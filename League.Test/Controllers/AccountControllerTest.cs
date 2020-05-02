@@ -58,7 +58,7 @@ namespace League.Test.Controllers
             var response = await Client.GetAsync("/");
             response.EnsureSuccessStatusCode();
             var content = await response.Content.ReadAsStringAsync();
-            Assert.IsTrue(content.Contains("volleyball-liga.de"));
+            Assert.IsTrue(content.Contains("logo-league-header.png"));
         }
     }
 }
