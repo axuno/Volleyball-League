@@ -21,14 +21,17 @@ The Volleyball League is a platform that brings everything necessary to organize
  * Individual settings (e.g. number of records, number of rounds, etc.)
  * Individual pages, e.g. for the game rules
  * Optimized for mobile devices: Comfortable operation on smartphones, tablets or desktop PCs
- * Localizable for language, region and time zone
- * Runs on Windows und Linux
+ * Localizable for language, region and time zone (currently with translations to English and German)
  * The platform software is Open Source
  
  ## Technology
  
   * ASP.NET Core 3.1 web-development framework
-  * C#
+  * C# programming language
   * Microsoft SQL Server database (2016+)
   * Bootstrap 4 as the HTML, CSS, and JavaScript framework
+  
+  ## Live website
+  
+  There is a [live website](https://volleyball-liga.de/) running the platform software.
   
