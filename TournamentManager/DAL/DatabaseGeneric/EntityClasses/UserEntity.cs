@@ -406,22 +406,6 @@ namespace TournamentManager.DAL.EntityClasses
 			set	{ SetValue((int)UserFieldIndex.Birthday, value); }
 		}
 
-		/// <summary>The PhotoFilename property of the Entity User<br/><br/></summary>
-		/// <remarks>Mapped on  table field: "User"."PhotoFilename".<br/>Table field type characteristics (type, precision, scale, length): NVarChar, 0, 0, 255.<br/>Table field behavior characteristics (is nullable, is PK, is identity): false, false, false</remarks>
-		public virtual System.String PhotoFilename
-		{
-			get { return (System.String)GetValue((int)UserFieldIndex.PhotoFilename, true); }
-			set	{ SetValue((int)UserFieldIndex.PhotoFilename, value); }
-		}
-
-		/// <summary>The DoNotContact property of the Entity User<br/><br/></summary>
-		/// <remarks>Mapped on  table field: "User"."DoNotContact".<br/>Table field type characteristics (type, precision, scale, length): Bit, 0, 0, 0.<br/>Table field behavior characteristics (is nullable, is PK, is identity): false, false, false</remarks>
-		public virtual System.Boolean DoNotContact
-		{
-			get { return (System.Boolean)GetValue((int)UserFieldIndex.DoNotContact, true); }
-			set	{ SetValue((int)UserFieldIndex.DoNotContact, value); }
-		}
-
 		/// <summary>The Remarks property of the Entity User<br/><br/></summary>
 		/// <remarks>Mapped on  table field: "User"."Remarks".<br/>Table field type characteristics (type, precision, scale, length): NVarChar, 0, 0, 4000.<br/>Table field behavior characteristics (is nullable, is PK, is identity): true, false, false</remarks>
 		public virtual System.String Remarks
@@ -524,10 +508,6 @@ namespace TournamentManager.DAL
 		Email2,
 		///<summary>Birthday. </summary>
 		Birthday,
-		///<summary>PhotoFilename. </summary>
-		PhotoFilename,
-		///<summary>DoNotContact. </summary>
-		DoNotContact,
 		///<summary>Remarks. </summary>
 		Remarks,
 		///<summary>CreatedOn. </summary>

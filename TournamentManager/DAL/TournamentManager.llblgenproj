@@ -430,13 +430,12 @@
       <EntityDefinition Name="Team" ObjectID="359f782e-7f26-46a1-9be5-865b369ee203">
         <Fields>
           <Field Name="ClubName" Type="string" IsOptional="true" MaxLength="255" FieldIndex="5" />
-          <Field Name="CreatedOn" Type="datetime" FieldIndex="7" />
+          <Field Name="CreatedOn" Type="datetime" FieldIndex="6" />
           <Field Name="Id" Type="long" IsReadOnly="true" Precision="11" IsPrimaryKey="true" FieldIndex="0" />
           <Field Name="MatchDayOfWeek" Type="int" IsOptional="true" Precision="6" FieldIndex="3" />
           <Field Name="MatchTime" Type="timespan" IsOptional="true" FieldIndex="4" />
-          <Field Name="ModifiedOn" Type="datetime" FieldIndex="8" />
+          <Field Name="ModifiedOn" Type="datetime" FieldIndex="7" />
           <Field Name="Name" Type="string" MaxLength="255" FieldIndex="2" />
-          <Field Name="PhotoFilename" Type="string" IsOptional="true" MaxLength="255" FieldIndex="6" />
           <Field Name="VenueId" Type="long" IsOptional="true" Precision="11" FieldIndex="1" />
         </Fields>
       </EntityDefinition>
@@ -476,8 +475,7 @@
         <Fields>
           <Field Name="AccessFailedCount" Type="int" FieldIndex="9" />
           <Field Name="Birthday" Type="datetime" IsOptional="true" FieldIndex="19" />
-          <Field Name="CreatedOn" Type="datetime" FieldIndex="23" />
-          <Field Name="DoNotContact" Type="bool" Precision="1" FieldIndex="21" />
+          <Field Name="CreatedOn" Type="datetime" FieldIndex="21" />
           <Field Name="Email" Type="string" MaxLength="255" FieldIndex="4" />
           <Field Name="Email2" Type="string" MaxLength="100" FieldIndex="18" />
           <Field Name="EmailConfirmedOn" Type="datetime" IsOptional="true" FieldIndex="5" />
@@ -489,7 +487,7 @@
           <Field Name="LastName" Type="string" MaxLength="255" FieldIndex="15" />
           <Field Name="LockoutEndDateUtc" Type="datetime" IsOptional="true" FieldIndex="10" />
           <Field Name="MiddleName" Type="string" MaxLength="255" FieldIndex="14" />
-          <Field Name="ModifiedOn" Type="datetime" FieldIndex="24" />
+          <Field Name="ModifiedOn" Type="datetime" FieldIndex="22" />
           <Field Name="Nickname" Type="string" MaxLength="255" FieldIndex="16" />
           <Field Name="PasswordHash" Type="string" MaxLength="2147483647" FieldIndex="3">
             <OutputSettingValues>
@@ -501,8 +499,7 @@
           <Field Name="PhoneNumber" Type="string" MaxLength="40" FieldIndex="6" />
           <Field Name="PhoneNumber2" Type="string" MaxLength="40" FieldIndex="17" />
           <Field Name="PhoneNumberConfirmedOn" Type="datetime" IsOptional="true" FieldIndex="7" />
-          <Field Name="PhotoFilename" Type="string" MaxLength="255" FieldIndex="20" />
-          <Field Name="Remarks" Type="string" IsOptional="true" MaxLength="4000" FieldIndex="22" />
+          <Field Name="Remarks" Type="string" IsOptional="true" MaxLength="4000" FieldIndex="20" />
           <Field Name="Title" Type="string" MaxLength="255" FieldIndex="12" />
           <Field Name="UserName" Type="string" MaxLength="255" FieldIndex="2" />
         </Fields>
@@ -716,11 +713,6 @@
       <NormalRelationship Name="TeamInRound.Team-Team.TeamInRounds" Start=":TeamInRound" End=":Team" StartNavigator="Team" EndNavigator="TeamInRounds" Type="4" UpdateRuleAction="1" DeleteRuleAction="1">
         <FieldRelationships>
           <FieldFieldRelationship FkField="TeamId" PkField="Id" />
-        </FieldRelationships>
-      </NormalRelationship>
-      <NormalRelationship Name="Tournament.PreviousTournament-Tournament.NextTournament" Start=":Tournament" End=":Tournament" StartNavigator="PreviousTournament" EndNavigator="NextTournament" Type="1" StartIsOptional="true" StartIsPkSide="true">
-        <FieldRelationships>
-          <FieldFieldRelationship FkField="NextTournamentId" PkField="Id" />
         </FieldRelationships>
       </NormalRelationship>
       <NormalRelationship Name="Tournament.TournamentType-TournamentType.Tournaments" Start=":Tournament" End=":TournamentType" StartNavigator="TournamentType" EndNavigator="Tournaments" Type="4" UpdateRuleAction="1" DeleteRuleAction="3">
@@ -1079,7 +1071,7 @@
       <Catalogs>
         <Catalog Name="TestOrg">
           <Schemas>
-            <Schema Name="dbo" SyncSource="2" LastSyncWithDatabase="2020-04-13T15:18:30.5802545Z">
+            <Schema Name="dbo" SyncSource="2" LastSyncWithDatabase="2020-05-02T18:53:40.8647112Z">
               <Tables>
                 <Table Name="AvailableMatchDate">
                   <PkConstraintName Name="PK_378f3f14a1c871b25041c380344" />
@@ -1427,9 +1419,8 @@
                       </CustomProperties>
                     </Field>
                     <Field Name="ClubName" Ordinal="6" IsOptional="true" HasDefaultValue="true" DefaultValue="''" DbType="12" Length="255" />
-                    <Field Name="PhotoFilename" Ordinal="7" IsOptional="true" HasDefaultValue="true" DefaultValue="''" DbType="12" Length="255" />
-                    <Field Name="CreatedOn" Ordinal="8" HasDefaultValue="true" DefaultValue="getdate()" DbType="4" />
-                    <Field Name="ModifiedOn" Ordinal="9" HasDefaultValue="true" DefaultValue="getdate()" DbType="4" />
+                    <Field Name="CreatedOn" Ordinal="7" HasDefaultValue="true" DefaultValue="getdate()" DbType="4" />
+                    <Field Name="ModifiedOn" Ordinal="8" HasDefaultValue="true" DefaultValue="getdate()" DbType="4" />
                   </Fields>
                   <CustomProperties>
                     <CustomProperty Name="MS_Description" Value="Team basic data" />
@@ -1502,11 +1493,9 @@
                     <Field Name="PhoneNumber2" Ordinal="18" HasDefaultValue="true" DefaultValue="''" DbType="12" Length="40" />
                     <Field Name="Email2" Ordinal="19" HasDefaultValue="true" DefaultValue="''" DbType="12" Length="100" />
                     <Field Name="Birthday" Ordinal="20" IsOptional="true" DbType="4" />
-                    <Field Name="PhotoFilename" Ordinal="21" HasDefaultValue="true" DefaultValue="''" DbType="12" Length="255" />
-                    <Field Name="DoNotContact" Ordinal="22" HasDefaultValue="true" DefaultValue="(0)" DbType="2" />
-                    <Field Name="Remarks" Ordinal="23" IsOptional="true" HasDefaultValue="true" DefaultValue="''" DbType="12" Length="4000" />
-                    <Field Name="CreatedOn" Ordinal="24" HasDefaultValue="true" DefaultValue="getdate()" DbType="4" />
-                    <Field Name="ModifiedOn" Ordinal="25" HasDefaultValue="true" DefaultValue="getdate()" DbType="4" />
+                    <Field Name="Remarks" Ordinal="21" IsOptional="true" HasDefaultValue="true" DefaultValue="''" DbType="12" Length="4000" />
+                    <Field Name="CreatedOn" Ordinal="22" HasDefaultValue="true" DefaultValue="getdate()" DbType="4" />
+                    <Field Name="ModifiedOn" Ordinal="23" HasDefaultValue="true" DefaultValue="getdate()" DbType="4" />
                   </Fields>
                   <UniqueConstraints>
                     <UniqueConstraint Name="UC_5ee8deb40f8bca844c8745f8722">
@@ -2331,7 +2320,6 @@
             <FieldMapping FieldName="MatchTime" TargetFieldName="MatchTime" />
             <FieldMapping FieldName="ModifiedOn" TargetFieldName="ModifiedOn" />
             <FieldMapping FieldName="Name" TargetFieldName="Name" />
-            <FieldMapping FieldName="PhotoFilename" TargetFieldName="PhotoFilename" />
             <FieldMapping FieldName="VenueId" TargetFieldName="VenueId" />
           </FieldMappings>
         </EntityMapping>
@@ -2372,7 +2360,6 @@
             <FieldMapping FieldName="AccessFailedCount" TargetFieldName="AccessFailedCount" />
             <FieldMapping FieldName="Birthday" TargetFieldName="Birthday" />
             <FieldMapping FieldName="CreatedOn" TargetFieldName="CreatedOn" />
-            <FieldMapping FieldName="DoNotContact" TargetFieldName="DoNotContact" />
             <FieldMapping FieldName="Email" TargetFieldName="Email" />
             <FieldMapping FieldName="Email2" TargetFieldName="Email2" />
             <FieldMapping FieldName="EmailConfirmedOn" TargetFieldName="EmailConfirmedOn" />
@@ -2390,7 +2377,6 @@
             <FieldMapping FieldName="PhoneNumber" TargetFieldName="PhoneNumber" />
             <FieldMapping FieldName="PhoneNumber2" TargetFieldName="PhoneNumber2" />
             <FieldMapping FieldName="PhoneNumberConfirmedOn" TargetFieldName="PhoneNumberConfirmedOn" />
-            <FieldMapping FieldName="PhotoFilename" TargetFieldName="PhotoFilename" />
             <FieldMapping FieldName="Remarks" TargetFieldName="Remarks" />
             <FieldMapping FieldName="Title" TargetFieldName="Title" />
             <FieldMapping FieldName="UserName" TargetFieldName="UserName" />

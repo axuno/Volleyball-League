@@ -23,7 +23,7 @@ namespace League.Test.Controllers
             mockLocalizer.Setup(_ => _[key]).Returns(localizedString);
             _mockLocalizer = mockLocalizer.Object;
 
-            _controller = new League.Controllers.Account(null, _mockLocalizer, null, null, null, null, null, null)
+            _controller = new League.Controllers.Account(null, _mockLocalizer, null, null, null, null, null, null, null, null)
             {
                 ControllerContext = new ControllerContext {HttpContext = new DefaultHttpContext()}
             };

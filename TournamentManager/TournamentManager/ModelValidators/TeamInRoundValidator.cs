@@ -49,7 +49,7 @@ namespace TournamentManager.ModelValidators
                         }
                         
                         var tournament =
-                            await Data.OrganizationContext.AppDb.TournamentRepository.GetTournamentByIdAsync(Data.TouramentId,
+                            await Data.OrganizationContext.AppDb.TournamentRepository.GetTournamentAsync(new PredicateExpression(TournamentFields.Id == Data.TouramentId),
                                 cancellationToken);
 
                         return new FactResult

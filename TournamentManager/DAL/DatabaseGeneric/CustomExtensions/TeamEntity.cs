@@ -14,7 +14,6 @@ namespace TournamentManager.DAL.EntityClasses
 		{
 			Name = Name.Trim();
 			ClubName = ClubName.Trim();
-			PhotoFilename = PhotoFilename.Trim();
 		}
 
 		/// <summary>

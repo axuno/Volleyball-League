@@ -373,7 +373,6 @@ namespace TournamentManager.DAL.HelperClasses
 			this.AddElementFieldInfo("TeamEntity", "MatchDayOfWeek", typeof(Nullable<System.Int32>), false, false, false, true,  (int)TeamFieldIndex.MatchDayOfWeek, 0, 0, 10);
 			this.AddElementFieldInfo("TeamEntity", "MatchTime", typeof(Nullable<System.TimeSpan>), false, false, false, true,  (int)TeamFieldIndex.MatchTime, 0, 0, 0);
 			this.AddElementFieldInfo("TeamEntity", "ClubName", typeof(System.String), false, false, false, true,  (int)TeamFieldIndex.ClubName, 255, 0, 0);
-			this.AddElementFieldInfo("TeamEntity", "PhotoFilename", typeof(System.String), false, false, false, true,  (int)TeamFieldIndex.PhotoFilename, 255, 0, 0);
 			this.AddElementFieldInfo("TeamEntity", "CreatedOn", typeof(System.DateTime), false, false, false, false,  (int)TeamFieldIndex.CreatedOn, 0, 0, 0);
 			this.AddElementFieldInfo("TeamEntity", "ModifiedOn", typeof(System.DateTime), false, false, false, false,  (int)TeamFieldIndex.ModifiedOn, 0, 0, 0);
 		}
@@ -400,7 +399,7 @@ namespace TournamentManager.DAL.HelperClasses
 			this.AddElementFieldInfo("TournamentEntity", "TypeId", typeof(Nullable<System.Int64>), false, true, false, true,  (int)TournamentFieldIndex.TypeId, 0, 0, 19);
 			this.AddElementFieldInfo("TournamentEntity", "IsComplete", typeof(System.Boolean), false, false, false, false,  (int)TournamentFieldIndex.IsComplete, 0, 0, 0);
 			this.AddElementFieldInfo("TournamentEntity", "IsPlanningMode", typeof(System.Boolean), false, false, false, false,  (int)TournamentFieldIndex.IsPlanningMode, 0, 0, 0);
-			this.AddElementFieldInfo("TournamentEntity", "NextTournamentId", typeof(Nullable<System.Int64>), false, true, false, true,  (int)TournamentFieldIndex.NextTournamentId, 0, 0, 19);
+			this.AddElementFieldInfo("TournamentEntity", "NextTournamentId", typeof(Nullable<System.Int64>), false, false, false, true,  (int)TournamentFieldIndex.NextTournamentId, 0, 0, 19);
 			this.AddElementFieldInfo("TournamentEntity", "CreatedOn", typeof(System.DateTime), false, false, false, false,  (int)TournamentFieldIndex.CreatedOn, 0, 0, 0);
 			this.AddElementFieldInfo("TournamentEntity", "ModifiedOn", typeof(System.DateTime), false, false, false, false,  (int)TournamentFieldIndex.ModifiedOn, 0, 0, 0);
 		}
@@ -440,8 +439,6 @@ namespace TournamentManager.DAL.HelperClasses
 			this.AddElementFieldInfo("UserEntity", "PhoneNumber2", typeof(System.String), false, false, false, false,  (int)UserFieldIndex.PhoneNumber2, 40, 0, 0);
 			this.AddElementFieldInfo("UserEntity", "Email2", typeof(System.String), false, false, false, false,  (int)UserFieldIndex.Email2, 100, 0, 0);
 			this.AddElementFieldInfo("UserEntity", "Birthday", typeof(Nullable<System.DateTime>), false, false, false, true,  (int)UserFieldIndex.Birthday, 0, 0, 0);
-			this.AddElementFieldInfo("UserEntity", "PhotoFilename", typeof(System.String), false, false, false, false,  (int)UserFieldIndex.PhotoFilename, 255, 0, 0);
-			this.AddElementFieldInfo("UserEntity", "DoNotContact", typeof(System.Boolean), false, false, false, false,  (int)UserFieldIndex.DoNotContact, 0, 0, 0);
 			this.AddElementFieldInfo("UserEntity", "Remarks", typeof(System.String), false, false, false, true,  (int)UserFieldIndex.Remarks, 4000, 0, 0);
 			this.AddElementFieldInfo("UserEntity", "CreatedOn", typeof(System.DateTime), false, false, false, false,  (int)UserFieldIndex.CreatedOn, 0, 0, 0);
 			this.AddElementFieldInfo("UserEntity", "ModifiedOn", typeof(System.DateTime), false, false, false, false,  (int)UserFieldIndex.ModifiedOn, 0, 0, 0);

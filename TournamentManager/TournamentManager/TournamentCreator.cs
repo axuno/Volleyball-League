@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using SD.LLBLGen.Pro.ORMSupportClasses;
 using TournamentManager.DAL.EntityClasses;
+using TournamentManager.DAL.HelperClasses;
 
 
 namespace TournamentManager.Data
@@ -45,14 +47,13 @@ namespace TournamentManager.Data
 		/// <param name="fromTournamentId">Existing source tournament id.</param>
 		/// <param name="toTournamentId">New target tournament id.</param>
 		/// <returns>True, if creation was successful, false otherwise.</returns>
-		public async Task<bool> CopyTournament (long fromTournamentId, long toTournamentId)
+		public async Task<bool> CopyTournament (long fromTournamentId)
 		{
 			DateTime now = DateTime.Now;
-			var tournament = await _appDb.TournamentRepository.GetTournamentByIdAsync(fromTournamentId, CancellationToken.None);
+			var tournament = await _appDb.TournamentRepository.GetTournamentAsync(new PredicateExpression(TournamentFields.Id == fromTournamentId), CancellationToken.None);
 
 			var newTournament = new TournamentEntity
              	{
-					Id = toTournamentId,
              		IsPlanningMode = true,
              		Name = tournament.Name,
 					Description = tournament.Description.Length == 0 ? null : tournament.Description,
@@ -60,10 +61,11 @@ namespace TournamentManager.Data
              		IsComplete = false,
              		CreatedOn = now,
              		ModifiedOn = now,
-					PreviousTournament = tournament
              	};
 
-		    tournament.NextTournament = newTournament;
+            _appDb.GenericRepository.SaveEntity(newTournament, true, false);
+
+		    tournament.NextTournamentId = newTournament.Id;
 		    tournament.ModifiedOn = now;
 
             // save recursively (new tournament with new legs)

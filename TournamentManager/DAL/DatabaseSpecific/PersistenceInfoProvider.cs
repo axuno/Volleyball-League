@@ -360,16 +360,15 @@ namespace TournamentManager.DAL.DatabaseSpecific
 		/// <summary>Inits TeamEntity's mappings</summary>
 		private void InitTeamEntityMappings()
 		{
-			this.AddElementMapping("TeamEntity", @"TestOrg", @"dbo", "Team", 9, 0);
+			this.AddElementMapping("TeamEntity", @"TestOrg", @"dbo", "Team", 8, 0);
 			this.AddElementFieldMapping("TeamEntity", "Id", "Id", false, "BigInt", 0, 19, 0, true, "SCOPE_IDENTITY()", null, typeof(System.Int64), 0);
 			this.AddElementFieldMapping("TeamEntity", "VenueId", "VenueId", true, "BigInt", 0, 19, 0, false, "", null, typeof(System.Int64), 1);
 			this.AddElementFieldMapping("TeamEntity", "Name", "Name", false, "NVarChar", 255, 0, 0, false, "", null, typeof(System.String), 2);
 			this.AddElementFieldMapping("TeamEntity", "MatchDayOfWeek", "MatchDayOfWeek", true, "Int", 0, 10, 0, false, "", null, typeof(System.Int32), 3);
 			this.AddElementFieldMapping("TeamEntity", "MatchTime", "MatchTime", true, "Time", 0, 0, 0, false, "", null, typeof(System.TimeSpan), 4);
 			this.AddElementFieldMapping("TeamEntity", "ClubName", "ClubName", true, "NVarChar", 255, 0, 0, false, "", null, typeof(System.String), 5);
-			this.AddElementFieldMapping("TeamEntity", "PhotoFilename", "PhotoFilename", true, "NVarChar", 255, 0, 0, false, "", null, typeof(System.String), 6);
-			this.AddElementFieldMapping("TeamEntity", "CreatedOn", "CreatedOn", false, "DateTime", 0, 0, 0, false, "", null, typeof(System.DateTime), 7);
-			this.AddElementFieldMapping("TeamEntity", "ModifiedOn", "ModifiedOn", false, "DateTime", 0, 0, 0, false, "", null, typeof(System.DateTime), 8);
+			this.AddElementFieldMapping("TeamEntity", "CreatedOn", "CreatedOn", false, "DateTime", 0, 0, 0, false, "", null, typeof(System.DateTime), 6);
+			this.AddElementFieldMapping("TeamEntity", "ModifiedOn", "ModifiedOn", false, "DateTime", 0, 0, 0, false, "", null, typeof(System.DateTime), 7);
 		}
 
 		/// <summary>Inits TeamInRoundEntity's mappings</summary>
@@ -413,7 +412,7 @@ namespace TournamentManager.DAL.DatabaseSpecific
 		/// <summary>Inits UserEntity's mappings</summary>
 		private void InitUserEntityMappings()
 		{
-			this.AddElementMapping("UserEntity", @"TestOrg", @"dbo", "User", 25, 0);
+			this.AddElementMapping("UserEntity", @"TestOrg", @"dbo", "User", 23, 0);
 			this.AddElementFieldMapping("UserEntity", "Id", "Id", false, "BigInt", 0, 19, 0, true, "SCOPE_IDENTITY()", null, typeof(System.Int64), 0);
 			this.AddElementFieldMapping("UserEntity", "Guid", "Guid", false, "NVarChar", 50, 0, 0, false, "", null, typeof(System.String), 1);
 			this.AddElementFieldMapping("UserEntity", "UserName", "UserName", false, "NVarChar", 255, 0, 0, false, "", null, typeof(System.String), 2);
@@ -434,11 +433,9 @@ namespace TournamentManager.DAL.DatabaseSpecific
 			this.AddElementFieldMapping("UserEntity", "PhoneNumber2", "PhoneNumber2", false, "NVarChar", 40, 0, 0, false, "", null, typeof(System.String), 17);
 			this.AddElementFieldMapping("UserEntity", "Email2", "Email2", false, "NVarChar", 100, 0, 0, false, "", null, typeof(System.String), 18);
 			this.AddElementFieldMapping("UserEntity", "Birthday", "Birthday", true, "DateTime", 0, 0, 0, false, "", null, typeof(System.DateTime), 19);
-			this.AddElementFieldMapping("UserEntity", "PhotoFilename", "PhotoFilename", false, "NVarChar", 255, 0, 0, false, "", null, typeof(System.String), 20);
-			this.AddElementFieldMapping("UserEntity", "DoNotContact", "DoNotContact", false, "Bit", 0, 0, 0, false, "", null, typeof(System.Boolean), 21);
-			this.AddElementFieldMapping("UserEntity", "Remarks", "Remarks", true, "NVarChar", 4000, 0, 0, false, "", null, typeof(System.String), 22);
-			this.AddElementFieldMapping("UserEntity", "CreatedOn", "CreatedOn", false, "DateTime", 0, 0, 0, false, "", null, typeof(System.DateTime), 23);
-			this.AddElementFieldMapping("UserEntity", "ModifiedOn", "ModifiedOn", false, "DateTime", 0, 0, 0, false, "", null, typeof(System.DateTime), 24);
+			this.AddElementFieldMapping("UserEntity", "Remarks", "Remarks", true, "NVarChar", 4000, 0, 0, false, "", null, typeof(System.String), 20);
+			this.AddElementFieldMapping("UserEntity", "CreatedOn", "CreatedOn", false, "DateTime", 0, 0, 0, false, "", null, typeof(System.DateTime), 21);
+			this.AddElementFieldMapping("UserEntity", "ModifiedOn", "ModifiedOn", false, "DateTime", 0, 0, 0, false, "", null, typeof(System.DateTime), 22);
 		}
 
 		/// <summary>Inits VenueEntity's mappings</summary>

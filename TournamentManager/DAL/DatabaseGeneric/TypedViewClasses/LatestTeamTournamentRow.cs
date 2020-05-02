@@ -29,6 +29,10 @@ namespace TournamentManager.DAL.TypedViewClasses
 		public System.Int64 RoundId { get; set; }
 		/// <summary>Gets or sets the RoundName field.</summary>
 		public System.String RoundName { get; set; }
+		/// <summary>Gets or sets the RoundTypeDescription field.</summary>
+		public System.String RoundTypeDescription { get; set; }
+		/// <summary>Gets or sets the RoundTypeName field.</summary>
+		public System.String RoundTypeName { get; set; }
 		/// <summary>Gets or sets the TeamClubName field.</summary>
 		public System.String TeamClubName { get; set; }
 		/// <summary>Gets or sets the TeamId field.</summary>
@@ -47,10 +51,6 @@ namespace TournamentManager.DAL.TypedViewClasses
 		public System.Int64 TournamentId { get; set; }
 		/// <summary>Gets or sets the TournamentName field.</summary>
 		public System.String TournamentName { get; set; }
-		/// <summary>Gets or sets the RoundTypeName field.</summary>
-		public System.String RoundTypeName { get; set; }
-		/// <summary>Gets or sets the RoundTypeDescription field.</summary>
-		public System.String RoundTypeDescription { get; set; }
 	}
 }
 

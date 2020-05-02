@@ -31,8 +31,6 @@ namespace TournamentManager.DAL.EntityClasses
 		private EntityCollection<RegistrationEntity> _registrations;
 		private EntityCollection<RoundEntity> _rounds;
 		private TournamentTypeEntity _tournamentType;
-		private TournamentEntity _previousTournament;
-		private TournamentEntity _nextTournament;
 
 		// __LLBLGENPRO_USER_CODE_REGION_START PrivateMembers
 		// __LLBLGENPRO_USER_CODE_REGION_END
@@ -52,10 +50,6 @@ namespace TournamentManager.DAL.EntityClasses
 			public static readonly string Registrations = "Registrations";
 			/// <summary>Member name Rounds</summary>
 			public static readonly string Rounds = "Rounds";
-			/// <summary>Member name PreviousTournament</summary>
-			public static readonly string PreviousTournament = "PreviousTournament";
-			/// <summary>Member name NextTournament</summary>
-			public static readonly string NextTournament = "NextTournament";
 		}
 
 		/// <summary>Static meta-data storage for navigator related information</summary>
@@ -69,8 +63,6 @@ namespace TournamentManager.DAL.EntityClasses
 				AddNavigatorMetaData<TournamentEntity, EntityCollection<RegistrationEntity>>("Registrations", a => a._registrations, (a, b) => a._registrations = b, a => a.Registrations, () => new TournamentRelations().RegistrationEntityUsingTournamentId, typeof(RegistrationEntity), (int)TournamentManager.DAL.EntityType.RegistrationEntity);
 				AddNavigatorMetaData<TournamentEntity, EntityCollection<RoundEntity>>("Rounds", a => a._rounds, (a, b) => a._rounds = b, a => a.Rounds, () => new TournamentRelations().RoundEntityUsingTournamentId, typeof(RoundEntity), (int)TournamentManager.DAL.EntityType.RoundEntity);
 				AddNavigatorMetaData<TournamentEntity, TournamentTypeEntity>("TournamentType", "Tournaments", (a, b) => a._tournamentType = b, a => a._tournamentType, (a, b) => a.TournamentType = b, TournamentManager.DAL.RelationClasses.StaticTournamentRelations.TournamentTypeEntityUsingTypeIdStatic, ()=>new TournamentRelations().TournamentTypeEntityUsingTypeId, null, new int[] { (int)TournamentFieldIndex.TypeId }, null, true, (int)TournamentManager.DAL.EntityType.TournamentTypeEntity);
-				AddNavigatorMetaData<TournamentEntity, TournamentEntity>("PreviousTournament", "NextTournament", (a, b) => a._previousTournament = b, a => a._previousTournament, (a, b) => a.PreviousTournament = b, TournamentManager.DAL.RelationClasses.StaticTournamentRelations.TournamentEntityUsingNextTournamentIdStatic, ()=>new TournamentRelations().TournamentEntityUsingNextTournamentId, null, null, null, true, (int)TournamentManager.DAL.EntityType.TournamentEntity);
-				AddNavigatorMetaData<TournamentEntity, TournamentEntity>("NextTournament", "PreviousTournament", (a, b) => a._nextTournament = b, a => a._nextTournament, (a, b) => a.NextTournament = b, TournamentManager.DAL.RelationClasses.StaticTournamentRelations.TournamentEntityUsingNextTournamentIdStatic, ()=>new TournamentRelations().TournamentEntityUsingId, null, new int[] { (int)TournamentFieldIndex.NextTournamentId }, null, false, (int)TournamentManager.DAL.EntityType.TournamentEntity);
 			}
 		}
 
@@ -123,15 +115,6 @@ namespace TournamentManager.DAL.EntityClasses
 			// __LLBLGENPRO_USER_CODE_REGION_END
 		}
 
-		/// <summary>Method which will construct a filter (predicate expression) for the unique constraint defined on the fields: NextTournamentId .</summary>
-		/// <returns>true if succeeded and the contents is read, false otherwise</returns>
-		public IPredicateExpression ConstructFilterForUCNextTournamentId()
-		{
-			var filter = new PredicateExpression();
-			filter.Add(TournamentManager.DAL.HelperClasses.TournamentFields.NextTournamentId == this.Fields.GetCurrentValue((int)TournamentFieldIndex.NextTournamentId));
- 			return filter;
-		}
-
 		/// <summary>Creates a new IRelationPredicateBucket object which contains the predicate expression and relation collection to fetch the related entities of type 'ExcludeMatchDate' to this entity.</summary>
 		/// <returns></returns>
 		public virtual IRelationPredicateBucket GetRelationInfoExcludeMatchDates() { return CreateRelationInfoForNavigator("ExcludeMatchDates"); }
@@ -151,14 +134,6 @@ namespace TournamentManager.DAL.EntityClasses
 		/// <summary>Creates a new IRelationPredicateBucket object which contains the predicate expression and relation collection to fetch the related entity of type 'TournamentType' to this entity.</summary>
 		/// <returns></returns>
 		public virtual IRelationPredicateBucket GetRelationInfoTournamentType() { return CreateRelationInfoForNavigator("TournamentType"); }
-
-		/// <summary>Creates a new IRelationPredicateBucket object which contains the predicate expression and relation collection to fetch the related entity of type 'Tournament' to this entity.</summary>
-		/// <returns></returns>
-		public virtual IRelationPredicateBucket GetRelationInfoPreviousTournament() { return CreateRelationInfoForNavigator("PreviousTournament"); }
-
-		/// <summary>Creates a new IRelationPredicateBucket object which contains the predicate expression and relation collection to fetch the related entity of type 'Tournament' to this entity.</summary>
-		/// <returns></returns>
-		public virtual IRelationPredicateBucket GetRelationInfoNextTournament() { return CreateRelationInfoForNavigator("NextTournament"); }
 		
 		/// <inheritdoc/>
 		protected override EntityStaticMetaDataBase GetEntityStaticMetaData() {	return _staticMetaData; }
@@ -209,14 +184,6 @@ namespace TournamentManager.DAL.EntityClasses
 		/// <summary>Creates a new PrefetchPathElement2 object which contains all the information to prefetch the related entities of type 'TournamentType' for this entity.</summary>
 		/// <returns>Ready to use IPrefetchPathElement2 implementation.</returns>
 		public static IPrefetchPathElement2 PrefetchPathTournamentType { get { return _staticMetaData.GetPrefetchPathElement("TournamentType", CommonEntityBase.CreateEntityCollection<TournamentTypeEntity>()); } }
-
-		/// <summary>Creates a new PrefetchPathElement2 object which contains all the information to prefetch the related entities of type 'Tournament' for this entity.</summary>
-		/// <returns>Ready to use IPrefetchPathElement2 implementation.</returns>
-		public static IPrefetchPathElement2 PrefetchPathPreviousTournament { get { return _staticMetaData.GetPrefetchPathElement("PreviousTournament", CommonEntityBase.CreateEntityCollection<TournamentEntity>()); } }
-
-		/// <summary>Creates a new PrefetchPathElement2 object which contains all the information to prefetch the related entities of type 'Tournament' for this entity.</summary>
-		/// <returns>Ready to use IPrefetchPathElement2 implementation.</returns>
-		public static IPrefetchPathElement2 PrefetchPathNextTournament { get { return _staticMetaData.GetPrefetchPathElement("NextTournament", CommonEntityBase.CreateEntityCollection<TournamentEntity>()); } }
 
 		/// <summary>The Id property of the Entity Tournament<br/><br/></summary>
 		/// <remarks>Mapped on  table field: "Tournament"."Id".<br/>Table field type characteristics (type, precision, scale, length): BigInt, 19, 0, 0.<br/>Table field behavior characteristics (is nullable, is PK, is identity): false, true, true</remarks>
@@ -313,22 +280,6 @@ namespace TournamentManager.DAL.EntityClasses
 			set { SetSingleRelatedEntityNavigator(value, "TournamentType"); }
 		}
 
-		/// <summary>Gets / sets related entity of type 'TournamentEntity' which has to be set using a fetch action earlier. If no related entity is set for this property, null is returned.<br/><br/></summary>
-		[Browsable(false)]
-		public virtual TournamentEntity PreviousTournament
-		{
-			get { return _previousTournament; }
-			set { SetSingleRelatedEntityNavigator(value, "PreviousTournament"); }
-		}
-
-		/// <summary>Gets / sets related entity of type 'TournamentEntity' which has to be set using a fetch action earlier. If no related entity is set for this property, null is returned.<br/><br/></summary>
-		[Browsable(false)]
-		public virtual TournamentEntity NextTournament
-		{
-			get { return _nextTournament; }
-			set { SetSingleRelatedEntityNavigator(value, "NextTournament"); }
-		}
-
 		// __LLBLGENPRO_USER_CODE_REGION_START CustomEntityCode
 		// __LLBLGENPRO_USER_CODE_REGION_END
 
@@ -391,18 +342,6 @@ namespace TournamentManager.DAL.RelationClasses
 			get { return ModelInfoProviderSingleton.GetInstance().CreateRelation(RelationType.OneToMany, "Rounds", true, new[] { TournamentFields.Id, RoundFields.TournamentId }); }
 		}
 
-		/// <summary>Returns a new IEntityRelation object, between TournamentEntity and TournamentEntity over the 1:1 relation they have, using the relation between the fields: Tournament.Id - Tournament.NextTournamentId</summary>
-		public virtual IEntityRelation TournamentEntityUsingNextTournamentId
-		{
-			get	{ return ModelInfoProviderSingleton.GetInstance().CreateRelation(RelationType.OneToOne, "PreviousTournament", true, new[] { TournamentFields.Id, TournamentFields.NextTournamentId }); }
-		}
-
-		/// <summary>Returns a new IEntityRelation object, between TournamentEntity and TournamentEntity over the 1:1 relation they have, using the relation between the fields: Tournament.NextTournamentId - Tournament.Id</summary>
-		public virtual IEntityRelation TournamentEntityUsingId
-		{
-			get	{ return ModelInfoProviderSingleton.GetInstance().CreateRelation(RelationType.OneToOne, "NextTournament", false, new[] { TournamentFields.Id, TournamentFields.NextTournamentId }); }
-		}
-
 		/// <summary>Returns a new IEntityRelation object, between TournamentEntity and TournamentTypeEntity over the m:1 relation they have, using the relation between the fields: Tournament.TypeId - TournamentType.Id</summary>
 		public virtual IEntityRelation TournamentTypeEntityUsingTypeId
 		{
@@ -418,8 +357,6 @@ namespace TournamentManager.DAL.RelationClasses
 		internal static readonly IEntityRelation RankingEntityUsingTournamentIdStatic = new TournamentRelations().RankingEntityUsingTournamentId;
 		internal static readonly IEntityRelation RegistrationEntityUsingTournamentIdStatic = new TournamentRelations().RegistrationEntityUsingTournamentId;
 		internal static readonly IEntityRelation RoundEntityUsingTournamentIdStatic = new TournamentRelations().RoundEntityUsingTournamentId;
-		internal static readonly IEntityRelation TournamentEntityUsingNextTournamentIdStatic = new TournamentRelations().TournamentEntityUsingNextTournamentId;
-		internal static readonly IEntityRelation TournamentEntityUsingIdStatic = new TournamentRelations().TournamentEntityUsingId;
 		internal static readonly IEntityRelation TournamentTypeEntityUsingTypeIdStatic = new TournamentRelations().TournamentTypeEntityUsingTypeId;
 
 		/// <summary>CTor</summary>

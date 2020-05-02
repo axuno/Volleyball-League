@@ -316,14 +316,6 @@ namespace TournamentManager.DAL.EntityClasses
 			set	{ SetValue((int)TeamFieldIndex.ClubName, value); }
 		}
 
-		/// <summary>The PhotoFilename property of the Entity Team<br/><br/></summary>
-		/// <remarks>Mapped on  table field: "Team"."PhotoFilename".<br/>Table field type characteristics (type, precision, scale, length): NVarChar, 0, 0, 255.<br/>Table field behavior characteristics (is nullable, is PK, is identity): true, false, false</remarks>
-		public virtual System.String PhotoFilename
-		{
-			get { return (System.String)GetValue((int)TeamFieldIndex.PhotoFilename, true); }
-			set	{ SetValue((int)TeamFieldIndex.PhotoFilename, value); }
-		}
-
 		/// <summary>The CreatedOn property of the Entity Team<br/><br/></summary>
 		/// <remarks>Mapped on  table field: "Team"."CreatedOn".<br/>Table field type characteristics (type, precision, scale, length): DateTime, 0, 0, 0.<br/>Table field behavior characteristics (is nullable, is PK, is identity): false, false, false</remarks>
 		public virtual System.DateTime CreatedOn
@@ -414,8 +406,6 @@ namespace TournamentManager.DAL
 		MatchTime,
 		///<summary>ClubName. </summary>
 		ClubName,
-		///<summary>PhotoFilename. </summary>
-		PhotoFilename,
 		///<summary>CreatedOn. </summary>
 		CreatedOn,
 		///<summary>ModifiedOn. </summary>

@@ -162,7 +162,7 @@ namespace League.Controllers
             var model = new ResultsViewModel(_timeZoneConverter)
             {
                 Tournament =
-                    await _appDb.TournamentRepository.GetTournamentByIdAsync(_siteContext.MatchPlanTournamentId,
+                    await _appDb.TournamentRepository.GetTournamentAsync(new PredicateExpression(TournamentFields.Id == _siteContext.MatchPlanTournamentId),
                         cancellationToken),
                 CompletedMatches = await _appDb.MatchRepository.GetCompletedMatchesAsync(
                      new PredicateExpression(CompletedMatchFields.TournamentId == _siteContext.MatchResultTournamentId), cancellationToken),
@@ -483,7 +483,7 @@ namespace League.Controllers
         private async Task<TournamentEntity> GetPlanTournament(CancellationToken cancellationToken)
         {
             var tournament =
-                await _appDb.TournamentRepository.GetTournamentByIdAsync(_siteContext.MatchPlanTournamentId, cancellationToken);
+                await _appDb.TournamentRepository.GetTournamentAsync(new PredicateExpression(TournamentFields.Id == _siteContext.MatchPlanTournamentId), cancellationToken);
 
             if (tournament != null) return tournament;
 
@@ -502,8 +502,8 @@ namespace League.Controllers
                 _logger.LogCritical("Number of found opponents for a match does not equal 2. User ID '{0}'.", GetCurrentUserId());
             }
 
-            var tournament = await _appDb.TournamentRepository.GetTournamentByIdAsync(
-                _siteContext.MatchResultTournamentId, cancellationToken);
+            var tournament = await _appDb.TournamentRepository.GetTournamentAsync(
+                new PredicateExpression(TournamentFields.Id == _siteContext.MatchResultTournamentId), cancellationToken);
             if (tournament == null)
             {
                 _logger.LogCritical($"{nameof(_siteContext.MatchResultTournamentId)} '{_siteContext.MatchPlanTournamentId}' does not exist");

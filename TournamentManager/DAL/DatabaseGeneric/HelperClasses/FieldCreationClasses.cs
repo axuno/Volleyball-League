@@ -452,8 +452,6 @@ namespace TournamentManager.DAL.HelperClasses
 		public static EntityField2 MatchTime { get { return ModelInfoProviderSingleton.GetInstance().CreateField2(TeamFieldIndex.MatchTime); }}
 		/// <summary>Creates a new TeamEntity.ClubName field instance</summary>
 		public static EntityField2 ClubName { get { return ModelInfoProviderSingleton.GetInstance().CreateField2(TeamFieldIndex.ClubName); }}
-		/// <summary>Creates a new TeamEntity.PhotoFilename field instance</summary>
-		public static EntityField2 PhotoFilename { get { return ModelInfoProviderSingleton.GetInstance().CreateField2(TeamFieldIndex.PhotoFilename); }}
 		/// <summary>Creates a new TeamEntity.CreatedOn field instance</summary>
 		public static EntityField2 CreatedOn { get { return ModelInfoProviderSingleton.GetInstance().CreateField2(TeamFieldIndex.CreatedOn); }}
 		/// <summary>Creates a new TeamEntity.ModifiedOn field instance</summary>
@@ -558,10 +556,6 @@ namespace TournamentManager.DAL.HelperClasses
 		public static EntityField2 Email2 { get { return ModelInfoProviderSingleton.GetInstance().CreateField2(UserFieldIndex.Email2); }}
 		/// <summary>Creates a new UserEntity.Birthday field instance</summary>
 		public static EntityField2 Birthday { get { return ModelInfoProviderSingleton.GetInstance().CreateField2(UserFieldIndex.Birthday); }}
-		/// <summary>Creates a new UserEntity.PhotoFilename field instance</summary>
-		public static EntityField2 PhotoFilename { get { return ModelInfoProviderSingleton.GetInstance().CreateField2(UserFieldIndex.PhotoFilename); }}
-		/// <summary>Creates a new UserEntity.DoNotContact field instance</summary>
-		public static EntityField2 DoNotContact { get { return ModelInfoProviderSingleton.GetInstance().CreateField2(UserFieldIndex.DoNotContact); }}
 		/// <summary>Creates a new UserEntity.Remarks field instance</summary>
 		public static EntityField2 Remarks { get { return ModelInfoProviderSingleton.GetInstance().CreateField2(UserFieldIndex.Remarks); }}
 		/// <summary>Creates a new UserEntity.CreatedOn field instance</summary>

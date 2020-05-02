@@ -64,7 +64,7 @@ namespace League.Controllers
                 var model = new RankingListModel
                 {
                     Tournament =
-                        await _appDb.TournamentRepository.GetTournamentByIdAsync(_siteContext.MatchResultTournamentId,
+                        await _appDb.TournamentRepository.GetTournamentAsync(new PredicateExpression(TournamentFields.Id == _siteContext.MatchResultTournamentId),
                             cancellationToken),
                     RankingList = rankingList,
                     ChartFileInfos = GetChartFileInfos(rankingList.Select(rl => rl.RoundId).Distinct())

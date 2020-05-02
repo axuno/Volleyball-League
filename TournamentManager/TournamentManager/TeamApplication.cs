@@ -28,7 +28,6 @@ namespace TournamentManager.Data
         public TeamApplication(IAppDb appDb, long plannedTournamentId) : this(appDb)
 		{
 			PlannedTournament = GetTournamentWithPreviousAndRounds(plannedTournamentId);
-			PreviousTournament = PlannedTournament.PreviousTournament;
 		}
 
 		public static TournamentEntity PreviousTournament
@@ -178,10 +177,8 @@ namespace TournamentManager.Data
             {
                 var tournament = new TournamentEntity(tournamentId);
                 var pfp = new PrefetchPath2(EntityType.TournamentEntity);
-                pfp.Add(TournamentEntity.PrefetchPathPreviousTournament);
-                pfp[0].SubPath.Add(TournamentEntity.PrefetchPathRounds);
                 pfp.Add(TournamentEntity.PrefetchPathRounds);
-                pfp[1].SubPath.Add(RoundEntity.PrefetchPathRoundType);
+                pfp[0].SubPath.Add(RoundEntity.PrefetchPathRoundType);
 
                 da.FetchEntity(tournament, pfp);
                 return tournament;

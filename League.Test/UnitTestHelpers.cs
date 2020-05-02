@@ -2,6 +2,7 @@
 using League.DI;
 using League.Identity;
 using League.Test.Identity;
+using League.Test.TestComponents;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Localization;
@@ -24,13 +25,14 @@ namespace League.Test
 
         public UnitTestHelpers()
         {
-            _configPath = @"d:\Internet\Websites\mlcore\League\Configuration";
+            _configPath = DirectoryLocator.GetTargetConfigurationPath();
             var orgSiteList = OrganizationSiteList.DeserializeFromFile(Path.Combine(_configPath, "OrganizationSiteList.Development.config"));
             var dbContextList = DbContextList.DeserializeFromFile(Path.Combine(_configPath, "DbContextList.Development.config"));
             foreach (var dbContext in dbContextList)
             {
                 dbContext.Catalog = "LeagueIntegration";
-                dbContext.ConnectionString = string.Format("Server={0};Database={1};Integrated Security=true", "(LocalDB)\\MSSQLLocalDB;AttachDbFilename=d:\\Internet\\Websites\\mlcore\\MsSqlDb\\LeagueIntegrationTest.mdf", dbContext.Catalog);
+                var msSqlPath = Path.Combine(DirectoryLocator.GetTargetProjectPath(), @"..\..\MsSqlDb");
+                dbContext.ConnectionString = string.Format("Server={0};Database={1};Integrated Security=true", $"(LocalDB)\\MSSQLLocalDB;AttachDbFilename={msSqlPath}\\LeagueIntegrationTest.mdf", dbContext.Catalog);
             }
             var dbContextResolver = new DbContextResolver(dbContextList);
 
@@ -49,7 +51,7 @@ namespace League.Test
             RuntimeConfiguration.Tracing.SetTraceLevel("ORMPersistenceExecution", System.Diagnostics.TraceLevel.Verbose);
             RuntimeConfiguration.Tracing.SetTraceLevel("ORMPlainSQLQueryExecution", System.Diagnostics.TraceLevel.Verbose);
 
-            LogManager.Configuration = new NLog.Config.XmlLoggingConfiguration(@"d:\Internet\Websites\mlcore\TournamentManager\Play\NLog.config", true);
+            LogManager.Configuration = new NLog.Config.XmlLoggingConfiguration(Path.Combine(DirectoryLocator.GetTargetConfigurationPath(), "NLog.Internal.config"));
             TournamentManager.AppLogging.LoggerFactory = ServiceProvider.GetRequiredService<ILoggerFactory>();
         }
 
