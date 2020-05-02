@@ -1,4 +1,4 @@
-<img src="https://raw.githubusercontent.com/axuno/Volleyball-League/master/logo-volleyball-league.png" alt="Logo">
+<img src="https://raw.githubusercontent.com/axuno/Volleyball-League/master/logo-volleyball-league.png" width="100" alt="Logo">
 
 # Volleyball-League
 
