@@ -1,0 +1,69 @@
+﻿@inject IViewLocalizer Localizer
+@inject OrganizationSiteContext SiteContext
+@using League.Controllers
+@using League.DI
+@using Microsoft.AspNetCore.Mvc.Localization
+@model ExternalSignConfirmationViewModel
+@{
+    ViewData["Title"] = Localizer["Associate social network account"];
+    List<SelectListItem> GenderList()
+    {
+        return new List<SelectListItem> {new SelectListItem {Value = string.Empty, Text = Localizer["Please choose"].Value}, 
+            new SelectListItem {Value = "f", Text = Localizer["Mrs."].Value}, 
+            new SelectListItem {Value = "m", Text = Localizer["Mr."].Value}};
+    }
+}
+<h2 class="h2">@(Localizer.GetHtml("Associate your <strong>{0}</strong> account", ViewData["LoginProvider"])).</h2>
+<hr />
+<form asp-controller="@nameof(Account)" asp-action="@nameof(Account.ExternalSignInConfirmation)" asp-route-returnurl="@ViewData["ReturnUrl"]" method="post" class="col-md-8 col-sm-10 col-12 pl-0" role="form">
+    <site-alert type="Success">
+        @(Localizer.GetHtml("You have successfully authenticated with <strong>{0}</strong>", ViewData["LoginProvider"])).
+    </site-alert>
+    <p>
+        @(Localizer.GetHtml("Please enter your contact data below below to finish signing in with <strong>{0}</strong>", SiteContext.ShortName)).
+    </p>
+    <site-validation-summary show="All">
+        <b>@Localizer["Input has some issues"]:</b>
+    </site-validation-summary>
+    <div class="form-group">
+        <label asp-for="Email" class="d-block"></label>
+        <div class="font-weight-bolder">@Model.Email</div>
+    </div>
+    <div class="form-group">
+        <label asp-for="Gender"></label>
+        <select asp-for="Gender" asp-items="GenderList()" class="custom-select col-md-6"></select>
+        <span asp-validation-for="Gender" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="FirstName"></label>
+        <input asp-for="FirstName" required="required" class="form-control" />
+        <span asp-validation-for="FirstName" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="LastName"></label>
+        <input asp-for="LastName" required="required" class="form-control" />
+        <span asp-validation-for="LastName" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Nickname"></label>
+        <input asp-for="Nickname" class="form-control" aria-describedby="nicknameHelpBlock" />
+        <span asp-validation-for="Nickname" class="text-danger"></span>
+        <small id="nicknameHelpBlock" class="form-text text-muted">
+            @Localizer["The name your team mates are using"]
+        </small>
+    </div>
+    <div class="form-group">
+        <label asp-for="PhoneNumber"></label>
+        <input asp-for="PhoneNumber" class="form-control" aria-describedby="phoneNumberHelpBlock" />
+        <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+        <small id="phoneNumberHelpBlock" class="form-text text-muted">
+            @Localizer["Enter your mobile phone number, if applicable"]
+        </small>
+    </div>
+    <div class="form-group">
+        <button type="submit" class="btn btn-lg btn-primary col-10">@Localizer["Associate account"]</button>
+    </div>
+</form>
+@section Scripts {
+    @{ await Html.RenderPartialAsync(League.ViewNames.Shared._ValidationScriptsPartial); }
+}

@@ -1,0 +1,27 @@
+@inject IViewLocalizer Localizer
+@using Microsoft.AspNetCore.Mvc.Localization
+@model League.Models.Error.ErrorViewModel
+@{
+    ViewData["Title"] = Model.StatusText;
+}
+<h2 class="h2">@ViewData["Title"].</h2>
+<div class="pb-4">
+    @if (Model.Exception == null)
+    {
+        @Model.Description <text> (@Model.StatusCode)</text>
+    }
+    else
+    {
+        @Model.Description <text> @(Model.Exception == null ? string.Empty : "(E)")</text>
+    }
+    @if (Model.Exception != null || Model.StatusCode == "500")
+    {
+    <div>
+        @Localizer["We apologize for any inconvenience this may cause"].<br />
+        @Localizer["We have been notified about this issue"].
+    </div>
+    }
+</div>
+<div class="pb-4">
+    <strong>@(ViewContext.HttpContext.Request.Scheme)://@ViewContext.HttpContext.Request.Host@Model.OrigPath</strong>
+</div>

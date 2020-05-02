@@ -1,0 +1,85 @@
+// **************************************
+// Variables used locally
+// **************************************
+@import '../bootstrap/custom';
+
+
+// **************************************
+// Styles
+// **************************************
+
+
+/**************************************************************
+* START: css classes coming from jquery Unobtrousive Validation
+**************************************************************/
+
+// used by custom "bs-validation-summary" tag helper
+// class "validation-summary-errors" is set programmatically for "errors"
+.validation-summary-errors {
+    & ul {
+        padding-left: 1rem !important;
+        margin-bottom: 0 !important;
+    }
+
+    & div:first-of-type {
+        margin-left: 1rem !important;
+    }
+}
+
+// class "validation-summary-valid" is set programmatically for "no errors"
+.validation-summary-valid {
+    display: none !important;
+}
+
+// class "input-validation-error" is set programmatically on input fields with errors
+.input-validation-error {
+    //font-size: 1rem;
+    border: 2px solid theme-color('danger') !important;
+}
+
+// used by "asp-validation-for" tag helper
+.field-validation-error {
+    display: block;
+}
+
+/************************************************************
+* END: css classes coming from jquery Unobtrousive Validation
+************************************************************/
+
+/**************************************************************
+* START: User feedback div boxes with icons
+**************************************************************/
+.site-alert {
+    & div:first-of-type {
+        margin-left: 1rem !important;
+    }
+}
+
+/**************************************************************
+* START: Override Bootstrap
+**************************************************************/
+
+.form-control {
+    font-size: 1.25rem;
+    padding: 0.25rem 0.5rem;
+}
+
+label {
+    //font-size: 1rem;
+    font-weight: normal;
+    color: theme-color('success');
+    background-color: transparent;
+    margin-top: .75rem;
+    margin-bottom: 0rem;
+    display: block;
+}
+
+/**************************************************************
+* END: Override Bootstrap
+**************************************************************/
+
+// e.g. <input type="text" required />
+input[type=text]:required, input[type=password] {
+    border-left: .5rem solid theme-color('success');
+}
+

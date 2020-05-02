@@ -1,0 +1,51 @@
+﻿@using League.Controllers
+@using Microsoft.AspNetCore.Mvc.Localization
+@model PersonalDetailsViewModel
+@inject IViewLocalizer Localizer
+@{
+    ViewContext.ClientValidationEnabled = true;
+    List<SelectListItem> GenderList()
+    {
+        var genderList = new List<SelectListItem>();
+        genderList.Add(new SelectListItem { Value = string.Empty, Text = Localizer["Please choose"].Value });
+        genderList.Add(new SelectListItem { Value = "f", Text = Localizer["Mrs."].Value });
+        genderList.Add(new SelectListItem { Value = "m", Text = Localizer["Mr."].Value });
+        return genderList;
+    }
+}
+<!-- Modal -->
+<modal id="change-email" title="@Localizer["Change Personal Details"].Value" tabindex="-1">
+    <modal-body>
+        <form asp-controller="@nameof(Manage)" asp-action="@nameof(Manage.EditPersonalDetails)" method="post" role="form">
+            <site-validation-summary show="All"></site-validation-summary>
+            <input name="IsValid" type="hidden" value="@ViewData.ModelState.IsValid.ToString()" />
+            <div class="form-group">
+                <label asp-for="Gender"></label>
+                <select asp-for="Gender" asp-items="GenderList()" class="form-control"></select>
+                <span asp-validation-for="Gender" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="FirstName"></label>
+                <input asp-for="FirstName" required="required" class="form-control" />
+                <span asp-validation-for="FirstName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="LastName"></label>
+                <input asp-for="LastName" required="required" class="form-control" />
+                <span asp-validation-for="LastName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Nickname"></label>
+                <input asp-for="Nickname" class="form-control" aria-describedby="nicknameHelpBlock" />
+                <span asp-validation-for="Nickname" class="text-danger"></span>
+                <small id="nicknameHelpBlock" class="form-text text-muted">
+                    @Localizer["The name your team mates are using"]
+                </small>
+            </div>
+        </form>
+    </modal-body>
+    <modal-footer show-dismiss="true" dismiss-text="@Localizer["Cancel"].Value">
+        <button site-ajax-submit class="btn btn-primary">@Localizer["Save"].Value</button>
+    </modal-footer>
+</modal>
+@{ if (ViewContext.ClientValidationEnabled) { await Html.RenderPartialAsync(League.ViewNames.Shared._ValidationScriptsPartial); } /* register the modal form for validation */ }

@@ -1,0 +1,15 @@
+﻿@using cloudscribe.Web.Navigation
+@model NavigationViewModel
+@functions {
+}
+<ul class="nav navbar-nav" role="menubar">
+    <li class="nav-item @Model.GetClass(Model.RootNode.Value)"><a class="nav-link" href="@Url.Content(Model.AdjustUrl(Model.RootNode))">@Html.Raw(Model.GetIcon(Model.RootNode.Value))@Model.AdjustText(Model.RootNode)</a></li>
+    @if (await Model.HasVisibleChildren(Model.RootNode))
+    {
+        foreach (var node in Model.RootNode.Children)
+        {
+            if (!await Model.ShouldAllowView(node)) { continue; }
+            <li class="nav-item @Model.GetClass(node.Value)"><a class="nav-link" role="menuitem" href="@Url.Content(Model.AdjustUrl(node))">@Html.Raw(Model.GetIcon(node.Value))@Model.AdjustText(node)</a></li>
+        }
+    }
+</ul>

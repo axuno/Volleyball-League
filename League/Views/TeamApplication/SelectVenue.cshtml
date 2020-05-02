@@ -1,0 +1,84 @@
+@using League.Controllers
+@using Microsoft.AspNetCore.Mvc.Localization
+@using TournamentManager.DAL.TypedViewClasses
+@using TournamentManager.DAL.EntityClasses
+@inject IViewLocalizer Localizer
+@model League.Models.TeamViewModels.TeamVenueSelectModel
+@{ ValueTuple<long, IList<long>, League.Components.VenueSelectorComponentModel.Criteria, League.Components.VenueSelectorComponentModel.Criteria, long?> componentModel =
+        (Model.TournamentId,
+            new List<long>(new[] {Model.TeamId}),
+            League.Components.VenueSelectorComponentModel.Criteria.VenuesOfTeams | League.Components.VenueSelectorComponentModel.Criteria.Active | League.Components.VenueSelectorComponentModel.Criteria.Unused,
+            League.Components.VenueSelectorComponentModel.Criteria.VenuesOfTeams | League.Components.VenueSelectorComponentModel.Criteria.Active | League.Components.VenueSelectorComponentModel.Criteria.Unused,
+            default(long?));
+    ViewData["Title"] = Localizer["Team Registration"].Value + " - " + ViewData["TournamentName"];
+}
+<div class="mb-0 pb-2">
+    <h2 class="h2">@ViewData["Title"]</h2>
+    <hr class="mb-3" />
+    @(await Component.InvokeAsync<League.Components.VenueSelector>(componentModel))
+    <form asp-controller="@nameof(TeamApplication)" asp-action="@nameof(TeamApplication.SelectVenue)" method="post">
+        <input asp-for="TeamId" type="hidden" />
+        <input asp-for="VenueId" type="hidden" />
+        <div class="row mt-3">
+            <div class="form-group col-12 col-md-6">
+                <input type="submit" class="btn btn-primary" value="@Localizer["Continue with selected venue"]">
+            </div>
+        </div>
+        <div class="row">
+            <div class="form-group col-12 col-md-6">
+                <label class="mt-0">@Localizer["No venue from the list applies"]</label>
+                <a asp-controller="@nameof(TeamApplication)" asp-action="@nameof(TeamApplication.EditVenue)" asp-route-isnew="true" class="btn btn-primary">@Localizer["Create a new venue"]</a>
+            </div>
+        </div>
+        <div class="row">
+            <div class="form-group col-12 col-md-6">
+                <a asp-controller="@nameof(TeamApplication)" asp-action="@nameof(TeamApplication.EditTeam)" class="btn btn-secondary">@Localizer["Back"]</a>
+            </div>
+        </div>
+    </form>
+</div>
+@section styles
+{
+    <style type="text/css">
+    @* TeamVenueSelect *@
+
+        #venue-list tbody tr {
+            border-bottom: solid 2px lightgray
+        }
+
+        #venue-list thead {
+            background-color: lightgray
+        }
+
+        #venue-list td {
+            cursor: pointer;
+        }
+
+        #venue-picker .input-group {
+            cursor: pointer;
+        }
+    </style>
+}
+@section scripts
+{
+<script type="text/javascript" site-on-content-loaded="true">
+
+    function CheckUncheckItems() {
+        $('#venue-list').find('tr[data-venue-id]').each(function(rowIndex, r) {
+            if ($(this).attr('data-venue-id') === $('#@(Html.IdFor(m => m.VenueId))').val()) {
+                $(this).find('td:first').html('<i class="fas fa-check"></i>');
+            } else {
+                $(this).find('td:first').html('');
+            }
+        });
+    }
+
+    $('#venue-list tr[data-venue-id]').on('click',
+        function() {
+            $('#@(Html.IdFor(m => m.VenueId))').val($(this).attr('data-venue-id'));
+            CheckUncheckItems();
+        });
+
+    CheckUncheckItems();
+</script>
+}

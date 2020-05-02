@@ -1,0 +1,179 @@
+﻿@using System.Globalization
+@using League.Controllers
+@using Microsoft.AspNetCore.Mvc.Localization
+@using Microsoft.AspNetCore.Mvc.ModelBinding
+@inject RegionInfo RegionInfo
+@inject IViewLocalizer Localizer
+@{ ViewContext.ClientValidationEnabled = false;}  @* We rely on datepicker and server side validation *@
+@model League.Models.MatchViewModels.EnterResultViewModel
+@{
+    ViewData["Title"] = Localizer["Enter Match Result"].Value + " - " + Model.Tournament.Name;
+
+    string AddSetErr(int setIndex)
+    {
+        return !ViewData.ModelState.IsValid && ViewData.ModelState.GetValidationState($"set-{setIndex}") == ModelValidationState.Invalid ? " input-validation-error" : string.Empty;
+    }
+
+    string AddDateErr()
+    {
+        return !ViewData.ModelState.IsValid && ViewData.ModelState.GetValidationState(nameof(Model.MatchDate)) == ModelValidationState.Invalid ? " input-validation-error" : string.Empty;
+    }
+}
+<div class="mb-0 pb-1">
+    <h2 class="h2">@ViewData["Title"]</h2>
+    <hr />
+    <form asp-controller="@nameof(Match)" asp-action="@nameof(Match.EnterResult)" asp-route-id="" method="post" role="form">
+        <site-validation-summary show="All" warning="@Model.IsWarning"></site-validation-summary>
+        <input name="IsValid" type="hidden" value="@ViewData.ModelState.IsValid.ToString()" />@* needed for unobtrusive validation *@
+        <input hidden="hidden" asp-for="Id" />
+        <input hidden="hidden" asp-for="Hash" />
+        @if (Model.IsWarning)
+        {
+            <div class="row">
+                <div class="form-group col-12 col-md-6">
+                    <div class="custom-control custom-checkbox border border-warning rounded py-2">
+                        <input asp-for="OverrideWarnings" type="checkbox" class="custom-control-input">
+                        <label class="custom-control-label text-warning ml-2 mt-0" asp-for="OverrideWarnings"></label>
+                    </div>
+                </div>
+            </div>
+        }
+        <div class="row">
+            <div class="form-group col-12 col-md-6">
+                <label class="mt-0">@Localizer["Opponents"]</label>
+                <div class="font-weight-bold d-inline-block">@Model.Opponent.Home</div><div class="font-weight-bold d-inline-block">&nbsp;:&nbsp;</div><div class="font-weight-bold d-inline-block">@Model.Opponent.Guest</div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="form-group col-12 col-md-5">
+                <label asp-for="MatchDate" class="mt-0"></label>
+                <div class="input-group" id="picker_@nameof(Model.MatchDate)" data-target-input="nearest">
+                    <input asp-for="MatchDate" type="text" autocomplete="off" class="form-control@(AddDateErr()) datepicker datetimepicker-input" data-target="#picker_@nameof(Model.MatchDate)" aria-describedby="@nameof(Model.MatchDate)HelpBlock" />
+                    <span class="input-group-append input-group-text" data-target="#picker_@nameof(Model.MatchDate)" data-toggle="datetimepicker">
+                        <i class="far fa-calendar-alt"></i>
+                    </span>
+                </div>
+                <small id="@nameof(Model.MatchDate)HelpBlock" class="d-block form-text text-muted">
+                    @Localizer["Date format"]: @(Localizer[CultureInfo.CurrentUICulture.DateTimeFormat.ShortDatePattern.ToUpperInvariant()])
+                </small>
+            </div><div class="col"></div>
+        </div>
+        <div class="row">
+            <div class="form-group col-12 col-md-4">
+                <label asp-for="MatchTimeFrom" class="mt-0"></label>
+                <div class="input-group" id="picker_@nameof(Model.MatchTimeFrom)" data-target-input="nearest">
+                    <input asp-for="MatchTimeFrom" type="text" autofocus autocomplete="off" class="form-control@(AddDateErr()) datepicker datetimepicker-input" data-target="#picker_@nameof(Model.MatchTimeFrom)" aria-describedby="@nameof(Model.MatchTimeFrom)HelpBlock" />
+                    <span class="input-group-append input-group-text" data-target="#picker_@nameof(Model.MatchTimeFrom)" data-toggle="datetimepicker">
+                        <i class="far fa-clock"></i>
+                    </span>
+                </div>
+                <small id="@nameof(Model.MatchTimeFrom)HelpBlock" class="d-block form-text text-muted">
+                    @Localizer["Time format"]: @(CultureInfo.CurrentUICulture.DateTimeFormat.ShortTimePattern.ToUpperInvariant().Replace("TT", "AM/PM"))
+                </small>
+            </div>
+            <div class="form-group col-12 col-md-4">
+                <label asp-for="MatchTimeTo" class="mt-0"></label>
+                <div class="input-group" id="picker_@nameof(Model.MatchTimeTo)" data-target-input="nearest">
+                    <input asp-for="MatchTimeTo" type="text" autocomplete="off" class="form-control@(AddDateErr()) datepicker datetimepicker-input" data-target="#picker_@nameof(Model.MatchTimeTo)" aria-describedby="@nameof(Model.MatchTimeTo)HelpBlock" />
+                    <span class="input-group-append input-group-text" data-target="#picker_@nameof(Model.MatchTimeTo)" data-toggle="datetimepicker">
+                        <i class="far fa-clock"></i>
+                    </span>
+                </div>
+                <small id="@nameof(Model.MatchTimeTo)HelpBlock" class="d-block form-text text-muted">
+                    @Localizer["Time format"]: @(CultureInfo.CurrentUICulture.DateTimeFormat.ShortTimePattern.ToUpperInvariant().Replace("TT", "AM/PM"))
+                </small>
+            </div>
+        </div>
+        @{
+            for (var i = 0; i < Model.Sets.Count; i++)
+            {
+                <div class="row">
+                    <div class="form-group col-12">
+                        <label class="mt-0">@Localizer["Set #{0}", i + 1]</label>
+                        <div class="input-group">
+                            <input asp-for="@Model.Sets[i].Home" type="text" autocomplete="off" class="form-control text-left col-2 col-md-1@(AddSetErr(i))" aria-describedby="@nameof(Model.MatchDate)HelpBlock" />
+                            <span class="input-group-prepend input-group-append input-group-text">
+                                :
+                            </span>
+                            <input asp-for="@Model.Sets[i].Guest" type="text" autocomplete="off" class="form-control text-right col-2 col-md-1@(AddSetErr(i))" aria-describedby="@nameof(Model.MatchDate)HelpBlock" />
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+        <div class="row">
+            <div class="form-group col-12 col-md-8">
+                <label asp-for="Remarks" class="mt-0"></label>
+                <textarea asp-for="Remarks" row="2" class="form-control" aria-describedby="@nameof(Model.Remarks)HelpBlock"></textarea>
+                <small id="@nameof(Model.Remarks)HelpBlock" class="d-block form-text text-muted">
+                    @Localizer["Remarks become part of the result submission"]
+                </small>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12 col-md-8">
+                <strong>@Localizer["Please double-check all entries before saving"]</strong>
+            </div>
+        </div>
+        <div class="row">
+            <div class="form-group col-12 mt-2">
+                @{
+                    if (Model.ReturnUrl != null && Url.IsLocalUrl(Model.ReturnUrl))
+                    {
+                        <a href="@Model.ReturnUrl" class="btn btn-lg btn-secondary">@Localizer["Cancel"]</a>
+                    }
+                    else
+                    {
+                        <a asp-controller="@nameof(Match)" asp-action="@nameof(Match.Fixtures)" class="btn btn-lg btn-secondary">@Localizer["Cancel"]</a>
+                    }
+                }
+                <button type="submit" class="btn btn-lg btn-primary">@Localizer["Save"]</button>
+            </div>
+        </div>
+    </form>
+</div>
+@section styles
+{
+    <link rel="stylesheet" href="~/lib/tempusdominus-bootstrap-4/tempusdominus-bootstrap-4.min.css" />
+    <style type="text/css">
+        /* Start: Change Bootstrap 4 default custom checkbox color */
+        .custom-checkbox .custom-control-input:checked ~ .custom-control-label::before {
+            background-color: var(--warning);
+            border-color: var(--warning);
+        }
+
+        .custom-control-input:checked ~ .custom-control-label::before {
+            color: #fff;
+            background-color: var(--warning);
+            border-color: var(--warning);
+        }
+        /* End: Change Bootstrap 4 default custom checkbox color */
+    </style>
+}
+@section scripts
+{
+    <script type="text/javascript" src="~/lib/Moment/moment.min.js"></script>
+    <script type="text/javascript" src="~/lib/tempusdominus-bootstrap-4/tempusdominus-bootstrap-4.min.js"></script>
+    <partial name="@nameof(League.ViewNames.Shared._DateTimePickerScriptPartial)" />
+    @if (ViewContext.ClientValidationEnabled)
+    {
+        <partial name="@nameof(League.ViewNames.Shared._ValidationScriptsPartial)" />
+    }
+    <script type="text/javascript">
+    $(document).ready(function() {
+        // don't use attribute 'autofocus' with datetimepicker - this will focus before initialization
+        $('#picker_@Html.IdFor(m => m.MatchDate)').datetimepicker({
+            format: 'L' /*, minDate: moment().startOf('day'), maxDate: moment('09/30/2019').startOf('day')*/
+        });
+        $('#picker_@Html.IdFor(m => m.MatchTimeFrom)').datetimepicker({ format: 'LT', stepping: 1 });
+        $('#picker_@Html.IdFor(m => m.MatchTimeTo)').datetimepicker({ format: 'LT', stepping: 1 });
+        $('select').selectpicker();
+    });
+
+    $('#@nameof(Model.MatchDate)').on('change',
+        function() {
+            if ($(this).val() === '') $('#@Html.IdFor(m => m.MatchTimeFrom)').val('');
+            if ($(this).val() === '') $('#@Html.IdFor(m => m.MatchTimeTo)').val('');
+        });
+    </script>
+}

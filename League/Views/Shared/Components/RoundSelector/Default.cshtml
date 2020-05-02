@@ -1,0 +1,44 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@model League.Components.RoundSelectorComponentModel
+@{
+    Layout = null;
+    ViewContext.ViewData.TemplateInfo.HtmlFieldPrefix = Model.HtmlFieldPrefix;
+    var round = Model.RoundWithTypeList.FirstOrDefault(rt => rt.Id == Model.SelectedRoundId);
+}
+<div class="row">
+    <div class="form-group col-12 col-md-6">
+        @if (Model.ShowSelector)
+        {
+            <label asp-for="SelectedRoundId" class="mt-0"></label>
+            <select asp-for="SelectedRoundId" class="form-control d-block col-7 selectpicker show-tick" data-show-subtext="true" data-size="auto" title="@Localizer["Please select a round"]..." data-width="fit">
+                @foreach (var rwt in Model.RoundWithTypeList)
+                {
+                    if (rwt.Id == Model.SelectedRoundId)
+                    {
+                        <option value="@rwt.Id" selected="selected" data-subtext="&nbsp;&nbsp;@rwt.RoundType.Description">@rwt.Description</option>
+                    }
+                    else
+                    {
+                        <option value="@rwt.Id" data-subtext="&nbsp;&nbsp;@rwt.RoundType.Description">@rwt.Description</option>
+                    }
+                }
+                @if (Model.RoundNotSpecifiedKey.HasValue)
+                {
+                    <option value="@Model.RoundNotSpecifiedKey">@Localizer["Not specified"]</option>
+                }
+            </select>
+        }
+        @if(!Model.ShowSelector)
+        {
+            <label asp-for="SelectedRoundId" class="mt-0"></label>
+            <div class="ml-0">
+                <span class="d-inline-block font-weight-bold mr-2">@(round?.Description ?? Localizer["Not specified"].Value)</span>
+                <span class="text-muted small">@(round?.RoundType?.Description ?? string.Empty)</span>
+                <small class="d-block form-text text-muted">
+                    @Localizer["Can only be edited as long as no matches exist"]
+                </small>
+            </div>
+        }
+    </div>
+</div>

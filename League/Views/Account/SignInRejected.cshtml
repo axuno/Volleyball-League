@@ -1,0 +1,27 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@model Microsoft.AspNetCore.Identity.SignInResult
+@{
+    if (Model == Microsoft.AspNetCore.Identity.SignInResult.LockedOut)
+    {
+        ViewData["Title"] = Localizer["Account has been locked out"];
+    }
+    else if (Model == Microsoft.AspNetCore.Identity.SignInResult.NotAllowed)
+    {
+        ViewData["Title"] = Localizer["Account is currently disabled"];
+    }
+    else
+    {
+        ViewData["Title"] = Localizer["Sign-in is currently not possible"];
+    }
+}
+<h2 class="h2">@ViewData["Title"].</h2>
+<div>
+    <site-alert type="Danger">
+        @(ViewData["Title"]).<br />
+        @(Localizer["Please try to sign-in later"]).<br />
+    </site-alert>
+    <p>
+        <a asp-controller="@nameof(League.Controllers.Account)" asp-action="@nameof(League.Controllers.Account.SignIn)" class="btn btn-lg btn-primary col-sm-8 col-md-5">@Localizer["Sign in"]</a>
+    </p>
+</div>

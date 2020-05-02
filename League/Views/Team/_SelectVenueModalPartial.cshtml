@@ -1,0 +1,45 @@
+@using League.Controllers
+@using Microsoft.AspNetCore.Mvc.Localization
+@using TournamentManager.DAL.TypedViewClasses
+@using TournamentManager.DAL.EntityClasses
+@inject IViewLocalizer Localizer
+@model League.Models.TeamViewModels.TeamVenueSelectModel
+<!-- Modal -->
+<modal id="select-venue" title="@Localizer["Select team venue"].Value" dialog-class="modal-lg" tabindex="-1">
+    <modal-body class="pb-0">
+        @{ ValueTuple<long, IList<long>, League.Components.VenueSelectorComponentModel.Criteria, League.Components.VenueSelectorComponentModel.Criteria, long?> componentModel =
+                (Model.TournamentId,
+                    new List<long>( new []{ Model.TeamId }),
+                    League.Components.VenueSelectorComponentModel.Criteria.VenuesOfTeams | League.Components.VenueSelectorComponentModel.Criteria.Active | League.Components.VenueSelectorComponentModel.Criteria.Unused,
+                    League.Components.VenueSelectorComponentModel.Criteria.VenuesOfTeams | League.Components.VenueSelectorComponentModel.Criteria.Active | League.Components.VenueSelectorComponentModel.Criteria.Unused,
+                    default(long?)); }
+        @(await Component.InvokeAsync<League.Components.VenueSelector>(componentModel))
+        <form asp-controller="@nameof(Team)" asp-action="@nameof(Team.SelectVenue)" method="post">
+            <input asp-for="TeamId" type="hidden" />
+            <input asp-for="VenueId" type="hidden" />
+        </form>
+</modal-body>
+    <modal-footer show-dismiss="true" dismiss-text="@Localizer["Cancel"].Value">
+        <button site-ajax-submit class="btn btn-primary">@Localizer["Save"].Value</button>
+        <script type="text/javascript" site-on-ajax-complete="true">
+
+            function CheckUncheckItems() {
+                $('#venue-list').find('tr[data-venue-id]').each(function(rowIndex, r) {
+                    if ($(this).attr('data-venue-id') === $('#@(Html.IdFor(m => m.VenueId))').val()) {
+                        $(this).find('td:first').html('<i class="fas fa-check"></i>');
+                    } else {
+                        $(this).find('td:first').html('');
+                    }
+                });
+            }
+
+            $('#venue-list tr[data-venue-id]').on('click',
+                function() {
+                    $('#@(Html.IdFor(m => m.VenueId))').val($(this).attr('data-venue-id'));
+                    CheckUncheckItems();
+                });
+
+            CheckUncheckItems();
+        </script>
+    </modal-footer>
+</modal>

@@ -1,0 +1,142 @@
+﻿@using League.Controllers
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@model League.Models.UploadViewModels.TeamPhotoViewModel
+@{
+    ViewData["Title"] = Localizer["Upload Team Photo"].Value;
+}
+<div class="mb-0 pb-1">
+    <h2 class="h2">@(ViewData["Title"])</h2>
+    <h4 class="h4">@Model.Team.Name</h4>
+    <hr class="mb-4" />
+    <div class="row">
+        <div class="col-md-9">
+            <div id="dropzone pb-2">
+                <form action="@(Url.Action(nameof(Upload.TeamPhoto), nameof(Upload), new {id = ""}))" class="dropzone dz-clickable" id="teamPhotoUploader">
+                    <input type="hidden" name="teamId" value="@Model.Team.Id" />
+                    <div class="dz-message">
+                        @Localizer["Drop files here or click to select"].
+                    </div>
+                </form>
+            </div>
+            <div class="my-2">
+                <button class="btn btn-secondary col-12 col-sm-6 col-md-5 mt-1" onclick="Dropzone.forElement('#teamPhotoUploader').removeAllFiles(true)">@Localizer["Clear selected files"].Value</button>
+                <button class="btn btn-primary col-12 col-sm-6 col-md-5 mt-1" onclick="Dropzone.forElement('#teamPhotoUploader').processQueue()">@Localizer["Upload selected files"].Value</button>
+            </div>
+        </div>
+    </div>
+    <div class="row mb-3">
+        <div class="col-md-9">
+            <div>@Localizer["Current team photo"]:</div>
+            @if (string.IsNullOrEmpty(Model.PhotoFileUrl))
+            {
+                <div>None</div>
+            }
+            else
+            {
+                <div><img id="team-photo" src="@Url.Content(Model.PhotoFileUrl)" alt="@Model.Team.Name" class="img-fluid" /></div>
+                <div>
+                    <small id="photo-info" class="text-muted">@Localizer["Last updated"]: @Model.PhotoFileDate?.ToShortDateString() @Model.PhotoFileDate?.ToLongTimeString().Replace("12:00:00 AM", "").Replace("00:00:00", "")</small>
+                </div>
+                <div>
+                    <a class="btn btn-primary d-inline-block" data-target="#delete-team-photo" data-toggle="modal" href="#">
+                        @Localizer["Delete team photo"]
+                    </a>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+<modal id="delete-team-photo" title="@Localizer["Delete team photo"].Value" dialog-class="modal-sm">
+    <modal-body>
+        <div>@Localizer["Delete the photo of team '{0}'?", Model.Team.Name]</div>
+    </modal-body>
+    <modal-footer show-dismiss="true" dismiss-text="@Localizer["Cancel"].Value">
+        <a class="btn btn-primary" asp-action="@nameof(Upload.RemoveTeamPhoto)" asp-controller="@nameof(Upload)" asp-route-id="@Model.Team.Id" >@Localizer["Delete team photo"]</a>
+    </modal-footer>
+</modal>
+@section styles
+{
+    <link rel="stylesheet" href="~/lib/dropzone/dropzone.min.css" />
+    <style type="text/css">
+        .dropzone {
+            background: white !important;
+            border-radius: 5px !important;
+            min-height: 50px !important;
+            padding: 0 !important;
+            border: 4px dashed gray !important;
+        }
+    </style>
+}
+@section scripts
+{
+    <script type="text/javascript" src="~/lib/dropzone/dropzone.min.js"></script>
+    <script type="text/javascript">
+        //<![CDATA[
+        $(document).ready(function() {
+
+            var img = document.getElementById("team-photo");
+            if (img != null) {
+                if (img.naturalWidth !== undefined && img.naturalHeight !== undefined) {
+                    var text = document.createTextNode(' - @Localizer["original size"]: ' +
+                        img.naturalWidth +
+                        ' x ' +
+                        img.naturalHeight +
+                        ' px');
+                    document.getElementById("photo-info").appendChild(text);
+                }
+            }
+        });
+        @* DO NOT include Dropzone into $(document).ready() *@
+        Dropzone.options.teamPhotoUploader = {
+            init: function() {
+                this.on('success',
+                    function(file, response) {
+                        @* // Handle the responseText here: add the text to the preview element:*@
+                        var div = document.createElement('div');
+                        div.innerText = response.info;
+                        var attr = document.createAttribute('class');
+                        attr.value = 'small text-center text-success';
+                        div.setAttributeNode(attr);
+                        file.previewTemplate.appendChild(div);
+                        location.reload(); // reload this page
+                    });
+                this.on('error',
+                    function(file, response, xhr) {
+                        @* // Handle the responseText here: add the text to the preview element: *@
+                        var div = document.createElement('div');
+                        div.innerText = response.error;
+                        var attr = document.createAttribute('class');
+                        attr.value = 'small text-center text-error';
+                        div.setAttributeNode(attr);
+                        file.previewTemplate.appendChild(div);
+                    });
+            },
+
+            paramName: 'file',
+            maxFilesize: 5, // MB, enough for images
+            resizeWidth: 2000,
+            resizeQuality: 1.0,
+            autoProcessQueue: false,
+            addRemoveLinks: true,
+            dictDefaultMessage: '@Localizer["Drop files here or click to select"].Value',
+            dictRemoveFile: '@Localizer["Remove file"].Value',
+            dictCancelUpload: '@Localizer["Cancel upload"].Value',
+            dictFileTooBig: '@Localizer["File is too big"].Value',
+            dictInvalidFileType: '@Localizer["Invalid file type"].Value',
+            dictCancelUploadConfirmation: '@Localizer["Click \"Ok\" to cancel the upload"].Value',
+            dictUploadCanceled: '@Localizer["Upload has been canceled"].Value',
+            maxFiles: 1,
+            clickable: true,
+            dictMaxFilesExceeded: '@Localizer["Maximum number of files: {{maxFiles}}"].Value',
+            acceptedFiles: '.jpg, .jpeg, .png' @*,
+                success: function(file, serverResponse) {
+                    alert(serverResponse + ' Success!!!');
+                },
+                error: function(file, msg, xhr) {
+                    alert(msg.error + ' Error!!!');
+                }*@
+        };
+        //]]>
+    </script>
+}

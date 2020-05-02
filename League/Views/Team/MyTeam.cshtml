@@ -1,0 +1,288 @@
+﻿@using System.Globalization
+@using System.Linq
+@using League.Controllers
+@using Microsoft.AspNetCore.Mvc.Localization
+@using TournamentManager.DAL.TypedViewClasses
+@using TournamentManager.DAL.EntityClasses
+@using TournamentManager.DI
+@inject IViewLocalizer Localizer
+@inject RegionInfo Region
+@inject PhoneNumberService PhoneNumberService
+@model League.Models.TeamViewModels.MyTeamShowModel
+@{
+    ViewData["Title"] = Localizer["My Team"].Value + " - " + Model.Tournament.Name;
+    string DisplayPhoneNo(string phoneNo)
+    {
+        return PhoneNumberService.Format(phoneNo, Region.TwoLetterISORegionName);
+    }
+    string TelUriPhoneNo(string phoneNo)
+    {
+        return PhoneNumberService.FormatAsTelephoneUri(phoneNo, Region.TwoLetterISORegionName);
+    }
+}
+<div class="mb-0 pb-2">
+    <h2 class="h2">@ViewData["Title"]</h2>
+    <hr class="mb-3" />
+    <partial name="@nameof(League.ViewNames.Team._MyTeamMessagesPartial)" />
+    @if (Model.TeamVenueRoundInfos.Count > 1)
+    {
+        <ul class="nav nav-tabs mb-3" id="team-tabs" role="tablist">
+            @foreach (var team in Model.TeamVenueRoundInfos)
+            {
+                <li class="nav-item"><a id="team-@team.TeamId" class="nav-link py-1@{if (team.TeamId == Model.ActiveTeamId){<text> active</text>}}" data-toggle="tab" href="#tab-@(team.TeamId)" role="tab" aria-controls="@team.TeamName">@team.TeamName</a></li>
+            }
+        </ul>
+    }
+    <div class="tab-content" id="nav-teamContent">
+        @foreach (var teamVenueInfo in Model.TeamVenueRoundInfos)
+        {
+            var teamPhotoInfo = Model.TeamPhotoStaticFile.GetUriInfo(teamVenueInfo.TeamId);
+            var zonedLastModified = Model.TimeZoneConverter.ToZonedTime(teamPhotoInfo.Date);
+
+            <div class="tab-pane@{if (teamVenueInfo.TeamId == Model.ActiveTeamId){<text> show active</text>}}" id="tab-@(teamVenueInfo.TeamId)" role="tabpanel" aria-labelledby="@teamVenueInfo.TeamName-tab">
+                <div class="card pb-2 mb-3">
+                    <div class="card-header px-3 py-1">
+                        <div class="d-flex justify-content-between align-items-baseline">
+                            <div><h5>@Localizer["Team"]</h5></div>
+                            <div>
+                                <button type="button" site-toggle-modal-ajax 
+                                        site-data-url="@Url.Action(nameof(Team.Edit), nameof(Team), new {teamId = teamVenueInfo.TeamId})" 
+                                        site-authorize-resource site-resource="@new TeamEntity(teamVenueInfo.TeamId)"
+                                        site-requirement="@League.Authorization.TeamOperations.EditTeam" class="btn btn-sm btn-primary">
+                                    @Localizer["Edit"]
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-text">
+                        <div class="text-success col-12">@Localizer["Round"]</div>
+                        <div class="col-12"><span class="font-weight-bold d-inline-block mr-3">@teamVenueInfo.RoundDescription</span><span class="text-muted small">@teamVenueInfo.RoundTypeDescription</span></div>
+                        <div class="text-success col-12">@Localizer["Team name"]</div>
+                        <div class="col-12 font-weight-bold">@teamVenueInfo.TeamName</div>
+                        @if (!string.IsNullOrEmpty(teamVenueInfo.TeamClubName))
+                        {
+                            <div class="text-success col-12">@Localizer["Club"]</div>
+                            <div class="col-12">@teamVenueInfo.TeamClubName</div>
+                        }
+                        @if (teamVenueInfo.MatchDayOfWeek.HasValue && teamVenueInfo.MatchTime.HasValue)
+                        {
+                            // MatchTime is defined as a zoned time, NOT UTC. It is always the same, never mind DST
+                            <div class="text-success col-12">@Localizer["Home match day"]</div>
+                            <div class="col-12 mb-2"><i class="far fa-calendar-alt"></i><span class="d-inline-block mr-2"></span>@DateTimeFormatInfo.CurrentInfo?.GetDayName((DayOfWeek)teamVenueInfo.MatchDayOfWeek), @(DateTime.UtcNow.Date.Add(teamVenueInfo.MatchTime.Value).ToShortTimeString()) @(Model.TimeZoneConverter.ToZonedTime(DateTime.UtcNow).Abbreviation)</div>
+                        }
+                        <div class="text-muted small col-12">
+                            @{ var zonedTime = Model.TimeZoneConverter.ToZonedTime(teamVenueInfo.TeamModifiedOn);}
+                            @Localizer["Last update"]: @zonedTime.DateTimeOffset.DateTime.ToShortDateString() @zonedTime.DateTimeOffset.DateTime.ToLongTimeString() @zonedTime.Abbreviation
+                        </div>
+                        <div class="text-success col-12">@Localizer["Team photo"]</div>
+                        @if (teamPhotoInfo.Uri != null)
+                        {
+                            <div class="col-12">
+                                <span class="d-inline-block mr-2"><i class="fas fa-camera"></i> @Localizer["Photo of {0}", zonedLastModified.DateTimeOffset.DateTime.ToShortDateString() + " " + zonedLastModified.Abbreviation]</span>
+                                <a class="btn btn-sm btn-primary d-inline-block mr-2" data-target="#show-team-photo-@(teamVenueInfo.TeamId)" data-toggle="modal" href="#">
+                                    @Localizer["View"]
+                                </a>
+                                <a class="btn btn-sm btn-primary d-inline-block"
+                                   asp-controller="@nameof(Upload)"
+                                   asp-action="@nameof(Upload.TeamPhoto)"
+                                   asp-route-id="@teamVenueInfo.TeamId"
+                                   site-authorize-resource site-resource="@new TeamEntity(teamVenueInfo.TeamId)"
+                                   site-requirement="@League.Authorization.TeamOperations.ChangePhoto">@Localizer["Change"]</a>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="col-12">
+                                <i class="fas fa-camera"></i>
+                                <span class="d-inline-block mx-2 text-danger">@Localizer["No team photo has been uploaded"]</span>
+                                <a class="btn btn-sm btn-primary d-inline-block"
+                                   asp-controller="@nameof(Upload)"
+                                   asp-action="@nameof(Upload.TeamPhoto)"
+                                   asp-route-id="@teamVenueInfo.TeamId"
+                                   site-authorize-resource site-resource="@new TeamEntity(teamVenueInfo.TeamId)"
+                                   site-requirement="@League.Authorization.TeamOperations.ChangePhoto">@Localizer["Upload"]</a>
+                            </div>
+                        }
+                    </div>
+                </div>
+                <div class="card mb-3">
+                    <div class="card-header px-3 py-1">
+                        <div class="d-flex justify-content-between align-items-baseline">
+                            <div><h5>@Localizer["Venue"]</h5></div>
+                            <div>
+                                <button type="button" 
+                                        site-toggle-modal-ajax site-data-url="@Url.Action(nameof(Team.ChangeVenue), new {tid = teamVenueInfo.TeamId})" 
+                                        site-authorize-resource site-resource="@new TeamEntity(teamVenueInfo.TeamId)"
+                                        site-requirement="@League.Authorization.TeamOperations.EditTeam"
+                                        class="btn btn-sm btn-primary">@Localizer["Edit"]
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-text">
+                        <div class="col-12 mb-2">
+                            @if (teamVenueInfo.VenueId.HasValue)
+                            {
+                                <div><i class="fas fa-map-marker-alt"></i><span class="d-inline-block mr-2"></span><span class="font-weight-bold">@teamVenueInfo.VenueName</span></div>
+                                <div>@(string.Join(", ", teamVenueInfo.VenuePostalCode, teamVenueInfo.VenueCity, teamVenueInfo.VenueStreet))</div>
+                                <div>
+                                    <a class="link" asp-action="@nameof(Map.Venue)"
+                                       asp-controller="@nameof(Map)"
+                                       asp-route-id="@teamVenueInfo.VenueId.Value">@Localizer["Direction"]</a>
+                                </div>
+                                <div class="text-muted small">
+                                    @{ zonedTime = Model.TimeZoneConverter.ToZonedTime(teamVenueInfo.VenueModifiedOn);}
+                                    @Localizer["Last update"]: @zonedTime.DateTimeOffset.DateTime.ToShortDateString() @zonedTime.DateTimeOffset.DateTime.ToLongTimeString() @zonedTime.Abbreviation
+                                </div>
+                            }
+                            else
+                            {
+                                <div><i class="fas fa-map-marker-alt"></i><span class="d-inline-block mr-2"></span>
+                                    @Localizer["There is no venue assigned to the team"].
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+                <div class="card pb-2 mb-2">
+                    <div class="card-header px-3 py-1">
+                        <div class="d-flex justify-content-between align-items-baseline">
+                            <div><h5>@Localizer["Team members"]</h5></div>
+                            <div>
+                                <button type="button"
+                                        site-toggle-modal-ajax
+                                        site-data-url="@Url.Action(nameof(Role.Add),
+                                                           nameof(Role), new {tid = teamVenueInfo.TeamId, ReturnUrl = Url.Action(nameof(Team.MyTeam), new {id = teamVenueInfo.TeamId})})} )" 
+                                        site-authorize-resource site-resource="@new TeamEntity(teamVenueInfo.TeamId)"
+                                        site-requirement="@League.Authorization.TeamOperations.AddTeamMember"
+                                        class="btn btn-sm btn-primary">
+                                    @Localizer["Add"]
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-text">
+                        @{
+                            var predicates = new List<Func<TeamUserRoundRow, bool>> { r => r.IsManager == true, r => r.IsPlayer == true };
+                            var userInfos = Model.TeamUserRoundInfos.Where(tur => tur.TeamId == teamVenueInfo.TeamId).ToList();
+                            if (userInfos.Count > 0)
+                            {
+                                var currentRole = string.Empty;
+                                // if a user is manager AND ALSO player, she will be shown as manager
+                                // because DISTINCT() first selects managers (are first in the predicate list)
+                                foreach (var userInfo in predicates.SelectMany(predicate => userInfos.Where(predicate)).Distinct())
+                                {
+                                    if (currentRole != (userInfo.IsManager ? Localizer["Team contact"].Value : Localizer["Player"].Value))
+                                    {
+                                        currentRole = userInfo.IsManager ? Localizer["Team contact"].Value : Localizer["Player"].Value;
+                                        <div class="text-success col-12 mt-2">@(currentRole)</div>
+                                    }
+
+                                    <div class="col-12">
+                                        <div class="font-weight-normal">
+                                            <a data-toggle="collapse" href="#user-@userInfo.UserId" aria-expanded="false" class="d-inline-block collapsed">
+                                                <i class="fas fa-user"></i><span class="username d-inline-block ml-2 mr-2">@userInfo.CompleteNameWithNickName</span>
+                                                <i class="fas fa-chevron-left pull-right text-success"></i>
+                                            </a>
+                                        </div>
+                                        <div id="user-@userInfo.UserId" class="collapse mb-2 ml-5">
+                                            <div><i class="far fa-envelope"></i><span class="d-inline-block mr-2"></span><a href="mailto:@userInfo.Email">@userInfo.Email</a></div>
+                                            <span class="d-inline-block mr-4">
+                                                <i class="fas fa-phone-square-alt"></i><span class="d-inline-block mr-2"></span><a href="@TelUriPhoneNo(userInfo.PhoneNumber)">@DisplayPhoneNo(userInfo.PhoneNumber)</a>
+                                            </span>
+                                            @if (!string.IsNullOrEmpty(userInfo.PhoneNumber2))
+                                            {
+                                                <span class="d-inline-block text-nowrap">
+                                                    <i class="fas fa-phone-square-alt"></i>
+                                                    <a href="@TelUriPhoneNo(userInfo.PhoneNumber2)">@DisplayPhoneNo(userInfo.PhoneNumber2)</a>
+                                                </span>
+                                            }
+                                            <div>
+                                                <button type="button" 
+                                                        site-toggle-modal-ajax site-data-url="@Url.Action(nameof(Role.Remove), nameof(Role), new {rolename = userInfo.IsManager ? League.Identity.Constants.ClaimType.ManagesTeam : League.Identity.Constants.ClaimType.PlaysInTeam, uid = userInfo.UserId, un = userInfo.CompleteName, tid = teamVenueInfo.TeamId, ReturnUrl = Url.Action(nameof(Team.MyTeam), new {id = teamVenueInfo.TeamId})})" 
+                                                        site-authorize-resource site-resource="@new TeamEntity(teamVenueInfo.TeamId)"
+                                                        site-requirement="@League.Authorization.TeamOperations.RemoveTeamMember"
+                                                        class="btn btn-sm btn-primary">@Localizer["Remove"]
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            }
+                        }
+                    </div>
+                </div>
+            </div>
+            <modal id="show-team-photo-@(teamVenueInfo.TeamId)" title="@Localizer["Team photo"].Value" dialog-class="modal-md">
+                <modal-body>
+                    @if (teamPhotoInfo.Uri != null)
+                    {
+                        <div><img src="@Url.Content(teamPhotoInfo.Uri)" class="img-fluid img-thumbnail" alt="@(teamVenueInfo.TeamName)" /></div>
+                        <div><small class="text-muted">@Localizer["Photo uploaded on"] @zonedLastModified.DateTimeOffset.DateTime.ToShortDateString() @zonedLastModified.DateTimeOffset.DateTime.ToLongTimeString().Replace("12:00:00 AM", "").Replace("00:00:00", "") @zonedLastModified.Abbreviation</small></div>
+                    }
+                </modal-body>
+            </modal>
+        }
+    </div>
+</div>
+@section styles
+{
+    <link rel="stylesheet" href="~/lib/tempusdominus-bootstrap-4/tempusdominus-bootstrap-4.min.css" />
+    <style type="text/css">
+        @* Team members *@
+
+        .fas.fa-chevron-left {
+            transition: .3s transform ease-in-out;
+        }
+
+        a.collapsed .fas.fa-chevron-left {
+            transform: rotate(-90deg);
+        }
+
+        .collapsed .username {
+            font-weight: normal;
+        }
+
+        .username {
+            font-weight: bold;
+        }
+        
+        @* TeamVenueSelect *@
+
+        #venue-list tbody tr {
+            border-bottom: solid 2px lightgray
+        }
+
+        #venue-list thead {
+            background-color: lightgray
+        }
+
+        #venue-list td {
+            cursor: pointer;
+        }
+
+        #venue-picker .input-group {
+            cursor: pointer;
+        }
+
+        /* Start: Change Bootstrap 4 default custom checkbox color */
+        .custom-checkbox .custom-control-input:checked ~ .custom-control-label::before {
+            background-color: var(--warning);
+            border-color: var(--warning);
+        }
+
+        .custom-control-input:checked ~ .custom-control-label::before {
+            color: #fff;
+            background-color: var(--warning);
+            border-color: var(--warning);
+        }
+        /* End: Change Bootstrap 4 default custom checkbox color */
+    </style>
+}
+@section scripts
+{
+    @* moment and tempusdominus-bootstrap-4 are required for EditTeam modal *@
+    <script type="text/javascript" src="~/lib/Moment/moment.min.js"></script>
+    <script type="text/javascript" src="~/lib/tempusdominus-bootstrap-4/tempusdominus-bootstrap-4.min.js"></script>
+    <partial name="@nameof(League.ViewNames.Shared._DateTimePickerScriptPartial)" />
+}

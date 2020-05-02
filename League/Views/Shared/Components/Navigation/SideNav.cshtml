@@ -1,0 +1,29 @@
+﻿@using cloudscribe.Web.Navigation
+@model NavigationViewModel
+@if (await Model.HasVisibleChildren(Model.StartingNode))
+{
+    <nav class="navbar navbar-expand-sm">
+        <div class="navbar-nav navbar-collapse">
+            <ul class="nav" id="side-menu" role="menu">
+                @foreach (var node in Model.StartingNode.Children)
+                {
+                    if (!await Model.ShouldAllowView(node))
+                    {
+                        continue;
+                    }
+                    if (!await Model.HasVisibleChildren(node))
+                    {
+                        <li class="@Model.GetClass(node.Value)"><a href="@Url.Content(Model.AdjustUrl(node))">@Html.Raw(Model.GetIcon(node.Value))@Model.AdjustText(node)</a></li>
+                    }
+                    else
+                    {
+                        <li class="@Model.GetClass(node.Value)">
+                            <a href="@Url.Content(Model.AdjustUrl(node))">@Html.Raw(Model.GetIcon(node.Value))@Model.AdjustText(node)</a>
+                            @Model.UpdateTempNode(node)@await Html.PartialAsync("NavigationNodeSideNavPartial", Model)
+                        </li>
+                    }
+                }
+            </ul>
+        </div>
+    </nav>
+}

@@ -1,0 +1,18 @@
+﻿@using League.Controllers
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@model ChangeEmailViewModel
+<!-- Modal -->
+<modal id="change-email" title="@Localizer["Delete Account"].Value" tabindex="-1">
+    <modal-body>
+        <div>
+            <p>@Localizer["Once you delete your user account, there is no going back. Please be certain."]</p>
+        </div>
+        <form asp-controller="@nameof(Manage)" asp-action="@nameof(Manage.DeleteAccountConfirmed)" method="post" role="form">
+        </form>
+    </modal-body>
+    <modal-footer show-dismiss="true" dismiss-text="@Localizer["Cancel"].Value">
+        <button site-ajax-submit class="btn btn-outline-danger">@Localizer["Delete my user account now"].Value</button>
+    </modal-footer>
+</modal>
+

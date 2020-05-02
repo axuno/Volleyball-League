@@ -1,0 +1,35 @@
+﻿@using League.Controllers
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@model EditPhone2ViewModel
+@{ const string BtnRemove = "btn-remove";
+    ViewContext.ClientValidationEnabled = true;}
+<!-- Modal -->
+<modal id="change-email" title="@Localizer["Change Additional Phone Number"].Value" tabindex="-1">
+    <modal-body>
+        <form asp-controller="@nameof(Manage)" asp-action="@nameof(Manage.EditPhoneNumber2)" method="post" role="form">
+            <site-validation-summary show="All"></site-validation-summary>
+            <input name="IsValid" type="hidden" value="@ViewData.ModelState.IsValid.ToString()" />
+            <div class="form-group">
+                <label asp-for="PhoneNumber2"></label>
+                <div class="input-group">
+                    <input asp-for="PhoneNumber2" class="form-control" autofocus type="text" />
+                    <span class="input-group-append input-group-text">
+                        <i class="fas fa-phone"></i>
+                    </span>
+                </div>
+                <span asp-validation-for="PhoneNumber2" class="text-danger"></span>
+            </div>
+        </form>
+        @* The script must be inside modal-body in order to run if the form is re-displayed after validation *@
+        <script type="text/javascript">
+            $('#@BtnRemove').on('click', function () { $('#@nameof(Model.PhoneNumber2)').val(''); });
+            //# sourceURL=dynamic.js
+        </script>
+        @{ if (ViewContext.ClientValidationEnabled) { await Html.RenderPartialAsync(League.ViewNames.Shared._ValidationScriptsPartial); } /* register the modal form for validation */ }
+    </modal-body>
+    <modal-footer show-dismiss="true" dismiss-text="@Localizer["Cancel"].Value">
+        <button site-ajax-submit id="@BtnRemove" class="btn btn-info" type="button">@Localizer["Remove"].Value</button>
+        <button site-ajax-submit id="btn-save" class="btn btn-primary" type="submit">@Localizer["Save"].Value</button>
+    </modal-footer>
+</modal>

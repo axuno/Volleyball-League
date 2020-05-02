@@ -1,0 +1,12 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@model TournamentManager.DAL.EntityClasses.TournamentEntity
+@inject IViewLocalizer Localizer
+@{
+    ViewData["Title"] = Localizer["My Team"].Value + " - " + Model.Name;
+}
+<div class="mb-0 pb-2">
+    <h2 class="h2">@ViewData["Title"]</h2>
+    <hr class="mb-3" />
+    <h4 class="h4">@Localizer["There are no teams connected with this user count"]</h4>
+</div>
+

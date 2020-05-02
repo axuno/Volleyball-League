@@ -1,0 +1,17 @@
+﻿@using Microsoft.Extensions.Configuration
+@using League.ConfigurationPoco
+@inject IConfiguration Configuration
+@{
+    var googleConfig = new GoogleConfiguration();
+    Configuration.Bind("GoogleConfiguration", googleConfig);
+}
+    @*<!-- Global site tag (gtag.js) - Google Analytics -->*@
+<script async src="https://www.googletagmanager.com/gtag/js?id=@googleConfig.AnalyticsTrackingId"></script>
+    <script type="text/javascript">
+        //<![CDATA[
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', '@googleConfig.AnalyticsTrackingId');
+        //]]>
+    </script>

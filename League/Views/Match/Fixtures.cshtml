@@ -1,0 +1,229 @@
+﻿@using System.Globalization
+@using League.Views
+@using Microsoft.AspNetCore.Mvc.Localization
+@using TournamentManager.DAL.EntityClasses
+@using TournamentManager.DAL.TypedViewClasses
+@inject IViewLocalizer Localizer
+@model League.Models.MatchViewModels.FixturesViewModel
+@{
+    ViewData["Title"] = Localizer["Fixtures"].Value + " - " + Model.Tournament.Name;
+
+    if (Model.PlannedMatches.Count == 0)
+    {
+        <div class="mb-0 pb-1">
+            <h2 class="h2">@ViewData["Title"]</h2>
+            <site-alert type="Info" icon="fas fa-calendar-times" icon-size-class="fa-3x">
+                <h4 class="h4">@Localizer["There are no fixtures at this time"].</h4>
+            </site-alert>
+        </div>
+
+        return;
+    }
+
+    var activeRoundId = Model.ActiveRoundId ?? 0;
+    var rounds = Model.PlannedMatches.GroupBy(m => m.RoundName, (key, m) => new { RoundName = key, RoundId = m.First().RoundId, RoundDescription = m.First().RoundDescription, RoundTypeDescription = m.First().RoundTypeDescription }).ToList();
+    var useRecentRoundCookie = !(Model.ActiveRoundId.HasValue && rounds.Any(r => r.RoundId == Model.ActiveRoundId));
+    if (useRecentRoundCookie) { activeRoundId = rounds.FirstOrDefault()?.RoundId ?? 0; }
+
+    string FmtDate(DateTime? matchDate)
+    {
+        var zonedTime = Model.TimeZoneConverter.ToZonedTime(matchDate);
+        return zonedTime != null ? zonedTime.DateTimeOffset.DateTime.ToString("ddd, ") + zonedTime.DateTimeOffset.DateTime.ToShortDateString() + "<br/>" + zonedTime.DateTimeOffset.DateTime.ToShortTimeString() + " " + zonedTime.Abbreviation : Localizer["unknown"].Value;
+    }
+
+    string FmtOrigDate(DateTime? matchDate)
+    {
+        var zonedTime = Model.TimeZoneConverter.ToZonedTime(matchDate);
+        return zonedTime != null ? Localizer["Originally"].Value + ":\n" + zonedTime.DateTimeOffset.DateTime.ToString("ddd, ") + zonedTime.DateTimeOffset.DateTime.ToShortDateString() + " " + zonedTime.DateTimeOffset.DateTime.ToShortTimeString() + " " + zonedTime.Abbreviation : string.Empty;
+    }
+
+    string FmtOrigVenue(string origVenue)
+    {
+        return string.IsNullOrEmpty(origVenue) ? string.Empty : Localizer["Originally"].Value + ":\n" + origVenue;
+    }
+
+    string GetBoldClass(bool hasValue)
+    {
+        return hasValue ? " font-weight-bold" : string.Empty;
+    }
+    MatchEntity ToMatchEntity(PlannedMatchRow pmr)
+    {
+        return new MatchEntity{Id = pmr.Id, HomeTeamId = pmr.HomeTeamId, GuestTeamId = pmr.GuestTeamId, VenueId = pmr.VenueId };
+    }
+}
+<div class="mb-0 pb-1">
+    <h2 class="h2">@ViewData["Title"]</h2>
+    <hr class="mb-4" />
+    <partial name="@League.ViewNames.Match._FixtureMessagesPartial" model="@Model.FixtureMessage" />
+    <ul class="nav nav-tabs" id="round-tabs" role="tablist">
+        @foreach (var r in rounds)
+        {
+            <li class="nav-item">
+                <a class="nav-link py-1@{if (r.RoundId == activeRoundId){<text> active</text>}}" id="tab-link-@(r.RoundId)" data-toggle="tab" href="#tab-@(r.RoundId)" role="tab" aria-controls="@r.RoundDescription" aria-selected="@(r.RoundId == activeRoundId ? "true" : "false")">@r.RoundDescription</a>
+            </li>
+        }
+    </ul>
+    <div class="tab-content mt-1" id="fixtures">
+        @foreach (var r in rounds)
+        {
+            <div class="tab-pane@{if (r.RoundId == activeRoundId) {<text> show active</text>}}" id="tab-@(r.RoundId)" role="tabpanel" aria-labelledby="@r.RoundDescription-tab">
+                <div class="text-success">@r.RoundTypeDescription</div>
+                <div id="team-filter-@r.RoundId" class="team-filter my-2 d-none" data-toggle="tooltip" title="@Localizer["Remove filter for team"]" style="display: none" tabindex="0">
+                    <i class="fas fa-1x fa-times-circle mr-2"></i>
+                    <span class="badge badge-dark"></span>
+                </div>
+                <div class="rounded table-responsive">
+                    <table class="table table-sm table-light table-bordered table">
+                        <thead class="rounded">
+                            <tr>
+                                <th class="opponents">@Localizer["Opponents"]</th>
+                                <th class="date">@Localizer["Match Date"]</th>
+                                <th class="result" data-toggle="tooltip" title="@Localizer["Venue"]">@Localizer["Venue"]</th>
+                                <th class="context-menu" data-toggle="tooltip" title="@Localizer["Menu"]"><i class="fas fa-ellipsis-v"></i></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @{
+                                const int columnCount = 5;
+                                var matches = Model.PlannedMatches.Where(m => m.RoundId == r.RoundId).OrderBy(m => m.RoundLegSequenceNo).ThenBy(m => m.PlannedStart).ToList();
+                                var legs = matches.GroupBy(m => m.RoundLegSequenceNo).ToList();
+                                for (var i = 0; i < matches.Count; i++)
+                                {
+                                    var match = matches[i];
+                                    if (legs.Count > 1 && (i == 0 || match.RoundLegSequenceNo != matches[i - 1].RoundLegSequenceNo))
+                                    {
+                                        <tr><td colspan="@columnCount" class="leg-change"><span class="badge badge-dark">@match.RoundLegDescription</span></td></tr>
+                                    }
+                                    <tr>
+                                        <td class="opponents@(Model?.FixtureMessage?.MatchId == match.Id ? " changed-fixture" : string.Empty)">
+                                            <div class="text-truncate">@match.HomeTeamNameForRound</div>
+                                            <div class="text-truncate">@match.GuestTeamNameForRound</div>
+                                        </td>
+                                        <td class="date text-nowrap@(GetBoldClass(match.OrigPlannedStart.HasValue))" data-toggle="tooltip" title="@(FmtOrigDate(match.OrigPlannedStart))">@(Html.Raw(FmtDate(match.PlannedStart)))</td>
+                                        <td class="venue@(GetBoldClass(match.OrigVenueId.HasValue))" data-toggle="tooltip" title="@(FmtOrigVenue(match.OrigVenueName))"><div class="text-truncate">@(match.VenueName ?? Localizer["unknown"].Value)</div></td>
+                                        <td class="context-menu">
+                                            <div class="dropdown text-center">
+                                                <a href="#" class="stretched-link" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                    <i class="fas fa-ellipsis-v" style="font-size: .8rem"></i>
+                                                </a>
+                                                <div class="dropdown-menu shadow-lg" role="menu">
+                                                    <a href="#" tabindex="0" data-round-id="@match.RoundId" data-team-name="@match.HomeTeamNameForRound" class="dropdown-item filter-link">@Localizer["Filter fixtures for this team"]</a>
+                                                    <a asp-action=@nameof(League.Controllers.Match.ReportSheet) asp-controller=@nameof(League.Controllers.Match) asp-route-id=@match.Id tabindex="0" class="dropdown-item">@Localizer["Print match report sheet"]</a>
+                                                    <a asp-action=@nameof(League.Controllers.Match.EditFixture) asp-controller=@nameof(League.Controllers.Match) asp-route-id=@match.Id tabindex="0" class="dropdown-item" 
+                                                       site-authorize-resource site-resource=@ToMatchEntity(match) 
+                                                       site-requirement=@League.Authorization.MatchOperations.ChangeFixture>@Localizer["Edit fixture"]</a>
+                                                    <a asp-action=@nameof(League.Controllers.Match.EnterResult) asp-controller=@nameof(League.Controllers.Match) asp-route-id=@match.Id tabindex="0" class="dropdown-item" 
+                                                       site-authorize-resource site-resource="@ToMatchEntity(match)" 
+                                                       site-requirement="@League.Authorization.MatchOperations.EnterResult">@Localizer["Enter match result"]</a>
+                                                    <a asp-action=@nameof(League.Controllers.Match.Calendar) asp-Controller=@nameof(League.Controllers.Match) asp-route-id=@match.Id tabindex="0" class="dropdown-item">@Localizer["Save match to calendar"]</a>
+                                                </div>
+                                            </div>
+                                            <div class="dropdown">
+                                                <a href="#" class="stretched-link" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                    <i class="fas fa-ellipsis-v" style="font-size: .8rem"></i>
+                                                </a>
+                                                <div class="dropdown-menu shadow-lg" role="menu" aria-labelledby="dropdownMenuLink">
+                                                    <a href="#" tabindex="0" data-round-id="@match.RoundId" data-team-name="@match.GuestTeamNameForRound" class="dropdown-item filter-link">@Localizer["Filter fixtures for this team"]</a>
+                                                    <a asp-action=@nameof(League.Controllers.Match.ReportSheet) asp-controller=@nameof(League.Controllers.Match) asp-route-id=@match.Id tabindex="0" class="dropdown-item">@Localizer["Print match report sheet"]</a>
+                                                    <a asp-action=@nameof(League.Controllers.Match.EditFixture) asp-controller=@nameof(League.Controllers.Match) asp-route-id=@match.Id tabindex="0" class="dropdown-item"
+                                                       site-authorize-resource site-resource=@ToMatchEntity(match)
+                                                       site-requirement=@League.Authorization.MatchOperations.ChangeFixture>@Localizer["Edit fixture"]</a>
+                                                    <a asp-action=@nameof(League.Controllers.Match.EnterResult) asp-controller=@nameof(League.Controllers.Match) asp-route-id=@match.Id tabindex="0" class="dropdown-item"
+                                                       site-authorize-resource site-resource="@ToMatchEntity(match)"
+                                                       site-requirement="@League.Authorization.MatchOperations.EnterResult">@Localizer["Enter match result"]</a>
+                                                    <a asp-action=@nameof(League.Controllers.Match.Calendar) asp-Controller=@nameof(League.Controllers.Match) asp-route-id=@match.Id tabindex="0" class="dropdown-item">@Localizer["Save match to calendar"]</a>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                        </tbody>
+                    </table>
+                </div>
+                @{ var zonedTime = Model.TimeZoneConverter.ToZonedTime(Model.PlannedMatches.Where(m => m.RoundId == r.RoundId).Max(m => m.ModifiedOn)); }
+                <div class="text-muted">
+                    @Localizer["Last update"]: @zonedTime.DateTimeOffset.DateTime.ToShortDateString() @zonedTime.DateTimeOffset.DateTime.ToLongTimeString() @zonedTime.Abbreviation
+                </div>
+            </div>
+        }
+    </div>
+</div>
+@section styles
+{
+    @{
+        var venueColWidth = 20;
+        var contextMenuColWidth = 5;
+        var dateColWidth = 15;
+        var opponentColWidth = 100 - venueColWidth - dateColWidth - contextMenuColWidth;
+    }
+    <style type="text/css">
+        #round-tabs .nav-link:not(.active) {border:solid 1px lightgray;}
+        #fixtures table tbody tr {border-bottom: solid 2px lightgray}
+        #fixtures table thead {background-color: lightgray}
+        .changed-fixture { font-weight: bold; border-left: solid 8px lightgray !important}
+        .team-filter { cursor: pointer;}
+        .filter-link { /* javascript only */ }
+        .leg-change { padding: 0, margin:0}
+        .venue { width:@(venueColWidth)%}
+        .venue > div {max-width: calc(45 * 1vw)}
+        .context-menu { text-align: center; width:@(contextMenuColWidth)%;}
+        .date { width: @(dateColWidth)%;}
+        .opponents {width:@(opponentColWidth)%)}
+        .opponents > div {max-width: calc(45 * 1vw); padding-right: .5rem }
+        .tooltip { white-space:pre-wrap; } @* will recognize \n for new lines *@
+    </style>
+}
+@section scripts
+{
+    <script type="text/javascript">
+        //<![CDATA[
+        var mostRecentRoundCookieName = '@CookieNames.MostRecentRound';
+        var useRecentRoundCookie = @useRecentRoundCookie.ToString().ToLowerInvariant();
+        Cookies = window.Cookies; @* js-cookies.js *@
+        $(document).ready(function() {
+            $('[data-toggle="tooltip"]').tooltip();
+            @* Try to set the active tab from a cookie *@
+            if (useRecentRoundCookie) {
+                var $activeRoundFromCookie = Cookies.get(mostRecentRoundCookieName);
+                var $tabLink = $('#tab-link-' + $activeRoundFromCookie);
+                if ($activeRoundFromCookie !== undefined && $tabLink.length) {
+                    $tabLink.tab('show');
+                } else {
+                    $('#round-tabs li:first-child a').tab('show');
+                }
+            }
+            $('.filter-link').on('click',
+                function (e) {
+                    e.preventDefault();
+                    var teamName = $(this).data('team-name');
+                    var roundId = $(this).data('round-id');
+                    var filter = $('#team-filter-' + roundId);
+                    filter.show().find('span').text(teamName);
+                    @* hide() and show() do not work for d-inline-block *@
+                    filter.removeClass('d-none').addClass('d-inline-block');
+                    @* // First make all rows visible *@
+                    $(this).closest('table').find('tbody > tr').show();
+                    @* // Then hide rows not containing the selected team name *@
+                    $(this).closest('table').find('td.context-menu:not(:has([data-team-name="' + teamName + '"]))').parent('tr').hide();
+                });
+
+            $('[id^=team-filter-]').on('click keypress',
+                function() {
+                    @* Bootstrap 4 flaw: otherwise tooltips remain visible on mobile devices *@
+                    $(this).tooltip('hide');
+                    @* hide() and show() do not work for d-inline-block *@
+                    $(this).removeClass('d-inline-block').addClass('d-none');
+                    $(this).parent().find('table tbody > tr').show();
+                });
+            $('a[data-toggle="tab"]').on('shown.bs.tab',
+                function(e) {
+                    var id = e.target.id.replace('tab-link-', ''); // newly activated tab with round id
+                    Cookies.set(mostRecentRoundCookieName,
+                        id,
+                        { expires: 365, path: '/' + e.target.pathname.split('/')[1] });
+                });
+        });
+        //]]>
+    </script>
+}

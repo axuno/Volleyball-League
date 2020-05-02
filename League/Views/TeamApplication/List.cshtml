@@ -1,0 +1,64 @@
+﻿@using System.Security.Policy
+@using League.DI
+@using League.Views
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@inject OrganizationSiteContext SiteContext
+@model League.Models.TeamApplicationViewModels.ApplicationListModel
+@{
+    ViewData["Title"] = Localizer["Team Registrations"].Value + " - " + Model.Tournament.Name;
+
+    string ZonedTimeString(long teamId)
+    {
+        return Model.TimeZoneConverter.ToZonedTime(Model.TeamRegisteredOn[teamId]).DateTimeOffset.DateTime.ToShortDateString();
+    }
+}
+    <div class="mb-0 pb-1">
+        <h2 class="h2">@ViewData["Title"]</h2>
+        <hr class="mb-2" />
+        <partial name="@nameof(League.ViewNames.TeamApplication._TeamApplicationMessagesPartial)" />
+        @if (SiteContext.ApplicationAllowed)
+        {
+            <a asp-controller="@nameof(League.Controllers.TeamApplication)" asp-action="@nameof(League.Controllers.TeamApplication.Start)" class="btn btn-primary mb-2">@Localizer["Register team now"]</a>
+        }
+        @if (Model.TournamentRoundTeams.Count == 0)
+        {
+            <site-alert type="Secondary" icon="fas fa-users" icon-size-class="fa-3x">
+                <h4 class="h4">@Localizer["There are no teams registered at this time"].</h4>
+            </site-alert>
+
+            return;
+        }
+
+        <div class="table-responsive mb-2">
+            @* Wrapping this way make tables responsive and 100% width *@
+            <table id="team-list" class="table table-sm table-light mb-0">
+                <thead class="rounded">
+                    <tr>
+                        <th>@Localizer["Team"]</th>
+                        <th>@Localizer["Club"]</th>
+                        <th class="text-right">@Localizer["Registered"]</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var round in Model.TournamentRoundTeams.OrderBy(r => r.RoundName).ToList().Select(r => (Id: r.RoundId, RoundDescription: r.RoundDescription, RoundTypeDescription: r.RoundTypeDescription)).Distinct())
+                    {
+                        <tr><td colspan="3"><h4 class="d-inline-block"><span class="badge badge-dark">@round.RoundDescription</span></h4><span class="text-muted small ml-3">@round.RoundTypeDescription</span></td></tr>
+                        foreach (var rt in Model.TournamentRoundTeams.Where(r => r.RoundId == round.Id).OrderBy(r => r.TeamName))
+                        {
+                            <tr><td>@rt.TeamName</td><td>@rt.TeamClubName</td><td class="text-right">@(ZonedTimeString(rt.TeamId))</td></tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+        <div class="text-muted small mb-2">@Localizer["Number of Teams"]: @Model.TournamentRoundTeams.Count</div>
+    </div>
+@section styles
+{
+    <style type="text/css">
+        table thead {background-color: lightgray}
+        table tbody tr { border-bottom: solid 2px lightgray}
+    </style>
+}
+

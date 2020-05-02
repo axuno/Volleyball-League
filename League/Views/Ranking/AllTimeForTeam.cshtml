@@ -1,0 +1,116 @@
+﻿@using League.Controllers
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@model League.Models.RankingViewModels.AllTimeTeamModel
+@{
+    ViewData["Title"] = Localizer["All-time Team Table"].Value;
+    if (Model.RankingList.Count == 0)
+    {
+        <div class="mb-0 pb-1">
+            <h2 class="h2">@ViewData["Title"]</h2>
+            <site-alert type="Info" icon="fas fa-calendar-times" icon-size-class="fa-3x">
+                <h4 class="h4">@Localizer["There are no final tables available yet"].</h4>
+            </site-alert>
+        </div>
+
+        return;
+    }
+
+    var selectedTeam = Model.GetSelectedTeam();
+    var teamRankRows = Model.RankingList.Where(rl => rl.TeamId == Model.SelectedTeamId).OrderByDescending(rl => Model.GetTournamentPeriod(rl.TournamentId).Start);
+}
+<div class="mb-0 pb-1">
+    <h2 class="h2">@ViewData["Title"]</h2>
+    <hr class="mb-2" />
+    <div class="mb-2">
+        <h3 class="h3 d-inline-block">@selectedTeam.TeamName</h3>
+        @{
+            if (!string.IsNullOrWhiteSpace(selectedTeam.ClubName))
+            {
+                <span class="ml-3 text-muted">(@selectedTeam.ClubName)</span>
+            }
+        }
+        <div>@Localizer["Click on a tournament name to show the all time list of it"]</div>
+    </div>
+
+    <div class="tab-content mt-1" id="ranking-table">
+        <div class="rounded table-responsive">
+            <table class="table table-sm table-light table-bordered table">
+                <thead class="rounded">
+                <tr>
+                    <th class="tournament">
+                        <div class="text-truncate">@Localizer["League"]</div>
+                    </th>
+                    <th class="round">@Localizer["Round"]</th>
+                    <th class="rank">@Localizer["Rank"]</th>
+                    <th class="result">
+                        <div>@Localizer["Match"]</div>
+                        <div>@Localizer["Pts."]</div>
+                    </th>
+                    <th class="result">
+                        <div>@Localizer["Set"]</div>
+                        <div>@Localizer["Pts."]</div>
+                    </th>
+                    <th class="result">
+                        <div>@Localizer["Ball"]</div>
+                        <div>@Localizer["Pts."]</div>
+                    </th>
+                </tr>
+                </thead>
+                <tbody>
+                @{
+                    @foreach (var rankRow in teamRankRows)
+                    {
+                        <tr>
+                            <td class="tournament">
+                                <div class="text-truncate">
+                                    <a asp-action="@nameof(Ranking.AllTimeTournament)" asp-controller="@nameof(Ranking)" asp-route-id="@rankRow.TournamentId">@rankRow.TournamentName</a>
+                                </div>
+                            </td>
+                            <td class="round">
+                                <div class="text-truncate">
+                                    @rankRow.RoundDescription
+                                </div>
+                            </td>
+                            <td class="rank">@rankRow.Rank</td>
+                            <td class="result">@rankRow.MatchPointsWon:@rankRow.MatchPointsLost</td>
+                            <td class="result">@rankRow.SetPointsWon:@rankRow.SetPointsLost</td>
+                            <td class="result">@rankRow.BallPointsWon:@rankRow.BallPointsLost</td>
+                        </tr>
+                    }
+                }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+@section styles
+{
+    @{
+        var rankColWidth = 10;
+        var resultColWidth = 10;
+        var roundColWidth = 15;
+        var tournamentColWidth = 100 - rankColWidth - roundColWidth -  3 * resultColWidth;
+    }
+    <style type="text/css">
+        #ranking-table table tbody tr {border-bottom: solid 2px lightgray}
+        #ranking-table table thead {background-color: lightgray}
+        .round {width: @(roundColWidth)%; text-align: center}
+        .rank { width: @(rankColWidth)%; text-align: center}
+        .tournament {width:@(tournamentColWidth)%}
+        .tournament > a {text-decoration: none}
+        .tournament > div {max-width: calc(45 * 1vw)}
+        .result { width: @(resultColWidth)%; text-align: center}
+        .tooltip { white-space:pre-wrap; } @* will recognize \n for new lines *@
+    </style>
+}
+@section scripts
+{
+<script type="text/javascript">
+    //<![CDATA[
+    $(document).ready(function() {
+        $('[data-toggle="tooltip"]').tooltip();
+    });
+    //]]>
+</script>
+}

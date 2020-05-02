@@ -1,0 +1,42 @@
+﻿@inject IViewLocalizer Localizer
+@using Microsoft.AspNetCore.Mvc.Localization
+@*ValueTuple*@
+@model (League.Models.HomeViewModels.ContactViewModel Form, League.DI.OrganizationSiteContext SiteContext)
+@{
+    Layout = null;
+    var to = string.IsNullOrEmpty(Model.SiteContext.OrganizationKey) ? "volleyball-liga.de" : Model.SiteContext.ShortName;
+
+    string Salutation(string gender)
+    {
+        switch (gender)
+        {
+            case "f":
+                return Localizer["Mrs."].Value;
+            case "m":
+                return Localizer["Mr."].Value;
+            default:
+                return string.Empty;
+        }
+    }
+}
+@Html.Raw(Localizer.GetString("Contact form message to {0}", to))
+
+@Html.Raw(Localizer["Sender"].Value)
+    @Html.Raw(string.Join(' ', Salutation(Model.Form.Gender), Model.Form.FirstName, Model.Form.LastName))
+    @Html.Raw(Localizer["Email"].Value): @Html.Raw(Model.Form.Email)
+    @Html.Raw(Localizer["Phone"].Value): @Html.Raw(!string.IsNullOrWhiteSpace(Model.Form.PhoneNumber) ? Model.Form.PhoneNumber : "-")
+
+@Html.Raw(Localizer["Subject"].Value)
+    @Html.Raw(Model.Form.Subject)
+
+@if (!string.IsNullOrWhiteSpace(Model.Form.Message))
+{
+@Html.Raw(Localizer["Message"].Value + "\n")
+@Html.Raw("------------------------------\n")
+@Html.Raw(Model.Form.Message + "\n")
+@Html.Raw("------------------------------\n")
+}
+else
+{
+@Html.Raw(Localizer["No message included"].Value)
+}

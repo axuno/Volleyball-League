@@ -1,0 +1,22 @@
+﻿@using League.Helpers
+@using League.Models.TeamApplicationViewModels
+@using League.Views.TeamApplication
+@{
+    var message = TempData.Get<TeamApplicationMessageModel.TeamApplicationMessage>(nameof(TeamApplicationMessageModel.TeamApplicationMessage));
+    if (message == null) { return; }
+}
+@{
+    <site-alert type="@message.AlertType">
+        @switch (message.MessageId)
+        {
+            case TeamApplicationMessageModel.MessageId.ApplicationSuccess:
+                W‌rite(_TeamApplicationMessagesPartial.ApplicationSuccess);
+                break;
+            case TeamApplicationMessageModel.MessageId.ApplicationFailure:
+                W‌rite(_TeamApplicationMessagesPartial.ApplicationFailure);
+                break;
+            default:
+                throw new ArgumentOutOfRangeException();
+        }
+    </site-alert>
+}

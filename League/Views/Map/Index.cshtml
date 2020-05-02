@@ -1,0 +1,161 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@using TournamentManager.DAL.EntityClasses
+@model League.Models.MapViewModels.MapModel
+@inject IViewLocalizer Localizer
+@{ ViewData["Title"] = Localizer["Venues"].Value + " - " + Model.Tournament.Name;}
+        @if (!Model.Venues.Any(v => v?.Latitude != null && v?.Longitude != null))
+        {
+            <div class="row">
+                <div class="col-12 pb-2">
+                    <h2 class="h2">@ViewData["Title"]</h2>
+                    <div class="mb-0 pb-1">
+                        <site-alert type="Info" icon="fas fa-map-marker-alt" icon-size-class="fa-3x">
+                            <h4 class="h4">@Localizer["There are no venue details available at this time"].</h4>
+                        </site-alert>
+                    </div>
+                </div>
+            </div>
+            return;
+        }
+<div class="row">
+    <div class="col-12 pb-2">
+        <h2 class="h2">@ViewData["Title"]</h2>
+        @if (Model.IsSingleValue)
+        {
+            var venue = Model.Venues.First();
+            <h3 class="h3"><i class="fas fa-map-marker-alt"></i> @venue.VenueName</h3>
+            <hr class="mb-4" />
+        }
+        else
+        {
+            <hr class="mb-3" />
+            <div class="mb-3">
+                @Localizer["The following Google Map shows the venues of all registered teams. Clicking the <strong>blue marker</strong> will display more details"].
+            </div>
+        }
+
+        <div id="map-canvas" class="rounded mb-2">
+            <div>
+                @Localizer["The map is currently loading"]...
+            </div>
+        </div>
+        @if (Model.IsSingleValue && Model.Venues[0].Longitude.HasValue && Model.Venues[0].Latitude.HasValue && !Model.Venues[0].PrecisePosition)
+        {
+            <div class="mb-2">
+                <i>@Localizer["Only an approximate map location was found for the venue address."]</i>
+            </div>
+        }
+        @if (Model.IsSingleValue && !string.IsNullOrWhiteSpace(Model.Venues[0].Direction))
+        {
+            <div>
+                <h5 class="h5">@Localizer["Notes"]</h5>
+                @Model.Venues[0].Direction
+            </div>
+        }
+    </div>
+</div>
+@section styles
+{
+    <style type="text/css">
+        #map-canvas {
+            border: 1px solid #979797;
+            background-color: #e5e3df;
+            width: 100%;
+            height: 600px;
+            color: black;
+        }
+        #map-canvas b {
+            font-weight: bold !important;
+        }
+
+        #map-canvas > div {
+            padding: .5em;
+        }
+    </style>
+}
+@section scripts
+{
+    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=@(Model.GoogleConfiguration.WebApiKey)"></script>
+    <script type="text/javascript">
+        //<![CDATA[
+        window.google = window.google || {};
+        google.maps = google.maps || {};
+        var map;
+        var infoWindow;
+        var Locations = [@Html.Raw(Model.Locations)];
+
+        function initializeSingleVenue() {
+            var mapOptions = {
+                zoom: 15,
+                center: new google.maps.LatLng(Locations[0].Lat, Locations[0].Lng),
+                mapTypeId: google.maps.MapTypeId.ROADMAP
+            }
+
+            map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
+            infoWindow = new google.maps.InfoWindow();
+            setMapMarkers();
+        }
+
+        function initializeMultiVenues() {
+            var mapOptions = {
+                zoom: 10,
+                mapTypeId: google.maps.MapTypeId.TERRAIN
+            };
+
+            map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
+            infoWindow = new google.maps.InfoWindow();
+
+            var northEast = new google.maps.LatLng(@Model.MaxLatitude, @Model.MaxLongitude);
+            var southWest = new google.maps.LatLng(@Model.MinLatitude, @Model.MinLongitude);
+            var bounds = new google.maps.LatLngBounds(southWest, northEast);
+            // fitBound overrides mapOptions 'zoom' and 'center'
+            map.fitBounds(bounds);
+            setMapMarkers();
+        }
+
+        function setMapMarkers() {
+            var marker;
+            for (let i in Locations) {
+                var venue = new google.maps.LatLng(Locations[i].Lat, Locations[i].Lng);
+
+                marker = new google.maps.Marker({
+                    position: venue,
+                    map: map,
+                    title: Locations[i].title,
+                    icon: 'https://www.google.com/intl/en_us/mapfiles/ms/icons/blue-dot.png'
+                });
+
+                attachMessageWindow(marker, Locations[i].Descr);
+            }
+            if (Locations.length === 1) {
+                infoWindow.setContent(Locations[0].Descr);
+                infoWindow.open(map, marker);
+            }
+        }
+
+        function attachMessageWindow(marker, text) {
+            // uncomment to get an InfoWindow per marker click
+            // var infoWindow = new google.maps.InfoWindow({ content: text });
+            google.maps.event.addListener(marker,
+                'click',
+                function() {
+                    infoWindow.setContent(text);
+                    infoWindow.open(map, marker);
+                });
+        }
+
+        $(document).ready(function() {
+            @{
+                if (Model.IsSingleValue)
+                {
+                    <text>initializeSingleVenue();</text>
+                }
+                else
+                {
+                    <text>initializeMultiVenues();</text>
+                }
+            }
+        });
+//]]>
+    </script>
+}

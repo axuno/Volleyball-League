@@ -1,0 +1,55 @@
+﻿@using League.Helpers
+@using League.Models.TeamViewModels
+@using League.Views.Team
+@{
+    var message = TempData.Get<MyTeamMessageModel.MyTeamMessage>(nameof(MyTeamMessageModel.MyTeamMessage));
+    if (message == null) { return; }
+}
+@{
+    <site-alert type="@message.AlertType">
+        @switch (message.MessageId)
+        {
+            case MyTeamMessageModel.MessageId.TeamDataSuccess:
+                W‌rite(_MyTeamMessagesPartial.TeamDataSuccess);
+                break;
+            case MyTeamMessageModel.MessageId.TeamDataFailure:
+                W‌rite(_MyTeamMessagesPartial.TeamDataSuccess);
+                break;
+            case MyTeamMessageModel.MessageId.MemberAddSuccess:
+                W‌rite(_MyTeamMessagesPartial.MemberAddSuccess);
+                break;
+            case MyTeamMessageModel.MessageId.MemberAddFailure:
+                W‌rite(_MyTeamMessagesPartial.MemberAddFailure);
+                break;
+            case MyTeamMessageModel.MessageId.MemberRemoveSuccess:
+                W‌rite(_MyTeamMessagesPartial.MemberRemoveSuccess);
+                break;
+            case MyTeamMessageModel.MessageId.MemberRemoveFailure:
+                W‌rite(_MyTeamMessagesPartial.MemberRemoveFailure);
+                break;
+            case MyTeamMessageModel.MessageId.MemberCannotRemoveLastTeamManager:
+                W‌rite(_MyTeamMessagesPartial.MemberCannotRemoveLastTeamManager);
+                break;
+            case MyTeamMessageModel.MessageId.VenueEditSuccess:
+                W‌rite(_MyTeamMessagesPartial.VenueEditSuccess);
+                break;
+            case MyTeamMessageModel.MessageId.VenueEditFailure:
+                W‌rite(_MyTeamMessagesPartial.VenueEditFailure);
+                break;
+            case MyTeamMessageModel.MessageId.VenueCreateSuccess:
+                W‌rite(_MyTeamMessagesPartial.VenueCreateSuccess);
+                break;
+            case MyTeamMessageModel.MessageId.VenueCreateFailure:
+                W‌rite(_MyTeamMessagesPartial.VenueCreateFailure);
+                break;
+            case MyTeamMessageModel.MessageId.VenueSelectSuccess:
+                W‌rite(_MyTeamMessagesPartial.VenueSelectSuccess);
+                break;
+            case MyTeamMessageModel.MessageId.VenueSelectFailure:
+                W‌rite(_MyTeamMessagesPartial.VenueSelectFailure);
+                break;
+            default:
+                throw new ArgumentOutOfRangeException();
+        }
+    </site-alert>
+}

@@ -1,0 +1,32 @@
+﻿@using League.Controllers
+@using League.Identity
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject UserManager<ApplicationUser> UserManager
+@inject IViewLocalizer Localizer
+@inject IUserValidator<ApplicationUser> userValidator
+@{ var UserValidator = (LeagueUserValidator<ApplicationUser>)this.userValidator;
+ViewContext.ClientValidationEnabled = false;}
+@model ChangeUsernameViewModel
+@{ var allowedUsernameCharacters = Axuno.Tools.StringFormatter.GroupedValidCharacters(UserManager.Options.User.AllowedUserNameCharacters);}
+<!-- Modal -->
+<modal id="change-username" title="@Localizer["Change username"].Value" tabindex="-1">
+    <modal-body>
+        @* Form with only 1 input field can be submitted with enter key. So we have to prevent default submit behavior and trigger a click on saveBtn *@
+        <form asp-controller="@nameof(Manage)" asp-action="@nameof(Manage.ChangeUserName)" method="post" role="form" onsubmit="$('#@(League.TagHelpers.Modal.SiteAjaxSubmitTagHelper.TagHelperAttributeName)').trigger('click');return false;">
+            <site-validation-summary show="All"></site-validation-summary>
+            <input name="IsValid" type="hidden" value="@ViewData.ModelState.IsValid.ToString()" />
+            <div class="form-group">
+                <label asp-for="Username"></label>
+                <input asp-for="Username" autofocus class="form-control" aria-describedby="usernameHelpBlock" />
+                <small id="usernameHelpBlock" class="form-text text-muted">
+                    @Localizer["Min."] @UserValidator.RequiredUsernameLength @Localizer["characters out of"]: @allowedUsernameCharacters
+                </small>
+                <span asp-validation-for="Username" class="text-danger"></span>
+            </div>
+        </form>
+    </modal-body>
+    <modal-footer show-dismiss="true" dismiss-text="@Localizer["Cancel"].Value">
+        <button site-ajax-submit class="btn btn-primary">@Localizer["Save"]</button>
+    </modal-footer>
+</modal>
+@{ if (ViewContext.ClientValidationEnabled) { await Html.RenderPartialAsync(League.ViewNames.Shared._ValidationScriptsPartial); } /* register the modal form for validation */ }

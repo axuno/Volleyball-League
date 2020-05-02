@@ -1,0 +1,134 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <NeutralLanguage></NeutralLanguage>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Report\**" />
+    <Compile Remove="Test\**" />
+    <EmbeddedResource Remove="Report\**" />
+    <EmbeddedResource Remove="Test\**" />
+    <None Remove="Report\**" />
+    <None Remove="Test\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Ical.Net" Version="4.1.11" />
+    <PackageReference Include="libphonenumber-csharp" Version="8.12.2" />
+    <PackageReference Include="NLog.Extensions.Logging" Version="1.6.2" />
+    <PackageReference Include="System.Data.SqlClient" Version="4.8.1" />
+    <PackageReference Include="YAXLib" Version="2.15.0" />
+    <PackageReference Include="ZedGraph" Version="6.0.0-alpha0001" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Axuno.Tools\Axuno.Tools.csproj" />
+    <ProjectReference Include="..\DAL\DatabaseGeneric\TournamentManager.DAL.DbGeneric.csproj" />
+    <ProjectReference Include="..\DAL\DatabaseSpecific\TournamentManager.DAL.DBSpecific.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="ModelValidators\FixtureValidatorResource.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>FixtureValidatorResource.resx</DependentUpon>
+    </Compile>
+    <Compile Update="EntityValidators\UserEntityValidatorResource.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>UserEntityValidatorResource.resx</DependentUpon>
+    </Compile>
+    <Compile Update="ModelValidators\MatchResultPermissionValidatorResource.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>MatchResultPermissionValidatorResource.resx</DependentUpon>
+    </Compile>
+    <Compile Update="ModelValidators\MatchResultValidatorResource.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>MatchResultValidatorResource.resx</DependentUpon>
+    </Compile>
+    <Compile Update="ModelValidators\PhoneNumberValidatorResource.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>PhoneNumberValidatorResource.resx</DependentUpon>
+    </Compile>
+    <Compile Update="ModelValidators\SetsValidatorResource.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>SetsValidatorResource.resx</DependentUpon>
+    </Compile>
+    <Compile Update="ModelValidators\SingleSetValidatorResource.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>SingleSetValidatorResource.resx</DependentUpon>
+    </Compile>
+    <Compile Update="ModelValidators\TeamValidatorResource - Copy.Designer.cs">
+      <DependentUpon>TeamValidatorResource.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Update="ModelValidators\TeamInRoundValidatorResource.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>TeamInRoundValidatorResource.resx</DependentUpon>
+    </Compile>
+    <Compile Update="ModelValidators\VenueValidatorResource.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>VenueValidatorResource.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="ModelValidators\FixtureValidatorResource.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>FixtureValidatorResource.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="EntityValidators\UserEntityValidatorResource.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>UserEntityValidatorResource.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="ModelValidators\MatchResultPermissionValidatorResource.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>MatchResultPermissionValidatorResource.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="ModelValidators\MatchResultValidatorResource.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>MatchResultValidatorResource.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="ModelValidators\PhoneNumberValidatorResource.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>PhoneNumberValidatorResource.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="ModelValidators\SetsValidatorResource.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>SetsValidatorResource.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="ModelValidators\SingleSetValidatorResource.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>SingleSetValidatorResource.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="ModelValidators\TeamInRoundValidatorResource.resx">
+      <LastGenOutput>TeamInRoundValidatorResource.Designer.cs</LastGenOutput>
+      <Generator>ResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="ModelValidators\VenueValidatorResource.resx">
+      <LastGenOutput>VenueValidatorResource.Designer.cs</LastGenOutput>
+      <Generator>PublicResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="ModelValidators\TeamValidatorResource.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>VenueValidator.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+      <_Parameter1>$(AssemblyName).Tests</_Parameter1>
+    </AssemblyAttribute>
+  </ItemGroup>
+
+</Project>

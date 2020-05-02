@@ -1,0 +1,72 @@
+﻿@using League.Components
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@model VenueSelectorComponentModel
+@{
+    Layout = null;
+}
+@if (!Model.AllVenues.Any())
+{
+    <div>
+        <h4 class="h4">@Localizer["No venues found at this time"].</h4>
+    </div>
+    return;
+}
+<div class="table-responsive">@* Wrapping this way make tables responsive and 100% width *@
+    <table id="venue-list" class="table table-sm table-light mb-0">
+        <thead class="rounded">
+        <tr>
+            <th><i class="far fa-check-square"></i></th>
+            <th>@Localizer["Name"]</th>
+            <th>@Localizer["City"]</th>
+        </tr>
+        </thead>
+        <tbody>
+        @if ((Model.Filter & VenueSelectorComponentModel.Criteria.NotSpecified) == VenueSelectorComponentModel.Criteria.NotSpecified && Model.VenueNotSpecifiedKey.HasValue)
+        {
+            <tr data-venue-id="@Model.VenueNotSpecifiedKey"><td></td><td colspan="2">@Localizer["Not specified"]</td></tr>
+        }
+        @if (Model.Filter == VenueSelectorComponentModel.Criteria.AllVenues)
+        {
+            // Show all venues if no filter criteria are set
+            foreach (var v in Model.AllVenues)
+            {
+                <tr data-venue-id="@v.Id"><td></td><td>@string.Join(", ", v.Name, v.Extension).TrimEnd(',', ' ')</td><td>@string.Join(' ', v.PostalCode, v.City)</td></tr>
+            }
+        }
+        @if ((Model.Filter & VenueSelectorComponentModel.Criteria.VenuesOfTeams) == VenueSelectorComponentModel.Criteria.VenuesOfTeams && Model.VenuesOfTeams?.Count > 0)
+        {
+            if ((Model.Group & VenueSelectorComponentModel.Criteria.VenuesOfTeams) == VenueSelectorComponentModel.Criteria.VenuesOfTeams)
+            {
+                <tr><td colspan="3"><span class="badge badge-dark">@Localizer["Team venues"]</span></td></tr>
+            }
+            foreach (var v in Model.VenuesOfTeams)
+            {
+                <tr data-venue-id="@v.Id"><td></td><td>@string.Join(", ", v.Name, v.Extension).TrimEnd(',', ' ')</td><td>@string.Join(' ', v.PostalCode, v.City)</td></tr>
+            }
+        }
+        @if ((Model.Filter & VenueSelectorComponentModel.Criteria.Active) == VenueSelectorComponentModel.Criteria.Active && Model.ActiveVenues?.Count > 0)
+        {
+            if ((Model.Group & VenueSelectorComponentModel.Criteria.Active) == VenueSelectorComponentModel.Criteria.Active)
+            {
+                <tr><td colspan="3"><span class="badge badge-dark">@Localizer["Active venues"]</span></td></tr>
+            }
+            foreach (var v in Model.ActiveVenues)
+            {
+                <tr data-venue-id="@v.Id"><td></td><td>@string.Join(", ", v.Name, v.Extension).TrimEnd(',', ' ')</td><td>@string.Join(' ', v.PostalCode, v.City)</td></tr>
+            }
+        }
+        @if ((Model.Filter & VenueSelectorComponentModel.Criteria.Unused) == VenueSelectorComponentModel.Criteria.Unused && Model.UnusedVenues?.Count > 0)
+        {
+            if ((Model.Group & VenueSelectorComponentModel.Criteria.Unused) == VenueSelectorComponentModel.Criteria.Unused)
+            {
+                <tr><td colspan="3"><span class="badge badge-dark">@Localizer["Other venues"]</span></td></tr>
+            }
+            foreach (var v in Model.UnusedVenues)
+            {
+                <tr data-venue-id="@v.Id"><td></td><td>@string.Join(", ", v.Name, v.Extension).TrimEnd(',', ' ')</td><td>@string.Join(' ', v.PostalCode, v.City)</td></tr>
+            }
+        }
+        </tbody>
+    </table>
+</div>

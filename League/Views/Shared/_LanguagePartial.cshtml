@@ -1,0 +1,24 @@
+@using System.Net
+@using Microsoft.AspNetCore.Builder
+@using Microsoft.AspNetCore.Localization
+@using Microsoft.Extensions.Options
+@inject IOptions<RequestLocalizationOptions> LocalizationOptions
+@{
+    if (Context.Features.Get<IRequestCultureFeature>() != null)
+    {
+        <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="/" role="button">
+                @(System.Threading.Thread.CurrentThread.CurrentCulture.ThreeLetterISOLanguageName.ToUpperInvariant().First() + System.Threading.Thread.CurrentThread.CurrentCulture.ThreeLetterISOLanguageName.Substring(1).ToLowerInvariant())
+            </a>
+            <div class="dropdown-menu shadow dropdown-menu-right" style="margin-top: -0.3rem">
+                @{
+                    var encodedCurrentRequest = WebUtility.UrlEncode($"{Context.Request.Path}{Context.Request.QueryString}");
+                    foreach (var c in LocalizationOptions.Value.SupportedCultures)
+                    {
+                        <a href="@Url.Action(nameof(League.Controllers.Language.Index), nameof(League.Controllers.Language), new {culture = c.TwoLetterISOLanguageName, uiCulture = c.TwoLetterISOLanguageName, returnUrl = encodedCurrentRequest})" class="dropdown-item">@(Html.Raw(c.DisplayName))</a>
+                    }
+                }
+            </div>
+        </li>
+    }
+}

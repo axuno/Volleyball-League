@@ -1,0 +1,16 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@{
+    ViewData["Title"] = Localizer["Sign-in with the social network account failed"];
+}
+<h2 class="h2">@ViewData["Title"].</h2>
+<hr/>
+<div>
+    <site-alert type="Danger">
+        @(ViewData["Title"]).<br />
+        @(Localizer["Please try to sign-in later, or use another account"]).<br />
+    </site-alert>
+    <p>
+        <a asp-controller="@nameof(League.Controllers.Account)" asp-action="@nameof(League.Controllers.Account.SignIn)" class="btn btn-lg btn-primary col-sm-8 col-md-5">@Localizer["Sign in"]</a>
+    </p>
+</div>

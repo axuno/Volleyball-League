@@ -1,0 +1,12 @@
+﻿@using League.Helpers
+@using League.TagHelpers
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject MetaDataHelper Metadata
+@inject IViewLocalizer Localizer
+@model League.Models.MatchViewModels.EditFixtureViewModel.FixtureMessage
+@if (Model == null) { return; }
+@{
+    <site-alert type="@(Model.ChangeSuccess ? SiteAlertTagHelper.AlertType.Success : SiteAlertTagHelper.AlertType.Danger)">
+        @(Model.ChangeSuccess ? Localizer["Fixture has been updated"] : Localizer["Updating the fixture failed"])
+    </site-alert>
+}

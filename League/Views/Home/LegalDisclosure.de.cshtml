@@ -1,0 +1,62 @@
+﻿@{
+    ViewData["Title"] = "Impressum";
+}
+<div>
+    <h2 class="h2">@ViewData["Title"]</h2>
+    <hr />
+</div>
+<div class="mb-0 pb-1">
+    <div class="row">
+        <article class="col-md-6">
+            <p class="mb-0"><b>Firma:</b></p>
+            <p>
+                axuno gemeinnützige GmbH<br/>
+            </p>
+
+            <p class="mb-0"><b>Postalische Anschrift:</b></p>
+            <p>
+                Leni-Hirsch-Weg 12<br/>
+                86156 Augsburg<br/>
+                Deutschland
+            </p>
+            <p class="mb-0">
+                <b>Geschäftsführer<br/>und verantwortlich für den Inhalt:</b>
+            </p>
+            <p>
+                Norbert Bietsch
+            </p>
+            <p class="mb-0">
+                <b>Kontakt:</b>
+            </p>
+            <p>
+                Telefon: +49 821 45094985<br/>
+                @*Html.ActionLink("Send a message", "Message", "Contact")*@
+            </p>
+            <p class="mb-0">
+                <b>Handelsregister:</b>
+            </p>
+            <p>
+                Amtsgericht Augsburg (DE)<br/>
+                Registernr.: HRB 30535<br/>
+            </p>
+            <p class="mb-0">
+                <b>Steuern:</b>
+            </p>
+            <p>
+                Finanzamt Augsburg-Stadt (DE)<br/>
+                Steuernummer: 103/147/01742
+            </p>
+            <p class="mb-0">
+                <b>Bank:</b>
+            </p>
+            <p>
+                Fidor Bank AG, Deutschland<br/>
+                IBAN Nr. DE61 7002 2200 0020 1378 00<br/>
+                BIC FDDODEMMXXX<br/>
+            </p>
+        </article>
+        <article class="col-md-6">
+            <img src="@Url.Content("~/images/logo-axuno.png")" alt="Logo axuno"/>
+        </article>
+    </div>
+</div>

@@ -1,0 +1,49 @@
+﻿@using System.Globalization
+@using League.Controllers
+@using League.Views.Role
+@model League.Models.RoleViewModels.RoleAddModel
+@{
+    var selectableRoleNames = new[] { League.Identity.Constants.ClaimType.PlaysInTeam, League.Identity.Constants.ClaimType.ManagesTeam };
+    ViewContext.ClientValidationEnabled = false;
+}
+<!-- Modal -->
+<modal id="add-team-member" title="@_AddMemberModalPartial.Add_team_member" dialog-class="modal-md" tabindex="-1">
+    <modal-body>
+        <site-validation-summary show="All"></site-validation-summary>
+        @* Form with only 1 input field can be submitted with enter key. So we have to prevent default submit behavior and trigger a click on saveBtn *@
+        <form asp-controller="@nameof(Role)" asp-action="@nameof(Role.Add)" method="post" role="form" onsubmit="$('#@(League.TagHelpers.Modal.SiteAjaxSubmitTagHelper.TagHelperAttributeName)').trigger('click');return false;">
+            <input name="IsValid" type="hidden" value="@ViewData.ModelState.IsValid.ToString()" />
+            <input asp-for="TeamId" type="hidden" />
+            <input asp-for="ReturnUrl" type="hidden" />
+            <div class="row">
+                <div class="form-group col-12">
+                    <label asp-for="UserEmail" class="mt-0"></label>
+                    <input asp-for="UserEmail" type="text" autofocus autocomplete="off" class="form-control" />
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group col-12">
+                    <label asp-for="ClaimType" class="mt-0"></label>
+                    <select asp-for="ClaimType" class="form-control d-block col-6 selectpicker show-tick" data-size="7" title="@(_AddMemberModalPartial.Please_select)..." data-width="fit">
+                        @foreach (var rn in selectableRoleNames)
+                        {
+                            <option value="@rn">@_AddMemberModalPartial.ResourceManager.GetString(rn)</option>
+                        }
+                    </select>
+                </div>
+            </div>
+        </form>
+    </modal-body>
+    <modal-footer show-dismiss="true" dismiss-text="@_AddMemberModalPartial.Cancel">
+        <button site-ajax-submit class="btn btn-primary">@_AddMemberModalPartial.Add</button>
+        <script type="text/javascript" site-on-content-loaded="true" site-on-modal-shown="true" site-inline="true">
+            $('select').selectpicker();
+        </script>
+        @{ if (ViewContext.ClientValidationEnabled)
+           {
+               /* register the modal form for validation */
+               <partial name="@nameof(League.ViewNames.Shared._ValidationScriptsPartial)" />
+           }
+        }
+    </modal-footer>
+</modal>

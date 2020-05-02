@@ -1,0 +1,176 @@
+﻿@using System.Globalization
+@using League.Components
+@using League.Controllers
+@using League.DI
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject RegionInfo RegionInfo
+@inject OrganizationSiteContext SiteContext
+@inject IViewLocalizer Localizer
+@{ ViewContext.ClientValidationEnabled = false;}  @* We rely on datepicker and server side validation *@
+@model League.Models.MatchViewModels.EditFixtureViewModel
+@{
+    ViewData["Title"] = Localizer["Edit Fixture"].Value + " - " + Model.Tournament.Name;
+}
+<div class="mb-0 pb-1">
+    <h2 class="h2">@ViewData["Title"]</h2>
+    <hr />
+    <form asp-controller="@nameof(Match)" asp-action="@nameof(Match.EditFixture)" asp-route-id="" method="post" role="form">
+        <site-validation-summary show="All" warning="@Model.IsWarning"></site-validation-summary>
+        <input name="IsValid" type="hidden" value="@ViewData.ModelState.IsValid.ToString()" />@* needed for unobtrusive validation *@
+        <input hidden="hidden" asp-for="Id" />
+        <input hidden="hidden" asp-for="Hash" />
+        @if (Model.IsWarning)
+        {
+            <div class="row">
+                <div class="form-group col-12 col-md-6">
+                    <div class="custom-control custom-checkbox border border-warning rounded py-2">
+                        <input asp-for="OverrideWarnings" type="checkbox" class="custom-control-input">
+                        <label class="custom-control-label text-warning ml-2 mt-0" asp-for="OverrideWarnings"></label>
+                    </div>
+                </div>
+            </div>
+        }
+        <div class="row">
+            <div class="form-group col-12 col-md-6">
+                <label class="mt-0">@Localizer["Opponents"]</label>
+                <div class="font-weight-bold">@Model.PlannedMatch.HomeTeamNameForRound : @Model.PlannedMatch.GuestTeamNameForRound</div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="form-group col-12 col-md-6">
+                <label asp-for="MatchDate" class="mt-0"></label>
+                <div class="input-group" id="picker_@nameof(Model.MatchDate)" data-target-input="nearest">
+                    <input asp-for="MatchDate" type="text" autofocus autocomplete="off" class="form-control datepicker datetimepicker-input" data-target="#picker_@nameof(Model.MatchDate)" aria-describedby="@nameof(Model.MatchDate)HelpBlock" />
+                    <span class="input-group-append input-group-text" data-target="#picker_@nameof(Model.MatchDate)" data-toggle="datetimepicker">
+                        <i class="far fa-calendar-alt"></i>
+                    </span>
+                </div>
+                <small id="@nameof(Model.MatchDate)HelpBlock" class="d-block form-text text-muted">
+                    @Localizer["Date format"]: @(Localizer[CultureInfo.CurrentUICulture.DateTimeFormat.ShortDatePattern.ToUpperInvariant()])
+                </small>
+                <span asp-validation-for="MatchDate" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="row">
+            <div class="form-group col-12 col-md-6">
+                <label asp-for="MatchTime" class="mt-0"></label>
+                <div class="input-group" id="picker_@nameof(Model.MatchTime)" data-target-input="nearest">
+                    <input asp-for="MatchTime" type="text" autocomplete="off" class="form-control datepicker datetimepicker-input" data-target="#picker_@nameof(Model.MatchTime)" aria-describedby="@nameof(Model.MatchDate)HelpBlock" />
+                    <span class="input-group-append input-group-text" data-target="#picker_@nameof(Model.MatchTime)" data-toggle="datetimepicker">
+                        <i class="far fa-clock"></i>
+                    </span>
+                </div>
+                <small id="@nameof(Model.MatchTime)HelpBlock" class="d-block form-text text-muted">
+                    @Localizer["Time format"]: @(CultureInfo.CurrentUICulture.DateTimeFormat.ShortTimePattern.ToUpperInvariant().Replace("TT", "AM/PM"))
+                </small>
+                <span asp-validation-for="MatchTime" class="text-danger"></span>
+            </div>
+        </div>
+        <div id="venue-picker">
+            <div class="row">
+                <div class="form-group col-12 col-md-6">
+                    <label asp-for="VenueId" class="mt-0"></label>
+                    <div class="input-group">
+                        <input type="hidden" asp-for="VenueId" />
+                        <div id="venue-text" class="form-control overflow-hidden" style="height:auto" data-target="#select-venue" data-toggle="modal">
+                            @string.Join(", ", Model.PlannedMatch.VenueName, Model.PlannedMatch.VenueExtension).TrimEnd(',', ' ')
+                        </div>
+                        <span class="input-group-append input-group-text" data-target="#select-venue" data-toggle="modal">
+                            <i class="fas fa-edit"></i>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="form-group col-12 col-md-6 mt-2">
+                <a asp-controller="@nameof(Match)" asp-action="@nameof(Match.Fixtures)" class="btn btn-lg btn-secondary">@Localizer["Cancel"]</a>
+                <button type="submit" class="btn btn-lg btn-primary">@Localizer["Save"]</button>
+            </div>
+        </div>
+    </form>
+</div>
+<modal id="select-venue" title="@Localizer["Please select a venue"].Value" dialog-class="modal-lg">
+    <modal-body>
+        <div>
+            @{ ValueTuple<long, IList<long>, VenueSelectorComponentModel.Criteria, VenueSelectorComponentModel.Criteria, long?> m = (SiteContext.MatchPlanTournamentId, new List<long>(new long[] { Model.PlannedMatch.HomeTeamId, Model.PlannedMatch.GuestTeamId }), VenueSelectorComponentModel.Criteria.VenuesOfTeams | VenueSelectorComponentModel.Criteria.Active, VenueSelectorComponentModel.Criteria.VenuesOfTeams | VenueSelectorComponentModel.Criteria.Active, -1);}
+            @(await Component.InvokeAsync<VenueSelector>(m))
+        </div>
+    </modal-body>
+</modal>
+@section styles
+{
+    <link rel="stylesheet" href="~/lib/tempusdominus-bootstrap-4/tempusdominus-bootstrap-4.min.css" />
+    <style type="text/css">
+        #venue-list tbody tr {
+            border-bottom: solid 2px lightgray
+        }
+
+        #venue-list thead {
+            background-color: lightgray
+        }
+
+        #venue-list td {
+            cursor: pointer;
+        }
+
+        #venue-picker .input-group {
+            cursor: pointer;
+        }
+
+        /* Start: Change Bootstrap 4 default custom checkbox color */
+        .custom-checkbox .custom-control-input:checked ~ .custom-control-label::before {
+            background-color: var(--warning);
+            border-color: var(--warning);
+        }
+
+        .custom-control-input:checked ~ .custom-control-label::before {
+            color: #fff;
+            background-color: var(--warning);
+            border-color: var(--warning);
+        }
+        /* End: Change Bootstrap 4 default custom checkbox color */
+    </style>
+}
+@section scripts
+{
+    <script type="text/javascript" src="~/lib/Moment/moment.min.js"></script>
+    <script type="text/javascript" src="~/lib/tempusdominus-bootstrap-4/tempusdominus-bootstrap-4.min.js"></script>
+    <partial name="@nameof(League.ViewNames.Shared._DateTimePickerScriptPartial)" />
+    @if (ViewContext.ClientValidationEnabled)
+    {
+        <partial name="@nameof(League.ViewNames.Shared._ValidationScriptsPartial)" />
+    }
+    <script type="text/javascript">
+        $(document).ready(function () {
+            // don't use attribute 'autofocus' with datetimepicker - this will focus before initialization
+            $('#picker_@Html.IdFor(m => m.MatchDate)').datetimepicker({
+                format: 'L' /*, minDate: moment().startOf('day'), maxDate: moment('09/30/2019').startOf('day')*/
+            });
+            $('#picker_@Html.IdFor(m => m.MatchTime)').datetimepicker({ format: 'LT', stepping: 15 });
+
+            $('#select-venue').on('show.bs.modal',
+                function(e) {
+                    $('#select-venue').find('tr[data-venue-id]').each(function(rowIndex, r) {
+                        if ($(this).attr('data-venue-id') === $('#@Html.IdFor(m => m.VenueId)').val()) {
+                            $(this).find('td:first').html('<i class="fas fa-check"></i>');
+                        } else {
+                            $(this).find('td:first').html('');
+                        }
+                    });
+                });
+
+            $('#select-venue tr[data-venue-id]').on('click',
+                function() {
+                    $('#@Html.IdFor( m => m.VenueId)').val($(this).attr('data-venue-id'));
+                    $('#venue-text').text($(this).find('td:nth-child(2)').text());
+                    $('#select-venue').modal('hide');
+                });
+        });
+
+        $('#@nameof(Model.MatchDate)').on('change',
+            function() {
+                if ($(this).val() === '') $('#@nameof(Model.MatchTime)').val('');
+            });
+    </script>
+}

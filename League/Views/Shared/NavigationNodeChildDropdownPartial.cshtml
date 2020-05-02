@@ -1,0 +1,34 @@
+﻿@using cloudscribe.Web.Navigation
+@using League.Navigation
+@using Microsoft.Extensions.Localization
+@model NavigationViewModel
+@addTagHelper *, cloudscribe.Web.Navigation
+@inject IStringLocalizer<NavigationResource> Localizer
+@if (Model.TempNode != null && await Model.HasVisibleChildren(Model.TempNode))
+{
+    <div class="dropdown-menu shadow@(ViewData["dropdown-menu-right"])" style="margin-top: -0.3rem">
+        @foreach (var childNode in Model.TempNode.Children)
+        {
+            if (!await Model.ShouldAllowView(childNode))
+            {
+                continue;
+            }
+
+            if (childNode.Value.Text == "Separator")
+            {
+                <div class="dropdown-divider"></div>
+                continue;
+            }
+            if (!await Model.HasVisibleChildren(childNode))
+            {
+                <a href="@Url.Content(Model.AdjustUrl(childNode))" class="@Model.GetClass(childNode.Value, "dropdown-item", "active", true)">@Localizer[Model.AdjustText(childNode)]</a>
+            }
+            else
+            {
+                <a href="@Url.Content(Model.AdjustUrl(childNode))" class="@Model.GetClass(childNode.Value, "dropdown-item", "active", true)">@Localizer[Model.AdjustText(childNode)]</a>
+                @Model.UpdateTempNode(childNode)<partial name="@League.ViewNames.Shared.NavigationNodeChildDropdownPartial" model="Model" /> @*recursion*@
+            }
+        }
+    </div>
+}
+

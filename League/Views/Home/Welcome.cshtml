@@ -1,0 +1,54 @@
+﻿@using League.Controllers
+@using League.TagHelpers
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@{
+    ViewData["Title"] = Localizer["Welcome"].Value;
+}
+<div>
+    <h2 class="h2">@ViewData["Title"]</h2>
+    <hr />
+</div>
+<div class="mb-0 pb-1">
+    <div id="welcome-carousel" class="carousel slide" data-ride="carousel">
+        @*<!-- Indicators -->*@
+        <ul class="carousel-indicators">
+            <li data-target="#welcome-carousel" data-slide-to="0" class="active"></li>
+            <li data-target="#welcome-carousel" data-slide-to="1"></li>
+            <li data-target="#welcome-carousel" data-slide-to="2"></li>
+            <li data-target="#welcome-carousel" data-slide-to="3"></li>
+        </ul>
+        @*<!-- The slideshow -->*@
+        <div class="carousel-inner">
+            <div class="carousel-item active">
+                <img class="img-fluid rounded" src="@Url.Content("~/images/home_welcome_carousel-01.png")" alt="">
+            </div>
+            <div class="carousel-item">
+                <img class="img-fluid rounded" src="@Url.Content("~/images/home_welcome_carousel-02.jpg")" alt="">
+            </div>
+            <div class="carousel-item">
+                <img class="img-fluid rounded" src="@Url.Content("~/images/home_welcome_carousel-03.jpg")" alt="">
+            </div>
+            <div class="carousel-item">
+                <img class="img-fluid rounded" src="@Url.Content("~/images/home_welcome_carousel-04.jpg")" alt="">
+            </div>
+        </div>
+        @*<!-- Left and right controls -->*@
+        <a class="carousel-control-prev" href="#welcome-carousel" data-slide="prev">
+            <span class="carousel-control-prev-icon"></span>
+        </a>
+        <a class="carousel-control-next" href="#welcome-carousel" data-slide="next">
+            <span class="carousel-control-next-icon"></span>
+        </a>
+    </div>
+    <div>
+        <ul class="fa-ul mt-4">
+            <li><span class="fa-li"><i class="fas fa-check-square text-primary"></i></span>@Localizer["You're organizing a volleyball league?"]</li>
+            <li><span class="fa-li"><i class="fas fa-check-square text-primary"></i></span>@Localizer["Tired of the manual work with it?"]</li>
+        </ul>
+        <h4 class="h4">
+            <a asp-action="@nameof(Home.AboutLeague)" asp-controller="@nameof(Home)" class="link">@Localizer["Here is the solution to help you out!"]</a>
+        </h4>
+    </div>
+</div>
+@section styles {}

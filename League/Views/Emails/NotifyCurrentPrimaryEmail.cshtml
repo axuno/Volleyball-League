@@ -1,0 +1,22 @@
+﻿@inject IViewLocalizer Localizer
+@{
+    Layout = "_LayoutEmail";
+}
+@using League.DI
+@using Microsoft.AspNetCore.Mvc.Localization
+@using Microsoft.Extensions.Options
+@*ValueTuple*@
+@model (string Email, string CallbackUrl, TournamentManager.Data.OrganizationContext OrganizationContext)
+<div>
+    <h3>@Localizer["Your primary email"]</h3>
+    <p>
+        @Localizer["Your primary email is about to be changed to"]<br />
+        <strong>@Model.Email</strong>
+    </p>
+    <p>
+        @Localizer["We have sent a confirmation code to the new email address"].
+    </p>
+    <p>
+        @Model.OrganizationContext.Name
+    </p>
+</div>

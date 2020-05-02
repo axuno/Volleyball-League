@@ -1,0 +1,21 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@{
+    ViewData["Title"] = Localizer["Access denied"];
+    var returnUrl = ViewData["ReturnUrl"];
+}
+<h2 class="h2">@ViewData["Title"].</h2>
+<div class="pb-4">
+    @if (User.Identity.IsAuthenticated)
+    {
+        @* Signed in, but account does not have enough privileges *@
+        <p>@Localizer["Your user account is not permitted to access the requested page"]</p>
+        <p><a asp-controller="@nameof(League.Controllers.Account)" asp-action="@nameof(League.Controllers.Account.SignIn)" asp-route-returnurl="@returnUrl" class="btn btn-lg btn-primary col-sm-8 col-md-5">@Localizer["Sign-in with another account"]</a></p>
+    }
+    else
+    {
+        @* With Asp.Net Core Identity this will never show, because there is an immediate redirect to sign-in *@
+        <p>@Localizer["You must be signed in to access the requested page"]</p>
+        <p><a asp-controller="@nameof(League.Controllers.Account)" asp-action="@nameof(League.Controllers.Account.SignIn)" asp-route-returnurl="@returnUrl" class="btn btn-lg btn-primary col-sm-8 col-md-5">@Localizer["Sign-in now"]</a></p>
+    }
+</div>

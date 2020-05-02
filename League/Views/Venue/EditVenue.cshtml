@@ -1,0 +1,116 @@
+﻿@using System.Globalization
+@using League.Components
+@using League.Controllers
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@model League.Models.VenueViewModels.VenueEditModel
+@{ ViewContext.ClientValidationEnabled = false;
+    ViewData["Title"] = (Model.Venue.IsNew ? Localizer["Create venue"].Value : Localizer["Edit venue"].Value) + " - " + ViewData["TournamentName"];
+}
+<div class="mb-0 pb-1">
+    <h2 class="h2">@ViewData["Title"]</h2>
+    <hr />
+    @* Form with only 1 input field can be submitted with enter key. So we have to prevent default submit behavior and trigger a click on saveBtn *@
+    <form asp-controller="@nameof(Venue)" asp-action="@(Model.Venue.IsNew ? nameof(Venue.Create) : nameof(Venue.Edit))" method="post" role="form">
+        <site-validation-summary show="All" warning="@Model.IsWarning" unique-error-text="true"></site-validation-summary>
+        <input asp-for="TeamId" type="hidden" />
+        <input asp-for="Hash" type="hidden" />
+        <input asp-for="ReturnUrl" type="hidden" />
+        <input name="IsValid" type="hidden" value="@ViewData.ModelState.IsValid.ToString()" />
+        @if (Model.VenuesForDistance.Any())
+        {
+            <button class="btn btn-warning btn-sm mb-2" data-target="#show-vicinity-venues" data-toggle="modal" onclick="event.preventDefault()">
+                @Localizer["Show vicinity venues"]
+            </button>
+        }
+        @if (Model.IsWarning)
+        {
+            <div class="row mb-2">
+                <div class="form-group col-12 col-md-6">
+                    <div class="custom-control custom-checkbox border border-warning rounded py-2">
+                        <input asp-for="OverrideWarnings" type="checkbox" class="custom-control-input">
+                        <label class="custom-control-label text-warning ml-2 mt-0" asp-for="OverrideWarnings"></label>
+                    </div>
+                </div>
+            </div>
+        }
+        @if (!string.IsNullOrEmpty(Model.ForTeamName))
+        {
+            <div class="row mb-2">
+                <div class="col-12">
+                    <h4 class="h4">@(Model.Venue.IsNew ? Localizer["New venue for team"].Value : Localizer["Venue for team"].Value) <span class="font-weight-bold">@Model.ForTeamName</span></h4>
+                </div>
+            </div>
+        }
+        @(await Component.InvokeAsync<VenueEditor>(Model.Venue))
+        @if (Model.TeamsUsingTheVenue.Any())
+        {
+            <div class="row mb-2">
+                <div class="col-12 col-md-6">
+                    <div class="border border-warning rounded p-2">
+                        <div>@Localizer["Changes will have effect for the following teams using this venue"]:</div>
+                        @foreach (var teamName in Model.TeamsUsingTheVenue)
+                        {
+                            <span class="badge badge-secondary d-inline-block mr-2">@teamName</span>
+                        }
+                    </div>
+                </div>
+            </div>
+        }
+        <div class="row">
+            <div class="form-group col-12 col-md-6 mt-2">
+                <a href="@(Model.ReturnUrl)" class="btn btn-lg btn-secondary">@Localizer["Cancel"]</a>
+                <button type="submit" class="btn btn-lg btn-primary">@Localizer["Save"]</button>
+            </div>
+        </div>
+    </form>
+</div>
+<modal id="show-vicinity-venues" title="@Localizer["Venues in direct vicinity"].Value" dialog-class="modal-xl">
+    <modal-body>
+        <div class="table-responsive">@* Wrapping this way makes tables responsive and 100% width *@
+            <table id="venue-list" class="table table-sm table-light">
+                <thead class="rounded">
+                <tr>
+                    <th>@Localizer["Name"]</th>
+                    <th>@Localizer["Address"]</th>
+                    <th style="text-align: right">@Localizer["Distance"]</th>
+                </tr>
+                </thead>
+                <tbody>
+                @foreach (var v in Model.VenuesForDistance)
+                {
+                    <tr>
+                        <td>@v.Name<br />@v.Extension</td>
+                        <td>@v.City<br />@v.Street</td>
+                        <td style="text-align: right">@((int) (Math.Round(v.Distance, 1) * 1000))m</td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        </div>
+    </modal-body>
+</modal>
+@section styles
+{
+<style type="text/css">
+    #venue-list tbody tr {
+        border-bottom: solid 2px lightgray
+    }
+    #venue-list thead {
+        background-color: lightgray
+    }
+
+    /* Start: Change Bootstrap 4 default custom checkbox color */
+    .custom-checkbox .custom-control-input:checked ~ .custom-control-label::before {
+        background-color: var(--warning);
+        border-color: var(--warning);
+    }
+
+    .custom-control-input:checked ~ .custom-control-label::before {
+        color: #fff;
+        background-color: var(--warning);
+        border-color: var(--warning);
+    }
+    /* End: Change Bootstrap 4 default custom checkbox color */
+</style>
+}

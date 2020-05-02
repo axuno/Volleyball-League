@@ -1,0 +1,14 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@{
+    ViewData["Title"] = Localizer["Thanks for your message"];
+}
+<div>
+    <h2 class="h2 d-inline-block">@ViewData["Title"]</h2>
+    <hr />
+</div>
+<div class="mb-0 pb-1">
+    <site-alert type="Success">
+        @Localizer["Your message has been submitted"].
+    </site-alert>
+</div>

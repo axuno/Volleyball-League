@@ -1,0 +1,22 @@
+﻿@using cloudscribe.Web.Navigation
+@model NavigationViewModel
+@if ((Model.TempNode != null) && (await Model.HasVisibleChildren(Model.TempNode)))
+{
+    <ul class="nav nav-second-level" role="menu">
+        @foreach (var childNode in Model.TempNode.Children)
+        {
+            if (!await Model.ShouldAllowView(childNode)) { continue; }
+            if (!await Model.HasVisibleChildren(childNode))
+            {
+                <li class="nav-item @Model.GetClass(childNode.Value)"><a class="nav-link" href="@Url.Content(Model.AdjustUrl(childNode))">@Html.Raw(Model.GetIcon(childNode.Value))@Model.AdjustText(childNode)</a></li>
+            }
+            else
+            {
+                <li class="nav-item @Model.GetClass(childNode.Value)">
+                    <a class="nav-link" href="@Url.Content(Model.AdjustUrl(childNode))">@Html.Raw(Model.GetIcon(childNode.Value))@Model.AdjustText(childNode)</a>
+                    @Model.UpdateTempNode(childNode)@await Html.PartialAsync("NavigationNodeSideNavPartial", Model) @* recursion *@
+                </li>
+            }
+        }
+    </ul>
+}

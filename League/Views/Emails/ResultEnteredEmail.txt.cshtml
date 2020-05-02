@@ -1,0 +1,95 @@
+﻿@inject IViewLocalizer Localizer
+@inject IOptions<DataProtectionTokenProviderOptions> TokenProviderOptions
+@inject Axuno.Tools.DateAndTime.TimeZoneConverter TimeZoneConverter
+@{
+    Layout = null;
+    const string NewLine = @"\n";
+}
+@using Microsoft.AspNetCore.Mvc.Localization
+@using Microsoft.Extensions.Options
+@*ValueTuple*@
+@model (ClaimsPrincipal ChangedByUser, TournamentManager.DAL.EntityClasses.MatchEntity Match, List<TournamentManager.DAL.TypedViewClasses.TeamUserRoundRow> TeamUserRound, TournamentManager.Data.OrganizationContext OrganizationContext)
+@{
+    string FmtDate(DateTime? matchDate)
+    {
+        var zonedTime = TimeZoneConverter.ToZonedTime(matchDate);
+        return zonedTime != null ? zonedTime.DateTimeOffset.DateTime.ToShortDateString() + " " + zonedTime.Abbreviation : Localizer["unknown"].Value;
+    }
+    string FmtTime(DateTime? matchDate)
+    {
+        var zonedTime = TimeZoneConverter.ToZonedTime(matchDate);
+        return zonedTime != null ? zonedTime.DateTimeOffset.DateTime.ToShortTimeString() + " " + zonedTime.Abbreviation : Localizer["unknown"].Value;
+    }
+    string GetUsername()
+    {
+        if (Model.ChangedByUser.HasClaim(c => c.Type == ClaimTypes.GivenName) && Model.ChangedByUser.HasClaim(c => c.Type == ClaimTypes.Surname))
+        {
+            return Model.ChangedByUser.Claims.First(c => c.Type == ClaimTypes.GivenName).Value + " " + Model.ChangedByUser.Claims.First(c => c.Type == ClaimTypes.Surname).Value;
+        }
+        return null;
+    }
+
+    var PointsLabel = new[] { Localizer["Ball points"].Value, Localizer["Set points"].Value, Localizer["Match points"].Value };
+    var TimeLabel = new[] { Localizer["Start of match"].Value, Localizer["End of match"].Value };
+}
+@Html.Raw(Model.OrganizationContext.Name) (@Html.Raw(Model.TeamUserRound.First(tur => tur.TeamId == Model.Match.HomeTeamId).RoundDescription)) @Html.Raw(NewLine)
+@Html.Raw(Model.TeamUserRound.First(tur => tur.TeamId == Model.Match.HomeTeamId).TeamNameForRound) : @Html.Raw(Model.TeamUserRound.First(tur => tur.TeamId == Model.Match.GuestTeamId).TeamNameForRound)
+@Html.Raw(NewLine)
+@{
+    if (Model.Match.RealStart?.Date == (Model.Match.OrigPlannedStart ?? Model.Match.PlannedStart)?.Date)
+    {
+        @Html.Raw(Localizer.GetString("Match day of {0}", FmtDate(Model.Match.RealStart)))
+    }
+    else
+    {
+        @Html.Raw(Localizer.GetString("Match day of {0}, played on {1}", FmtDate(Model.Match.OrigPlannedStart ?? Model.Match.PlannedStart), FmtDate(Model.Match.RealStart)))
+    }
+    @Html.Raw(NewLine)@Html.Raw(NewLine)
+}
+@Html.Raw(Localizer["Result"].Value)@Html.Raw(NewLine)
+@{
+    for (var i = 0; i < Model.Match.Sets.Count; i++)
+    {
+        @Html.Raw(Localizer.GetString("Set #{0}", i + 1) + ":  " + Model.Match.Sets[i].HomeBallPoints + ":" + Model.Match.Sets[i].GuestBallPoints)
+        @Html.Raw(NewLine)
+    }
+}
+@Html.Raw(NewLine)
+@{
+    var maxLength = PointsLabel.Max(pl => pl.Length);
+    @Html.Raw(PointsLabel[0].PadRight(maxLength, '.'))@(":  ")
+    @Html.Raw(Model.Match.Sets.Sum(s => s.HomeBallPoints) + ":" + Model.Match.Sets.Sum(s => s.GuestBallPoints))@Html.Raw(NewLine)
+    @Html.Raw(PointsLabel[1].PadRight(maxLength, '.'))@(":  ")
+    @Html.Raw(Model.Match.Sets.Sum(s => s.HomeSetPoints) + ":" + Model.Match.Sets.Sum(s => s.GuestSetPoints))@Html.Raw(NewLine)
+    @Html.Raw(PointsLabel[2].PadRight(maxLength, '.'))@(":  ")
+    @Html.Raw(Model.Match.HomePoints + ":" + Model.Match.GuestPoints)
+    @Html.Raw(NewLine)
+    @Html.Raw(NewLine)
+}
+@{
+    maxLength = TimeLabel.Max(pl => pl.Length);
+    @Html.Raw(TimeLabel[0].PadRight(maxLength, '.'))@(":  ")
+    @Html.Raw(FmtTime(Model.Match.RealStart))@Html.Raw(NewLine)
+    @Html.Raw(TimeLabel[1].PadRight(maxLength, '.'))@(":  ")
+    @Html.Raw(FmtTime(Model.Match.RealEnd))
+    @Html.Raw(NewLine)
+    @Html.Raw(NewLine)
+}
+@{
+    if (!string.IsNullOrWhiteSpace(Model.Match.Remarks))
+    {
+        @Html.Raw(Localizer["Remarks"].Value)@(":  ")
+        @Html.Raw(NewLine)
+        @Html.Raw(Model.Match.Remarks)
+        @Html.Raw(NewLine)
+        @Html.Raw(NewLine)
+    }
+}
+@Html.Raw(Localizer["Changes were submitted by"].Value)@(" ")@Html.Raw(GetUsername() ?? "?").
+@Html.Raw(Localizer["This notification has been sent to the contact persons of the teams"].Value).
+@Html.Raw(NewLine)
+@Html.Raw(Model.OrganizationContext.Name)
+@Html.Raw(NewLine)
+@Html.Raw(NewLine)
+@Html.Raw(Localizer["ID"].Value) #@Html.Raw(Model.Match.Id) - @Html.Raw(Localizer["Number of changes"].Value): @Html.Raw(Model.Match.ChangeSerial)
+@Html.Raw(NewLine)

@@ -1,0 +1,2752 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!--LLBLGen Pro v5.5 project file. Do not manually edit this file. Incorrect references could lead to an unloadable project file.-->
+<Project Version="5.5" TargetFrameworkName="LLBLGen Pro Runtime Framework">
+  <Properties>
+    <Abbreviations />
+    <Property Name="AdditionalTaskPerformerFolder" Value="" />
+    <Property Name="AdditionalTasksFolder" Value="" />
+    <Property Name="AdditionalTemplatesFolder" Value="" />
+    <Property Name="AdditionalTypeConverterFolder" Value="" />
+    <Property Name="AddNewElementsAfterRefresh_v5" Value="false" />
+    <Property Name="AddNewElementsAfterRelationalModelDataSync_v5" Value="false" />
+    <Property Name="AddNewFieldsAfterRefresh_v5" Value="true" />
+    <Property Name="AddNewFieldsAfterRelationalModelDataSync_v5" Value="true" />
+    <Property Name="AddNewViewsAsEntitiesAfterRefresh_v5" Value="false" />
+    <Property Name="AddNewViewsAsEntitiesAfterRelationalModelDataSync_v5" Value="false" />
+    <Property Name="AutoAddManyToManyRelationships" Value="false" />
+    <Property Name="AutoAssignSequencesToIntegerPks" Value="true" />
+    <Property Name="AutoAssignTypeConverterToFieldMapping" Value="true" />
+    <Property Name="ConnectionStringKeyNamePattern" Value="ConnectionString.{$ProviderName}" />
+    <Property Name="DefaultDeleteRuleAction" Value="1" />
+    <Property Name="DefaultUpdateRuleAction" Value="0" />
+    <Property Name="EncodingToUse" Value="0" />
+    <Property Name="EntityActionCombinationDefaultForTable" Value="0" />
+    <Property Name="EntityActionCombinationDefaultForView" Value="4" />
+    <Property Name="EntityFieldNameStripPattern" Value="{}{}" />
+    <Property Name="EntityNameStripPattern" Value="{}{}" />
+    <Property Name="ExcludableOrphanedElementDetectedAction" Value="3" />
+    <Property Name="FailCodeGenerationOnWriteError" Value="false" />
+    <Property Name="FieldMappedOntoRelatedFieldPattern" Value="{$RelatedFieldName}" />
+    <Property Name="FkFieldsAreNamedAfterTargetField" Value="true" />
+    <Property Name="ForeignKeyConstraintPattern" Value="FK_{$Guid}" />
+    <Property Name="ForeignKeyFieldPattern" Value="{$NavigatorName}{$RelatedFieldName}" />
+    <Property Name="GroupUsage" Value="0" />
+    <Property Name="IdentifyingFieldsFollowDBPrimaryKeyConstraints_v5" Value="true" />
+    <Property Name="InsertUnderscoreAtWordBreakCaseInsensitiveDBs" Value="false" />
+    <Property Name="InsertUnderscoreAtWordBreakCaseSensitiveDBs" Value="false" />
+    <Property Name="LengthPrecisionScaleFollowDBLengthPrecisionScale_v5" Value="true" />
+    <Property Name="MakeElementNamePascalCasing" Value="true" />
+    <Property Name="NavigatorMappedOntoManyToManyPattern" Value="{$EndEntityName}CollectionVia{$IntermediateEntityName$S}" />
+    <Property Name="NavigatorMappedOntoOneManyToOnePattern" Value="{$EndEntityName$S}" />
+    <Property Name="NavigatorMappedOntoOneToManyPattern" Value="{$EndEntityName$P}" />
+    <Property Name="NonExcludableOrphanedElementDetectedAction" Value="3" />
+    <Property Name="PreferDecimalOverCurrencyTypes" Value="true" />
+    <Property Name="PreferNaturalCharacterTypes" Value="true" />
+    <Property Name="PreferSystemSequencesOverSchemaSequencesIfApplicable" Value="true" />
+    <Property Name="PreferVariableLengthTypes" Value="true" />
+    <Property Name="PrimaryKeyConstraintPattern" Value="PK_{$Guid}" />
+    <Property Name="ProjectCreator" Value="axuno gGmbH" />
+    <Property Name="ProjectName" Value="TournamentManager" />
+    <Property Name="ReflectNullabilityOfElementFieldInTargetField_v5" Value="false" />
+    <Property Name="ReflectTypeOfElementFieldInTargetField_v5" Value="true" />
+    <Property Name="RelationalModelDataElementNameCasingCaseInsensitiveDBs" Value="3" />
+    <Property Name="RelationalModelDataElementNameCasingCaseSensitiveDBs" Value="3" />
+    <Property Name="RelationshipsFollowDBForeignKeyConstraints_v5" Value="true" />
+    <Property Name="RemoveUnderscoresFromElementName" Value="true" />
+    <Property Name="RemoveUnmappedElementsAfterRefresh_v5" Value="false" />
+    <Property Name="RemoveUnmappedElementsAfterRelationalModelDataSync_v5" Value="false" />
+    <Property Name="ResetFieldOrderBasedOnTargetOrderAtRefresh" Value="false" />
+    <Property Name="ResetFieldOrderBasedOnTargetOrderAtRelationalModelDataSync" Value="false" />
+    <Property Name="RetrieveDBCustomProperties" Value="false" />
+    <Property Name="RootNamespace" Value="" />
+    <Property Name="SequenceNameMatchingPattern" Value="SEQ_{$TableName}" />
+    <Property Name="SequencePattern" Value="SEQ_{$EntityName}" />
+    <Property Name="SetGroupNameAfterSchemaName" Value="true" />
+    <Property Name="SetSchemaNameAfterGroupName" Value="true" />
+    <Property Name="SingularizeElementNames" Value="true" />
+    <Property Name="StoredProcNameStripPattern" Value="{pr_, sp_}{}" />
+    <Property Name="StoreTimeLastGeneratedIntoProject" Value="false" />
+    <Property Name="StoreTimeLastSyncIntoProject" Value="true" />
+    <Property Name="SyncMappedElementNamesAfterRefresh_v5" Value="false" />
+    <Property Name="SyncMappedElementNamesAfterRelationalModelDataSync_v5" Value="false" />
+    <Property Name="SyncRelationalModelDataElementNameWithModelElementName_v5" Value="false" />
+    <Property Name="SyncRenamedMappedElementNamesAfterRefresh_v5" Value="false" />
+    <Property Name="SyncRenamedMappedElementNamesAfterRelationalModelDataSync_v5" Value="false" />
+    <Property Name="TableValuedFunctionNameStripPattern" Value="{fn_, pr_, sp_}{}" />
+    <Property Name="TargetPerEntityEdgesRequireBackingFkConstraint" Value="true" />
+    <Property Name="TypedViewFieldNameStripPattern" Value="{}{}" />
+    <Property Name="TypedViewMappedOnResultsetPattern" Value="{$ProcFunctionName}{$ResultsetName}Result" />
+    <Property Name="TypedViewNameStripPattern" Value="{}{}" />
+    <Property Name="UniqueConstraintPattern" Value="UC_{$Guid}" />
+    <Property Name="UniqueConstraintsFollowDBUniqueConstraints_v5" Value="true" />
+    <Property Name="UpdateCustomPropertiesAfterRefresh_v5" Value="false" />
+    <Property Name="UpdateCustomPropertiesAfterRelationalModelDataSync_v5" Value="false" />
+    <Property Name="UseCustomFieldOrderingOnNewElements" Value="false" />
+  </Properties>
+  <TypeShortcuts />
+  <IgnoredWarnings />
+  <SavedSearchQueries />
+  <CodeGenerationCyclePreferences>
+    <OutputType Value="2">
+      <LastUsedPreferences>
+        <DestinationRootFolder Value="c:\temp\export" />
+        <FrameworkName Value="DDL SQL" />
+        <LanguageName Value="SQL" />
+        <PlatformName Value="RDBMS" />
+        <PresetName Value="SD.Presets.DDLSQL.UpdateScript" />
+        <RootNamespace Value="" />
+        <TemplateGroup Value="Update DDL SQL" />
+        <TemplateBindings>
+          <Binding Name="SD.TemplateBindings.MySqlSpecific.DDLSQL" />
+          <Binding Name="SD.TemplateBindings.SharedTemplates.DDLSQL" />
+        </TemplateBindings>
+      </LastUsedPreferences>
+    </OutputType>
+    <OutputType Value="3">
+      <LastUsedPreferences>
+        <DestinationRootFolder Value=".\" />
+        <FrameworkName Value="LLBLGen Pro Runtime Framework" />
+        <LanguageName Value="C#" />
+        <PlatformName Value=".NET Standard 2.0" />
+        <PresetName Value="SD.Presets.Adapter.General.Netstandard" />
+        <RootNamespace Value="TournamentManager.DAL" />
+        <TemplateGroup Value="Adapter" />
+        <TemplateBindings>
+          <Binding Name="SD.TemplateBindings.SharedTemplates.Netstandard20" />
+          <Binding Name="SD.TemplateBindings.SharedTemplates" />
+          <Binding Name="SD.TemplateBindings.SqlServerSpecific" />
+          <Binding Name="SD.TemplateBindings.General" />
+        </TemplateBindings>
+      </LastUsedPreferences>
+    </OutputType>
+    <OutputType Value="1">
+      <LastUsedPreferences>
+        <DestinationRootFolder Value="c:\Temp\DAL\DDL\" />
+        <FrameworkName Value="DDL SQL" />
+        <LanguageName Value="SQL" />
+        <PlatformName Value="RDBMS" />
+        <PresetName Value="SD.Presets.DDLSQL.CreateScript" />
+        <RootNamespace Value="" />
+        <TemplateGroup Value="Create DDL SQL" />
+        <TemplateBindings>
+          <Binding Name="SD.TemplateBindings.MySqlSpecific.DDLSQL" />
+          <Binding Name="SD.TemplateBindings.SqlServerSpecific.DDLSQL" />
+          <Binding Name="SD.TemplateBindings.SharedTemplates.DDLSQL" />
+        </TemplateBindings>
+      </LastUsedPreferences>
+    </OutputType>
+  </CodeGenerationCyclePreferences>
+  <OutputSettingValues>
+    <SettingValues>
+      <SettingValue Name="1:AdapterDbGenericProjectFileSuffix" Value=".DbGeneric" Type="18" />
+      <SettingValue Name="1:AdapterDbGenericSubFolderName" Value="DatabaseGeneric" Type="18" />
+      <SettingValue Name="1:AdapterDbSpecificNamespaceSuffix" Value="DatabaseSpecific" Type="18" />
+      <SettingValue Name="1:AdapterDbSpecificProjectFileSuffix" Value=".DBSpecific" Type="18" />
+      <SettingValue Name="1:AdapterDbSpecificSubFolderName" Value="DatabaseSpecific" Type="18" />
+      <SettingValue Name="1:ConvertNulledReferenceTypesToDefaultValue" Value="true" Type="3" />
+      <SettingValue Name="1:EntityBaseClassNameDefault" Value="CommonEntityBase" Type="18" />
+      <SettingValue Name="1:FieldPropertyIsPublicDefault" Value="true" Type="3" />
+      <SettingValue Name="1:GenerateAsNullableTypeDefault" Value="true" Type="3" />
+      <SettingValue Name="1:GenerateEntityFieldFactory" Value="false" Type="3" />
+      <SettingValue Name="1:GenerateEntityFieldsFactory" Value="false" Type="3" />
+      <SettingValue Name="1:InlineValueTypedFields" Value="true" Type="3" />
+      <SettingValue Name="1:LazyLoadingWithoutResultReturnsNew" Value="false" Type="3" />
+      <SettingValue Name="1:NavigatorPropertyIsPublicDefault" Value="true" Type="3" />
+      <SettingValue Name="1:SupportedActionCombinations" Value="0,1,2,3,4,5,6,7" Type="18" />
+      <SettingValue Name="1:TdlEmitTimeDateInOutputFiles" Value="false" Type="3" />
+      <SettingValue Name="1:TypedListOutputTypeDefault" Value="PocoWithQuerySpecQuery" Type="18" />
+      <SettingValue Name="1:TypedViewOutputTypeDefault" Value="PocoWithQuerySpecQuery" Type="18" />
+    </SettingValues>
+  </OutputSettingValues>
+  <CodeGenerationMetaDataDefaults>
+    <TargetElement Type="256">
+      <Defaults>
+        <Attributes>
+          <Attribute Value="Browsable($false)" />
+        </Attributes>
+      </Defaults>
+    </TargetElement>
+  </CodeGenerationMetaDataDefaults>
+  <EntityModel>
+    <ValueTypeDefinitions />
+    <EntityDefinitions>
+      <EntityDefinition Name="AvailableMatchDate" ObjectID="3957e513-dc94-453c-ae7a-4e5aac05da60">
+        <Fields>
+          <Field Name="CreatedOn" Type="datetime" FieldIndex="7" />
+          <Field Name="HomeTeamId" Type="long" Precision="11" FieldIndex="2" />
+          <Field Name="Id" Type="long" IsReadOnly="true" Precision="11" IsPrimaryKey="true" FieldIndex="0" />
+          <Field Name="IsGenerated" Type="bool" Precision="4" FieldIndex="6" />
+          <Field Name="MatchEndTime" Type="datetime" FieldIndex="5" />
+          <Field Name="MatchStartTime" Type="datetime" FieldIndex="4" />
+          <Field Name="ModifiedOn" Type="datetime" FieldIndex="8" />
+          <Field Name="TournamentId" Type="long" Precision="11" FieldIndex="1" />
+          <Field Name="VenueId" Type="long" Precision="11" FieldIndex="3" />
+        </Fields>
+      </EntityDefinition>
+      <EntityDefinition Name="ExcludeMatchDate" ObjectID="f5ddf71f-ea0d-4304-bc3f-878d5cf89af3">
+        <Fields>
+          <Field Name="CreatedOn" Type="datetime" FieldIndex="7" />
+          <Field Name="DateFrom" Type="datetime" FieldIndex="4" />
+          <Field Name="DateTo" Type="datetime" FieldIndex="5" />
+          <Field Name="Id" Type="long" IsReadOnly="true" Precision="11" IsPrimaryKey="true" FieldIndex="0" />
+          <Field Name="ModifiedOn" Type="datetime" FieldIndex="8" />
+          <Field Name="Reason" Type="string" IsOptional="true" MaxLength="60" FieldIndex="6" />
+          <Field Name="RoundId" Type="long" IsOptional="true" Precision="11" FieldIndex="2" />
+          <Field Name="TeamId" Type="long" IsOptional="true" Precision="11" FieldIndex="3" />
+          <Field Name="TournamentId" Type="long" Precision="11" FieldIndex="1" />
+        </Fields>
+      </EntityDefinition>
+      <EntityDefinition Name="IdentityRole" ObjectID="39aab5ae-8ed8-4f81-8758-df570d707e45">
+        <Fields>
+          <Field Name="Id" Type="long" IsReadOnly="true" Precision="19" IsPrimaryKey="true" />
+          <Field Name="Name" Type="string" MaxLength="255" />
+        </Fields>
+        <UniqueConstraints>
+          <UniqueConstraint Name="RoleUq">
+            <Field Name="Name" />
+          </UniqueConstraint>
+        </UniqueConstraints>
+      </EntityDefinition>
+      <EntityDefinition Name="IdentityRoleClaim" ObjectID="7365a69a-3b33-49c4-b0ed-99435ad910f6">
+        <Fields>
+          <Field Name="ClaimType" Type="string" MaxLength="255" />
+          <Field Name="ClaimValue" Type="string" MaxLength="2147483647" />
+          <Field Name="Id" Type="long" IsReadOnly="true" Precision="19" IsPrimaryKey="true" />
+          <Field Name="Issuer" Type="string" IsOptional="true" MaxLength="255" />
+          <Field Name="RoleId" Type="long" Precision="19" />
+          <Field Name="ValueType" Type="string" IsOptional="true" MaxLength="255" />
+        </Fields>
+      </EntityDefinition>
+      <EntityDefinition Name="IdentityUserClaim" ObjectID="871f0d59-2605-4151-834b-106d58987a9a">
+        <Fields>
+          <Field Name="ClaimType" Type="string" MaxLength="255" />
+          <Field Name="ClaimValue" Type="string" MaxLength="2147483647" />
+          <Field Name="Id" Type="long" IsReadOnly="true" Precision="19" IsPrimaryKey="true" />
+          <Field Name="Issuer" Type="string" IsOptional="true" MaxLength="255" />
+          <Field Name="UserId" Type="long" Precision="11" />
+          <Field Name="ValueType" Type="string" IsOptional="true" MaxLength="255" />
+        </Fields>
+      </EntityDefinition>
+      <EntityDefinition Name="IdentityUserLogin" ObjectID="90ccaa0d-b15d-423c-a880-be37a03734da">
+        <Fields>
+          <Field Name="Id" Type="long" IsReadOnly="true" Precision="19" />
+          <Field Name="LoginProvider" Type="string" MaxLength="128" IsPrimaryKey="true" />
+          <Field Name="ProviderDisplayName" Type="string" MaxLength="128" />
+          <Field Name="ProviderKey" Type="string" MaxLength="128" IsPrimaryKey="true" />
+          <Field Name="UserId" Type="long" Precision="11" IsPrimaryKey="true" />
+        </Fields>
+        <UniqueConstraints>
+          <UniqueConstraint Name="UserLoginUq">
+            <Field Name="Id" />
+          </UniqueConstraint>
+        </UniqueConstraints>
+      </EntityDefinition>
+      <EntityDefinition Name="IdentityUserRole" ObjectID="cac18919-7b83-4374-8d20-44a75cec840f">
+        <Fields>
+          <Field Name="Id" Type="long" IsReadOnly="true" Precision="19" />
+          <Field Name="RoleId" Type="long" Precision="19" IsPrimaryKey="true" />
+          <Field Name="UserId" Type="long" Precision="11" IsPrimaryKey="true" />
+        </Fields>
+      </EntityDefinition>
+      <EntityDefinition Name="IdentityUserToken" ObjectID="2a9d9c17-61c2-4b95-9607-376db6825ea2">
+        <Fields>
+          <Field Name="Id" Type="long" IsReadOnly="true" Precision="19" />
+          <Field Name="LoginProvider" Type="string" MaxLength="128" IsPrimaryKey="true" />
+          <Field Name="Name" Type="string" MaxLength="128" IsPrimaryKey="true" />
+          <Field Name="UserId" Type="long" Precision="11" IsPrimaryKey="true" />
+          <Field Name="Value" Type="string" IsOptional="true" MaxLength="2147483647" />
+        </Fields>
+        <UniqueConstraints>
+          <UniqueConstraint Name="UserTokensUq">
+            <Field Name="Id" />
+          </UniqueConstraint>
+        </UniqueConstraints>
+      </EntityDefinition>
+      <EntityDefinition Name="ManagerOfTeam" ObjectID="90872f48-c0bc-49b0-8de9-cb1d330d9692">
+        <Fields>
+          <Field Name="CreatedOn" Type="datetime" FieldIndex="3" />
+          <Field Name="Id" Type="long" IsReadOnly="true" Precision="11" FieldIndex="0" />
+          <Field Name="ModifiedOn" Type="datetime" FieldIndex="4" />
+          <Field Name="TeamId" Type="long" Precision="11" IsPrimaryKey="true" FieldIndex="2" />
+          <Field Name="UserId" Type="long" Precision="11" IsPrimaryKey="true" IsAutoCreated="true" FieldIndex="1" />
+        </Fields>
+      </EntityDefinition>
+      <EntityDefinition Name="Match" ObjectID="6bf6a760-7771-453d-ae10-c637fdac2370">
+        <Fields>
+          <Field Name="ChangeSerial" Type="long" Precision="2" FieldIndex="19" />
+          <Field Name="CreatedOn" Type="datetime" FieldIndex="20" />
+          <Field Name="GuestPoints" Type="int" IsOptional="true" Precision="2" FieldIndex="9" />
+          <Field Name="GuestTeamId" Type="long" Precision="11" FieldIndex="2" />
+          <Field Name="HomePoints" Type="int" IsOptional="true" Precision="2" FieldIndex="8" />
+          <Field Name="HomeTeamId" Type="long" Precision="11" FieldIndex="1" />
+          <Field Name="Id" Type="long" IsReadOnly="true" Precision="11" IsPrimaryKey="true" FieldIndex="0" />
+          <Field Name="IsComplete" Type="bool" Precision="1" FieldIndex="10" />
+          <Field Name="IsOverruled" Type="bool" Precision="1" FieldIndex="11" />
+          <Field Name="LegSequenceNo" Type="int" IsOptional="true" Precision="2" FieldIndex="7" />
+          <Field Name="ModifiedOn" Type="datetime" FieldIndex="21" />
+          <Field Name="OrigPlannedEnd" Type="datetime" IsOptional="true" FieldIndex="15" />
+          <Field Name="OrigPlannedStart" Type="datetime" IsOptional="true" FieldIndex="14" />
+          <Field Name="OrigVenueId" Type="long" IsOptional="true" Precision="11" FieldIndex="6" />
+          <Field Name="PlannedEnd" Type="datetime" IsOptional="true" FieldIndex="13" />
+          <Field Name="PlannedStart" Type="datetime" IsOptional="true" FieldIndex="12" />
+          <Field Name="RealEnd" Type="datetime" IsOptional="true" FieldIndex="17" />
+          <Field Name="RealStart" Type="datetime" IsOptional="true" FieldIndex="16" />
+          <Field Name="RefereeId" Type="long" IsOptional="true" Precision="11" FieldIndex="3" />
+          <Field Name="Remarks" Type="string" IsOptional="true" MaxLength="2147483647" FieldIndex="18" />
+          <Field Name="RoundId" Type="long" Precision="11" FieldIndex="4" />
+          <Field Name="VenueId" Type="long" IsOptional="true" Precision="11" FieldIndex="5" />
+        </Fields>
+      </EntityDefinition>
+      <EntityDefinition Name="MatchRule" ObjectID="6b97ec72-23c7-4e86-88d5-be1264db7c40">
+        <Fields>
+          <Field Name="BestOf" Type="bool" />
+          <Field Name="CreatedOn" Type="datetime" />
+          <Field Name="Id" Type="long" IsReadOnly="true" Precision="19" IsPrimaryKey="true" />
+          <Field Name="ModifiedOn" Type="datetime" />
+          <Field Name="Name" Type="string" MaxLength="255" />
+          <Field Name="NumOfSets" Type="int" Precision="10" />
+          <Field Name="PointsMatchLost" Type="int" Precision="10" />
+          <Field Name="PointsMatchLostAfterTieBreak" Type="int" Precision="10" />
+          <Field Name="PointsMatchTie" Type="int" Precision="10" />
+          <Field Name="PointsMatchWon" Type="int" Precision="10" />
+          <Field Name="PointsMatchWonAfterTieBreak" Type="int" Precision="10" />
+          <Field Name="RankComparer" Type="int" Precision="10" />
+        </Fields>
+      </EntityDefinition>
+      <EntityDefinition Name="PlayerInTeam" ObjectID="4a727a17-6478-490c-a0d8-4d2620cdcd93">
+        <Fields>
+          <Field Name="CreatedOn" Type="datetime" FieldIndex="3" />
+          <Field Name="Id" Type="long" Precision="11" FieldIndex="0" />
+          <Field Name="ModifiedOn" Type="datetime" FieldIndex="4" />
+          <Field Name="TeamId" Type="long" Precision="11" IsPrimaryKey="true" FieldIndex="2" />
+          <Field Name="UserId" Type="long" Precision="11" IsPrimaryKey="true" FieldIndex="1" />
+        </Fields>
+      </EntityDefinition>
+      <EntityDefinition Name="Ranking" ObjectID="57291438-2945-46f1-b8b6-00e779f27967">
+        <Fields>
+          <Field Name="BallPointsLost" Type="int" IsOptional="true" FieldIndex="11" />
+          <Field Name="BallPointsWon" Type="int" IsOptional="true" FieldIndex="10" />
+          <Field Name="CreatedOn" Type="datetime" FieldIndex="14" />
+          <Field Name="Id" Type="long" IsReadOnly="true" Precision="11" IsPrimaryKey="true" FieldIndex="0" />
+          <Field Name="MatchesPlayed" Type="int" FieldIndex="12" />
+          <Field Name="MatchesToPlay" Type="int" Precision="4" FieldIndex="13" />
+          <Field Name="MatchPointsLost" Type="int" IsOptional="true" FieldIndex="7" />
+          <Field Name="MatchPointsWon" Type="int" IsOptional="true" FieldIndex="6" />
+          <Field Name="ModifiedOn" Type="datetime" FieldIndex="15" />
+          <Field Name="Rank" Type="int" Precision="4" FieldIndex="5" />
+          <Field Name="RoundId" Type="long" Precision="11" FieldIndex="2" />
+          <Field Name="SetPointsLost" Type="int" IsOptional="true" FieldIndex="9" />
+          <Field Name="SetPointsWon" Type="int" IsOptional="true" FieldIndex="8" />
+          <Field Name="TeamId" Type="long" Precision="11" FieldIndex="3" />
+          <Field Name="TournamentId" Type="long" Precision="11" FieldIndex="1" />
+          <Field Name="ValuationDate" Type="datetime" FieldIndex="4" />
+        </Fields>
+      </EntityDefinition>
+      <EntityDefinition Name="Registration" ObjectID="d4e773b6-4709-4cef-9406-8ebe1077d035">
+        <Fields>
+          <Field Name="AppliedOn" Type="datetime" FieldIndex="6" />
+          <Field Name="AppliedWithMessage" Type="string" IsOptional="true" MaxLength="4000" FieldIndex="5" />
+          <Field Name="Guid" Type="string" MaxLength="50" FieldIndex="4" />
+          <Field Name="Id" Type="long" IsReadOnly="true" Precision="11" IsPrimaryKey="true" FieldIndex="0" />
+          <Field Name="ManagerId" Type="long" Precision="11" FieldIndex="3" />
+          <Field Name="TeamId" Type="long" Precision="11" FieldIndex="2" />
+          <Field Name="TournamentId" Type="long" Precision="11" IsAutoCreated="true" FieldIndex="1" />
+        </Fields>
+      </EntityDefinition>
+      <EntityDefinition Name="Round" ObjectID="fb44d94c-9791-4dc1-a27e-bc427cbabd26">
+        <Fields>
+          <Field Name="CreatedOn" Type="datetime" FieldIndex="10" />
+          <Field Name="Description" Type="string" MaxLength="255" FieldIndex="3" />
+          <Field Name="Id" Type="long" IsReadOnly="true" Precision="11" IsPrimaryKey="true" FieldIndex="0" />
+          <Field Name="IsComplete" Type="bool" Precision="1" FieldIndex="8" />
+          <Field Name="MatchRuleId" Type="long" Precision="19" FieldIndex="6" />
+          <Field Name="ModifiedOn" Type="datetime" FieldIndex="11" />
+          <Field Name="Name" Type="string" MaxLength="255" FieldIndex="2" />
+          <Field Name="NextRoundId" Type="long" IsOptional="true" Precision="11" FieldIndex="9" />
+          <Field Name="NumOfLegs" Type="int" Precision="11" FieldIndex="5" />
+          <Field Name="SetRuleId" Type="long" Precision="19" FieldIndex="7" />
+          <Field Name="TournamentId" Type="long" IsOptional="true" Precision="11" FieldIndex="1" />
+          <Field Name="TypeId" Type="long" Precision="11" FieldIndex="4" />
+        </Fields>
+      </EntityDefinition>
+      <EntityDefinition Name="RoundLeg" ObjectID="637b9802-1b06-4be5-8d01-6c64d27b7050">
+        <Fields>
+          <Field Name="CreatedOn" Type="datetime" FieldIndex="6" />
+          <Field Name="Description" Type="string" IsOptional="true" MaxLength="255" FieldIndex="3" />
+          <Field Name="EndDateTime" Type="datetime" FieldIndex="5" />
+          <Field Name="Id" Type="long" IsReadOnly="true" Precision="11" IsPrimaryKey="true" FieldIndex="0" />
+          <Field Name="ModifiedOn" Type="datetime" FieldIndex="7" />
+          <Field Name="RoundId" Type="long" Precision="11" FieldIndex="1" />
+          <Field Name="SequenceNo" Type="int" Precision="2" FieldIndex="2" />
+          <Field Name="StartDateTime" Type="datetime" FieldIndex="4" />
+        </Fields>
+      </EntityDefinition>
+      <EntityDefinition Name="RoundType" ObjectID="b930ffbc-0b0e-4a06-ace6-fac2b86ab022">
+        <Fields>
+          <Field Name="CreatedOn" Type="datetime" FieldIndex="3" />
+          <Field Name="Description" Type="string" MaxLength="255" FieldIndex="2" />
+          <Field Name="Id" Type="long" IsReadOnly="true" Precision="11" IsPrimaryKey="true" FieldIndex="0" />
+          <Field Name="ModifiedOn" Type="datetime" FieldIndex="4" />
+          <Field Name="Name" Type="string" MaxLength="255" FieldIndex="1" />
+        </Fields>
+      </EntityDefinition>
+      <EntityDefinition Name="Set" ObjectID="930dd8df-211d-4a39-b64b-dda25680289e">
+        <Fields>
+          <Field Name="CreatedOn" Type="datetime" FieldIndex="14" />
+          <Field Name="GuestBallPoints" Type="int" Precision="2" FieldIndex="4" />
+          <Field Name="GuestSetPoints" Type="int" Precision="2" FieldIndex="6" />
+          <Field Name="GuestTimeout" Type="int" FieldIndex="8" />
+          <Field Name="HomeBallPoints" Type="int" Precision="2" FieldIndex="3" />
+          <Field Name="HomeSetPoints" Type="int" Precision="2" FieldIndex="5" />
+          <Field Name="HomeTimeout" Type="int" FieldIndex="7" />
+          <Field Name="Id" Type="long" IsReadOnly="true" Precision="11" IsPrimaryKey="true" FieldIndex="0" />
+          <Field Name="IsOverruled" Type="bool" Precision="1" FieldIndex="9" />
+          <Field Name="IsTieBreak" Type="bool" Precision="1" FieldIndex="10" />
+          <Field Name="MatchId" Type="long" Precision="11" FieldIndex="1" />
+          <Field Name="ModifiedOn" Type="datetime" FieldIndex="15" />
+          <Field Name="RealEnd" Type="datetime" IsOptional="true" FieldIndex="12" />
+          <Field Name="RealStart" Type="datetime" IsOptional="true" FieldIndex="11" />
+          <Field Name="Remarks" Type="string" IsOptional="true" MaxLength="2147483647" FieldIndex="13" />
+          <Field Name="SequenceNo" Type="int" Precision="2" FieldIndex="2" />
+        </Fields>
+      </EntityDefinition>
+      <EntityDefinition Name="SetRule" ObjectID="ba39c135-6ae4-4683-a974-20cc86131e91">
+        <Fields>
+          <Field Name="CreatedOn" Type="datetime" />
+          <Field Name="Id" Type="long" IsReadOnly="true" Precision="19" IsPrimaryKey="true" />
+          <Field Name="MaxSubstitutions" Type="int" Precision="10" />
+          <Field Name="MaxTimeouts" Type="int" Precision="10" />
+          <Field Name="ModifiedOn" Type="datetime" />
+          <Field Name="Name" Type="string" MaxLength="255" />
+          <Field Name="NumOfPointsToWinRegular" Type="int" Precision="10" />
+          <Field Name="NumOfPointsToWinTiebreak" Type="int" Precision="10" />
+          <Field Name="PointsDiffToWinRegular" Type="int" Precision="10" />
+          <Field Name="PointsDiffToWinTiebreak" Type="int" Precision="10" />
+          <Field Name="PointsSetLost" Type="int" Precision="10" />
+          <Field Name="PointsSetTie" Type="int" Precision="10" />
+          <Field Name="PointsSetWon" Type="int" Precision="10" />
+        </Fields>
+      </EntityDefinition>
+      <EntityDefinition Name="Team" ObjectID="359f782e-7f26-46a1-9be5-865b369ee203">
+        <Fields>
+          <Field Name="ClubName" Type="string" IsOptional="true" MaxLength="255" FieldIndex="5" />
+          <Field Name="CreatedOn" Type="datetime" FieldIndex="7" />
+          <Field Name="Id" Type="long" IsReadOnly="true" Precision="11" IsPrimaryKey="true" FieldIndex="0" />
+          <Field Name="MatchDayOfWeek" Type="int" IsOptional="true" Precision="6" FieldIndex="3" />
+          <Field Name="MatchTime" Type="timespan" IsOptional="true" FieldIndex="4" />
+          <Field Name="ModifiedOn" Type="datetime" FieldIndex="8" />
+          <Field Name="Name" Type="string" MaxLength="255" FieldIndex="2" />
+          <Field Name="PhotoFilename" Type="string" IsOptional="true" MaxLength="255" FieldIndex="6" />
+          <Field Name="VenueId" Type="long" IsOptional="true" Precision="11" FieldIndex="1" />
+        </Fields>
+      </EntityDefinition>
+      <EntityDefinition Name="TeamInRound" ObjectID="9cf8fe55-7906-4c27-ba18-8d237a0329a7">
+        <Fields>
+          <Field Name="CreatedOn" Type="datetime" FieldIndex="4" />
+          <Field Name="Id" Type="long" IsReadOnly="true" Precision="11" FieldIndex="0" />
+          <Field Name="ModifiedOn" Type="datetime" FieldIndex="5" />
+          <Field Name="RoundId" Type="long" Precision="11" IsPrimaryKey="true" FieldIndex="1" />
+          <Field Name="TeamId" Type="long" Precision="11" IsPrimaryKey="true" FieldIndex="2" />
+          <Field Name="TeamNameForRound" Type="string" IsOptional="true" MaxLength="255" FieldIndex="3" />
+        </Fields>
+      </EntityDefinition>
+      <EntityDefinition Name="Tournament" ObjectID="ca23a303-bd66-4958-a387-d863d80cfb7e">
+        <Fields>
+          <Field Name="CreatedOn" Type="datetime" FieldIndex="7" />
+          <Field Name="Description" Type="string" IsOptional="true" MaxLength="255" FieldIndex="2" />
+          <Field Name="Id" Type="long" IsReadOnly="true" Precision="11" IsPrimaryKey="true" FieldIndex="0" />
+          <Field Name="IsComplete" Type="bool" Precision="1" FieldIndex="4" />
+          <Field Name="IsPlanningMode" Type="bool" Precision="1" FieldIndex="5" />
+          <Field Name="ModifiedOn" Type="datetime" FieldIndex="8" />
+          <Field Name="Name" Type="string" MaxLength="255" FieldIndex="1" />
+          <Field Name="NextTournamentId" Type="long" IsOptional="true" Precision="11" FieldIndex="6" />
+          <Field Name="TypeId" Type="long" IsOptional="true" Precision="11" FieldIndex="3" />
+        </Fields>
+      </EntityDefinition>
+      <EntityDefinition Name="TournamentType" ObjectID="c8e7b5c1-9a2c-4342-9f27-d55b06cc277c">
+        <Fields>
+          <Field Name="CreatedOn" Type="datetime" FieldIndex="3" />
+          <Field Name="Description" Type="string" MaxLength="255" FieldIndex="2" />
+          <Field Name="Id" Type="long" IsReadOnly="true" Precision="11" IsPrimaryKey="true" FieldIndex="0" />
+          <Field Name="ModifiedOn" Type="datetime" FieldIndex="4" />
+          <Field Name="Name" Type="string" MaxLength="255" FieldIndex="1" />
+        </Fields>
+      </EntityDefinition>
+      <EntityDefinition Name="User" ObjectID="9fc6ebd7-ea86-4b4a-9886-c91aafe1baf5">
+        <Fields>
+          <Field Name="AccessFailedCount" Type="int" FieldIndex="9" />
+          <Field Name="Birthday" Type="datetime" IsOptional="true" FieldIndex="19" />
+          <Field Name="CreatedOn" Type="datetime" FieldIndex="23" />
+          <Field Name="DoNotContact" Type="bool" Precision="1" FieldIndex="21" />
+          <Field Name="Email" Type="string" MaxLength="255" FieldIndex="4" />
+          <Field Name="Email2" Type="string" MaxLength="100" FieldIndex="18" />
+          <Field Name="EmailConfirmedOn" Type="datetime" IsOptional="true" FieldIndex="5" />
+          <Field Name="FirstName" Type="string" MaxLength="255" FieldIndex="13" />
+          <Field Name="Gender" Type="string" MaxLength="1" FieldIndex="11" />
+          <Field Name="Guid" Type="string" MaxLength="50" FieldIndex="1" />
+          <Field Name="Id" Type="long" IsReadOnly="true" Precision="11" IsPrimaryKey="true" FieldIndex="0" />
+          <Field Name="LastLoginOn" Type="datetime" IsOptional="true" FieldIndex="8" />
+          <Field Name="LastName" Type="string" MaxLength="255" FieldIndex="15" />
+          <Field Name="LockoutEndDateUtc" Type="datetime" IsOptional="true" FieldIndex="10" />
+          <Field Name="MiddleName" Type="string" MaxLength="255" FieldIndex="14" />
+          <Field Name="ModifiedOn" Type="datetime" FieldIndex="24" />
+          <Field Name="Nickname" Type="string" MaxLength="255" FieldIndex="16" />
+          <Field Name="PasswordHash" Type="string" MaxLength="2147483647" FieldIndex="3">
+            <OutputSettingValues>
+              <CustomProperties>
+                <CustomProperty Name="MaxInputLength" Value="20" />
+              </CustomProperties>
+            </OutputSettingValues>
+          </Field>
+          <Field Name="PhoneNumber" Type="string" MaxLength="40" FieldIndex="6" />
+          <Field Name="PhoneNumber2" Type="string" MaxLength="40" FieldIndex="17" />
+          <Field Name="PhoneNumberConfirmedOn" Type="datetime" IsOptional="true" FieldIndex="7" />
+          <Field Name="PhotoFilename" Type="string" MaxLength="255" FieldIndex="20" />
+          <Field Name="Remarks" Type="string" IsOptional="true" MaxLength="4000" FieldIndex="22" />
+          <Field Name="Title" Type="string" MaxLength="255" FieldIndex="12" />
+          <Field Name="UserName" Type="string" MaxLength="255" FieldIndex="2" />
+        </Fields>
+        <UniqueConstraints>
+          <UniqueConstraint Name="Email">
+            <Field Name="Email" />
+          </UniqueConstraint>
+          <UniqueConstraint Name="UserName">
+            <Field Name="UserName" />
+          </UniqueConstraint>
+        </UniqueConstraints>
+      </EntityDefinition>
+      <EntityDefinition Name="Venue" ObjectID="9ce3c4cb-a2b1-4bbd-9265-8b0d56e61042">
+        <Fields>
+          <Field Name="City" Type="string" MaxLength="255" FieldIndex="5" />
+          <Field Name="CreatedOn" Type="datetime" FieldIndex="9" />
+          <Field Name="Direction" Type="string" MaxLength="2147483647" FieldIndex="8" />
+          <Field Name="Extension" Type="string" MaxLength="255" FieldIndex="2" />
+          <Field Name="Id" Type="long" IsReadOnly="true" Precision="11" IsPrimaryKey="true" FieldIndex="0" />
+          <Field Name="Latitude" Type="double" IsOptional="true" FieldIndex="7" />
+          <Field Name="Longitude" Type="double" IsOptional="true" FieldIndex="6" />
+          <Field Name="ModifiedOn" Type="datetime" FieldIndex="10" />
+          <Field Name="Name" Type="string" MaxLength="255" FieldIndex="1" />
+          <Field Name="PostalCode" Type="string" MaxLength="10" FieldIndex="4" />
+          <Field Name="PrecisePosition" Type="bool" FieldIndex="11" />
+          <Field Name="Street" Type="string" MaxLength="255" FieldIndex="3" />
+        </Fields>
+      </EntityDefinition>
+    </EntityDefinitions>
+    <Relationships>
+      <NormalRelationship Name="AvailableMatchDate.Team-Team.AvailableMatchDates" Start=":AvailableMatchDate" End=":Team" StartNavigator="Team" EndNavigator="AvailableMatchDates" Type="4" UpdateRuleAction="1" DeleteRuleAction="1">
+        <FieldRelationships>
+          <FieldFieldRelationship FkField="HomeTeamId" PkField="Id" />
+        </FieldRelationships>
+      </NormalRelationship>
+      <NormalRelationship Name="AvailableMatchDate.Venue-Venue.AvailableMatchDates" Start=":AvailableMatchDate" End=":Venue" StartNavigator="Venue" EndNavigator="AvailableMatchDates" Type="4">
+        <FieldRelationships>
+          <FieldFieldRelationship FkField="VenueId" PkField="Id" />
+        </FieldRelationships>
+      </NormalRelationship>
+      <NormalRelationship Name="ExcludeMatchDate.Round-Round.ExcludeMatchDates" Start=":ExcludeMatchDate" End=":Round" StartNavigator="Round" EndNavigator="ExcludeMatchDates" Type="4" UpdateRuleAction="1" DeleteRuleAction="3">
+        <FieldRelationships>
+          <FieldFieldRelationship FkField="RoundId" PkField="Id" />
+        </FieldRelationships>
+      </NormalRelationship>
+      <NormalRelationship Name="ExcludeMatchDate.Team-Team.ExcludeMatchDates" Start=":ExcludeMatchDate" End=":Team" StartNavigator="Team" EndNavigator="ExcludeMatchDates" Type="4" UpdateRuleAction="1" DeleteRuleAction="3">
+        <FieldRelationships>
+          <FieldFieldRelationship FkField="TeamId" PkField="Id" />
+        </FieldRelationships>
+      </NormalRelationship>
+      <NormalRelationship Name="ExcludeMatchDate.Tournament-Tournament.ExcludeMatchDates" Start=":ExcludeMatchDate" End=":Tournament" StartNavigator="Tournament" EndNavigator="ExcludeMatchDates" Type="4" UpdateRuleAction="1" DeleteRuleAction="1">
+        <FieldRelationships>
+          <FieldFieldRelationship FkField="TournamentId" PkField="Id" />
+        </FieldRelationships>
+      </NormalRelationship>
+      <NormalRelationship Name="IdentityRoleClaim.IdentityRole-IdentityRole.IdentityRoleClaims" Start=":IdentityRoleClaim" End=":IdentityRole" StartNavigator="IdentityRole" EndNavigator="IdentityRoleClaims" Type="4" UpdateRuleAction="1" DeleteRuleAction="1">
+        <FieldRelationships>
+          <FieldFieldRelationship FkField="RoleId" PkField="Id" />
+        </FieldRelationships>
+      </NormalRelationship>
+      <NormalRelationship Name="IdentityUserClaim.User-User.IdentityUserClaims" Start=":IdentityUserClaim" End=":User" StartNavigator="User" EndNavigator="IdentityUserClaims" Type="4" UpdateRuleAction="1" DeleteRuleAction="1">
+        <FieldRelationships>
+          <FieldFieldRelationship FkField="UserId" PkField="Id" />
+        </FieldRelationships>
+      </NormalRelationship>
+      <NormalRelationship Name="IdentityUserLogin.User-User.IdentityUserLogins" Start=":IdentityUserLogin" End=":User" StartNavigator="User" EndNavigator="IdentityUserLogins" Type="4" UpdateRuleAction="1" DeleteRuleAction="1">
+        <FieldRelationships>
+          <FieldFieldRelationship FkField="UserId" PkField="Id" />
+        </FieldRelationships>
+      </NormalRelationship>
+      <NormalRelationship Name="IdentityUserRole.IdentityRole-IdentityRole.IdentityUserRoles" Start=":IdentityUserRole" End=":IdentityRole" StartNavigator="IdentityRole" EndNavigator="IdentityUserRoles" Type="4" UpdateRuleAction="1" DeleteRuleAction="1">
+        <FieldRelationships>
+          <FieldFieldRelationship FkField="RoleId" PkField="Id" />
+        </FieldRelationships>
+      </NormalRelationship>
+      <NormalRelationship Name="IdentityUserRole.User-User.IdentityUserRoles" Start=":IdentityUserRole" End=":User" StartNavigator="User" EndNavigator="IdentityUserRoles" Type="4" UpdateRuleAction="1" DeleteRuleAction="1">
+        <FieldRelationships>
+          <FieldFieldRelationship FkField="UserId" PkField="Id" />
+        </FieldRelationships>
+      </NormalRelationship>
+      <NormalRelationship Name="IdentityUserToken.User-User.IdentityUserTokens" Start=":IdentityUserToken" End=":User" StartNavigator="User" EndNavigator="IdentityUserTokens" Type="4" UpdateRuleAction="1" DeleteRuleAction="1">
+        <FieldRelationships>
+          <FieldFieldRelationship FkField="UserId" PkField="Id" />
+        </FieldRelationships>
+      </NormalRelationship>
+      <NormalRelationship Name="ManagerOfTeam.Team-Team.ManagerOfTeams" Start=":ManagerOfTeam" End=":Team" StartNavigator="Team" EndNavigator="ManagerOfTeams" Type="4" UpdateRuleAction="1" DeleteRuleAction="1">
+        <FieldRelationships>
+          <FieldFieldRelationship FkField="TeamId" PkField="Id" />
+        </FieldRelationships>
+      </NormalRelationship>
+      <NormalRelationship Name="ManagerOfTeam.User-User.ManagerOfTeams" Start=":ManagerOfTeam" End=":User" StartNavigator="User" EndNavigator="ManagerOfTeams" Type="4" UpdateRuleAction="1" DeleteRuleAction="1">
+        <FieldRelationships>
+          <FieldFieldRelationship FkField="UserId" PkField="Id" />
+        </FieldRelationships>
+      </NormalRelationship>
+      <NormalRelationship Name="Match.GuestTeam-Team.MatchGuestTeam" Start=":Match" End=":Team" StartNavigator="GuestTeam" EndNavigator="MatchGuestTeam" Type="4">
+        <FieldRelationships>
+          <FieldFieldRelationship FkField="GuestTeamId" PkField="Id" />
+        </FieldRelationships>
+      </NormalRelationship>
+      <NormalRelationship Name="Match.HomeTeam-Team.MatchHomeTeam" Start=":Match" End=":Team" StartNavigator="HomeTeam" EndNavigator="MatchHomeTeam" Type="4">
+        <FieldRelationships>
+          <FieldFieldRelationship FkField="HomeTeamId" PkField="Id" />
+        </FieldRelationships>
+      </NormalRelationship>
+      <NormalRelationship Name="Match.OrigVenue-Venue.OrigVenueMatches" Start=":Match" End=":Venue" StartNavigator="OrigVenue" EndNavigator="OrigVenueMatches" Type="4" EndIsOptional="true">
+        <FieldRelationships>
+          <FieldFieldRelationship FkField="OrigVenueId" PkField="Id" />
+        </FieldRelationships>
+      </NormalRelationship>
+      <NormalRelationship Name="Match.RefereeTeam-Team.MatchReferee" Start=":Match" End=":Team" StartNavigator="RefereeTeam" EndNavigator="MatchReferee" Type="4">
+        <FieldRelationships>
+          <FieldFieldRelationship FkField="RefereeId" PkField="Id" />
+        </FieldRelationships>
+      </NormalRelationship>
+      <NormalRelationship Name="Match.Round-Round.Matches" Start=":Match" End=":Round" StartNavigator="Round" EndNavigator="Matches" Type="4" UpdateRuleAction="1" DeleteRuleAction="1">
+        <FieldRelationships>
+          <FieldFieldRelationship FkField="RoundId" PkField="Id" />
+        </FieldRelationships>
+      </NormalRelationship>
+      <NormalRelationship Name="Match.Venue-Venue.CurrentVenueMatches" Start=":Match" End=":Venue" StartNavigator="Venue" EndNavigator="CurrentVenueMatches" Type="4">
+        <FieldRelationships>
+          <FieldFieldRelationship FkField="VenueId" PkField="Id" />
+        </FieldRelationships>
+      </NormalRelationship>
+      <NormalRelationship Name="PlayerInTeam.Team-Team.PlayerInTeams" Start=":PlayerInTeam" End=":Team" StartNavigator="Team" EndNavigator="PlayerInTeams" Type="4" UpdateRuleAction="1" DeleteRuleAction="1">
+        <FieldRelationships>
+          <FieldFieldRelationship FkField="TeamId" PkField="Id" />
+        </FieldRelationships>
+      </NormalRelationship>
+      <NormalRelationship Name="PlayerInTeam.User-User.PlayerInTeams" Start=":PlayerInTeam" End=":User" StartNavigator="User" EndNavigator="PlayerInTeams" Type="4" UpdateRuleAction="1" DeleteRuleAction="1">
+        <FieldRelationships>
+          <FieldFieldRelationship FkField="UserId" PkField="Id" />
+        </FieldRelationships>
+      </NormalRelationship>
+      <NormalRelationship Name="Ranking.Round-Round.Rankings" Start=":Ranking" End=":Round" StartNavigator="Round" EndNavigator="Rankings" Type="4" UpdateRuleAction="1" DeleteRuleAction="1">
+        <FieldRelationships>
+          <FieldFieldRelationship FkField="RoundId" PkField="Id" />
+        </FieldRelationships>
+      </NormalRelationship>
+      <NormalRelationship Name="Ranking.Team-Team.Rankings" Start=":Ranking" End=":Team" StartNavigator="Team" EndNavigator="Rankings" Type="4" UpdateRuleAction="1" DeleteRuleAction="1">
+        <FieldRelationships>
+          <FieldFieldRelationship FkField="TeamId" PkField="Id" />
+        </FieldRelationships>
+      </NormalRelationship>
+      <NormalRelationship Name="Ranking.Tournament-Tournament.Rankings" Start=":Ranking" End=":Tournament" StartNavigator="Tournament" EndNavigator="Rankings" Type="4" UpdateRuleAction="1" DeleteRuleAction="1">
+        <FieldRelationships>
+          <FieldFieldRelationship FkField="TournamentId" PkField="Id" />
+        </FieldRelationships>
+      </NormalRelationship>
+      <NormalRelationship Name="Registration.Team-Team.Registration" Start=":Registration" End=":Team" StartNavigator="Team" EndNavigator="Registration" Type="4" UpdateRuleAction="1" DeleteRuleAction="1">
+        <FieldRelationships>
+          <FieldFieldRelationship FkField="TeamId" PkField="Id" />
+        </FieldRelationships>
+      </NormalRelationship>
+      <NormalRelationship Name="Registration.Tournament-Tournament.Registrations" Start=":Registration" End=":Tournament" StartNavigator="Tournament" EndNavigator="Registrations" Type="4" UpdateRuleAction="1" DeleteRuleAction="1">
+        <FieldRelationships>
+          <FieldFieldRelationship FkField="TournamentId" PkField="Id" />
+        </FieldRelationships>
+      </NormalRelationship>
+      <NormalRelationship Name="Registration.User-User.Registrations" Start=":Registration" End=":User" StartNavigator="User" EndNavigator="Registrations" Type="4" UpdateRuleAction="1" DeleteRuleAction="1">
+        <FieldRelationships>
+          <FieldFieldRelationship FkField="ManagerId" PkField="Id" />
+        </FieldRelationships>
+      </NormalRelationship>
+      <NormalRelationship Name="Round.MatchRule-MatchRule.Rounds" Start=":Round" End=":MatchRule" StartNavigator="MatchRule" EndNavigator="Rounds" Type="4" UpdateRuleAction="1">
+        <FieldRelationships>
+          <FieldFieldRelationship FkField="MatchRuleId" PkField="Id" />
+        </FieldRelationships>
+      </NormalRelationship>
+      <NormalRelationship Name="Round.PreviousRound-Round.NextRound" Start=":Round" End=":Round" StartNavigator="PreviousRound" EndNavigator="NextRound" Type="2" StartIsOptional="true" StartIsPkSide="true">
+        <FieldRelationships>
+          <FieldFieldRelationship FkField="NextRoundId" PkField="Id" />
+        </FieldRelationships>
+      </NormalRelationship>
+      <NormalRelationship Name="Round.RoundType-RoundType.Rounds" Start=":Round" End=":RoundType" StartNavigator="RoundType" EndNavigator="Rounds" Type="4" UpdateRuleAction="1">
+        <FieldRelationships>
+          <FieldFieldRelationship FkField="TypeId" PkField="Id" />
+        </FieldRelationships>
+      </NormalRelationship>
+      <NormalRelationship Name="Round.SetRule-SetRule.Rounds" Start=":Round" End=":SetRule" StartNavigator="SetRule" EndNavigator="Rounds" Type="4" UpdateRuleAction="1">
+        <FieldRelationships>
+          <FieldFieldRelationship FkField="SetRuleId" PkField="Id" />
+        </FieldRelationships>
+      </NormalRelationship>
+      <NormalRelationship Name="Round.Tournament-Tournament.Rounds" Start=":Round" End=":Tournament" StartNavigator="Tournament" EndNavigator="Rounds" Type="4">
+        <FieldRelationships>
+          <FieldFieldRelationship FkField="TournamentId" PkField="Id" />
+        </FieldRelationships>
+      </NormalRelationship>
+      <NormalRelationship Name="RoundLeg.Round-Round.RoundLegs" Start=":RoundLeg" End=":Round" StartNavigator="Round" EndNavigator="RoundLegs" Type="4" UpdateRuleAction="1" DeleteRuleAction="1">
+        <FieldRelationships>
+          <FieldFieldRelationship FkField="RoundId" PkField="Id" />
+        </FieldRelationships>
+      </NormalRelationship>
+      <NormalRelationship Name="Set.Match-Match.Sets" Start=":Set" End=":Match" StartNavigator="Match" EndNavigator="Sets" Type="4" UpdateRuleAction="1" DeleteRuleAction="1">
+        <FieldRelationships>
+          <FieldFieldRelationship FkField="MatchId" PkField="Id" />
+        </FieldRelationships>
+      </NormalRelationship>
+      <NormalRelationship Name="Team.Venue-Venue.Teams" Start=":Team" End=":Venue" StartNavigator="Venue" EndNavigator="Teams" Type="4">
+        <FieldRelationships>
+          <FieldFieldRelationship FkField="VenueId" PkField="Id" />
+        </FieldRelationships>
+      </NormalRelationship>
+      <NormalRelationship Name="TeamInRound.Round-Round.TeamInRounds" Start=":TeamInRound" End=":Round" StartNavigator="Round" EndNavigator="TeamInRounds" Type="4" UpdateRuleAction="1">
+        <FieldRelationships>
+          <FieldFieldRelationship FkField="RoundId" PkField="Id" />
+        </FieldRelationships>
+      </NormalRelationship>
+      <NormalRelationship Name="TeamInRound.Team-Team.TeamInRounds" Start=":TeamInRound" End=":Team" StartNavigator="Team" EndNavigator="TeamInRounds" Type="4" UpdateRuleAction="1" DeleteRuleAction="1">
+        <FieldRelationships>
+          <FieldFieldRelationship FkField="TeamId" PkField="Id" />
+        </FieldRelationships>
+      </NormalRelationship>
+      <NormalRelationship Name="Tournament.PreviousTournament-Tournament.NextTournament" Start=":Tournament" End=":Tournament" StartNavigator="PreviousTournament" EndNavigator="NextTournament" Type="1" StartIsOptional="true" StartIsPkSide="true">
+        <FieldRelationships>
+          <FieldFieldRelationship FkField="NextTournamentId" PkField="Id" />
+        </FieldRelationships>
+      </NormalRelationship>
+      <NormalRelationship Name="Tournament.TournamentType-TournamentType.Tournaments" Start=":Tournament" End=":TournamentType" StartNavigator="TournamentType" EndNavigator="Tournaments" Type="4" UpdateRuleAction="1" DeleteRuleAction="3">
+        <FieldRelationships>
+          <FieldFieldRelationship FkField="TypeId" PkField="Id" />
+        </FieldRelationships>
+      </NormalRelationship>
+      <IndirectRelationship Start=":Team" End=":Round" StartNavigator="RoundCollectionViaTeamsInRounds" EndNavigator="TeamCollectionViaTeamInRound" Relationship1="TeamInRound.Team-Team.TeamInRounds" Relationship2="TeamInRound.Round-Round.TeamInRounds" />
+    </Relationships>
+    <InheritanceHierarchies />
+  </EntityModel>
+  <TypedViewDefinitions>
+    <TypedViewDefinition Name="Calendar" ObjectID="1c0740e5-63eb-4fd1-a90c-45796e3b8fcd">
+      <Fields>
+        <Field Name="ChangeSerial" Type="long" Precision="19" />
+        <Field Name="GuestTeamId" Type="long" Precision="19" />
+        <Field Name="GuestTeamNameForRound" Type="string" IsOptional="true" MaxLength="255" />
+        <Field Name="HomeTeamId" Type="long" Precision="19" />
+        <Field Name="HomeTeamNameForRound" Type="string" IsOptional="true" MaxLength="255" />
+        <Field Name="Id" Type="long" Precision="19" />
+        <Field Name="ModifiedOn" Type="datetime" />
+        <Field Name="PlannedEnd" Type="datetime" IsOptional="true" />
+        <Field Name="PlannedStart" Type="datetime" IsOptional="true" />
+        <Field Name="RoundDescription" Type="string" MaxLength="255" />
+        <Field Name="RoundId" Type="long" Precision="19" />
+        <Field Name="RoundName" Type="string" MaxLength="255" />
+        <Field Name="RoundTypeDescription" Type="string" MaxLength="255" />
+        <Field Name="RoundTypeName" Type="string" MaxLength="255" />
+        <Field Name="TournamentId" Type="long" IsOptional="true" Precision="19" />
+        <Field Name="TournamentName" Type="string" MaxLength="255" />
+        <Field Name="VenueCity" Type="string" IsOptional="true" MaxLength="255" />
+        <Field Name="VenueDirection" Type="string" IsOptional="true" MaxLength="2147483647" />
+        <Field Name="VenueExtension" Type="string" IsOptional="true" MaxLength="255" />
+        <Field Name="VenueId" Type="long" IsOptional="true" Precision="19" />
+        <Field Name="VenueLatitude" Type="double" IsOptional="true" Precision="38" />
+        <Field Name="VenueLongitude" Type="double" IsOptional="true" Precision="38" />
+        <Field Name="VenueName" Type="string" IsOptional="true" MaxLength="255" />
+        <Field Name="VenuePostalCode" Type="string" IsOptional="true" MaxLength="10" />
+        <Field Name="VenueStreet" Type="string" IsOptional="true" MaxLength="255" />
+      </Fields>
+    </TypedViewDefinition>
+    <TypedViewDefinition Name="CompletedMatch" ObjectID="fd48e931-c19d-41dc-8592-997b0cd50ea1">
+      <Fields>
+        <Field Name="GuestBallPoints" Type="int" IsOptional="true" Precision="10" />
+        <Field Name="GuestMatchPoints" Type="int" IsOptional="true" Precision="10" />
+        <Field Name="GuestSetPoints" Type="int" IsOptional="true" Precision="10" />
+        <Field Name="GuestTeamId" Type="long" Precision="19" />
+        <Field Name="GuestTeamNameForRound" Type="string" IsOptional="true" MaxLength="255" />
+        <Field Name="HomeBallPoints" Type="int" IsOptional="true" Precision="10" />
+        <Field Name="HomeMatchPoints" Type="int" IsOptional="true" Precision="10" />
+        <Field Name="HomeSetPoints" Type="int" IsOptional="true" Precision="10" />
+        <Field Name="HomeTeamId" Type="long" Precision="19" />
+        <Field Name="HomeTeamNameForRound" Type="string" IsOptional="true" MaxLength="255" />
+        <Field Name="Id" Type="long" Precision="19" />
+        <Field Name="IsOverruled" Type="bool" />
+        <Field Name="MatchDate" Type="datetime" IsOptional="true" />
+        <Field Name="ModifiedOn" Type="datetime" />
+        <Field Name="Remarks" Type="string" IsOptional="true" MaxLength="2147483647" />
+        <Field Name="RoundDescription" Type="string" MaxLength="255" />
+        <Field Name="RoundId" Type="long" Precision="19" />
+        <Field Name="RoundLegDescription" Type="string" IsOptional="true" MaxLength="255" />
+        <Field Name="RoundLegSequenceNo" Type="int" Precision="10" />
+        <Field Name="RoundName" Type="string" MaxLength="255" />
+        <Field Name="RoundTypeDescription" Type="string" MaxLength="255" />
+        <Field Name="RoundTypeName" Type="string" MaxLength="255" />
+        <Field Name="SetResults" Type="string" IsOptional="true" MaxLength="2147483647" />
+        <Field Name="TournamentId" Type="long" IsOptional="true" Precision="19" />
+        <Field Name="TournamentName" Type="string" MaxLength="255" />
+        <Field Name="VenueId" Type="long" IsOptional="true" Precision="19" />
+      </Fields>
+    </TypedViewDefinition>
+    <TypedViewDefinition Name="LatestTeamTournament" ObjectID="38dea468-128a-4f32-9163-11444a3dbe2b">
+      <Fields>
+        <Field Name="RoundDescription" Type="string" MaxLength="255" />
+        <Field Name="RoundId" Type="long" Precision="19" />
+        <Field Name="RoundName" Type="string" MaxLength="255" />
+        <Field Name="RoundTypeDescription" Type="string" MaxLength="255" />
+        <Field Name="RoundTypeName" Type="string" MaxLength="255" />
+        <Field Name="TeamClubName" Type="string" IsOptional="true" MaxLength="255" />
+        <Field Name="TeamId" Type="long" Precision="19" />
+        <Field Name="TeamMatchDayOfWeek" Type="int" IsOptional="true" Precision="10" />
+        <Field Name="TeamMatchTime" Type="timespan" IsOptional="true" />
+        <Field Name="TeamName" Type="string" MaxLength="255" />
+        <Field Name="TeamNameForRound" Type="string" IsOptional="true" MaxLength="255" />
+        <Field Name="TournamentDescription" Type="string" IsOptional="true" MaxLength="255" />
+        <Field Name="TournamentId" Type="long" Precision="19" />
+        <Field Name="TournamentName" Type="string" MaxLength="255" />
+      </Fields>
+    </TypedViewDefinition>
+    <TypedViewDefinition Name="MatchCompleteRaw" ObjectID="11a6d294-c83d-4c2f-aea8-f65f2f6e232d">
+      <Fields>
+        <Field Name="GuestBallPoints" Type="int" IsOptional="true" Precision="10" />
+        <Field Name="GuestMatchPoints" Type="int" IsOptional="true" Precision="10" />
+        <Field Name="GuestSetPoints" Type="int" IsOptional="true" Precision="10" />
+        <Field Name="GuestTeamId" Type="long" Precision="19" />
+        <Field Name="HomeBallPoints" Type="int" IsOptional="true" Precision="10" />
+        <Field Name="HomeMatchPoints" Type="int" IsOptional="true" Precision="10" />
+        <Field Name="HomeSetPoints" Type="int" IsOptional="true" Precision="10" />
+        <Field Name="HomeTeamId" Type="long" Precision="19" />
+        <Field Name="Id" Type="long" Precision="19" />
+        <Field Name="IsOverruled" Type="bool" />
+        <Field Name="MatchDate" Type="datetime" IsOptional="true" />
+        <Field Name="ModifiedOn" Type="datetime" />
+        <Field Name="RoundId" Type="long" Precision="19" />
+        <Field Name="TournamentId" Type="long" IsOptional="true" Precision="19" />
+        <Field Name="VenueId" Type="long" IsOptional="true" Precision="19" />
+      </Fields>
+    </TypedViewDefinition>
+    <TypedViewDefinition Name="MatchReportSheet" ObjectID="1f16434e-9676-459c-beb2-147b2bd42fbc">
+      <Fields>
+        <Field Name="BestOf" Type="bool" />
+        <Field Name="ChangeSerial" Type="long" Precision="19" />
+        <Field Name="GuestTeamId" Type="long" Precision="19" />
+        <Field Name="GuestTeamNameForRound" Type="string" IsOptional="true" MaxLength="255" />
+        <Field Name="HomeTeamId" Type="long" Precision="19" />
+        <Field Name="HomeTeamNameForRound" Type="string" IsOptional="true" MaxLength="255" />
+        <Field Name="Id" Type="long" Precision="19" />
+        <Field Name="MaxSubstitutions" Type="int" Precision="10" />
+        <Field Name="MaxTimeouts" Type="int" Precision="10" />
+        <Field Name="ModifiedOn" Type="datetime" />
+        <Field Name="NumOfPointsToWinRegular" Type="int" Precision="10" />
+        <Field Name="NumOfPointsToWinTieBreak" Type="int" Precision="10" />
+        <Field Name="NumOfSets" Type="int" Precision="10" />
+        <Field Name="OrigPlannedStart" Type="datetime" IsOptional="true" />
+        <Field Name="PlannedStart" Type="datetime" IsOptional="true" />
+        <Field Name="Remarks" Type="string" IsOptional="true" MaxLength="2147483647" />
+        <Field Name="RoundDescription" Type="string" MaxLength="255" />
+        <Field Name="RoundLegDescription" Type="string" IsOptional="true" MaxLength="255" />
+        <Field Name="RoundLegSequenceNo" Type="int" Precision="10" />
+        <Field Name="RoundName" Type="string" MaxLength="255" />
+        <Field Name="RoundTypeDescription" Type="string" MaxLength="255" />
+        <Field Name="RoundTypeName" Type="string" MaxLength="255" />
+        <Field Name="TournamentId" Type="long" IsOptional="true" Precision="19" />
+        <Field Name="TournamentName" Type="string" MaxLength="255" />
+      </Fields>
+    </TypedViewDefinition>
+    <TypedViewDefinition Name="MatchToPlayRaw" ObjectID="221da9a7-5a07-4a49-bc15-5d49bd402837">
+      <Fields>
+        <Field Name="GuestTeamId" Type="long" Precision="19" />
+        <Field Name="HomeTeamId" Type="long" Precision="19" />
+        <Field Name="Id" Type="long" Precision="19" />
+        <Field Name="MatchDate" Type="datetime" IsOptional="true" />
+        <Field Name="ModifiedOn" Type="datetime" />
+        <Field Name="RoundId" Type="long" Precision="19" />
+        <Field Name="TournamentId" Type="long" IsOptional="true" Precision="19" />
+        <Field Name="VenueId" Type="long" IsOptional="true" Precision="19" />
+      </Fields>
+    </TypedViewDefinition>
+    <TypedViewDefinition Name="PlannedMatch" ObjectID="e53bacf1-162a-4dec-bda0-f81ec943572f">
+      <Fields>
+        <Field Name="ChangeSerial" Type="long" Precision="19" />
+        <Field Name="GuestTeamId" Type="long" Precision="19" />
+        <Field Name="GuestTeamNameForRound" Type="string" IsOptional="true" MaxLength="255" />
+        <Field Name="HomeTeamId" Type="long" Precision="19" />
+        <Field Name="HomeTeamNameForRound" Type="string" IsOptional="true" MaxLength="255" />
+        <Field Name="Id" Type="long" Precision="19" />
+        <Field Name="ModifiedOn" Type="datetime" />
+        <Field Name="OrigPlannedEnd" Type="datetime" IsOptional="true" />
+        <Field Name="OrigPlannedStart" Type="datetime" IsOptional="true" />
+        <Field Name="OrigVenueExtension" Type="string" IsOptional="true" MaxLength="255" />
+        <Field Name="OrigVenueId" Type="long" IsOptional="true" Precision="19" />
+        <Field Name="OrigVenueName" Type="string" IsOptional="true" MaxLength="255" />
+        <Field Name="PlannedEnd" Type="datetime" IsOptional="true" />
+        <Field Name="PlannedStart" Type="datetime" IsOptional="true" />
+        <Field Name="Remarks" Type="string" IsOptional="true" MaxLength="2147483647" />
+        <Field Name="RoundDescription" Type="string" MaxLength="255" />
+        <Field Name="RoundId" Type="long" Precision="19" />
+        <Field Name="RoundLegDescription" Type="string" IsOptional="true" MaxLength="255" />
+        <Field Name="RoundLegSequenceNo" Type="int" Precision="10" />
+        <Field Name="RoundName" Type="string" MaxLength="255" />
+        <Field Name="RoundTypeDescription" Type="string" MaxLength="255" />
+        <Field Name="RoundTypeName" Type="string" MaxLength="255" />
+        <Field Name="TournamentId" Type="long" IsOptional="true" Precision="19" />
+        <Field Name="TournamentName" Type="string" MaxLength="255" />
+        <Field Name="VenueExtension" Type="string" IsOptional="true" MaxLength="255" />
+        <Field Name="VenueId" Type="long" IsOptional="true" Precision="19" />
+        <Field Name="VenueName" Type="string" IsOptional="true" MaxLength="255" />
+      </Fields>
+    </TypedViewDefinition>
+    <TypedViewDefinition Name="RankingList" ObjectID="17d2a188-47fc-446a-9acb-4241bebab4e2">
+      <Fields>
+        <Field Name="BallPointsLost" Type="int" IsOptional="true" Precision="10" />
+        <Field Name="BallPointsWon" Type="int" IsOptional="true" Precision="10" />
+        <Field Name="ClubName" Type="string" IsOptional="true" MaxLength="255" />
+        <Field Name="MatchesPlayed" Type="int" Precision="10" />
+        <Field Name="MatchesToPlay" Type="int" Precision="10" />
+        <Field Name="MatchPointsLost" Type="int" IsOptional="true" Precision="10" />
+        <Field Name="MatchPointsWon" Type="int" IsOptional="true" Precision="10" />
+        <Field Name="ModifiedOn" Type="datetime" />
+        <Field Name="Rank" Type="int" Precision="10" />
+        <Field Name="RoundDescription" Type="string" MaxLength="255" />
+        <Field Name="RoundId" Type="long" Precision="19" />
+        <Field Name="RoundName" Type="string" MaxLength="255" />
+        <Field Name="RoundTypeDescription" Type="string" MaxLength="255" />
+        <Field Name="RoundTypeName" Type="string" MaxLength="255" />
+        <Field Name="SetPointsLost" Type="int" IsOptional="true" Precision="10" />
+        <Field Name="SetPointsWon" Type="int" IsOptional="true" Precision="10" />
+        <Field Name="TeamId" Type="long" Precision="19" />
+        <Field Name="TeamName" Type="string" MaxLength="255" />
+        <Field Name="TeamNameForRound" Type="string" IsOptional="true" MaxLength="255" />
+        <Field Name="TournamentDescription" Type="string" IsOptional="true" MaxLength="255" />
+        <Field Name="TournamentId" Type="long" Precision="19" />
+        <Field Name="TournamentIsComplete" Type="bool" />
+        <Field Name="TournamentName" Type="string" MaxLength="255" />
+        <Field Name="ValuationDate" Type="datetime" />
+      </Fields>
+    </TypedViewDefinition>
+    <TypedViewDefinition Name="RoundLegPeriod" ObjectID="504f4d9b-d02c-4844-971a-98129edeba48">
+      <Fields>
+        <Field Name="EndDateTime" Type="datetime" />
+        <Field Name="LegId" Type="long" Precision="19" />
+        <Field Name="RoundId" Type="long" Precision="19" />
+        <Field Name="SequenceNo" Type="int" Precision="10" />
+        <Field Name="StartDateTime" Type="datetime" />
+        <Field Name="TournamentId" Type="long" IsOptional="true" Precision="19" />
+      </Fields>
+    </TypedViewDefinition>
+    <TypedViewDefinition Name="RoundTeam" ObjectID="74f2b48f-8cb9-4724-8e60-355c8717a831">
+      <Fields>
+        <Field Name="RoundDescription" Type="string" MaxLength="255" />
+        <Field Name="RoundId" Type="long" Precision="19" />
+        <Field Name="RoundName" Type="string" MaxLength="255" />
+        <Field Name="RoundTypeDescription" Type="string" MaxLength="255" />
+        <Field Name="RoundTypeName" Type="string" MaxLength="255" />
+        <Field Name="TeamClubName" Type="string" IsOptional="true" MaxLength="255" />
+        <Field Name="TeamId" Type="long" Precision="19" />
+        <Field Name="TeamMatchDayOfWeek" Type="int" IsOptional="true" Precision="10" />
+        <Field Name="TeamMatchTime" Type="timespan" IsOptional="true" />
+        <Field Name="TeamModifiedOn" Type="datetime" />
+        <Field Name="TeamName" Type="string" MaxLength="255" />
+        <Field Name="TeamNameForRound" Type="string" IsOptional="true" MaxLength="255" />
+        <Field Name="TeamPhoto" Type="string" IsOptional="true" MaxLength="255" />
+        <Field Name="TournamentId" Type="long" Precision="19" />
+      </Fields>
+    </TypedViewDefinition>
+    <TypedViewDefinition Name="TeamUserRound" ObjectID="b9b79998-ad78-4dc3-9b81-48f57a9a8481">
+      <Fields>
+        <Field Name="ClubName" Type="string" IsOptional="true" MaxLength="255" />
+        <Field Name="Email" Type="string" MaxLength="255" />
+        <Field Name="Email2" Type="string" MaxLength="100" />
+        <Field Name="FirstName" Type="string" MaxLength="255" />
+        <Field Name="Gender" Type="string" MaxLength="1" />
+        <Field Name="IsManager" Type="bool" />
+        <Field Name="IsPlayer" Type="bool" />
+        <Field Name="LastName" Type="string" MaxLength="255" />
+        <Field Name="MatchDayOfWeek" Type="int" IsOptional="true" Precision="10" />
+        <Field Name="MatchTime" Type="timespan" IsOptional="true" />
+        <Field Name="MatchWeekday" Type="string" IsOptional="true" MaxLength="4000" />
+        <Field Name="MiddleName" Type="string" MaxLength="255" />
+        <Field Name="Nickname" Type="string" MaxLength="255" />
+        <Field Name="PhoneNumber" Type="string" MaxLength="40" />
+        <Field Name="PhoneNumber2" Type="string" MaxLength="40" />
+        <Field Name="PhotoFilename" Type="string" IsOptional="true" MaxLength="255" />
+        <Field Name="RoundDescription" Type="string" MaxLength="255" />
+        <Field Name="RoundId" Type="long" Precision="19" />
+        <Field Name="RoundName" Type="string" MaxLength="255" />
+        <Field Name="TeamId" Type="long" Precision="19" />
+        <Field Name="TeamModifiedOn" Type="datetime" />
+        <Field Name="TeamName" Type="string" MaxLength="255" />
+        <Field Name="TeamNameForRound" Type="string" IsOptional="true" MaxLength="255" />
+        <Field Name="Title" Type="string" MaxLength="255" />
+        <Field Name="TournamentId" Type="long" IsOptional="true" Precision="19" />
+        <Field Name="UserId" Type="long" Precision="19" />
+        <Field Name="UserModifiedOn" Type="datetime" />
+      </Fields>
+    </TypedViewDefinition>
+    <TypedViewDefinition Name="TeamVenueRound" ObjectID="45dce30d-a362-446e-a33e-29e84ddfcc43">
+      <Fields>
+        <Field Name="MatchDayOfWeek" Type="int" IsOptional="true" Precision="10" />
+        <Field Name="MatchTime" Type="timespan" IsOptional="true" />
+        <Field Name="MatchWeekday" Type="string" IsOptional="true" MaxLength="4000" />
+        <Field Name="RoundDescription" Type="string" MaxLength="255" />
+        <Field Name="RoundId" Type="long" Precision="19" />
+        <Field Name="RoundName" Type="string" MaxLength="255" />
+        <Field Name="RoundTypeDescription" Type="string" MaxLength="255" />
+        <Field Name="RoundTypeName" Type="string" MaxLength="255" />
+        <Field Name="TeamClubName" Type="string" IsOptional="true" MaxLength="255" />
+        <Field Name="TeamId" Type="long" Precision="19" />
+        <Field Name="TeamModifiedOn" Type="datetime" />
+        <Field Name="TeamName" Type="string" MaxLength="255" />
+        <Field Name="TeamNameForRound" Type="string" IsOptional="true" MaxLength="255" />
+        <Field Name="TeamPhoto" Type="string" IsOptional="true" MaxLength="255" />
+        <Field Name="TournamentId" Type="long" Precision="19" />
+        <Field Name="VenueCity" Type="string" IsOptional="true" MaxLength="255" />
+        <Field Name="VenueDirection" Type="string" IsOptional="true" MaxLength="2147483647" />
+        <Field Name="VenueId" Type="long" IsOptional="true" Precision="19" />
+        <Field Name="VenueLatitude" Type="double" IsOptional="true" Precision="38" />
+        <Field Name="VenueLongitude" Type="double" IsOptional="true" Precision="38" />
+        <Field Name="VenueModifiedOn" Type="datetime" IsOptional="true" />
+        <Field Name="VenueName" Type="string" IsOptional="true" MaxLength="255" />
+        <Field Name="VenuePostalCode" Type="string" IsOptional="true" MaxLength="10" />
+        <Field Name="VenuePrecisePosition" Type="bool" IsOptional="true" />
+        <Field Name="VenueStreet" Type="string" IsOptional="true" MaxLength="255" />
+      </Fields>
+    </TypedViewDefinition>
+    <TypedViewDefinition Name="VenueDistanceResult" ObjectID="60165f58-6b1a-49cb-aae5-1853b4b63d8c">
+      <Fields>
+        <Field Name="City" Type="string" MaxLength="255" />
+        <Field Name="CreatedOn" Type="datetime" />
+        <Field Name="Direction" Type="string" MaxLength="2147483647" />
+        <Field Name="Distance" Type="double" Precision="15" />
+        <Field Name="Extension" Type="string" MaxLength="255" />
+        <Field Name="Id" Type="long" Precision="19" />
+        <Field Name="Latitude" Type="double" IsOptional="true" Precision="15" />
+        <Field Name="Longitude" Type="double" IsOptional="true" Precision="15" />
+        <Field Name="ModifiedOn" Type="datetime" />
+        <Field Name="Name" Type="string" MaxLength="255" />
+        <Field Name="PostalCode" Type="string" MaxLength="10" />
+        <Field Name="PrecisePosition" Type="bool" />
+        <Field Name="Street" Type="string" MaxLength="255" />
+      </Fields>
+    </TypedViewDefinition>
+    <TypedViewDefinition Name="VenueTeam" ObjectID="d7f98724-a73d-44be-8449-138c6728c959">
+      <Fields>
+        <Field Name="City" Type="string" MaxLength="255" />
+        <Field Name="Direction" Type="string" MaxLength="2147483647" />
+        <Field Name="Latitude" Type="double" IsOptional="true" Precision="38" />
+        <Field Name="Longitude" Type="double" IsOptional="true" Precision="38" />
+        <Field Name="PostalCode" Type="string" MaxLength="10" />
+        <Field Name="PrecisePosition" Type="bool" />
+        <Field Name="RoundId" Type="long" Precision="19" />
+        <Field Name="Street" Type="string" MaxLength="255" />
+        <Field Name="TeamClubName" Type="string" IsOptional="true" MaxLength="255" />
+        <Field Name="TeamId" Type="long" Precision="19" />
+        <Field Name="TeamName" Type="string" MaxLength="255" />
+        <Field Name="TeamNameForRound" Type="string" IsOptional="true" MaxLength="255" />
+        <Field Name="TournamentId" Type="long" Precision="19" />
+        <Field Name="VenueExtension" Type="string" MaxLength="255" />
+        <Field Name="VenueId" Type="long" Precision="19" />
+        <Field Name="VenueName" Type="string" MaxLength="255" />
+      </Fields>
+    </TypedViewDefinition>
+  </TypedViewDefinitions>
+  <SPCallDefinitions>
+    <SPCallDefinition Name="VenueDistance" ObjectID="bdb6ec60-7ede-44c1-a7a6-949437313480">
+      <Parameters>
+        <Parameter Name="Lat" Type="double" Precision="38" />
+        <Parameter Name="Lng" Type="double" Precision="38" />
+        <Parameter Name="MaxDistance" Type="double" Precision="38" />
+      </Parameters>
+    </SPCallDefinition>
+  </SPCallDefinitions>
+  <TargetDatabases>
+    <TargetDatabase Type="2D18D138-1DD2-467E-86CC-4838250611AE" SyncSource="2">
+      <ConnectionElements>
+        <ConnectionElement Name="ServerName" Value="(LocalDB)\MSSQLLocalDB" />
+        <ConnectionElement Name="CatalogName" Value="master" />
+        <ConnectionElement Name="UseWindowsAuthentication" Value="true" />
+        <ConnectionElement Name="UserID" Value="" />
+        <ConnectionElement Name="Password" Value="" />
+      </ConnectionElements>
+      <SystemSequences>
+        <Sequence Name="SCOPE_IDENTITY()" />
+        <Sequence Name="@@IDENTITY" />
+      </SystemSequences>
+      <Catalogs>
+        <Catalog Name="TestOrg">
+          <Schemas>
+            <Schema Name="dbo" SyncSource="2" LastSyncWithDatabase="2020-04-13T15:18:30.5802545Z">
+              <Tables>
+                <Table Name="AvailableMatchDate">
+                  <PkConstraintName Name="PK_378f3f14a1c871b25041c380344" />
+                  <Fields>
+                    <Field Name="Id" Ordinal="1" IsIdentity="true" IsPrimaryKey="true" DbType="0" Precision="19" />
+                    <Field Name="TournamentId" Ordinal="2" DbType="0" Precision="19" />
+                    <Field Name="HomeTeamId" Ordinal="3" DbType="0" Precision="19" />
+                    <Field Name="VenueId" Ordinal="4" DbType="0" Precision="19" />
+                    <Field Name="MatchStartTime" Ordinal="5" DbType="4" />
+                    <Field Name="MatchEndTime" Ordinal="6" DbType="4" />
+                    <Field Name="IsGenerated" Ordinal="7" DbType="2" />
+                    <Field Name="CreatedOn" Ordinal="8" HasDefaultValue="true" DefaultValue="getdate()" DbType="4" />
+                    <Field Name="ModifiedOn" Ordinal="9" HasDefaultValue="true" DefaultValue="getdate()" DbType="4" />
+                  </Fields>
+                  <CustomProperties>
+                    <CustomProperty Name="MS_Description" Value="Invitations for new users, players or managers" />
+                  </CustomProperties>
+                </Table>
+                <Table Name="ExcludeMatchDate">
+                  <PkConstraintName Name="PK_31fdaf2445a85a5094198491bb0" />
+                  <Fields>
+                    <Field Name="Id" Ordinal="1" IsIdentity="true" IsPrimaryKey="true" DbType="0" Precision="19" />
+                    <Field Name="TournamentId" Ordinal="2" DbType="0" Precision="19" />
+                    <Field Name="RoundId" Ordinal="3" IsOptional="true" DbType="0" Precision="19" />
+                    <Field Name="TeamId" Ordinal="4" IsOptional="true" DbType="0" Precision="19" />
+                    <Field Name="DateFrom" Ordinal="5" DbType="4" />
+                    <Field Name="DateTo" Ordinal="6" DbType="4" />
+                    <Field Name="Reason" Ordinal="7" IsOptional="true" DbType="12" Length="60" />
+                    <Field Name="CreatedOn" Ordinal="8" HasDefaultValue="true" DefaultValue="getdate()" DbType="4" />
+                    <Field Name="ModifiedOn" Ordinal="9" HasDefaultValue="true" DefaultValue="getdate()" DbType="4" />
+                  </Fields>
+                  <CustomProperties>
+                    <CustomProperty Name="MS_Description" Value="Match dates which cannot be used" />
+                  </CustomProperties>
+                </Table>
+                <Table Name="IdentityRole">
+                  <PkConstraintName Name="PK__Role__3214EC07A29BE973" />
+                  <Fields>
+                    <Field Name="Id" Ordinal="1" IsIdentity="true" IsPrimaryKey="true" DbType="0" Precision="19" />
+                    <Field Name="Name" Ordinal="2" HasDefaultValue="true" DefaultValue="''" DbType="12" Length="255" />
+                  </Fields>
+                  <UniqueConstraints>
+                    <UniqueConstraint Name="Role_uq">
+                      <Field Name="Name" />
+                    </UniqueConstraint>
+                  </UniqueConstraints>
+                  <CustomProperties>
+                    <CustomProperty Name="MS_Description" Value="Identity Role" />
+                  </CustomProperties>
+                </Table>
+                <Table Name="IdentityRoleClaim">
+                  <PkConstraintName Name="PK__Identity__3214EC0744667F65" />
+                  <Fields>
+                    <Field Name="Id" Ordinal="1" IsIdentity="true" IsPrimaryKey="true" DbType="0" Precision="19" />
+                    <Field Name="RoleId" Ordinal="2" DbType="0" Precision="19" />
+                    <Field Name="ClaimType" Ordinal="3" HasDefaultValue="true" DefaultValue="''" DbType="12" Length="255" />
+                    <Field Name="ClaimValue" Ordinal="4" HasDefaultValue="true" DefaultValue="''" DbType="12" Length="2147483647" />
+                    <Field Name="ValueType" Ordinal="5" IsOptional="true" DbType="12" Length="255" />
+                    <Field Name="Issuer" Ordinal="6" IsOptional="true" DbType="12" Length="255" />
+                  </Fields>
+                  <CustomProperties>
+                    <CustomProperty Name="MS_Description" Value="Identity RoleClaim" />
+                  </CustomProperties>
+                </Table>
+                <Table Name="IdentityUserClaim">
+                  <PkConstraintName Name="PK__Identity__3214EC07FCBABEB0" />
+                  <Fields>
+                    <Field Name="Id" Ordinal="1" IsIdentity="true" IsPrimaryKey="true" DbType="0" Precision="19" />
+                    <Field Name="UserId" Ordinal="2" DbType="0" Precision="19" />
+                    <Field Name="ClaimType" Ordinal="3" HasDefaultValue="true" DefaultValue="''" DbType="12" Length="255" />
+                    <Field Name="ClaimValue" Ordinal="4" HasDefaultValue="true" DefaultValue="''" DbType="12" Length="2147483647" />
+                    <Field Name="ValueType" Ordinal="5" IsOptional="true" DbType="12" Length="255" />
+                    <Field Name="Issuer" Ordinal="6" IsOptional="true" DbType="12" Length="255" />
+                  </Fields>
+                  <CustomProperties>
+                    <CustomProperty Name="MS_Description" Value="Identity UserClaim" />
+                  </CustomProperties>
+                </Table>
+                <Table Name="IdentityUserLogin">
+                  <PkConstraintName Name="PK_IdentityUserLogins" />
+                  <Fields>
+                    <Field Name="Id" Ordinal="1" IsIdentity="true" DbType="0" Precision="19" />
+                    <Field Name="UserId" Ordinal="2" IsPrimaryKey="true" DbType="0" Precision="19" />
+                    <Field Name="LoginProvider" Ordinal="3" IsPrimaryKey="true" HasDefaultValue="true" DefaultValue="''" DbType="12" Length="128" />
+                    <Field Name="ProviderKey" Ordinal="4" IsPrimaryKey="true" HasDefaultValue="true" DefaultValue="''" DbType="12" Length="128" />
+                    <Field Name="ProviderDisplayName" Ordinal="5" HasDefaultValue="true" DefaultValue="''" DbType="12" Length="128" />
+                  </Fields>
+                  <UniqueConstraints>
+                    <UniqueConstraint Name="UserLogin_uq">
+                      <Field Name="Id" />
+                    </UniqueConstraint>
+                  </UniqueConstraints>
+                  <CustomProperties>
+                    <CustomProperty Name="MS_Description" Value="Store for login providers of user" />
+                  </CustomProperties>
+                </Table>
+                <Table Name="IdentityUserRole">
+                  <PkConstraintName Name="PK__Identity__AF2760AD34727FF2" />
+                  <Fields>
+                    <Field Name="Id" Ordinal="1" IsIdentity="true" DbType="0" Precision="19" />
+                    <Field Name="UserId" Ordinal="2" IsPrimaryKey="true" DbType="0" Precision="19" />
+                    <Field Name="RoleId" Ordinal="3" IsPrimaryKey="true" DbType="0" Precision="19" />
+                  </Fields>
+                  <CustomProperties>
+                    <CustomProperty Name="MS_Description" Value="User Roles" />
+                  </CustomProperties>
+                </Table>
+                <Table Name="IdentityUserToken">
+                  <PkConstraintName Name="PK_UserTokens" />
+                  <Fields>
+                    <Field Name="Id" Ordinal="1" IsIdentity="true" DbType="0" Precision="19" />
+                    <Field Name="UserId" Ordinal="2" IsPrimaryKey="true" DbType="0" Precision="19" />
+                    <Field Name="LoginProvider" Ordinal="3" IsPrimaryKey="true" HasDefaultValue="true" DefaultValue="''" DbType="12" Length="128" />
+                    <Field Name="Name" Ordinal="4" IsPrimaryKey="true" HasDefaultValue="true" DefaultValue="''" DbType="12" Length="128" />
+                    <Field Name="Value" Ordinal="5" IsOptional="true" DbType="12" Length="2147483647" />
+                  </Fields>
+                  <UniqueConstraints>
+                    <UniqueConstraint Name="UserTokens_uq">
+                      <Field Name="Id" />
+                    </UniqueConstraint>
+                  </UniqueConstraints>
+                  <CustomProperties>
+                    <CustomProperty Name="MS_Description" Value="Store for login tokens of users" />
+                  </CustomProperties>
+                </Table>
+                <Table Name="ManagerOfTeam">
+                  <PkConstraintName Name="PK_61281d44c57bcda8f8ca6d2d85a" />
+                  <Fields>
+                    <Field Name="Id" Ordinal="1" IsIdentity="true" DbType="0" Precision="19" />
+                    <Field Name="UserId" Ordinal="2" IsPrimaryKey="true" DbType="0" Precision="19" />
+                    <Field Name="TeamId" Ordinal="3" IsPrimaryKey="true" DbType="0" Precision="19" />
+                    <Field Name="CreatedOn" Ordinal="4" HasDefaultValue="true" DefaultValue="getdate()" DbType="4" />
+                    <Field Name="ModifiedOn" Ordinal="5" HasDefaultValue="true" DefaultValue="getdate()" DbType="4" />
+                  </Fields>
+                  <CustomProperties>
+                    <CustomProperty Name="MS_Description" Value="Teams and their Managers" />
+                  </CustomProperties>
+                </Table>
+                <Table Name="Match">
+                  <PkConstraintName Name="PK_cdb30d74095824096fb340c68d6" />
+                  <Fields>
+                    <Field Name="Id" Ordinal="1" IsIdentity="true" IsPrimaryKey="true" DbType="0" Precision="19" />
+                    <Field Name="HomeTeamId" Ordinal="2" DbType="0" Precision="19" />
+                    <Field Name="GuestTeamId" Ordinal="3" DbType="0" Precision="19" />
+                    <Field Name="RefereeId" Ordinal="4" IsOptional="true" DbType="0" Precision="19" />
+                    <Field Name="RoundId" Ordinal="5" DbType="0" Precision="19" />
+                    <Field Name="VenueId" Ordinal="6" IsOptional="true" DbType="0" Precision="19" />
+                    <Field Name="OrigVenueId" Ordinal="7" IsOptional="true" DbType="0" Precision="19" />
+                    <Field Name="LegSequenceNo" Ordinal="8" IsOptional="true" DbType="8" Precision="10" />
+                    <Field Name="HomePoints" Ordinal="9" IsOptional="true" DbType="8" Precision="10" />
+                    <Field Name="GuestPoints" Ordinal="10" IsOptional="true" DbType="8" Precision="10" />
+                    <Field Name="IsComplete" Ordinal="11" HasDefaultValue="true" DefaultValue="(1)" DbType="2" />
+                    <Field Name="IsOverruled" Ordinal="12" HasDefaultValue="true" DefaultValue="(0)" DbType="2" />
+                    <Field Name="PlannedStart" Ordinal="13" IsOptional="true" DbType="4" />
+                    <Field Name="PlannedEnd" Ordinal="14" IsOptional="true" DbType="4" />
+                    <Field Name="OrigPlannedStart" Ordinal="15" IsOptional="true" DbType="4" />
+                    <Field Name="OrigPlannedEnd" Ordinal="16" IsOptional="true" DbType="4" />
+                    <Field Name="RealStart" Ordinal="17" IsOptional="true" DbType="4" />
+                    <Field Name="RealEnd" Ordinal="18" IsOptional="true" DbType="4" />
+                    <Field Name="Remarks" Ordinal="19" IsOptional="true" DbType="12" Length="2147483647" />
+                    <Field Name="ChangeSerial" Ordinal="20" HasDefaultValue="true" DefaultValue="(0)" DbType="0" Precision="19" />
+                    <Field Name="CreatedOn" Ordinal="21" HasDefaultValue="true" DefaultValue="getdate()" DbType="4" />
+                    <Field Name="ModifiedOn" Ordinal="22" HasDefaultValue="true" DefaultValue="getdate()" DbType="4" />
+                  </Fields>
+                  <CustomProperties>
+                    <CustomProperty Name="MS_Description" Value="Matches of the tournaments" />
+                  </CustomProperties>
+                </Table>
+                <Table Name="MatchRule">
+                  <PkConstraintName Name="PK_086d14b497db1fbf2242367f70b" />
+                  <Fields>
+                    <Field Name="Id" Ordinal="1" IsIdentity="true" IsPrimaryKey="true" DbType="0" Precision="19" />
+                    <Field Name="Name" Ordinal="2" HasDefaultValue="true" DefaultValue="''" DbType="12" Length="255" />
+                    <Field Name="NumOfSets" Ordinal="3" HasDefaultValue="true" DefaultValue="(1)" DbType="8" Precision="10" />
+                    <Field Name="BestOf" Ordinal="4" HasDefaultValue="true" DefaultValue="(0)" DbType="2" />
+                    <Field Name="PointsMatchWon" Ordinal="5" HasDefaultValue="true" DefaultValue="(0)" DbType="8" Precision="10" />
+                    <Field Name="PointsMatchLost" Ordinal="6" HasDefaultValue="true" DefaultValue="(0)" DbType="8" Precision="10" />
+                    <Field Name="PointsMatchWonAfterTieBreak" Ordinal="7" HasDefaultValue="true" DefaultValue="(0)" DbType="8" Precision="10" />
+                    <Field Name="PointsMatchLostAfterTieBreak" Ordinal="8" HasDefaultValue="true" DefaultValue="(0)" DbType="8" Precision="10" />
+                    <Field Name="PointsMatchTie" Ordinal="9" HasDefaultValue="true" DefaultValue="(0)" DbType="8" Precision="10" />
+                    <Field Name="RankComparer" Ordinal="10" HasDefaultValue="true" DefaultValue="(1)" DbType="8" Precision="10" />
+                    <Field Name="CreatedOn" Ordinal="11" HasDefaultValue="true" DefaultValue="getdate()" DbType="4" />
+                    <Field Name="ModifiedOn" Ordinal="12" HasDefaultValue="true" DefaultValue="getdate()" DbType="4" />
+                  </Fields>
+                  <CustomProperties>
+                    <CustomProperty Name="MS_Description" Value="Match result rules" />
+                  </CustomProperties>
+                </Table>
+                <Table Name="PlayerInTeam">
+                  <PkConstraintName Name="PK_813c96e4d12bbb271cfd2e6f609" />
+                  <Fields>
+                    <Field Name="Id" Ordinal="1" IsIdentity="true" DbType="0" Precision="19" />
+                    <Field Name="UserId" Ordinal="2" IsPrimaryKey="true" DbType="0" Precision="19" />
+                    <Field Name="TeamId" Ordinal="3" IsPrimaryKey="true" DbType="0" Precision="19" />
+                    <Field Name="CreatedOn" Ordinal="4" HasDefaultValue="true" DefaultValue="getdate()" DbType="4" />
+                    <Field Name="ModifiedOn" Ordinal="5" HasDefaultValue="true" DefaultValue="getdate()" DbType="4" />
+                  </Fields>
+                  <CustomProperties>
+                    <CustomProperty Name="MS_Description" Value="Players in Teams" />
+                  </CustomProperties>
+                </Table>
+                <Table Name="Ranking">
+                  <PkConstraintName Name="PK_d28bac344c795e61c21b8e6d9b9" />
+                  <Fields>
+                    <Field Name="Id" Ordinal="1" IsIdentity="true" IsPrimaryKey="true" DbType="0" Precision="19" />
+                    <Field Name="TournamentId" Ordinal="2" DbType="0" Precision="19" />
+                    <Field Name="RoundId" Ordinal="3" DbType="0" Precision="19" />
+                    <Field Name="TeamId" Ordinal="4" DbType="0" Precision="19" />
+                    <Field Name="ValuationDate" Ordinal="5" DbType="4" />
+                    <Field Name="Rank" Ordinal="6" DbType="8" Precision="10" />
+                    <Field Name="MatchPointsWon" Ordinal="7" IsOptional="true" DbType="8" Precision="10" />
+                    <Field Name="MatchPointsLost" Ordinal="8" IsOptional="true" DbType="8" Precision="10" />
+                    <Field Name="SetPointsWon" Ordinal="9" IsOptional="true" DbType="8" Precision="10" />
+                    <Field Name="SetPointsLost" Ordinal="10" IsOptional="true" DbType="8" Precision="10" />
+                    <Field Name="BallPointsWon" Ordinal="11" IsOptional="true" DbType="8" Precision="10" />
+                    <Field Name="BallPointsLost" Ordinal="12" IsOptional="true" DbType="8" Precision="10" />
+                    <Field Name="MatchesPlayed" Ordinal="13" HasDefaultValue="true" DefaultValue="(0)" DbType="8" Precision="10" />
+                    <Field Name="MatchesToPlay" Ordinal="14" HasDefaultValue="true" DefaultValue="(0)" DbType="8" Precision="10" />
+                    <Field Name="CreatedOn" Ordinal="15" HasDefaultValue="true" DefaultValue="getdate()" DbType="4" />
+                    <Field Name="ModifiedOn" Ordinal="16" HasDefaultValue="true" DefaultValue="getdate()" DbType="4" />
+                  </Fields>
+                  <CustomProperties>
+                    <CustomProperty Name="MS_Description" Value="Ranking history for all tournaments" />
+                  </CustomProperties>
+                </Table>
+                <Table Name="Registration">
+                  <PkConstraintName Name="PK_5a14f5d4dc690066c854d5d8685" />
+                  <Fields>
+                    <Field Name="Id" Ordinal="1" IsIdentity="true" IsPrimaryKey="true" DbType="0" Precision="19" />
+                    <Field Name="TournamentId" Ordinal="2" DbType="0" Precision="19" />
+                    <Field Name="TeamId" Ordinal="3" DbType="0" Precision="19" />
+                    <Field Name="ManagerId" Ordinal="4" DbType="0" Precision="19" />
+                    <Field Name="Guid" Ordinal="5" HasDefaultValue="true" DefaultValue="''" DbType="12" Length="50" />
+                    <Field Name="AppliedWithMessage" Ordinal="6" IsOptional="true" HasDefaultValue="true" DefaultValue="''" DbType="12" Length="4000" />
+                    <Field Name="AppliedOn" Ordinal="7" HasDefaultValue="true" DefaultValue="getdate()" DbType="4" />
+                  </Fields>
+                  <CustomProperties>
+                    <CustomProperty Name="MS_Description" Value="Registration of teams for a tournament" />
+                  </CustomProperties>
+                </Table>
+                <Table Name="Round">
+                  <PkConstraintName Name="PK_ff808a54bd291274117f80c10df" />
+                  <Fields>
+                    <Field Name="Id" Ordinal="1" IsIdentity="true" IsPrimaryKey="true" DbType="0" Precision="19" />
+                    <Field Name="TournamentId" Ordinal="2" IsOptional="true" DbType="0" Precision="19" />
+                    <Field Name="Name" Ordinal="3" HasDefaultValue="true" DefaultValue="''" DbType="12" Length="255" />
+                    <Field Name="Description" Ordinal="4" HasDefaultValue="true" DefaultValue="''" DbType="12" Length="255" />
+                    <Field Name="TypeId" Ordinal="5" DbType="0" Precision="19" />
+                    <Field Name="NumOfLegs" Ordinal="6" HasDefaultValue="true" DefaultValue="(1)" DbType="8" Precision="10" />
+                    <Field Name="MatchRuleId" Ordinal="7" DbType="0" Precision="19" />
+                    <Field Name="SetRuleId" Ordinal="8" DbType="0" Precision="19" />
+                    <Field Name="IsComplete" Ordinal="9" HasDefaultValue="true" DefaultValue="(0)" DbType="2" />
+                    <Field Name="NextRoundId" Ordinal="10" IsOptional="true" DbType="0" Precision="19" />
+                    <Field Name="CreatedOn" Ordinal="11" HasDefaultValue="true" DefaultValue="getdate()" DbType="4" />
+                    <Field Name="ModifiedOn" Ordinal="12" HasDefaultValue="true" DefaultValue="getdate()" DbType="4" />
+                  </Fields>
+                  <CustomProperties>
+                    <CustomProperty Name="MS_Description" Value="Rounds of a tournament" />
+                  </CustomProperties>
+                </Table>
+                <Table Name="RoundLeg">
+                  <PkConstraintName Name="PK_a0718ea42c3be684e9e944c4033" />
+                  <Fields>
+                    <Field Name="Id" Ordinal="1" IsIdentity="true" IsPrimaryKey="true" DbType="0" Precision="19" />
+                    <Field Name="RoundId" Ordinal="2" DbType="0" Precision="19" />
+                    <Field Name="SequenceNo" Ordinal="3" HasDefaultValue="true" DefaultValue="(1)" DbType="8" Precision="10" />
+                    <Field Name="Description" Ordinal="4" IsOptional="true" DbType="12" Length="255" />
+                    <Field Name="StartDateTime" Ordinal="5" HasDefaultValue="true" DefaultValue="getdate()" DbType="4" />
+                    <Field Name="EndDateTime" Ordinal="6" HasDefaultValue="true" DefaultValue="getdate()" DbType="4" />
+                    <Field Name="CreatedOn" Ordinal="7" HasDefaultValue="true" DefaultValue="getdate()" DbType="4" />
+                    <Field Name="ModifiedOn" Ordinal="8" HasDefaultValue="true" DefaultValue="getdate()" DbType="4" />
+                  </Fields>
+                  <CustomProperties>
+                    <CustomProperty Name="MS_Description" Value="Legs of a round" />
+                  </CustomProperties>
+                </Table>
+                <Table Name="RoundType">
+                  <PkConstraintName Name="PK_872525b4019ba9fd7b6b23f9ab5" />
+                  <Fields>
+                    <Field Name="Id" Ordinal="1" IsIdentity="true" IsPrimaryKey="true" DbType="0" Precision="19" />
+                    <Field Name="Name" Ordinal="2" HasDefaultValue="true" DefaultValue="''" DbType="12" Length="255" />
+                    <Field Name="Description" Ordinal="3" HasDefaultValue="true" DefaultValue="''" DbType="12" Length="255" />
+                    <Field Name="CreatedOn" Ordinal="4" HasDefaultValue="true" DefaultValue="getdate()" DbType="4" />
+                    <Field Name="ModifiedOn" Ordinal="5" HasDefaultValue="true" DefaultValue="getdate()" DbType="4" />
+                  </Fields>
+                  <CustomProperties>
+                    <CustomProperty Name="MS_Description" Value="The type of a round, e.g. number of female/male players" />
+                  </CustomProperties>
+                </Table>
+                <Table Name="Set">
+                  <PkConstraintName Name="PK_b4138ea4b60b7ab2bf5de64a148" />
+                  <Fields>
+                    <Field Name="Id" Ordinal="1" IsIdentity="true" IsPrimaryKey="true" DbType="0" Precision="19" />
+                    <Field Name="MatchId" Ordinal="2" DbType="0" Precision="19" />
+                    <Field Name="SequenceNo" Ordinal="3" HasDefaultValue="true" DefaultValue="(1)" DbType="8" Precision="10" />
+                    <Field Name="HomeBallPoints" Ordinal="4" HasDefaultValue="true" DefaultValue="(0)" DbType="8" Precision="10" />
+                    <Field Name="GuestBallPoints" Ordinal="5" HasDefaultValue="true" DefaultValue="(0)" DbType="8" Precision="10" />
+                    <Field Name="HomeSetPoints" Ordinal="6" HasDefaultValue="true" DefaultValue="(0)" DbType="8" Precision="10" />
+                    <Field Name="GuestSetPoints" Ordinal="7" HasDefaultValue="true" DefaultValue="(0)" DbType="8" Precision="10" />
+                    <Field Name="HomeTimeout" Ordinal="8" HasDefaultValue="true" DefaultValue="(0)" DbType="8" Precision="10" />
+                    <Field Name="GuestTimeout" Ordinal="9" HasDefaultValue="true" DefaultValue="(0)" DbType="8" Precision="10" />
+                    <Field Name="IsOverruled" Ordinal="10" HasDefaultValue="true" DefaultValue="(0)" DbType="2" />
+                    <Field Name="IsTieBreak" Ordinal="11" HasDefaultValue="true" DefaultValue="(0)" DbType="2" />
+                    <Field Name="RealStart" Ordinal="12" IsOptional="true" DbType="4" />
+                    <Field Name="RealEnd" Ordinal="13" IsOptional="true" DbType="4" />
+                    <Field Name="Remarks" Ordinal="14" IsOptional="true" DbType="12" Length="2147483647" />
+                    <Field Name="CreatedOn" Ordinal="15" HasDefaultValue="true" DefaultValue="getdate()" DbType="4" />
+                    <Field Name="ModifiedOn" Ordinal="16" HasDefaultValue="true" DefaultValue="getdate()" DbType="4" />
+                  </Fields>
+                  <CustomProperties>
+                    <CustomProperty Name="MS_Description" Value="Sets of the matches" />
+                  </CustomProperties>
+                </Table>
+                <Table Name="SetRule">
+                  <PkConstraintName Name="PK_23e33af454a87a76a066050c891" />
+                  <Fields>
+                    <Field Name="Id" Ordinal="1" IsIdentity="true" IsPrimaryKey="true" DbType="0" Precision="19" />
+                    <Field Name="Name" Ordinal="2" HasDefaultValue="true" DefaultValue="''" DbType="12" Length="255" />
+                    <Field Name="NumOfPointsToWinRegular" Ordinal="3" HasDefaultValue="true" DefaultValue="(0)" DbType="8" Precision="10" />
+                    <Field Name="NumOfPointsToWinTiebreak" Ordinal="4" HasDefaultValue="true" DefaultValue="(0)" DbType="8" Precision="10" />
+                    <Field Name="PointsDiffToWinRegular" Ordinal="5" HasDefaultValue="true" DefaultValue="(0)" DbType="8" Precision="10" />
+                    <Field Name="PointsDiffToWinTiebreak" Ordinal="6" HasDefaultValue="true" DefaultValue="(0)" DbType="8" Precision="10" />
+                    <Field Name="PointsSetLost" Ordinal="7" HasDefaultValue="true" DefaultValue="(0)" DbType="8" Precision="10" />
+                    <Field Name="PointsSetTie" Ordinal="8" HasDefaultValue="true" DefaultValue="(0)" DbType="8" Precision="10" />
+                    <Field Name="PointsSetWon" Ordinal="9" HasDefaultValue="true" DefaultValue="(0)" DbType="8" Precision="10" />
+                    <Field Name="MaxTimeouts" Ordinal="10" HasDefaultValue="true" DefaultValue="(0)" DbType="8" Precision="10" />
+                    <Field Name="MaxSubstitutions" Ordinal="11" HasDefaultValue="true" DefaultValue="(0)" DbType="8" Precision="10" />
+                    <Field Name="CreatedOn" Ordinal="12" HasDefaultValue="true" DefaultValue="getdate()" DbType="4" />
+                    <Field Name="ModifiedOn" Ordinal="13" HasDefaultValue="true" DefaultValue="getdate()" DbType="4" />
+                  </Fields>
+                  <CustomProperties>
+                    <CustomProperty Name="MS_Description" Value="Set result rules" />
+                  </CustomProperties>
+                </Table>
+                <Table Name="Team">
+                  <PkConstraintName Name="PK_e4f33494c6d8484f20aabdbf101" />
+                  <Fields>
+                    <Field Name="Id" Ordinal="1" IsIdentity="true" IsPrimaryKey="true" DbType="0" Precision="19" />
+                    <Field Name="VenueId" Ordinal="2" IsOptional="true" DbType="0" Precision="19" />
+                    <Field Name="Name" Ordinal="3" HasDefaultValue="true" DefaultValue="''" DbType="12" Length="255" />
+                    <Field Name="MatchDayOfWeek" Ordinal="4" IsOptional="true" DbType="8" Precision="10" />
+                    <Field Name="MatchTime" Ordinal="5" IsOptional="true" DbType="31">
+                      <CustomProperties>
+                        <CustomProperty Name="MS_Description" Value="Time for home matches in local (!) time" />
+                      </CustomProperties>
+                    </Field>
+                    <Field Name="ClubName" Ordinal="6" IsOptional="true" HasDefaultValue="true" DefaultValue="''" DbType="12" Length="255" />
+                    <Field Name="PhotoFilename" Ordinal="7" IsOptional="true" HasDefaultValue="true" DefaultValue="''" DbType="12" Length="255" />
+                    <Field Name="CreatedOn" Ordinal="8" HasDefaultValue="true" DefaultValue="getdate()" DbType="4" />
+                    <Field Name="ModifiedOn" Ordinal="9" HasDefaultValue="true" DefaultValue="getdate()" DbType="4" />
+                  </Fields>
+                  <CustomProperties>
+                    <CustomProperty Name="MS_Description" Value="Team basic data" />
+                  </CustomProperties>
+                </Table>
+                <Table Name="TeamInRound">
+                  <PkConstraintName Name="TeamRound_idx" />
+                  <Fields>
+                    <Field Name="Id" Ordinal="1" IsIdentity="true" DbType="0" Precision="19" />
+                    <Field Name="RoundId" Ordinal="2" IsPrimaryKey="true" DbType="0" Precision="19" />
+                    <Field Name="TeamId" Ordinal="3" IsPrimaryKey="true" DbType="0" Precision="19" />
+                    <Field Name="TeamNameForRound" Ordinal="4" IsOptional="true" HasDefaultValue="true" DefaultValue="''" DbType="12" Length="255" />
+                    <Field Name="CreatedOn" Ordinal="5" HasDefaultValue="true" DefaultValue="getdate()" DbType="4" />
+                    <Field Name="ModifiedOn" Ordinal="6" HasDefaultValue="true" DefaultValue="getdate()" DbType="4" />
+                  </Fields>
+                  <CustomProperties>
+                    <CustomProperty Name="MS_Description" Value="Which teams play in which round" />
+                  </CustomProperties>
+                </Table>
+                <Table Name="Tournament">
+                  <PkConstraintName Name="PK_f407daf4107a2d31aa47471145c" />
+                  <Fields>
+                    <Field Name="Id" Ordinal="1" IsIdentity="true" IsPrimaryKey="true" DbType="0" Precision="19" />
+                    <Field Name="Name" Ordinal="2" HasDefaultValue="true" DefaultValue="''" DbType="12" Length="255" />
+                    <Field Name="Description" Ordinal="3" IsOptional="true" HasDefaultValue="true" DefaultValue="''" DbType="12" Length="255" />
+                    <Field Name="TypeId" Ordinal="4" IsOptional="true" DbType="0" Precision="19" />
+                    <Field Name="IsComplete" Ordinal="5" HasDefaultValue="true" DefaultValue="(0)" DbType="2" />
+                    <Field Name="IsPlanningMode" Ordinal="6" HasDefaultValue="true" DefaultValue="(0)" DbType="2" />
+                    <Field Name="NextTournamentId" Ordinal="7" IsOptional="true" DbType="0" Precision="19" />
+                    <Field Name="CreatedOn" Ordinal="8" HasDefaultValue="true" DefaultValue="getdate()" DbType="4" />
+                    <Field Name="ModifiedOn" Ordinal="9" HasDefaultValue="true" DefaultValue="getdate()" DbType="4" />
+                  </Fields>
+                  <CustomProperties>
+                    <CustomProperty Name="MS_Description" Value="Tournament basic data" />
+                  </CustomProperties>
+                </Table>
+                <Table Name="TournamentType">
+                  <PkConstraintName Name="PK_848db044eef87f3bbcc96868650" />
+                  <Fields>
+                    <Field Name="Id" Ordinal="1" IsIdentity="true" IsPrimaryKey="true" DbType="0" Precision="19" />
+                    <Field Name="Name" Ordinal="2" HasDefaultValue="true" DefaultValue="''" DbType="12" Length="255" />
+                    <Field Name="Description" Ordinal="3" HasDefaultValue="true" DefaultValue="''" DbType="12" Length="255" />
+                    <Field Name="CreatedOn" Ordinal="4" HasDefaultValue="true" DefaultValue="getdate()" DbType="4" />
+                    <Field Name="ModifiedOn" Ordinal="5" HasDefaultValue="true" DefaultValue="getdate()" DbType="4" />
+                  </Fields>
+                  <CustomProperties>
+                    <CustomProperty Name="MS_Description" Value="Tournament types" />
+                  </CustomProperties>
+                </Table>
+                <Table Name="User">
+                  <PkConstraintName Name="PK_05646114ed0b268cc9236c4f656" />
+                  <Fields>
+                    <Field Name="Id" Ordinal="1" IsIdentity="true" IsPrimaryKey="true" DbType="0" Precision="19" />
+                    <Field Name="Guid" Ordinal="2" HasDefaultValue="true" DefaultValue="''" DbType="12" Length="50" />
+                    <Field Name="UserName" Ordinal="3" HasDefaultValue="true" DefaultValue="''" DbType="12" Length="255" />
+                    <Field Name="PasswordHash" Ordinal="4" HasDefaultValue="true" DefaultValue="''" DbType="12" Length="2147483647" />
+                    <Field Name="Email" Ordinal="5" HasDefaultValue="true" DefaultValue="''" DbType="12" Length="255" />
+                    <Field Name="EmailConfirmedOn" Ordinal="6" IsOptional="true" DbType="4" />
+                    <Field Name="PhoneNumber" Ordinal="7" HasDefaultValue="true" DefaultValue="''" DbType="12" Length="40" />
+                    <Field Name="PhoneNumberConfirmedOn" Ordinal="8" IsOptional="true" DbType="4" />
+                    <Field Name="LastLoginOn" Ordinal="9" IsOptional="true" DbType="4" />
+                    <Field Name="AccessFailedCount" Ordinal="10" HasDefaultValue="true" DefaultValue="(0)" DbType="8" Precision="10" />
+                    <Field Name="LockoutEndDateUtc" Ordinal="11" IsOptional="true" DbType="4" />
+                    <Field Name="Gender" Ordinal="12" HasDefaultValue="true" DefaultValue="'u'" DbType="12" Length="1" />
+                    <Field Name="Title" Ordinal="13" HasDefaultValue="true" DefaultValue="''" DbType="12" Length="255" />
+                    <Field Name="FirstName" Ordinal="14" HasDefaultValue="true" DefaultValue="''" DbType="12" Length="255" />
+                    <Field Name="MiddleName" Ordinal="15" HasDefaultValue="true" DefaultValue="''" DbType="12" Length="255" />
+                    <Field Name="LastName" Ordinal="16" HasDefaultValue="true" DefaultValue="''" DbType="12" Length="255" />
+                    <Field Name="Nickname" Ordinal="17" HasDefaultValue="true" DefaultValue="''" DbType="12" Length="255" />
+                    <Field Name="PhoneNumber2" Ordinal="18" HasDefaultValue="true" DefaultValue="''" DbType="12" Length="40" />
+                    <Field Name="Email2" Ordinal="19" HasDefaultValue="true" DefaultValue="''" DbType="12" Length="100" />
+                    <Field Name="Birthday" Ordinal="20" IsOptional="true" DbType="4" />
+                    <Field Name="PhotoFilename" Ordinal="21" HasDefaultValue="true" DefaultValue="''" DbType="12" Length="255" />
+                    <Field Name="DoNotContact" Ordinal="22" HasDefaultValue="true" DefaultValue="(0)" DbType="2" />
+                    <Field Name="Remarks" Ordinal="23" IsOptional="true" HasDefaultValue="true" DefaultValue="''" DbType="12" Length="4000" />
+                    <Field Name="CreatedOn" Ordinal="24" HasDefaultValue="true" DefaultValue="getdate()" DbType="4" />
+                    <Field Name="ModifiedOn" Ordinal="25" HasDefaultValue="true" DefaultValue="getdate()" DbType="4" />
+                  </Fields>
+                  <UniqueConstraints>
+                    <UniqueConstraint Name="UC_5ee8deb40f8bca844c8745f8722">
+                      <Field Name="Email" />
+                    </UniqueConstraint>
+                    <UniqueConstraint Name="UC_9d0e7fb4df4865699f58d126a42">
+                      <Field Name="UserName" />
+                    </UniqueConstraint>
+                  </UniqueConstraints>
+                  <CustomProperties>
+                    <CustomProperty Name="MS_Description" Value="User incl. Managers (similar to IdentityUser of Microsoft.AspNet.Identity)" />
+                  </CustomProperties>
+                </Table>
+                <Table Name="Venue">
+                  <PkConstraintName Name="PK_26cdf024cef8161d4090ee30111" />
+                  <Fields>
+                    <Field Name="Id" Ordinal="1" IsIdentity="true" IsPrimaryKey="true" DbType="0" Precision="19" />
+                    <Field Name="Name" Ordinal="2" HasDefaultValue="true" DefaultValue="''" DbType="12" Length="255" />
+                    <Field Name="Extension" Ordinal="3" HasDefaultValue="true" DefaultValue="''" DbType="12" Length="255" />
+                    <Field Name="Street" Ordinal="4" HasDefaultValue="true" DefaultValue="''" DbType="12" Length="255" />
+                    <Field Name="PostalCode" Ordinal="5" HasDefaultValue="true" DefaultValue="''" DbType="12" Length="10" />
+                    <Field Name="City" Ordinal="6" HasDefaultValue="true" DefaultValue="''" DbType="12" Length="255" />
+                    <Field Name="Longitude" Ordinal="7" IsOptional="true" DbType="6" Precision="38" />
+                    <Field Name="Latitude" Ordinal="8" IsOptional="true" DbType="6" Precision="38" />
+                    <Field Name="PrecisePosition" Ordinal="9" HasDefaultValue="true" DefaultValue="(0)" DbType="2" />
+                    <Field Name="Direction" Ordinal="10" HasDefaultValue="true" DefaultValue="''" DbType="12" Length="2147483647" />
+                    <Field Name="CreatedOn" Ordinal="11" HasDefaultValue="true" DefaultValue="getdate()" DbType="4" />
+                    <Field Name="ModifiedOn" Ordinal="12" HasDefaultValue="true" DefaultValue="getdate()" DbType="4" />
+                  </Fields>
+                  <CustomProperties>
+                    <CustomProperty Name="MS_Description" Value="Venue teams are using for matches" />
+                  </CustomProperties>
+                </Table>
+              </Tables>
+              <Views>
+                <View Name="Calendar">
+                  <Fields>
+                    <Field Name="Id" Ordinal="1" DbType="0" Precision="19" />
+                    <Field Name="TournamentId" Ordinal="2" IsOptional="true" DbType="0" Precision="19" />
+                    <Field Name="TournamentName" Ordinal="3" DbType="12" Length="255" />
+                    <Field Name="RoundId" Ordinal="4" DbType="0" Precision="19" />
+                    <Field Name="RoundName" Ordinal="5" DbType="12" Length="255" />
+                    <Field Name="RoundDescription" Ordinal="6" DbType="12" Length="255" />
+                    <Field Name="RoundTypeName" Ordinal="7" DbType="12" Length="255" />
+                    <Field Name="RoundTypeDescription" Ordinal="8" DbType="12" Length="255" />
+                    <Field Name="HomeTeamId" Ordinal="9" DbType="0" Precision="19" />
+                    <Field Name="HomeTeamNameForRound" Ordinal="10" IsOptional="true" DbType="12" Length="255" />
+                    <Field Name="GuestTeamId" Ordinal="11" DbType="0" Precision="19" />
+                    <Field Name="GuestTeamNameForRound" Ordinal="12" IsOptional="true" DbType="12" Length="255" />
+                    <Field Name="PlannedStart" Ordinal="13" IsOptional="true" DbType="4" />
+                    <Field Name="PlannedEnd" Ordinal="14" IsOptional="true" DbType="4" />
+                    <Field Name="VenueId" Ordinal="15" IsOptional="true" DbType="0" Precision="19" />
+                    <Field Name="VenueName" Ordinal="16" IsOptional="true" DbType="12" Length="255" />
+                    <Field Name="VenueExtension" Ordinal="17" IsOptional="true" DbType="12" Length="255" />
+                    <Field Name="VenueStreet" Ordinal="18" IsOptional="true" DbType="12" Length="255" />
+                    <Field Name="VenuePostalCode" Ordinal="19" IsOptional="true" DbType="12" Length="10" />
+                    <Field Name="VenueCity" Ordinal="20" IsOptional="true" DbType="12" Length="255" />
+                    <Field Name="VenueLongitude" Ordinal="21" IsOptional="true" DbType="6" Precision="38" />
+                    <Field Name="VenueLatitude" Ordinal="22" IsOptional="true" DbType="6" Precision="38" />
+                    <Field Name="VenueDirection" Ordinal="23" IsOptional="true" DbType="12" Length="2147483647" />
+                    <Field Name="ChangeSerial" Ordinal="24" DbType="0" Precision="19" />
+                    <Field Name="ModifiedOn" Ordinal="25" DbType="4" />
+                  </Fields>
+                </View>
+                <View Name="CompletedMatch">
+                  <Fields>
+                    <Field Name="Id" Ordinal="1" DbType="0" Precision="19" />
+                    <Field Name="TournamentId" Ordinal="2" IsOptional="true" DbType="0" Precision="19" />
+                    <Field Name="TournamentName" Ordinal="3" DbType="12" Length="255" />
+                    <Field Name="RoundId" Ordinal="4" DbType="0" Precision="19" />
+                    <Field Name="RoundName" Ordinal="5" DbType="12" Length="255" />
+                    <Field Name="RoundDescription" Ordinal="6" DbType="12" Length="255" />
+                    <Field Name="RoundTypeName" Ordinal="7" DbType="12" Length="255" />
+                    <Field Name="RoundTypeDescription" Ordinal="8" DbType="12" Length="255" />
+                    <Field Name="RoundLegSequenceNo" Ordinal="9" DbType="8" Precision="10" />
+                    <Field Name="RoundLegDescription" Ordinal="10" IsOptional="true" DbType="12" Length="255" />
+                    <Field Name="HomeTeamId" Ordinal="11" DbType="0" Precision="19" />
+                    <Field Name="HomeTeamNameForRound" Ordinal="12" IsOptional="true" DbType="12" Length="255" />
+                    <Field Name="GuestTeamId" Ordinal="13" DbType="0" Precision="19" />
+                    <Field Name="GuestTeamNameForRound" Ordinal="14" IsOptional="true" DbType="12" Length="255" />
+                    <Field Name="VenueId" Ordinal="15" IsOptional="true" DbType="0" Precision="19" />
+                    <Field Name="MatchDate" Ordinal="16" IsOptional="true" DbType="4" />
+                    <Field Name="HomeMatchPoints" Ordinal="17" IsOptional="true" DbType="8" Precision="10" />
+                    <Field Name="GuestMatchPoints" Ordinal="18" IsOptional="true" DbType="8" Precision="10" />
+                    <Field Name="HomeSetPoints" Ordinal="19" IsOptional="true" DbType="8" Precision="10" />
+                    <Field Name="GuestSetPoints" Ordinal="20" IsOptional="true" DbType="8" Precision="10" />
+                    <Field Name="HomeBallPoints" Ordinal="21" IsOptional="true" DbType="8" Precision="10" />
+                    <Field Name="GuestBallPoints" Ordinal="22" IsOptional="true" DbType="8" Precision="10" />
+                    <Field Name="SetResults" Ordinal="23" IsOptional="true" DbType="12" Length="2147483647" />
+                    <Field Name="IsOverruled" Ordinal="24" DbType="2" />
+                    <Field Name="Remarks" Ordinal="25" IsOptional="true" DbType="12" Length="2147483647" />
+                    <Field Name="ModifiedOn" Ordinal="26" DbType="4" />
+                  </Fields>
+                </View>
+                <View Name="LatestTeamTournament">
+                  <Fields>
+                    <Field Name="TournamentId" Ordinal="1" DbType="0" Precision="19" />
+                    <Field Name="TournamentName" Ordinal="2" DbType="12" Length="255" />
+                    <Field Name="TournamentDescription" Ordinal="3" IsOptional="true" DbType="12" Length="255" />
+                    <Field Name="RoundId" Ordinal="4" DbType="0" Precision="19" />
+                    <Field Name="RoundName" Ordinal="5" DbType="12" Length="255" />
+                    <Field Name="RoundDescription" Ordinal="6" DbType="12" Length="255" />
+                    <Field Name="RoundTypeName" Ordinal="7" DbType="12" Length="255" />
+                    <Field Name="RoundTypeDescription" Ordinal="8" DbType="12" Length="255" />
+                    <Field Name="TeamId" Ordinal="9" DbType="0" Precision="19" />
+                    <Field Name="TeamName" Ordinal="10" DbType="12" Length="255" />
+                    <Field Name="TeamNameForRound" Ordinal="11" IsOptional="true" DbType="12" Length="255" />
+                    <Field Name="TeamClubName" Ordinal="12" IsOptional="true" DbType="12" Length="255" />
+                    <Field Name="TeamMatchDayOfWeek" Ordinal="13" IsOptional="true" DbType="8" Precision="10" />
+                    <Field Name="TeamMatchTime" Ordinal="14" IsOptional="true" DbType="31" />
+                  </Fields>
+                </View>
+                <View Name="MatchCompleteRaw">
+                  <Fields>
+                    <Field Name="Id" Ordinal="1" DbType="0" Precision="19" />
+                    <Field Name="TournamentId" Ordinal="2" IsOptional="true" DbType="0" Precision="19" />
+                    <Field Name="RoundId" Ordinal="3" DbType="0" Precision="19" />
+                    <Field Name="HomeTeamId" Ordinal="4" DbType="0" Precision="19" />
+                    <Field Name="GuestTeamId" Ordinal="5" DbType="0" Precision="19" />
+                    <Field Name="VenueId" Ordinal="6" IsOptional="true" DbType="0" Precision="19" />
+                    <Field Name="MatchDate" Ordinal="7" IsOptional="true" DbType="4" />
+                    <Field Name="HomeMatchPoints" Ordinal="8" IsOptional="true" DbType="8" Precision="10" />
+                    <Field Name="GuestMatchPoints" Ordinal="9" IsOptional="true" DbType="8" Precision="10" />
+                    <Field Name="HomeSetPoints" Ordinal="10" IsOptional="true" DbType="8" Precision="10" />
+                    <Field Name="GuestSetPoints" Ordinal="11" IsOptional="true" DbType="8" Precision="10" />
+                    <Field Name="HomeBallPoints" Ordinal="12" IsOptional="true" DbType="8" Precision="10" />
+                    <Field Name="GuestBallPoints" Ordinal="13" IsOptional="true" DbType="8" Precision="10" />
+                    <Field Name="IsOverruled" Ordinal="14" DbType="2" />
+                    <Field Name="ModifiedOn" Ordinal="15" DbType="4" />
+                  </Fields>
+                </View>
+                <View Name="MatchReportSheet">
+                  <Fields>
+                    <Field Name="Id" Ordinal="1" DbType="0" Precision="19" />
+                    <Field Name="TournamentId" Ordinal="2" IsOptional="true" DbType="0" Precision="19" />
+                    <Field Name="TournamentName" Ordinal="3" DbType="12" Length="255" />
+                    <Field Name="RoundName" Ordinal="4" DbType="12" Length="255" />
+                    <Field Name="RoundDescription" Ordinal="5" DbType="12" Length="255" />
+                    <Field Name="RoundTypeName" Ordinal="6" DbType="12" Length="255" />
+                    <Field Name="RoundTypeDescription" Ordinal="7" DbType="12" Length="255" />
+                    <Field Name="RoundLegSequenceNo" Ordinal="8" DbType="8" Precision="10" />
+                    <Field Name="RoundLegDescription" Ordinal="9" IsOptional="true" DbType="12" Length="255" />
+                    <Field Name="HomeTeamId" Ordinal="10" DbType="0" Precision="19" />
+                    <Field Name="HomeTeamNameForRound" Ordinal="11" IsOptional="true" DbType="12" Length="255" />
+                    <Field Name="GuestTeamId" Ordinal="12" DbType="0" Precision="19" />
+                    <Field Name="GuestTeamNameForRound" Ordinal="13" IsOptional="true" DbType="12" Length="255" />
+                    <Field Name="PlannedStart" Ordinal="14" IsOptional="true" DbType="4" />
+                    <Field Name="OrigPlannedStart" Ordinal="15" IsOptional="true" DbType="4" />
+                    <Field Name="NumOfSets" Ordinal="16" DbType="8" Precision="10" />
+                    <Field Name="BestOf" Ordinal="17" DbType="2" />
+                    <Field Name="NumOfPointsToWinRegular" Ordinal="18" DbType="8" Precision="10" />
+                    <Field Name="NumOfPointsToWinTieBreak" Ordinal="19" DbType="8" Precision="10" />
+                    <Field Name="MaxTimeouts" Ordinal="20" DbType="8" Precision="10" />
+                    <Field Name="MaxSubstitutions" Ordinal="21" DbType="8" Precision="10" />
+                    <Field Name="ChangeSerial" Ordinal="22" DbType="0" Precision="19" />
+                    <Field Name="Remarks" Ordinal="23" IsOptional="true" DbType="12" Length="2147483647" />
+                    <Field Name="ModifiedOn" Ordinal="24" DbType="4" />
+                  </Fields>
+                </View>
+                <View Name="MatchToPlayRaw">
+                  <Fields>
+                    <Field Name="Id" Ordinal="1" DbType="0" Precision="19" />
+                    <Field Name="TournamentId" Ordinal="2" IsOptional="true" DbType="0" Precision="19" />
+                    <Field Name="RoundId" Ordinal="3" DbType="0" Precision="19" />
+                    <Field Name="HomeTeamId" Ordinal="4" DbType="0" Precision="19" />
+                    <Field Name="GuestTeamId" Ordinal="5" DbType="0" Precision="19" />
+                    <Field Name="VenueId" Ordinal="6" IsOptional="true" DbType="0" Precision="19" />
+                    <Field Name="MatchDate" Ordinal="7" IsOptional="true" DbType="4" />
+                    <Field Name="ModifiedOn" Ordinal="8" DbType="4" />
+                  </Fields>
+                </View>
+                <View Name="PlannedMatch">
+                  <Fields>
+                    <Field Name="Id" Ordinal="1" DbType="0" Precision="19" />
+                    <Field Name="TournamentId" Ordinal="2" IsOptional="true" DbType="0" Precision="19" />
+                    <Field Name="TournamentName" Ordinal="3" DbType="12" Length="255" />
+                    <Field Name="RoundId" Ordinal="4" DbType="0" Precision="19" />
+                    <Field Name="RoundName" Ordinal="5" DbType="12" Length="255" />
+                    <Field Name="RoundDescription" Ordinal="6" DbType="12" Length="255" />
+                    <Field Name="RoundTypeName" Ordinal="7" DbType="12" Length="255" />
+                    <Field Name="RoundTypeDescription" Ordinal="8" DbType="12" Length="255" />
+                    <Field Name="RoundLegSequenceNo" Ordinal="9" DbType="8" Precision="10" />
+                    <Field Name="RoundLegDescription" Ordinal="10" IsOptional="true" DbType="12" Length="255" />
+                    <Field Name="HomeTeamId" Ordinal="11" DbType="0" Precision="19" />
+                    <Field Name="HomeTeamNameForRound" Ordinal="12" IsOptional="true" DbType="12" Length="255" />
+                    <Field Name="GuestTeamId" Ordinal="13" DbType="0" Precision="19" />
+                    <Field Name="GuestTeamNameForRound" Ordinal="14" IsOptional="true" DbType="12" Length="255" />
+                    <Field Name="PlannedStart" Ordinal="15" IsOptional="true" DbType="4" />
+                    <Field Name="PlannedEnd" Ordinal="16" IsOptional="true" DbType="4" />
+                    <Field Name="OrigPlannedStart" Ordinal="17" IsOptional="true" DbType="4" />
+                    <Field Name="OrigPlannedEnd" Ordinal="18" IsOptional="true" DbType="4" />
+                    <Field Name="VenueId" Ordinal="19" IsOptional="true" DbType="0" Precision="19" />
+                    <Field Name="VenueName" Ordinal="20" IsOptional="true" DbType="12" Length="255" />
+                    <Field Name="VenueExtension" Ordinal="21" IsOptional="true" DbType="12" Length="255" />
+                    <Field Name="OrigVenueId" Ordinal="22" IsOptional="true" DbType="0" Precision="19" />
+                    <Field Name="OrigVenueName" Ordinal="23" IsOptional="true" DbType="12" Length="255" />
+                    <Field Name="OrigVenueExtension" Ordinal="24" IsOptional="true" DbType="12" Length="255" />
+                    <Field Name="ChangeSerial" Ordinal="25" DbType="0" Precision="19" />
+                    <Field Name="Remarks" Ordinal="26" IsOptional="true" DbType="12" Length="2147483647" />
+                    <Field Name="ModifiedOn" Ordinal="27" DbType="4" />
+                  </Fields>
+                </View>
+                <View Name="RankingList">
+                  <Fields>
+                    <Field Name="TournamentId" Ordinal="1" DbType="0" Precision="19" />
+                    <Field Name="TournamentName" Ordinal="2" DbType="12" Length="255" />
+                    <Field Name="TournamentDescription" Ordinal="3" IsOptional="true" DbType="12" Length="255" />
+                    <Field Name="TournamentIsComplete" Ordinal="4" DbType="2" />
+                    <Field Name="RoundId" Ordinal="5" DbType="0" Precision="19" />
+                    <Field Name="RoundName" Ordinal="6" DbType="12" Length="255" />
+                    <Field Name="RoundDescription" Ordinal="7" DbType="12" Length="255" />
+                    <Field Name="RoundTypeName" Ordinal="8" DbType="12" Length="255" />
+                    <Field Name="RoundTypeDescription" Ordinal="9" DbType="12" Length="255" />
+                    <Field Name="TeamId" Ordinal="10" DbType="0" Precision="19" />
+                    <Field Name="TeamName" Ordinal="11" DbType="12" Length="255" />
+                    <Field Name="TeamNameForRound" Ordinal="12" IsOptional="true" DbType="12" Length="255" />
+                    <Field Name="ClubName" Ordinal="13" IsOptional="true" DbType="12" Length="255" />
+                    <Field Name="ValuationDate" Ordinal="14" DbType="4" />
+                    <Field Name="Rank" Ordinal="15" DbType="8" Precision="10" />
+                    <Field Name="MatchPointsWon" Ordinal="16" IsOptional="true" DbType="8" Precision="10" />
+                    <Field Name="MatchPointsLost" Ordinal="17" IsOptional="true" DbType="8" Precision="10" />
+                    <Field Name="SetPointsWon" Ordinal="18" IsOptional="true" DbType="8" Precision="10" />
+                    <Field Name="SetPointsLost" Ordinal="19" IsOptional="true" DbType="8" Precision="10" />
+                    <Field Name="BallPointsWon" Ordinal="20" IsOptional="true" DbType="8" Precision="10" />
+                    <Field Name="BallPointsLost" Ordinal="21" IsOptional="true" DbType="8" Precision="10" />
+                    <Field Name="MatchesPlayed" Ordinal="22" DbType="8" Precision="10" />
+                    <Field Name="MatchesToPlay" Ordinal="23" DbType="8" Precision="10" />
+                    <Field Name="ModifiedOn" Ordinal="24" DbType="4" />
+                  </Fields>
+                </View>
+                <View Name="RoundLegPeriod">
+                  <Fields>
+                    <Field Name="TournamentId" Ordinal="1" IsOptional="true" DbType="0" Precision="19" />
+                    <Field Name="RoundId" Ordinal="2" DbType="0" Precision="19" />
+                    <Field Name="LegId" Ordinal="3" DbType="0" Precision="19" />
+                    <Field Name="SequenceNo" Ordinal="4" DbType="8" Precision="10" />
+                    <Field Name="StartDateTime" Ordinal="5" DbType="4" />
+                    <Field Name="EndDateTime" Ordinal="6" DbType="4" />
+                  </Fields>
+                </View>
+                <View Name="RoundTeam">
+                  <Fields>
+                    <Field Name="RoundId" Ordinal="1" DbType="0" Precision="19" />
+                    <Field Name="RoundName" Ordinal="2" DbType="12" Length="255" />
+                    <Field Name="RoundDescription" Ordinal="3" DbType="12" Length="255" />
+                    <Field Name="RoundTypeName" Ordinal="4" DbType="12" Length="255" />
+                    <Field Name="RoundTypeDescription" Ordinal="5" DbType="12" Length="255" />
+                    <Field Name="TeamId" Ordinal="6" DbType="0" Precision="19" />
+                    <Field Name="TeamName" Ordinal="7" DbType="12" Length="255" />
+                    <Field Name="TeamNameForRound" Ordinal="8" IsOptional="true" DbType="12" Length="255" />
+                    <Field Name="TeamClubName" Ordinal="9" IsOptional="true" DbType="12" Length="255" />
+                    <Field Name="TeamMatchDayOfWeek" Ordinal="10" IsOptional="true" DbType="8" Precision="10" />
+                    <Field Name="TeamMatchTime" Ordinal="11" IsOptional="true" DbType="31" />
+                    <Field Name="TeamPhoto" Ordinal="12" IsOptional="true" DbType="12" Length="255" />
+                    <Field Name="TeamModifiedOn" Ordinal="13" DbType="4" />
+                    <Field Name="TournamentId" Ordinal="14" DbType="0" Precision="19" />
+                  </Fields>
+                </View>
+                <View Name="TeamUserRound">
+                  <Fields>
+                    <Field Name="TeamId" Ordinal="1" DbType="0" Precision="19" />
+                    <Field Name="TeamName" Ordinal="2" DbType="12" Length="255" />
+                    <Field Name="TeamNameForRound" Ordinal="3" IsOptional="true" DbType="12" Length="255" />
+                    <Field Name="MatchDayOfWeek" Ordinal="4" IsOptional="true" DbType="8" Precision="10" />
+                    <Field Name="MatchWeekday" Ordinal="5" IsOptional="true" DbType="12" Length="4000" />
+                    <Field Name="MatchTime" Ordinal="6" IsOptional="true" DbType="31" />
+                    <Field Name="ClubName" Ordinal="7" IsOptional="true" DbType="12" Length="255" />
+                    <Field Name="PhotoFilename" Ordinal="8" IsOptional="true" DbType="12" Length="255" />
+                    <Field Name="TeamModifiedOn" Ordinal="9" DbType="4" />
+                    <Field Name="UserId" Ordinal="10" DbType="0" Precision="19" />
+                    <Field Name="Gender" Ordinal="11" DbType="12" Length="1" />
+                    <Field Name="Title" Ordinal="12" DbType="12" Length="255" />
+                    <Field Name="FirstName" Ordinal="13" DbType="12" Length="255" />
+                    <Field Name="MiddleName" Ordinal="14" DbType="12" Length="255" />
+                    <Field Name="LastName" Ordinal="15" DbType="12" Length="255" />
+                    <Field Name="Nickname" Ordinal="16" DbType="12" Length="255" />
+                    <Field Name="PhoneNumber" Ordinal="17" DbType="12" Length="40" />
+                    <Field Name="PhoneNumber2" Ordinal="18" DbType="12" Length="40" />
+                    <Field Name="Email" Ordinal="19" DbType="12" Length="255" />
+                    <Field Name="Email2" Ordinal="20" DbType="12" Length="100" />
+                    <Field Name="UserModifiedOn" Ordinal="21" DbType="4" />
+                    <Field Name="IsManager" Ordinal="22" DbType="2" />
+                    <Field Name="IsPlayer" Ordinal="23" DbType="2" />
+                    <Field Name="RoundId" Ordinal="24" DbType="0" Precision="19" />
+                    <Field Name="RoundName" Ordinal="25" DbType="12" Length="255" />
+                    <Field Name="RoundDescription" Ordinal="26" DbType="12" Length="255" />
+                    <Field Name="TournamentId" Ordinal="27" IsOptional="true" DbType="0" Precision="19" />
+                  </Fields>
+                </View>
+                <View Name="TeamVenueRound">
+                  <Fields>
+                    <Field Name="TeamId" Ordinal="1" DbType="0" Precision="19" />
+                    <Field Name="TeamName" Ordinal="2" DbType="12" Length="255" />
+                    <Field Name="TeamNameForRound" Ordinal="3" IsOptional="true" DbType="12" Length="255" />
+                    <Field Name="TeamClubName" Ordinal="4" IsOptional="true" DbType="12" Length="255" />
+                    <Field Name="TeamPhoto" Ordinal="5" IsOptional="true" DbType="12" Length="255" />
+                    <Field Name="MatchDayOfWeek" Ordinal="6" IsOptional="true" DbType="8" Precision="10" />
+                    <Field Name="MatchWeekday" Ordinal="7" IsOptional="true" DbType="12" Length="4000" />
+                    <Field Name="MatchTime" Ordinal="8" IsOptional="true" DbType="31" />
+                    <Field Name="TeamModifiedOn" Ordinal="9" DbType="4" />
+                    <Field Name="VenueId" Ordinal="10" IsOptional="true" DbType="0" Precision="19" />
+                    <Field Name="VenueName" Ordinal="11" IsOptional="true" DbType="12" Length="255" />
+                    <Field Name="VenueStreet" Ordinal="12" IsOptional="true" DbType="12" Length="255" />
+                    <Field Name="VenuePostalCode" Ordinal="13" IsOptional="true" DbType="12" Length="10" />
+                    <Field Name="VenueCity" Ordinal="14" IsOptional="true" DbType="12" Length="255" />
+                    <Field Name="VenueDirection" Ordinal="15" IsOptional="true" DbType="12" Length="2147483647" />
+                    <Field Name="VenueLongitude" Ordinal="16" IsOptional="true" DbType="6" Precision="38" />
+                    <Field Name="VenueLatitude" Ordinal="17" IsOptional="true" DbType="6" Precision="38" />
+                    <Field Name="VenuePrecisePosition" Ordinal="18" IsOptional="true" DbType="2" />
+                    <Field Name="VenueModifiedOn" Ordinal="19" IsOptional="true" DbType="4" />
+                    <Field Name="RoundId" Ordinal="20" DbType="0" Precision="19" />
+                    <Field Name="RoundName" Ordinal="21" DbType="12" Length="255" />
+                    <Field Name="RoundDescription" Ordinal="22" DbType="12" Length="255" />
+                    <Field Name="RoundTypeName" Ordinal="23" DbType="12" Length="255" />
+                    <Field Name="RoundTypeDescription" Ordinal="24" DbType="12" Length="255" />
+                    <Field Name="TournamentId" Ordinal="25" DbType="0" Precision="19" />
+                  </Fields>
+                </View>
+                <View Name="VenueTeam">
+                  <Fields>
+                    <Field Name="VenueId" Ordinal="1" DbType="0" Precision="19" />
+                    <Field Name="VenueName" Ordinal="2" DbType="12" Length="255" />
+                    <Field Name="VenueExtension" Ordinal="3" DbType="12" Length="255" />
+                    <Field Name="Street" Ordinal="4" DbType="12" Length="255" />
+                    <Field Name="PostalCode" Ordinal="5" DbType="12" Length="10" />
+                    <Field Name="City" Ordinal="6" DbType="12" Length="255" />
+                    <Field Name="Direction" Ordinal="7" DbType="12" Length="2147483647" />
+                    <Field Name="Longitude" Ordinal="8" IsOptional="true" DbType="6" Precision="38" />
+                    <Field Name="Latitude" Ordinal="9" IsOptional="true" DbType="6" Precision="38" />
+                    <Field Name="PrecisePosition" Ordinal="10" DbType="2" />
+                    <Field Name="TeamId" Ordinal="11" DbType="0" Precision="19" />
+                    <Field Name="TeamName" Ordinal="12" DbType="12" Length="255" />
+                    <Field Name="TeamNameForRound" Ordinal="13" IsOptional="true" DbType="12" Length="255" />
+                    <Field Name="TeamClubName" Ordinal="14" IsOptional="true" DbType="12" Length="255" />
+                    <Field Name="TournamentId" Ordinal="15" DbType="0" Precision="19" />
+                    <Field Name="RoundId" Ordinal="16" DbType="0" Precision="19" />
+                  </Fields>
+                </View>
+              </Views>
+              <StoredProcedures>
+                <StoredProcedure Name="VenueDistance" NumberOfResultsets="1">
+                  <Parameters>
+                    <Parameter Name="@MaxDistance" Direction="1" Ordinal="1" DbType="6" Precision="38" />
+                    <Parameter Name="@Lat" Direction="1" Ordinal="2" DbType="6" Precision="38" />
+                    <Parameter Name="@Lng" Direction="1" Ordinal="3" DbType="6" Precision="38" />
+                  </Parameters>
+                  <Resultsets>
+                    <Resultset Name="Resultset1">
+                      <Fields>
+                        <Field Name="Id" Ordinal="1" DbType="0" Precision="19" />
+                        <Field Name="Name" Ordinal="2" DbType="12" Length="255" />
+                        <Field Name="Extension" Ordinal="3" DbType="12" Length="255" />
+                        <Field Name="Street" Ordinal="4" DbType="12" Length="255" />
+                        <Field Name="PostalCode" Ordinal="5" DbType="12" Length="10" />
+                        <Field Name="City" Ordinal="6" DbType="12" Length="255" />
+                        <Field Name="Longitude" Ordinal="7" IsOptional="true" DbType="6" Precision="15" />
+                        <Field Name="Latitude" Ordinal="8" IsOptional="true" DbType="6" Precision="15" />
+                        <Field Name="PrecisePosition" Ordinal="9" DbType="2" />
+                        <Field Name="Direction" Ordinal="10" DbType="12" Length="2147483647" />
+                        <Field Name="CreatedOn" Ordinal="11" DbType="4" />
+                        <Field Name="ModifiedOn" Ordinal="12" DbType="4" />
+                        <Field Name="Distance" Ordinal="13" DbType="6" Precision="15" />
+                      </Fields>
+                    </Resultset>
+                  </Resultsets>
+                </StoredProcedure>
+              </StoredProcedures>
+            </Schema>
+          </Schemas>
+          <ForeignKeyConstraints>
+            <ForeignKeyConstraint Name="dbo:AvailableMatchDate:FK_4d472ac4c12adb65ea0b4d3ff01" UpdateRuleAction="1" DeleteRuleAction="1">
+              <FieldPairs>
+                <FieldPair PkField="dbo:Team:Id" FkField="dbo:AvailableMatchDate:HomeTeamId" />
+              </FieldPairs>
+            </ForeignKeyConstraint>
+            <ForeignKeyConstraint Name="dbo:AvailableMatchDate:FK_74cccb8440e8cf75d4dd871747b">
+              <FieldPairs>
+                <FieldPair PkField="dbo:Venue:Id" FkField="dbo:AvailableMatchDate:VenueId" />
+              </FieldPairs>
+            </ForeignKeyConstraint>
+            <ForeignKeyConstraint Name="dbo:ExcludeMatchDate:ExcludeMatchDate_TournamentId_fk" UpdateRuleAction="1" DeleteRuleAction="1">
+              <FieldPairs>
+                <FieldPair PkField="dbo:Tournament:Id" FkField="dbo:ExcludeMatchDate:TournamentId" />
+              </FieldPairs>
+            </ForeignKeyConstraint>
+            <ForeignKeyConstraint Name="dbo:ExcludeMatchDate:FK_839b5ab411ba7bce29b0d4782c7" UpdateRuleAction="1" DeleteRuleAction="3">
+              <FieldPairs>
+                <FieldPair PkField="dbo:Round:Id" FkField="dbo:ExcludeMatchDate:RoundId" />
+              </FieldPairs>
+            </ForeignKeyConstraint>
+            <ForeignKeyConstraint Name="dbo:ExcludeMatchDate:FK_e059c2f4a6fbdd3147184f47ed1" UpdateRuleAction="1" DeleteRuleAction="3">
+              <FieldPairs>
+                <FieldPair PkField="dbo:Team:Id" FkField="dbo:ExcludeMatchDate:TeamId" />
+              </FieldPairs>
+            </ForeignKeyConstraint>
+            <ForeignKeyConstraint Name="dbo:IdentityRoleClaim:IdentityRoleClaim_Role_fk" UpdateRuleAction="1" DeleteRuleAction="1">
+              <FieldPairs>
+                <FieldPair PkField="dbo:IdentityRole:Id" FkField="dbo:IdentityRoleClaim:RoleId" />
+              </FieldPairs>
+            </ForeignKeyConstraint>
+            <ForeignKeyConstraint Name="dbo:IdentityUserClaim:IdentityUserClaim_User_fk" UpdateRuleAction="1" DeleteRuleAction="1">
+              <FieldPairs>
+                <FieldPair PkField="dbo:User:Id" FkField="dbo:IdentityUserClaim:UserId" />
+              </FieldPairs>
+            </ForeignKeyConstraint>
+            <ForeignKeyConstraint Name="dbo:IdentityUserLogin:Fk_UserLogin_User" UpdateRuleAction="1" DeleteRuleAction="1">
+              <FieldPairs>
+                <FieldPair PkField="dbo:User:Id" FkField="dbo:IdentityUserLogin:UserId" />
+              </FieldPairs>
+            </ForeignKeyConstraint>
+            <ForeignKeyConstraint Name="dbo:IdentityUserRole:Fk_UserRole_Role" UpdateRuleAction="1" DeleteRuleAction="1">
+              <FieldPairs>
+                <FieldPair PkField="dbo:IdentityRole:Id" FkField="dbo:IdentityUserRole:RoleId" />
+              </FieldPairs>
+            </ForeignKeyConstraint>
+            <ForeignKeyConstraint Name="dbo:IdentityUserRole:Fk_UserRole_User" UpdateRuleAction="1" DeleteRuleAction="1">
+              <FieldPairs>
+                <FieldPair PkField="dbo:User:Id" FkField="dbo:IdentityUserRole:UserId" />
+              </FieldPairs>
+            </ForeignKeyConstraint>
+            <ForeignKeyConstraint Name="dbo:IdentityUserToken:UserTokens_fk" UpdateRuleAction="1" DeleteRuleAction="1">
+              <FieldPairs>
+                <FieldPair PkField="dbo:User:Id" FkField="dbo:IdentityUserToken:UserId" />
+              </FieldPairs>
+            </ForeignKeyConstraint>
+            <ForeignKeyConstraint Name="dbo:ManagerOfTeam:FK_0e7569e46d2be7d0a9142edbb25" UpdateRuleAction="1" DeleteRuleAction="1">
+              <FieldPairs>
+                <FieldPair PkField="dbo:Team:Id" FkField="dbo:ManagerOfTeam:TeamId" />
+              </FieldPairs>
+            </ForeignKeyConstraint>
+            <ForeignKeyConstraint Name="dbo:ManagerOfTeam:FK_d308f7c4770bee43783a0e53d8f" UpdateRuleAction="1" DeleteRuleAction="1">
+              <FieldPairs>
+                <FieldPair PkField="dbo:User:Id" FkField="dbo:ManagerOfTeam:UserId" />
+              </FieldPairs>
+            </ForeignKeyConstraint>
+            <ForeignKeyConstraint Name="dbo:Match:FK_5c03c0c403195643ad89303cc4b" UpdateRuleAction="1" DeleteRuleAction="1">
+              <FieldPairs>
+                <FieldPair PkField="dbo:Round:Id" FkField="dbo:Match:RoundId" />
+              </FieldPairs>
+            </ForeignKeyConstraint>
+            <ForeignKeyConstraint Name="dbo:Match:FK_cb028e742dbbcefcdc18bc33d8c">
+              <FieldPairs>
+                <FieldPair PkField="dbo:Venue:Id" FkField="dbo:Match:VenueId" />
+              </FieldPairs>
+            </ForeignKeyConstraint>
+            <ForeignKeyConstraint Name="dbo:Match:FK_ce641dd44a79b6a0536029e5095">
+              <FieldPairs>
+                <FieldPair PkField="dbo:Team:Id" FkField="dbo:Match:GuestTeamId" />
+              </FieldPairs>
+            </ForeignKeyConstraint>
+            <ForeignKeyConstraint Name="dbo:Match:FK_ef1387a4716a86685ca94abfe03">
+              <FieldPairs>
+                <FieldPair PkField="dbo:Team:Id" FkField="dbo:Match:HomeTeamId" />
+              </FieldPairs>
+            </ForeignKeyConstraint>
+            <ForeignKeyConstraint Name="dbo:Match:FK_f7bed0a4ecbbddad75d0016be12">
+              <FieldPairs>
+                <FieldPair PkField="dbo:Venue:Id" FkField="dbo:Match:OrigVenueId" />
+              </FieldPairs>
+            </ForeignKeyConstraint>
+            <ForeignKeyConstraint Name="dbo:Match:FK_fc8dfc04f2d86db9b7c1f85ab55">
+              <FieldPairs>
+                <FieldPair PkField="dbo:Team:Id" FkField="dbo:Match:RefereeId" />
+              </FieldPairs>
+            </ForeignKeyConstraint>
+            <ForeignKeyConstraint Name="dbo:PlayerInTeam:FK_1f583a545568a2d84dc9b3c3e85" UpdateRuleAction="1" DeleteRuleAction="1">
+              <FieldPairs>
+                <FieldPair PkField="dbo:User:Id" FkField="dbo:PlayerInTeam:UserId" />
+              </FieldPairs>
+            </ForeignKeyConstraint>
+            <ForeignKeyConstraint Name="dbo:PlayerInTeam:FK_5de6c0349c79218e00c605092ae" UpdateRuleAction="1" DeleteRuleAction="1">
+              <FieldPairs>
+                <FieldPair PkField="dbo:Team:Id" FkField="dbo:PlayerInTeam:TeamId" />
+              </FieldPairs>
+            </ForeignKeyConstraint>
+            <ForeignKeyConstraint Name="dbo:Ranking:FK_2074dbd428a8d48582fdeaa4b8c" UpdateRuleAction="1" DeleteRuleAction="1">
+              <FieldPairs>
+                <FieldPair PkField="dbo:Team:Id" FkField="dbo:Ranking:TeamId" />
+              </FieldPairs>
+            </ForeignKeyConstraint>
+            <ForeignKeyConstraint Name="dbo:Ranking:FK_ba19e0b4cd4a24b99b094d481f7" UpdateRuleAction="1" DeleteRuleAction="1">
+              <FieldPairs>
+                <FieldPair PkField="dbo:Round:Id" FkField="dbo:Ranking:RoundId" />
+              </FieldPairs>
+            </ForeignKeyConstraint>
+            <ForeignKeyConstraint Name="dbo:Ranking:FK_c8e677848abac5f1b8bf13ea775" UpdateRuleAction="1" DeleteRuleAction="1">
+              <FieldPairs>
+                <FieldPair PkField="dbo:Tournament:Id" FkField="dbo:Ranking:TournamentId" />
+              </FieldPairs>
+            </ForeignKeyConstraint>
+            <ForeignKeyConstraint Name="dbo:Registration:FK_4462bad40269915324df04e014d" UpdateRuleAction="1" DeleteRuleAction="1">
+              <FieldPairs>
+                <FieldPair PkField="dbo:User:Id" FkField="dbo:Registration:ManagerId" />
+              </FieldPairs>
+            </ForeignKeyConstraint>
+            <ForeignKeyConstraint Name="dbo:Registration:FK_7bab7f542cbbe91cec71043643e" UpdateRuleAction="1" DeleteRuleAction="1">
+              <FieldPairs>
+                <FieldPair PkField="dbo:Team:Id" FkField="dbo:Registration:TeamId" />
+              </FieldPairs>
+            </ForeignKeyConstraint>
+            <ForeignKeyConstraint Name="dbo:Registration:FK_b3d49004f0692a3e027b9b68624" UpdateRuleAction="1" DeleteRuleAction="1">
+              <FieldPairs>
+                <FieldPair PkField="dbo:Tournament:Id" FkField="dbo:Registration:TournamentId" />
+              </FieldPairs>
+            </ForeignKeyConstraint>
+            <ForeignKeyConstraint Name="dbo:Round:Round_MatchRule" UpdateRuleAction="1">
+              <FieldPairs>
+                <FieldPair PkField="dbo:MatchRule:Id" FkField="dbo:Round:MatchRuleId" />
+              </FieldPairs>
+            </ForeignKeyConstraint>
+            <ForeignKeyConstraint Name="dbo:Round:Round_NextRound">
+              <FieldPairs>
+                <FieldPair PkField="dbo:Round:Id" FkField="dbo:Round:NextRoundId" />
+              </FieldPairs>
+            </ForeignKeyConstraint>
+            <ForeignKeyConstraint Name="dbo:Round:Round_RoundType" UpdateRuleAction="1">
+              <FieldPairs>
+                <FieldPair PkField="dbo:RoundType:Id" FkField="dbo:Round:TypeId" />
+              </FieldPairs>
+            </ForeignKeyConstraint>
+            <ForeignKeyConstraint Name="dbo:Round:Round_SetRule" UpdateRuleAction="1">
+              <FieldPairs>
+                <FieldPair PkField="dbo:SetRule:Id" FkField="dbo:Round:SetRuleId" />
+              </FieldPairs>
+            </ForeignKeyConstraint>
+            <ForeignKeyConstraint Name="dbo:Round:Round_Tournament">
+              <FieldPairs>
+                <FieldPair PkField="dbo:Tournament:Id" FkField="dbo:Round:TournamentId" />
+              </FieldPairs>
+            </ForeignKeyConstraint>
+            <ForeignKeyConstraint Name="dbo:RoundLeg:FK_b06fad141949b946948a4b7b238" UpdateRuleAction="1" DeleteRuleAction="1">
+              <FieldPairs>
+                <FieldPair PkField="dbo:Round:Id" FkField="dbo:RoundLeg:RoundId" />
+              </FieldPairs>
+            </ForeignKeyConstraint>
+            <ForeignKeyConstraint Name="dbo:Set:FK_a5d0fa848aab17137435c5e2c47" UpdateRuleAction="1" DeleteRuleAction="1">
+              <FieldPairs>
+                <FieldPair PkField="dbo:Match:Id" FkField="dbo:Set:MatchId" />
+              </FieldPairs>
+            </ForeignKeyConstraint>
+            <ForeignKeyConstraint Name="dbo:Team:FK_e13a4a24741b2e5a717f9c696a8">
+              <FieldPairs>
+                <FieldPair PkField="dbo:Venue:Id" FkField="dbo:Team:VenueId" />
+              </FieldPairs>
+            </ForeignKeyConstraint>
+            <ForeignKeyConstraint Name="dbo:TeamInRound:FK_144927a424e8f34c15e8854f3c9" UpdateRuleAction="1">
+              <FieldPairs>
+                <FieldPair PkField="dbo:Round:Id" FkField="dbo:TeamInRound:RoundId" />
+              </FieldPairs>
+            </ForeignKeyConstraint>
+            <ForeignKeyConstraint Name="dbo:TeamInRound:FK_b5d92d5411191fa54e97410ad0f" UpdateRuleAction="1" DeleteRuleAction="1">
+              <FieldPairs>
+                <FieldPair PkField="dbo:Team:Id" FkField="dbo:TeamInRound:TeamId" />
+              </FieldPairs>
+            </ForeignKeyConstraint>
+            <ForeignKeyConstraint Name="dbo:Tournament:FK_7fdd8614f9d8df5c5df69e60586">
+              <FieldPairs>
+                <FieldPair PkField="dbo:Tournament:Id" FkField="dbo:Tournament:NextTournamentId" />
+              </FieldPairs>
+            </ForeignKeyConstraint>
+            <ForeignKeyConstraint Name="dbo:Tournament:FK_b1c85dc49a0ad94cf65182015cb" UpdateRuleAction="1" DeleteRuleAction="3">
+              <FieldPairs>
+                <FieldPair PkField="dbo:TournamentType:Id" FkField="dbo:Tournament:TypeId" />
+              </FieldPairs>
+            </ForeignKeyConstraint>
+          </ForeignKeyConstraints>
+        </Catalog>
+      </Catalogs>
+    </TargetDatabase>
+  </TargetDatabases>
+  <MappingStores>
+    <MappingStore Type="2D18D138-1DD2-467E-86CC-4838250611AE">
+      <EntityMappings>
+        <EntityMapping EntityName=":AvailableMatchDate" TargetName="TestOrg:dbo:AvailableMatchDate">
+          <FieldMappings>
+            <FieldMapping FieldName="CreatedOn" TargetFieldName="CreatedOn" />
+            <FieldMapping FieldName="HomeTeamId" TargetFieldName="HomeTeamId" />
+            <FieldMapping FieldName="Id" TargetFieldName="Id" SequenceToUse="SCOPE_IDENTITY()" />
+            <FieldMapping FieldName="IsGenerated" TargetFieldName="IsGenerated" />
+            <FieldMapping FieldName="MatchEndTime" TargetFieldName="MatchEndTime" />
+            <FieldMapping FieldName="MatchStartTime" TargetFieldName="MatchStartTime" />
+            <FieldMapping FieldName="ModifiedOn" TargetFieldName="ModifiedOn" />
+            <FieldMapping FieldName="TournamentId" TargetFieldName="TournamentId" />
+            <FieldMapping FieldName="VenueId" TargetFieldName="VenueId" />
+          </FieldMappings>
+        </EntityMapping>
+        <EntityMapping EntityName=":ExcludeMatchDate" TargetName="TestOrg:dbo:ExcludeMatchDate">
+          <FieldMappings>
+            <FieldMapping FieldName="CreatedOn" TargetFieldName="CreatedOn" />
+            <FieldMapping FieldName="DateFrom" TargetFieldName="DateFrom" />
+            <FieldMapping FieldName="DateTo" TargetFieldName="DateTo" />
+            <FieldMapping FieldName="Id" TargetFieldName="Id" SequenceToUse="SCOPE_IDENTITY()" />
+            <FieldMapping FieldName="ModifiedOn" TargetFieldName="ModifiedOn" />
+            <FieldMapping FieldName="Reason" TargetFieldName="Reason" />
+            <FieldMapping FieldName="RoundId" TargetFieldName="RoundId" />
+            <FieldMapping FieldName="TeamId" TargetFieldName="TeamId" />
+            <FieldMapping FieldName="TournamentId" TargetFieldName="TournamentId" />
+          </FieldMappings>
+        </EntityMapping>
+        <EntityMapping EntityName=":IdentityRole" TargetName="TestOrg:dbo:IdentityRole">
+          <FieldMappings>
+            <FieldMapping FieldName="Id" TargetFieldName="Id" SequenceToUse="SCOPE_IDENTITY()" />
+            <FieldMapping FieldName="Name" TargetFieldName="Name" />
+          </FieldMappings>
+        </EntityMapping>
+        <EntityMapping EntityName=":IdentityRoleClaim" TargetName="TestOrg:dbo:IdentityRoleClaim">
+          <FieldMappings>
+            <FieldMapping FieldName="ClaimType" TargetFieldName="ClaimType" />
+            <FieldMapping FieldName="ClaimValue" TargetFieldName="ClaimValue" />
+            <FieldMapping FieldName="Id" TargetFieldName="Id" SequenceToUse="SCOPE_IDENTITY()" />
+            <FieldMapping FieldName="Issuer" TargetFieldName="Issuer" />
+            <FieldMapping FieldName="RoleId" TargetFieldName="RoleId" />
+            <FieldMapping FieldName="ValueType" TargetFieldName="ValueType" />
+          </FieldMappings>
+        </EntityMapping>
+        <EntityMapping EntityName=":IdentityUserClaim" TargetName="TestOrg:dbo:IdentityUserClaim">
+          <FieldMappings>
+            <FieldMapping FieldName="ClaimType" TargetFieldName="ClaimType" />
+            <FieldMapping FieldName="ClaimValue" TargetFieldName="ClaimValue" />
+            <FieldMapping FieldName="Id" TargetFieldName="Id" SequenceToUse="SCOPE_IDENTITY()" />
+            <FieldMapping FieldName="Issuer" TargetFieldName="Issuer" />
+            <FieldMapping FieldName="UserId" TargetFieldName="UserId" />
+            <FieldMapping FieldName="ValueType" TargetFieldName="ValueType" />
+          </FieldMappings>
+        </EntityMapping>
+        <EntityMapping EntityName=":IdentityUserLogin" TargetName="TestOrg:dbo:IdentityUserLogin">
+          <FieldMappings>
+            <FieldMapping FieldName="Id" TargetFieldName="Id" SequenceToUse="SCOPE_IDENTITY()" />
+            <FieldMapping FieldName="LoginProvider" TargetFieldName="LoginProvider" />
+            <FieldMapping FieldName="ProviderDisplayName" TargetFieldName="ProviderDisplayName" />
+            <FieldMapping FieldName="ProviderKey" TargetFieldName="ProviderKey" />
+            <FieldMapping FieldName="UserId" TargetFieldName="UserId" />
+          </FieldMappings>
+        </EntityMapping>
+        <EntityMapping EntityName=":IdentityUserRole" TargetName="TestOrg:dbo:IdentityUserRole">
+          <FieldMappings>
+            <FieldMapping FieldName="Id" TargetFieldName="Id" SequenceToUse="SCOPE_IDENTITY()" />
+            <FieldMapping FieldName="RoleId" TargetFieldName="RoleId" />
+            <FieldMapping FieldName="UserId" TargetFieldName="UserId" />
+          </FieldMappings>
+        </EntityMapping>
+        <EntityMapping EntityName=":IdentityUserToken" TargetName="TestOrg:dbo:IdentityUserToken">
+          <FieldMappings>
+            <FieldMapping FieldName="Id" TargetFieldName="Id" SequenceToUse="SCOPE_IDENTITY()" />
+            <FieldMapping FieldName="LoginProvider" TargetFieldName="LoginProvider" />
+            <FieldMapping FieldName="Name" TargetFieldName="Name" />
+            <FieldMapping FieldName="UserId" TargetFieldName="UserId" />
+            <FieldMapping FieldName="Value" TargetFieldName="Value" />
+          </FieldMappings>
+        </EntityMapping>
+        <EntityMapping EntityName=":ManagerOfTeam" TargetName="TestOrg:dbo:ManagerOfTeam">
+          <FieldMappings>
+            <FieldMapping FieldName="CreatedOn" TargetFieldName="CreatedOn" />
+            <FieldMapping FieldName="Id" TargetFieldName="Id" SequenceToUse="SCOPE_IDENTITY()" />
+            <FieldMapping FieldName="ModifiedOn" TargetFieldName="ModifiedOn" />
+            <FieldMapping FieldName="TeamId" TargetFieldName="TeamId" />
+            <FieldMapping FieldName="UserId" TargetFieldName="UserId" />
+          </FieldMappings>
+        </EntityMapping>
+        <EntityMapping EntityName=":Match" TargetName="TestOrg:dbo:Match">
+          <FieldMappings>
+            <FieldMapping FieldName="ChangeSerial" TargetFieldName="ChangeSerial" />
+            <FieldMapping FieldName="CreatedOn" TargetFieldName="CreatedOn" />
+            <FieldMapping FieldName="GuestPoints" TargetFieldName="GuestPoints" />
+            <FieldMapping FieldName="GuestTeamId" TargetFieldName="GuestTeamId" />
+            <FieldMapping FieldName="HomePoints" TargetFieldName="HomePoints" />
+            <FieldMapping FieldName="HomeTeamId" TargetFieldName="HomeTeamId" />
+            <FieldMapping FieldName="Id" TargetFieldName="Id" SequenceToUse="SCOPE_IDENTITY()" />
+            <FieldMapping FieldName="IsComplete" TargetFieldName="IsComplete" />
+            <FieldMapping FieldName="IsOverruled" TargetFieldName="IsOverruled" />
+            <FieldMapping FieldName="LegSequenceNo" TargetFieldName="LegSequenceNo" />
+            <FieldMapping FieldName="ModifiedOn" TargetFieldName="ModifiedOn" />
+            <FieldMapping FieldName="OrigPlannedEnd" TargetFieldName="OrigPlannedEnd" />
+            <FieldMapping FieldName="OrigPlannedStart" TargetFieldName="OrigPlannedStart" />
+            <FieldMapping FieldName="OrigVenueId" TargetFieldName="OrigVenueId" />
+            <FieldMapping FieldName="PlannedEnd" TargetFieldName="PlannedEnd" />
+            <FieldMapping FieldName="PlannedStart" TargetFieldName="PlannedStart" />
+            <FieldMapping FieldName="RealEnd" TargetFieldName="RealEnd" />
+            <FieldMapping FieldName="RealStart" TargetFieldName="RealStart" />
+            <FieldMapping FieldName="RefereeId" TargetFieldName="RefereeId" />
+            <FieldMapping FieldName="Remarks" TargetFieldName="Remarks" />
+            <FieldMapping FieldName="RoundId" TargetFieldName="RoundId" />
+            <FieldMapping FieldName="VenueId" TargetFieldName="VenueId" />
+          </FieldMappings>
+        </EntityMapping>
+        <EntityMapping EntityName=":MatchRule" TargetName="TestOrg:dbo:MatchRule">
+          <FieldMappings>
+            <FieldMapping FieldName="BestOf" TargetFieldName="BestOf" />
+            <FieldMapping FieldName="CreatedOn" TargetFieldName="CreatedOn" />
+            <FieldMapping FieldName="Id" TargetFieldName="Id" SequenceToUse="SCOPE_IDENTITY()" />
+            <FieldMapping FieldName="ModifiedOn" TargetFieldName="ModifiedOn" />
+            <FieldMapping FieldName="Name" TargetFieldName="Name" />
+            <FieldMapping FieldName="NumOfSets" TargetFieldName="NumOfSets" />
+            <FieldMapping FieldName="PointsMatchLost" TargetFieldName="PointsMatchLost" />
+            <FieldMapping FieldName="PointsMatchLostAfterTieBreak" TargetFieldName="PointsMatchLostAfterTieBreak" />
+            <FieldMapping FieldName="PointsMatchTie" TargetFieldName="PointsMatchTie" />
+            <FieldMapping FieldName="PointsMatchWon" TargetFieldName="PointsMatchWon" />
+            <FieldMapping FieldName="PointsMatchWonAfterTieBreak" TargetFieldName="PointsMatchWonAfterTieBreak" />
+            <FieldMapping FieldName="RankComparer" TargetFieldName="RankComparer" />
+          </FieldMappings>
+        </EntityMapping>
+        <EntityMapping EntityName=":PlayerInTeam" TargetName="TestOrg:dbo:PlayerInTeam">
+          <FieldMappings>
+            <FieldMapping FieldName="CreatedOn" TargetFieldName="CreatedOn" />
+            <FieldMapping FieldName="Id" TargetFieldName="Id" SequenceToUse="SCOPE_IDENTITY()" />
+            <FieldMapping FieldName="ModifiedOn" TargetFieldName="ModifiedOn" />
+            <FieldMapping FieldName="TeamId" TargetFieldName="TeamId" />
+            <FieldMapping FieldName="UserId" TargetFieldName="UserId" />
+          </FieldMappings>
+        </EntityMapping>
+        <EntityMapping EntityName=":Ranking" TargetName="TestOrg:dbo:Ranking">
+          <FieldMappings>
+            <FieldMapping FieldName="BallPointsLost" TargetFieldName="BallPointsLost" />
+            <FieldMapping FieldName="BallPointsWon" TargetFieldName="BallPointsWon" />
+            <FieldMapping FieldName="CreatedOn" TargetFieldName="CreatedOn" />
+            <FieldMapping FieldName="Id" TargetFieldName="Id" SequenceToUse="SCOPE_IDENTITY()" />
+            <FieldMapping FieldName="MatchesPlayed" TargetFieldName="MatchesPlayed" />
+            <FieldMapping FieldName="MatchesToPlay" TargetFieldName="MatchesToPlay" />
+            <FieldMapping FieldName="MatchPointsLost" TargetFieldName="MatchPointsLost" />
+            <FieldMapping FieldName="MatchPointsWon" TargetFieldName="MatchPointsWon" />
+            <FieldMapping FieldName="ModifiedOn" TargetFieldName="ModifiedOn" />
+            <FieldMapping FieldName="Rank" TargetFieldName="Rank" />
+            <FieldMapping FieldName="RoundId" TargetFieldName="RoundId" />
+            <FieldMapping FieldName="SetPointsLost" TargetFieldName="SetPointsLost" />
+            <FieldMapping FieldName="SetPointsWon" TargetFieldName="SetPointsWon" />
+            <FieldMapping FieldName="TeamId" TargetFieldName="TeamId" />
+            <FieldMapping FieldName="TournamentId" TargetFieldName="TournamentId" />
+            <FieldMapping FieldName="ValuationDate" TargetFieldName="ValuationDate" />
+          </FieldMappings>
+        </EntityMapping>
+        <EntityMapping EntityName=":Registration" TargetName="TestOrg:dbo:Registration">
+          <FieldMappings>
+            <FieldMapping FieldName="AppliedOn" TargetFieldName="AppliedOn" />
+            <FieldMapping FieldName="AppliedWithMessage" TargetFieldName="AppliedWithMessage" />
+            <FieldMapping FieldName="Guid" TargetFieldName="Guid" />
+            <FieldMapping FieldName="Id" TargetFieldName="Id" SequenceToUse="SCOPE_IDENTITY()" />
+            <FieldMapping FieldName="ManagerId" TargetFieldName="ManagerId" />
+            <FieldMapping FieldName="TeamId" TargetFieldName="TeamId" />
+            <FieldMapping FieldName="TournamentId" TargetFieldName="TournamentId" />
+          </FieldMappings>
+        </EntityMapping>
+        <EntityMapping EntityName=":Round" TargetName="TestOrg:dbo:Round">
+          <FieldMappings>
+            <FieldMapping FieldName="CreatedOn" TargetFieldName="CreatedOn" />
+            <FieldMapping FieldName="Description" TargetFieldName="Description" />
+            <FieldMapping FieldName="Id" TargetFieldName="Id" SequenceToUse="SCOPE_IDENTITY()" />
+            <FieldMapping FieldName="IsComplete" TargetFieldName="IsComplete" />
+            <FieldMapping FieldName="MatchRuleId" TargetFieldName="MatchRuleId" />
+            <FieldMapping FieldName="ModifiedOn" TargetFieldName="ModifiedOn" />
+            <FieldMapping FieldName="Name" TargetFieldName="Name" />
+            <FieldMapping FieldName="NextRoundId" TargetFieldName="NextRoundId" />
+            <FieldMapping FieldName="NumOfLegs" TargetFieldName="NumOfLegs" />
+            <FieldMapping FieldName="SetRuleId" TargetFieldName="SetRuleId" />
+            <FieldMapping FieldName="TournamentId" TargetFieldName="TournamentId" />
+            <FieldMapping FieldName="TypeId" TargetFieldName="TypeId" />
+          </FieldMappings>
+        </EntityMapping>
+        <EntityMapping EntityName=":RoundLeg" TargetName="TestOrg:dbo:RoundLeg">
+          <FieldMappings>
+            <FieldMapping FieldName="CreatedOn" TargetFieldName="CreatedOn" />
+            <FieldMapping FieldName="Description" TargetFieldName="Description" />
+            <FieldMapping FieldName="EndDateTime" TargetFieldName="EndDateTime" />
+            <FieldMapping FieldName="Id" TargetFieldName="Id" SequenceToUse="SCOPE_IDENTITY()" />
+            <FieldMapping FieldName="ModifiedOn" TargetFieldName="ModifiedOn" />
+            <FieldMapping FieldName="RoundId" TargetFieldName="RoundId" />
+            <FieldMapping FieldName="SequenceNo" TargetFieldName="SequenceNo" />
+            <FieldMapping FieldName="StartDateTime" TargetFieldName="StartDateTime" />
+          </FieldMappings>
+        </EntityMapping>
+        <EntityMapping EntityName=":RoundType" TargetName="TestOrg:dbo:RoundType">
+          <FieldMappings>
+            <FieldMapping FieldName="CreatedOn" TargetFieldName="CreatedOn" />
+            <FieldMapping FieldName="Description" TargetFieldName="Description" />
+            <FieldMapping FieldName="Id" TargetFieldName="Id" SequenceToUse="SCOPE_IDENTITY()" />
+            <FieldMapping FieldName="ModifiedOn" TargetFieldName="ModifiedOn" />
+            <FieldMapping FieldName="Name" TargetFieldName="Name" />
+          </FieldMappings>
+        </EntityMapping>
+        <EntityMapping EntityName=":Set" TargetName="TestOrg:dbo:Set">
+          <FieldMappings>
+            <FieldMapping FieldName="CreatedOn" TargetFieldName="CreatedOn" />
+            <FieldMapping FieldName="GuestBallPoints" TargetFieldName="GuestBallPoints" />
+            <FieldMapping FieldName="GuestSetPoints" TargetFieldName="GuestSetPoints" />
+            <FieldMapping FieldName="GuestTimeout" TargetFieldName="GuestTimeout" />
+            <FieldMapping FieldName="HomeBallPoints" TargetFieldName="HomeBallPoints" />
+            <FieldMapping FieldName="HomeSetPoints" TargetFieldName="HomeSetPoints" />
+            <FieldMapping FieldName="HomeTimeout" TargetFieldName="HomeTimeout" />
+            <FieldMapping FieldName="Id" TargetFieldName="Id" SequenceToUse="SCOPE_IDENTITY()" />
+            <FieldMapping FieldName="IsOverruled" TargetFieldName="IsOverruled" />
+            <FieldMapping FieldName="IsTieBreak" TargetFieldName="IsTieBreak" />
+            <FieldMapping FieldName="MatchId" TargetFieldName="MatchId" />
+            <FieldMapping FieldName="ModifiedOn" TargetFieldName="ModifiedOn" />
+            <FieldMapping FieldName="RealEnd" TargetFieldName="RealEnd" />
+            <FieldMapping FieldName="RealStart" TargetFieldName="RealStart" />
+            <FieldMapping FieldName="Remarks" TargetFieldName="Remarks" />
+            <FieldMapping FieldName="SequenceNo" TargetFieldName="SequenceNo" />
+          </FieldMappings>
+        </EntityMapping>
+        <EntityMapping EntityName=":SetRule" TargetName="TestOrg:dbo:SetRule">
+          <FieldMappings>
+            <FieldMapping FieldName="CreatedOn" TargetFieldName="CreatedOn" />
+            <FieldMapping FieldName="Id" TargetFieldName="Id" SequenceToUse="SCOPE_IDENTITY()" />
+            <FieldMapping FieldName="MaxSubstitutions" TargetFieldName="MaxSubstitutions" />
+            <FieldMapping FieldName="MaxTimeouts" TargetFieldName="MaxTimeouts" />
+            <FieldMapping FieldName="ModifiedOn" TargetFieldName="ModifiedOn" />
+            <FieldMapping FieldName="Name" TargetFieldName="Name" />
+            <FieldMapping FieldName="NumOfPointsToWinRegular" TargetFieldName="NumOfPointsToWinRegular" />
+            <FieldMapping FieldName="NumOfPointsToWinTiebreak" TargetFieldName="NumOfPointsToWinTiebreak" />
+            <FieldMapping FieldName="PointsDiffToWinRegular" TargetFieldName="PointsDiffToWinRegular" />
+            <FieldMapping FieldName="PointsDiffToWinTiebreak" TargetFieldName="PointsDiffToWinTiebreak" />
+            <FieldMapping FieldName="PointsSetLost" TargetFieldName="PointsSetLost" />
+            <FieldMapping FieldName="PointsSetTie" TargetFieldName="PointsSetTie" />
+            <FieldMapping FieldName="PointsSetWon" TargetFieldName="PointsSetWon" />
+          </FieldMappings>
+        </EntityMapping>
+        <EntityMapping EntityName=":Team" TargetName="TestOrg:dbo:Team">
+          <FieldMappings>
+            <FieldMapping FieldName="ClubName" TargetFieldName="ClubName" />
+            <FieldMapping FieldName="CreatedOn" TargetFieldName="CreatedOn" />
+            <FieldMapping FieldName="Id" TargetFieldName="Id" SequenceToUse="SCOPE_IDENTITY()" />
+            <FieldMapping FieldName="MatchDayOfWeek" TargetFieldName="MatchDayOfWeek" />
+            <FieldMapping FieldName="MatchTime" TargetFieldName="MatchTime" />
+            <FieldMapping FieldName="ModifiedOn" TargetFieldName="ModifiedOn" />
+            <FieldMapping FieldName="Name" TargetFieldName="Name" />
+            <FieldMapping FieldName="PhotoFilename" TargetFieldName="PhotoFilename" />
+            <FieldMapping FieldName="VenueId" TargetFieldName="VenueId" />
+          </FieldMappings>
+        </EntityMapping>
+        <EntityMapping EntityName=":TeamInRound" TargetName="TestOrg:dbo:TeamInRound">
+          <FieldMappings>
+            <FieldMapping FieldName="CreatedOn" TargetFieldName="CreatedOn" />
+            <FieldMapping FieldName="Id" TargetFieldName="Id" SequenceToUse="SCOPE_IDENTITY()" />
+            <FieldMapping FieldName="ModifiedOn" TargetFieldName="ModifiedOn" />
+            <FieldMapping FieldName="RoundId" TargetFieldName="RoundId" />
+            <FieldMapping FieldName="TeamId" TargetFieldName="TeamId" />
+            <FieldMapping FieldName="TeamNameForRound" TargetFieldName="TeamNameForRound" />
+          </FieldMappings>
+        </EntityMapping>
+        <EntityMapping EntityName=":Tournament" TargetName="TestOrg:dbo:Tournament">
+          <FieldMappings>
+            <FieldMapping FieldName="CreatedOn" TargetFieldName="CreatedOn" />
+            <FieldMapping FieldName="Description" TargetFieldName="Description" />
+            <FieldMapping FieldName="Id" TargetFieldName="Id" SequenceToUse="SCOPE_IDENTITY()" />
+            <FieldMapping FieldName="IsComplete" TargetFieldName="IsComplete" />
+            <FieldMapping FieldName="IsPlanningMode" TargetFieldName="IsPlanningMode" />
+            <FieldMapping FieldName="ModifiedOn" TargetFieldName="ModifiedOn" />
+            <FieldMapping FieldName="Name" TargetFieldName="Name" />
+            <FieldMapping FieldName="NextTournamentId" TargetFieldName="NextTournamentId" />
+            <FieldMapping FieldName="TypeId" TargetFieldName="TypeId" />
+          </FieldMappings>
+        </EntityMapping>
+        <EntityMapping EntityName=":TournamentType" TargetName="TestOrg:dbo:TournamentType">
+          <FieldMappings>
+            <FieldMapping FieldName="CreatedOn" TargetFieldName="CreatedOn" />
+            <FieldMapping FieldName="Description" TargetFieldName="Description" />
+            <FieldMapping FieldName="Id" TargetFieldName="Id" SequenceToUse="SCOPE_IDENTITY()" />
+            <FieldMapping FieldName="ModifiedOn" TargetFieldName="ModifiedOn" />
+            <FieldMapping FieldName="Name" TargetFieldName="Name" />
+          </FieldMappings>
+        </EntityMapping>
+        <EntityMapping EntityName=":User" TargetName="TestOrg:dbo:User">
+          <FieldMappings>
+            <FieldMapping FieldName="AccessFailedCount" TargetFieldName="AccessFailedCount" />
+            <FieldMapping FieldName="Birthday" TargetFieldName="Birthday" />
+            <FieldMapping FieldName="CreatedOn" TargetFieldName="CreatedOn" />
+            <FieldMapping FieldName="DoNotContact" TargetFieldName="DoNotContact" />
+            <FieldMapping FieldName="Email" TargetFieldName="Email" />
+            <FieldMapping FieldName="Email2" TargetFieldName="Email2" />
+            <FieldMapping FieldName="EmailConfirmedOn" TargetFieldName="EmailConfirmedOn" />
+            <FieldMapping FieldName="FirstName" TargetFieldName="FirstName" />
+            <FieldMapping FieldName="Gender" TargetFieldName="Gender" />
+            <FieldMapping FieldName="Guid" TargetFieldName="Guid" />
+            <FieldMapping FieldName="Id" TargetFieldName="Id" SequenceToUse="SCOPE_IDENTITY()" />
+            <FieldMapping FieldName="LastLoginOn" TargetFieldName="LastLoginOn" />
+            <FieldMapping FieldName="LastName" TargetFieldName="LastName" />
+            <FieldMapping FieldName="LockoutEndDateUtc" TargetFieldName="LockoutEndDateUtc" />
+            <FieldMapping FieldName="MiddleName" TargetFieldName="MiddleName" />
+            <FieldMapping FieldName="ModifiedOn" TargetFieldName="ModifiedOn" />
+            <FieldMapping FieldName="Nickname" TargetFieldName="Nickname" />
+            <FieldMapping FieldName="PasswordHash" TargetFieldName="PasswordHash" />
+            <FieldMapping FieldName="PhoneNumber" TargetFieldName="PhoneNumber" />
+            <FieldMapping FieldName="PhoneNumber2" TargetFieldName="PhoneNumber2" />
+            <FieldMapping FieldName="PhoneNumberConfirmedOn" TargetFieldName="PhoneNumberConfirmedOn" />
+            <FieldMapping FieldName="PhotoFilename" TargetFieldName="PhotoFilename" />
+            <FieldMapping FieldName="Remarks" TargetFieldName="Remarks" />
+            <FieldMapping FieldName="Title" TargetFieldName="Title" />
+            <FieldMapping FieldName="UserName" TargetFieldName="UserName" />
+          </FieldMappings>
+        </EntityMapping>
+        <EntityMapping EntityName=":Venue" TargetName="TestOrg:dbo:Venue">
+          <FieldMappings>
+            <FieldMapping FieldName="City" TargetFieldName="City" />
+            <FieldMapping FieldName="CreatedOn" TargetFieldName="CreatedOn" />
+            <FieldMapping FieldName="Direction" TargetFieldName="Direction" />
+            <FieldMapping FieldName="Extension" TargetFieldName="Extension" />
+            <FieldMapping FieldName="Id" TargetFieldName="Id" SequenceToUse="SCOPE_IDENTITY()" />
+            <FieldMapping FieldName="Latitude" TargetFieldName="Latitude" />
+            <FieldMapping FieldName="Longitude" TargetFieldName="Longitude" />
+            <FieldMapping FieldName="ModifiedOn" TargetFieldName="ModifiedOn" />
+            <FieldMapping FieldName="Name" TargetFieldName="Name" />
+            <FieldMapping FieldName="PostalCode" TargetFieldName="PostalCode" />
+            <FieldMapping FieldName="PrecisePosition" TargetFieldName="PrecisePosition" />
+            <FieldMapping FieldName="Street" TargetFieldName="Street" />
+          </FieldMappings>
+        </EntityMapping>
+      </EntityMappings>
+      <TypedViewMappings>
+        <TypedViewMapping TypedViewName=":Calendar" TargetName="TestOrg:dbo:Calendar">
+          <FieldMappings>
+            <FieldMapping FieldName="ChangeSerial" TargetFieldName="ChangeSerial" />
+            <FieldMapping FieldName="GuestTeamId" TargetFieldName="GuestTeamId" />
+            <FieldMapping FieldName="GuestTeamNameForRound" TargetFieldName="GuestTeamNameForRound" />
+            <FieldMapping FieldName="HomeTeamId" TargetFieldName="HomeTeamId" />
+            <FieldMapping FieldName="HomeTeamNameForRound" TargetFieldName="HomeTeamNameForRound" />
+            <FieldMapping FieldName="Id" TargetFieldName="Id" />
+            <FieldMapping FieldName="ModifiedOn" TargetFieldName="ModifiedOn" />
+            <FieldMapping FieldName="PlannedEnd" TargetFieldName="PlannedEnd" />
+            <FieldMapping FieldName="PlannedStart" TargetFieldName="PlannedStart" />
+            <FieldMapping FieldName="RoundDescription" TargetFieldName="RoundDescription" />
+            <FieldMapping FieldName="RoundId" TargetFieldName="RoundId" />
+            <FieldMapping FieldName="RoundName" TargetFieldName="RoundName" />
+            <FieldMapping FieldName="RoundTypeDescription" TargetFieldName="RoundTypeDescription" />
+            <FieldMapping FieldName="RoundTypeName" TargetFieldName="RoundTypeName" />
+            <FieldMapping FieldName="TournamentId" TargetFieldName="TournamentId" />
+            <FieldMapping FieldName="TournamentName" TargetFieldName="TournamentName" />
+            <FieldMapping FieldName="VenueCity" TargetFieldName="VenueCity" />
+            <FieldMapping FieldName="VenueDirection" TargetFieldName="VenueDirection" />
+            <FieldMapping FieldName="VenueExtension" TargetFieldName="VenueExtension" />
+            <FieldMapping FieldName="VenueId" TargetFieldName="VenueId" />
+            <FieldMapping FieldName="VenueLatitude" TargetFieldName="VenueLatitude" />
+            <FieldMapping FieldName="VenueLongitude" TargetFieldName="VenueLongitude" />
+            <FieldMapping FieldName="VenueName" TargetFieldName="VenueName" />
+            <FieldMapping FieldName="VenuePostalCode" TargetFieldName="VenuePostalCode" />
+            <FieldMapping FieldName="VenueStreet" TargetFieldName="VenueStreet" />
+          </FieldMappings>
+        </TypedViewMapping>
+        <TypedViewMapping TypedViewName=":CompletedMatch" TargetName="TestOrg:dbo:CompletedMatch">
+          <FieldMappings>
+            <FieldMapping FieldName="GuestBallPoints" TargetFieldName="GuestBallPoints" />
+            <FieldMapping FieldName="GuestMatchPoints" TargetFieldName="GuestMatchPoints" />
+            <FieldMapping FieldName="GuestSetPoints" TargetFieldName="GuestSetPoints" />
+            <FieldMapping FieldName="GuestTeamId" TargetFieldName="GuestTeamId" />
+            <FieldMapping FieldName="GuestTeamNameForRound" TargetFieldName="GuestTeamNameForRound" />
+            <FieldMapping FieldName="HomeBallPoints" TargetFieldName="HomeBallPoints" />
+            <FieldMapping FieldName="HomeMatchPoints" TargetFieldName="HomeMatchPoints" />
+            <FieldMapping FieldName="HomeSetPoints" TargetFieldName="HomeSetPoints" />
+            <FieldMapping FieldName="HomeTeamId" TargetFieldName="HomeTeamId" />
+            <FieldMapping FieldName="HomeTeamNameForRound" TargetFieldName="HomeTeamNameForRound" />
+            <FieldMapping FieldName="Id" TargetFieldName="Id" />
+            <FieldMapping FieldName="IsOverruled" TargetFieldName="IsOverruled" />
+            <FieldMapping FieldName="MatchDate" TargetFieldName="MatchDate" />
+            <FieldMapping FieldName="ModifiedOn" TargetFieldName="ModifiedOn" />
+            <FieldMapping FieldName="Remarks" TargetFieldName="Remarks" />
+            <FieldMapping FieldName="RoundDescription" TargetFieldName="RoundDescription" />
+            <FieldMapping FieldName="RoundId" TargetFieldName="RoundId" />
+            <FieldMapping FieldName="RoundLegDescription" TargetFieldName="RoundLegDescription" />
+            <FieldMapping FieldName="RoundLegSequenceNo" TargetFieldName="RoundLegSequenceNo" />
+            <FieldMapping FieldName="RoundName" TargetFieldName="RoundName" />
+            <FieldMapping FieldName="RoundTypeDescription" TargetFieldName="RoundTypeDescription" />
+            <FieldMapping FieldName="RoundTypeName" TargetFieldName="RoundTypeName" />
+            <FieldMapping FieldName="SetResults" TargetFieldName="SetResults" />
+            <FieldMapping FieldName="TournamentId" TargetFieldName="TournamentId" />
+            <FieldMapping FieldName="TournamentName" TargetFieldName="TournamentName" />
+            <FieldMapping FieldName="VenueId" TargetFieldName="VenueId" />
+          </FieldMappings>
+        </TypedViewMapping>
+        <TypedViewMapping TypedViewName=":LatestTeamTournament" TargetName="TestOrg:dbo:LatestTeamTournament">
+          <FieldMappings>
+            <FieldMapping FieldName="RoundDescription" TargetFieldName="RoundDescription" />
+            <FieldMapping FieldName="RoundId" TargetFieldName="RoundId" />
+            <FieldMapping FieldName="RoundName" TargetFieldName="RoundName" />
+            <FieldMapping FieldName="RoundTypeDescription" TargetFieldName="RoundTypeDescription" />
+            <FieldMapping FieldName="RoundTypeName" TargetFieldName="RoundTypeName" />
+            <FieldMapping FieldName="TeamClubName" TargetFieldName="TeamClubName" />
+            <FieldMapping FieldName="TeamId" TargetFieldName="TeamId" />
+            <FieldMapping FieldName="TeamMatchDayOfWeek" TargetFieldName="TeamMatchDayOfWeek" />
+            <FieldMapping FieldName="TeamMatchTime" TargetFieldName="TeamMatchTime" />
+            <FieldMapping FieldName="TeamName" TargetFieldName="TeamName" />
+            <FieldMapping FieldName="TeamNameForRound" TargetFieldName="TeamNameForRound" />
+            <FieldMapping FieldName="TournamentDescription" TargetFieldName="TournamentDescription" />
+            <FieldMapping FieldName="TournamentId" TargetFieldName="TournamentId" />
+            <FieldMapping FieldName="TournamentName" TargetFieldName="TournamentName" />
+          </FieldMappings>
+        </TypedViewMapping>
+        <TypedViewMapping TypedViewName=":MatchCompleteRaw" TargetName="TestOrg:dbo:MatchCompleteRaw">
+          <FieldMappings>
+            <FieldMapping FieldName="GuestBallPoints" TargetFieldName="GuestBallPoints" />
+            <FieldMapping FieldName="GuestMatchPoints" TargetFieldName="GuestMatchPoints" />
+            <FieldMapping FieldName="GuestSetPoints" TargetFieldName="GuestSetPoints" />
+            <FieldMapping FieldName="GuestTeamId" TargetFieldName="GuestTeamId" />
+            <FieldMapping FieldName="HomeBallPoints" TargetFieldName="HomeBallPoints" />
+            <FieldMapping FieldName="HomeMatchPoints" TargetFieldName="HomeMatchPoints" />
+            <FieldMapping FieldName="HomeSetPoints" TargetFieldName="HomeSetPoints" />
+            <FieldMapping FieldName="HomeTeamId" TargetFieldName="HomeTeamId" />
+            <FieldMapping FieldName="Id" TargetFieldName="Id" />
+            <FieldMapping FieldName="IsOverruled" TargetFieldName="IsOverruled" />
+            <FieldMapping FieldName="MatchDate" TargetFieldName="MatchDate" />
+            <FieldMapping FieldName="ModifiedOn" TargetFieldName="ModifiedOn" />
+            <FieldMapping FieldName="RoundId" TargetFieldName="RoundId" />
+            <FieldMapping FieldName="TournamentId" TargetFieldName="TournamentId" />
+            <FieldMapping FieldName="VenueId" TargetFieldName="VenueId" />
+          </FieldMappings>
+        </TypedViewMapping>
+        <TypedViewMapping TypedViewName=":MatchReportSheet" TargetName="TestOrg:dbo:MatchReportSheet">
+          <FieldMappings>
+            <FieldMapping FieldName="BestOf" TargetFieldName="BestOf" />
+            <FieldMapping FieldName="ChangeSerial" TargetFieldName="ChangeSerial" />
+            <FieldMapping FieldName="GuestTeamId" TargetFieldName="GuestTeamId" />
+            <FieldMapping FieldName="GuestTeamNameForRound" TargetFieldName="GuestTeamNameForRound" />
+            <FieldMapping FieldName="HomeTeamId" TargetFieldName="HomeTeamId" />
+            <FieldMapping FieldName="HomeTeamNameForRound" TargetFieldName="HomeTeamNameForRound" />
+            <FieldMapping FieldName="Id" TargetFieldName="Id" />
+            <FieldMapping FieldName="MaxSubstitutions" TargetFieldName="MaxSubstitutions" />
+            <FieldMapping FieldName="MaxTimeouts" TargetFieldName="MaxTimeouts" />
+            <FieldMapping FieldName="ModifiedOn" TargetFieldName="ModifiedOn" />
+            <FieldMapping FieldName="NumOfPointsToWinRegular" TargetFieldName="NumOfPointsToWinRegular" />
+            <FieldMapping FieldName="NumOfPointsToWinTieBreak" TargetFieldName="NumOfPointsToWinTieBreak" />
+            <FieldMapping FieldName="NumOfSets" TargetFieldName="NumOfSets" />
+            <FieldMapping FieldName="OrigPlannedStart" TargetFieldName="OrigPlannedStart" />
+            <FieldMapping FieldName="PlannedStart" TargetFieldName="PlannedStart" />
+            <FieldMapping FieldName="Remarks" TargetFieldName="Remarks" />
+            <FieldMapping FieldName="RoundDescription" TargetFieldName="RoundDescription" />
+            <FieldMapping FieldName="RoundLegDescription" TargetFieldName="RoundLegDescription" />
+            <FieldMapping FieldName="RoundLegSequenceNo" TargetFieldName="RoundLegSequenceNo" />
+            <FieldMapping FieldName="RoundName" TargetFieldName="RoundName" />
+            <FieldMapping FieldName="RoundTypeDescription" TargetFieldName="RoundTypeDescription" />
+            <FieldMapping FieldName="RoundTypeName" TargetFieldName="RoundTypeName" />
+            <FieldMapping FieldName="TournamentId" TargetFieldName="TournamentId" />
+            <FieldMapping FieldName="TournamentName" TargetFieldName="TournamentName" />
+          </FieldMappings>
+        </TypedViewMapping>
+        <TypedViewMapping TypedViewName=":MatchToPlayRaw" TargetName="TestOrg:dbo:MatchToPlayRaw">
+          <FieldMappings>
+            <FieldMapping FieldName="GuestTeamId" TargetFieldName="GuestTeamId" />
+            <FieldMapping FieldName="HomeTeamId" TargetFieldName="HomeTeamId" />
+            <FieldMapping FieldName="Id" TargetFieldName="Id" />
+            <FieldMapping FieldName="MatchDate" TargetFieldName="MatchDate" />
+            <FieldMapping FieldName="ModifiedOn" TargetFieldName="ModifiedOn" />
+            <FieldMapping FieldName="RoundId" TargetFieldName="RoundId" />
+            <FieldMapping FieldName="TournamentId" TargetFieldName="TournamentId" />
+            <FieldMapping FieldName="VenueId" TargetFieldName="VenueId" />
+          </FieldMappings>
+        </TypedViewMapping>
+        <TypedViewMapping TypedViewName=":PlannedMatch" TargetName="TestOrg:dbo:PlannedMatch">
+          <FieldMappings>
+            <FieldMapping FieldName="ChangeSerial" TargetFieldName="ChangeSerial" />
+            <FieldMapping FieldName="GuestTeamId" TargetFieldName="GuestTeamId" />
+            <FieldMapping FieldName="GuestTeamNameForRound" TargetFieldName="GuestTeamNameForRound" />
+            <FieldMapping FieldName="HomeTeamId" TargetFieldName="HomeTeamId" />
+            <FieldMapping FieldName="HomeTeamNameForRound" TargetFieldName="HomeTeamNameForRound" />
+            <FieldMapping FieldName="Id" TargetFieldName="Id" />
+            <FieldMapping FieldName="ModifiedOn" TargetFieldName="ModifiedOn" />
+            <FieldMapping FieldName="OrigPlannedEnd" TargetFieldName="OrigPlannedEnd" />
+            <FieldMapping FieldName="OrigPlannedStart" TargetFieldName="OrigPlannedStart" />
+            <FieldMapping FieldName="OrigVenueExtension" TargetFieldName="OrigVenueExtension" />
+            <FieldMapping FieldName="OrigVenueId" TargetFieldName="OrigVenueId" />
+            <FieldMapping FieldName="OrigVenueName" TargetFieldName="OrigVenueName" />
+            <FieldMapping FieldName="PlannedEnd" TargetFieldName="PlannedEnd" />
+            <FieldMapping FieldName="PlannedStart" TargetFieldName="PlannedStart" />
+            <FieldMapping FieldName="Remarks" TargetFieldName="Remarks" />
+            <FieldMapping FieldName="RoundDescription" TargetFieldName="RoundDescription" />
+            <FieldMapping FieldName="RoundId" TargetFieldName="RoundId" />
+            <FieldMapping FieldName="RoundLegDescription" TargetFieldName="RoundLegDescription" />
+            <FieldMapping FieldName="RoundLegSequenceNo" TargetFieldName="RoundLegSequenceNo" />
+            <FieldMapping FieldName="RoundName" TargetFieldName="RoundName" />
+            <FieldMapping FieldName="RoundTypeDescription" TargetFieldName="RoundTypeDescription" />
+            <FieldMapping FieldName="RoundTypeName" TargetFieldName="RoundTypeName" />
+            <FieldMapping FieldName="TournamentId" TargetFieldName="TournamentId" />
+            <FieldMapping FieldName="TournamentName" TargetFieldName="TournamentName" />
+            <FieldMapping FieldName="VenueExtension" TargetFieldName="VenueExtension" />
+            <FieldMapping FieldName="VenueId" TargetFieldName="VenueId" />
+            <FieldMapping FieldName="VenueName" TargetFieldName="VenueName" />
+          </FieldMappings>
+        </TypedViewMapping>
+        <TypedViewMapping TypedViewName=":RankingList" TargetName="TestOrg:dbo:RankingList">
+          <FieldMappings>
+            <FieldMapping FieldName="BallPointsLost" TargetFieldName="BallPointsLost" />
+            <FieldMapping FieldName="BallPointsWon" TargetFieldName="BallPointsWon" />
+            <FieldMapping FieldName="ClubName" TargetFieldName="ClubName" />
+            <FieldMapping FieldName="MatchesPlayed" TargetFieldName="MatchesPlayed" />
+            <FieldMapping FieldName="MatchesToPlay" TargetFieldName="MatchesToPlay" />
+            <FieldMapping FieldName="MatchPointsLost" TargetFieldName="MatchPointsLost" />
+            <FieldMapping FieldName="MatchPointsWon" TargetFieldName="MatchPointsWon" />
+            <FieldMapping FieldName="ModifiedOn" TargetFieldName="ModifiedOn" />
+            <FieldMapping FieldName="Rank" TargetFieldName="Rank" />
+            <FieldMapping FieldName="RoundDescription" TargetFieldName="RoundDescription" />
+            <FieldMapping FieldName="RoundId" TargetFieldName="RoundId" />
+            <FieldMapping FieldName="RoundName" TargetFieldName="RoundName" />
+            <FieldMapping FieldName="RoundTypeDescription" TargetFieldName="RoundTypeDescription" />
+            <FieldMapping FieldName="RoundTypeName" TargetFieldName="RoundTypeName" />
+            <FieldMapping FieldName="SetPointsLost" TargetFieldName="SetPointsLost" />
+            <FieldMapping FieldName="SetPointsWon" TargetFieldName="SetPointsWon" />
+            <FieldMapping FieldName="TeamId" TargetFieldName="TeamId" />
+            <FieldMapping FieldName="TeamName" TargetFieldName="TeamName" />
+            <FieldMapping FieldName="TeamNameForRound" TargetFieldName="TeamNameForRound" />
+            <FieldMapping FieldName="TournamentDescription" TargetFieldName="TournamentDescription" />
+            <FieldMapping FieldName="TournamentId" TargetFieldName="TournamentId" />
+            <FieldMapping FieldName="TournamentIsComplete" TargetFieldName="TournamentIsComplete" />
+            <FieldMapping FieldName="TournamentName" TargetFieldName="TournamentName" />
+            <FieldMapping FieldName="ValuationDate" TargetFieldName="ValuationDate" />
+          </FieldMappings>
+        </TypedViewMapping>
+        <TypedViewMapping TypedViewName=":RoundLegPeriod" TargetName="TestOrg:dbo:RoundLegPeriod">
+          <FieldMappings>
+            <FieldMapping FieldName="EndDateTime" TargetFieldName="EndDateTime" />
+            <FieldMapping FieldName="LegId" TargetFieldName="LegId" />
+            <FieldMapping FieldName="RoundId" TargetFieldName="RoundId" />
+            <FieldMapping FieldName="SequenceNo" TargetFieldName="SequenceNo" />
+            <FieldMapping FieldName="StartDateTime" TargetFieldName="StartDateTime" />
+            <FieldMapping FieldName="TournamentId" TargetFieldName="TournamentId" />
+          </FieldMappings>
+        </TypedViewMapping>
+        <TypedViewMapping TypedViewName=":RoundTeam" TargetName="TestOrg:dbo:RoundTeam">
+          <FieldMappings>
+            <FieldMapping FieldName="RoundDescription" TargetFieldName="RoundDescription" />
+            <FieldMapping FieldName="RoundId" TargetFieldName="RoundId" />
+            <FieldMapping FieldName="RoundName" TargetFieldName="RoundName" />
+            <FieldMapping FieldName="RoundTypeDescription" TargetFieldName="RoundTypeDescription" />
+            <FieldMapping FieldName="RoundTypeName" TargetFieldName="RoundTypeName" />
+            <FieldMapping FieldName="TeamClubName" TargetFieldName="TeamClubName" />
+            <FieldMapping FieldName="TeamId" TargetFieldName="TeamId" />
+            <FieldMapping FieldName="TeamMatchDayOfWeek" TargetFieldName="TeamMatchDayOfWeek" />
+            <FieldMapping FieldName="TeamMatchTime" TargetFieldName="TeamMatchTime" />
+            <FieldMapping FieldName="TeamModifiedOn" TargetFieldName="TeamModifiedOn" />
+            <FieldMapping FieldName="TeamName" TargetFieldName="TeamName" />
+            <FieldMapping FieldName="TeamNameForRound" TargetFieldName="TeamNameForRound" />
+            <FieldMapping FieldName="TeamPhoto" TargetFieldName="TeamPhoto" />
+            <FieldMapping FieldName="TournamentId" TargetFieldName="TournamentId" />
+          </FieldMappings>
+        </TypedViewMapping>
+        <TypedViewMapping TypedViewName=":TeamUserRound" TargetName="TestOrg:dbo:TeamUserRound">
+          <FieldMappings>
+            <FieldMapping FieldName="ClubName" TargetFieldName="ClubName" />
+            <FieldMapping FieldName="Email" TargetFieldName="Email" />
+            <FieldMapping FieldName="Email2" TargetFieldName="Email2" />
+            <FieldMapping FieldName="FirstName" TargetFieldName="FirstName" />
+            <FieldMapping FieldName="Gender" TargetFieldName="Gender" />
+            <FieldMapping FieldName="IsManager" TargetFieldName="IsManager" />
+            <FieldMapping FieldName="IsPlayer" TargetFieldName="IsPlayer" />
+            <FieldMapping FieldName="LastName" TargetFieldName="LastName" />
+            <FieldMapping FieldName="MatchDayOfWeek" TargetFieldName="MatchDayOfWeek" />
+            <FieldMapping FieldName="MatchTime" TargetFieldName="MatchTime" />
+            <FieldMapping FieldName="MatchWeekday" TargetFieldName="MatchWeekday" />
+            <FieldMapping FieldName="MiddleName" TargetFieldName="MiddleName" />
+            <FieldMapping FieldName="Nickname" TargetFieldName="Nickname" />
+            <FieldMapping FieldName="PhoneNumber" TargetFieldName="PhoneNumber" />
+            <FieldMapping FieldName="PhoneNumber2" TargetFieldName="PhoneNumber2" />
+            <FieldMapping FieldName="PhotoFilename" TargetFieldName="PhotoFilename" />
+            <FieldMapping FieldName="RoundDescription" TargetFieldName="RoundDescription" />
+            <FieldMapping FieldName="RoundId" TargetFieldName="RoundId" />
+            <FieldMapping FieldName="RoundName" TargetFieldName="RoundName" />
+            <FieldMapping FieldName="TeamId" TargetFieldName="TeamId" />
+            <FieldMapping FieldName="TeamModifiedOn" TargetFieldName="TeamModifiedOn" />
+            <FieldMapping FieldName="TeamName" TargetFieldName="TeamName" />
+            <FieldMapping FieldName="TeamNameForRound" TargetFieldName="TeamNameForRound" />
+            <FieldMapping FieldName="Title" TargetFieldName="Title" />
+            <FieldMapping FieldName="TournamentId" TargetFieldName="TournamentId" />
+            <FieldMapping FieldName="UserId" TargetFieldName="UserId" />
+            <FieldMapping FieldName="UserModifiedOn" TargetFieldName="UserModifiedOn" />
+          </FieldMappings>
+        </TypedViewMapping>
+        <TypedViewMapping TypedViewName=":TeamVenueRound" TargetName="TestOrg:dbo:TeamVenueRound">
+          <FieldMappings>
+            <FieldMapping FieldName="MatchDayOfWeek" TargetFieldName="MatchDayOfWeek" />
+            <FieldMapping FieldName="MatchTime" TargetFieldName="MatchTime" />
+            <FieldMapping FieldName="MatchWeekday" TargetFieldName="MatchWeekday" />
+            <FieldMapping FieldName="RoundDescription" TargetFieldName="RoundDescription" />
+            <FieldMapping FieldName="RoundId" TargetFieldName="RoundId" />
+            <FieldMapping FieldName="RoundName" TargetFieldName="RoundName" />
+            <FieldMapping FieldName="RoundTypeDescription" TargetFieldName="RoundTypeDescription" />
+            <FieldMapping FieldName="RoundTypeName" TargetFieldName="RoundTypeName" />
+            <FieldMapping FieldName="TeamClubName" TargetFieldName="TeamClubName" />
+            <FieldMapping FieldName="TeamId" TargetFieldName="TeamId" />
+            <FieldMapping FieldName="TeamModifiedOn" TargetFieldName="TeamModifiedOn" />
+            <FieldMapping FieldName="TeamName" TargetFieldName="TeamName" />
+            <FieldMapping FieldName="TeamNameForRound" TargetFieldName="TeamNameForRound" />
+            <FieldMapping FieldName="TeamPhoto" TargetFieldName="TeamPhoto" />
+            <FieldMapping FieldName="TournamentId" TargetFieldName="TournamentId" />
+            <FieldMapping FieldName="VenueCity" TargetFieldName="VenueCity" />
+            <FieldMapping FieldName="VenueDirection" TargetFieldName="VenueDirection" />
+            <FieldMapping FieldName="VenueId" TargetFieldName="VenueId" />
+            <FieldMapping FieldName="VenueLatitude" TargetFieldName="VenueLatitude" />
+            <FieldMapping FieldName="VenueLongitude" TargetFieldName="VenueLongitude" />
+            <FieldMapping FieldName="VenueModifiedOn" TargetFieldName="VenueModifiedOn" />
+            <FieldMapping FieldName="VenueName" TargetFieldName="VenueName" />
+            <FieldMapping FieldName="VenuePostalCode" TargetFieldName="VenuePostalCode" />
+            <FieldMapping FieldName="VenuePrecisePosition" TargetFieldName="VenuePrecisePosition" />
+            <FieldMapping FieldName="VenueStreet" TargetFieldName="VenueStreet" />
+          </FieldMappings>
+        </TypedViewMapping>
+        <TypedViewMapping TypedViewName=":VenueDistanceResult" TargetName="TestOrg:dbo:VenueDistance:Resultset1">
+          <FieldMappings>
+            <FieldMapping FieldName="City" TargetFieldName="City" />
+            <FieldMapping FieldName="CreatedOn" TargetFieldName="CreatedOn" />
+            <FieldMapping FieldName="Direction" TargetFieldName="Direction" />
+            <FieldMapping FieldName="Distance" TargetFieldName="Distance" />
+            <FieldMapping FieldName="Extension" TargetFieldName="Extension" />
+            <FieldMapping FieldName="Id" TargetFieldName="Id" />
+            <FieldMapping FieldName="Latitude" TargetFieldName="Latitude" />
+            <FieldMapping FieldName="Longitude" TargetFieldName="Longitude" />
+            <FieldMapping FieldName="ModifiedOn" TargetFieldName="ModifiedOn" />
+            <FieldMapping FieldName="Name" TargetFieldName="Name" />
+            <FieldMapping FieldName="PostalCode" TargetFieldName="PostalCode" />
+            <FieldMapping FieldName="PrecisePosition" TargetFieldName="PrecisePosition" />
+            <FieldMapping FieldName="Street" TargetFieldName="Street" />
+          </FieldMappings>
+        </TypedViewMapping>
+        <TypedViewMapping TypedViewName=":VenueTeam" TargetName="TestOrg:dbo:VenueTeam">
+          <FieldMappings>
+            <FieldMapping FieldName="City" TargetFieldName="City" />
+            <FieldMapping FieldName="Direction" TargetFieldName="Direction" />
+            <FieldMapping FieldName="Latitude" TargetFieldName="Latitude" />
+            <FieldMapping FieldName="Longitude" TargetFieldName="Longitude" />
+            <FieldMapping FieldName="PostalCode" TargetFieldName="PostalCode" />
+            <FieldMapping FieldName="PrecisePosition" TargetFieldName="PrecisePosition" />
+            <FieldMapping FieldName="RoundId" TargetFieldName="RoundId" />
+            <FieldMapping FieldName="Street" TargetFieldName="Street" />
+            <FieldMapping FieldName="TeamClubName" TargetFieldName="TeamClubName" />
+            <FieldMapping FieldName="TeamId" TargetFieldName="TeamId" />
+            <FieldMapping FieldName="TeamName" TargetFieldName="TeamName" />
+            <FieldMapping FieldName="TeamNameForRound" TargetFieldName="TeamNameForRound" />
+            <FieldMapping FieldName="TournamentId" TargetFieldName="TournamentId" />
+            <FieldMapping FieldName="VenueExtension" TargetFieldName="VenueExtension" />
+            <FieldMapping FieldName="VenueId" TargetFieldName="VenueId" />
+            <FieldMapping FieldName="VenueName" TargetFieldName="VenueName" />
+          </FieldMappings>
+        </TypedViewMapping>
+      </TypedViewMappings>
+      <SPCallMappings>
+        <SPCallMapping SPCallName=":VenueDistance" TargetName="TestOrg:dbo:VenueDistance">
+          <FieldMappings>
+            <FieldMapping FieldName="Lat" TargetFieldName="@Lat" />
+            <FieldMapping FieldName="Lng" TargetFieldName="@Lng" />
+            <FieldMapping FieldName="MaxDistance" TargetFieldName="@MaxDistance" />
+          </FieldMappings>
+        </SPCallMapping>
+      </SPCallMappings>
+      <TvfCallMappings />
+      <TypeConversionDefinitions />
+    </MappingStore>
+  </MappingStores>
+  <ModelViews />
+</Project>

@@ -1,0 +1,155 @@
+﻿@using League.Controllers
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@model League.Models.RankingViewModels.AllTimeTournamentModel
+@{
+    ViewData["Title"] = Localizer["All-time Tournament Tables"].Value;
+    if (Model.RankingList.Count == 0)
+    {
+        <div class="mb-0 pb-1">
+            <h2 class="h2">@ViewData["Title"]</h2>
+            <site-alert type="Info" icon="fas fa-calendar-times" icon-size-class="fa-3x">
+                <h4 class="h4">@Localizer["There are no final tables available yet"].</h4>
+            </site-alert>
+        </div>
+
+        return;
+    }
+    var rounds = Model.RankingList.Where(rl => rl.TournamentId == Model.SelectedTournamentId).GroupBy(m => m.RoundName, (key, m) => new { RoundName = key, RoundId = m.First().RoundId, RoundDescription = m.First().RoundDescription, RoundTypeDescription = m.First().RoundTypeDescription }).ToList();
+    var activeRoundId = rounds.First().RoundId;
+}
+<div class="mb-0 pb-1">
+    <h2 class="h2">@ViewData["Title"]</h2>
+    <hr class="mb-4" />
+    @{
+        var tournamentCount = 0;
+        var tournaments = Model.GetAllTournaments().OrderByDescending(t => Model.GetTournamentPeriod(t.Id).Start).ToList();
+    }
+<div id="tournament-list">
+    @foreach (var (id, name, period) in tournaments)
+    {
+        if (period?.Start == null || period.End == null)
+        {
+            continue;
+        }
+
+        tournamentCount++;
+        // Only display the most recent 5 tournaments
+        if (tournaments.Count > 5 && tournamentCount == 5)
+        {
+            <a id="btn-more-tournaments" class="btn btn-success btn-sm mr-2 mb-2" href="#" role="button">@Localizer["more..."]</a>
+        }
+        if (tournamentCount >= 5)
+        {
+            <a class="btn btn-primary btn-sm mr-2 mb-2 d-none@(id == Model.SelectedTournamentId ? " active" : "")" asp-action="@nameof(League.Controllers.Ranking.AllTimeTournament)" asp-controller="@nameof(Ranking)" asp-route-id="@id" data-toggle="tooltip" title="@name" role="button">@($"{period.Start.Value.Year}.{period.Start.Value.Month} - {period.End.Value.Year}.{period.End.Value.Month}")</a>
+        }
+        else
+        {
+            <a class="btn btn-primary btn-sm mr-2 mb-2@(id == Model.SelectedTournamentId ? " active" : "")" asp-action="@nameof(League.Controllers.Ranking.AllTimeTournament)" asp-controller="@nameof(Ranking)" asp-route-id="@id" data-toggle="tooltip" title="@name" role="button">@($"{period.Start.Value.Year}.{period.Start.Value.Month} - {period.End.Value.Year}.{period.End.Value.Month}")</a>
+        }
+    }
+</div>
+    <div class="mt-4 mb-2">
+        <h3 class="h3">@Model.GetAllTournaments().First(m => m.Id == Model.SelectedTournamentId).Name</h3>
+        <div>@Localizer["Click on a team name to show the all time list of it"]</div>
+    </div>
+    <ul class="nav nav-tabs" id="round-tabs" role="tablist">
+        @foreach (var r in rounds)
+        {
+            <li class="nav-item">
+                <a class="nav-link py-1@{if (r.RoundId == activeRoundId){<text> active</text>}}" id="tab-link-@(r.RoundId)" data-toggle="tab" href="#tab-@(r.RoundId)" role="tab" aria-controls="@r.RoundDescription" aria-selected="@(r.RoundId == activeRoundId ? "true" : "false")">@r.RoundDescription</a>
+            </li>
+        }
+    </ul>
+
+    <div class="tab-content mt-1" id="ranking-table">
+        @foreach (var r in rounds)
+        {
+            <div class="tab-pane@{if (r.RoundId == activeRoundId) {<text> show active</text>}}" id="tab-@(r.RoundId)" role="tabpanel" aria-labelledby="@r.RoundDescription-tab">
+                <div class="text-success">@r.RoundTypeDescription</div>
+                <div class="rounded table-responsive">
+                    <table class="table table-sm table-light table-bordered table">
+                        <thead class="rounded">
+                            <tr>
+                                <th class="rank">@Localizer["Rank"]</th>
+                                <th class="team">
+                                    <div class="text-truncate">@Localizer["Team"]</div>
+                                    <div class="text-truncate">@Localizer["Club"]</div>
+                                </th>
+                                <th class="result">
+                                    <div>@Localizer["Match"]</div>
+                                    <div>@Localizer["Pts."]</div>
+                                </th>
+                                <th class="result">
+                                    <div>@Localizer["Set"]</div>
+                                    <div>@Localizer["Pts."]</div>
+                                </th>
+                                <th class="result">
+                                    <div>@Localizer["Ball"]</div>
+                                    <div>@Localizer["Pts."]</div>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @{
+                                var rankingList = Model.RankingList.Where(m => m.RoundId == r.RoundId).OrderBy(m => m.Rank).ToList();
+                                for (var i = 0; i < rankingList.Count; i++)
+                                {
+                                    var rankRow = rankingList[i];
+                                    <tr>
+                                        <td class="rank">@rankRow.Rank</td>
+                                        <td class="team">
+                                            @{ var linkTitle = rankRow.TeamName != rankRow.TeamNameForRound ? Localizer["Team name in this round"].Value + ": \"" + rankRow.TeamNameForRound + "\"" : null;}
+                                            <div class="text-truncate" data-toggle="tooltip" title="@linkTitle">
+                                                <a asp-action="@nameof(Ranking.AllTimeTeam)" asp-controller="@nameof(Ranking)" asp-route-id="@rankRow.TeamId" >@rankRow.TeamName</a>
+                                            </div>
+                                            <div class="text-truncate">@rankRow.ClubName</div>
+                                        </td>
+                                        <td class="result">@rankRow.MatchPointsWon:@rankRow.MatchPointsLost</td>
+                                        <td class="result">@rankRow.SetPointsWon:@rankRow.SetPointsLost</td>
+                                        <td class="result">@rankRow.BallPointsWon:@rankRow.BallPointsLost</td>
+                                    </tr>
+                                }
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+@section styles
+{
+    @{
+        var rankColWidth = 10;
+        var resultColWidth = 10;
+        var teamColWidth = 100 - rankColWidth - 3 * resultColWidth;
+    }
+    <style type="text/css">
+        #round-tabs .nav-link:not(.active) {border:solid 1px lightgray;}
+        #ranking-table table tbody tr {border-bottom: solid 2px lightgray}
+        #ranking-table table thead {background-color: lightgray}
+        .rank { width: @(rankColWidth)%; text-align: center}
+        .team {width:@(teamColWidth)%}
+        .team > a {text-decoration: none}
+        .team > div {max-width: calc(45 * 1vw)}
+        .result { width: @(resultColWidth)%; text-align: center}
+        .tooltip { white-space:pre-wrap; } @* will recognize \n for new lines *@
+    </style>
+}
+@section scripts
+{
+<script type="text/javascript">
+    //<![CDATA[
+    $(document).ready(function() {
+        $('[data-toggle="tooltip"]').tooltip();
+        $('#btn-more-tournaments').on('click',
+            function(e) {
+                $('#tournament-list > .btn').removeClass('d-none');
+                $('#btn-more-tournaments').addClass('d-none');
+                e.preventDefault();
+            });
+    });
+    //]]>
+</script>
+}

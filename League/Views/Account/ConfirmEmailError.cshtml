@@ -1,0 +1,22 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@{
+    ViewData["Title"] = Localizer["Your email could not be confirmed"].Value;
+}
+<h2 class="h2">@ViewData["Title"].</h2>
+<hr/>
+<div>
+    <site-alert type="Warning">
+        @Localizer["Sorry, your email could not be confirmed. Possible causes"]:<br />
+        <ul class="mb-0 pl-4">
+            <li>@Localizer["The link has expired"]</li>
+            <li>@Localizer["The link is not exactly as written in the email"]</li>
+        </ul>
+    </site-alert>
+    <p>
+        @Localizer["Please consider to create an account again. Then, another confirmation email will be sent to you."]
+    </p>
+    <p>
+        <a asp-controller="@nameof(League.Controllers.Account)" asp-action="@nameof(League.Controllers.Account.CreateAccount)" class="btn btn-lg btn-primary col-sm-8 col-md-5">@Localizer["Create Account"]</a>
+    </p>
+</div>

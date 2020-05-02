@@ -1,0 +1,87 @@
+﻿@using System.Globalization
+@using Microsoft.AspNetCore.Mvc.Localization
+@{ Layout = null; 
+ViewContext.ClientValidationEnabled = false;  @* We rely on datepicker and server side validation *@
+ViewContext.ViewData.TemplateInfo.HtmlFieldPrefix = Model.HtmlFieldPrefix;
+}
+@inject IViewLocalizer Localizer
+@model League.Components.TeamEditorComponentModel
+<div class="row">
+    <input type="hidden" asp-for="Id" />
+    <input type="hidden" asp-for="IsNew" />
+    <div class="form-group col-12 col-md-6">
+        <label asp-for="Name" class="mt-0"></label>
+        <input asp-for="Name" type="text" autofocus autocomplete="off" class="form-control" />
+        @*<span asp-validation-for="Name" class="text-danger"></span>*@
+    </div>
+</div>
+<div class="row">
+    <div class="form-group col-12 col-md-6">
+        <label asp-for="ClubName" class="mt-0"></label>
+        <input asp-for="ClubName" type="text" autocomplete="off" class="form-control" />
+        @*<span asp-validation-for="ClubName" class="text-danger"></span>*@
+    </div>
+</div>
+<div class="row">
+    <div class="form-group col-12 col-md-6">
+        <label asp-for="MatchDayOfWeek" class="mt-0"></label>
+        <div class="input-group">
+            <select asp-for="MatchDayOfWeek" class="form-control d-block col-6 selectpicker show-tick" title="@Localizer["Please select a weekday"]..." data-width="auto">
+                <option value="@((int)DayOfWeek.Monday)">@DateTimeFormatInfo.CurrentInfo?.GetDayName(DayOfWeek.Monday)</option>
+                <option value="@((int)DayOfWeek.Tuesday)">@DateTimeFormatInfo.CurrentInfo?.GetDayName(DayOfWeek.Tuesday)</option>
+                <option value="@((int)DayOfWeek.Wednesday)">@DateTimeFormatInfo.CurrentInfo?.GetDayName(DayOfWeek.Wednesday)</option>
+                <option value="@((int)DayOfWeek.Thursday)">@DateTimeFormatInfo.CurrentInfo?.GetDayName(DayOfWeek.Thursday)</option>
+                <option value="@((int)DayOfWeek.Friday)">@DateTimeFormatInfo.CurrentInfo?.GetDayName(DayOfWeek.Friday)</option>
+                <option value="@((int)DayOfWeek.Saturday)">@DateTimeFormatInfo.CurrentInfo?.GetDayName(DayOfWeek.Saturday)</option>
+                <option value="@((int)DayOfWeek.Sunday)">@DateTimeFormatInfo.CurrentInfo?.GetDayName(DayOfWeek.Sunday)</option>
+                @if (Model.MatchDayOfWeek == null)
+                {
+                    <option value="" selected="selected">@Localizer["Not specified"]</option>
+                }
+                else
+                {
+                    <option value="">@Localizer["Not specified"]</option>
+                }
+            </select>
+            <span id="@Html.IdFor(m => m.MatchDayOfWeek)-calendar" class="input-group-append input-group-text">
+                <i class="far fa-calendar-alt"></i>
+            </span>
+            @*<span asp-validation-for="MatchDayOfWeek" class="text-danger"></span>*@
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="form-group col-12 col-md-6">
+        <label asp-for="MatchTime" class="mt-0"></label>
+        <div class="input-group" id="picker_@Html.IdFor(m => m.MatchTime)" data-target-input="nearest">
+            <input asp-for="MatchTime" type="text" autocomplete="off" class="form-control d-block col-6 datepicker datetimepicker-input" data-target="#picker_@Html.IdFor(m => m.MatchTime)" aria-describedby="@nameof(Model.MatchTime)HelpBlock" />
+            <span class="input-group-append input-group-text" data-target="#picker_@Html.IdFor(m => m.MatchTime)" data-toggle="datetimepicker">
+                <i class="far fa-clock"></i>
+            </span>
+        </div>
+        <small id="@nameof(Model.MatchTime)HelpBlock" class="d-block form-text text-muted">
+            @Localizer["Time format"]: @(CultureInfo.CurrentUICulture.DateTimeFormat.ShortTimePattern.ToUpperInvariant().Replace("TT", "AM/PM"))
+        </small>
+        @*<span asp-validation-for="MatchTime" class="text-danger"></span>*@
+    </div>
+</div>
+<script type="text/javascript" site-on-content-loaded="true" site-on-modal-shown="true" site-inline="true">
+    var onMatchDayOfWeekChangeFunction =
+        function() {
+            if (this.value === '') {
+                $('#@Html.IdFor(m => m.MatchTime)').attr('disabled', 'disabled').css('cursor', 'not-allowed').val('');
+                $('span[data-target="#picker_@Html.IdFor(m => m.MatchTime)"]').css('cursor', 'not-allowed');
+            } else {
+                $('#@Html.IdFor(m => m.MatchTime)').removeAttr('disabled').css('cursor', 'auto');
+                $('span[data-target="#picker_@Html.IdFor(m => m.MatchTime)"]').css('cursor', 'pointer');
+            }
+        };
+    $('#@Html.IdFor(m => m.MatchDayOfWeek)').off('change', onMatchDayOfWeekChangeFunction).on('change', onMatchDayOfWeekChangeFunction);
+    $('#@Html.IdFor(m => m.MatchDayOfWeek)-calendar').css('cursor', 'pointer').off('click').on('click', function () { @* first remove delegates in case they were added after DOMContentLoaded and later with Bootstrap 4 modal *@
+        $('#@Html.IdFor(m => m.MatchDayOfWeek)').selectpicker('toggle');
+    });
+
+    $('#@Html.IdFor(m => m.MatchDayOfWeek)').trigger('change'); // initialize
+    $('select').selectpicker();
+    $('#picker_@Html.IdFor(m => m.MatchTime)').datetimepicker({ format: 'LT', stepping: 15 });
+</script>

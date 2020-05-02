@@ -1,0 +1,85 @@
+﻿@using League.Controllers
+@using League.DI
+@using Microsoft.AspNetCore.Mvc.Localization
+@model League.Models.HomeViewModels.ContactViewModel
+@inject OrganizationSiteContext SiteContext
+@inject IViewLocalizer Localizer
+@{
+    ViewData["Title"] = Localizer["Message"];
+    List<SelectListItem> GenderList()
+    {
+        return new List<SelectListItem> {new SelectListItem {Value = string.Empty, Text = Localizer["Please choose"].Value}, 
+            new SelectListItem {Value = "f", Text = Localizer["Mrs."].Value}, 
+            new SelectListItem {Value = "m", Text = Localizer["Mr."].Value}};
+    }
+}
+<div>
+    <h2 class="h2 d-inline-block">@ViewData["Title"]</h2>
+    <h4 class="h4 d-inline-block">@Localizer["to"] @(string.IsNullOrEmpty(SiteContext.OrganizationKey) ? "volleyball-liga.de" : SiteContext.ShortName )</h4>
+    <hr />
+</div>
+<div>
+    @* Create the action url using the same named route as when invoking the controller action method *@
+    <form asp-route="@ViewContext.ActionDescriptor.AttributeRouteInfo.Name" method="post" class="col-md-8 col-sm-10 col-12 pl-0" role="form">
+        <site-validation-summary show="All">
+            <b>@Localizer["Input has some issues"]:</b>
+        </site-validation-summary>
+        <div class="form-group">
+            <label asp-for="Email"></label>
+            <input asp-for="Email" required="required" class="form-control"/>
+            <span asp-validation-for="Email" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="Gender"></label>
+            <select asp-for="Gender" asp-items="GenderList()" class="custom-select col-md-6"></select>
+            <span asp-validation-for="Gender" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="FirstName"></label>
+            <input asp-for="FirstName" required="required" class="form-control"/>
+            <span asp-validation-for="FirstName" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="LastName"></label>
+            <input asp-for="LastName" required="required" class="form-control"/>
+            <span asp-validation-for="LastName" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="PhoneNumber"></label>
+            <input asp-for="PhoneNumber" class="form-control"/>
+            <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="Subject"></label>
+            <input asp-for="Subject" required="required" class="form-control" autocomplete="off"/>
+            <span asp-validation-for="Subject" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="Message"></label>
+            <textarea asp-for="Message" class="form-control" rows="5"></textarea>
+            <span asp-validation-for="Message" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <div class="mt-2">
+                <img id="CaptchaImage" style="vertical-align: bottom; display: inline" src="@Url.Action(nameof(League.Controllers.Captcha.Index), nameof(League.Controllers.Captcha))@("?guid=" + Guid.NewGuid())" alt="Captcha" title=""/>
+                <label class="d-inline" onclick="javascript:if (document.images) document.images.CaptchaImage.src = '@Url.Action(nameof(League.Controllers.Captcha.Index), nameof(League.Controllers.Captcha))?new=1&amp;time=' + new Date().getTime();" style="cursor: pointer"><i class="fa fa-sync-alt fa-2x" style="margin: 0 5px 0 5px;" title="@Localizer["Reload"]"></i></label><br/>
+            </div>
+            <label asp-for="Captcha"></label>
+            <div class="input-group">
+                <input asp-for="Captcha" required="required" type="text" class="form-control" maxlength="7" autocomplete="off"/>
+                <span class="input-group-append input-group-text">
+                    <i class="fas fa-equals"></i>
+                </span>
+            </div>
+            <span asp-validation-for="Captcha" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <button type="submit" class="btn btn-lg btn-primary col-10">@Localizer["Submit message"]</button>
+        </div>
+    </form>
+</div>
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync(League.ViewNames.Shared._ValidationScriptsPartial);
+    }
+}

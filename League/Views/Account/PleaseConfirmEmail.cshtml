@@ -1,0 +1,29 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@using Microsoft.Extensions.Options
+@inject IViewLocalizer Localizer
+@inject Axuno.Tools.DateAndTime.TimeZoneConverter TimeZoneConverter
+@inject IOptions<DataProtectionTokenProviderOptions> TokenProviderOptions
+@{
+    var tokenExpiresOn = TimeZoneConverter.ToZonedTime(DateTime.UtcNow.Add(TokenProviderOptions.Value.TokenLifespan));
+    ViewData["Title"] = Localizer["Please confirm your email address"];
+}
+<h2>@ViewData["Title"].</h2>
+<hr />
+<div>
+    <site-alert type="Success">
+        @Localizer["A confirmation email has been sent to your mailbox address"]<br />
+        @Localizer["to complete the registration"]
+    </site-alert>
+    <site-alert type="Success" icon="fas fa-lightbulb fa-2x">
+        <ul class="mb-0 pl-4">
+            <li>
+                <b>@ViewData["Title"]</b>
+                @Localizer["until"]
+                @tokenExpiresOn.DateTimeOffset.DateTime.ToString("d") @tokenExpiresOn.DateTimeOffset.DateTime.ToString("HH:00 'h'")
+                @tokenExpiresOn.Abbreviation
+                @Localizer["as described in the email you will receive"].
+            </li>
+            <li>@Localizer["In case you're missing the confirmation email, please check the Junk mail folder of your mailbox"].</li>
+        </ul>
+    </site-alert>
+</div>

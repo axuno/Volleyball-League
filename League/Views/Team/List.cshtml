@@ -1,0 +1,124 @@
+﻿@using League.Views
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@model League.Models.TeamViewModels.TeamListModel
+@{
+    ViewData["Title"] = Localizer["Teams"].Value + " - " + Model.Tournament.Name;
+    
+    if (Model.RoundsWithTeams.Count == 0)
+    {
+        <div class="mb-0 pb-1">
+            <h2 class="h2">@ViewData["Title"]</h2>
+            <site-alert type="Info" icon="fas fa-users" icon-size-class="fa-3x">
+                <h4 class="h4">@Localizer["There are no teams at this time"].</h4>
+            </site-alert>
+        </div>
+
+        return;
+    }
+
+    var activeRoundId = Model.ActiveRoundId ?? 0;
+    var rounds = Model.RoundsWithTeams.GroupBy(t => t.RoundName, (key, m) => new { RoundName = key, RoundId = m.First().RoundId, RoundDescription = m.First().RoundDescription, RoundTypeName = m.First().RoundTypeName, RoundTypeDescription = m.First().RoundTypeDescription }).ToList();
+    var useRecentRoundCookie = !(Model.ActiveRoundId.HasValue && rounds.Any(r => r.RoundId == Model.ActiveRoundId));
+    if (useRecentRoundCookie) { activeRoundId = rounds.FirstOrDefault()?.RoundId ?? 0; }
+}
+<div class="mb-0 pb-1">
+    <h2 class="h2">@ViewData["Title"]</h2>
+    <hr class="mb-4" />
+
+    <ul class="nav nav-tabs" id="round-tabs" role="tablist">
+        @foreach (var r in rounds)
+        {
+            <li class="nav-item">
+                <a class="nav-link py-1@{if (r.RoundId == activeRoundId){<text> active</text>}}" id="tab-link-@(r.RoundId)" data-toggle="tab" href="#tab-@(r.RoundId)" role="tab" aria-controls="@r.RoundDescription" aria-selected="@(r.RoundId == activeRoundId ? "true" : "false")">@r.RoundDescription</a>
+            </li>
+        }
+    </ul>
+    <div class="tab-content" id="round-list">
+        @foreach (var r in rounds)
+        {
+            <div class="tab-pane@{if (r.RoundId == activeRoundId){<text> show active</text>}}" id="tab-@(r.RoundId)" role="tabpanel" aria-labelledby="@r.RoundDescription-tab">
+                <div class="text-success">@r.RoundTypeDescription</div>
+                <div id="team-list" class="rounded table-responsive">
+                    <table class="table table-sm table-light table-bordered table">
+                        <thead class="rounded">
+                        <tr>
+                            <th>@Localizer["Team"]</th>
+                            <th>@Localizer["Club"]</th>
+                            <th class="text-center"><i class="fas fa-info-circle"></i></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        @{
+                            var teams = Model.RoundsWithTeams.Where(rd => rd.RoundId == r.RoundId).ToList();
+                            var teamsInThisRound = teams.Count;
+                            foreach (var t in teams)
+                            {
+                                <tr>
+                                    <td>@t.TeamNameForRound</td>
+                                    <td>@t.TeamClubName</td>
+                                    <td class="text-center"><a href="@Url.Action(nameof(League.Controllers.Team.Single), nameof(League.Controllers.Team), new {id = t.TeamId})" class=""><i class="fas fa-ellipsis-h"></i></a></td>
+                                </tr>
+                            }
+                        }
+                        </tbody>
+                    </table>
+                </div>
+                @{ var maxModifiedOn = Model.TimeZoneConverter.ToZonedTime(Model.RoundsWithTeams.Where(m => m.RoundId == r.RoundId).Max(m => m.TeamModifiedOn)); }
+                <div class="text-muted">
+                    @Localizer[Model.RoundsWithTeams.Count > 1 ? "{0} out of {1} teams" : "{0} out of {1} team", teamsInThisRound, Model.RoundsWithTeams.Count]<br/>
+                    @Localizer["Last update"]: @maxModifiedOn.DateTimeOffset.DateTime.ToShortDateString() @maxModifiedOn.DateTimeOffset.DateTime.ToLongTimeString() @maxModifiedOn.Abbreviation
+                </div>
+            </div>
+        }
+    </div>
+</div>
+@section styles
+{
+    <style type="text/css">
+        #round-tabs .nav-link:not(.active) {border:solid 1px lightgray;}
+        #team-list table tbody tr { border-bottom: solid 2px lightgray; cursor: pointer}
+        #team-list table thead {background-color: lightgray}
+        #team-list th:first-child, #team-list td:first-child {width: 50%}
+        #team-list th:nth-child(2), #team-list td:nth-child(2) {width: 45%}
+        #team-list th:nth-child(3), #team-list td:nth-child(3) { width: 5%}
+    </style>
+}
+@section scripts
+{
+    <script type="text/javascript">
+        //<![CDATA[
+        var mostRecentRoundCookieName = '@CookieNames.MostRecentRound';
+        var useRecentRoundCookie = @useRecentRoundCookie.ToString().ToLowerInvariant();
+        Cookies = window.Cookies; @* js-cookies.js *@
+        $(document).ready(function() {
+            $('[data-toggle="tooltip"]').tooltip();
+            @* Try to set the active tab from a cookie *@
+            if (useRecentRoundCookie) {
+                var $activeRoundFromCookie = Cookies.get(mostRecentRoundCookieName);
+                var $tabLink = $('#tab-link-' + $activeRoundFromCookie);
+                if ($activeRoundFromCookie !== undefined && $tabLink.length) {
+                    $tabLink.tab('show');
+                } else {
+                    $('#round-tabs li:first-child a').tab('show');
+                }
+            }
+
+            $('tbody > tr').on('click',
+                function(e) {
+                    e.preventDefault();
+                    var href = $(this).find('td:last-child > a').attr('href');
+                    if(href) window.location = href;
+                });
+
+            $('a[data-toggle="tab"]').on('shown.bs.tab',
+                function(e) {
+                    var id = e.target.id.replace('tab-link-', ''); // newly activated tab with round id
+                    Cookies.set(mostRecentRoundCookieName,
+                        id,
+                        { expires: 365, path: `/${e.target.pathname.split('/')[1]}` });
+                });
+        });
+        //]]>
+    </script>
+}

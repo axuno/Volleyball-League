@@ -1,0 +1,44 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@{
+    ViewData["Title"] = Localizer["Picture Credits"];
+}
+<div>
+    <h2 class="h2">@ViewData["Title"]</h2>
+    <hr />
+</div>
+<div class="mb-0 pb-1">
+    <p>@Localizer["We give credit to the following list of pictures"]:</p>
+    <p>
+        <a href="@Url.Content("~/images/logo-league-lg.png")" class="credit">© vectorstock 14122148 / vectorstock.com</a><br />
+        <a href="@Url.Content("~/images/logo-axuno.png")" class="credit">© Elaelo / fotolia.com</a><br />
+        <a href="@Url.Content("~/images/a-beach.jpg")" class="credit">© 27375447_ml_madabatman / 123rf.com</a><br />
+        <a href="@Url.Content("~/images/a-indoor.jpg")" class="credit">© 27386872_ml_madabatman / 123rf.com</a><br />
+        <a href="@Url.Content("~/images/home_welcome_carousel-01.png")" class="credit">© vectorstock 14122148 / vectorstock.com</a><br />
+        <a href="@Url.Content("~/images/home_welcome_carousel-02.jpg")" class="credit">Capri23auto-1767157</a> / <a href="https://pixabay.com/de/?utm_source=link-attribution&amp;utm_medium=referral&amp;utm_campaign=image&amp;utm_content=3031697">Pixabay</a><br />
+        <a href="@Url.Content("~/images/home_welcome_carousel-03.jpg")" class="credit">Wolfgang Gerth 2639700</a> / <a href="https://pixabay.com/de/?utm_source=link-attribution&amp;utm_medium=referral&amp;utm_campaign=image&amp;utm_content=2639700">Pixabay</a><br />
+        <a href="@Url.Content("~/images/home_welcome_carousel-04.jpg")" class="credit">Tania van den Berghen 520093</a> / <a href="https://pixabay.com/de/?utm_source=link-attribution&amp;utm_medium=referral&amp;utm_campaign=image&amp;utm_content=520093">Pixabay</a><br />
+    </p>
+</div>
+<modal id="img-modal" title="@Localizer["Picture Credits"].Value" dialog-class="modal-md">
+    <modal-body>
+        <img class="img-fluid" src="" id="show-img" alt="" />
+    </modal-body>
+</modal>
+@section scripts
+{
+    <script site-on-content-loaded="true">
+        $('.credit').click(function(e) {
+            var img = $(this).attr('href');
+            $('#show-img').attr('src', img);
+            $('#img-credit').html(content);
+            $('#img-modal').modal('show');
+            e.preventDefault();
+        });
+    </script>
+}
+@section styles {
+    <style type="text/css">
+        .credit { }
+    </style>
+}

@@ -1,0 +1,19 @@
+﻿@using League.Helpers
+@using League.TagHelpers
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject MetaDataHelper Metadata
+@inject IViewLocalizer Localizer
+@model League.Models.MatchViewModels.EnterResultViewModel.MatchResultMessage
+@if (Model == null) { return; }
+@{
+    <site-alert type="@(Model.ChangeSuccess ? SiteAlertTagHelper.AlertType.Success : SiteAlertTagHelper.AlertType.Danger)">
+        @if (Model.ChangeSuccess)
+        {
+            W‌rite(Localizer["Match result has been saved"]);
+        }
+        else
+        {
+            W‌rite(Localizer["Saving the match result failed"]);
+        }
+    </site-alert>
+}

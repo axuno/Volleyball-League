@@ -1,0 +1,96 @@
+@using League.Controllers
+@using League.Identity
+@using Microsoft.AspNetCore.Mvc.Localization
+@model SignInViewModel
+@inject SignInManager<ApplicationUser> SignInManager
+@inject IViewLocalizer Localizer
+@{
+    ViewData["Title"] = Localizer["Sign in"];
+}
+<h2 class="h2">@ViewData["Title"]</h2>
+@{
+    var schemes = await SignInManager.GetExternalAuthenticationSchemesAsync();
+    var loginProviders = schemes.ToList();
+    if (loginProviders.Count != 0)
+    {
+    <hr/>
+    <div class="col-md-8 col-sm-10 col-12 pl-0">
+        <h3 class="h3">@Localizer["Sign-in using a social network account"]</h3>
+        <form asp-controller="@nameof(Account)" asp-action="@nameof(Account.ExternalSignIn)" asp-route-returnurl="@ViewData["ReturnUrl"]" method="post" role="form">
+            @if (ViewData["Form"]?.ToString() == "SocialMedia")
+            {
+                <site-validation-summary show="All">
+                </site-validation-summary>
+            }
+            <div class="flex-row">
+                @foreach (var provider in loginProviders)
+                {
+                    <button type="submit" class="btn btn-lg btn-secondary mb-2 mr-2" name="provider" value="@provider.Name">@provider.DisplayName</button>
+                }
+            </div>
+        </form>
+    </div>
+    }
+}
+    <hr />
+    <div class="col-md-8 col-sm-10 col-12 pl-0">
+        <h3 class="h3">@Localizer["Sign-in with your user account credentials"]</h3>
+        <form asp-controller="@nameof(Account)" asp-action="@nameof(Account.SignIn)" asp-route-returnurl="@ViewData["ReturnUrl"]" method="post" role="form" class="pl-0">
+            @if (ViewData["Form"]?.ToString() != "SocialMedia")
+            {
+                <site-validation-summary show="All">
+                    <b>@Localizer["Input has some issues"]:</b>
+                </site-validation-summary>
+            }
+            <div class="form-group">
+                <label asp-for="EmailOrUsername"></label>
+                <div class="input-group">
+                    <input asp-for="EmailOrUsername" class="form-control" required="required" />
+                    <span class="input-group-append input-group-text">
+                        <i class="fas fa-user"></i>
+                    </span>
+                </div>
+                <span asp-validation-for="EmailOrUsername" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Password"></label>
+                <div class="input-group">
+                    <input asp-for="Password" class="form-control" required="required" type="text" />@* js will change type to "password" *@
+                    <span class="input-group-append input-group-text" style="cursor: pointer" onclick="Site.ShowHidePassword($(this))">
+                        <i class="fas fa-eye"></i>
+                    </span>
+                </div>
+                <span asp-validation-for="Password" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <div class="form-check">
+                    <input asp-for="RememberMe" class="form-check-input" checked="checked" />
+                    <label asp-for="RememberMe" class="form-check-label"></label>
+                </div>
+            </div>
+            <div class="form-group">
+                <button type="submit" class="btn btn-lg btn-primary col-10">@Localizer["Sign in"]</button>
+            </div>
+        </form>
+    </div>
+<hr />
+<div class="mb-2">
+    <section>
+        <div>
+            <a asp-action="@nameof(Account.ForgotPassword)" class="link">@Localizer["Forgot your password?"]</a>
+        </div>
+        <div>
+            <a asp-action="@nameof(Account.CreateAccount)" asp-route-returnurl="@ViewData["ReturnUrl"]" class="link">@Localizer["Register as a new user?"]</a>
+        </div>
+    </section>
+</div>
+@section Scripts {
+    @{ await Html.RenderPartialAsync(League.ViewNames.Shared._ValidationScriptsPartial); }
+    @* <partial name="_ValidationScriptsPartial"/> but name not resolved by R# *@
+    <script type="text/javascript">
+        // Show tab coming from e.g. url#social-network
+        // $('.nav-tabs a[href="' + window.location.hash + '"]').tab('show');
+        $("#@Html.IdFor(m => m.Password)").attr("type", "password");
+        $("#@Html.IdFor(m => m.EmailOrUsername)").focus();
+    </script>
+}

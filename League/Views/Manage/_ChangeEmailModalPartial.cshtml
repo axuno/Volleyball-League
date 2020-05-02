@@ -1,0 +1,31 @@
+﻿@using League.Controllers
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@model ChangeEmailViewModel
+<!-- Modal -->
+<modal id="change-email" title="@Localizer["Change Primary Email Address"].Value" tabindex="-1">
+    <modal-body>
+        <div>
+            <p>@Localizer["For changing your primary email address we will send a confirmation code to the new email."]</p>
+            <p><strong>@Localizer["The primary email address will be changed only after the confirmation link in our message was submitted."]</strong></p>
+        </div>
+        <form asp-controller="@nameof(Manage)" asp-action="@nameof(Manage.ChangeEmail)" method="post" role="form">
+            <site-validation-summary show="All"></site-validation-summary>
+            <input name="IsValid" type="hidden" value="@ViewData.ModelState.IsValid.ToString()" />
+            <div class="form-group">
+                <label asp-for="Email"></label>
+                <div class="input-group">
+                    <input asp-for="Email" class="form-control" autofocus required="required" type="text" />
+                    <span class="input-group-append input-group-text">
+                        <i class="fas fa-envelope"></i>
+                    </span>
+                </div>
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+        </form>
+    </modal-body>
+    <modal-footer show-dismiss="true" dismiss-text="@Localizer["Cancel"].Value">
+        <button site-ajax-submit class="btn btn-primary">@Localizer["Save"].Value</button>
+    </modal-footer>
+</modal>
+@{ await Html.RenderPartialAsync(League.ViewNames.Shared._ValidationScriptsPartial); /* register the modal form for validation */ }

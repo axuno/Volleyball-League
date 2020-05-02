@@ -1,0 +1,29 @@
+﻿@using cloudscribe.Web.Navigation
+@using League.Navigation
+@using Microsoft.Extensions.Localization
+@model NavigationViewModel
+@inject IStringLocalizer<NavigationResource> Localizer
+@if ((Model.TempNode != null) && (await Model.HasVisibleChildren(Model.TempNode)))
+{
+    <ul class="nav">
+        @foreach (var childNode in Model.TempNode.Children)
+        {
+            if (!await Model.ShouldAllowView(childNode))
+            {
+                continue;
+            }
+
+            if (!await Model.HasVisibleChildren(childNode))
+            {
+                <li class="nav-item @Model.GetClass(childNode.Value)"><a class="nav-link" href="@Url.Content(Model.AdjustUrl(childNode))">@Html.Raw(Model.GetIcon(childNode.Value))@Localizer[Model.AdjustText(childNode)]</a></li>
+            }
+            else
+            {
+                <li class="nav-item @Model.GetClass(childNode.Value)">
+                    <a class="nav-link" href="@Url.Content(Model.AdjustUrl(childNode))">@Html.Raw(Model.GetIcon(childNode.Value))@Localizer[Model.AdjustText(childNode)]</a>
+                    @Model.UpdateTempNode(childNode)@await Html.PartialAsync("NavigationNodeChildTreePartial", Model) @* recursion *@
+                </li>
+            }
+        }
+    </ul>
+}

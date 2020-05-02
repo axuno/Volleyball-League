@@ -1,0 +1,39 @@
+﻿@using System.Threading
+@using League.Components
+@using SD.LLBLGen.Pro.ORMSupportClasses
+@using TournamentManager.DAL.HelperClasses
+@inject League.DI.OrganizationSiteContext _siteContext
+@{
+    ViewData["Title"] = "Index";
+    var venue = (await _siteContext.AppDb.VenueRepository.GetVenueTeamRowsAsync(new PredicateExpression(), CancellationToken.None)).First(v => v.VenueId == 82);
+    var venueModel = new VenueEditorComponentModel { IsNew = false, ShowLatLng = true, Id = venue.VenueId, Name = venue.VenueName, Direction = venue.Direction, PostalCode = venue.PostalCode, City = venue.City, Latitude = venue.Latitude, Longitude = venue.Longitude };
+}
+<div class="mb-0 pb-1">
+    <h2 class="h2">Augsburg Index</h2>
+    Content goes here...
+    @(await Component.InvokeAsync<RoundSelector>(new RoundSelectorComponentModel { TournamentId = 22, RoundNotSpecifiedKey = null, SelectedRoundId = 110, HtmlFieldPrefix = "Team" }))
+    <div>Team</div>
+    @(await Component.InvokeAsync<TeamEditor>(new TeamEditorComponentModel { IsNew = true, MatchDayOfWeek = 3, MatchTime = null, HtmlFieldPrefix = "Some.Team"}))
+    <div>Venue</div>
+    @(await Component.InvokeAsync<VenueEditor>(venueModel))
+</div>
+@section styles
+{
+    <link rel="stylesheet" href="~/lib/tempusdominus-bootstrap-4/tempusdominus-bootstrap-4.min.css" />
+}
+@section scripts
+{
+    <script type="text/javascript" src="~/lib/Moment/moment.min.js"></script>
+    <script type="text/javascript" src="~/lib/tempusdominus-bootstrap-4/tempusdominus-bootstrap-4.min.js"></script>
+    <partial name="@nameof(League.ViewNames.Shared._DateTimePickerScriptPartial)" />
+    @if (ViewContext.ClientValidationEnabled)
+    {
+        <partial name="@nameof(League.ViewNames.Shared._ValidationScriptsPartial)" />
+    }
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $('select').selectpicker();
+            $('div[id^="picker_"]').datetimepicker({ format: 'LT', stepping: 15 });
+        });
+    </script>
+}

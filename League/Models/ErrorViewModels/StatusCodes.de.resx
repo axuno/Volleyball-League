@@ -1,0 +1,288 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="E1" xml:space="preserve">
+    <value>Softwarefehler</value>
+    <comment>Custom application error code</comment>
+  </data>
+  <data name="E2" xml:space="preserve">
+    <value>Wartungsarbeiten</value>
+    <comment>Custom application error code</comment>
+  </data>
+  <data name="E400" xml:space="preserve">
+    <value>Ungültige Anforderung</value>
+    <comment>This response means that server could not understand the request due to invalid syntax.</comment>
+  </data>
+  <data name="E401" xml:space="preserve">
+    <value>Authentifizierung erforderlich</value>
+    <comment>Although the HTTP standard specifies "unauthorized", semantically this response means "unauthenticated". That is, the client must authenticate itself to get the requested response.</comment>
+  </data>
+  <data name="E402" xml:space="preserve">
+    <value>Bezahlung benötigt</value>
+    <comment>This response code is reserved for future use. Initial aim for creating this code was using it for digital payment systems however this is not used currently.</comment>
+  </data>
+  <data name="E403" xml:space="preserve">
+    <value>Zugrff verweigert</value>
+    <comment>The client does not have access rights to the content, i.e. they are unauthorized, so server is rejecting to give proper response. Unlike 401, the client's identity is known to the server.</comment>
+  </data>
+  <data name="E404" xml:space="preserve">
+    <value>Nicht gefunden</value>
+    <comment>The server can not find requested resource. In the browser, this means the URL is not recognized. In an API, this can also mean that the endpoint is valid but the resource itself does not exist. Servers may also send this response instead of 403 to hide the existence of a resource from an unauthorized client. This response code is probably the most famous one due to its frequent occurence on the web.</comment>
+  </data>
+  <data name="E405" xml:space="preserve">
+    <value>Methode nicht erlaubt</value>
+    <comment>The request method is known by the server but has been disabled and cannot be used. For example, an API may forbid DELETE-ing a resource. The two mandatory methods, GET and HEAD, must never be disabled and should not return this error code.</comment>
+  </data>
+  <data name="E406" xml:space="preserve">
+    <value>Nicht akzeptabel</value>
+    <comment>This response is sent when the web server, after performing server-driven content negotiation, doesn't find any content following the criteria given by the user agent.</comment>
+  </data>
+  <data name="E407" xml:space="preserve">
+    <value>Proxy-Authentifizierung benötigt</value>
+    <comment>This is similar to 401 but authentication is needed to be done by a proxy.</comment>
+  </data>
+  <data name="E408" xml:space="preserve">
+    <value>Anfrage-Zeitüberschreitung</value>
+    <comment>This response is sent on an idle connection by some servers, even without any previous request by the client. It means that the server would like to shut down this unused connection. This response is used much more since some browsers, like Chrome, Firefox 27+, or IE9, use HTTP pre-connection mechanisms to speed up surfing. Also note that some servers merely shut down the connection without sending this message.</comment>
+  </data>
+  <data name="E409" xml:space="preserve">
+    <value>Konflikt</value>
+    <comment>This response is sent when a request conflicts with the current state of the server.</comment>
+  </data>
+  <data name="E410" xml:space="preserve">
+    <value>Verschwunden</value>
+    <comment>This response would be sent when the requested content has been permanently deleted from server, with no forwarding address. Clients are expected to remove their caches and links to the resource. The HTTP specification intends this status code to be used for "limited-time, promotional services". APIs should not feel compelled to indicate resources that have been deleted with this status code.</comment>
+  </data>
+  <data name="E411" xml:space="preserve">
+    <value>Länge benötigt</value>
+    <comment>Server rejected the request because the Content-Length header field is not defined and the server requires it.</comment>
+  </data>
+  <data name="E412" xml:space="preserve">
+    <value>Vorbedingung fehlgeschlagen</value>
+    <comment>The client has indicated preconditions in its headers which the server does not meet.</comment>
+  </data>
+  <data name="E413" xml:space="preserve">
+    <value>Anfrage-Entität zu groß</value>
+    <comment>Request entity is larger than limits defined by server; the server might close the connection or return an Retry-After header field.</comment>
+  </data>
+  <data name="E414" xml:space="preserve">
+    <value>Anfrage-URI zu lang</value>
+    <comment>The URI requested by the client is longer than the server is willing to interpret.</comment>
+  </data>
+  <data name="E415" xml:space="preserve">
+    <value>Nicht unterstützter Medientyp</value>
+    <comment>The media format of the requested data is not supported by the server, so the server is rejecting the request.</comment>
+  </data>
+  <data name="E416" xml:space="preserve">
+    <value>Anfragebereich nicht erfüllbar</value>
+    <comment>The range specified by the Range header field in the request can't be fulfilled; it's possible that the range is outside the size of the target URI's data.</comment>
+  </data>
+  <data name="E417" xml:space="preserve">
+    <value>Expect Header fehlgeschlagen</value>
+    <comment>This response code means the expectation indicated by the Expect request header field can't be met by the server.</comment>
+  </data>
+  <data name="E418" xml:space="preserve">
+    <value>Ich bin ein Teetopf</value>
+    <comment>The server refuses the attempt to brew coffee with a teapot.</comment>
+  </data>
+  <data name="E421" xml:space="preserve">
+    <value>Fehlgeleitete Anfrage</value>
+    <comment>The request was directed at a server that is not able to produce a response. This can be sent by a server that is not configured to produce responses for the combination of scheme and authority that are included in the request URI.</comment>
+  </data>
+  <data name="E422" xml:space="preserve">
+    <value>Entität kann nicht verarbeitet werden  (WebDAV)</value>
+    <comment>The request was well-formed but was unable to be followed due to semantic errors.</comment>
+  </data>
+  <data name="E423" xml:space="preserve">
+    <value>Gesperrt (WebDAV)</value>
+    <comment>The resource that is being accessed is locked.</comment>
+  </data>
+  <data name="E424" xml:space="preserve">
+    <value>Vorhergehende Bedingung nicht erfüllt (WebDAV)</value>
+    <comment>The request failed due to failure of a previous request.</comment>
+  </data>
+  <data name="E425" xml:space="preserve">
+    <value>Zu früh</value>
+    <comment>Indicates that the server is unwilling to risk processing a request that might be replayed.</comment>
+  </data>
+  <data name="E426" xml:space="preserve">
+    <value>Update benötigt</value>
+    <comment>The server refuses to perform the request using the current protocol but might be willing to do so after the client upgrades to a different protocol. The server sends an Upgrade header in a 426 response to indicate the required protocol(s).</comment>
+  </data>
+  <data name="E428" xml:space="preserve">
+    <value>Vorbedingung erforderlich</value>
+    <comment>The origin server requires the request to be conditional. Intended to prevent the 'lost update' problem, where a client GETs a resource's state, modifies it, and PUTs it back to the server, when meanwhile a third party has modified the state on the server, leading to a conflict.</comment>
+  </data>
+  <data name="E429" xml:space="preserve">
+    <value>Zu viele Anfragen</value>
+    <comment>The user has sent too many requests in a given amount of time ("rate limiting").</comment>
+  </data>
+  <data name="E431" xml:space="preserve">
+    <value>Header-Felder der Anfrage zu lang</value>
+    <comment>The server is unwilling to process the request because its header fields are too large. The request MAY be resubmitted after reducing the size of the request header fields.</comment>
+  </data>
+  <data name="E451" xml:space="preserve">
+    <value>Ressource aus rechtlichen Gründen nicht verfügbar</value>
+    <comment>The user requests an illegal resource, such as a web page censored by a government.</comment>
+  </data>
+  <data name="E500" xml:space="preserve">
+    <value>Interner Serverfehler</value>
+    <comment>The server has encountered a situation it doesn't know how to handle.</comment>
+  </data>
+  <data name="E501" xml:space="preserve">
+    <value>Nicht implementiert</value>
+    <comment>The request method is not supported by the server and cannot be handled. The only methods that servers are required to support (and therefore that must not return this code) are GET and HEAD.</comment>
+  </data>
+  <data name="E502" xml:space="preserve">
+    <value>Unbrauchbarer Gateway</value>
+    <comment>This error response means that the server, while working as a gateway to get a response needed to handle the request, got an invalid response.</comment>
+  </data>
+  <data name="E503" xml:space="preserve">
+    <value>Dienst nicht verfügbar</value>
+    <comment>The server is not ready to handle the request. Common causes are a server that is down for maintenance or that is overloaded. Note that together with this response, a user-friendly page explaining the problem should be sent. This responses should be used for temporary conditions and the Retry-After: HTTP header should, if possible, contain the estimated time before the recovery of the service. The webmaster must also take care about the caching-related headers that are sent along with this response, as these temporary condition responses should usually not be cached.</comment>
+  </data>
+  <data name="E504" xml:space="preserve">
+    <value>Zeitüberschreitung beim Gateway</value>
+    <comment>This error response is given when the server is acting as a gateway and cannot get a response in time.</comment>
+  </data>
+  <data name="E505" xml:space="preserve">
+    <value>HTTP Version nicht unterstützt</value>
+    <comment>The HTTP version used in the request is not supported by the server.</comment>
+  </data>
+  <data name="E506" xml:space="preserve">
+    <value>Zirkelbezug</value>
+    <comment>The server has an internal configuration error: transparent content negotiation for the request results in a circular reference.</comment>
+  </data>
+  <data name="E507" xml:space="preserve">
+    <value>Serverspeicher reicht nicht aus</value>
+    <comment>The server has an internal configuration error: the chosen variant resource is configured to engage in transparent content negotiation itself, and is therefore not a proper end point in the negotiation process.</comment>
+  </data>
+  <data name="E508" xml:space="preserve">
+    <value>Endlosschleife (WebDAV)</value>
+    <comment>The server detected an infinite loop while processing the request.</comment>
+  </data>
+  <data name="E510" xml:space="preserve">
+    <value>Anfrage benötigt mehr Details</value>
+    <comment>Further extensions to the request are required for the server to fulfill it.</comment>
+  </data>
+  <data name="E511" xml:space="preserve">
+    <value>Netzwerk-Authentifizierung erforderllich</value>
+    <comment>The 511 status code indicates that the client needs to authenticate to gain network access.</comment>
+  </data>
+</root>
