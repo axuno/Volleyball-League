@@ -120,8 +120,8 @@
   <data name="Club" xml:space="preserve">
     <value>Verein</value>
   </data>
-  <data name="Contacts are only displayed to team members" xml:space="preserve">
-    <value>Kontakte werden nur Teammitgliedern angezeigt</value>
+  <data name="Contacts are only displayed to members of any team" xml:space="preserve">
+    <value>Kontakte werden nur Mitgliedern eines der Teams angezeigt</value>
   </data>
   <data name="Direction" xml:space="preserve">
     <value>Anfahrt</value>
