@@ -1,11 +1,11 @@
 <img src="https://raw.githubusercontent.com/axuno/Volleyball-League/master/logo-volleyball-league.png" width="100" alt="Logo">
 
-# Volleyball-League
+# Volleyball League
 
 ## What is it?
-The Volleyball League is a platform that brings everything necessary to organize and to run a league.
+Volleyball League is a platform that brings everything necessary to organize and to run a league.
 
-## What are the features?
+## Features
 
  * Indoor and beach leagues
  * Registration of teams
@@ -18,7 +18,7 @@ The Volleyball League is a platform that brings everything necessary to organize
  * Shared use of venues
  * Referees
 
-## About the software
+## Software desgin
 
  * Individual settings (e.g. number of records, number of rounds, etc.)
  * Individual pages, e.g. for the game rules
@@ -31,7 +31,7 @@ The Volleyball League is a platform that brings everything necessary to organize
   * ASP.NET Core 3.1 web-development framework
   * C# programming language
   * Microsoft SQL Server database (2016+)
-  * Bootstrap 4 as the HTML, CSS, and JavaScript framework
+  * Bootstrap 4 and jQuery as the HTML, CSS, and JavaScript framework
   
   ## Live website
   
