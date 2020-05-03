@@ -715,6 +715,11 @@
           <FieldFieldRelationship FkField="TeamId" PkField="Id" />
         </FieldRelationships>
       </NormalRelationship>
+      <NormalRelationship Name="Tournament.Tournament-Tournament.Tournaments" Start=":Tournament" End=":Tournament" StartNavigator="Tournament" EndNavigator="Tournaments" Type="4" EndIsOptional="true">
+        <FieldRelationships>
+          <FieldFieldRelationship FkField="NextTournamentId" PkField="Id" />
+        </FieldRelationships>
+      </NormalRelationship>
       <NormalRelationship Name="Tournament.TournamentType-TournamentType.Tournaments" Start=":Tournament" End=":TournamentType" StartNavigator="TournamentType" EndNavigator="Tournaments" Type="4" UpdateRuleAction="1" DeleteRuleAction="3">
         <FieldRelationships>
           <FieldFieldRelationship FkField="TypeId" PkField="Id" />
@@ -1071,7 +1076,7 @@
       <Catalogs>
         <Catalog Name="TestOrg">
           <Schemas>
-            <Schema Name="dbo" SyncSource="2" LastSyncWithDatabase="2020-05-02T18:53:40.8647112Z">
+            <Schema Name="dbo" SyncSource="2" LastSyncWithDatabase="2020-05-03T08:41:06.6091377Z">
               <Tables>
                 <Table Name="AvailableMatchDate">
                   <PkConstraintName Name="PK_378f3f14a1c871b25041c380344" />
