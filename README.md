@@ -18,7 +18,7 @@ Volleyball League is a platform that brings everything necessary to organize and
  * Shared use of venues
  * Referees
 
-## Software desgin
+## Software design
 
  * Individual settings (e.g. number of records, number of rounds, etc.)
  * Individual pages, e.g. for the game rules
@@ -30,7 +30,7 @@ Volleyball League is a platform that brings everything necessary to organize and
   * ASP.NET Core 3.1 web-development framework
   * C# programming language
   * Microsoft SQL Server database (2016+)
-  * Bootstrap 4 and jQuery as the HTML, CSS, and JavaScript framework
+  * Bootstrap 4 and jQuery as the HTML, CSS, and JavaScript frameworks
 
 ## License
 
