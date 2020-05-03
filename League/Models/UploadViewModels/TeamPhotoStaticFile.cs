@@ -88,7 +88,7 @@ namespace League.Models.UploadViewModels
         public (string Filename, DateTime Date) GetFileInfo(long teamId)
         {
             return GetFileInfo(new DirectoryInfo(Path.Combine(_webHostEnvironment.WebRootPath, _folder)),
-                string.Format(_fileSearchPattern, _siteContext.FolderName, teamId));
+                string.Format(_fileSearchPattern, _siteContext.OrganizationKey, teamId));
         }
 
         public (string Uri, DateTime Date) GetUriInfo(long teamId)

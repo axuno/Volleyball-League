@@ -117,58 +117,10 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="All-time tables" xml:space="preserve">
-    <value>Ewige Tabellen</value>
+  <data name="Leagues" xml:space="preserve">
+    <value>Ligen</value>
   </data>
-  <data name="Contact teams" xml:space="preserve">
-    <value>Team-Kontaktdaten</value>
-  </data>
-  <data name="Current season" xml:space="preserve">
-    <value>Aktuelle Saison</value>
-  </data>
-  <data name="Fixtures" xml:space="preserve">
-    <value>Spielplan</value>
-  </data>
-  <data name="Geographical spread" xml:space="preserve">
-    <value>Geografische Verteilung</value>
-  </data>
-  <data name="Home" xml:space="preserve">
-    <value>Startseite</value>
-  </data>
-  <data name="Info" xml:space="preserve">
-    <value>Info</value>
-  </data>
-  <data name="League" xml:space="preserve">
-    <value>Liga</value>
-  </data>
-  <data name="League Overview" xml:space="preserve">
-    <value>Liga-Übersicht</value>
-  </data>
-  <data name="Match results" xml:space="preserve">
-    <value>Spielergebnisse</value>
-  </data>
-  <data name="Matches" xml:space="preserve">
-    <value>Spiele</value>
-  </data>
-  <data name="My team" xml:space="preserve">
-    <value>Mein Team</value>
-  </data>
-  <data name="News" xml:space="preserve">
-    <value>Aktuelles</value>
-  </data>
-  <data name="Register team for next season" xml:space="preserve">
-    <value>Team für nächste Saison anmelden</value>
-  </data>
-  <data name="Rule of game" xml:space="preserve">
-    <value>Spielordnung</value>
-  </data>
-  <data name="Tables" xml:space="preserve">
-    <value>Tabellen</value>
-  </data>
-  <data name="Teams" xml:space="preserve">
-    <value>Teams</value>
-  </data>
-  <data name="Volleyball League" xml:space="preserve">
-    <value>Volleyball-Liga</value>
+  <data name="using volleyball-liga.de" xml:space="preserve">
+    <value>auf volleyball-liga.de</value>
   </data>
 </root>

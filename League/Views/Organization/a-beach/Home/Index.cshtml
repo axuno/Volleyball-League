@@ -1,0 +1,29 @@
+﻿@using System.Threading
+@using League.Components
+@using League.Routing
+@inject League.DI.OrganizationSiteContext SiteContext
+@{
+    ViewData["Title"] = "Startseite";
+}
+<div>
+    <h2 class="h2">@SiteContext.ShortName</h2>
+    <hr />
+</div>
+<div class="mb-0 pb-1">
+    <div class="d-flex flex-column">
+        <div>
+            <p>@Html.Raw(SiteContext.Description)</p>
+            <p>
+                Interessiert, in der Liga mitzuspielen? Wir freuen uns über jedes Team.<br />
+                Einfach <a asp-route="@RouteNames.HomeOrganizationContact" class="link">Kontakt mit uns aufnehmen</a>.
+            </p>
+        </div>
+        <div class="py-2 mb-2">
+            <img src="@Url.Content("~/images/a-beach.jpg")" class="img-fluid rounded" alt="@SiteContext.Name"/>
+        </div>
+    </div>
+</div>
+@section styles
+{}
+@section scripts
+{}

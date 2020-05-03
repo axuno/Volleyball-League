@@ -1,0 +1,265 @@
+﻿@inject League.DI.OrganizationSiteContext SiteContext
+@{
+    ViewData["Title"] = "Spielordnung";
+}
+<div>
+    <h2 class="h2">@ViewData["Title"]</h2>
+    <hr />
+</div>
+<div class="mb-0 pb-1">
+    <h4 class="h4">
+        1. Ziel der Volleyball-Mixedliga Augsburg
+    </h4>
+    <p>
+        1.1 Die Mixedliga Augsburg soll Mannschaften, die in ihrer Freizeit Volleyball spielen, Gelegenheit geben,
+        sich mit anderen Mannschaften zu vergleichen.
+    </p>
+    <p>
+        1.2 Neben dem sportlichen Ehrgeiz sollen besonders die Freude am Spiel, der faire und freundschaftliche Umgang miteinander im Vordergrund
+        stehen.
+    </p>
+    <p>
+        1.3 Diese Spielordnung soll nur dann zum Einsatz kommen, wenn es den Mannschaften nicht möglich ist, sich untereinander zu einigen.
+    </p>
+    <h4 class="h4">
+        2. Teilnahmeberechtigung
+    </h4>
+    <p>
+        2.1 In der Mixedliga sollen alle Mannschaften aus der Region Augsburg teilnehmen können, die
+    </p>
+    <ul>
+        <li>nicht an einer offiziellen Spielrunde teilnehmen</li>
+        <li>über einen eigenen Zeiten in einer Sportstätte verfügen. </li>
+    </ul>
+    <p>
+        2.2 Ausnahmsweise können auch Mannschaften ohne eigene Zeiten in einer Sportstätte teilnehmen, sofern dem aus planungstechnischer Sicht nichts entgegensteht.
+    </p>
+    <h4 class="h4">
+        3. Spielzeit
+    </h4>
+    <p>
+        3.1 Die Spielzeit der Mixedliga beginnt nach den Schulsommerferien im September und läuft bis etwa April des folgenden Jahres.
+    </p>
+    <p>
+        3.2 Während der Schulferien finden Spiele nur dann statt, wenn sich beide Mannschaften darauf verständigen.
+    </p>
+    <h4 class="h4">
+        4. Planung und Organisation
+    </h4>
+    <p>
+        4.1 Die Planung, Einteilung, Gestaltung und Durchführung der Liga wird jedes Jahr neu Ausrichter festgelegt.
+    </p>
+    <p>
+        4.2 Ausrichter der Mixedliga Augsburg ist <I>axuno</I>, eine gemeinnützige Organisation aus Augsburg, die u.a. das von ihr entwickelte Portal volleyball-liga.de betreibt.
+    </p>
+    <p>
+        4.2 Wünsche  der teilnehmenden Mannschaften werden - soweit organisatorisch machbar - so weit wie möglich berücksichtigt.
+        Neue Mannschaften werden nach geschätzter Spielstärke einer Gruppe zugeordnet.
+    </p>
+    <p>
+        4.3 Die Mixedliga Augsburg ist eigenständig und keinem Verband und keiner Dachorganisation angeschlossen.
+    </p>
+    <p>
+        4.4 Der Bayerische Volleyballverband (BVV) räumt derzeit den/dem Erstplatzierten der Gruppe A der Mixedliga Augsburg die Teilnahme an
+        der Schwäbischen bzw. der Bayerischen Meisterschaft (BFS-Mixed) des BVV ein.
+    </p>
+    <h4 class="h4">
+        5. Spielklassen und Gruppen
+    </h4>
+    <p>
+        5.1 Es wird in mehreren Gruppen gespielt, die zwischen 4 und 6 Mannschaften etwa gleicher Spielstärke enthalten.
+    </p>
+    <p>
+        5.2 Hierbei bedeuten die Buchstaben eine Spielniveaueinteilung von hoch (A) bis Anfänger (F). Daneben gibt es eine offene
+        Gruppe (OA).
+    </p>
+    <h4 class="h4">
+        6. Anmeldung
+    </h4>
+    <p>
+        6.1 Jede Mannschaft kann dem Ausrichter zu Beginn der Saison eine Gruppe vorschlagen, in der sie glaubt, am besten aufgehoben zu sein.
+        Soweit möglich und sinnvoll, wird der Ausrichter dies bei der Gruppeneinteilung berücksichtigen.
+    </p>
+    <p>
+        6.2 Die Tabellenersten und -letzten einer Gruppe nehmen i.d.R. in der nächsten Spielrunde in der nächsthöheren bzw. nächsttieferen Gruppe
+        teil. Erst werden alle Abstiege (nach der Spielordnung oder freiwillig) in die Planung eingearbeitet,
+        dann die Aufstiege. Verzichtet ein Team auf den Aufstieg, kommt das Team mit dem nächstbesten Platz zum Zug.
+    </p>
+    <p>
+        6.3 Die Anmeldung zur Spielsaison der Mixedliga muss online bis zum festgesetzten Anmeldeschluss beim Ausrichter erfolgen. Eine Nachmeldung
+        kann nicht berücksichtigt werden.
+    </p>
+    <p>
+        6.4 Mit der Anmeldung ist das Startgeld von @SiteContext.Bank.Amount EUR auf das Konto von <I>@SiteContext.Bank.Recipient</I> zu überweisen.
+        Die Bestätigungs-E-Mail zur Anmeldung enthält die Kontoverbindung.
+        @*(IBAN @SiteContext.Bank.Iban, @SiteContext.Bank.BankName, BIC @SiteContext.Bank.Bic)*@
+    </p>
+    <p>
+        6.5 Jede teilnehmende Mannschaft meldet sich mit folgenden Angaben an:
+    </p>
+    <ul style="margin-left: 16px; margin-top: 0px; margin-bottom: 0px;">
+        <li>2 Ansprechpartner mit Adresse, Telefonnr. und E-Mail Adresse</li>
+        <li>Sportstätte mit Adresse und Wegbeschreibung</li>
+        <li>
+            Trainingszeit (Spielbeginn mit Wochentag und Uhrzeit), zu der die Heimspiele ausgetragen werden. Öffnung und
+            Einspielen ist 30 Minuten vor Spielbeginn.
+        </li>
+    </ul>
+    <h4 class="h4">
+        7. Zusammensetzung der Mannschaften
+    </h4>
+    <p>
+        7.1 Die Mannschaften bestehen während des gesamten Spiels aus 6 Spielern, davon mindestens 3 Damen. Ausnahme: In der Offenen
+        Gruppe gibt es keine Mindestanzahl an Damen bzw. Herren.
+    </p>
+    <p>
+        7.2 Für den Spielereinsatz gilt:
+    </p>
+    <ul>
+        <li>
+            In der Mixedliga sollen vor allem SpielerInnen ohne Spielerpass und Staffelleitervermerk für den Pflichtspielbetrieb
+            eines Volleyballverbands teilnehmen.
+        </li>
+        <li>Es bleibt grundsätzlich jedem Volleyballer überlassen, in wie vielen Mannschaften sie/er spielen möchte. </li>
+    </ul>
+    <p>
+        7.3 Der Ausrichter behält sich vor, die Zustimmung zu Einsätzen nach Ziffer 7.2 abzulehnen oder mit Auflagen zu versehen, um den Freizeitcharakter
+        der Mixedliga zu erhalten.
+    </p>
+    <h4 class="h4">
+        8. Spieltage
+    </h4>
+    <p>
+        8.1. Die vom Spielleiter festgelegten Spieltage sind so verteilt, dass zwischen ihnen möglichst zwei Wochen spielfreie Zeit liegen.
+    </p>
+    <p>
+        8.2 Die festgesetzten Spieltage sind möglichst einzuhalten.
+    </p>
+    <p>
+        8.3 Generell hat jede Mannschaft das Recht auf die gleiche Anzahl von Heim- und Auswärtsspielen.
+    </p>
+    <h4 class="h4">
+        9. Spielverschiebungen
+    </h4>
+    <p>
+        9.1 Spielverschiebungen sind nur einmal pro Mannschaft pro angesetzter Begegnung möglich. Der Ausweichtermin soll maximal 2 Wochen früher
+        oder später stattfinden.
+    </p>
+    <p>
+        9.2 Ausgefallene Spiele werden zunächst mit 0:0 Sätzen und 0:0 Punkten gerechnet.
+    </p>
+    <p>
+        9.3 Sofern das Spiel innerhalb der vom Ausrichter festgelegten Frist nachgeholt wird, wird nachträglich der tatsächliche Spielausgang
+        gewertet.
+    </p>
+    <p>
+        9.4 Die jeweilige Heimmannschaft muss dem Ausrichter die nicht ausgetragene Begegnung melden.
+    </p>
+    <p>
+        9.5 Spielabsagen am festgesetzten Spieltag selbst führen automatisch zum Spielverlust der absagenden Mannschaft und lassen das Ansetzen
+        eines neuen Termins nicht mehr zu, es sei denn, die Mannschaften einigen sich anderweitig.
+    </p>
+    <h4 class="h4">
+        10. Organisation der Spiele
+    </h4>
+    <p>
+        10.1 Gespielt wird an dem jeweiligen Trainingsabend der gastgebenden Mannschaft.
+    </p>
+    <p>
+        10.2 Vor Saisonbeginn wird der offizielle Spielplan mit Anfahrtsbeschreibung zu den Sportstätten online zur Verfügung gestellt.
+    </p>
+    <p>
+        10.3 Die Durchführung einer Begegnung ist Aufgabe des Gastgebers.
+    </p>
+    <p>
+        10.4 Gespielt wird bei der erstgenannten Mannschaft auf dem Spielplan (Gastgeber). Sollte dies nicht möglich sein, können sich
+        beide Mannschaften auf einen anderen Ort einigen.
+    </p>
+    <p>
+        10.5 Mannschaften, die weiter als 30 km von Augsburg (Königsplatz) entfernt liegen, müssen auf ihr Heimrecht verzichten, wenn der anzureisenden
+        Mannschaft die Anfahrt zu lang ist.
+    </p>
+    <p>
+        10.6 Die Heimmannschaft stellt Ersten und Zweiten Schiedsrichter. Beide sollten das Regelwerk beherrschen. Die Mannschaften können hinsichtlich
+        des Schiedsgerichtes auch eine andere Regelung treffen.
+    </p>
+    <p>
+        10.7 Neben dem Anschreiber sollte eine Anzeigetafel den jeweiligen Spielstand sichtbar machen.
+    </p>
+    <p>
+        10.8 Wenn eine der Mannschaften das möchte und sie den Ball stellen kann, wird mit dem von der Mixedliga empfohlenen Spielball Mikasa
+        V200W gespielt.
+    </p>
+    <p>
+        10.9 Der Gastgeber ist für das übermitteln des Spielergebnisses an den Ausrichter verantwortlich. Spiele, die dem Ausrichter bis
+        zum Ende einer Saison nicht gemeldet werden, gelten als für die Heimmannschaft verloren.
+    </p>
+    <p>
+        10.10 Der Gastgeber bewahrt die ausgefüllten Spielberichtsbögen der laufenden Saison bis vier Wochen nach Saisonende auf, um bei Rückfragen
+        zum Spielverlauf bzw. Ergebnis Auskunft geben zu können.
+    </p>
+    <h4 class="h4">
+        11. Durchführung der Spiele
+    </h4>
+    <p>
+        11.1 Es gelten die Internationalen Volleyballspielregeln, sofern nicht nachfolgend eine davon abweichende Regelung aufgeführt ist.
+    </p>
+    <p>
+        11.2. Gespielt wird nach dem 25-Punkte (Rally-Point-) System auf 3 Sätze. Im dritten Satz ist Seitenwechsel, sobald eine Mannschaft
+        13 Punkte erreicht hat.
+    </p>
+    <p>
+        11.3 Die Netzhöhe beträgt 2,35 m (Standardmixedhöhe).
+    </p>
+    <p>
+        11.4 Bestimmte Spielkleidung ist nicht vorgeschrieben. Die Trikots brauchen nicht numeriert zu sein. Sofern mit Libero gespielt wird,
+        muss sich dessen Trikot von dem der Mannschaft deutlich unterscheiden. Der Libero-Einsatz ist dem Schiedsgericht vor Spielbeginn anzuzeigen.
+    </p>
+    <p>
+        11.5 Es ist wünschenswert, wenn die Mannschaften in jeder Hinsicht ein sportlich faires Verhalten an den Tag legten und sich im Streitfall
+        selbständig einigten, um so dem Schiedsgericht seine ohnehin schwere Aufgabe zu erleichtern. Andererseits sollte der 1. Schiedsrichter
+        flexibel sein und nicht, wie in regulären Punktspielen oft üblich, auf seiner Entscheidung bestehen. Oftmals ist man als alleiniger
+        Schiedsrichter einfach überfordert, alle Aktionen im Blick zu behalten. Hier können die beteiligten Spieler durch Akzeptanz oder,
+        wenn nicht anders möglich, eine Doppelfehlerentscheidung des Schiedsrichters weiterhelfen.
+    </p>
+    <p>
+        11.6 Technische Fehler sollten je nach Spielklasse großzügig behandelt werden; die Entscheidung hierüber bleibt immer dem 1. Schiedsrichter
+        überlassen und ist von allen Spielern zu akzeptieren.
+    </p>
+    <p>
+        11.7 Es gibt keine Spielerlisten für die Mannschaften.
+    </p>
+    <p>
+        11.8 Der Ausrichter stellt Spielberichtsbögen, die von beiden Mannschaftsführern zu unterschreiben sind.
+        Das Spielergebnis wird über das Meldeformular im Internet an den Ausrichter gemeldet.
+    <p>
+        11.9 Die aktuellen Ergebnisse können im Internet abgerufen werden.
+    </p>
+    <h4 class="h4">
+        12. Haftung, Versicherungsschutz
+    </h4>
+    <p>
+        12.1 Jede Mannschaft und jeder Spieler nimmt auf eigene Gefahr teil.
+    </p>
+    <p>
+        12.2 Alle Mannschaften müssen sich selbst um den nötigen Versicherungsschutz (z.B. Unfall- und Haftpflicht) kümmern.
+    </p>
+    <p>
+        12.3 Der Ausrichter haftet nicht für Verletzungen oder Schäden jeglicher Art.
+    </p>
+    <h4 class="h4">
+        13. Einverständniserklärung
+    </h4>
+    <p>
+        Die teilnehmenden Mannschaften erklären sich damit einverstanden, dass die im Zusammenhang mit der Teilnahme an der Mixedliga gemachten
+        Fotos in Pressemitteilungen sowie im Internet ohne Vergütungsansprüche genutzt und veröffentlicht werden dürfen. Ebenso dürfen die Kontaktdaten
+        der beiden Ansprechpartner auf den Internetseiten der Mixedliga veröffentlicht und für deren E-Mails verwendet werden.
+    </p>
+
+    <p>Stand: @(new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1).AddMonths(-3).ToShortDateString())</p>
+
+</div>
+@section styles
+{}
+@section scripts
+{}
