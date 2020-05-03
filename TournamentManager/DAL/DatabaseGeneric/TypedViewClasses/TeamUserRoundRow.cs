@@ -53,8 +53,6 @@ namespace TournamentManager.DAL.TypedViewClasses
 		public System.String PhoneNumber { get; set; }
 		/// <summary>Gets or sets the PhoneNumber2 field.</summary>
 		public System.String PhoneNumber2 { get; set; }
-		/// <summary>Gets or sets the PhotoFilename field.</summary>
-		public System.String PhotoFilename { get; set; }
 		/// <summary>Gets or sets the RoundDescription field.</summary>
 		public System.String RoundDescription { get; set; }
 		/// <summary>Gets or sets the RoundId field.</summary>

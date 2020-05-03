@@ -426,8 +426,6 @@ namespace TournamentManager.DAL
 		TeamMatchDayOfWeek,
 		///<summary>TeamMatchTime</summary>
 		TeamMatchTime,
-		///<summary>TeamPhoto</summary>
-		TeamPhoto,
 		///<summary>TeamModifiedOn</summary>
 		TeamModifiedOn,
 		///<summary>TournamentId</summary>
@@ -452,8 +450,6 @@ namespace TournamentManager.DAL
 		MatchTime,
 		///<summary>ClubName</summary>
 		ClubName,
-		///<summary>PhotoFilename</summary>
-		PhotoFilename,
 		///<summary>TeamModifiedOn</summary>
 		TeamModifiedOn,
 		///<summary>UserId</summary>

@@ -700,7 +700,6 @@ namespace TournamentManager.DAL.HelperClasses
 			this.AddElementFieldInfo("RoundTeamTypedView", "TeamClubName", typeof(System.String), false, false, true, false, (int)RoundTeamFieldIndex.TeamClubName, 255, 0, 0);
 			this.AddElementFieldInfo("RoundTeamTypedView", "TeamMatchDayOfWeek", typeof(Nullable<System.Int32>), false, false, true, false, (int)RoundTeamFieldIndex.TeamMatchDayOfWeek, 0, 0, 10);
 			this.AddElementFieldInfo("RoundTeamTypedView", "TeamMatchTime", typeof(Nullable<System.TimeSpan>), false, false, true, false, (int)RoundTeamFieldIndex.TeamMatchTime, 0, 0, 0);
-			this.AddElementFieldInfo("RoundTeamTypedView", "TeamPhoto", typeof(System.String), false, false, true, false, (int)RoundTeamFieldIndex.TeamPhoto, 255, 0, 0);
 			this.AddElementFieldInfo("RoundTeamTypedView", "TeamModifiedOn", typeof(System.DateTime), false, false, true, false, (int)RoundTeamFieldIndex.TeamModifiedOn, 0, 0, 0);
 			this.AddElementFieldInfo("RoundTeamTypedView", "TournamentId", typeof(System.Int64), false, false, true, false, (int)RoundTeamFieldIndex.TournamentId, 0, 0, 19);
 		}
@@ -716,7 +715,6 @@ namespace TournamentManager.DAL.HelperClasses
 			this.AddElementFieldInfo("TeamUserRoundTypedView", "MatchWeekday", typeof(System.String), false, false, true, false, (int)TeamUserRoundFieldIndex.MatchWeekday, 4000, 0, 0);
 			this.AddElementFieldInfo("TeamUserRoundTypedView", "MatchTime", typeof(Nullable<System.TimeSpan>), false, false, true, false, (int)TeamUserRoundFieldIndex.MatchTime, 0, 0, 0);
 			this.AddElementFieldInfo("TeamUserRoundTypedView", "ClubName", typeof(System.String), false, false, true, false, (int)TeamUserRoundFieldIndex.ClubName, 255, 0, 0);
-			this.AddElementFieldInfo("TeamUserRoundTypedView", "PhotoFilename", typeof(System.String), false, false, true, false, (int)TeamUserRoundFieldIndex.PhotoFilename, 255, 0, 0);
 			this.AddElementFieldInfo("TeamUserRoundTypedView", "TeamModifiedOn", typeof(System.DateTime), false, false, true, false, (int)TeamUserRoundFieldIndex.TeamModifiedOn, 0, 0, 0);
 			this.AddElementFieldInfo("TeamUserRoundTypedView", "UserId", typeof(System.Int64), false, false, true, false, (int)TeamUserRoundFieldIndex.UserId, 0, 0, 19);
 			this.AddElementFieldInfo("TeamUserRoundTypedView", "Gender", typeof(System.String), false, false, true, false, (int)TeamUserRoundFieldIndex.Gender, 1, 0, 0);

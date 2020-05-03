@@ -949,7 +949,6 @@
         <Field Name="TeamModifiedOn" Type="datetime" />
         <Field Name="TeamName" Type="string" MaxLength="255" />
         <Field Name="TeamNameForRound" Type="string" IsOptional="true" MaxLength="255" />
-        <Field Name="TeamPhoto" Type="string" IsOptional="true" MaxLength="255" />
         <Field Name="TournamentId" Type="long" Precision="19" />
       </Fields>
     </TypedViewDefinition>
@@ -970,7 +969,6 @@
         <Field Name="Nickname" Type="string" MaxLength="255" />
         <Field Name="PhoneNumber" Type="string" MaxLength="40" />
         <Field Name="PhoneNumber2" Type="string" MaxLength="40" />
-        <Field Name="PhotoFilename" Type="string" IsOptional="true" MaxLength="255" />
         <Field Name="RoundDescription" Type="string" MaxLength="255" />
         <Field Name="RoundId" Type="long" Precision="19" />
         <Field Name="RoundName" Type="string" MaxLength="255" />
@@ -1076,7 +1074,7 @@
       <Catalogs>
         <Catalog Name="TestOrg">
           <Schemas>
-            <Schema Name="dbo" SyncSource="2" LastSyncWithDatabase="2020-05-03T08:41:06.6091377Z">
+            <Schema Name="dbo" SyncSource="2" LastSyncWithDatabase="2020-05-03T08:50:01.3883115Z">
               <Tables>
                 <Table Name="AvailableMatchDate">
                   <PkConstraintName Name="PK_378f3f14a1c871b25041c380344" />
@@ -1754,9 +1752,8 @@
                     <Field Name="TeamClubName" Ordinal="9" IsOptional="true" DbType="12" Length="255" />
                     <Field Name="TeamMatchDayOfWeek" Ordinal="10" IsOptional="true" DbType="8" Precision="10" />
                     <Field Name="TeamMatchTime" Ordinal="11" IsOptional="true" DbType="31" />
-                    <Field Name="TeamPhoto" Ordinal="12" IsOptional="true" DbType="12" Length="255" />
-                    <Field Name="TeamModifiedOn" Ordinal="13" DbType="4" />
-                    <Field Name="TournamentId" Ordinal="14" DbType="0" Precision="19" />
+                    <Field Name="TeamModifiedOn" Ordinal="12" DbType="4" />
+                    <Field Name="TournamentId" Ordinal="13" DbType="0" Precision="19" />
                   </Fields>
                 </View>
                 <View Name="TeamUserRound">
@@ -1768,26 +1765,25 @@
                     <Field Name="MatchWeekday" Ordinal="5" IsOptional="true" DbType="12" Length="4000" />
                     <Field Name="MatchTime" Ordinal="6" IsOptional="true" DbType="31" />
                     <Field Name="ClubName" Ordinal="7" IsOptional="true" DbType="12" Length="255" />
-                    <Field Name="PhotoFilename" Ordinal="8" IsOptional="true" DbType="12" Length="255" />
-                    <Field Name="TeamModifiedOn" Ordinal="9" DbType="4" />
-                    <Field Name="UserId" Ordinal="10" DbType="0" Precision="19" />
-                    <Field Name="Gender" Ordinal="11" DbType="12" Length="1" />
-                    <Field Name="Title" Ordinal="12" DbType="12" Length="255" />
-                    <Field Name="FirstName" Ordinal="13" DbType="12" Length="255" />
-                    <Field Name="MiddleName" Ordinal="14" DbType="12" Length="255" />
-                    <Field Name="LastName" Ordinal="15" DbType="12" Length="255" />
-                    <Field Name="Nickname" Ordinal="16" DbType="12" Length="255" />
-                    <Field Name="PhoneNumber" Ordinal="17" DbType="12" Length="40" />
-                    <Field Name="PhoneNumber2" Ordinal="18" DbType="12" Length="40" />
-                    <Field Name="Email" Ordinal="19" DbType="12" Length="255" />
-                    <Field Name="Email2" Ordinal="20" DbType="12" Length="100" />
-                    <Field Name="UserModifiedOn" Ordinal="21" DbType="4" />
-                    <Field Name="IsManager" Ordinal="22" DbType="2" />
-                    <Field Name="IsPlayer" Ordinal="23" DbType="2" />
-                    <Field Name="RoundId" Ordinal="24" DbType="0" Precision="19" />
-                    <Field Name="RoundName" Ordinal="25" DbType="12" Length="255" />
-                    <Field Name="RoundDescription" Ordinal="26" DbType="12" Length="255" />
-                    <Field Name="TournamentId" Ordinal="27" IsOptional="true" DbType="0" Precision="19" />
+                    <Field Name="TeamModifiedOn" Ordinal="8" DbType="4" />
+                    <Field Name="UserId" Ordinal="9" DbType="0" Precision="19" />
+                    <Field Name="Gender" Ordinal="10" DbType="12" Length="1" />
+                    <Field Name="Title" Ordinal="11" DbType="12" Length="255" />
+                    <Field Name="FirstName" Ordinal="12" DbType="12" Length="255" />
+                    <Field Name="MiddleName" Ordinal="13" DbType="12" Length="255" />
+                    <Field Name="LastName" Ordinal="14" DbType="12" Length="255" />
+                    <Field Name="Nickname" Ordinal="15" DbType="12" Length="255" />
+                    <Field Name="PhoneNumber" Ordinal="16" DbType="12" Length="40" />
+                    <Field Name="PhoneNumber2" Ordinal="17" DbType="12" Length="40" />
+                    <Field Name="Email" Ordinal="18" DbType="12" Length="255" />
+                    <Field Name="Email2" Ordinal="19" DbType="12" Length="100" />
+                    <Field Name="UserModifiedOn" Ordinal="20" DbType="4" />
+                    <Field Name="IsManager" Ordinal="21" DbType="2" />
+                    <Field Name="IsPlayer" Ordinal="22" DbType="2" />
+                    <Field Name="RoundId" Ordinal="23" DbType="0" Precision="19" />
+                    <Field Name="RoundName" Ordinal="24" DbType="12" Length="255" />
+                    <Field Name="RoundDescription" Ordinal="25" DbType="12" Length="255" />
+                    <Field Name="TournamentId" Ordinal="26" IsOptional="true" DbType="0" Precision="19" />
                   </Fields>
                 </View>
                 <View Name="TeamVenueRound">
@@ -2624,7 +2620,6 @@
             <FieldMapping FieldName="TeamModifiedOn" TargetFieldName="TeamModifiedOn" />
             <FieldMapping FieldName="TeamName" TargetFieldName="TeamName" />
             <FieldMapping FieldName="TeamNameForRound" TargetFieldName="TeamNameForRound" />
-            <FieldMapping FieldName="TeamPhoto" TargetFieldName="TeamPhoto" />
             <FieldMapping FieldName="TournamentId" TargetFieldName="TournamentId" />
           </FieldMappings>
         </TypedViewMapping>
@@ -2645,7 +2640,6 @@
             <FieldMapping FieldName="Nickname" TargetFieldName="Nickname" />
             <FieldMapping FieldName="PhoneNumber" TargetFieldName="PhoneNumber" />
             <FieldMapping FieldName="PhoneNumber2" TargetFieldName="PhoneNumber2" />
-            <FieldMapping FieldName="PhotoFilename" TargetFieldName="PhotoFilename" />
             <FieldMapping FieldName="RoundDescription" TargetFieldName="RoundDescription" />
             <FieldMapping FieldName="RoundId" TargetFieldName="RoundId" />
             <FieldMapping FieldName="RoundName" TargetFieldName="RoundName" />

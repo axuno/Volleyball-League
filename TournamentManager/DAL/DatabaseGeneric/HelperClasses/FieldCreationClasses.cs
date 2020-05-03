@@ -1002,8 +1002,6 @@ namespace TournamentManager.DAL.HelperClasses
 		public static EntityField2 TeamMatchDayOfWeek	{ get { return ModelInfoProviderSingleton.GetInstance().CreateField2(RoundTeamFieldIndex.TeamMatchDayOfWeek); } }
 		/// <summary>Creates a new RoundTeamTypedView.TeamMatchTime field instance</summary>
 		public static EntityField2 TeamMatchTime	{ get { return ModelInfoProviderSingleton.GetInstance().CreateField2(RoundTeamFieldIndex.TeamMatchTime); } }
-		/// <summary>Creates a new RoundTeamTypedView.TeamPhoto field instance</summary>
-		public static EntityField2 TeamPhoto	{ get { return ModelInfoProviderSingleton.GetInstance().CreateField2(RoundTeamFieldIndex.TeamPhoto); } }
 		/// <summary>Creates a new RoundTeamTypedView.TeamModifiedOn field instance</summary>
 		public static EntityField2 TeamModifiedOn	{ get { return ModelInfoProviderSingleton.GetInstance().CreateField2(RoundTeamFieldIndex.TeamModifiedOn); } }
 		/// <summary>Creates a new RoundTeamTypedView.TournamentId field instance</summary>
@@ -1027,8 +1025,6 @@ namespace TournamentManager.DAL.HelperClasses
 		public static EntityField2 MatchTime	{ get { return ModelInfoProviderSingleton.GetInstance().CreateField2(TeamUserRoundFieldIndex.MatchTime); } }
 		/// <summary>Creates a new TeamUserRoundTypedView.ClubName field instance</summary>
 		public static EntityField2 ClubName	{ get { return ModelInfoProviderSingleton.GetInstance().CreateField2(TeamUserRoundFieldIndex.ClubName); } }
-		/// <summary>Creates a new TeamUserRoundTypedView.PhotoFilename field instance</summary>
-		public static EntityField2 PhotoFilename	{ get { return ModelInfoProviderSingleton.GetInstance().CreateField2(TeamUserRoundFieldIndex.PhotoFilename); } }
 		/// <summary>Creates a new TeamUserRoundTypedView.TeamModifiedOn field instance</summary>
 		public static EntityField2 TeamModifiedOn	{ get { return ModelInfoProviderSingleton.GetInstance().CreateField2(TeamUserRoundFieldIndex.TeamModifiedOn); } }
 		/// <summary>Creates a new TeamUserRoundTypedView.UserId field instance</summary>

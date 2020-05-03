@@ -683,7 +683,7 @@ namespace TournamentManager.DAL.DatabaseSpecific
 		/// <summary>Inits RoundTeamView's mappings</summary>
 		private void InitRoundTeamTypedViewMappings()
 		{
-			this.AddElementMapping("RoundTeamTypedView", @"TestOrg", @"dbo", "RoundTeam", 14);
+			this.AddElementMapping("RoundTeamTypedView", @"TestOrg", @"dbo", "RoundTeam", 13);
 			this.AddElementFieldMapping("RoundTeamTypedView", "RoundId", "RoundId", false, "BigInt", 0, 19, 0, false, string.Empty, null, typeof(System.Int64), 0);
 			this.AddElementFieldMapping("RoundTeamTypedView", "RoundName", "RoundName", false, "NVarChar", 255, 0, 0, false, string.Empty, null, typeof(System.String), 1);
 			this.AddElementFieldMapping("RoundTeamTypedView", "RoundDescription", "RoundDescription", false, "NVarChar", 255, 0, 0, false, string.Empty, null, typeof(System.String), 2);
@@ -695,15 +695,14 @@ namespace TournamentManager.DAL.DatabaseSpecific
 			this.AddElementFieldMapping("RoundTeamTypedView", "TeamClubName", "TeamClubName", false, "NVarChar", 255, 0, 0, false, string.Empty, null, typeof(System.String), 8);
 			this.AddElementFieldMapping("RoundTeamTypedView", "TeamMatchDayOfWeek", "TeamMatchDayOfWeek", false, "Int", 0, 10, 0, false, string.Empty, null, typeof(System.Int32), 9);
 			this.AddElementFieldMapping("RoundTeamTypedView", "TeamMatchTime", "TeamMatchTime", false, "Time", 0, 0, 0, false, string.Empty, null, typeof(System.TimeSpan), 10);
-			this.AddElementFieldMapping("RoundTeamTypedView", "TeamPhoto", "TeamPhoto", false, "NVarChar", 255, 0, 0, false, string.Empty, null, typeof(System.String), 11);
-			this.AddElementFieldMapping("RoundTeamTypedView", "TeamModifiedOn", "TeamModifiedOn", false, "DateTime", 0, 0, 0, false, string.Empty, null, typeof(System.DateTime), 12);
-			this.AddElementFieldMapping("RoundTeamTypedView", "TournamentId", "TournamentId", false, "BigInt", 0, 19, 0, false, string.Empty, null, typeof(System.Int64), 13);
+			this.AddElementFieldMapping("RoundTeamTypedView", "TeamModifiedOn", "TeamModifiedOn", false, "DateTime", 0, 0, 0, false, string.Empty, null, typeof(System.DateTime), 11);
+			this.AddElementFieldMapping("RoundTeamTypedView", "TournamentId", "TournamentId", false, "BigInt", 0, 19, 0, false, string.Empty, null, typeof(System.Int64), 12);
 		}
 
 		/// <summary>Inits TeamUserRoundView's mappings</summary>
 		private void InitTeamUserRoundTypedViewMappings()
 		{
-			this.AddElementMapping("TeamUserRoundTypedView", @"TestOrg", @"dbo", "TeamUserRound", 27);
+			this.AddElementMapping("TeamUserRoundTypedView", @"TestOrg", @"dbo", "TeamUserRound", 26);
 			this.AddElementFieldMapping("TeamUserRoundTypedView", "TeamId", "TeamId", false, "BigInt", 0, 19, 0, false, string.Empty, null, typeof(System.Int64), 0);
 			this.AddElementFieldMapping("TeamUserRoundTypedView", "TeamName", "TeamName", false, "NVarChar", 255, 0, 0, false, string.Empty, null, typeof(System.String), 1);
 			this.AddElementFieldMapping("TeamUserRoundTypedView", "TeamNameForRound", "TeamNameForRound", false, "NVarChar", 255, 0, 0, false, string.Empty, null, typeof(System.String), 2);
@@ -711,26 +710,25 @@ namespace TournamentManager.DAL.DatabaseSpecific
 			this.AddElementFieldMapping("TeamUserRoundTypedView", "MatchWeekday", "MatchWeekday", false, "NVarChar", 4000, 0, 0, false, string.Empty, null, typeof(System.String), 4);
 			this.AddElementFieldMapping("TeamUserRoundTypedView", "MatchTime", "MatchTime", false, "Time", 0, 0, 0, false, string.Empty, null, typeof(System.TimeSpan), 5);
 			this.AddElementFieldMapping("TeamUserRoundTypedView", "ClubName", "ClubName", false, "NVarChar", 255, 0, 0, false, string.Empty, null, typeof(System.String), 6);
-			this.AddElementFieldMapping("TeamUserRoundTypedView", "PhotoFilename", "PhotoFilename", false, "NVarChar", 255, 0, 0, false, string.Empty, null, typeof(System.String), 7);
-			this.AddElementFieldMapping("TeamUserRoundTypedView", "TeamModifiedOn", "TeamModifiedOn", false, "DateTime", 0, 0, 0, false, string.Empty, null, typeof(System.DateTime), 8);
-			this.AddElementFieldMapping("TeamUserRoundTypedView", "UserId", "UserId", false, "BigInt", 0, 19, 0, false, string.Empty, null, typeof(System.Int64), 9);
-			this.AddElementFieldMapping("TeamUserRoundTypedView", "Gender", "Gender", false, "NVarChar", 1, 0, 0, false, string.Empty, null, typeof(System.String), 10);
-			this.AddElementFieldMapping("TeamUserRoundTypedView", "Title", "Title", false, "NVarChar", 255, 0, 0, false, string.Empty, null, typeof(System.String), 11);
-			this.AddElementFieldMapping("TeamUserRoundTypedView", "FirstName", "FirstName", false, "NVarChar", 255, 0, 0, false, string.Empty, null, typeof(System.String), 12);
-			this.AddElementFieldMapping("TeamUserRoundTypedView", "MiddleName", "MiddleName", false, "NVarChar", 255, 0, 0, false, string.Empty, null, typeof(System.String), 13);
-			this.AddElementFieldMapping("TeamUserRoundTypedView", "LastName", "LastName", false, "NVarChar", 255, 0, 0, false, string.Empty, null, typeof(System.String), 14);
-			this.AddElementFieldMapping("TeamUserRoundTypedView", "Nickname", "Nickname", false, "NVarChar", 255, 0, 0, false, string.Empty, null, typeof(System.String), 15);
-			this.AddElementFieldMapping("TeamUserRoundTypedView", "PhoneNumber", "PhoneNumber", false, "NVarChar", 40, 0, 0, false, string.Empty, null, typeof(System.String), 16);
-			this.AddElementFieldMapping("TeamUserRoundTypedView", "PhoneNumber2", "PhoneNumber2", false, "NVarChar", 40, 0, 0, false, string.Empty, null, typeof(System.String), 17);
-			this.AddElementFieldMapping("TeamUserRoundTypedView", "Email", "Email", false, "NVarChar", 255, 0, 0, false, string.Empty, null, typeof(System.String), 18);
-			this.AddElementFieldMapping("TeamUserRoundTypedView", "Email2", "Email2", false, "NVarChar", 100, 0, 0, false, string.Empty, null, typeof(System.String), 19);
-			this.AddElementFieldMapping("TeamUserRoundTypedView", "UserModifiedOn", "UserModifiedOn", false, "DateTime", 0, 0, 0, false, string.Empty, null, typeof(System.DateTime), 20);
-			this.AddElementFieldMapping("TeamUserRoundTypedView", "IsManager", "IsManager", false, "Bit", 0, 0, 0, false, string.Empty, null, typeof(System.Boolean), 21);
-			this.AddElementFieldMapping("TeamUserRoundTypedView", "IsPlayer", "IsPlayer", false, "Bit", 0, 0, 0, false, string.Empty, null, typeof(System.Boolean), 22);
-			this.AddElementFieldMapping("TeamUserRoundTypedView", "RoundId", "RoundId", false, "BigInt", 0, 19, 0, false, string.Empty, null, typeof(System.Int64), 23);
-			this.AddElementFieldMapping("TeamUserRoundTypedView", "RoundName", "RoundName", false, "NVarChar", 255, 0, 0, false, string.Empty, null, typeof(System.String), 24);
-			this.AddElementFieldMapping("TeamUserRoundTypedView", "RoundDescription", "RoundDescription", false, "NVarChar", 255, 0, 0, false, string.Empty, null, typeof(System.String), 25);
-			this.AddElementFieldMapping("TeamUserRoundTypedView", "TournamentId", "TournamentId", false, "BigInt", 0, 19, 0, false, string.Empty, null, typeof(System.Int64), 26);
+			this.AddElementFieldMapping("TeamUserRoundTypedView", "TeamModifiedOn", "TeamModifiedOn", false, "DateTime", 0, 0, 0, false, string.Empty, null, typeof(System.DateTime), 7);
+			this.AddElementFieldMapping("TeamUserRoundTypedView", "UserId", "UserId", false, "BigInt", 0, 19, 0, false, string.Empty, null, typeof(System.Int64), 8);
+			this.AddElementFieldMapping("TeamUserRoundTypedView", "Gender", "Gender", false, "NVarChar", 1, 0, 0, false, string.Empty, null, typeof(System.String), 9);
+			this.AddElementFieldMapping("TeamUserRoundTypedView", "Title", "Title", false, "NVarChar", 255, 0, 0, false, string.Empty, null, typeof(System.String), 10);
+			this.AddElementFieldMapping("TeamUserRoundTypedView", "FirstName", "FirstName", false, "NVarChar", 255, 0, 0, false, string.Empty, null, typeof(System.String), 11);
+			this.AddElementFieldMapping("TeamUserRoundTypedView", "MiddleName", "MiddleName", false, "NVarChar", 255, 0, 0, false, string.Empty, null, typeof(System.String), 12);
+			this.AddElementFieldMapping("TeamUserRoundTypedView", "LastName", "LastName", false, "NVarChar", 255, 0, 0, false, string.Empty, null, typeof(System.String), 13);
+			this.AddElementFieldMapping("TeamUserRoundTypedView", "Nickname", "Nickname", false, "NVarChar", 255, 0, 0, false, string.Empty, null, typeof(System.String), 14);
+			this.AddElementFieldMapping("TeamUserRoundTypedView", "PhoneNumber", "PhoneNumber", false, "NVarChar", 40, 0, 0, false, string.Empty, null, typeof(System.String), 15);
+			this.AddElementFieldMapping("TeamUserRoundTypedView", "PhoneNumber2", "PhoneNumber2", false, "NVarChar", 40, 0, 0, false, string.Empty, null, typeof(System.String), 16);
+			this.AddElementFieldMapping("TeamUserRoundTypedView", "Email", "Email", false, "NVarChar", 255, 0, 0, false, string.Empty, null, typeof(System.String), 17);
+			this.AddElementFieldMapping("TeamUserRoundTypedView", "Email2", "Email2", false, "NVarChar", 100, 0, 0, false, string.Empty, null, typeof(System.String), 18);
+			this.AddElementFieldMapping("TeamUserRoundTypedView", "UserModifiedOn", "UserModifiedOn", false, "DateTime", 0, 0, 0, false, string.Empty, null, typeof(System.DateTime), 19);
+			this.AddElementFieldMapping("TeamUserRoundTypedView", "IsManager", "IsManager", false, "Bit", 0, 0, 0, false, string.Empty, null, typeof(System.Boolean), 20);
+			this.AddElementFieldMapping("TeamUserRoundTypedView", "IsPlayer", "IsPlayer", false, "Bit", 0, 0, 0, false, string.Empty, null, typeof(System.Boolean), 21);
+			this.AddElementFieldMapping("TeamUserRoundTypedView", "RoundId", "RoundId", false, "BigInt", 0, 19, 0, false, string.Empty, null, typeof(System.Int64), 22);
+			this.AddElementFieldMapping("TeamUserRoundTypedView", "RoundName", "RoundName", false, "NVarChar", 255, 0, 0, false, string.Empty, null, typeof(System.String), 23);
+			this.AddElementFieldMapping("TeamUserRoundTypedView", "RoundDescription", "RoundDescription", false, "NVarChar", 255, 0, 0, false, string.Empty, null, typeof(System.String), 24);
+			this.AddElementFieldMapping("TeamUserRoundTypedView", "TournamentId", "TournamentId", false, "BigInt", 0, 19, 0, false, string.Empty, null, typeof(System.Int64), 25);
 		}
 
 		/// <summary>Inits TeamVenueRoundView's mappings</summary>
