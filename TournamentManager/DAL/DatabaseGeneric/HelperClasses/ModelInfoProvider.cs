@@ -744,7 +744,6 @@ namespace TournamentManager.DAL.HelperClasses
 			this.AddElementFieldInfo("TeamVenueRoundTypedView", "TeamName", typeof(System.String), false, false, true, false, (int)TeamVenueRoundFieldIndex.TeamName, 255, 0, 0);
 			this.AddElementFieldInfo("TeamVenueRoundTypedView", "TeamNameForRound", typeof(System.String), false, false, true, false, (int)TeamVenueRoundFieldIndex.TeamNameForRound, 255, 0, 0);
 			this.AddElementFieldInfo("TeamVenueRoundTypedView", "TeamClubName", typeof(System.String), false, false, true, false, (int)TeamVenueRoundFieldIndex.TeamClubName, 255, 0, 0);
-			this.AddElementFieldInfo("TeamVenueRoundTypedView", "TeamPhoto", typeof(System.String), false, false, true, false, (int)TeamVenueRoundFieldIndex.TeamPhoto, 255, 0, 0);
 			this.AddElementFieldInfo("TeamVenueRoundTypedView", "MatchDayOfWeek", typeof(Nullable<System.Int32>), false, false, true, false, (int)TeamVenueRoundFieldIndex.MatchDayOfWeek, 0, 0, 10);
 			this.AddElementFieldInfo("TeamVenueRoundTypedView", "MatchWeekday", typeof(System.String), false, false, true, false, (int)TeamVenueRoundFieldIndex.MatchWeekday, 4000, 0, 0);
 			this.AddElementFieldInfo("TeamVenueRoundTypedView", "MatchTime", typeof(Nullable<System.TimeSpan>), false, false, true, false, (int)TeamVenueRoundFieldIndex.MatchTime, 0, 0, 0);

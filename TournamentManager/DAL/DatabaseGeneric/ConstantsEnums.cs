@@ -502,8 +502,6 @@ namespace TournamentManager.DAL
 		TeamNameForRound,
 		///<summary>TeamClubName</summary>
 		TeamClubName,
-		///<summary>TeamPhoto</summary>
-		TeamPhoto,
 		///<summary>MatchDayOfWeek</summary>
 		MatchDayOfWeek,
 		///<summary>MatchWeekday</summary>

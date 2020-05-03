@@ -997,7 +997,6 @@
         <Field Name="TeamModifiedOn" Type="datetime" />
         <Field Name="TeamName" Type="string" MaxLength="255" />
         <Field Name="TeamNameForRound" Type="string" IsOptional="true" MaxLength="255" />
-        <Field Name="TeamPhoto" Type="string" IsOptional="true" MaxLength="255" />
         <Field Name="TournamentId" Type="long" Precision="19" />
         <Field Name="VenueCity" Type="string" IsOptional="true" MaxLength="255" />
         <Field Name="VenueDirection" Type="string" IsOptional="true" MaxLength="2147483647" />
@@ -1074,7 +1073,7 @@
       <Catalogs>
         <Catalog Name="TestOrg">
           <Schemas>
-            <Schema Name="dbo" SyncSource="2" LastSyncWithDatabase="2020-05-03T08:50:01.3883115Z">
+            <Schema Name="dbo" SyncSource="2" LastSyncWithDatabase="2020-05-03T11:54:24.4497918Z">
               <Tables>
                 <Table Name="AvailableMatchDate">
                   <PkConstraintName Name="PK_378f3f14a1c871b25041c380344" />
@@ -1792,27 +1791,26 @@
                     <Field Name="TeamName" Ordinal="2" DbType="12" Length="255" />
                     <Field Name="TeamNameForRound" Ordinal="3" IsOptional="true" DbType="12" Length="255" />
                     <Field Name="TeamClubName" Ordinal="4" IsOptional="true" DbType="12" Length="255" />
-                    <Field Name="TeamPhoto" Ordinal="5" IsOptional="true" DbType="12" Length="255" />
-                    <Field Name="MatchDayOfWeek" Ordinal="6" IsOptional="true" DbType="8" Precision="10" />
-                    <Field Name="MatchWeekday" Ordinal="7" IsOptional="true" DbType="12" Length="4000" />
-                    <Field Name="MatchTime" Ordinal="8" IsOptional="true" DbType="31" />
-                    <Field Name="TeamModifiedOn" Ordinal="9" DbType="4" />
-                    <Field Name="VenueId" Ordinal="10" IsOptional="true" DbType="0" Precision="19" />
-                    <Field Name="VenueName" Ordinal="11" IsOptional="true" DbType="12" Length="255" />
-                    <Field Name="VenueStreet" Ordinal="12" IsOptional="true" DbType="12" Length="255" />
-                    <Field Name="VenuePostalCode" Ordinal="13" IsOptional="true" DbType="12" Length="10" />
-                    <Field Name="VenueCity" Ordinal="14" IsOptional="true" DbType="12" Length="255" />
-                    <Field Name="VenueDirection" Ordinal="15" IsOptional="true" DbType="12" Length="2147483647" />
-                    <Field Name="VenueLongitude" Ordinal="16" IsOptional="true" DbType="6" Precision="38" />
-                    <Field Name="VenueLatitude" Ordinal="17" IsOptional="true" DbType="6" Precision="38" />
-                    <Field Name="VenuePrecisePosition" Ordinal="18" IsOptional="true" DbType="2" />
-                    <Field Name="VenueModifiedOn" Ordinal="19" IsOptional="true" DbType="4" />
-                    <Field Name="RoundId" Ordinal="20" DbType="0" Precision="19" />
-                    <Field Name="RoundName" Ordinal="21" DbType="12" Length="255" />
-                    <Field Name="RoundDescription" Ordinal="22" DbType="12" Length="255" />
-                    <Field Name="RoundTypeName" Ordinal="23" DbType="12" Length="255" />
-                    <Field Name="RoundTypeDescription" Ordinal="24" DbType="12" Length="255" />
-                    <Field Name="TournamentId" Ordinal="25" DbType="0" Precision="19" />
+                    <Field Name="MatchDayOfWeek" Ordinal="5" IsOptional="true" DbType="8" Precision="10" />
+                    <Field Name="MatchWeekday" Ordinal="6" IsOptional="true" DbType="12" Length="4000" />
+                    <Field Name="MatchTime" Ordinal="7" IsOptional="true" DbType="31" />
+                    <Field Name="TeamModifiedOn" Ordinal="8" DbType="4" />
+                    <Field Name="VenueId" Ordinal="9" IsOptional="true" DbType="0" Precision="19" />
+                    <Field Name="VenueName" Ordinal="10" IsOptional="true" DbType="12" Length="255" />
+                    <Field Name="VenueStreet" Ordinal="11" IsOptional="true" DbType="12" Length="255" />
+                    <Field Name="VenuePostalCode" Ordinal="12" IsOptional="true" DbType="12" Length="10" />
+                    <Field Name="VenueCity" Ordinal="13" IsOptional="true" DbType="12" Length="255" />
+                    <Field Name="VenueDirection" Ordinal="14" IsOptional="true" DbType="12" Length="2147483647" />
+                    <Field Name="VenueLongitude" Ordinal="15" IsOptional="true" DbType="6" Precision="38" />
+                    <Field Name="VenueLatitude" Ordinal="16" IsOptional="true" DbType="6" Precision="38" />
+                    <Field Name="VenuePrecisePosition" Ordinal="17" IsOptional="true" DbType="2" />
+                    <Field Name="VenueModifiedOn" Ordinal="18" IsOptional="true" DbType="4" />
+                    <Field Name="RoundId" Ordinal="19" DbType="0" Precision="19" />
+                    <Field Name="RoundName" Ordinal="20" DbType="12" Length="255" />
+                    <Field Name="RoundDescription" Ordinal="21" DbType="12" Length="255" />
+                    <Field Name="RoundTypeName" Ordinal="22" DbType="12" Length="255" />
+                    <Field Name="RoundTypeDescription" Ordinal="23" DbType="12" Length="255" />
+                    <Field Name="TournamentId" Ordinal="24" DbType="0" Precision="19" />
                   </Fields>
                 </View>
                 <View Name="VenueTeam">
@@ -2668,7 +2666,6 @@
             <FieldMapping FieldName="TeamModifiedOn" TargetFieldName="TeamModifiedOn" />
             <FieldMapping FieldName="TeamName" TargetFieldName="TeamName" />
             <FieldMapping FieldName="TeamNameForRound" TargetFieldName="TeamNameForRound" />
-            <FieldMapping FieldName="TeamPhoto" TargetFieldName="TeamPhoto" />
             <FieldMapping FieldName="TournamentId" TargetFieldName="TournamentId" />
             <FieldMapping FieldName="VenueCity" TargetFieldName="VenueCity" />
             <FieldMapping FieldName="VenueDirection" TargetFieldName="VenueDirection" />

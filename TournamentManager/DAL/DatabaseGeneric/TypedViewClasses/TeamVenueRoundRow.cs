@@ -49,8 +49,6 @@ namespace TournamentManager.DAL.TypedViewClasses
 		public System.String TeamName { get; set; }
 		/// <summary>Gets or sets the TeamNameForRound field.</summary>
 		public System.String TeamNameForRound { get; set; }
-		/// <summary>Gets or sets the TeamPhoto field.</summary>
-		public System.String TeamPhoto { get; set; }
 		/// <summary>Gets or sets the TournamentId field.</summary>
 		public System.Int64 TournamentId { get; set; }
 		/// <summary>Gets or sets the VenueCity field.</summary>

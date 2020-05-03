@@ -1076,8 +1076,6 @@ namespace TournamentManager.DAL.HelperClasses
 		public static EntityField2 TeamNameForRound	{ get { return ModelInfoProviderSingleton.GetInstance().CreateField2(TeamVenueRoundFieldIndex.TeamNameForRound); } }
 		/// <summary>Creates a new TeamVenueRoundTypedView.TeamClubName field instance</summary>
 		public static EntityField2 TeamClubName	{ get { return ModelInfoProviderSingleton.GetInstance().CreateField2(TeamVenueRoundFieldIndex.TeamClubName); } }
-		/// <summary>Creates a new TeamVenueRoundTypedView.TeamPhoto field instance</summary>
-		public static EntityField2 TeamPhoto	{ get { return ModelInfoProviderSingleton.GetInstance().CreateField2(TeamVenueRoundFieldIndex.TeamPhoto); } }
 		/// <summary>Creates a new TeamVenueRoundTypedView.MatchDayOfWeek field instance</summary>
 		public static EntityField2 MatchDayOfWeek	{ get { return ModelInfoProviderSingleton.GetInstance().CreateField2(TeamVenueRoundFieldIndex.MatchDayOfWeek); } }
 		/// <summary>Creates a new TeamVenueRoundTypedView.MatchWeekday field instance</summary>

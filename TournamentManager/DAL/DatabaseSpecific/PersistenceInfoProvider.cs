@@ -734,32 +734,31 @@ namespace TournamentManager.DAL.DatabaseSpecific
 		/// <summary>Inits TeamVenueRoundView's mappings</summary>
 		private void InitTeamVenueRoundTypedViewMappings()
 		{
-			this.AddElementMapping("TeamVenueRoundTypedView", @"TestOrg", @"dbo", "TeamVenueRound", 25);
+			this.AddElementMapping("TeamVenueRoundTypedView", @"TestOrg", @"dbo", "TeamVenueRound", 24);
 			this.AddElementFieldMapping("TeamVenueRoundTypedView", "TeamId", "TeamId", false, "BigInt", 0, 19, 0, false, string.Empty, null, typeof(System.Int64), 0);
 			this.AddElementFieldMapping("TeamVenueRoundTypedView", "TeamName", "TeamName", false, "NVarChar", 255, 0, 0, false, string.Empty, null, typeof(System.String), 1);
 			this.AddElementFieldMapping("TeamVenueRoundTypedView", "TeamNameForRound", "TeamNameForRound", false, "NVarChar", 255, 0, 0, false, string.Empty, null, typeof(System.String), 2);
 			this.AddElementFieldMapping("TeamVenueRoundTypedView", "TeamClubName", "TeamClubName", false, "NVarChar", 255, 0, 0, false, string.Empty, null, typeof(System.String), 3);
-			this.AddElementFieldMapping("TeamVenueRoundTypedView", "TeamPhoto", "TeamPhoto", false, "NVarChar", 255, 0, 0, false, string.Empty, null, typeof(System.String), 4);
-			this.AddElementFieldMapping("TeamVenueRoundTypedView", "MatchDayOfWeek", "MatchDayOfWeek", false, "Int", 0, 10, 0, false, string.Empty, null, typeof(System.Int32), 5);
-			this.AddElementFieldMapping("TeamVenueRoundTypedView", "MatchWeekday", "MatchWeekday", false, "NVarChar", 4000, 0, 0, false, string.Empty, null, typeof(System.String), 6);
-			this.AddElementFieldMapping("TeamVenueRoundTypedView", "MatchTime", "MatchTime", false, "Time", 0, 0, 0, false, string.Empty, null, typeof(System.TimeSpan), 7);
-			this.AddElementFieldMapping("TeamVenueRoundTypedView", "TeamModifiedOn", "TeamModifiedOn", false, "DateTime", 0, 0, 0, false, string.Empty, null, typeof(System.DateTime), 8);
-			this.AddElementFieldMapping("TeamVenueRoundTypedView", "VenueId", "VenueId", false, "BigInt", 0, 19, 0, false, string.Empty, null, typeof(System.Int64), 9);
-			this.AddElementFieldMapping("TeamVenueRoundTypedView", "VenueName", "VenueName", false, "NVarChar", 255, 0, 0, false, string.Empty, null, typeof(System.String), 10);
-			this.AddElementFieldMapping("TeamVenueRoundTypedView", "VenueStreet", "VenueStreet", false, "NVarChar", 255, 0, 0, false, string.Empty, null, typeof(System.String), 11);
-			this.AddElementFieldMapping("TeamVenueRoundTypedView", "VenuePostalCode", "VenuePostalCode", false, "NVarChar", 10, 0, 0, false, string.Empty, null, typeof(System.String), 12);
-			this.AddElementFieldMapping("TeamVenueRoundTypedView", "VenueCity", "VenueCity", false, "NVarChar", 255, 0, 0, false, string.Empty, null, typeof(System.String), 13);
-			this.AddElementFieldMapping("TeamVenueRoundTypedView", "VenueDirection", "VenueDirection", false, "NVarChar", 2147483647, 0, 0, false, string.Empty, null, typeof(System.String), 14);
-			this.AddElementFieldMapping("TeamVenueRoundTypedView", "VenueLongitude", "VenueLongitude", false, "Float", 0, 38, 0, false, string.Empty, null, typeof(System.Double), 15);
-			this.AddElementFieldMapping("TeamVenueRoundTypedView", "VenueLatitude", "VenueLatitude", false, "Float", 0, 38, 0, false, string.Empty, null, typeof(System.Double), 16);
-			this.AddElementFieldMapping("TeamVenueRoundTypedView", "VenuePrecisePosition", "VenuePrecisePosition", false, "Bit", 0, 0, 0, false, string.Empty, null, typeof(System.Boolean), 17);
-			this.AddElementFieldMapping("TeamVenueRoundTypedView", "VenueModifiedOn", "VenueModifiedOn", false, "DateTime", 0, 0, 0, false, string.Empty, null, typeof(System.DateTime), 18);
-			this.AddElementFieldMapping("TeamVenueRoundTypedView", "RoundId", "RoundId", false, "BigInt", 0, 19, 0, false, string.Empty, null, typeof(System.Int64), 19);
-			this.AddElementFieldMapping("TeamVenueRoundTypedView", "RoundName", "RoundName", false, "NVarChar", 255, 0, 0, false, string.Empty, null, typeof(System.String), 20);
-			this.AddElementFieldMapping("TeamVenueRoundTypedView", "RoundDescription", "RoundDescription", false, "NVarChar", 255, 0, 0, false, string.Empty, null, typeof(System.String), 21);
-			this.AddElementFieldMapping("TeamVenueRoundTypedView", "RoundTypeName", "RoundTypeName", false, "NVarChar", 255, 0, 0, false, string.Empty, null, typeof(System.String), 22);
-			this.AddElementFieldMapping("TeamVenueRoundTypedView", "RoundTypeDescription", "RoundTypeDescription", false, "NVarChar", 255, 0, 0, false, string.Empty, null, typeof(System.String), 23);
-			this.AddElementFieldMapping("TeamVenueRoundTypedView", "TournamentId", "TournamentId", false, "BigInt", 0, 19, 0, false, string.Empty, null, typeof(System.Int64), 24);
+			this.AddElementFieldMapping("TeamVenueRoundTypedView", "MatchDayOfWeek", "MatchDayOfWeek", false, "Int", 0, 10, 0, false, string.Empty, null, typeof(System.Int32), 4);
+			this.AddElementFieldMapping("TeamVenueRoundTypedView", "MatchWeekday", "MatchWeekday", false, "NVarChar", 4000, 0, 0, false, string.Empty, null, typeof(System.String), 5);
+			this.AddElementFieldMapping("TeamVenueRoundTypedView", "MatchTime", "MatchTime", false, "Time", 0, 0, 0, false, string.Empty, null, typeof(System.TimeSpan), 6);
+			this.AddElementFieldMapping("TeamVenueRoundTypedView", "TeamModifiedOn", "TeamModifiedOn", false, "DateTime", 0, 0, 0, false, string.Empty, null, typeof(System.DateTime), 7);
+			this.AddElementFieldMapping("TeamVenueRoundTypedView", "VenueId", "VenueId", false, "BigInt", 0, 19, 0, false, string.Empty, null, typeof(System.Int64), 8);
+			this.AddElementFieldMapping("TeamVenueRoundTypedView", "VenueName", "VenueName", false, "NVarChar", 255, 0, 0, false, string.Empty, null, typeof(System.String), 9);
+			this.AddElementFieldMapping("TeamVenueRoundTypedView", "VenueStreet", "VenueStreet", false, "NVarChar", 255, 0, 0, false, string.Empty, null, typeof(System.String), 10);
+			this.AddElementFieldMapping("TeamVenueRoundTypedView", "VenuePostalCode", "VenuePostalCode", false, "NVarChar", 10, 0, 0, false, string.Empty, null, typeof(System.String), 11);
+			this.AddElementFieldMapping("TeamVenueRoundTypedView", "VenueCity", "VenueCity", false, "NVarChar", 255, 0, 0, false, string.Empty, null, typeof(System.String), 12);
+			this.AddElementFieldMapping("TeamVenueRoundTypedView", "VenueDirection", "VenueDirection", false, "NVarChar", 2147483647, 0, 0, false, string.Empty, null, typeof(System.String), 13);
+			this.AddElementFieldMapping("TeamVenueRoundTypedView", "VenueLongitude", "VenueLongitude", false, "Float", 0, 38, 0, false, string.Empty, null, typeof(System.Double), 14);
+			this.AddElementFieldMapping("TeamVenueRoundTypedView", "VenueLatitude", "VenueLatitude", false, "Float", 0, 38, 0, false, string.Empty, null, typeof(System.Double), 15);
+			this.AddElementFieldMapping("TeamVenueRoundTypedView", "VenuePrecisePosition", "VenuePrecisePosition", false, "Bit", 0, 0, 0, false, string.Empty, null, typeof(System.Boolean), 16);
+			this.AddElementFieldMapping("TeamVenueRoundTypedView", "VenueModifiedOn", "VenueModifiedOn", false, "DateTime", 0, 0, 0, false, string.Empty, null, typeof(System.DateTime), 17);
+			this.AddElementFieldMapping("TeamVenueRoundTypedView", "RoundId", "RoundId", false, "BigInt", 0, 19, 0, false, string.Empty, null, typeof(System.Int64), 18);
+			this.AddElementFieldMapping("TeamVenueRoundTypedView", "RoundName", "RoundName", false, "NVarChar", 255, 0, 0, false, string.Empty, null, typeof(System.String), 19);
+			this.AddElementFieldMapping("TeamVenueRoundTypedView", "RoundDescription", "RoundDescription", false, "NVarChar", 255, 0, 0, false, string.Empty, null, typeof(System.String), 20);
+			this.AddElementFieldMapping("TeamVenueRoundTypedView", "RoundTypeName", "RoundTypeName", false, "NVarChar", 255, 0, 0, false, string.Empty, null, typeof(System.String), 21);
+			this.AddElementFieldMapping("TeamVenueRoundTypedView", "RoundTypeDescription", "RoundTypeDescription", false, "NVarChar", 255, 0, 0, false, string.Empty, null, typeof(System.String), 22);
+			this.AddElementFieldMapping("TeamVenueRoundTypedView", "TournamentId", "TournamentId", false, "BigInt", 0, 19, 0, false, string.Empty, null, typeof(System.Int64), 23);
 		}
 
 		/// <summary>Inits VenueDistanceResultView's mappings</summary>
