@@ -16,6 +16,7 @@
     <partial name="@League.ViewNames.Shared._FavIcons" />
     <link rel="stylesheet" href="~/lib/bootstrap/bootstrap.min.css">
     <link rel="stylesheet" href="~/css/site.min.css" />
+    <style type="text/css">.site-sticky-top { position: -webkit-sticky; position: sticky; top: 0; z-index: 1020; }</style>
     @await RenderSectionAsync("styles", required: false)
 </head>
 <body>
@@ -33,7 +34,7 @@
             </div>
         </div>
     </header>
-    <nav id="nav-main" class="navbar navbar-expand-md navbar-dark rounded pl-2">
+    <nav id="nav-main" class="navbar navbar-expand-md navbar-dark rounded pl-2 site-sticky-top">
         @* bootstrap 4 class "sticky-top" interferes with modal, that's why we use our identical "site-sticky-top" *@
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-header" aria-controls="navbar-header" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
