@@ -1,18 +1,42 @@
 ﻿@using League.Controllers
+@using League.DI
 @using League.TagHelpers
+@using Microsoft.AspNetCore.Hosting
+@using Microsoft.AspNetCore.Mvc.Localization
+@using TournamentManager.Data
+@inject IViewLocalizer Localizer
+@inject OrganizationSiteList OrganizationSiteList
+@inject OrganizationContextResolver OrganizationContextResolver
 @{
-    ViewData["Title"] = "todo";
+    ViewData["Title"] = Localizer["Leagues"].Value;
+    var siteContextList = OrganizationSiteList
+        .Where(ctx => !string.IsNullOrEmpty(ctx.OrganizationKey) && !ctx.HideInMenu)
+        .Select(orgSite => new OrganizationSiteContext(orgSite.OrganizationKey, OrganizationContextResolver, OrganizationSiteList))
+        .ToList();
 }
 <div>
-    <h2 class="h2">@ViewData["Title"]</h2>
+    <h2 class="h2 d-inline-block">@ViewData["Title"]</h2>
+    <h4 class="h4 d-inline-block">@Localizer["using volleyball-liga.de"]</h4>
     <hr />
 </div>
 <div class="mb-0 pb-1">
-    <div class="row">
-        todo
-    </div>
+        @foreach (var siteContext in siteContextList)
+        {
+            <div class="mb-4 p-2 border border-dark rounded league-entry">
+                <environment include="Production">
+                    <h4 class="h4"><a href="@siteContext.HomepageUrl">@Html.Raw(siteContext.Name)</a></h4>
+                </environment>
+                <environment include="Development">
+                    <h4 class="h4"><a href="/@(siteContext.UrlSegmentValue)" class="link">@Html.Raw(siteContext.Name)</a></h4>
+                </environment>               
+                <div>@Html.Raw(siteContext.Description)</div>
+            </div>
+        }
 </div>
 @section styles {
     <style type="text/css">
+        .league-entry {
+            background: linear-gradient(to right, #c7ffc7 5%, #ffffff 100%);
+        }
     </style>
 }

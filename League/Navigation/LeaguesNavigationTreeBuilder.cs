@@ -22,7 +22,7 @@ namespace League.Navigation
 
         public Task<TreeNode<NavigationNode>> BuildTree(NavigationTreeBuilderService service)
         {
-            var topNode = new NavigationNode { Text = _localizer["League"], Url = "#"};
+            var topNode = new NavigationNode { Text = _localizer["League"], Url = "/#"};
             var treeNode = new TreeNode<NavigationNode>(topNode);
             treeNode.AddChild(new NavigationNode { Text = _localizer["Home"], Url = "/welcome", Key = "LeagueWelcome" });
             foreach (var site in _organizationSiteContext.SiteList)
