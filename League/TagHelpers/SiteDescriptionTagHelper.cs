@@ -15,7 +15,8 @@ namespace League.TagHelpers
     /// [Display(Name = &quot;Phone&quot;, Description=&quot;This is my description&quot;)]
     /// public string Phone { get; set; }
     /// <c>The <see cref="ITagHelper"/>:</c>
-    /// &lt;span&gt;site-description-for=&quot;Phone&quot;" class=&quot;form-text text-muted&quot;&lt;/span&gt;
+    /// &lt;span&gt;site-description-for=&quot;Phone&quot;" class=&quot;form-text text-muted&quot;&gt;&lt;/span&gt;
+    /// <c>Existing content of the tag will be replaced by the description.</c>
     /// </example>
     [HtmlTargetElement("span", Attributes = DescriptionForAttributeName)]
     public class DescriptionTagHelper : TagHelper
@@ -44,16 +45,16 @@ namespace League.TagHelpers
         /// An expression to be evaluated against the current model.
         /// </summary>
         [HtmlAttributeName(DescriptionForAttributeName)]
-        public ModelExpression DescriptionFor { get; set; }
+        public ModelExpression For { get; set; }
 
         /// <inheritdoc />
-        /// <remarks>There is no output if <see cref="DescriptionFor"/> is <c>null</c>.</remarks>
+        /// <remarks>There is no output if <see cref="For"/> is <c>null</c>.</remarks>
         public override Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
         {
             _ = context ?? throw new ArgumentNullException(nameof(context)); 
             _ = output ?? throw new ArgumentNullException(nameof(output));
 
-            var metadata = DescriptionFor.Metadata ??
+            var metadata = For.Metadata ??
                            throw new InvalidOperationException($"No metadata provided ({DescriptionForAttributeName})");
 
             if (string.IsNullOrWhiteSpace(metadata.Description)) return Task.CompletedTask;

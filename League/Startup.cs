@@ -725,7 +725,7 @@ namespace League
                 var rankingUpdateTask = app.ApplicationServices.GetRequiredService<RankingUpdateTask>();
                 rankingUpdateTask.OrganizationSiteContext = siteContext.Resolve(orgSite.OrganizationKey);
                 rankingUpdateTask.TournamentId = siteContext.MatchResultTournamentId;
-                rankingUpdateTask.Timeout = TimeSpan.FromMinutes(1);
+                rankingUpdateTask.Timeout = TimeSpan.FromMinutes(5);
                 queue.QueueTask(rankingUpdateTask);
             }
             
