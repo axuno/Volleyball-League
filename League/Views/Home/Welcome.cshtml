@@ -42,12 +42,12 @@
         </a>
     </div>
     <div>
-        <ul class="fa-ul mt-4">
-            <li><span class="fa-li"><i class="fas fa-check-square text-primary"></i></span>@Localizer["You're organizing a volleyball league?"]</li>
-            <li><span class="fa-li"><i class="fas fa-check-square text-primary"></i></span>@Localizer["Tired of the manual work with it?"]</li>
+        <ul class="fa-ul mt-4 ml-4">@* ml-4 means 'no indent' here*@
+            <li><span class="fa-li"><i class="fas fa-question text-primary"></i></span>@Localizer["You're organizing a volleyball league?"]</li>
+            <li><span class="fa-li"><i class="fas fa-question text-primary"></i></span>@Localizer["Manual work takes too much from your leisure time?"]</li>
         </ul>
-        <h4 class="h4">
-            <a asp-action="@nameof(Home.AboutLeague)" asp-controller="@nameof(Home)" class="link">@Localizer["Here is the solution to help you out!"]</a>
+        <h4 class="h5">
+            <a asp-action="@nameof(Home.AboutLeague)" asp-controller="@nameof(Home)" class="text-primary font-weight-bolder" ><i class="fa fa-check-circle text-primary"></i> @Localizer["Here is the solution to help you out!"]</a>
         </h4>
     </div>
 </div>

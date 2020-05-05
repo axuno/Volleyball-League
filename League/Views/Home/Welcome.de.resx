@@ -120,8 +120,8 @@
   <data name="Here is the solution to help you out!" xml:space="preserve">
     <value>Hier ist die richtige Lösung dafür!</value>
   </data>
-  <data name="Tired of the manual work with it?" xml:space="preserve">
-    <value>Die manuelle Arbeit damit ist eine Last?</value>
+  <data name="Manual work takes too much from your leisure time?" xml:space="preserve">
+    <value>Die manuelle Arbeit nimmt zu viel Freizeit in Anspruch?</value>
   </data>
   <data name="Welcome" xml:space="preserve">
     <value>Willkommen</value>

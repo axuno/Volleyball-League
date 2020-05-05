@@ -97,6 +97,15 @@ namespace League.Views.Role {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The new team member must have a user account.
+        /// </summary>
+        public static string MemberMustHaveAnAccount {
+            get {
+                return ResourceManager.GetString("MemberMustHaveAnAccount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Player.
         /// </summary>
         public static string PlaysInTeam {

@@ -21,6 +21,10 @@
         {
             <a asp-controller="@nameof(League.Controllers.TeamApplication)" asp-action="@nameof(League.Controllers.TeamApplication.Start)" class="btn btn-primary mb-2">@Localizer["Register team now"]</a>
         }
+        else
+        {
+            <div class="font-weight-bolder my-2">@Localizer["The registration deadline for this season has unfortunately already expired"].</div>
+        }
         @if (Model.TournamentRoundTeams.Count == 0)
         {
             <site-alert type="Secondary" icon="fas fa-users" icon-size-class="fa-3x">

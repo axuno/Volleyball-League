@@ -75,6 +75,11 @@
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
     </Compile>
+    <Compile Update="Views\Role\_AddMemberModalPartial.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>_AddMemberModalPartial.resx</DependentUpon>
+    </Compile>
     <Compile Update="Views\Role\_RemoveMemberModalPartial.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -132,7 +137,7 @@
     </EmbeddedResource>
     <EmbeddedResource Update="Views\Role\_AddMemberModalPartial.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>_RemoveMemberModalPartial.Designer.cs</LastGenOutput>
+      <LastGenOutput>_AddMemberModalPartial.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Update="Views\TeamApplication\_TeamApplicationMessagesPartial.resx">
       <LastGenOutput>_TeamApplicationMessagesPartial.Designer.cs</LastGenOutput>

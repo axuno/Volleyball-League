@@ -129,6 +129,9 @@
   <data name="ManagesTeam" xml:space="preserve">
     <value>Team Contact</value>
   </data>
+  <data name="MemberMustHaveAnAccount" xml:space="preserve">
+    <value>The new team member must have a user account</value>
+  </data>
   <data name="PlaysInTeam" xml:space="preserve">
     <value>Player</value>
   </data>

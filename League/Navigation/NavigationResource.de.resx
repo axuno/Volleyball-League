@@ -123,6 +123,9 @@
   <data name="Contact teams" xml:space="preserve">
     <value>Team-Kontaktdaten</value>
   </data>
+  <data name="Create account" xml:space="preserve">
+    <value>Konto anlegen</value>
+  </data>
   <data name="Current season" xml:space="preserve">
     <value>Aktuelle Saison</value>
   </data>
@@ -144,6 +147,9 @@
   <data name="League Overview" xml:space="preserve">
     <value>Liga-Übersicht</value>
   </data>
+  <data name="Manage account" xml:space="preserve">
+    <value>Konto verwalten</value>
+  </data>
   <data name="Match results" xml:space="preserve">
     <value>Spielergebnisse</value>
   </data>
@@ -161,6 +167,15 @@
   </data>
   <data name="Rule of game" xml:space="preserve">
     <value>Spielordnung</value>
+  </data>
+  <data name="Sign in" xml:space="preserve">
+    <value>Anmelden</value>
+  </data>
+  <data name="Sign in with other account" xml:space="preserve">
+    <value>Mit anderem Konto anmelden</value>
+  </data>
+  <data name="Sign out" xml:space="preserve">
+    <value>Abmelden</value>
   </data>
   <data name="Tables" xml:space="preserve">
     <value>Tabellen</value>
