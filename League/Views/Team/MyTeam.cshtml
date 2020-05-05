@@ -123,7 +123,7 @@
                         <div class="col-12 mb-2">
                             @if (teamVenueInfo.VenueId.HasValue)
                             {
-                                <div><i class="fas fa-map-marker-alt"></i><span class="d-inline-block mr-2"></span><span class="font-weight-bold">@teamVenueInfo.VenueName</span></div>
+                            <div><i class="fas fa-map-marker-alt"></i><span class="d-inline-block mr-2"></span><span class="font-weight-bold">@teamVenueInfo.VenueName</span> <span>@{if (!string.IsNullOrWhiteSpace(teamVenueInfo.VenueExtension)){<text>(@teamVenueInfo.VenueExtension)</text>}}</span></div>
                                 <div>@(string.Join(", ", teamVenueInfo.VenuePostalCode, teamVenueInfo.VenueCity, teamVenueInfo.VenueStreet))</div>
                                 <div>
                                     <a class="link" asp-action="@nameof(Map.Venue)"

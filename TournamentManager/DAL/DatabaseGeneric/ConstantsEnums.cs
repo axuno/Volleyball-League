@@ -514,6 +514,8 @@ namespace TournamentManager.DAL
 		VenueId,
 		///<summary>VenueName</summary>
 		VenueName,
+		///<summary>VenueExtension</summary>
+		VenueExtension,
 		///<summary>VenueStreet</summary>
 		VenueStreet,
 		///<summary>VenuePostalCode</summary>

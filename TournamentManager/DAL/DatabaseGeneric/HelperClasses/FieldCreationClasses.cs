@@ -1088,6 +1088,8 @@ namespace TournamentManager.DAL.HelperClasses
 		public static EntityField2 VenueId	{ get { return ModelInfoProviderSingleton.GetInstance().CreateField2(TeamVenueRoundFieldIndex.VenueId); } }
 		/// <summary>Creates a new TeamVenueRoundTypedView.VenueName field instance</summary>
 		public static EntityField2 VenueName	{ get { return ModelInfoProviderSingleton.GetInstance().CreateField2(TeamVenueRoundFieldIndex.VenueName); } }
+		/// <summary>Creates a new TeamVenueRoundTypedView.VenueExtension field instance</summary>
+		public static EntityField2 VenueExtension	{ get { return ModelInfoProviderSingleton.GetInstance().CreateField2(TeamVenueRoundFieldIndex.VenueExtension); } }
 		/// <summary>Creates a new TeamVenueRoundTypedView.VenueStreet field instance</summary>
 		public static EntityField2 VenueStreet	{ get { return ModelInfoProviderSingleton.GetInstance().CreateField2(TeamVenueRoundFieldIndex.VenueStreet); } }
 		/// <summary>Creates a new TeamVenueRoundTypedView.VenuePostalCode field instance</summary>

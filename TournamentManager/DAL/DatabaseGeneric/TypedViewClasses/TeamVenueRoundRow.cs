@@ -71,6 +71,8 @@ namespace TournamentManager.DAL.TypedViewClasses
 		public Nullable<System.Boolean> VenuePrecisePosition { get; set; }
 		/// <summary>Gets or sets the VenueStreet field.</summary>
 		public System.String VenueStreet { get; set; }
+		/// <summary>Gets or sets the VenueExtension field.</summary>
+		public System.String VenueExtension { get; set; }
 	}
 }
 
