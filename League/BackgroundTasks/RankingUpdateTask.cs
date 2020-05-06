@@ -143,7 +143,7 @@ namespace League.BackgroundTasks
                     using var image = chart.GetImage();
                     image.Save(
                         Path.Combine(_webHostEnvironment.WebRootPath, RankingImageFolder,
-                            string.Format(RankingChartFilenameTemplate, OrganizationSiteContext.FolderName, roundId,
+                            string.Format(RankingChartFilenameTemplate, OrganizationSiteContext.OrganizationKey, roundId,
                                 DateTime.UtcNow.Ticks)), System.Drawing.Imaging.ImageFormat.Png);
                 }
             }
@@ -167,7 +167,7 @@ namespace League.BackgroundTasks
                 foreach (var roundId in roundIds)
                 {
                     var fileInfos = chartDirectory.GetFiles(string.Format(RankingChartFilenameTemplate,
-                        OrganizationSiteContext.FolderName, roundId, "*")).OrderByDescending(fi => fi.LastWriteTimeUtc);
+                        OrganizationSiteContext.OrganizationKey, roundId, "*")).OrderByDescending(fi => fi.LastWriteTimeUtc);
 
                     // Remove all files except for the most recent
                     foreach (var fileInfo in fileInfos.Skip(1))

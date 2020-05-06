@@ -132,7 +132,8 @@ namespace TournamentManager.Ranking
 			{
                 var rank = new Rank {Number = -1, TeamId = teamId, MatchesPlayed = MatchesPlayed.Count(m => m.HomeTeamId == teamId || m.GuestTeamId == teamId), MatchesToPlay = MatchesToPlay.Count(m => m.HomeTeamId == teamId || m.GuestTeamId == teamId)};
 
-                foreach (var match in MatchesPlayed.Where(m => (m.HomeTeamId == teamId || m.GuestTeamId == teamId) && m.MatchDate <= upperDateLimit))
+                // upperDateLimit contains the date part (without time), so the MatchDate must also be compared with the date part!
+                foreach (var match in MatchesPlayed.Where(m => (m.HomeTeamId == teamId || m.GuestTeamId == teamId) && m.MatchDate.HasValue && m.MatchDate.Value.Date <= upperDateLimit.Date))
 				{
 					if (match.HomeTeamId == teamId)
 					{
