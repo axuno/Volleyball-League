@@ -4,6 +4,7 @@
 
 ## What is it?
 Volleyball League is a platform that brings everything necessary to organize and to run a league.
+This is the 4th generation of the software developed over the last 20 years and a complete re-write.
 
 ## Features
 
@@ -13,6 +14,7 @@ Volleyball League is a platform that brings everything necessary to organize and
  * User administration and authorization
  * Fixtures incl. calendar export
  * Fixture changes, entry of results
+ * Match report sheets
  * Result lists and tables
  * Automatic notifications and reminders
  * Shared use of venues
@@ -29,7 +31,7 @@ Volleyball League is a platform that brings everything necessary to organize and
  
   * ASP.NET Core 3.1 web-development framework
   * C# programming language
-  * Microsoft SQL Server database (2016+)
+  * Microsoft SQL-Server 2016+ database is currently implemented. [See supported databases](https://www.llblgen.com/Pages/specifications.aspx)
   * Bootstrap 4 and jQuery as the HTML, CSS, and JavaScript frameworks
 
 ## License
