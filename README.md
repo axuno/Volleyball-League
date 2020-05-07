@@ -19,6 +19,7 @@ This is the 4th generation of the software developed over the last 20 years and 
  * Automatic notifications and reminders
  * Shared use of venues
  * Referees
+ * Local accounts and most popular social logins implemented
 
 ## Software design
 
