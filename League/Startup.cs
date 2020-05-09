@@ -45,6 +45,7 @@ using TournamentManager.Data;
 using League.BackgroundTasks.Email;
 using League.ConfigurationPoco;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Rewrite;
 using TournamentManager.DI;
 
 namespace League
@@ -613,6 +614,16 @@ namespace League
 
             #endregion
 
+            #region *** Rewrite ALL domains (even those without SSL certificate) to https://volleyball-liga.de ***
+
+            {
+                using var iisUrlRewriteStreamReader = File.OpenText(Path.Combine(WebHostEnvironment.ContentRootPath, Program.ConfigurationFolder, @"IisRewrite.config"));
+                var options = new RewriteOptions().AddIISUrlRewrite(iisUrlRewriteStreamReader);
+                app.UseRewriter(options);
+            }
+            
+            #endregion
+
             if (env.IsDevelopment())
             {
                 app.UseMiddleware<StackifyMiddleware.RequestTracerMiddleware>();
@@ -636,7 +647,7 @@ namespace League
                 app.UseHsts();
             }
 
-            #region ** JsNLog **
+            #region *** JsNLog ***
             // add the JSNLog middleware before the UseStaticFiles middleware. 
             var jsNLogConfiguration =
                 new JsnlogConfiguration
