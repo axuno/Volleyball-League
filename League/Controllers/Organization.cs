@@ -32,11 +32,11 @@ namespace League.Controllers
             _siteContext = siteContext;
         }
 
-        [Route("{section=home}/{page=index}")]
-        public IActionResult Index(string section = "home", string page = "index")
+        [Route("{section=home}/{content=index}")]
+        public IActionResult Index(string section = "home", string content = "index")
         {
             // Note: Indicate the current controller-specific directory ("Organization") with the "./" prefix
-            var view = $"./{_siteContext.FolderName}/{section}/{page}";
+            var view = $"./{_siteContext.FolderName}/{section}/{content}";
             var result = _viewEngine.FindView(_actionContext, view, false);
             if(!result.Success) return NotFound();
             
