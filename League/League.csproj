@@ -48,7 +48,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="Chrome-Win\**\*.*" Exclude="Chrome-Win\**\*.json">
+    <Content Include="Chromium-Win\**\*.*" Exclude="Chromium-Win\**\*.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="app_offline_.htm">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
@@ -162,6 +168,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="app_offline_.htm">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="Views\ViewNames.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>ViewNames.cs</LastGenOutput>
