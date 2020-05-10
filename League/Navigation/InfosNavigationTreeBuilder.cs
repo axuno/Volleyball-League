@@ -25,10 +25,10 @@ namespace League.Navigation
 
         public Task<TreeNode<NavigationNode>> BuildTree(NavigationTreeBuilderService service)
         {
-            var topNode = new NavigationNode { Text = _localizer["Info"], Url = _urlHelper.Action(nameof(League.Controllers.Organization.Index), nameof(League.Controllers.Organization), new { section="info", page=""}), Key = "Info"};
+            var topNode = new NavigationNode { Text = _localizer["Info"], Url = _urlHelper.Action(nameof(League.Controllers.Organization.Index), nameof(League.Controllers.Organization), new { section="info", content=""}), Key = "Info"};
             var treeNode = new TreeNode<NavigationNode>(topNode);
-            treeNode.AddChild(new NavigationNode { Text = _localizer["Rule of game"], Url = _urlHelper.Action(nameof(League.Controllers.Organization.Index), nameof(League.Controllers.Organization), new { section="info", page="ruleofgame"}), Key = "RuleOfGame" });
-            treeNode.AddChild(new NavigationNode { Text = _localizer["News"], Url =_urlHelper.Action(nameof(League.Controllers.Organization.Index), nameof(League.Controllers.Organization), new { section="info", page="news"}), Key = "News" });
+            treeNode.AddChild(new NavigationNode { Text = _localizer["Rule of game"], Url = _urlHelper.Action(nameof(League.Controllers.Organization.Index), nameof(League.Controllers.Organization), new { section="info", content="ruleofgame"}), Key = "RuleOfGame" });
+            treeNode.AddChild(new NavigationNode { Text = _localizer["News"], Url =_urlHelper.Action(nameof(League.Controllers.Organization.Index), nameof(League.Controllers.Organization), new { section="info", content="news"}), Key = "News" });
             
             // To return a TreeNode, that won't be rendered, use: new TreeNode<NavigationNode>(new NavigationNode());
             return Task.FromResult(treeNode);
