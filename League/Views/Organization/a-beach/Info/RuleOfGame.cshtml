@@ -1,9 +1,10 @@
-﻿@inject League.DI.OrganizationSiteContext SiteContext
+﻿@using League.Helpers
+@inject League.DI.OrganizationSiteContext SiteContext
 @{
-    ViewData["Title"] = "Spielordnung";
+    ViewData.Title("Spielordnung");
 }
 <div>
-    <h2 class="h2">@ViewData["Title"]</h2>
+    <h2 class="h2">@ViewData.Title()</h2>
     <hr />
 </div>
 <div class="mb-0 pb-1">

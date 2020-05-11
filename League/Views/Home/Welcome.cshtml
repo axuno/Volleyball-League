@@ -1,10 +1,10 @@
 ﻿@using League.Controllers
-@using League.TagHelpers
+@using League.Helpers
 @using Microsoft.AspNetCore.Mvc.Localization
 @inject IViewLocalizer Localizer
 @{
-    ViewData["Title"] = Localizer["Volleyball Leagues: Organization and Operation"].Value;
-    ViewData["Description"] = Localizer["The Volleyball League Platform brings everything necessary to organize and to run a league"].Value;
+    ViewData.Title(Localizer["Volleyball Leagues: Organization and Operation"].Value);
+    ViewData.Description(Localizer["The Volleyball League Platform brings everything necessary to organize and to run a league"].Value);
 }
 <div>
     <h2 class="h2">@ViewData["Title"]</h2>

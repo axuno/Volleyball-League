@@ -1,10 +1,11 @@
 ﻿@using System.Threading
 @using League.Components
+@using League.Helpers
 @using League.Routing
 @inject League.DI.OrganizationSiteContext SiteContext
 @{
-    ViewData["Title"] = "Volleyball-Mixedliga Augsburg";
-    ViewData["Description"] = SiteContext.Description;
+    ViewData.Title("Volleyball-Mixedliga Augsburg");
+    ViewData.Description(SiteContext.Description);
 }
 <div>
     <h2 class="h2">@SiteContext.ShortName</h2>

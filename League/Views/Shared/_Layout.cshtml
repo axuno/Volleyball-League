@@ -1,4 +1,5 @@
 ﻿@using League.DI
+@using League.Helpers
 @using League.Navigation
 @using League.Routing
 @using League.ViewNames
@@ -12,10 +13,10 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=0" />
-    <title>@ViewData["Title"]</title>
-    @if (ViewData["Description"] != null)
+    <title>@ViewData.Title()</title>
+    @if (ViewData.Description() != null)
     {
-    <meta name="description" content="@ViewData["Description"]" />
+    <meta name="description" content="@ViewData.Description()" />
     }
     <partial name="@League.ViewNames.Shared._FavIcons" />
     <link rel="stylesheet" href="~/lib/bootstrap/bootstrap.min.css">
