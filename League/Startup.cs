@@ -469,23 +469,6 @@ namespace League
 
             #endregion
 
-            #region *** Add CloudScribeNavigation ***
-
-            // CloudscribeNavigation requires:
-            // ~/Views/Shared/NavigationNodeChildDropdownPartial.cshtml
-            // ~/Views/Shared/NavigationNodeChildTreePartial.cshtml
-            // ~/Views/Shared/NavigationNodeSideNavPartial.cshtml
-            // ~/Views/Shared/Components/Navigation/*.cshtml
-            // ~/Views/_ViewImports.cshtml: @using cloudscribe.Web.Navigation
-
-            //services.AddCloudscribeNavigation(Configuration.GetSection("NavigationOptions"));
-            services.AddCloudscribeNavigation(null);
-            services.AddScoped<IOptions<NavigationOptions>, Navigation.LeagueSiteNavigationOptionsResolver>(); // resolve navigation xml files per organization
-            services.AddScoped<INavigationTreeBuilder, Navigation.LeaguesNavigationTreeBuilder>(); //add top nav item for all leagues
-            services.AddScoped<INavigationTreeBuilder, Navigation.InfosNavigationTreeBuilder>(); //add top nav item for info menue
-            services.AddScoped<ITreeCache, Navigation.LeagueMemoryTreeCache>(); // cache navigation tree per organization
-            #endregion
-
             services.AddSingleton<Helpers.MetaDataHelper>();
 
             services.Configure<CookiePolicyOptions>(options =>
@@ -579,6 +562,23 @@ namespace League
             {
                 options.RedirectStatusCode = StatusCodes.Status301MovedPermanently;
             });
+
+            #region *** Add CloudScribeNavigation ***
+
+            // CloudscribeNavigation requires:
+            // ~/Views/Shared/NavigationNodeChildDropdownPartial.cshtml
+            // ~/Views/Shared/NavigationNodeChildTreePartial.cshtml
+            // ~/Views/Shared/NavigationNodeSideNavPartial.cshtml
+            // ~/Views/Shared/Components/Navigation/*.cshtml
+            // ~/Views/_ViewImports.cshtml: @using cloudscribe.Web.Navigation
+
+            //services.AddCloudscribeNavigation(Configuration.GetSection("NavigationOptions"));
+            services.AddCloudscribeNavigation(null);
+            services.AddScoped<IOptions<NavigationOptions>, Navigation.LeagueSiteNavigationOptionsResolver>(); // resolve navigation xml files per organization
+            services.AddScoped<INavigationTreeBuilder, Navigation.LeaguesNavigationTreeBuilder>(); //add top nav item for all leagues
+            services.AddScoped<INavigationTreeBuilder, Navigation.InfosNavigationTreeBuilder>(); //add top nav item for info menu
+            services.AddScoped<ITreeCache, Navigation.LeagueMemoryTreeCache>(); // cache navigation tree per organization
+            #endregion
 
             #region *** HostedServices related ***
             

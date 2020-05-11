@@ -3,7 +3,8 @@
 @using League.Routing
 @inject League.DI.OrganizationSiteContext SiteContext
 @{
-    ViewData["Title"] = "Startseite";
+    ViewData["Title"] = "Volleyball-Mixedliga Augsburg";
+    ViewData["Description"] = SiteContext.Description;
 }
 <div>
     <h2 class="h2">@SiteContext.ShortName</h2>

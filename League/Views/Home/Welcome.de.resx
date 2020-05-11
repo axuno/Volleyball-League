@@ -123,8 +123,11 @@
   <data name="Manual work takes too much from your leisure time?" xml:space="preserve">
     <value>Die manuelle Arbeit nimmt zu viel Freizeit in Anspruch?</value>
   </data>
-  <data name="Volleyball League: Organization and Operation" xml:space="preserve">
-    <value>Volleyball-Liga: Organisation und Spielbetrieb</value>
+  <data name="The Volleyball League Platform brings everything necessary to organize and to run a league" xml:space="preserve">
+    <value>Die Volleyball-Liga Plattform bringt alles Notwendige mit, um eine Liga zu organisieren und den Spielbetrieb durchzuführen</value>
+  </data>
+  <data name="Volleyball Leagues: Organization and Operation" xml:space="preserve">
+    <value>Volleyball-Ligen: Organisation und Spielbetrieb</value>
   </data>
   <data name="You're organizing a volleyball league?" xml:space="preserve">
     <value>Du organisierst eine Volleyball-Liga?</value>
