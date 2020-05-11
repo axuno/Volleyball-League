@@ -3,7 +3,7 @@
 @using Microsoft.AspNetCore.Mvc.Localization
 @inject IViewLocalizer Localizer
 @{
-    ViewData["Title"] = Localizer["Welcome"].Value;
+    ViewData["Title"] = Localizer["Volleyball League: Organization and Operation"].Value;
 }
 <div>
     <h2 class="h2">@ViewData["Title"]</h2>
@@ -18,7 +18,7 @@
             <li data-target="#welcome-carousel" data-slide-to="2"></li>
             <li data-target="#welcome-carousel" data-slide-to="3"></li>
         </ul>
-        @*<!-- The slideshow -->*@
+        @*<!-- The slide show -->*@
         <div class="carousel-inner">
             <div class="carousel-item active">
                 <img class="img-fluid rounded" src="@Url.Content("~/images/home_welcome_carousel-01.png")" alt="">
@@ -51,4 +51,8 @@
         </h4>
     </div>
 </div>
-@section styles {}
+@section styles {
+    <style type="text/css">
+        .slide { }  @* Makes picture slide instead of immediate replacement*@
+    </style>
+}
