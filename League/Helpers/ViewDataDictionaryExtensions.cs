@@ -12,7 +12,7 @@ namespace League.Helpers
         /// </summary>
         /// <param name="viewData"></param>
         /// <param name="title"></param>
-        public static void Title(this ViewDataDictionary<dynamic> viewData, string title)
+        public static void Title(this ViewDataDictionary viewData, string title)
         {
             viewData[nameof(Title)] = title;
         }
@@ -22,7 +22,7 @@ namespace League.Helpers
         /// </summary>
         /// <param name="viewData"></param>
         /// <returns>Returns the value used for the page title tag</returns>
-        public static string Title(this ViewDataDictionary<dynamic> viewData)
+        public static string Title(this ViewDataDictionary viewData)
         {
             return viewData[nameof(Title)]?.ToString();
         }
@@ -32,7 +32,7 @@ namespace League.Helpers
         /// </summary>
         /// <param name="viewData"></param>
         /// <param name="description"></param>
-        public static void Description(this ViewDataDictionary<dynamic> viewData, string description)
+        public static void Description(this ViewDataDictionary viewData, string description)
         {
             viewData[nameof(Description)] = description;
         }
@@ -42,7 +42,7 @@ namespace League.Helpers
         /// </summary>
         /// <param name="viewData"></param>
         /// <returns>Returns the value used for the page meta description tag</returns>
-        public static string Description(this ViewDataDictionary<dynamic> viewData)
+        public static string Description(this ViewDataDictionary viewData)
         {
             return viewData[nameof(Description)]?.ToString();
         }
