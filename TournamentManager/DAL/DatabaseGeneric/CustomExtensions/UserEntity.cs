@@ -72,17 +72,16 @@ namespace TournamentManager.DAL.EntityClasses
 
         protected override void OnBeforeEntitySave()
 		{   
-            var now = _dateModifiedCreatedOn ?? DateTime.UtcNow;
-            if (IsNew) CreatedOn = now;
-            if (IsDirty) ModifiedOn = now;
-            // Guid = System.Guid.NewGuid().ToString("N");  will be set by UserStore of Identity
+            var now = DateTime.UtcNow;
+            if (IsNew && !Fields[UserFields.CreatedOn.FieldIndex].IsChanged) CreatedOn = now;
+            if (IsDirty && !Fields[UserFields.ModifiedOn.FieldIndex].IsChanged) ModifiedOn = now;
+            if (IsNew && !Fields[UserFields.Guid.FieldIndex].IsChanged) Guid = System.Guid.NewGuid().ToString("N"); // should be set by UserStore of Identity
 
             if (Gender.Length == 0 || !new[] {'m', 'f', 'u'}.Contains(Gender[0]))
             {
                 Gender = "u";
             }
             
-
             if (!string.IsNullOrEmpty(FirstName))
             {
                 FirstName = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(FirstName?.ToLower(CultureInfo.CurrentCulture));

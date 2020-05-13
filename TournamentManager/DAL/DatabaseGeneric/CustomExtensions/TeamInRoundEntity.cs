@@ -1,4 +1,6 @@
 ﻿using System;
+using TournamentManager.DAL.HelperClasses;
+
 #if !CF
 #endif
 
@@ -6,23 +8,11 @@ namespace TournamentManager.DAL.EntityClasses
 {
 	public partial class TeamInRoundEntity
 	{
-        private DateTime? _dateModifiedCreatedOn;
-
-        /// <summary>
-        /// Sets the date for <see cref="CreatedOn"/> and <see cref="ModifiedOn"/>.
-        /// If it is not set, <see cref="DateTime.UtcNow"/> will be used.
-        /// </summary>
-        /// <param name="dateModifiedCreatedOn"></param>
-        public void SetModifiedOnDate(DateTime dateModifiedCreatedOn)
-        {
-            _dateModifiedCreatedOn = dateModifiedCreatedOn;
-        }
-
         protected override void OnBeforeEntitySave()
         {
-            var now = _dateModifiedCreatedOn ?? DateTime.UtcNow;
-            if (IsNew) CreatedOn = now;
-            if (IsDirty) ModifiedOn = now;
+            var now = DateTime.UtcNow;
+            if (IsNew && !Fields[TeamInRoundFields.CreatedOn.FieldIndex].IsChanged) CreatedOn = now;
+            if (IsDirty && !Fields[TeamInRoundFields.ModifiedOn.FieldIndex].IsChanged) ModifiedOn = now;
             base.OnBeforeEntitySave();
         }
 	}

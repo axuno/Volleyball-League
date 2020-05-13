@@ -41,9 +41,10 @@ namespace TournamentManager.Tests.ModelValidators
 
             var tournamentRepoMock = TestMocks.GetRepo<TournamentRepository>();
             tournamentRepoMock
-                .Setup(rep => rep.GetTournamentByIdAsync(It.IsAny<long>(), It.IsAny<CancellationToken>()))
-                .Callback(() => { }).Returns((long tournamentId, CancellationToken cancellationToken) =>
+                .Setup(rep => rep.GetTournamentAsync(It.IsAny<PredicateExpression>(), It.IsAny<CancellationToken>()))
+                .Callback(() => { }).Returns((PredicateExpression filter, CancellationToken cancellationToken) =>
                 {
+                    var tournamentId = (long)((FieldCompareValuePredicate)filter[0].Contents).Value;
                     return Task.FromResult(new TournamentEntity{Id = tournamentId, Name = $"Tournament{tournamentId}", Description = $"DescriptionTournament{tournamentId}" });
                 });
             appDbMock.Setup(a => a.TournamentRepository).Returns(tournamentRepoMock.Object);
@@ -62,7 +63,7 @@ namespace TournamentManager.Tests.ModelValidators
         [TestCase(2, 4, false)] // RoundId 4 does not belong to any tournament
         public async Task TeamInRound_RoundId_Should_Belong_To_Tournament(long teamTournamentId, long teamInRoundRoundId, bool expected)
         {
-            var tournament = await _appDb.TournamentRepository.GetTournamentByIdAsync(teamTournamentId, CancellationToken.None);
+            var tournament = await _appDb.TournamentRepository.GetTournamentAsync(new PredicateExpression(TournamentFields.Id == teamTournamentId), CancellationToken.None);
             var rounds = await _appDb.RoundRepository.GetRoundsWithTypeAsync(
                 new PredicateExpression(RoundFields.TournamentId == teamTournamentId), CancellationToken.None);
 
