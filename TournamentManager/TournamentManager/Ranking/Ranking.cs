@@ -121,11 +121,16 @@ namespace TournamentManager.Ranking
 
         private RankingList GetUnsortedList(IEnumerable<long> teamIds, DateTime upperDateLimit, out DateTime lastUpdatedOn)
         {
-            lastUpdatedOn = MatchesPlayed.Count > 0
-                ? MatchesPlayed.Max(m => m.ModifiedOn)
-                : MatchesToPlay.Max(m => m.ModifiedOn);
+            lastUpdatedOn = DateTime.UtcNow;
+            if (MatchesPlayed.Any())
+                lastUpdatedOn = MatchesPlayed
+                    .Where(m => teamIds.Contains(m.HomeTeamId) || teamIds.Contains(m.GuestTeamId))
+                    .Max(m => m.ModifiedOn);
+            else if (MatchesToPlay.Any())
+                lastUpdatedOn = MatchesToPlay
+                    .Where(m => teamIds.Contains(m.HomeTeamId) || teamIds.Contains(m.GuestTeamId))
+                    .Max(m => m.ModifiedOn);
 
-            lastUpdatedOn = MatchesPlayed.Count > 0 ? MatchesPlayed.Max(m => m.ModifiedOn) : DateTime.MinValue;
             var rankingList = new RankingList {UpperDateLimit = upperDateLimit, LastUpdatedOn = lastUpdatedOn};
 
             foreach (var teamId in teamIds)

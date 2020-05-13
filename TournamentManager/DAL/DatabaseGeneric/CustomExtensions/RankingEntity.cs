@@ -1,4 +1,6 @@
 ﻿using System;
+using TournamentManager.DAL.HelperClasses;
+
 #if !CF
 #endif
 
@@ -20,9 +22,9 @@ namespace TournamentManager.DAL.EntityClasses
 
         protected override void OnBeforeEntitySave()
         {
-            var now = _dateModifiedCreatedOn ?? DateTime.UtcNow;
-            if (IsNew) CreatedOn = now;
-            if (IsDirty) ModifiedOn = now;
+            var now = DateTime.UtcNow;
+            if (IsNew && !Fields[RankingFields.CreatedOn.FieldIndex].IsChanged) CreatedOn = now;
+            if (IsDirty && !Fields[RankingFields.ModifiedOn.FieldIndex].IsChanged) ModifiedOn = _dateModifiedCreatedOn ?? now;
             base.OnBeforeEntitySave();
         }
 	}

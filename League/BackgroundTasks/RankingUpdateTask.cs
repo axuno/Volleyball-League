@@ -10,8 +10,8 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Logging;
 using SD.LLBLGen.Pro.ORMSupportClasses;
 using SD.LLBLGen.Pro.QuerySpec;
+using TournamentManager.DAL.EntityClasses;
 using TournamentManager.DAL.HelperClasses;
-using TournamentManager.Data;
 using TournamentManager.Ranking;
 
 namespace League.BackgroundTasks
@@ -75,6 +75,12 @@ namespace League.BackgroundTasks
         public long? RoundId { get; set; }
 
         /// <summary>
+        /// If set to <see langword="true"/>, ranking tables and ranking charts will updated,
+        /// never mind whether <see cref="MatchEntity.ModifiedOn"/> &gt; <see cref="RankingEntity.CreatedOn"/> or not.
+        /// </summary>
+        public bool EnforceUpdate { get; set; }
+
+        /// <summary>
         /// Gets or sets the <see cref="OrganizationSiteContext"/> to use for the update.
         /// </summary>
         public OrganizationSiteContext OrganizationSiteContext { get; set; }
@@ -86,7 +92,7 @@ namespace League.BackgroundTasks
             if (TournamentId == null && RoundId == null)
             {
                 _logger.LogError($"Both {nameof(TournamentId)} and {nameof(RoundId)} are null. Cannot update ranking.");
-                return;
+                return; 
             }
 
             if (OrganizationSiteContext == null)
@@ -108,10 +114,37 @@ namespace League.BackgroundTasks
                     new PredicateExpression(TournamentId != null
                         ? MatchToPlayRawFields.TournamentId == TournamentId
                         : MatchToPlayRawFields.RoundId == RoundId), cancellationToken);
-                matchesPlayed.ForEach(m => roundIds.Add(m.RoundId));
-                // matches to play is required for generation of ranking chart files
-                matchesToPlay.ForEach(m => roundIds.Add(m.RoundId));
+                // Get round id and date of creation for the ranking entry
+                var rankingCreatedOnTable = await OrganizationSiteContext.AppDb.RankingRepository.GetRoundRanksCreatedOn(
+                    new PredicateExpression(TournamentId != null
+                        ? RankingFields.TournamentId == TournamentId
+                        : RankingFields.RoundId == RoundId), cancellationToken);
+
+                #region * Identify rounds for which the ranking table must be updated *
                 
+                matchesPlayed.ForEach(m =>
+                {
+                    // Was the match updated after the ranking entry was created?
+                    if (EnforceUpdate || rankingCreatedOnTable.Exists(rt => rt.RoundId == m.RoundId && rt.CreatedOn < m.ModifiedOn))
+                    {
+                        roundIds.Add(m.RoundId);
+                    }
+                });
+                // matches to play is required for generation of ranking chart files (remaining match days)
+                matchesToPlay.ForEach(m => 
+                {
+                    // Was the match updated after the ranking entry was created?
+                    if (EnforceUpdate || rankingCreatedOnTable.Exists(rt => rt.RoundId == m.RoundId && rt.CreatedOn < m.ModifiedOn))
+                    {
+                        roundIds.Add(m.RoundId);
+                    }
+                });
+
+                // No rounds which require an update
+                if (!roundIds.Any()) return;
+                
+                #endregion
+
                 var teamsInRound =
                     await OrganizationSiteContext.AppDb.TeamInRoundRepository.GetTeamInRoundAsync(
                         new PredicateExpression(TeamInRoundFields.RoundId.In(roundIds)), cancellationToken);
