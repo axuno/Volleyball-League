@@ -77,7 +77,8 @@ namespace TournamentManager.ModelValidators
                             return await Task.FromResult(factResult);
                         }
 
-                        var maxCorrectionDate = Model.RealStart.Value.AddDays(Data.OrganizationContext.MaxDaysForResultCorrection);
+                        // negative values will allow unlimited corrections
+                        var maxCorrectionDate = Data.OrganizationContext.MaxDaysForResultCorrection >= 0 ? Model.RealStart.Value.AddDays(Data.OrganizationContext.MaxDaysForResultCorrection) : DateTime.MaxValue;
 
                         if (maxCorrectionDate < Data.Criteria.CurrentDateUtc)
                         {
