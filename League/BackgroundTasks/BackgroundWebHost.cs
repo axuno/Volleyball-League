@@ -176,8 +176,8 @@ namespace League.BackgroundTasks
 
         public void Dispose()
         {
-            _serviceDescriptors.Clear();
-            _instance.Dispose();
+            _serviceDescriptors?.Clear();
+            _instance?.Dispose();
         }
     }
 }
