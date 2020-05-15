@@ -23,9 +23,9 @@ namespace League.Controllers
     {
         private readonly ILogger<Language> _logger;
         private readonly SignInManager<ApplicationUser> _signInManager;
-        private readonly OrganizationSiteContext _siteContext;
+        private readonly SiteContext _siteContext;
 
-        public Impersonation(SignInManager<ApplicationUser> signInManager, OrganizationSiteContext siteContext, ILogger<Language> logger)
+        public Impersonation(SignInManager<ApplicationUser> signInManager, SiteContext siteContext, ILogger<Language> logger)
         {
             _signInManager = signInManager;
             _siteContext = siteContext;

@@ -1,7 +1,7 @@
 ﻿@inject IViewLocalizer Localizer
 @using Microsoft.AspNetCore.Mvc.Localization
 @*ValueTuple*@
-@model (League.Models.HomeViewModels.ContactViewModel Form, League.DI.OrganizationSiteContext SiteContext)
+@model (League.Models.HomeViewModels.ContactViewModel Form, League.DI.SiteContext SiteContext)
 @{
     Layout = null;
     var to = string.IsNullOrEmpty(Model.SiteContext.OrganizationKey) ? "volleyball-liga.de" : Model.SiteContext.ShortName;

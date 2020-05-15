@@ -34,7 +34,7 @@ namespace League.Controllers
     [Route("{organization:ValidOrganizations}/[controller]")]
     public class Venue : AbstractController
     {
-        private readonly OrganizationSiteContext _siteContext;
+        private readonly SiteContext _siteContext;
         private readonly AppDb _appDb;
         private readonly UserManager<Identity.ApplicationUser> _userManager;
         private readonly IAuthorizationService _authorizationService;
@@ -45,14 +45,14 @@ namespace League.Controllers
         private readonly GoogleConfiguration _googleConfig;
         private readonly string _defaultReturnUrl;
 
-        public Venue(OrganizationSiteContext organizationSiteContext,
+        public Venue(SiteContext siteContext,
             SignInManager<Identity.ApplicationUser> signInManager,
             IAuthorizationService authorizationService, IStringLocalizer<Venue> localizer, RegionInfo regionInfo,
             IConfiguration configuration, ILogger<Venue> logger)
         {
             _defaultReturnUrl = "/";
-            _siteContext = organizationSiteContext;
-            _appDb = organizationSiteContext.AppDb;
+            _siteContext = siteContext;
+            _appDb = siteContext.AppDb;
             _userManager = signInManager.UserManager;
             _authorizationService = authorizationService;
             _localizer = localizer;

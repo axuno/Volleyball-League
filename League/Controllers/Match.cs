@@ -32,7 +32,7 @@ namespace League.Controllers
     [Route("{organization:ValidOrganizations}/[controller]")]
     public class Match : AbstractController
     {
-        private readonly OrganizationSiteContext _siteContext;
+        private readonly SiteContext _siteContext;
         private readonly AppDb _appDb;
         private readonly IStringLocalizer<Match> _localizer;
         private readonly IAuthorizationService _authorizationService;
@@ -44,12 +44,12 @@ namespace League.Controllers
         private readonly RankingUpdateTask _rankingUpdateTask;
         private readonly RazorViewToStringRenderer _razorViewToStringRenderer;
 
-        public Match(OrganizationSiteContext organizationSiteContext, IStringLocalizer<Match> localizer, IAuthorizationService authorizationService,
+        public Match(SiteContext siteContext, IStringLocalizer<Match> localizer, IAuthorizationService authorizationService,
             Axuno.Tools.DateAndTime.TimeZoneConverter timeZoneConverter, Axuno.BackgroundTask.IBackgroundQueue queue,
             FixtureEmailTask fixtureEmailTask, ResultEmailTask resultEmailTask, RankingUpdateTask rankingUpdateTask, RazorViewToStringRenderer razorViewToStringRenderer, ILogger<Match> logger)
         {
-            _siteContext = organizationSiteContext;
-            _appDb = organizationSiteContext.AppDb;
+            _siteContext = siteContext;
+            _appDb = siteContext.AppDb;
             _localizer = localizer;
             _authorizationService = authorizationService;
             _timeZoneConverter = timeZoneConverter;
@@ -601,7 +601,7 @@ namespace League.Controllers
 
         private void UpdateRanking(in long roundId)
         {
-            _rankingUpdateTask.OrganizationSiteContext = _siteContext;
+            _rankingUpdateTask.siteContext = _siteContext;
             _rankingUpdateTask.RoundId = roundId;
             _rankingUpdateTask.Timeout = TimeSpan.FromMinutes(2);
             _queue.QueueTask(_rankingUpdateTask);

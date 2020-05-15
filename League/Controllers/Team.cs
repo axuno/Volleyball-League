@@ -32,7 +32,7 @@ namespace League.Controllers
     [Route("{organization:ValidOrganizations}/[controller]")]
     public class Team : AbstractController
     {
-        private readonly OrganizationSiteContext _siteContext;
+        private readonly SiteContext _siteContext;
         private readonly AppDb _appDb;
         private readonly IStringLocalizer<Team> _localizer;
         private readonly IAuthorizationService _authorizationService;
@@ -41,12 +41,12 @@ namespace League.Controllers
         private readonly SignInManager<Identity.ApplicationUser> _signInManager;
         private readonly IWebHostEnvironment _webHostEnvironment;
 
-        public Team(OrganizationSiteContext organizationSiteContext, Axuno.Tools.DateAndTime.TimeZoneConverter timeZoneConverter, IWebHostEnvironment webHostEnvironment, IStringLocalizer<Team> localizer, IAuthorizationService authorizationService, SignInManager<Identity.ApplicationUser> signInManger, ILogger<Team> logger)
+        public Team(SiteContext siteContext, Axuno.Tools.DateAndTime.TimeZoneConverter timeZoneConverter, IWebHostEnvironment webHostEnvironment, IStringLocalizer<Team> localizer, IAuthorizationService authorizationService, SignInManager<Identity.ApplicationUser> signInManger, ILogger<Team> logger)
         {
-            _siteContext = organizationSiteContext;
+            _siteContext = siteContext;
             _timeZoneConverter = timeZoneConverter;
             _webHostEnvironment = webHostEnvironment;
-            _appDb = organizationSiteContext.AppDb;
+            _appDb = siteContext.AppDb;
             _signInManager = signInManger;
             _localizer = localizer;
             _authorizationService = authorizationService;

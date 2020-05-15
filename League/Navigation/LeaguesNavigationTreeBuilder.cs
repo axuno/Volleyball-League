@@ -10,12 +10,12 @@ namespace League.Navigation
     /// </summary>
     public class LeaguesNavigationTreeBuilder : INavigationTreeBuilder
     {
-        private readonly OrganizationSiteContext _organizationSiteContext;
+        private readonly SiteContext _siteContext;
         private readonly IStringLocalizer<NavigationResource> _localizer;
 
-        public LeaguesNavigationTreeBuilder(OrganizationSiteContext organizationSiteContext, IStringLocalizer<NavigationResource> localizer)
+        public LeaguesNavigationTreeBuilder(SiteContext siteContext, IStringLocalizer<NavigationResource> localizer)
         {
-            _organizationSiteContext = organizationSiteContext;
+            _siteContext = siteContext;
             _localizer = localizer;
         }
         public string Name => string.Join(".", nameof(League), nameof(Navigation), nameof(LeaguesNavigationTreeBuilder));
@@ -25,9 +25,9 @@ namespace League.Navigation
             var topNode = new NavigationNode { Text = _localizer["League"], Url = "/#"};
             var treeNode = new TreeNode<NavigationNode>(topNode);
             treeNode.AddChild(new NavigationNode { Text = _localizer["Home"], Url = "/welcome", Key = "LeagueWelcome" });
-            foreach (var site in _organizationSiteContext.SiteList)
+            foreach (var site in _siteContext.SiteList)
             {
-                var siteContext = _organizationSiteContext.Resolve(site.OrganizationKey);
+                var siteContext = _siteContext.Resolve(site.OrganizationKey);
                 if (!string.IsNullOrEmpty(siteContext.OrganizationKey) && !siteContext.HideInMenu)
                 {
                     treeNode.AddChild(

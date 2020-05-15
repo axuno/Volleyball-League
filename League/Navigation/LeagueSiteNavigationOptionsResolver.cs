@@ -15,7 +15,7 @@ namespace League.Navigation
         private readonly IWebHostEnvironment _hostingEnvironment;
         private readonly string _organizationKey;
 
-        public LeagueSiteNavigationOptionsResolver(IWebHostEnvironment hostingEnvironment, OrganizationSiteContext siteContext)
+        public LeagueSiteNavigationOptionsResolver(IWebHostEnvironment hostingEnvironment, SiteContext siteContext)
         {
             _hostingEnvironment = hostingEnvironment;
             _organizationKey = siteContext.OrganizationKey;

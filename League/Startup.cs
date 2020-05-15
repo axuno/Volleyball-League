@@ -172,10 +172,10 @@ namespace League
             var dbContextResolver = new DbContextResolver(dbContextList);
             services.AddSingleton<OrganizationContextResolver>(s => new OrganizationContextResolver(dbContextResolver, s.GetRequiredService<ILogger<OrganizationContextResolver>>(), Path.Combine(WebHostEnvironment.ContentRootPath, Program.ConfigurationFolder)));
 
-            services.AddSingleton<OrganizationSiteList>(sp =>
-                OrganizationSiteList.DeserializeFromFile(Path.Combine(WebHostEnvironment.ContentRootPath,
-                    Program.ConfigurationFolder, $"OrganizationSiteList.{WebHostEnvironment.EnvironmentName}.config")));
-            services.AddScoped<OrganizationSiteContext>();
+            services.AddSingleton<SiteList>(sp =>
+                SiteList.DeserializeFromFile(Path.Combine(WebHostEnvironment.ContentRootPath,
+                    Program.ConfigurationFolder, $"SiteList.{WebHostEnvironment.EnvironmentName}.config")));
+            services.AddScoped<SiteContext>();
 
             services.Configure<IISOptions>(options => { });
 
@@ -358,7 +358,7 @@ namespace League
                 {
                     var returnUrl = "?ReturnUrl=" + context.Request.Path + context.Request.QueryString;
                     // fires with [Authorize] attribute, when the user is authenticated, but does not have enough privileges
-                    var siteContext = context.HttpContext.RequestServices.GetRequiredService<OrganizationSiteContext>();
+                    var siteContext = context.HttpContext.RequestServices.GetRequiredService<SiteContext>();
                     // other context properties can be set, but are not considered in the redirect, though
                     context.Response.Redirect(new PathString($"/{siteContext.UrlSegmentValue}").Add(context.Options.AccessDeniedPath) + returnUrl);
                     return Task.CompletedTask;
@@ -367,20 +367,20 @@ namespace League
                 {
                     var returnUrl = "?ReturnUrl=" + context.Request.Path + context.Request.QueryString;
                     // fires with [Authorize] attribute, when the user is not authenticated
-                    var siteContext = context.HttpContext.RequestServices.GetRequiredService<OrganizationSiteContext>();
+                    var siteContext = context.HttpContext.RequestServices.GetRequiredService<SiteContext>();
                     // other context properties can be set, but are not considered in the redirect, though
                     context.Response.Redirect(new PathString($"/{siteContext.UrlSegmentValue}").Add(context.Options.LoginPath) + returnUrl);
                     return Task.CompletedTask;
                 };
                 options.Events.OnRedirectToLogout = context =>
                 {
-                    var siteContext = context.HttpContext.RequestServices.GetRequiredService<OrganizationSiteContext>();
+                    var siteContext = context.HttpContext.RequestServices.GetRequiredService<SiteContext>();
                     context.Response.Redirect(new PathString($"/{siteContext.UrlSegmentValue}").Add(context.Options.LogoutPath));
                     return Task.CompletedTask;
                 };
                 options.Events.OnSignedIn += async context =>
                 {
-                    var siteContext = context.HttpContext.RequestServices.GetRequiredService<OrganizationSiteContext>();
+                    var siteContext = context.HttpContext.RequestServices.GetRequiredService<SiteContext>();
                     var success = await siteContext.AppDb.UserRepository.SetLastLoginDateAsync(context.Principal.Identity.Name, null, CancellationToken.None);
                 };
             });
@@ -404,7 +404,7 @@ namespace League
                 {
                     var returnUrl = "?ReturnUrl=" + context.Request.Path + context.Request.QueryString;
                     // fires with [Authorize] attribute, when the user is authenticated, but does not have enough privileges
-                    var siteContext = context.HttpContext.RequestServices.GetRequiredService<OrganizationSiteContext>();
+                    var siteContext = context.HttpContext.RequestServices.GetRequiredService<SiteContext>();
                     // other context properties can be set, but are not considered in the redirect, though
                     context.Response.Redirect(new PathString($"/{siteContext.UrlSegmentValue}").Add(context.Options.AccessDeniedPath) + returnUrl);
                     return Task.CompletedTask;
@@ -413,14 +413,14 @@ namespace League
                 {
                     var returnUrl = "?ReturnUrl=" + context.Request.Path + context.Request.QueryString;
                     // fires with [Authorize] attribute, when the user is not authenticated
-                    var siteContext = context.HttpContext.RequestServices.GetRequiredService<OrganizationSiteContext>();
+                    var siteContext = context.HttpContext.RequestServices.GetRequiredService<SiteContext>();
                     // other context properties can be set, but are not considered in the redirect, though
                     context.Response.Redirect(new PathString($"/{siteContext.UrlSegmentValue}").Add(context.Options.LoginPath) + returnUrl);
                     return Task.CompletedTask;
                 };
                 options.Events.OnRedirectToLogout = context =>
                 {
-                    var siteContext = context.HttpContext.RequestServices.GetRequiredService<OrganizationSiteContext>();
+                    var siteContext = context.HttpContext.RequestServices.GetRequiredService<SiteContext>();
                     context.Response.Redirect(new PathString($"/{siteContext.UrlSegmentValue}").Add(context.Options.LogoutPath));
                     return Task.CompletedTask;
                 };
@@ -727,14 +727,14 @@ namespace League
 
             #region *** Initialize ranking tables and charts ***
             
-            var siteList = app.ApplicationServices.GetRequiredService<OrganizationSiteList>();
+            var siteList = app.ApplicationServices.GetRequiredService<SiteList>();
             var queue = app.ApplicationServices.GetRequiredService<IBackgroundQueue>();
             
             foreach (var orgSite in siteList.Where(ctx => !string.IsNullOrEmpty(ctx.OrganizationKey)))
             {
-                var siteContext = new OrganizationSiteContext(orgSite.OrganizationKey, app.ApplicationServices.GetRequiredService<OrganizationContextResolver>(), siteList);
+                var siteContext = new SiteContext(orgSite.OrganizationKey, app.ApplicationServices.GetRequiredService<OrganizationContextResolver>(), siteList);
                 var rankingUpdateTask = app.ApplicationServices.GetRequiredService<RankingUpdateTask>();
-                rankingUpdateTask.OrganizationSiteContext = siteContext.Resolve(orgSite.OrganizationKey);
+                rankingUpdateTask.siteContext = siteContext.Resolve(orgSite.OrganizationKey);
                 rankingUpdateTask.TournamentId = siteContext.MatchResultTournamentId;
                 rankingUpdateTask.Timeout = TimeSpan.FromMinutes(5);
                 queue.QueueTask(rankingUpdateTask);

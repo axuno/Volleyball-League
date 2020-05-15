@@ -9,8 +9,8 @@ namespace League.ControllerAttributes
     {
 		public override void OnActionExecuting(ActionExecutingContext filterContext)
         {
-            if (filterContext.HttpContext.RequestServices.GetService(typeof(OrganizationSiteContext)) is
-                    OrganizationSiteContext siteContext &&
+            if (filterContext.HttpContext.RequestServices.GetService(typeof(SiteContext)) is
+                    SiteContext siteContext &&
                 (!siteContext.ApplicationAllowed && (filterContext.RouteData.Values["controller"].ToString()
                                                          .Equals(nameof(League.Controllers.TeamApplication),
                                                              StringComparison.OrdinalIgnoreCase) &&

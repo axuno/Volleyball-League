@@ -12,12 +12,12 @@ namespace League.Navigation
     /// </summary>
     public class InfosNavigationTreeBuilder : INavigationTreeBuilder
     {
-        private readonly OrganizationSiteContext _siteContext;
+        private readonly SiteContext _siteContext;
         private readonly ILogger<InfosNavigationTreeBuilder> _logger;
         private readonly IStringLocalizer<NavigationResource> _localizer;
         private readonly IUrlHelper _urlHelper;
 
-        public InfosNavigationTreeBuilder(OrganizationSiteContext siteContext, ILogger<InfosNavigationTreeBuilder> logger, IStringLocalizer<NavigationResource> localizer, IUrlHelper urlHelper)
+        public InfosNavigationTreeBuilder(SiteContext siteContext, ILogger<InfosNavigationTreeBuilder> logger, IStringLocalizer<NavigationResource> localizer, IUrlHelper urlHelper)
         {
             _siteContext = siteContext;
             _logger = logger;

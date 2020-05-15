@@ -13,11 +13,11 @@ namespace League.Components
 {
     public class RoundSelector : ViewComponent
     {
-        private readonly OrganizationSiteContext _siteContext;
+        private readonly SiteContext _siteContext;
         private readonly AppDb _appDb;
         private readonly ILogger<RoundSelector> _logger;
 
-        public RoundSelector(OrganizationSiteContext siteContext, ILogger<RoundSelector> logger)
+        public RoundSelector(SiteContext siteContext, ILogger<RoundSelector> logger)
         {
             _siteContext = siteContext;
             _appDb = siteContext.AppDb;

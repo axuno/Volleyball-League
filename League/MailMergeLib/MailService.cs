@@ -24,13 +24,13 @@ namespace MailMergeLib.AspNet
 
     public class MailMergeService : IMailMergeService
     {
-        private readonly OrganizationSiteContext _organizationSiteContext;
+        private readonly SiteContext _siteContext;
 
-        public MailMergeService(IOptions<MailMergeServiceConfig> serviceConfig, OrganizationSiteContext organizationSiteContext )
+        public MailMergeService(IOptions<MailMergeServiceConfig> serviceConfig, SiteContext siteContext )
         {
             Settings = serviceConfig.Value.Settings;
             MessageStore = serviceConfig.Value.MessageStore;
-            _organizationSiteContext = organizationSiteContext;
+            _siteContext = siteContext;
         }
         public Settings Settings { get; }
         public IMessageStore MessageStore { get; }
@@ -46,18 +46,18 @@ namespace MailMergeLib.AspNet
             };
             mmm.MailMergeAddresses.Clear();
 
-            if (_organizationSiteContext?.Email?.GeneralFrom?.Address != null)
+            if (_siteContext?.Email?.GeneralFrom?.Address != null)
             {
                 mmm.MailMergeAddresses.Add(new MailMergeAddress(MailAddressType.From,
-                    _organizationSiteContext.Email.GeneralFrom.DisplayName,
-                    _organizationSiteContext.Email.GeneralFrom.Address));
+                    _siteContext.Email.GeneralFrom.DisplayName,
+                    _siteContext.Email.GeneralFrom.Address));
             }
 
-            if (_organizationSiteContext?.Email?.GeneralBcc != null)
+            if (_siteContext?.Email?.GeneralBcc != null)
             {
                 mmm.MailMergeAddresses.Add(new MailMergeAddress(MailAddressType.Bcc,
-                    _organizationSiteContext.Email.GeneralBcc.DisplayName,
-                    _organizationSiteContext.Email.GeneralBcc.Address));
+                    _siteContext.Email.GeneralBcc.DisplayName,
+                    _siteContext.Email.GeneralBcc.Address));
             }
 
             return mmm;

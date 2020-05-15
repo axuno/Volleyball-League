@@ -28,16 +28,16 @@ namespace League.Controllers
     [Route("{organization:ValidOrganizations}/[controller]")]
     public class Ranking : AbstractController
     {
-        private readonly OrganizationSiteContext _siteContext;
+        private readonly SiteContext _siteContext;
         private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly AppDb _appDb;
         private readonly ILogger<Ranking> _logger;
         private readonly IMemoryCache _memoryCache;
 
-        public Ranking(OrganizationSiteContext organizationSiteContext, IWebHostEnvironment webHostEnvironment, IStringLocalizer<Ranking> localizer, ILogger<Ranking> logger, IMemoryCache memoryCache)
+        public Ranking(SiteContext siteContext, IWebHostEnvironment webHostEnvironment, IStringLocalizer<Ranking> localizer, ILogger<Ranking> logger, IMemoryCache memoryCache)
         {
-            _siteContext = organizationSiteContext;
-            _appDb = organizationSiteContext.AppDb;
+            _siteContext = siteContext;
+            _appDb = siteContext.AppDb;
             _webHostEnvironment = webHostEnvironment;
             _logger = logger;
             _memoryCache = memoryCache;

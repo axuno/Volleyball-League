@@ -20,13 +20,13 @@ namespace League.Test
     public class UnitTestHelpers
     {
         private ServiceProvider _serviceProvider;
-        private readonly OrganizationSiteContext _organizationSiteContext;
+        private readonly SiteContext _siteContext;
         private string _configPath;
 
         public UnitTestHelpers()
         {
             _configPath = DirectoryLocator.GetTargetConfigurationPath();
-            var orgSiteList = OrganizationSiteList.DeserializeFromFile(Path.Combine(_configPath, "OrganizationSiteList.Development.config"));
+            var orgSiteList = SiteList.DeserializeFromFile(Path.Combine(_configPath, "SiteList.Development.config"));
             var dbContextList = DbContextList.DeserializeFromFile(Path.Combine(_configPath, "DbContextList.Development.config"));
             foreach (var dbContext in dbContextList)
             {
@@ -38,7 +38,7 @@ namespace League.Test
 
             InitializeLlBlGenPro();
 
-            _organizationSiteContext = new OrganizationSiteContext(dbContextResolver.Resolve("dbo").OrganizationKey, new OrganizationContextResolver(dbContextResolver, new NullLogger<OrganizationContextResolver>(), _configPath), orgSiteList);
+            _siteContext = new SiteContext(dbContextResolver.Resolve("dbo").OrganizationKey, new OrganizationContextResolver(dbContextResolver, new NullLogger<OrganizationContextResolver>(), _configPath), orgSiteList);
         }
 
         private void InitializeLlBlGenPro()
@@ -55,19 +55,19 @@ namespace League.Test
             TournamentManager.AppLogging.LoggerFactory = ServiceProvider.GetRequiredService<ILoggerFactory>();
         }
 
-        public OrganizationSiteContext GetOrganizationSiteContext()
+        public SiteContext GetsiteContext()
         {
-            return _organizationSiteContext;
+            return _siteContext;
         }
 
         public UserStore GetUserStore()
         {
-            return new UserStore(_organizationSiteContext, new NullLogger<UserStore>(), new UpperInvariantLookupNormalizer(), new Mock<MultiLanguageIdentityErrorDescriber>(null).Object);
+            return new UserStore(_siteContext, new NullLogger<UserStore>(), new UpperInvariantLookupNormalizer(), new Mock<MultiLanguageIdentityErrorDescriber>(null).Object);
         }
 
         public RoleStore GetRoleStore()
         {
-            return new RoleStore(_organizationSiteContext, new NullLogger<UserStore>(), new UpperInvariantLookupNormalizer(), new Mock<MultiLanguageIdentityErrorDescriber>(null).Object);
+            return new RoleStore(_siteContext, new NullLogger<UserStore>(), new UpperInvariantLookupNormalizer(), new Mock<MultiLanguageIdentityErrorDescriber>(null).Object);
         }
 
         public ServiceProvider ServiceProvider

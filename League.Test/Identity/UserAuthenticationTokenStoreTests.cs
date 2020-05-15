@@ -20,13 +20,13 @@ namespace League.Test.Identity
     public class UserAuthenticationTokenStoreTests
     {
         private readonly UnitTestHelpers _uth = new UnitTestHelpers();
-        private readonly OrganizationSiteContext _orgCtx;
+        private readonly SiteContext _orgCtx;
         private readonly AppDb _appDb;
         private readonly UserStore _store;
 
         public UserAuthenticationTokenStoreTests()
         {
-            _orgCtx = _uth.GetOrganizationSiteContext();
+            _orgCtx = _uth.GetsiteContext();
             _appDb = _orgCtx.AppDb;
             _store = _uth.GetUserStore();
         }

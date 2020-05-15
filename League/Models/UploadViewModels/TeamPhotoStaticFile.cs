@@ -14,7 +14,7 @@ namespace League.Models.UploadViewModels
     public class TeamPhotoStaticFile : AbstractStaticFile
     {
         private readonly IWebHostEnvironment _webHostEnvironment;
-        private readonly OrganizationSiteContext _siteContext;
+        private readonly SiteContext _siteContext;
         private readonly ILogger<TeamPhotoStaticFile> _logger;
 
         /// <summary>
@@ -38,7 +38,7 @@ namespace League.Models.UploadViewModels
         /// <param name="webHostEnvironment"></param>
         /// <param name="siteContext"></param>
         /// <param name="logger"></param>
-        public TeamPhotoStaticFile(IWebHostEnvironment webHostEnvironment, OrganizationSiteContext siteContext, ILogger<TeamPhotoStaticFile> logger) : base(logger)
+        public TeamPhotoStaticFile(IWebHostEnvironment webHostEnvironment, SiteContext siteContext, ILogger<TeamPhotoStaticFile> logger) : base(logger)
         {
             _webHostEnvironment = webHostEnvironment;
             _siteContext = siteContext;

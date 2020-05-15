@@ -29,7 +29,7 @@ namespace League.BackgroundTasks.Email
         /// <summary>
         /// Gets or sets the model.
         /// </summary>
-        public (ContactViewModel Form, OrganizationSiteContext SiteContext) Model { get; set; }
+        public (ContactViewModel Form, SiteContext SiteContext) Model { get; set; }
 
         /// <summary>
         /// The view names for the HTML and plain text part of the email.
@@ -45,7 +45,7 @@ namespace League.BackgroundTasks.Email
         {
             SetThreadCulture();
 
-            // For empty OrganizationKey only IOrganizationSite members are available
+            // For empty OrganizationKey only ISite members are available
             var siteContext = Model.SiteContext;
             var emailTo = !string.IsNullOrEmpty(siteContext?.Email?.ContactTo?.Address)
                 ? siteContext.Email.ContactTo.Address

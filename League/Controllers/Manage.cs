@@ -32,7 +32,7 @@ namespace League.Controllers
         private readonly UserEmailTask _userEmailTask1;
         private readonly UserEmailTask _userEmailTask2;
         private readonly MetaDataHelper _metaData;
-        private readonly OrganizationSiteContext _organizationSiteContext;
+        private readonly SiteContext _siteContext;
         private readonly ILogger<Manage> _logger;
         private readonly PhoneNumberService _phoneNumberService;
         private readonly RegionInfo _regionInfo;
@@ -42,7 +42,7 @@ namespace League.Controllers
             Axuno.Tools.DateAndTime.TimeZoneConverter timeZoneConverter,
             Axuno.BackgroundTask.IBackgroundQueue queue,
             UserEmailTask userEmailTask,
-            MetaDataHelper metaData, OrganizationSiteContext organizationSiteContext, 
+            MetaDataHelper metaData, SiteContext siteContext, 
             RegionInfo regionInfo, PhoneNumberService phoneNumberService,
             ILogger<Manage> logger)
         {
@@ -54,7 +54,7 @@ namespace League.Controllers
             _userEmailTask1 = userEmailTask;
             _userEmailTask2 = userEmailTask.CreateNew();
             _metaData = metaData;
-            _organizationSiteContext = organizationSiteContext;
+            _siteContext = siteContext;
             _phoneNumberService = phoneNumberService;
             _regionInfo = regionInfo;
             _logger = logger;
@@ -239,7 +239,7 @@ namespace League.Controllers
                 return PartialView(ViewNames.Manage._EditEmail2ModalPartial, model);
             }
 
-            var userEntity = await _organizationSiteContext.AppDb.UserRepository.GetLoginUserByUserNameAsync(User.Identity.Name, cancellationToken);
+            var userEntity = await _siteContext.AppDb.UserRepository.GetLoginUserByUserNameAsync(User.Identity.Name, cancellationToken);
             if (userEntity == null)
             {
                 TempData.Put<ManageMessage>(nameof(ManageMessage), new ManageMessage { AlertType = SiteAlertTagHelper.AlertType.Danger, MessageId = MessageId.ChangeEmail2Failure });
@@ -263,7 +263,7 @@ namespace League.Controllers
             userEntity.Email2 = model.Email2 ?? string.Empty;
             try
             {
-                await _organizationSiteContext.AppDb.GenericRepository.SaveEntityAsync(userEntity, false, false, cancellationToken);
+                await _siteContext.AppDb.GenericRepository.SaveEntityAsync(userEntity, false, false, cancellationToken);
                 TempData.Put<ManageMessage>(nameof(ManageMessage), new ManageMessage { AlertType = SiteAlertTagHelper.AlertType.Success, MessageId = MessageId.ChangeEmail2Success });
                 return JsonAjaxRedirectForModal(Url.Action(nameof(Index)));
             }
@@ -351,7 +351,7 @@ namespace League.Controllers
         public async Task<IActionResult> EditPersonalDetails(CancellationToken cancellationToken)
         {
             var model = new PersonalDetailsViewModel();
-            var user = await _organizationSiteContext.AppDb.UserRepository.GetLoginUserByUserNameAsync(HttpContext.User.Identity.Name, cancellationToken);
+            var user = await _siteContext.AppDb.UserRepository.GetLoginUserByUserNameAsync(HttpContext.User.Identity.Name, cancellationToken);
             if (user == null)
             {
                 _logger.LogError($"Username '{HttpContext.User.Identity.Name}' not found in repository");
@@ -377,7 +377,7 @@ namespace League.Controllers
                 return PartialView(ViewNames.Manage._EditPersonalDetailsModalPartial, model);
             }
 
-            var user = await _organizationSiteContext.AppDb.UserRepository.GetLoginUserByUserNameAsync(HttpContext.User.Identity.Name, cancellationToken);
+            var user = await _siteContext.AppDb.UserRepository.GetLoginUserByUserNameAsync(HttpContext.User.Identity.Name, cancellationToken);
             if (user == null)
             {
                 _logger.LogError($"Username '{HttpContext.User.Identity.Name}' not found in repository");
@@ -391,7 +391,7 @@ namespace League.Controllers
             user.Nickname = model.Nickname ?? string.Empty;
             try
             {
-                await _organizationSiteContext.AppDb.GenericRepository.SaveEntityAsync(user, false, false, cancellationToken);
+                await _siteContext.AppDb.GenericRepository.SaveEntityAsync(user, false, false, cancellationToken);
             }
             catch (Exception e)
             {
@@ -409,7 +409,7 @@ namespace League.Controllers
         public async Task<IActionResult> EditPhoneNumber(CancellationToken cancellationToken)
         {
             var model = new EditPhoneViewModel();
-            var user = await _organizationSiteContext.AppDb.UserRepository.GetLoginUserByUserNameAsync(HttpContext.User.Identity.Name, cancellationToken);
+            var user = await _siteContext.AppDb.UserRepository.GetLoginUserByUserNameAsync(HttpContext.User.Identity.Name, cancellationToken);
             if (user == null)
             {
                 _logger.LogError($"Username '{HttpContext.User.Identity.Name}' not found in repository");
@@ -435,7 +435,7 @@ namespace League.Controllers
 
                 try
                 {
-                    await _organizationSiteContext.AppDb.GenericRepository.SaveEntityAsync(userEntity, false, false, cancellationToken);
+                    await _siteContext.AppDb.GenericRepository.SaveEntityAsync(userEntity, false, false, cancellationToken);
                 }
                 catch (Exception e)
                 {
@@ -454,7 +454,7 @@ namespace League.Controllers
             }
             ModelState.Clear();
 
-            userEntity = await _organizationSiteContext.AppDb.UserRepository.GetLoginUserByUserNameAsync(User.Identity.Name, cancellationToken);
+            userEntity = await _siteContext.AppDb.UserRepository.GetLoginUserByUserNameAsync(User.Identity.Name, cancellationToken);
 
             if (userEntity == null)
             {
@@ -502,7 +502,7 @@ namespace League.Controllers
         public async Task<IActionResult> EditPhoneNumber2(CancellationToken cancellationToken)
         {
             var model = new EditPhone2ViewModel();
-            var user = await _organizationSiteContext.AppDb.UserRepository.GetLoginUserByUserNameAsync(HttpContext.User.Identity.Name, cancellationToken);
+            var user = await _siteContext.AppDb.UserRepository.GetLoginUserByUserNameAsync(HttpContext.User.Identity.Name, cancellationToken);
             if (user == null)
             {
                 _logger.LogError($"Username '{HttpContext.User.Identity.Name}' not found in repository");
@@ -527,7 +527,7 @@ namespace League.Controllers
                 userEntity.PhoneNumber2 = _phoneNumberService.FormatForStorage(model.PhoneNumber2, _regionInfo.TwoLetterISORegionName);
                 try
                 {
-                    await _organizationSiteContext.AppDb.GenericRepository.SaveEntityAsync(userEntity, false, false, cancellationToken);
+                    await _siteContext.AppDb.GenericRepository.SaveEntityAsync(userEntity, false, false, cancellationToken);
                 }
                 catch (Exception e)
                 {
@@ -546,7 +546,7 @@ namespace League.Controllers
             }
             ModelState.Clear();
 
-            userEntity = await _organizationSiteContext.AppDb.UserRepository.GetLoginUserByUserNameAsync(User.Identity.Name, cancellationToken);
+            userEntity = await _siteContext.AppDb.UserRepository.GetLoginUserByUserNameAsync(User.Identity.Name, cancellationToken);
 
             if (userEntity == null)
             {
@@ -727,7 +727,7 @@ namespace League.Controllers
                     _userEmailTask1.Subject = _localizer["Your primary email is about to be changed"].Value;
                     _userEmailTask1.ViewNames = new[] {ViewNames.Emails.NotifyCurrentPrimaryEmail, ViewNames.Emails.NotifyCurrentPrimaryEmailTxt };
                     _userEmailTask1.LogMessage = "Notify current primary email about the requested change";
-                    _userEmailTask1.Model = (Email: model, CallbackUrl: string.Empty, OrganizationContext: _organizationSiteContext);
+                    _userEmailTask1.Model = (Email: model, CallbackUrl: string.Empty, OrganizationContext: _siteContext);
                     _queue.QueueTask(_userEmailTask1);
                     break;
                 case EmailPurpose.ConfirmNewPrimaryEmail:
@@ -737,7 +737,7 @@ namespace League.Controllers
                     _userEmailTask2.ViewNames = new [] {ViewNames.Emails.ConfirmNewPrimaryEmail, ViewNames.Emails.ConfirmNewPrimaryEmailTxt };
                     _userEmailTask2.LogMessage = "Email to confirm the new primary email";
                     var code = (await _userManager.GenerateChangeEmailTokenAsync(user, newEmail)).Base64UrlEncode();
-                    _userEmailTask2.Model = (Email: newEmail, CallbackUrl: Url.Action(nameof(ConfirmNewPrimaryEmail), nameof(Manage), new { id = user.Id, code, e = newEmail.Base64UrlEncode()}, protocol: HttpContext.Request.Scheme), OrganizationContext: _organizationSiteContext);
+                    _userEmailTask2.Model = (Email: newEmail, CallbackUrl: Url.Action(nameof(ConfirmNewPrimaryEmail), nameof(Manage), new { id = user.Id, code, e = newEmail.Base64UrlEncode()}, protocol: HttpContext.Request.Scheme), OrganizationContext: _siteContext);
                     _queue.QueueTask(_userEmailTask2);
                     break;
                 default:

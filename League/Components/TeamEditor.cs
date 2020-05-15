@@ -11,11 +11,11 @@ namespace League.Components
 {
     public class TeamEditor : ViewComponent
     {
-        private readonly OrganizationSiteContext _siteContext;
+        private readonly SiteContext _siteContext;
         private readonly AppDb _appDb;
         private readonly ILogger<TeamEditor> _logger;
 
-        public TeamEditor(OrganizationSiteContext siteContext, ILogger<TeamEditor> logger)
+        public TeamEditor(SiteContext siteContext, ILogger<TeamEditor> logger)
         {
             _siteContext = siteContext;
             _appDb = siteContext.AppDb;

@@ -23,9 +23,9 @@ namespace League.Controllers
         // -> view files could also come from other providers, not only PhysicalFileProvider
         private readonly ICompositeViewEngine _viewEngine;
         private readonly ActionContext _actionContext;
-        private readonly OrganizationSiteContext _siteContext;
+        private readonly SiteContext _siteContext;
 
-        public Organization(ICompositeViewEngine viewEngine, IActionContextAccessor actionContextAccessor, OrganizationSiteContext siteContext)
+        public Organization(ICompositeViewEngine viewEngine, IActionContextAccessor actionContextAccessor, SiteContext siteContext)
         {
             _viewEngine = viewEngine;
             _actionContext = actionContextAccessor.ActionContext;

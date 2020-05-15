@@ -24,19 +24,19 @@ namespace League.Identity
 
         public void AppendResponseCookie(HttpContext context, string key, string value, CookieOptions options)
         {
-            var siteContext = context.RequestServices.GetRequiredService<OrganizationSiteContext>();
+            var siteContext = context.RequestServices.GetRequiredService<SiteContext>();
             _concreteManager.AppendResponseCookie(context, $"{key}{siteContext.IdentityCookieName}", value, options);
         }
 
         public void DeleteCookie(HttpContext context, string key, CookieOptions options)
         {
-            var siteContext = context.RequestServices.GetRequiredService<OrganizationSiteContext>();
+            var siteContext = context.RequestServices.GetRequiredService<SiteContext>();
             _concreteManager.DeleteCookie(context, $"{key}{siteContext.IdentityCookieName}", options);
         }
 
         public string GetRequestCookie(HttpContext context, string key)
         {
-            var siteContext = context.RequestServices.GetRequiredService<OrganizationSiteContext>();
+            var siteContext = context.RequestServices.GetRequiredService<SiteContext>();
             return _concreteManager.GetRequestCookie(context, $"{key}{siteContext.IdentityCookieName}");
         }
 

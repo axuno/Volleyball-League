@@ -12,11 +12,11 @@ namespace League.Navigation
     {
         private IMemoryCache _cache;
         private TreeCacheOptions _options;
-        private readonly OrganizationSiteContext _organizationSiteContext;
+        private readonly SiteContext _siteContext;
 
-        public LeagueMemoryTreeCache(IMemoryCache cache, OrganizationSiteContext organizationSiteContext, IOptions<TreeCacheOptions> optionsAccessor = null)
+        public LeagueMemoryTreeCache(IMemoryCache cache, SiteContext siteContext, IOptions<TreeCacheOptions> optionsAccessor = null)
         {
-            _organizationSiteContext = organizationSiteContext;
+            _siteContext = siteContext;
             _cache = cache ?? throw new ArgumentNullException(nameof(cache));
             _options = optionsAccessor?.Value;
             if (_options != null)
@@ -31,7 +31,7 @@ namespace League.Navigation
         /// <returns></returns>
         public Task<TreeNode<NavigationNode>> GetTree(string cacheKey)
         {
-            return Task.FromResult<TreeNode<NavigationNode>>((TreeNode<NavigationNode>)_cache.Get((object) string.Join('_', System.Threading.Thread.CurrentThread.CurrentCulture.TwoLetterISOLanguageName, _organizationSiteContext.OrganizationKey, cacheKey)));
+            return Task.FromResult<TreeNode<NavigationNode>>((TreeNode<NavigationNode>)_cache.Get((object) string.Join('_', System.Threading.Thread.CurrentThread.CurrentCulture.TwoLetterISOLanguageName, _siteContext.OrganizationKey, cacheKey)));
         }
 
         /// <summary>
@@ -41,7 +41,7 @@ namespace League.Navigation
         /// <param name="cacheKey"></param>
         public Task AddToCache(TreeNode<NavigationNode> tree, string cacheKey)
         {
-            _cache.Set<TreeNode<NavigationNode>>((object)string.Join('_', System.Threading.Thread.CurrentThread.CurrentCulture.TwoLetterISOLanguageName, _organizationSiteContext.OrganizationKey, cacheKey), tree, new MemoryCacheEntryOptions().SetSlidingExpiration(TimeSpan.FromSeconds((double)this._options.CacheDurationInSeconds)));
+            _cache.Set<TreeNode<NavigationNode>>((object)string.Join('_', System.Threading.Thread.CurrentThread.CurrentCulture.TwoLetterISOLanguageName, _siteContext.OrganizationKey, cacheKey), tree, new MemoryCacheEntryOptions().SetSlidingExpiration(TimeSpan.FromSeconds((double)this._options.CacheDurationInSeconds)));
             return Task.CompletedTask;
         }
 

@@ -4,7 +4,7 @@ namespace League.DI
     /// <summary>
     /// Interface for site-specific settings
     /// </summary>
-    public interface IOrganizationSite
+    public interface ISite
     {
         /// <summary>
         /// The host name used for the site.

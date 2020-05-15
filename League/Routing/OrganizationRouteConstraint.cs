@@ -9,9 +9,9 @@ namespace League.Routing
     public class OrganizationRouteConstraint : IRouteConstraint
     {
         private readonly OrganizationContextResolver _organizationContextResolver;
-        private readonly OrganizationSiteList _siteList;
+        private readonly SiteList _siteList;
 
-        public OrganizationRouteConstraint(OrganizationContextResolver organizationContextResolver, OrganizationSiteList siteList)
+        public OrganizationRouteConstraint(OrganizationContextResolver organizationContextResolver, SiteList siteList)
         {
             _organizationContextResolver = organizationContextResolver;
             _siteList = siteList;
@@ -22,7 +22,7 @@ namespace League.Routing
         {
             if (routeDirection == RouteDirection.IncomingRequest)
             {
-                return OrganizationSiteContext.ResolveOrganizationKey(httpContext, _siteList) != null;
+                return SiteContext.ResolveOrganizationKey(httpContext, _siteList) != null;
             }
             // RouteDirection.UrlGeneration
             return _organizationContextResolver.Resolve(values[parameterName]?.ToString()?.ToLowerInvariant())

@@ -25,9 +25,9 @@ namespace League.Identity
         private readonly ILookupNormalizer _keyNormalizer;
         private readonly IdentityErrorDescriber _identityErrorDescriber;
 
-        public UserStore(OrganizationSiteContext organizationSiteContext, ILogger<UserStore> logger, ILookupNormalizer keyNormalizer, IdentityErrorDescriber identityErrorDescriber)
+        public UserStore(SiteContext siteContext, ILogger<UserStore> logger, ILookupNormalizer keyNormalizer, IdentityErrorDescriber identityErrorDescriber)
         {
-            _appDb = organizationSiteContext.AppDb;
+            _appDb = siteContext.AppDb;
             _logger = logger;
             _keyNormalizer = keyNormalizer;
             _identityErrorDescriber = identityErrorDescriber as MultiLanguageIdentityErrorDescriber;

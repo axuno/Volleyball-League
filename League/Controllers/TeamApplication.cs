@@ -36,7 +36,7 @@ namespace League.Controllers
     [Authorize]
     public class TeamApplication : AbstractController
     {
-        private readonly OrganizationSiteContext _siteContext;
+        private readonly SiteContext _siteContext;
         private readonly AppDb _appDb;
         private readonly IStringLocalizer<Team> _localizer;
         private readonly IAuthorizationService _authorizationService;
@@ -47,18 +47,18 @@ namespace League.Controllers
         private readonly GoogleConfiguration _googleConfig;
         private const string TeamApplicationSessionName = "TeamApplicationSession";
 
-        public TeamApplication(OrganizationSiteContext organizationSiteContext,
+        public TeamApplication(SiteContext siteContext,
             Axuno.Tools.DateAndTime.TimeZoneConverter timeZoneConverter, 
             IStringLocalizer<Team> localizer, IAuthorizationService authorizationService, RegionInfo regionInfo,
             IConfiguration configuration, ILogger<TeamApplication> logger)
         {
-            _siteContext = organizationSiteContext;
+            _siteContext = siteContext;
             _timeZoneConverter = timeZoneConverter;
             _regionInfo = regionInfo;
             _configuration = configuration;
             _googleConfig = new GoogleConfiguration();
             _configuration.Bind(nameof(GoogleConfiguration), _googleConfig);
-            _appDb = organizationSiteContext.AppDb;
+            _appDb = siteContext.AppDb;
             _localizer = localizer;
             _authorizationService = authorizationService;
             _logger = logger;

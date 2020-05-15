@@ -81,7 +81,7 @@ namespace League.Controllers
         private readonly IStringLocalizer<Account> _localizer;
         private readonly IOptions<DataProtectionTokenProviderOptions> _dataProtectionTokenProviderOptions;
         private readonly ILogger<Account> _logger;
-        private readonly OrganizationSiteContext _organizationSiteContext;
+        private readonly SiteContext _siteContext;
         private readonly Axuno.BackgroundTask.IBackgroundQueue _queue;
         private readonly UserEmailTask _userEmailTask;
         private readonly DataProtection.DataProtector _dataProtector;
@@ -95,7 +95,7 @@ namespace League.Controllers
             IStringLocalizer<Account> localizer,
             IOptions<DataProtectionTokenProviderOptions> dataProtectionTokenProviderOptions,
             ILogger<Account> logger,
-            OrganizationSiteContext organizationSiteContext,
+            SiteContext siteContext,
             Axuno.BackgroundTask.IBackgroundQueue queue,
             UserEmailTask userEmailTask,
             DataProtection.DataProtector dataProtector,
@@ -106,7 +106,7 @@ namespace League.Controllers
             _localizer = localizer;
             _dataProtectionTokenProviderOptions = dataProtectionTokenProviderOptions;
             _logger = logger;
-            _organizationSiteContext = organizationSiteContext;
+            _siteContext = siteContext;
             _queue = queue;
             _userEmailTask = userEmailTask;
             _dataProtector = dataProtector;
@@ -153,7 +153,7 @@ namespace League.Controllers
             if (result.Succeeded)
             {
                 _logger.LogInformation($"User Id '{user.Id}' signed in.");
-                return RedirectToLocal(returnUrl ?? "/" + _organizationSiteContext.UrlSegmentValue);
+                return RedirectToLocal(returnUrl ?? "/" + _siteContext.UrlSegmentValue);
             }
 
             if (result.IsLockedOut || result.IsNotAllowed)
@@ -264,7 +264,7 @@ namespace League.Controllers
 
             var user = new ApplicationUser
             {
-                UserName = await _organizationSiteContext.AppDb.UserRepository.GenerateUniqueUsernameAsync(model.Email,
+                UserName = await _siteContext.AppDb.UserRepository.GenerateUniqueUsernameAsync(model.Email,
                     _signInManager.UserManager.Options.User.AllowedUserNameCharacters, "User"),
                 Email = model.Email,
                 EmailConfirmed = true,
@@ -353,7 +353,7 @@ namespace League.Controllers
                     {
                         _logger.LogInformation($"{nameof(ExternalSignInCallback)} {existingUser.Email} is already associated with another account");
                         return SocialMediaSignInFailure($"Social network account for {existingUser.Email} is already associated with another account",
-                            _localizer.GetString("Your {0} account is already associated with another account at {1}", info.LoginProvider, _organizationSiteContext.ShortName));
+                            _localizer.GetString("Your {0} account is already associated with another account at {1}", info.LoginProvider, _siteContext.ShortName));
                     }
 
                     await UpdateUserFromExternalLogin(existingUser, info);
@@ -368,7 +368,7 @@ namespace League.Controllers
                 await _signInManager.UpdateExternalAuthenticationTokensAsync(info);
 
                 _logger.LogInformation($"User signed-in in with login provider '{info.LoginProvider}'.");
-                return RedirectToLocal(returnUrl ?? "/" + _organizationSiteContext.UrlSegmentValue);
+                return RedirectToLocal(returnUrl ?? "/" + _siteContext.UrlSegmentValue);
             }
             if (result.IsLockedOut || result.IsNotAllowed)
             {
@@ -411,7 +411,7 @@ namespace League.Controllers
             }
             var user = new ApplicationUser
             {
-                UserName = await _organizationSiteContext.AppDb.UserRepository.GenerateUniqueUsernameAsync(model.Email, _signInManager.UserManager.Options.User.AllowedUserNameCharacters, "User"), 
+                UserName = await _siteContext.AppDb.UserRepository.GenerateUniqueUsernameAsync(model.Email, _signInManager.UserManager.Options.User.AllowedUserNameCharacters, "User"), 
                 Email = info.Principal.FindFirstValue(ClaimTypes.Email),
                 Gender = model.Gender,
                 FirstName = model.FirstName,
@@ -442,7 +442,7 @@ namespace League.Controllers
                     // email is flagged as confirmed if local email and external email are equal
                     if (user.EmailConfirmed)
                     {
-                        return RedirectToLocal(returnUrl ?? "/" + _organizationSiteContext.UrlSegmentValue);
+                        return RedirectToLocal(returnUrl ?? "/" + _siteContext.UrlSegmentValue);
                     }
 
                     return RedirectToAction(nameof(Message),
@@ -587,7 +587,7 @@ namespace League.Controllers
             }
 
             _logger.LogWarning($"Undefined {nameof(MessageType)}: '{messageTypeText}'");
-            return RedirectToLocal("/" + _organizationSiteContext.UrlSegmentValue);
+            return RedirectToLocal("/" + _siteContext.UrlSegmentValue);
         }
 
         #region ** Helpers **
@@ -666,14 +666,14 @@ namespace League.Controllers
                     _userEmailTask.ViewNames = new [] { ViewNames.Emails.EmailPleaseConfirmEmail, ViewNames.Emails.EmailPleaseConfirmEmailTxt };
                     _userEmailTask.LogMessage = "Send email confirmation mail";
                     code = _dataProtector.Encrypt(user.Email, DateTimeOffset.UtcNow.Add(_dataProtectionTokenProviderOptions.Value.TokenLifespan)).Base64UrlEncode();
-                    _userEmailTask.Model = (Email: user.Email, CallbackUrl: Url.Action(nameof(Register), nameof(Account), new { code }, protocol: HttpContext.Request.Scheme), _organizationSiteContext);
+                    _userEmailTask.Model = (Email: user.Email, CallbackUrl: Url.Action(nameof(Register), nameof(Account), new { code }, protocol: HttpContext.Request.Scheme), _siteContext);
                     break;
                 case EmailPurpose.ForgotPassword:
                     _userEmailTask.Subject = _localizer["This is your password recovery key"].Value;
                     _userEmailTask.ViewNames = new [] { ViewNames.Emails.EmailPasswordReset, ViewNames.Emails.EmailPasswordResetTxt };
                     _userEmailTask.LogMessage = "Password recovery email";
                     code = (await _signInManager.UserManager.GeneratePasswordResetTokenAsync(user)).Base64UrlEncode();
-                    _userEmailTask.Model = (Email: user.Email, CallbackUrl: Url.Action(nameof(ResetPassword), nameof(Account), new { id = user.Id, code }, protocol: HttpContext.Request.Scheme), _organizationSiteContext);
+                    _userEmailTask.Model = (Email: user.Email, CallbackUrl: Url.Action(nameof(ResetPassword), nameof(Account), new { id = user.Id, code }, protocol: HttpContext.Request.Scheme), _siteContext);
                     break;
                 default:
                     _logger.LogError($"Illegal enum type for {nameof(EmailPurpose)}");

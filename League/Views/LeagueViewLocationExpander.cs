@@ -25,21 +25,21 @@ namespace League.Views
             
             try
             {
-                var organizationSiteContext = (DI.OrganizationSiteContext)context.ActionContext.HttpContext.RequestServices.GetService(typeof(DI.OrganizationSiteContext));
+                var siteContext = (DI.SiteContext)context.ActionContext.HttpContext.RequestServices.GetService(typeof(DI.SiteContext));
                 _organizationSearchPaths.Clear();
-                if (!string.IsNullOrEmpty(organizationSiteContext.OrganizationKey))
+                if (!string.IsNullOrEmpty(siteContext.OrganizationKey))
                 {
                     _organizationSearchPaths.AddRange(new[]
                     {
-                        $"/Views/{{1}}/{organizationSiteContext.FolderName}/{{0}}.cshtml",
-                        $"/Views/Emails/{organizationSiteContext.FolderName}/{{0}}.cshtml",
-                        $"/Views/shared/{organizationSiteContext.FolderName}/{{0}}.cshtml"
+                        $"/Views/{{1}}/{siteContext.FolderName}/{{0}}.cshtml",
+                        $"/Views/Emails/{siteContext.FolderName}/{{0}}.cshtml",
+                        $"/Views/shared/{siteContext.FolderName}/{{0}}.cshtml"
                     });
                 }
             }
             catch
             {
-                // DI.OrganizationSiteContext cannot be resolved
+                // DI.siteContext cannot be resolved
             }
         }
 

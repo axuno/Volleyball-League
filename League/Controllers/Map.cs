@@ -21,12 +21,12 @@ namespace League.Controllers
     {
         private readonly IConfiguration _configuration;
         private readonly ILogger<Map> _logger;
-        private readonly OrganizationSiteContext _siteContext;
+        private readonly SiteContext _siteContext;
         private readonly AppDb _appDb;
         private readonly IStringLocalizer<Map> _localizer;
         private readonly GoogleConfiguration _googleConfig;
 
-        public Map(OrganizationSiteContext siteContext, IConfiguration configuration, IStringLocalizer<Map> localizer, ILogger<Map> logger)
+        public Map(SiteContext siteContext, IConfiguration configuration, IStringLocalizer<Map> localizer, ILogger<Map> logger)
         {
             _siteContext = siteContext;
             _appDb = siteContext.AppDb;

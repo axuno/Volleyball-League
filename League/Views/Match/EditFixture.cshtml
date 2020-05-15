@@ -4,7 +4,7 @@
 @using League.DI
 @using Microsoft.AspNetCore.Mvc.Localization
 @inject RegionInfo RegionInfo
-@inject OrganizationSiteContext SiteContext
+@inject SiteContext SiteContext
 @inject IViewLocalizer Localizer
 @{ ViewContext.ClientValidationEnabled = false;}  @* We rely on datepicker and server side validation *@
 @model League.Models.MatchViewModels.EditFixtureViewModel

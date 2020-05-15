@@ -3,7 +3,7 @@
     /// <summary>
     /// Site-specific settings
     /// </summary>
-    public class OrganizationSite : IOrganizationSite
+    public class Site : ISite
     {
         public string HostName { get; set; }
         public string UrlSegmentValue { get; set; }

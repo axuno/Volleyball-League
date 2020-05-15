@@ -13,9 +13,9 @@ namespace League.Controllers
         private readonly ILogger _logger;
         private readonly IStringLocalizer<Error> _localizer;
         private readonly IWebHostEnvironment _environment;
-        private readonly OrganizationSiteContext _siteContext;
+        private readonly SiteContext _siteContext;
 
-        public Error(ILogger<Error> logger, IStringLocalizer<Error> localizer, IWebHostEnvironment environment, OrganizationSiteContext siteContext)
+        public Error(ILogger<Error> logger, IStringLocalizer<Error> localizer, IWebHostEnvironment environment, SiteContext siteContext)
         {
             _logger = logger;
             _environment = environment;

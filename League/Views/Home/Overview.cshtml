@@ -5,13 +5,13 @@
 @using Microsoft.AspNetCore.Mvc.Localization
 @using TournamentManager.Data
 @inject IViewLocalizer Localizer
-@inject OrganizationSiteList OrganizationSiteList
+@inject SiteList SiteList
 @inject OrganizationContextResolver OrganizationContextResolver
 @{
     ViewData["Title"] = Localizer["Leagues"].Value;
-    var siteContextList = OrganizationSiteList
+    var siteContextList = SiteList
         .Where(ctx => !string.IsNullOrEmpty(ctx.OrganizationKey) && !ctx.HideInMenu)
-        .Select(orgSite => new OrganizationSiteContext(orgSite.OrganizationKey, OrganizationContextResolver, OrganizationSiteList))
+        .Select(orgSite => new SiteContext(orgSite.OrganizationKey, OrganizationContextResolver, SiteList))
         .ToList();
 }
 <div>

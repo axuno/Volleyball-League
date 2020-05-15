@@ -25,17 +25,17 @@ namespace League.Controllers
     public class Home : AbstractController
     {
         private readonly AppDb _appDb;
-        private readonly OrganizationSiteContext _siteContext;
+        private readonly SiteContext _siteContext;
         private readonly IStringLocalizer<Account> _localizer;
         private readonly Axuno.BackgroundTask.IBackgroundQueue _queue;
         private readonly ContactEmailTask _contactEmailTask;
         private readonly ILogger<Home> _logger;
 
 
-        public Home(OrganizationSiteContext organizationSiteContext, Axuno.BackgroundTask.IBackgroundQueue queue, ContactEmailTask contactEmailTask, ILogger<Home> logger, IStringLocalizer<Account> localizer)
+        public Home(SiteContext siteContext, Axuno.BackgroundTask.IBackgroundQueue queue, ContactEmailTask contactEmailTask, ILogger<Home> logger, IStringLocalizer<Account> localizer)
         {
-            _siteContext = organizationSiteContext;
-            _appDb = organizationSiteContext.AppDb;
+            _siteContext = siteContext;
+            _appDb = siteContext.AppDb;
             _queue = queue;
             _contactEmailTask = contactEmailTask;
             _logger = logger;            

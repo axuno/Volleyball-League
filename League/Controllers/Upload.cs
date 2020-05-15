@@ -22,18 +22,18 @@ namespace League.Controllers
     [Route("{organization:ValidOrganizations}/[controller]")]
     public class Upload : AbstractController
     {
-        private readonly OrganizationSiteContext _siteContext;
+        private readonly SiteContext _siteContext;
         private readonly IWebHostEnvironment _webHostingEnvironment;
         private readonly IAuthorizationService _authorizationService;
         private readonly IStringLocalizer<Upload> _localizer;
         private readonly ILogger<Upload> _logger;
         private readonly ILoggerFactory _loggerFactory;
 
-        public Upload(OrganizationSiteContext organizationSiteContext, IWebHostEnvironment webHostingEnvironment,
+        public Upload(SiteContext siteContext, IWebHostEnvironment webHostingEnvironment,
             IAuthorizationService authorizationService, IStringLocalizer<Upload> localizer,
             ILoggerFactory loggerFactory)
         {
-            _siteContext = organizationSiteContext;
+            _siteContext = siteContext;
             _webHostingEnvironment = webHostingEnvironment;
             _authorizationService = authorizationService;
             _localizer = localizer;

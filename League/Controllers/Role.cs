@@ -23,7 +23,7 @@ namespace League.Controllers
     [Route("{organization:ValidOrganizations}/[controller]")]
     public class Role : AbstractController
     {
-        private readonly OrganizationSiteContext _siteContext;
+        private readonly SiteContext _siteContext;
         private readonly Microsoft.AspNetCore.Identity.SignInManager<Identity.ApplicationUser> _signInManager;
         private readonly IAuthorizationService _authorizationService;
         private readonly IStringLocalizer<Role> _localizer;
@@ -31,12 +31,12 @@ namespace League.Controllers
         private readonly ILoggerFactory _loggerFactory;
         private const string _defaultReturnUrl = "/";
 
-        public Role(OrganizationSiteContext organizationSiteContext,
+        public Role(SiteContext siteContext,
             Microsoft.AspNetCore.Identity.SignInManager<Identity.ApplicationUser> signInManager,
             IAuthorizationService authorizationService, IStringLocalizer<Role> localizer,
             ILoggerFactory loggerFactory)
         {
-            _siteContext = organizationSiteContext;
+            _siteContext = siteContext;
             _signInManager = signInManager;
             _authorizationService = authorizationService;
             _localizer = localizer;

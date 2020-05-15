@@ -3,7 +3,7 @@
 @using League.Views
 @using Microsoft.AspNetCore.Mvc.Localization
 @inject IViewLocalizer Localizer
-@inject OrganizationSiteContext SiteContext
+@inject SiteContext SiteContext
 @model League.Models.TeamApplicationViewModels.ApplicationListModel
 @{
     ViewData["Title"] = Localizer["Team Registrations"].Value + " - " + Model.Tournament.Name;
