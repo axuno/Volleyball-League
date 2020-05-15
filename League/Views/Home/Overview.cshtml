@@ -8,6 +8,7 @@
 @inject OrganizationContextResolver OrganizationContextResolver
 @{
     ViewData.Title(Localizer["Leagues"].Value);
+    ViewData.Description(Localizer["Leagues using volleyball-liga.de"].Value);
     var siteContextList = SiteList
         .Where(ctx => !string.IsNullOrEmpty(ctx.OrganizationKey) && !ctx.HideInMenu)
         .Select(orgSite => new SiteContext(orgSite.OrganizationKey, OrganizationContextResolver, SiteList))

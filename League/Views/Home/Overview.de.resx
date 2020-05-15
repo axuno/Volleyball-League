@@ -120,6 +120,9 @@
   <data name="Leagues" xml:space="preserve">
     <value>Ligen</value>
   </data>
+  <data name="Leagues using volleyball-liga.de" xml:space="preserve">
+    <value>Ligen auf volleyball-liga.de</value>
+  </data>
   <data name="using volleyball-liga.de" xml:space="preserve">
     <value>auf volleyball-liga.de</value>
   </data>
