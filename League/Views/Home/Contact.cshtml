@@ -1,11 +1,12 @@
 ﻿@using League.Controllers
 @using League.DI
+@using League.Helpers
 @using Microsoft.AspNetCore.Mvc.Localization
 @model League.Models.HomeViewModels.ContactViewModel
 @inject SiteContext SiteContext
 @inject IViewLocalizer Localizer
 @{
-    ViewData["Title"] = Localizer["Message"];
+    ViewData.Title(Localizer["Message"].Value);
     List<SelectListItem> GenderList()
     {
         return new List<SelectListItem> {new SelectListItem {Value = string.Empty, Text = Localizer["Please choose"].Value}, 
@@ -14,7 +15,7 @@
     }
 }
 <div>
-    <h2 class="h2 d-inline-block">@ViewData["Title"]</h2>
+    <h2 class="h2 d-inline-block">@ViewData.Title()</h2>
     <h4 class="h4 d-inline-block">@Localizer["to"] @(string.IsNullOrEmpty(SiteContext.OrganizationKey) ? "volleyball-liga.de" : SiteContext.ShortName )</h4>
     <hr />
 </div>

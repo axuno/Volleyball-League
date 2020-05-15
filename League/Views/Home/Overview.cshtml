@@ -1,21 +1,20 @@
-﻿@using League.Controllers
-@using League.DI
+﻿@using League.DI
+@using League.Helpers
 @using League.TagHelpers
-@using Microsoft.AspNetCore.Hosting
 @using Microsoft.AspNetCore.Mvc.Localization
 @using TournamentManager.Data
 @inject IViewLocalizer Localizer
 @inject SiteList SiteList
 @inject OrganizationContextResolver OrganizationContextResolver
 @{
-    ViewData["Title"] = Localizer["Leagues"].Value;
+    ViewData.Title(Localizer["Leagues"].Value);
     var siteContextList = SiteList
         .Where(ctx => !string.IsNullOrEmpty(ctx.OrganizationKey) && !ctx.HideInMenu)
         .Select(orgSite => new SiteContext(orgSite.OrganizationKey, OrganizationContextResolver, SiteList))
         .ToList();
 }
 <div>
-    <h2 class="h2 d-inline-block">@ViewData["Title"]</h2>
+    <h2 class="h2 d-inline-block">@ViewData.Title()</h2>
     <h4 class="h4 d-inline-block">@Localizer["using volleyball-liga.de"]</h4>
     <hr />
 </div>

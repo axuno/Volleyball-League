@@ -1,11 +1,12 @@
 ﻿@using League.Controllers
+@using League.Helpers
 @using League.Routing
 @using League.TagHelpers
 @{
-    ViewData["Title"] = "Über Volleyball-Liga";
+    ViewData.Title("Über Volleyball-Liga");
 }
 <div>
-    <h2 class="h2">@ViewData["Title"]</h2>
+    <h2 class="h2">@ViewData.Title()</h2>
     <hr />
 </div>
 <div class="mb-0 pb-1">
