@@ -26,11 +26,11 @@ namespace League.Controllers
         [HttpGet("")]
         public IActionResult Index(string culture, string uiCulture, string returnUrl)
         {
-            // QueryStringRequestCultureProvider requires one of both
+            // QueryStringRequestCultureProvider processes arguments and requires one of both
             if (culture == null && uiCulture == null)
             {
-                _logger.LogWarning($"{nameof(Language)} controller was invoked without {nameof(culture)} or {nameof(uiCulture)} query string");
-                RedirectToLocal(returnUrl);
+                _logger.LogDebug($"{nameof(Language)} controller was invoked without {nameof(culture)} or {nameof(uiCulture)} query string");
+                return RedirectToLocal(returnUrl);
             }
 
             // get languages from header submitted by the browser
