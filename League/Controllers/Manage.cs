@@ -400,7 +400,7 @@ namespace League.Controllers
                 return JsonAjaxRedirectForModal(Url.Action(nameof(Index)));
             }
 
-            _logger.LogError($"Personal data for username '{HttpContext.User.Identity.Name}' updated");
+            _logger.LogInformation($"Personal data for username '{HttpContext.User.Identity.Name}' updated");
             TempData.Put<ManageMessage>(nameof(ManageMessage), new ManageMessage { AlertType = SiteAlertTagHelper.AlertType.Success, MessageId = MessageId.ChangePersonalDetailsSuccess });
             return JsonAjaxRedirectForModal(Url.Action(nameof(Index)));
         }

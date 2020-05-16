@@ -32,7 +32,7 @@ namespace Axuno.BackgroundTask
         /// <returns>Returns the <see cref="IServiceCollection"/> after the <see cref="BackgroundQueueService"/> has been registered.</returns>
         public static IServiceCollection AddBackgroundQueueService(this IServiceCollection services, Action<BackgroundQueueServiceConfig> config = null)
         {
-            // Null-checks are part the extension methods:
+            // Null-checks are part of the extension methods:
             services.Configure<BackgroundQueueServiceConfig>(config ?? new Action<BackgroundQueueServiceConfig>(options => { }));
             services.AddHostedService<BackgroundQueueService>();
 
