@@ -129,7 +129,7 @@ namespace League.Controllers
                 if (result.Succeeded)
                 {
                     await _signInManager.SignInAsync(user, isPersistent: false);
-                    _logger.LogInformation($"User '{user.Name}' changed the username successfully.");
+                    _logger.LogInformation($"User '{user.Id}' changed the username successfully.");
                     TempData.Put<ManageMessage>(nameof(ManageMessage), new ManageMessage { AlertType = SiteAlertTagHelper.AlertType.Success, MessageId = MessageId.ChangeUsernameSuccess });
                     return JsonAjaxRedirectForModal(Url.Action(nameof(Index)));
                 }
@@ -151,7 +151,7 @@ namespace League.Controllers
             var user = await GetCurrentUserAsync();
             if (user == null)
             {
-                _logger.LogError($"Username '{HttpContext.User.Identity.Name}' not found in repository");
+                _logger.LogError($"User id '{GetCurrentUserId()}' not found in repository");
                 ModelState.AddModelError(string.Empty, _localizer["'{0}' not found", _metaData.GetDisplayName<ChangeEmailViewModel>(nameof(ChangeEmailViewModel.Email))]);
                 return PartialView(ViewNames.Manage._ChangeEmailModalPartial, model);
             }
@@ -221,7 +221,7 @@ namespace League.Controllers
             var user = await GetCurrentUserAsync();
             if (user == null)
             {
-                _logger.LogError($"Username '{HttpContext.User.Identity.Name}' not found in repository");
+                _logger.LogError($"User id '{GetCurrentUserId()}' not found in repository");
                 ModelState.AddModelError(string.Empty, _localizer["'{0}' not found", _metaData.GetDisplayName<EditEmail2ViewModel>(nameof(EditEmail2ViewModel.Email2))]);
                 return PartialView(ViewNames.Manage._EditEmail2ModalPartial, model);
             }
@@ -302,7 +302,7 @@ namespace League.Controllers
                 if (result.Succeeded)
                 {
                     await _signInManager.SignInAsync(user, isPersistent: false);
-                    _logger.LogInformation($"User '{user.Name}' changed the password successfully.");
+                    _logger.LogInformation($"User '{user.Id}' changed the password successfully.");
                     TempData.Put<ManageMessage>(nameof(ManageMessage), new ManageMessage { AlertType = SiteAlertTagHelper.AlertType.Success, MessageId = MessageId.ChangePasswordSuccess });
                     return JsonAjaxRedirectForModal(Url.Action(nameof(Index)));
                 }
@@ -354,7 +354,7 @@ namespace League.Controllers
             var user = await _siteContext.AppDb.UserRepository.GetLoginUserByUserNameAsync(HttpContext.User.Identity.Name, cancellationToken);
             if (user == null)
             {
-                _logger.LogError($"Username '{HttpContext.User.Identity.Name}' not found in repository");
+                _logger.LogError($"User id '{GetCurrentUserId()}' not found in repository");
                 TempData.Put<ManageMessage>(nameof(ManageMessage), new ManageMessage { AlertType = SiteAlertTagHelper.AlertType.Danger, MessageId = MessageId.ChangePersonalDetailsFailure });
                 ModelState.AddModelError(string.Empty, _localizer["Personal details not found"]);
                 return PartialView(ViewNames.Manage._EditPersonalDetailsModalPartial, model);
@@ -395,12 +395,12 @@ namespace League.Controllers
             }
             catch (Exception e)
             {
-                _logger.LogError($"Failure saving personal data for username '{HttpContext.User.Identity.Name}'", e);
+                _logger.LogError($"Failure saving personal data for user id '{GetCurrentUserId()}'", e);
                 TempData.Put<ManageMessage>(nameof(ManageMessage), new ManageMessage { AlertType = SiteAlertTagHelper.AlertType.Danger, MessageId = MessageId.ChangePersonalDetailsFailure });
                 return JsonAjaxRedirectForModal(Url.Action(nameof(Index)));
             }
 
-            _logger.LogInformation($"Personal data for username '{HttpContext.User.Identity.Name}' updated");
+            _logger.LogInformation($"Personal data for user id '{GetCurrentUserId()}' updated");
             TempData.Put<ManageMessage>(nameof(ManageMessage), new ManageMessage { AlertType = SiteAlertTagHelper.AlertType.Success, MessageId = MessageId.ChangePersonalDetailsSuccess });
             return JsonAjaxRedirectForModal(Url.Action(nameof(Index)));
         }
@@ -675,7 +675,7 @@ namespace League.Controllers
                 var result = await _userManager.DeleteAsync(user);
                 if (!result.Succeeded)
                 {
-                    _logger.LogError($"Account for username '{user.Name}' could not be deleted.");
+                    _logger.LogError($"Account for username '{user.Id}' could not be deleted.");
                 }
             }
             await _signInManager.SignOutAsync();
