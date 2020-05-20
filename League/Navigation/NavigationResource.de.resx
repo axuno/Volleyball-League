@@ -183,6 +183,9 @@
   <data name="Teams" xml:space="preserve">
     <value>Teams</value>
   </data>
+  <data name="Tournaments" xml:space="preserve">
+    <value>Turniere</value>
+  </data>
   <data name="Volleyball League" xml:space="preserve">
     <value>Volleyball-Liga</value>
   </data>

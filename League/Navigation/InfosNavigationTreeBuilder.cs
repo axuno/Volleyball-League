@@ -38,6 +38,7 @@ namespace League.Navigation
             var treeNode = new TreeNode<NavigationNode>(topNode);
             treeNode.AddChild(new NavigationNode { Text = _localizer["Rule of game"], Url = _urlHelper.Action(nameof(League.Controllers.Organization.Index), nameof(League.Controllers.Organization), new { organization=_siteContext.UrlSegmentValue, section="info", content="ruleofgame"}), Key = "RuleOfGame" });
             treeNode.AddChild(new NavigationNode { Text = _localizer["News"], Url =_urlHelper.Action(nameof(League.Controllers.Organization.Index), nameof(League.Controllers.Organization), new { organization=_siteContext.UrlSegmentValue, section="info", content="news"}), Key = "News" });
+            treeNode.AddChild(new NavigationNode { Text = _localizer["Tournaments"], Url = "https://volleyball-turnier.de/", Key = "Tournaments" });
             
             if(string.IsNullOrEmpty(treeNode.Value.Url)) _logger.LogError("TreeNode for {0} has empty Url", treeNode.Value.Text);
             if(string.IsNullOrEmpty(treeNode.Children[0].Value.Url)) _logger.LogError("TreeNode for {0}/{1} has empty Url", treeNode.Value.Text, treeNode.Children[0].Value.Text);
