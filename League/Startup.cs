@@ -591,6 +591,7 @@ namespace League
             services.AddTransient<ResultEmailTask>();
             services.AddTransient<RankingUpdateTask>();
             services.AddTransient<ContactEmailTask>();
+            services.AddTransient<TeamApplicationEmailTask>();
             
             #endregion
         }

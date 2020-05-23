@@ -157,7 +157,7 @@ namespace TournamentManager.Data
 
 		public bool SetLegDates(IEnumerable<RoundEntity> rounds , int sequenceNo, DateTime start, DateTime end)
 		{
-			const string transactionName = "SetLegDates";
+			//const string transactionName = "SetLegDates";
 			var now = DateTime.Now;
 
             var roundEntities = (rounds as RoundEntity[] ?? rounds.ToArray()).ToList();

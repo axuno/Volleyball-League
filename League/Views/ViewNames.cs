@@ -30,6 +30,7 @@ namespace League.ViewNames
     {
         public const string ConfirmNewPrimaryEmail = "ConfirmNewPrimaryEmail";
         public const string ConfirmNewPrimaryEmailTxt = "ConfirmNewPrimaryEmail.txt";
+        public const string ConfirmTeamApplicationTxt = "ConfirmTeamApplication.txt";
         public const string ContactEmailTxt = "ContactEmail.txt";
         public const string EmailPasswordReset = "EmailPasswordReset";
         public const string EmailPasswordResetTxt = "EmailPasswordReset.txt";
@@ -54,7 +55,6 @@ namespace League.ViewNames
         public const string LegalDisclosure = "LegalDisclosure";
         public const string LegalDisclosurede = "LegalDisclosure.de";
         public const string Overview = "Overview";
-        public const string Overviewde = "Overview.de";
         public const string PictureCredits = "PictureCredits";
         public const string Privacy = "Privacy";
         public const string Privacyde = "Privacy.de";
@@ -92,11 +92,28 @@ namespace League.ViewNames
     }
     public static class Organization
     {
-        public static class Augsburg
+        public static class a_beach
         {
             public static class Home
             {
                 public const string Index = "Index";
+            }
+            public static class Info
+            {
+                public const string News = "News";
+                public const string RuleOfGame = "RuleOfGame";
+            }
+        }
+        public static class a_indoor
+        {
+            public static class Home
+            {
+                public const string Index = "Index";
+            }
+            public static class Info
+            {
+                public const string News = "News";
+                public const string RuleOfGame = "RuleOfGame";
             }
         }
         public static class OtherOrg

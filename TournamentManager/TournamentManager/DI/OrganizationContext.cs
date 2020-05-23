@@ -206,6 +206,10 @@ namespace TournamentManager.Data
     public class BankDetails
     {
         /// <summary>
+        /// If <see langword="true"/>, bank details are part of the confirmation email when registering a team.
+        /// </summary>
+        public bool ShowBankDetailsInConfirmationEmail { get; set; }
+        /// <summary>
         /// The name of the payment recipient, usually the organization name.
         /// </summary>
         public string Recipient { get; set; }
@@ -225,6 +229,10 @@ namespace TournamentManager.Data
         /// The participation fee, may be zero.
         /// </summary>
         public decimal Amount { get; set; }
+        /// <summary>
+        /// The currency for the participation fee.
+        /// </summary>
+        public string Currency { get; set; }
     }
 
     public class FixtureRuleSet

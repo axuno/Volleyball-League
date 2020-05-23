@@ -33,7 +33,7 @@ namespace League.BackgroundTasks.Email
         /// <summary>
         /// Gets the the <see cref="MailMergeMessage"/> created by <see cref="MailMergeLib.AspNet.MailMergeService.CreateStandardMessage"/>.
         /// </summary>
-        protected MailMergeMessage MailMessage { get; }
+        protected MailMergeMessage MailMessage { get; set; }
 
         protected BackgroundWebHost BackgroundWebHost { get; }
         protected IMailMergeService MailMergeService { get; }

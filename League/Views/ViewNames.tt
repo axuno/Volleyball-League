@@ -22,7 +22,7 @@ void ProcessFiles(string path, bool skipFiles, int level)
     var directories = Directory.GetDirectories(path);
     foreach (var directory in directories)
     {
-#><#=new string(' ', level * tabSize)#>public static class <#= Path.GetFileName(directory) #>
+#><#=new string(' ', level * tabSize)#>public static class <#= Path.GetFileName(directory).Replace('-', '_') #>
 <#=new string(' ', level * tabSize)#>{
 <#
         // Process each directory recursively

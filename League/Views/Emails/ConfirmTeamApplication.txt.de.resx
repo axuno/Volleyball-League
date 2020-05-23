@@ -117,7 +117,49 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Registration for team '{0}'" xml:space="preserve">
-    <value>Anmeldung für Team '{0}'</value>
+  <data name="Amount" xml:space="preserve">
+    <value>Betrag</value>
+  </data>
+  <data name="Bank name" xml:space="preserve">
+    <value>Name der Bank</value>
+  </data>
+  <data name="BIC" xml:space="preserve">
+    <value>BIC</value>
+  </data>
+  <data name="Confirmation of the team registration" xml:space="preserve">
+    <value>Bestätigung der Teamanmeldung</value>
+  </data>
+  <data name="IBAN" xml:space="preserve">
+    <value>IBAN</value>
+  </data>
+  <data name="Please transfer the participation fee to the following bank account:" xml:space="preserve">
+    <value>Bitte die Teilnahmegebühr auf folgendes Bankkonto überweisen:</value>
+  </data>
+  <data name="Recipient" xml:space="preserve">
+    <value>Empfänger</value>
+  </data>
+  <data name="Registered by" xml:space="preserve">
+    <value>Angemeldet von</value>
+  </data>
+  <data name="Sporting greetings" xml:space="preserve">
+    <value>Sportliche Grüße</value>
+  </data>
+  <data name="Team name" xml:space="preserve">
+    <value>Teamname</value>
+  </data>
+  <data name="Thank you." xml:space="preserve">
+    <value>Vielen Dank.</value>
+  </data>
+  <data name="Thanks for registering your team." xml:space="preserve">
+    <value>Danke für die Anmeldung des Teams.</value>
+  </data>
+  <data name="The registration can be edited using this link:" xml:space="preserve">
+    <value>Die Anmeldung kann über folgenden Link bearbeitet werden:</value>
+  </data>
+  <data name="Update of team registration" xml:space="preserve">
+    <value>Aktualisierung der Teamanmeldung</value>
+  </data>
+  <data name="We wish you much success and good luck." xml:space="preserve">
+    <value>Wir wünschen viel Erfolg und alles Gute.</value>
   </data>
 </root>

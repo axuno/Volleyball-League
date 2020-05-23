@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Axuno.Tools.GeoSpatial;
+using League.BackgroundTasks.Email;
 using League.Components;
 using League.ConfigurationPoco;
 using League.DI;
@@ -38,26 +39,30 @@ namespace League.Controllers
     {
         private readonly SiteContext _siteContext;
         private readonly AppDb _appDb;
-        private readonly IStringLocalizer<Team> _localizer;
+        private readonly IStringLocalizer<TeamApplication> _localizer;
         private readonly IAuthorizationService _authorizationService;
         private readonly ILogger<TeamApplication> _logger;
         private readonly Axuno.Tools.DateAndTime.TimeZoneConverter _timeZoneConverter;
         private readonly RegionInfo _regionInfo;
-        private readonly IConfiguration _configuration;
         private readonly GoogleConfiguration _googleConfig;
+        private readonly Axuno.BackgroundTask.IBackgroundQueue _queue;
+        private readonly TeamApplicationEmailTask _teamApplicationEmailTask;
         private const string TeamApplicationSessionName = "TeamApplicationSession";
 
         public TeamApplication(SiteContext siteContext,
-            Axuno.Tools.DateAndTime.TimeZoneConverter timeZoneConverter, 
-            IStringLocalizer<Team> localizer, IAuthorizationService authorizationService, RegionInfo regionInfo,
-            IConfiguration configuration, ILogger<TeamApplication> logger)
+            Axuno.Tools.DateAndTime.TimeZoneConverter timeZoneConverter,
+            IStringLocalizer<TeamApplication> localizer, IAuthorizationService authorizationService,
+            RegionInfo regionInfo,
+            IConfiguration configuration, Axuno.BackgroundTask.IBackgroundQueue queue,
+            TeamApplicationEmailTask teamApplicationEmailTask, ILogger<TeamApplication> logger)
         {
             _siteContext = siteContext;
             _timeZoneConverter = timeZoneConverter;
             _regionInfo = regionInfo;
-            _configuration = configuration;
             _googleConfig = new GoogleConfiguration();
-            _configuration.Bind(nameof(GoogleConfiguration), _googleConfig);
+            configuration.Bind(nameof(GoogleConfiguration), _googleConfig);
+            _queue = queue;
+            _teamApplicationEmailTask = teamApplicationEmailTask;
             _appDb = siteContext.AppDb;
             _localizer = localizer;
             _authorizationService = authorizationService;
@@ -152,6 +157,22 @@ namespace League.Controllers
             return RedirectToAction(nameof(EditTeam));
         }
 
+        [HttpGet("edit-team/{teamId:long}")]
+        public async Task<IActionResult> EditTeam(long teamId, CancellationToken cancellationToken)
+        {
+            var teamSelectModel = await GetTeamSelectModel(cancellationToken);
+            if (teamSelectModel.TeamsManagedByUser.All(t => t.TeamId != teamId))
+            {
+                return RedirectToAction(nameof(SelectTeam));
+            }
+
+            var sessionModel = await GetNewSessionModel(cancellationToken);
+            sessionModel.Team.Id = teamId;
+            sessionModel.Team.IsNew = false;
+            SaveModelToSession(sessionModel);
+            return RedirectToAction(nameof(EditTeam), new {teamId = string.Empty});
+        }
+
         [HttpGet("edit-team")]
         public async Task<IActionResult> EditTeam(bool? isNew, CancellationToken cancellationToken)
         {
@@ -165,8 +186,7 @@ namespace League.Controllers
                 sessionModel.TeamIsSet = false;
                 sessionModel.TeamInRoundIsSet = false;
             }
-
-
+            
             var teamEntity = new TeamEntity();
             // Team.IsNew and Team.Id were set in step "select team"
             if (!sessionModel.Team.IsNew && !sessionModel.TeamIsSet)
@@ -464,9 +484,12 @@ namespace League.Controllers
 
             try
             {
+                var isNewApplication = teamInRoundEntity.IsNew;
+
+                // Adds the current user as team manager, unless she already is team manager
                 await AddManagerToTeamEntity(teamInRoundEntity.Team, cancellationToken);
             
-                if (await _appDb.GenericRepository.SaveEntityAsync(teamInRoundEntity, false, true, cancellationToken))
+                if (await _appDb.GenericRepository.SaveEntityAsync(teamInRoundEntity, true, true, cancellationToken))
                 {
                     HttpContext.Session.Remove(TeamApplicationSessionName);
                     TempData.Put<TeamApplicationMessageModel.TeamApplicationMessage>(
@@ -476,6 +499,24 @@ namespace League.Controllers
                             AlertType = SiteAlertTagHelper.AlertType.Success,
                             MessageId = TeamApplicationMessageModel.MessageId.ApplicationSuccess
                         });
+
+                    _teamApplicationEmailTask.Model = new ApplicationEmailViewModel
+                    {
+                        RegisteredByUserId = GetCurrentUserId(),
+                        TeamId = teamInRoundEntity.TeamId,
+                        TeamName = teamInRoundEntity.TeamNameForRound,
+                        IsNewApplication = isNewApplication,
+                        TournamentName = sessionModel.TournamentName,
+                        RoundId = teamInRoundEntity.RoundId,
+                        OrganizationContext = _siteContext,
+                        UrlToEditApplication = Url.Action(nameof(EditTeam), nameof(TeamApplication), new {teamId = teamInRoundEntity.TeamId}, Request.Scheme, Request.Host.ToString())
+                    };
+                    _teamApplicationEmailTask.Subject = _localizer["Registration for team '{0}'", _teamApplicationEmailTask.Model.TeamName].Value;
+                    _teamApplicationEmailTask.EmailCultureInfo = CultureInfo.DefaultThreadCurrentUICulture;
+                    _teamApplicationEmailTask.Timeout = TimeSpan.FromMinutes(5);
+                    _teamApplicationEmailTask.ViewNames = new[] {null, ViewNames.Emails.ConfirmTeamApplicationTxt};
+                    _queue.QueueTask(_teamApplicationEmailTask);
+
                     return RedirectToAction(nameof(List));
                 }
 
