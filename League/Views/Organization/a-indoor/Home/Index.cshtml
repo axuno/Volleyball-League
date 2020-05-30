@@ -17,7 +17,7 @@
             <p>@Html.Raw(SiteContext.Description)</p>
             <p>
                 Interessiert, in der Liga mitzuspielen? Wir freuen uns über jedes Team.<br />
-                Einfach <a asp-route="@RouteNames.HomeOrganizationContact" class="link">Kontakt mit uns aufnehmen</a>.
+                Einfach <a asp-controller="@nameof(League.Controllers.TeamApplication)" asp-action="@nameof(League.Controllers.TeamApplication.Start)" asp-route-organization="@SiteContext.UrlSegmentValue" class="link">direkt für die nächste Saison anmelden</a> oder <a asp-route="@RouteNames.HomeOrganizationContact" class="link">Kontakt mit uns aufnehmen</a>.
             </p>
         </div>
         <div class="py-2 mb-2">
