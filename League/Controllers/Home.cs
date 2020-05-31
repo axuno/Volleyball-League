@@ -50,7 +50,7 @@ namespace League.Controllers
                 if (!string.IsNullOrEmpty(urlSegmentValue)) return Redirect($"/{urlSegmentValue}");
             }
 
-            return Redirect(Url.Action(nameof(Welcome)));
+            return Redirect(Url.Action(nameof(Welcome), nameof(Home)));
         }
 
         [Route("/[action]")]
@@ -123,11 +123,11 @@ namespace League.Controllers
             SendEmail(model);
             _logger.LogTrace("Mail sent: {@model}", model);
 
-            return RedirectToAction(nameof(ContactConfirmation));
+            return string.IsNullOrEmpty(_siteContext.OrganizationKey) ? RedirectToRoute(RouteNames.HomeGeneralContactConfirmation) : RedirectToRoute(RouteNames.HomeOrganizationContactConfirmation, new { Organization = _siteContext.UrlSegmentValue });
         }
 
-        [HttpGet("{organization:ValidOrganizations}/[action]")]
-        [HttpGet("/[action]")]
+        [HttpGet("{organization:ValidOrganizations}/contact-confirmation", Name = RouteNames.HomeOrganizationContactConfirmation)]
+        [HttpGet("/contact-confirmation", Name = RouteNames.HomeGeneralContactConfirmation)]
         public IActionResult ContactConfirmation()
         {
             return View(ViewNames.Home.ContactConfirmation);

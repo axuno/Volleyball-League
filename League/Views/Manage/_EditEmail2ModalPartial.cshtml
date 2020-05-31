@@ -3,14 +3,14 @@
 @inject IViewLocalizer Localizer
 @model EditEmail2ViewModel
 @{ const string BtnRemove = "btn-remove";
-ViewContext.ClientValidationEnabled = true;}
+ViewContext.ClientValidationEnabled = true; var organizationRoute = ViewContext.RouteData.Values["organization"];}
 <!-- Modal -->
 <modal id="change-email" title="@Localizer["Change Additional Email Address"].Value" tabindex="-1">
     <modal-body>
         <div>
             <p>@Localizer["The Additional Email will receive the same messages as the Primary Email."]</p>
         </div>
-        <form asp-controller="@nameof(Manage)" asp-action="@nameof(Manage.EditEmail2)" method="post" role="form">
+        <form asp-controller="@nameof(Manage)" asp-action="@nameof(Manage.EditEmail2)" asp-route-organization="@organizationRoute" method="post" role="form">
             <site-validation-summary show="All"></site-validation-summary>
             <input name="IsValid" type="hidden" value="@ViewData.ModelState.IsValid.ToString()" />
             <div class="form-group">

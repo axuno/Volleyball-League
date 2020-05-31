@@ -72,7 +72,7 @@ namespace League.Controllers
             var user = await GetCurrentUserAsync();
             if (user == null)
             {
-                return RedirectToAction(nameof(Account.SignIn), nameof(Account));
+                return RedirectToAction(nameof(Account.SignIn), nameof(Account), new { Organization = _siteContext.UrlSegmentValue });
             }
             
             var model = new IndexViewModel(_timeZoneConverter)
@@ -122,7 +122,7 @@ namespace League.Controllers
                 {
                     // do nothing and display success
                     TempData.Put<ManageMessage>(nameof(ManageMessage), new ManageMessage { AlertType = SiteAlertTagHelper.AlertType.Success, MessageId = MessageId.ChangeUsernameSuccess });
-                    return JsonAjaxRedirectForModal(Url.Action(nameof(Index)));
+                    return JsonAjaxRedirectForModal(Url.Action(nameof(Index), nameof(Manage), new { Organization = _siteContext.UrlSegmentValue }));
                 }
                 user.UserName = model.Username;
                 var result = await _userManager.UpdateAsync(user);
@@ -131,7 +131,7 @@ namespace League.Controllers
                     await _signInManager.SignInAsync(user, isPersistent: false);
                     _logger.LogInformation($"User '{user.Id}' changed the username successfully.");
                     TempData.Put<ManageMessage>(nameof(ManageMessage), new ManageMessage { AlertType = SiteAlertTagHelper.AlertType.Success, MessageId = MessageId.ChangeUsernameSuccess });
-                    return JsonAjaxRedirectForModal(Url.Action(nameof(Index)));
+                    return JsonAjaxRedirectForModal(Url.Action(nameof(Index), nameof(Manage), new { Organization = _siteContext.UrlSegmentValue }));
                 }
                 AddErrors(result);
                 //return View(model);
@@ -139,7 +139,7 @@ namespace League.Controllers
             }
 
             TempData.Put<ManageMessage>(nameof(ManageMessage), new ManageMessage { AlertType = SiteAlertTagHelper.AlertType.Danger, MessageId = MessageId.ChangeUsernameFailure });
-            return JsonAjaxRedirectForModal(Url.Action(nameof(Index)));
+            return JsonAjaxRedirectForModal(Url.Action(nameof(Index), nameof(Manage), new { Organization = _siteContext.UrlSegmentValue }));
         }
 
         
@@ -174,7 +174,7 @@ namespace League.Controllers
             if (user == null)
             {
                 TempData.Put<ManageMessage>(nameof(ManageMessage), new ManageMessage { AlertType = SiteAlertTagHelper.AlertType.Danger, MessageId = MessageId.ChangeEmailFailure });
-                return JsonAjaxRedirectForModal(Url.Action(nameof(Index)));
+                return JsonAjaxRedirectForModal(Url.Action(nameof(Index), nameof(Manage), new { Organization = _siteContext.UrlSegmentValue }));
             }
 
             if (user.NormalizedEmail == _userManager.KeyNormalizer.NormalizeEmail(model.Email))
@@ -188,7 +188,7 @@ namespace League.Controllers
             await SendEmail(user, EmailPurpose.ConfirmNewPrimaryEmail, model.Email);
 
             TempData.Put<ManageMessage>(nameof(ManageMessage), new ManageMessage { AlertType = SiteAlertTagHelper.AlertType.Success, MessageId = MessageId.ChangeEmailConfirmationSent });
-            return JsonAjaxRedirectForModal(Url.Action(nameof(Index)));
+            return JsonAjaxRedirectForModal(Url.Action(nameof(Index), nameof(Manage), new { Organization = _siteContext.UrlSegmentValue }));
         }
 
         [AllowAnonymous]
@@ -199,7 +199,7 @@ namespace League.Controllers
             if (user == null)
             {
                 TempData.Put<ManageMessage>(nameof(ManageMessage), new ManageMessage { AlertType = SiteAlertTagHelper.AlertType.Danger, MessageId = MessageId.ChangeEmailFailure });
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Index), nameof(Manage), new { Organization = _siteContext.UrlSegmentValue });
             }
 
             // ChangeEmailAsync also sets EmailConfirmed = true
@@ -207,11 +207,11 @@ namespace League.Controllers
             if (result != IdentityResult.Success)
             {
                 TempData.Put<ManageMessage>(nameof(ManageMessage), new ManageMessage { AlertType = SiteAlertTagHelper.AlertType.Danger, MessageId = MessageId.ChangeEmailFailure });
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Index), nameof(Manage), new { Organization = _siteContext.UrlSegmentValue });
             }
 
             TempData.Put<ManageMessage>(nameof(ManageMessage), new ManageMessage { AlertType = SiteAlertTagHelper.AlertType.Success, MessageId = MessageId.ChangeEmailSuccess });
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(Index), nameof(Manage), new { Organization = _siteContext.UrlSegmentValue });
         }
 
         [HttpGet("[action]")]
@@ -243,14 +243,14 @@ namespace League.Controllers
             if (userEntity == null)
             {
                 TempData.Put<ManageMessage>(nameof(ManageMessage), new ManageMessage { AlertType = SiteAlertTagHelper.AlertType.Danger, MessageId = MessageId.ChangeEmail2Failure });
-                return JsonAjaxRedirectForModal(Url.Action(nameof(Index)));
+                return JsonAjaxRedirectForModal(Url.Action(nameof(Index), nameof(Manage), new { Organization = _siteContext.UrlSegmentValue }));
             }
 
             if (_userManager.KeyNormalizer.NormalizeEmail(userEntity.Email2) == _userManager.KeyNormalizer.NormalizeEmail(model.Email2))
             {
                 // do nothing and display success
                 TempData.Put<ManageMessage>(nameof(ManageMessage), new ManageMessage { AlertType = SiteAlertTagHelper.AlertType.Success, MessageId = MessageId.ChangeEmail2Success });
-                return JsonAjaxRedirectForModal(Url.Action(nameof(Index)));
+                return JsonAjaxRedirectForModal(Url.Action(nameof(Index), nameof(Manage), new { Organization = _siteContext.UrlSegmentValue }));
             }
 
             if (_userManager.KeyNormalizer.NormalizeEmail(userEntity.Email) == _userManager.KeyNormalizer.NormalizeEmail(model.Email2))
@@ -265,7 +265,7 @@ namespace League.Controllers
             {
                 await _siteContext.AppDb.GenericRepository.SaveEntityAsync(userEntity, false, false, cancellationToken);
                 TempData.Put<ManageMessage>(nameof(ManageMessage), new ManageMessage { AlertType = SiteAlertTagHelper.AlertType.Success, MessageId = MessageId.ChangeEmail2Success });
-                return JsonAjaxRedirectForModal(Url.Action(nameof(Index)));
+                return JsonAjaxRedirectForModal(Url.Action(nameof(Index), nameof(Manage), new { Organization = _siteContext.UrlSegmentValue }));
             }
             catch (Exception e)
             {
@@ -304,14 +304,14 @@ namespace League.Controllers
                     await _signInManager.SignInAsync(user, isPersistent: false);
                     _logger.LogInformation($"User '{user.Id}' changed the password successfully.");
                     TempData.Put<ManageMessage>(nameof(ManageMessage), new ManageMessage { AlertType = SiteAlertTagHelper.AlertType.Success, MessageId = MessageId.ChangePasswordSuccess });
-                    return JsonAjaxRedirectForModal(Url.Action(nameof(Index)));
+                    return JsonAjaxRedirectForModal(Url.Action(nameof(Index), nameof(Manage), new { Organization = _siteContext.UrlSegmentValue }));
                 }
                 AddErrors(result);
                 return PartialView(ViewNames.Manage._ChangePasswordModalPartial, model);
             }
 
             TempData.Put<ManageMessage>(nameof(ManageMessage), new ManageMessage { AlertType = SiteAlertTagHelper.AlertType.Danger, MessageId = MessageId.ChangePasswordFailure });
-            return JsonAjaxRedirectForModal(Url.Action(nameof(Index)));
+            return JsonAjaxRedirectForModal(Url.Action(nameof(Index), nameof(Manage), new { Organization = _siteContext.UrlSegmentValue }));
         }
 
         [HttpGet("[action]")]
@@ -337,14 +337,14 @@ namespace League.Controllers
                 {
                     await _signInManager.SignInAsync(user, isPersistent: false);
                     TempData.Put<ManageMessage>(nameof(ManageMessage), new ManageMessage { AlertType = SiteAlertTagHelper.AlertType.Success, MessageId = MessageId.SetPasswordSuccess });
-                    return JsonAjaxRedirectForModal(Url.Action(nameof(Index)));
+                    return JsonAjaxRedirectForModal(Url.Action(nameof(Index), nameof(Manage), new { Organization = _siteContext.UrlSegmentValue }));
                 }
                 AddErrors(result);
                 return PartialView(ViewNames.Manage._SetPasswordModalPartial, model);
             }
 
             TempData.Put<ManageMessage>(nameof(ManageMessage), new ManageMessage { AlertType = SiteAlertTagHelper.AlertType.Danger, MessageId = MessageId.SetPasswordFailure });
-            return JsonAjaxRedirectForModal(Url.Action(nameof(Index)));
+            return JsonAjaxRedirectForModal(Url.Action(nameof(Index), nameof(Manage), new { Organization = _siteContext.UrlSegmentValue }));
         }
 
         [HttpGet("[action]")]
@@ -382,7 +382,7 @@ namespace League.Controllers
             {
                 _logger.LogError($"Username '{HttpContext.User.Identity.Name}' not found in repository");
                 TempData.Put<ManageMessage>(nameof(ManageMessage), new ManageMessage { AlertType = SiteAlertTagHelper.AlertType.Danger, MessageId = MessageId.ChangePersonalDetailsFailure });
-                return JsonAjaxRedirectForModal(Url.Action(nameof(Index)));
+                return JsonAjaxRedirectForModal(Url.Action(nameof(Index), nameof(Manage), new { Organization = _siteContext.UrlSegmentValue }));
             }
 
             user.Gender = model.Gender;
@@ -397,12 +397,12 @@ namespace League.Controllers
             {
                 _logger.LogError($"Failure saving personal data for user id '{GetCurrentUserId()}'", e);
                 TempData.Put<ManageMessage>(nameof(ManageMessage), new ManageMessage { AlertType = SiteAlertTagHelper.AlertType.Danger, MessageId = MessageId.ChangePersonalDetailsFailure });
-                return JsonAjaxRedirectForModal(Url.Action(nameof(Index)));
+                return JsonAjaxRedirectForModal(Url.Action(nameof(Index), nameof(Manage), new { Organization = _siteContext.UrlSegmentValue }));
             }
 
             _logger.LogInformation($"Personal data for user id '{GetCurrentUserId()}' updated");
             TempData.Put<ManageMessage>(nameof(ManageMessage), new ManageMessage { AlertType = SiteAlertTagHelper.AlertType.Success, MessageId = MessageId.ChangePersonalDetailsSuccess });
-            return JsonAjaxRedirectForModal(Url.Action(nameof(Index)));
+            return JsonAjaxRedirectForModal(Url.Action(nameof(Index), nameof(Manage), new { Organization = _siteContext.UrlSegmentValue }));
         }
 
         [HttpGet("[action]")]
@@ -441,11 +441,11 @@ namespace League.Controllers
                 {
                     _logger.LogError($"Save user name '{userEntity.UserName}' failed", e);
                     TempData.Put<ManageMessage>(nameof(ManageMessage), new ManageMessage { AlertType = SiteAlertTagHelper.AlertType.Danger, MessageId = MessageId.ChangePhoneFailure });
-                    return JsonAjaxRedirectForModal(Url.Action(nameof(Index)));
+                    return JsonAjaxRedirectForModal(Url.Action(nameof(Index), nameof(Manage), new { Organization = _siteContext.UrlSegmentValue }));
                 }
 
                 TempData.Put<ManageMessage>(nameof(ManageMessage), new ManageMessage { AlertType = SiteAlertTagHelper.AlertType.Success, MessageId = MessageId.ChangePhoneSuccess });
-                return JsonAjaxRedirectForModal(Url.Action(nameof(Index)));
+                return JsonAjaxRedirectForModal(Url.Action(nameof(Index), nameof(Manage), new { Organization = _siteContext.UrlSegmentValue }));
             }
 
             if (!ModelState.IsValid)
@@ -459,7 +459,7 @@ namespace League.Controllers
             if (userEntity == null)
             {
                 TempData.Put<ManageMessage>(nameof(ManageMessage), new ManageMessage { AlertType = SiteAlertTagHelper.AlertType.Danger, MessageId = MessageId.ChangePhoneFailure });
-                return JsonAjaxRedirectForModal(Url.Action(nameof(Index)));
+                return JsonAjaxRedirectForModal(Url.Action(nameof(Index), nameof(Manage), new { Organization = _siteContext.UrlSegmentValue }));
             }
 
             // Remove the phone number
@@ -533,11 +533,11 @@ namespace League.Controllers
                 {
                     _logger.LogError($"Save user name '{userEntity.UserName}' failed", e);
                     TempData.Put<ManageMessage>(nameof(ManageMessage), new ManageMessage { AlertType = SiteAlertTagHelper.AlertType.Danger, MessageId = MessageId.ChangePhone2Failure });
-                    return JsonAjaxRedirectForModal(Url.Action(nameof(Index)));
+                    return JsonAjaxRedirectForModal(Url.Action(nameof(Index), nameof(Manage), new { Organization = _siteContext.UrlSegmentValue }));
                 }
 
                 TempData.Put<ManageMessage>(nameof(ManageMessage), new ManageMessage { AlertType = SiteAlertTagHelper.AlertType.Success, MessageId = MessageId.ChangePhone2Success });
-                return JsonAjaxRedirectForModal(Url.Action(nameof(Index)));
+                return JsonAjaxRedirectForModal(Url.Action(nameof(Index), nameof(Manage), new { Organization = _siteContext.UrlSegmentValue }));
             }
 
             if (!ModelState.IsValid)
@@ -551,7 +551,7 @@ namespace League.Controllers
             if (userEntity == null)
             {
                 TempData.Put<ManageMessage>(nameof(ManageMessage), new ManageMessage { AlertType = SiteAlertTagHelper.AlertType.Danger, MessageId = MessageId.ChangePhone2Failure });
-                return JsonAjaxRedirectForModal(Url.Action(nameof(Index)));
+                return JsonAjaxRedirectForModal(Url.Action(nameof(Index), nameof(Manage), new { Organization = _siteContext.UrlSegmentValue }));
             }
 
             // Remove the phone number
@@ -591,7 +591,7 @@ namespace League.Controllers
             if (user == null)
             {
                 TempData.Put<ManageMessage>(nameof(ManageMessage), new ManageMessage { AlertType = SiteAlertTagHelper.AlertType.Danger, MessageId = MessageId.ManageLoginFailure });
-                return JsonAjaxRedirectForModal(Url.Action(nameof(Index)));
+                return JsonAjaxRedirectForModal(Url.Action(nameof(Index), nameof(Manage), new { Organization = _siteContext.UrlSegmentValue }));
             }
             var userLogins = await _userManager.GetLoginsAsync(user);
             var schemes = await _signInManager.GetExternalAuthenticationSchemesAsync();
@@ -616,12 +616,12 @@ namespace League.Controllers
                 {
                     await _signInManager.SignInAsync(user, isPersistent: false);
                     TempData.Put<ManageMessage>(nameof(ManageMessage), new ManageMessage { AlertType = SiteAlertTagHelper.AlertType.Success, MessageId = MessageId.RemoveLoginSuccess });
-                    return JsonAjaxRedirectForModal(Url.Action(nameof(Index)));
+                    return JsonAjaxRedirectForModal(Url.Action(nameof(Index), nameof(Manage), new { Organization = _siteContext.UrlSegmentValue }));
                 }
             }
 
             TempData.Put<ManageMessage>(nameof(ManageMessage), new ManageMessage { AlertType = SiteAlertTagHelper.AlertType.Danger, MessageId = MessageId.RemoveLoginFailure });
-            return JsonAjaxRedirectForModal(Url.Action(nameof(Index)));
+            return JsonAjaxRedirectForModal(Url.Action(nameof(Index), nameof(Manage), new { Organization = _siteContext.UrlSegmentValue }));
         }
 
 
@@ -630,7 +630,7 @@ namespace League.Controllers
         public IActionResult LinkLogin(string provider)
         {
             // Request a redirect to the external login provider to link a login for the current user
-            var redirectUrl = Url.Action(nameof(LinkLoginCallback), nameof(Manage));
+            var redirectUrl = Url.Action(nameof(LinkLoginCallback), nameof(Manage), new { Organization = _siteContext.UrlSegmentValue });
             var properties = _signInManager.ConfigureExternalAuthenticationProperties(provider, redirectUrl, _userManager.GetUserId(User));
             return Challenge(properties, provider);
         }
@@ -648,7 +648,7 @@ namespace League.Controllers
             if (info == null)
             {
                 TempData.Put<ManageMessage>(nameof(ManageMessage), new ManageMessage { AlertType = SiteAlertTagHelper.AlertType.Danger, MessageId = MessageId.AddLoginFailure });
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Index), nameof(Manage), new { Organization = _siteContext.UrlSegmentValue });
             }
             var result = await _userManager.AddLoginAsync(user, info);
             TempData.Put<ManageMessage>(nameof(ManageMessage), result.Succeeded
@@ -657,7 +657,7 @@ namespace League.Controllers
                 : new ManageMessage
                     {AlertType = SiteAlertTagHelper.AlertType.Danger, MessageId = MessageId.AddLoginFailure});
 
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(Index),nameof(Manage), new { Organization = _siteContext.UrlSegmentValue });
         }
 
         [HttpGet("[action]")]
@@ -737,7 +737,7 @@ namespace League.Controllers
                     _userEmailTask2.ViewNames = new [] {ViewNames.Emails.ConfirmNewPrimaryEmail, ViewNames.Emails.ConfirmNewPrimaryEmailTxt };
                     _userEmailTask2.LogMessage = "Email to confirm the new primary email";
                     var code = (await _userManager.GenerateChangeEmailTokenAsync(user, newEmail)).Base64UrlEncode();
-                    _userEmailTask2.Model = (Email: newEmail, CallbackUrl: Url.Action(nameof(ConfirmNewPrimaryEmail), nameof(Manage), new { id = user.Id, code, e = newEmail.Base64UrlEncode()}, protocol: HttpContext.Request.Scheme), OrganizationContext: _siteContext);
+                    _userEmailTask2.Model = (Email: newEmail, CallbackUrl: Url.Action(nameof(ConfirmNewPrimaryEmail), nameof(Manage), new { Organization = _siteContext.UrlSegmentValue, id = user.Id, code, e = newEmail.Base64UrlEncode()}, protocol: HttpContext.Request.Scheme), OrganizationContext: _siteContext);
                     _queue.QueueTask(_userEmailTask2);
                     break;
                 default:

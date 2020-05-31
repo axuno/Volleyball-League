@@ -20,7 +20,7 @@ namespace League.ControllerAttributes
                     )))
             {
                 filterContext.Result = new RedirectToActionResult(nameof(Controllers.TeamApplication.List),
-                    nameof(Controllers.TeamApplication), new { });
+                    nameof(Controllers.TeamApplication), new { Organization = siteContext.UrlSegmentValue });
             }
         }
 	}

@@ -6,6 +6,7 @@
 @inject IViewLocalizer Localizer
 @{
     ViewData["Title"] = Localizer["Sign in"];
+    var organizationRoute = ViewContext.RouteData.Values["organization"];
 }
 <h2 class="h2">@ViewData["Title"]</h2>
 @{
@@ -16,7 +17,7 @@
     <hr/>
     <div class="col-md-8 col-sm-10 col-12 pl-0">
         <h3 class="h3">@Localizer["Sign-in using a social network account"]</h3>
-        <form asp-controller="@nameof(Account)" asp-action="@nameof(Account.ExternalSignIn)" asp-route-returnurl="@ViewData["ReturnUrl"]" method="post" role="form">
+        <form asp-controller="@nameof(Account)" asp-action="@nameof(Account.ExternalSignIn)" asp-route-organization="@organizationRoute" asp-route-returnurl="@ViewData["ReturnUrl"]" method="post" role="form">
             @if (ViewData["Form"]?.ToString() == "SocialMedia")
             {
                 <site-validation-summary show="All">
@@ -35,7 +36,7 @@
     <hr />
     <div class="col-md-8 col-sm-10 col-12 pl-0">
         <h3 class="h3">@Localizer["Sign-in with your user account credentials"]</h3>
-        <form asp-controller="@nameof(Account)" asp-action="@nameof(Account.SignIn)" asp-route-returnurl="@ViewData["ReturnUrl"]" method="post" role="form" class="pl-0">
+        <form asp-controller="@nameof(Account)" asp-action="@nameof(Account.SignIn)" asp-route-organization="@organizationRoute" asp-route-returnurl="@ViewData["ReturnUrl"]" method="post" role="form" class="pl-0">
             @if (ViewData["Form"]?.ToString() != "SocialMedia")
             {
                 <site-validation-summary show="All">
@@ -77,10 +78,10 @@
 <div class="mb-2">
     <section>
         <div>
-            <a asp-action="@nameof(Account.ForgotPassword)" class="link">@Localizer["Forgot your password?"]</a>
+            <a asp-controller="@nameof(Account)" asp-action="@nameof(Account.ForgotPassword)" asp-route-organization="@organizationRoute" class="link">@Localizer["Forgot your password?"]</a>
         </div>
         <div>
-            <a asp-action="@nameof(Account.CreateAccount)" asp-route-returnurl="@ViewData["ReturnUrl"]" class="link">@Localizer["Register as a new user?"]</a>
+            <a asp-controller="@nameof(Account)" asp-action="@nameof(Account.CreateAccount)" asp-route-organization="@organizationRoute" asp-route-returnurl="@ViewData["ReturnUrl"]" class="link">@Localizer["Register as a new user?"]</a>
         </div>
     </section>
 </div>

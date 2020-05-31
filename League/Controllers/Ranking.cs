@@ -45,7 +45,7 @@ namespace League.Controllers
 
         public IActionResult Index()
         {
-            return Redirect(Url.Action(nameof(Table)));
+            return Redirect(Url.Action(nameof(Table), nameof(Ranking), new { Organization = _siteContext.UrlSegmentValue }));
         }
 
         /// <summary>
@@ -94,7 +94,7 @@ namespace League.Controllers
 
                 id ??= roundLegPeriods.Max(rlp => rlp.TournamentId);
                 if (roundLegPeriods.Count > 0 && roundLegPeriods.All(rlp => rlp.TournamentId != id))
-                    return RedirectToAction(nameof(AllTimeTournament), new { id = string.Empty });
+                    return RedirectToAction(nameof(AllTimeTournament), nameof(Ranking), new { Organization = _siteContext.UrlSegmentValue, id = string.Empty });
 
                 var model = new AllTimeTournamentModel(rankingList, roundLegPeriods) { SelectedTournamentId = id };
                 return View(ViewNames.Ranking.AllTimeForTournament, model);
@@ -115,7 +115,7 @@ namespace League.Controllers
                 var roundLegPeriods = await GetRoundLegPeriodsCached(rankingList, cancellationToken);
 
                 if (rankingList.Count > 0 && rankingList.All(rl => rl.TeamId != id))
-                    return RedirectToAction(nameof(AllTimeTournament), new { id = string.Empty });
+                    return RedirectToAction(nameof(AllTimeTournament), nameof(Ranking), new { Organization = _siteContext.UrlSegmentValue, id = string.Empty });
 
                 var model = new AllTimeTeamModel(rankingList, roundLegPeriods) { SelectedTeamId = id };
                 return View(ViewNames.Ranking.AllTimeForTeam, model);

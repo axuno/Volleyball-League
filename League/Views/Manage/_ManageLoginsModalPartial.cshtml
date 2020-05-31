@@ -2,6 +2,7 @@
 @using Microsoft.AspNetCore.Mvc.Localization
 @inject IViewLocalizer Localizer
 @model ManageLoginsViewModel
+@{var organizationRoute = ViewContext.RouteData.Values["organization"];}
 <!-- Modal -->
 <modal id="change-email" title="@Localizer["Social Network Logins"].Value" tabindex="-1">
     <modal-body>
@@ -17,7 +18,7 @@
                         <div class="col-sm-7 text-wrap">
                             @if (Model.ShowRemoveButton)
                             {
-                                <form asp-controller="@nameof(Manage)" asp-action="@nameof(Manage.RemoveLogin)" method="post" role="form">
+                                <form asp-controller="@nameof(Manage)" asp-action="@nameof(Manage.RemoveLogin)" asp-route-organization="@organizationRoute" method="post" role="form">
                                     <input name="IsValid" type="hidden" value="@ViewData.ModelState.IsValid.ToString()" />
                                     <input name="@nameof(RemoveLoginViewModel.LoginProvider)" value="@Model.CurrentLogins[index].LoginProvider" type="hidden" />
                                     <input name="@nameof(RemoveLoginViewModel.ProviderKey)" value="@Model.CurrentLogins[index].ProviderKey" type="hidden" />
@@ -26,7 +27,7 @@
                             }
                             else
                             {
-                                <form asp-controller="@nameof(Manage)" asp-action="@nameof(Manage.SetPassword)" method="get" role="form">
+                                <form asp-controller="@nameof(Manage)" asp-action="@nameof(Manage.SetPassword)" asp-route-organization="@organizationRoute" method="get" role="form">
                                     <button type="button" site-ajax-submit class="btn btn-sm btn-primary" aria-describedby="setPasswordHelpBlock">@Localizer["Set Local Password"]</button>
                                     <small id="setPasswordHelpBlock" class="form-text text-muted d-inline-block">
                                         @Localizer["Set a local password before you remove the social login"]
@@ -42,7 +43,7 @@
                 <div class="mt-4">
                     <h4 class="h4">@Localizer["Add New Social Login"]</h4>
                     <hr />
-                    <form asp-controller="@nameof(Manage)" asp-action="@nameof(Manage.LinkLogin)" method="post" role="form">
+                    <form asp-controller="@nameof(Manage)" asp-action="@nameof(Manage.LinkLogin)" asp-route-organization="@organizationRoute" method="post" role="form">
                         <div id="socialLoginList">
                             <p>
                                 @foreach (var provider in Model.OtherLogins)

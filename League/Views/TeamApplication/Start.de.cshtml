@@ -8,6 +8,7 @@
 @model League.Models.TeamApplicationViewModels.ApplicationSessionModel
 @{
     ViewData["Title"] = "Team-Anmeldung" + " - " + Model.TournamentName;
+    var organizationRoute = ViewContext.RouteData.Values["organization"];
 }
 <div class="mb-0 pb-1">
     <h2 class="h2">@ViewData["Title"]</h2>
@@ -55,7 +56,7 @@
             </ul>
         </div>
         <div class="col-12">
-            <a asp-controller="@nameof(TeamApplication)" asp-action="@nameof(TeamApplication.SelectTeam)" class="btn btn-primary mb-2">Mit der Anmeldung beginnen</a>
+            <a asp-controller="@nameof(TeamApplication)" asp-action="@nameof(TeamApplication.SelectTeam)" asp-route-organization="@organizationRoute" class="btn btn-primary mb-2">Mit der Anmeldung beginnen</a>
         </div>
     </div>
 </div>

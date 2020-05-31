@@ -530,7 +530,7 @@ namespace League
 
             var mvcBuilder = services.AddMvc(options =>
                 {
-                    options.EnableEndpointRouting = false;
+                    options.EnableEndpointRouting = true;
                     // Add model binding messages for errors that do not reach data annotation validation
                     options.ModelBindingMessageProvider.SetValueMustNotBeNullAccessor(x => string.Format(Resources.ModelBindingMessageResource.ValueMustNotBeNull));
                     options.ModelBindingMessageProvider.SetAttemptedValueIsInvalidAccessor((x, val) => string.Format(Resources.ModelBindingMessageResource.AttemptedValueIsInvalid, x, val));
@@ -714,18 +714,13 @@ namespace League
             app.UseAuthentication();
             app.UseAuthorization();
             
-            // We only use attribute routing - no endpoints / route templates specified here
-            app.UseMvc();
-            
-            /* Before using endpoint routing, all anchor, form tags and Url.(...) tag helpers must be updated with {organization}
-               (ViewContext.RouteData.Values["organization"]) because ambient parameters are not preserved here (as opposed to IRoute)
-
+            /* Before using endpoint routing, all anchor, form tags Url.(...) and RedirectToAction(...) tag helpers had to be updated with {organization}
+               (ViewContext.RouteData.Values["organization"]) because ambient parameters are not preserved here (as opposed to IRoute) */
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
             });
-            */
-
+            
             #region *** Initialize ranking tables and charts ***
             
             var siteList = app.ApplicationServices.GetRequiredService<SiteList>();
@@ -735,7 +730,7 @@ namespace League
             {
                 var siteContext = new SiteContext(orgSite.OrganizationKey, app.ApplicationServices.GetRequiredService<OrganizationContextResolver>(), siteList);
                 var rankingUpdateTask = app.ApplicationServices.GetRequiredService<RankingUpdateTask>();
-                rankingUpdateTask.siteContext = siteContext.Resolve(orgSite.OrganizationKey);
+                rankingUpdateTask.SiteContext = siteContext.Resolve(orgSite.OrganizationKey);
                 rankingUpdateTask.TournamentId = siteContext.MatchResultTournamentId;
                 rankingUpdateTask.Timeout = TimeSpan.FromMinutes(5);
                 queue.QueueTask(rankingUpdateTask);

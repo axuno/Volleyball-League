@@ -84,7 +84,7 @@ namespace League.Controllers
             return View(ViewNames.Upload.TeamPhoto, model);
         }
 
-        [HttpPost("team-photo")]
+        [HttpPost("team-photo/{*segments}")]
         public async Task<IActionResult> TeamPhoto([FromForm] IFormFile file, [FromForm] long teamId, CancellationToken cancellationToken)
         {
             if (!(await _authorizationService.AuthorizeAsync(User, new TeamEntity(teamId),
@@ -166,7 +166,7 @@ namespace League.Controllers
                 _loggerFactory.CreateLogger<TeamPhotoStaticFile>());
             photoFile.DeleteMostRecentFile(id);
 
-            return RedirectToAction(nameof(TeamPhoto), new {id});
+            return RedirectToAction(nameof(TeamPhoto), nameof(Upload), new { Organization = _siteContext.UrlSegmentValue, id});
         }
     }
 }

@@ -100,8 +100,7 @@
                 if (Model.ChartFileInfos.ContainsKey(r.RoundId))
                 {
                     <figure>
-                        @*<img src="@Url.Action(nameof(League.Controllers.Ranking.Chart), nameof(League.Controllers.Ranking), new { id = r.RoundId })" class="img-fluid shadow" alt="Chart @r.RoundDescription"/>*@
-                        <img src="/@RankingUpdateTask.RankingImageFolder/@(Model.ChartFileInfos[r.RoundId].Name)" class="img-fluid shadow" alt="Chart @r.RoundDescription" />
+                        <img src="@Url.Content($"~/{RankingUpdateTask.RankingImageFolder}/{Model.ChartFileInfos[r.RoundId].Name}")" class="img-fluid shadow" alt="Chart @r.RoundDescription" />
                         <figcaption>R = @Localizer["Rank"], MD = @Localizer["Match Days"] (@Localizer["until"] @zonedMaxMatchDate.DateTimeOffset.DateTime.ToShortDateString())</figcaption>
                     </figure>
                 }

@@ -186,7 +186,7 @@ namespace League.Controllers
 
         private string SetAdjustedReturnResult(string method, string returnUrl, long teamId, bool isSuccess)
         {
-            if (method.Equals(nameof(Add)) && returnUrl.Contains(Url.Action(nameof(Team.MyTeam), nameof(Team))))
+            if (method.Equals(nameof(Add)) && returnUrl.Contains(Url.Action(nameof(Team.MyTeam), nameof(Team), new { Organization = _siteContext.UrlSegmentValue })))
             {
                 TempData.Put<MyTeamMessageModel.MyTeamMessage>(nameof(MyTeamMessageModel.MyTeamMessage),
                     new MyTeamMessageModel.MyTeamMessage
@@ -198,7 +198,7 @@ namespace League.Controllers
                 return Url.Action(nameof(Team.MyTeam), nameof(Team), new { id = teamId });
             }
 
-            if (method.Equals(nameof(Remove)) && returnUrl.Contains(Url.Action(nameof(Team.MyTeam), nameof(Team))))
+            if (method.Equals(nameof(Remove)) && returnUrl.Contains(Url.Action(nameof(Team.MyTeam), nameof(Team), new { Organization = _siteContext.UrlSegmentValue })))
             {
                 TempData.Put<MyTeamMessageModel.MyTeamMessage>(nameof(MyTeamMessageModel.MyTeamMessage),
                     new MyTeamMessageModel.MyTeamMessage
@@ -207,7 +207,7 @@ namespace League.Controllers
                         MessageId = isSuccess ? MyTeamMessageModel.MessageId.MemberRemoveSuccess : MyTeamMessageModel.MessageId.MemberRemoveFailure
                     });
 
-                return Url.Action(nameof(Team.MyTeam), nameof(Team), new {id = teamId});
+                return Url.Action(nameof(Team.MyTeam), nameof(Team), new { Organization = _siteContext.UrlSegmentValue, id = teamId});
             }
 
             return returnUrl;
@@ -215,7 +215,7 @@ namespace League.Controllers
 
         private string SetCannotRemoveLastTeamManagerReturnResult(string returnUrl, long teamId)
         {
-            if (returnUrl.Contains(Url.Action(nameof(Team.MyTeam), nameof(Team))))
+            if (returnUrl.Contains(Url.Action(nameof(Team.MyTeam), nameof(Team), new { Organization = _siteContext.UrlSegmentValue })))
             {
                 TempData.Put<MyTeamMessageModel.MyTeamMessage>(nameof(MyTeamMessageModel.MyTeamMessage),
                     new MyTeamMessageModel.MyTeamMessage
@@ -224,7 +224,7 @@ namespace League.Controllers
                         MessageId = MyTeamMessageModel.MessageId.MemberCannotRemoveLastTeamManager
                     });
 
-                return Url.Action(nameof(Team.MyTeam), nameof(Team), new { id = teamId });
+                return Url.Action(nameof(Team.MyTeam), nameof(Team), new { Organization = _siteContext.UrlSegmentValue, id = teamId });
             }
 
             return returnUrl;

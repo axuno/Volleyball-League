@@ -7,7 +7,7 @@
 @model League.Models.MatchViewModels.FixturesViewModel
 @{
     ViewData["Title"] = Localizer["Fixtures"].Value + " - " + Model.Tournament.Name;
-
+    var organizationRoute = ViewContext.RouteData.Values["organization"];
     if (Model.PlannedMatches.Count == 0)
     {
         <div class="mb-0 pb-1">
@@ -108,14 +108,14 @@
                                                 </a>
                                                 <div class="dropdown-menu shadow-lg" role="menu">
                                                     <a href="#" tabindex="0" data-round-id="@match.RoundId" data-team-name="@match.HomeTeamNameForRound" class="dropdown-item filter-link">@Localizer["Filter fixtures for this team"]</a>
-                                                    <a asp-action=@nameof(League.Controllers.Match.ReportSheet) asp-controller=@nameof(League.Controllers.Match) asp-route-id=@match.Id tabindex="0" class="dropdown-item">@Localizer["Print match report sheet"]</a>
-                                                    <a asp-action=@nameof(League.Controllers.Match.EditFixture) asp-controller=@nameof(League.Controllers.Match) asp-route-id=@match.Id tabindex="0" class="dropdown-item" 
+                                                    <a asp-action=@nameof(League.Controllers.Match.ReportSheet) asp-controller=@nameof(League.Controllers.Match) asp-route-organization="@organizationRoute" asp-route-id=@match.Id tabindex="0" class="dropdown-item">@Localizer["Print match report sheet"]</a>
+                                                    <a asp-action=@nameof(League.Controllers.Match.EditFixture) asp-controller=@nameof(League.Controllers.Match) asp-route-organization="@organizationRoute" asp-route-id=@match.Id tabindex="0" class="dropdown-item" 
                                                        site-authorize-resource site-resource=@ToMatchEntity(match) 
                                                        site-requirement=@League.Authorization.MatchOperations.ChangeFixture>@Localizer["Edit fixture"]</a>
-                                                    <a asp-action=@nameof(League.Controllers.Match.EnterResult) asp-controller=@nameof(League.Controllers.Match) asp-route-id=@match.Id tabindex="0" class="dropdown-item" 
+                                                    <a asp-action=@nameof(League.Controllers.Match.EnterResult) asp-controller=@nameof(League.Controllers.Match) asp-route-organization="@organizationRoute" asp-route-id=@match.Id tabindex="0" class="dropdown-item" 
                                                        site-authorize-resource site-resource="@ToMatchEntity(match)" 
                                                        site-requirement="@League.Authorization.MatchOperations.EnterResult">@Localizer["Enter match result"]</a>
-                                                    <a asp-action=@nameof(League.Controllers.Match.Calendar) asp-Controller=@nameof(League.Controllers.Match) asp-route-id=@match.Id tabindex="0" class="dropdown-item">@Localizer["Save match to calendar"]</a>
+                                                    <a asp-action=@nameof(League.Controllers.Match.Calendar) asp-Controller=@nameof(League.Controllers.Match) asp-route-organization="@organizationRoute" asp-route-id=@match.Id tabindex="0" class="dropdown-item">@Localizer["Save match to calendar"]</a>
                                                 </div>
                                             </div>
                                             <div class="dropdown">
@@ -124,14 +124,14 @@
                                                 </a>
                                                 <div class="dropdown-menu shadow-lg" role="menu" aria-labelledby="dropdownMenuLink">
                                                     <a href="#" tabindex="0" data-round-id="@match.RoundId" data-team-name="@match.GuestTeamNameForRound" class="dropdown-item filter-link">@Localizer["Filter fixtures for this team"]</a>
-                                                    <a asp-action=@nameof(League.Controllers.Match.ReportSheet) asp-controller=@nameof(League.Controllers.Match) asp-route-id=@match.Id tabindex="0" class="dropdown-item">@Localizer["Print match report sheet"]</a>
-                                                    <a asp-action=@nameof(League.Controllers.Match.EditFixture) asp-controller=@nameof(League.Controllers.Match) asp-route-id=@match.Id tabindex="0" class="dropdown-item"
+                                                    <a asp-action=@nameof(League.Controllers.Match.ReportSheet) asp-controller=@nameof(League.Controllers.Match) asp-route-organization="@organizationRoute" asp-route-id=@match.Id tabindex="0" class="dropdown-item">@Localizer["Print match report sheet"]</a>
+                                                    <a asp-action=@nameof(League.Controllers.Match.EditFixture) asp-controller=@nameof(League.Controllers.Match) asp-route-organization="@organizationRoute" asp-route-id=@match.Id tabindex="0" class="dropdown-item"
                                                        site-authorize-resource site-resource=@ToMatchEntity(match)
                                                        site-requirement=@League.Authorization.MatchOperations.ChangeFixture>@Localizer["Edit fixture"]</a>
-                                                    <a asp-action=@nameof(League.Controllers.Match.EnterResult) asp-controller=@nameof(League.Controllers.Match) asp-route-id=@match.Id tabindex="0" class="dropdown-item"
+                                                    <a asp-action=@nameof(League.Controllers.Match.EnterResult) asp-controller=@nameof(League.Controllers.Match) asp-route-organization="@organizationRoute" asp-route-id=@match.Id tabindex="0" class="dropdown-item"
                                                        site-authorize-resource site-resource="@ToMatchEntity(match)"
                                                        site-requirement="@League.Authorization.MatchOperations.EnterResult">@Localizer["Enter match result"]</a>
-                                                    <a asp-action=@nameof(League.Controllers.Match.Calendar) asp-Controller=@nameof(League.Controllers.Match) asp-route-id=@match.Id tabindex="0" class="dropdown-item">@Localizer["Save match to calendar"]</a>
+                                                    <a asp-action=@nameof(League.Controllers.Match.Calendar) asp-Controller=@nameof(League.Controllers.Match) asp-route-organization="@organizationRoute" asp-route-id=@match.Id tabindex="0" class="dropdown-item">@Localizer["Save match to calendar"]</a>
                                                 </div>
                                             </div>
                                         </td>

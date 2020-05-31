@@ -1,9 +1,9 @@
 @using League.Controllers
 @using Microsoft.AspNetCore.Mvc.Localization
 @using TournamentManager.DAL.TypedViewClasses
-@using TournamentManager.DAL.EntityClasses
 @inject IViewLocalizer Localizer
 @model (long TeamId, long? VenueId)
+@{var organizationRoute = ViewContext.RouteData.Values["organization"];}
 <!-- Modal -->
     <modal id="change-venue" title="@Localizer["Change team venue"].Value" tabindex="-1">
         <modal-body>
@@ -14,7 +14,8 @@
                         <a asp-action="@nameof(Venue.Edit)"
                            asp-controller="@nameof(Venue)"
                            asp-route-id="@Model.VenueId"
-                           asp-route-returnurl="@Url.Action(nameof(Team.MyTeam))"
+                           asp-route-organization="@organizationRoute"
+                           asp-route-returnurl="@Url.Action(nameof(Team.MyTeam), nameof(Team), new { Organization = organizationRoute })"
                            site-authorize-resource site-resource="@new List<VenueTeamRow>{{ new VenueTeamRow{ TeamId = Model.TeamId, VenueId = Model.VenueId.Value }}}"
                            site-requirement="@League.Authorization.VenueOperations.EditVenue"
                            class="btn btn-primary btn-block">@Localizer["Edit current venue"]</a>
@@ -28,8 +29,9 @@
                 <div>
                     <a asp-action="@nameof(Venue.Create)"
                        asp-controller="@nameof(Venue)"
+                       asp-route-organization="@organizationRoute"
                        asp-route-tid="@Model.TeamId"
-                       asp-route-returnurl="@Url.Action(nameof(Team.MyTeam))"
+                       asp-route-returnurl="@Url.Action(nameof(Team.MyTeam), nameof(Team), new { Organization = organizationRoute })"
                        site-authorize-resource site-resource="@new List<VenueTeamRow>()"
                        site-requirement="@League.Authorization.VenueOperations.CreateVenue"
                        class="btn btn-primary btn-block">@Localizer["Create new team venue"]</a>

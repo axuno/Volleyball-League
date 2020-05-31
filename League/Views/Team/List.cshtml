@@ -4,7 +4,7 @@
 @model League.Models.TeamViewModels.TeamListModel
 @{
     ViewData["Title"] = Localizer["Teams"].Value + " - " + Model.Tournament.Name;
-    
+    var organizationRoute = ViewContext.RouteData.Values["organization"];
     if (Model.RoundsWithTeams.Count == 0)
     {
         <div class="mb-0 pb-1">
@@ -57,7 +57,7 @@
                                 <tr>
                                     <td>@t.TeamNameForRound</td>
                                     <td>@t.TeamClubName</td>
-                                    <td class="text-center"><a href="@Url.Action(nameof(League.Controllers.Team.Single), nameof(League.Controllers.Team), new {id = t.TeamId})" class=""><i class="fas fa-ellipsis-h"></i></a></td>
+                                    <td class="text-center"><a asp-action="@nameof(League.Controllers.Team.Single)" asp-controller="@nameof(League.Controllers.Team)" asp-route-organization="@organizationRoute" asp-route-id="@t.TeamId" class=""><i class="fas fa-ellipsis-h"></i></a></td>
                                 </tr>
                             }
                         }

@@ -63,13 +63,13 @@
         <div class="d-flex flex-row">
             <div class="text-center w-100">
                 @{
-                    if (string.IsNullOrEmpty(Url.RouteUrl(RouteNames.HomeOrganizationContact)))
+                    if (string.IsNullOrEmpty(SiteContext.OrganizationKey))
                     {
                         <a asp-route="@RouteNames.HomeGeneralContact" class="d-inline-block mr-4">@Localizer["Contact"]</a>
                     }
                     else
                     {
-                        <a asp-route="@RouteNames.HomeOrganizationContact" class="d-inline-block mr-4">@Localizer["Contact"]</a>
+                        <a asp-route="@RouteNames.HomeOrganizationContact" asp-route-organization="@SiteContext.UrlSegmentValue" class="d-inline-block mr-4">@Localizer["Contact"]</a>
                     }
                 }
                 <a asp-action="@nameof(Home.LegalDisclosure)" asp-controller="@nameof(Home)" class="d-inline-block mr-4">@Localizer["Legal Disclosure"]</a>

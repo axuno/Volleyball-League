@@ -5,14 +5,15 @@
 @inject IViewLocalizer Localizer
 @inject IUserValidator<ApplicationUser> userValidator
 @{ var UserValidator = (LeagueUserValidator<ApplicationUser>)this.userValidator;
-ViewContext.ClientValidationEnabled = false;}
+ViewContext.ClientValidationEnabled = false; 
+var organizationRoute = ViewContext.RouteData.Values["organization"];}
 @model ChangeUsernameViewModel
 @{ var allowedUsernameCharacters = Axuno.Tools.StringFormatter.GroupedValidCharacters(UserManager.Options.User.AllowedUserNameCharacters);}
 <!-- Modal -->
 <modal id="change-username" title="@Localizer["Change username"].Value" tabindex="-1">
     <modal-body>
         @* Form with only 1 input field can be submitted with enter key. So we have to prevent default submit behavior and trigger a click on saveBtn *@
-        <form asp-controller="@nameof(Manage)" asp-action="@nameof(Manage.ChangeUserName)" method="post" role="form" onsubmit="$('#@(League.TagHelpers.Modal.SiteAjaxSubmitTagHelper.TagHelperAttributeName)').trigger('click');return false;">
+        <form asp-controller="@nameof(Manage)" asp-action="@nameof(Manage.ChangeUserName)" asp-route-organization="@organizationRoute" method="post" role="form" onsubmit="$('#@(League.TagHelpers.Modal.SiteAjaxSubmitTagHelper.TagHelperAttributeName)').trigger('click');return false;">
             <site-validation-summary show="All"></site-validation-summary>
             <input name="IsValid" type="hidden" value="@ViewData.ModelState.IsValid.ToString()" />
             <div class="form-group">

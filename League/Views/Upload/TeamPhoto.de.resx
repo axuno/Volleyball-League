@@ -150,6 +150,9 @@
   <data name="Maximum number of files: {{maxFiles}}" xml:space="preserve">
     <value>Max. Anzahl Dateien: {{maxFiles}}</value>
   </data>
+  <data name="None" xml:space="preserve">
+    <value>Keines</value>
+  </data>
   <data name="original size" xml:space="preserve">
     <value>Originalgröße</value>
   </data>

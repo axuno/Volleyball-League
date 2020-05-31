@@ -1,9 +1,8 @@
 @using League.Controllers
 @using Microsoft.AspNetCore.Mvc.Localization
-@using TournamentManager.DAL.TypedViewClasses
-@using TournamentManager.DAL.EntityClasses
 @inject IViewLocalizer Localizer
 @model League.Models.TeamViewModels.TeamVenueSelectModel
+@{var organizationRoute = ViewContext.RouteData.Values["organization"];}
 <!-- Modal -->
 <modal id="select-venue" title="@Localizer["Select team venue"].Value" dialog-class="modal-lg" tabindex="-1">
     <modal-body class="pb-0">
@@ -14,7 +13,7 @@
                     League.Components.VenueSelectorComponentModel.Criteria.VenuesOfTeams | League.Components.VenueSelectorComponentModel.Criteria.Active | League.Components.VenueSelectorComponentModel.Criteria.Unused,
                     default(long?)); }
         @(await Component.InvokeAsync<League.Components.VenueSelector>(componentModel))
-        <form asp-controller="@nameof(Team)" asp-action="@nameof(Team.SelectVenue)" method="post">
+        <form asp-controller="@nameof(Team)" asp-action="@nameof(Team.SelectVenue)" asp-route-organization="@organizationRoute" method="post">
             <input asp-for="TeamId" type="hidden" />
             <input asp-for="VenueId" type="hidden" />
         </form>

@@ -245,7 +245,7 @@ namespace League.Controllers
         
         private string SetAdjustedReturnResult(string method, string returnUrl, bool isSuccess)
         {
-            if (method.Equals(nameof(Edit)) && returnUrl.Contains(Url.Action(nameof(Team.MyTeam), nameof(Team))))
+            if (method.Equals(nameof(Edit)) && returnUrl.Contains(Url.Action(nameof(Team.MyTeam), nameof(Team), new { Organization = _siteContext.UrlSegmentValue })))
             {
                 TempData.Put<MyTeamMessageModel.MyTeamMessage>(nameof(MyTeamMessageModel.MyTeamMessage),
                     new MyTeamMessageModel.MyTeamMessage
@@ -257,7 +257,7 @@ namespace League.Controllers
                 return returnUrl;
             }
 
-            if (method.Equals(nameof(Create)) && returnUrl.Contains(Url.Action(nameof(Team.MyTeam), nameof(Team))))
+            if (method.Equals(nameof(Create)) && returnUrl.Contains(Url.Action(nameof(Team.MyTeam), nameof(Team), new { Organization = _siteContext.UrlSegmentValue })))
             {
                 TempData.Put<MyTeamMessageModel.MyTeamMessage>(nameof(MyTeamMessageModel.MyTeamMessage),
                     new MyTeamMessageModel.MyTeamMessage

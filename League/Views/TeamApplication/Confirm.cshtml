@@ -8,6 +8,7 @@
 @model League.Models.TeamApplicationViewModels.ApplicationConfirmModel
 @{
     ViewData["Title"] = Localizer["Team Registration"].Value + " - " + Model.SessionModel.TournamentName;
+    var organizationRoute = ViewContext.RouteData.Values["organization"];
 }
 <div class="mb-0 pb-1">
     <h2 class="h2">@ViewData["Title"]</h2>
@@ -45,8 +46,8 @@
     </div>
     <div class="row">
         <div class="form-group col-12 col-md-6">
-            <form asp-controller="@nameof(TeamApplication)" asp-action="@nameof(TeamApplication.Confirm)" method="post" role="form">
-                <a asp-controller="@nameof(TeamApplication)" asp-action="@nameof(TeamApplication.EditVenue)" class="btn btn-secondary d-inline-block">@Localizer["Back"]</a>
+            <form asp-controller="@nameof(TeamApplication)" asp-action="@nameof(TeamApplication.Confirm)" asp-route-organization="@organizationRoute" method="post" role="form">
+                <a asp-controller="@nameof(TeamApplication)" asp-action="@nameof(TeamApplication.EditVenue)" asp-route-organization="@organizationRoute" class="btn btn-secondary d-inline-block">@Localizer["Back"]</a>
                 <input type="hidden" id="Done" name="Done" value="true" />
                 <button type="submit" class="btn btn-primary d-inline-block ">@Localizer["Confirm and save"]</button>
             </form>

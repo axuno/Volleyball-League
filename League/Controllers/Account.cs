@@ -162,11 +162,11 @@ namespace League.Controllers
                     _signInManager.UserManager.Options.SignIn.RequireConfirmedEmail)
                 {
                     _logger.LogInformation($"Sign-in not allowed: Email for user id '{user.Id}' is not confirmed");
-                    return RedirectToAction(nameof(Message), new { messageTypeText = MessageType.SignInRejectedEmailNotConfirmed });
+                    return RedirectToAction(nameof(Message), nameof(Account), new { Organization = _siteContext.UrlSegmentValue, messageTypeText = MessageType.SignInRejectedEmailNotConfirmed });
                 }
 
                 _logger.LogInformation($"Account for user id '{user.Id}': {result}");
-                return RedirectToAction(nameof(Message), new { messageTypeText = MessageType.SignInRejected });
+                return RedirectToAction(nameof(Message), nameof(Account), new { Organization = _siteContext.UrlSegmentValue, messageTypeText = MessageType.SignInRejected });
             }
 
             // PasswordSignIn failed
@@ -214,7 +214,7 @@ namespace League.Controllers
             }
 
             await SendCodeByEmail(new ApplicationUser {Email = model.Email}, EmailPurpose.ConfirmYourEmail);
-            return RedirectToAction(nameof(Message), new { messageTypeText = MessageType.PleaseConfirmEmail });
+            return RedirectToAction(nameof(Message), nameof(Account), new { Organization = _siteContext.UrlSegmentValue, messageTypeText = MessageType.PleaseConfirmEmail });
         }
 
         [HttpGet("register")]
@@ -223,7 +223,7 @@ namespace League.Controllers
         {
             if (!_dataProtector.TryDecrypt(code?.Base64UrlDecode() ?? string.Empty, out var email, out var expiration))
             {
-                return RedirectToAction(nameof(Message), new { messageTypeText = MessageType.ConfirmEmailError });
+                return RedirectToAction(nameof(Message), nameof(Account), new { Organization = _siteContext.UrlSegmentValue, messageTypeText = MessageType.ConfirmEmailError });
             }
 
             // Note: We check, whether the email is available only during POST
@@ -242,7 +242,7 @@ namespace League.Controllers
 
             if (!_dataProtector.TryDecrypt(model.Code?.Base64UrlDecode() ?? string.Empty, out var email, out var expiration))
             {
-                return RedirectToAction(nameof(Message), new { messageTypeText = MessageType.ConfirmEmailError });
+                return RedirectToAction(nameof(Message), nameof(Account), new { Organization = _siteContext.UrlSegmentValue, messageTypeText = MessageType.ConfirmEmailError });
             }
             model.Email = email;
             if (await _signInManager.UserManager.FindByEmailAsync(model.Email) != null)
@@ -287,7 +287,7 @@ namespace League.Controllers
                     await _signInManager.SignInAsync(user, isPersistent: false);
                 }
 
-                return RedirectToAction(nameof(Manage.Index), nameof(Manage));
+                return RedirectToAction(nameof(Manage.Index), nameof(Manage), new { Organization = _siteContext.UrlSegmentValue });
             }
 
             _logger.LogError($"User (email: {user.Email}) could not be created.", result.Errors);
@@ -301,7 +301,7 @@ namespace League.Controllers
         public IActionResult ExternalSignIn(string provider, string returnUrl = null)
         {
             // Request a redirect to the external login provider.
-            var redirectUrl = Url.Action(nameof(ExternalSignInCallback), nameof(Account), new { ReturnUrl = returnUrl });
+            var redirectUrl = Url.Action(nameof(ExternalSignInCallback), nameof(Account), new { Organization = _siteContext.UrlSegmentValue, ReturnUrl = returnUrl });
             var properties = _signInManager.ConfigureExternalAuthenticationProperties(provider, redirectUrl);
 
             return Challenge(properties, provider);
@@ -407,7 +407,7 @@ namespace League.Controllers
             if (info == null)
             {
                 _logger.LogInformation($"{nameof(ExternalSignInConfirmation)} failed to get external sign-in information");
-                return RedirectToAction(nameof(Message), new { messageTypeText = MessageType.ExternalSignInFailure });
+                return RedirectToAction(nameof(Message), nameof(Account), new { Organization = _siteContext.UrlSegmentValue, messageTypeText = MessageType.ExternalSignInFailure });
             }
             var user = new ApplicationUser
             {
@@ -445,8 +445,8 @@ namespace League.Controllers
                         return RedirectToLocal(returnUrl ?? "/" + _siteContext.UrlSegmentValue);
                     }
 
-                    return RedirectToAction(nameof(Message),
-                        new {messageTypeText = MessageType.PleaseConfirmEmail});
+                    return RedirectToAction(nameof(Message), nameof(Account),
+                        new {Organization = _siteContext.UrlSegmentValue, messageTypeText = MessageType.PleaseConfirmEmail});
                 }
             }
 
@@ -491,7 +491,7 @@ namespace League.Controllers
             
             await SendCodeByEmail(user, EmailPurpose.ForgotPassword);
 
-            return RedirectToAction(nameof(Message), new { messageTypeText = MessageType.ForgotPassword });
+            return RedirectToAction(nameof(Message), nameof(Account), new { Organization = _siteContext.UrlSegmentValue, messageTypeText = MessageType.ForgotPassword });
         }
 
         [HttpGet(nameof(ResetPassword))]
@@ -513,7 +513,7 @@ namespace League.Controllers
         {
             if (model.Code == null)
             {
-                return RedirectToAction(nameof(ResetPassword));
+                return RedirectToAction(nameof(ResetPassword), nameof(Account), new { Organization = _siteContext.UrlSegmentValue });
             }
 
             if (!ModelState.IsValid)
@@ -542,7 +542,7 @@ namespace League.Controllers
             var result = await _signInManager.UserManager.ResetPasswordAsync(user, model.Code.Base64UrlDecode(), model.Password);
             if (result.Succeeded)
             {
-                return RedirectToAction(nameof(Message), new { messageTypeText = MessageType.PasswordChanged });
+                return RedirectToAction(nameof(Message), nameof(Account), new { Organization = _siteContext.UrlSegmentValue, messageTypeText = MessageType.PasswordChanged });
             }
             
             var invalidCode = result.Errors.FirstOrDefault(e => e.Code == _signInManager.UserManager.ErrorDescriber.InvalidToken().Code);
@@ -666,14 +666,14 @@ namespace League.Controllers
                     _userEmailTask.ViewNames = new [] { ViewNames.Emails.EmailPleaseConfirmEmail, ViewNames.Emails.EmailPleaseConfirmEmailTxt };
                     _userEmailTask.LogMessage = "Send email confirmation mail";
                     code = _dataProtector.Encrypt(user.Email, DateTimeOffset.UtcNow.Add(_dataProtectionTokenProviderOptions.Value.TokenLifespan)).Base64UrlEncode();
-                    _userEmailTask.Model = (Email: user.Email, CallbackUrl: Url.Action(nameof(Register), nameof(Account), new { code }, protocol: HttpContext.Request.Scheme), _siteContext);
+                    _userEmailTask.Model = (Email: user.Email, CallbackUrl: Url.Action(nameof(Register), nameof(Account), new { Organization = _siteContext.UrlSegmentValue, code }, protocol: HttpContext.Request.Scheme), _siteContext);
                     break;
                 case EmailPurpose.ForgotPassword:
                     _userEmailTask.Subject = _localizer["This is your password recovery key"].Value;
                     _userEmailTask.ViewNames = new [] { ViewNames.Emails.EmailPasswordReset, ViewNames.Emails.EmailPasswordResetTxt };
                     _userEmailTask.LogMessage = "Password recovery email";
                     code = (await _signInManager.UserManager.GeneratePasswordResetTokenAsync(user)).Base64UrlEncode();
-                    _userEmailTask.Model = (Email: user.Email, CallbackUrl: Url.Action(nameof(ResetPassword), nameof(Account), new { id = user.Id, code }, protocol: HttpContext.Request.Scheme), _siteContext);
+                    _userEmailTask.Model = (Email: user.Email, CallbackUrl: Url.Action(nameof(ResetPassword), nameof(Account), new { Organization = _siteContext.UrlSegmentValue, id = user.Id, code }, protocol: HttpContext.Request.Scheme), _siteContext);
                     break;
                 default:
                     _logger.LogError($"Illegal enum type for {nameof(EmailPurpose)}");

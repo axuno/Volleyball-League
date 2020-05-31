@@ -4,6 +4,7 @@
 @inject IViewLocalizer Localizer
 @{
     ViewContext.ClientValidationEnabled = true;
+    var organizationRoute = ViewContext.RouteData.Values["organization"];
     List<SelectListItem> GenderList()
     {
         var genderList = new List<SelectListItem>();
@@ -16,7 +17,7 @@
 <!-- Modal -->
 <modal id="change-email" title="@Localizer["Change Personal Details"].Value" tabindex="-1">
     <modal-body>
-        <form asp-controller="@nameof(Manage)" asp-action="@nameof(Manage.EditPersonalDetails)" method="post" role="form">
+        <form asp-controller="@nameof(Manage)" asp-action="@nameof(Manage.EditPersonalDetails)" asp-route-organization="@organizationRoute" method="post" role="form">
             <site-validation-summary show="All"></site-validation-summary>
             <input name="IsValid" type="hidden" value="@ViewData.ModelState.IsValid.ToString()" />
             <div class="form-group">

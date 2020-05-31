@@ -56,7 +56,7 @@ namespace League.Controllers
         [HttpGet("")]
         public IActionResult Index()
         {
-            return Redirect(Url.Action(nameof(List)));
+            return Redirect(Url.Action(nameof(List), nameof(Team), new { Organization = _siteContext.UrlSegmentValue }));
         }
 
         [HttpGet("[action]")]
@@ -98,7 +98,7 @@ namespace League.Controllers
             
             if (id.HasValue && !userTeamIds.Contains(id.Value))
             {
-                return RedirectToAction(nameof(MyTeam), new {id = default(long?)});
+                return RedirectToAction(nameof(MyTeam), nameof(Team), new { Organization = _siteContext.UrlSegmentValue, id = default(long?) });
             }
 
             var teamUserRoundInfos = await _appDb.TeamRepository.GetTeamUserRoundInfosAsync(
@@ -172,7 +172,7 @@ namespace League.Controllers
                 Authorization.TeamOperations.EditTeam)).Succeeded)
             {
                 return JsonAjaxRedirectForModal(Url.Action(nameof(Error.AccessDenied), nameof(Error),
-                    new { ReturnUrl = Url.Action(nameof(MyTeam)) }));
+                    new { ReturnUrl = Url.Action(nameof(MyTeam), nameof(Team), new { Organization = _siteContext.UrlSegmentValue }) }));
             }
 
             var model = new TeamEditModel
@@ -201,7 +201,7 @@ namespace League.Controllers
                     Authorization.TeamOperations.EditTeam)).Succeeded)
                 {
                     return JsonAjaxRedirectForModal(Url.Action(nameof(Error.AccessDenied), nameof(Error),
-                        new {ReturnUrl = Url.Action(nameof(MyTeam))}));
+                        new {ReturnUrl = Url.Action(nameof(MyTeam), nameof(Team), new { Organization = _siteContext.UrlSegmentValue })}));
                 }
 
                 team.TeamInRounds.AddRange(await _appDb.TeamInRoundRepository.GetTeamInRoundAsync(
@@ -237,14 +237,14 @@ namespace League.Controllers
                 if (await _appDb.GenericRepository.SaveEntityAsync(model.TeamEntity, false, true, cancellationToken))
                 {
                     TempData.Put<MyTeamMessageModel.MyTeamMessage>(nameof(MyTeamMessageModel.MyTeamMessage), new MyTeamMessageModel.MyTeamMessage { AlertType = SiteAlertTagHelper.AlertType.Success, MessageId = MyTeamMessageModel.MessageId.TeamDataSuccess });
-                    return JsonAjaxRedirectForModal(Url.Action(nameof(MyTeam), new {id = team.Id}));
+                    return JsonAjaxRedirectForModal(Url.Action(nameof(MyTeam), nameof(Team), new { Organization = _siteContext.UrlSegmentValue, id = team.Id}));
                 }
             }
             catch (Exception e)
             {
                 TempData.Put<MyTeamMessageModel.MyTeamMessage>(nameof(MyTeamMessageModel.MyTeamMessage), new MyTeamMessageModel.MyTeamMessage { AlertType = SiteAlertTagHelper.AlertType.Danger, MessageId = MyTeamMessageModel.MessageId.TeamDataFailure});
                 _logger.LogCritical(e, "Error saving team id '{0}'", model.Team.IsNew ? "new" : model.Team.Id.ToString());
-                return JsonAjaxRedirectForModal(Url.Action(nameof(MyTeam), new { id = team.Id }));
+                return JsonAjaxRedirectForModal(Url.Action(nameof(MyTeam), new { Organization = _siteContext.UrlSegmentValue, id = team.Id }));
             }
 
             // We never should come this far
@@ -280,12 +280,17 @@ namespace League.Controllers
                 Authorization.TeamOperations.EditTeam)).Succeeded)
             {
                 return RedirectToAction(nameof(Error.AccessDenied), nameof(Error),
-                    new { ReturnUrl = Url.Action(nameof(MyTeam), new { tid}) });
+                    new { ReturnUrl = Url.Action(nameof(MyTeam), nameof(Team), new { Organization = _siteContext.UrlSegmentValue, tid}) });
             }
 
             return PartialView(ViewNames.Team._SelectVenueModalPartial,
                 new TeamVenueSelectModel
-                    {TournamentId = _siteContext.TeamTournamentId, TeamId = teamEntity.Id, VenueId = teamEntity.VenueId, ReturnUrl = Url.IsLocalUrl(returnUrl) ? returnUrl : Url.Action(nameof(MyTeam)) }
+                {
+                    TournamentId = _siteContext.TeamTournamentId, TeamId = teamEntity.Id, VenueId = teamEntity.VenueId,
+                    ReturnUrl = Url.IsLocalUrl(returnUrl)
+                        ? returnUrl
+                        : Url.Action(nameof(MyTeam), nameof(Team), new {Organization = _siteContext.UrlSegmentValue})
+                }
             );
         }
 
@@ -308,7 +313,7 @@ namespace League.Controllers
                 Authorization.TeamOperations.EditTeam)).Succeeded)
             {
                 return JsonAjaxRedirectForModal(Url.Action(nameof(Error.AccessDenied), nameof(Error),
-                    new { ReturnUrl = Url.Action(nameof(MyTeam), new { model.TeamId }) }));
+                    new { ReturnUrl = Url.Action(nameof(MyTeam), nameof(Team), new { Organization = _siteContext.UrlSegmentValue, model.TeamId }) }));
             }
 
             model.TournamentId = _siteContext.TeamTournamentId;
@@ -336,7 +341,7 @@ namespace League.Controllers
                 _logger.LogCritical(e, "Failed to save selected venue for team id {0}, venue id {1}", model.TeamId, model.VenueId);
             }
             
-            return JsonAjaxRedirectForModal(Url.Action(nameof(MyTeam), new { model.TeamId }));
+            return JsonAjaxRedirectForModal(Url.Action(nameof(MyTeam), nameof(Team), new { Organization = _siteContext.UrlSegmentValue, model.TeamId }));
         }
 
         private IList<long> GetUserClaimTeamIds()

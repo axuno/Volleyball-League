@@ -2,6 +2,7 @@
 @inject IViewLocalizer Localizer
 @{
     ViewData["Title"] = Localizer["Account is currently disabled"];
+    var organizationRoute = ViewContext.RouteData.Values["organization"];
 }
 <h2 class="h2">@ViewData["Title"].</h2>
 <div>
@@ -9,6 +10,6 @@
         @Localizer["Your account is currently disabled, because your email address has not been confirmed yet"]<br />
     </site-alert>
     <p>
-        <a asp-controller="@nameof(League.Controllers.Account)" asp-action="@nameof(League.Controllers.Account.SignIn)" class="btn btn-lg btn-primary col-sm-8 col-md-5">@Localizer["Sign in"]</a>
+        <a asp-controller="@nameof(League.Controllers.Account)" asp-action="@nameof(League.Controllers.Account.SignIn)" asp-route-organization="@organizationRoute" class="btn btn-lg btn-primary col-sm-8 col-md-5">@Localizer["Sign in"]</a>
     </p>
 </div>

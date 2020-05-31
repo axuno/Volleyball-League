@@ -64,7 +64,7 @@ namespace League.Controllers
         [HttpGet("")]
         public IActionResult Index()
         {
-            return Redirect(Url.Action(nameof(Results)));
+            return Redirect(Url.Action(nameof(Results), nameof(Match), new { Organization = _siteContext.UrlSegmentValue }));
         }
 
         [HttpGet("[action]")]
@@ -221,7 +221,7 @@ namespace League.Controllers
         }
 
         [Authorize(Policy = Authorization.PolicyName.MatchPolicy)]
-        [HttpPost("enter-result")]
+        [HttpPost("enter-result/{*segments}")]
         public async Task<IActionResult> EnterResult([FromForm] EnterResultViewModel model, CancellationToken cancellationToken)
         {
             MatchEntity match;
@@ -297,7 +297,7 @@ namespace League.Controllers
             }
 
             // redirect to results overview, where success message is shown
-            return RedirectToAction(nameof(Results));
+            return RedirectToAction(nameof(Results), nameof(Match), new { Organization = _siteContext.UrlSegmentValue });
         }
 
         [Authorize(Policy = Authorization.PolicyName.MatchPolicy)]
@@ -330,7 +330,7 @@ namespace League.Controllers
         }
 
         [Authorize(Policy = Authorization.PolicyName.MatchPolicy)]
-        [HttpPost("edit-fixture")]
+        [HttpPost("edit-fixture/{*segments}")]
         public async Task<IActionResult> EditFixture([FromForm] EditFixtureViewModel model, CancellationToken cancellationToken)
         {
             // [FromBody] => 'content-type': 'application/json'
@@ -404,7 +404,7 @@ namespace League.Controllers
 
             // redirect to fixture overview, where success message is shown
             TempData.Put<EditFixtureViewModel.FixtureMessage>(nameof(EditFixtureViewModel.FixtureMessage), fixtureMessage);
-            return RedirectToAction(nameof(Fixtures));
+            return RedirectToAction(nameof(Fixtures), nameof(Match), new { Organization = _siteContext.UrlSegmentValue });
         }
 
         /// <summary>
@@ -601,7 +601,7 @@ namespace League.Controllers
 
         private void UpdateRanking(in long roundId)
         {
-            _rankingUpdateTask.siteContext = _siteContext;
+            _rankingUpdateTask.SiteContext = _siteContext;
             _rankingUpdateTask.RoundId = roundId;
             _rankingUpdateTask.Timeout = TimeSpan.FromMinutes(2);
             _queue.QueueTask(_rankingUpdateTask);
@@ -614,9 +614,9 @@ namespace League.Controllers
         private string GetReturnUrl()
         {
             var returnUrl = HttpContext.Request.GetTypedHeaders().Referer.ToString();
-            return returnUrl == Url.Action(nameof(Results), nameof(Match), null, Url.ActionContext.HttpContext.Request.Scheme)
-                ? Url.Action(nameof(Results)) // editing a result is exceptional
-                : Url.Action(nameof(Fixtures)); // coming from fixtures is normal
+            return returnUrl == Url.Action(nameof(Results), nameof(Match), new { Organization = _siteContext.UrlSegmentValue }, Url.ActionContext.HttpContext.Request.Scheme)
+                ? Url.Action(nameof(Results), nameof(Match), new { Organization = _siteContext.UrlSegmentValue }) // editing a result is exceptional
+                : Url.Action(nameof(Fixtures), nameof(Match), new { Organization = _siteContext.UrlSegmentValue }); // coming from fixtures is normal
         }
     }
 }

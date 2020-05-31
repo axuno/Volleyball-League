@@ -4,12 +4,12 @@
 @using Microsoft.AspNetCore.Mvc.Localization
 @inject IViewLocalizer Localizer
 @model League.Models.TeamViewModels.TeamEditModel
-@{ ViewContext.ClientValidationEnabled = false; }
+@{ ViewContext.ClientValidationEnabled = false; var organizationRoute = ViewContext.RouteData.Values["organization"];}
 <!-- Modal -->
 <modal id="edit-team" title="@Localizer["Edit team"].Value" dialog-class="modal-xl" tabindex="-1">
     <modal-body>
         @* Form with only 1 input field can be submitted with enter key. So we have to prevent default submit behavior and trigger a click on saveBtn *@
-        <form asp-controller="@nameof(Team)" asp-action="@nameof(Team.Edit)" method="post" role="form" onsubmit="$('#@(League.TagHelpers.Modal.SiteAjaxSubmitTagHelper.TagHelperAttributeName)').trigger('click');return false;">
+        <form asp-controller="@nameof(Team)" asp-action="@nameof(Team.Edit)" asp-route-organization="@organizationRoute" method="post" role="form" onsubmit="$('#@(League.TagHelpers.Modal.SiteAjaxSubmitTagHelper.TagHelperAttributeName)').trigger('click');return false;">
             <site-validation-summary show="All" warning="@Model.IsWarning" unique-error-text="true"></site-validation-summary>
             <input asp-for="Hash" type="hidden" />
             <input name="IsValid" type="hidden" value="@ViewData.ModelState.IsValid.ToString()" />

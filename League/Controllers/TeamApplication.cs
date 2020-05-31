@@ -72,7 +72,7 @@ namespace League.Controllers
         [HttpGet("")]
         public IActionResult Index()
         {
-            return Redirect(Url.Action(nameof(List)));
+            return Redirect(Url.Action(nameof(List), nameof(TeamApplication), new { Organization = _siteContext.UrlSegmentValue }));
         }
 
         [HttpGet("[action]")]
@@ -127,10 +127,10 @@ namespace League.Controllers
 
             // No existing team can be selected, so prepare to enter a new one
             sessionModel.Team.IsNew = true;
-            return RedirectToAction(nameof(EditTeam));
+            return RedirectToAction(nameof(EditTeam), new { Organization = _siteContext.UrlSegmentValue });
         }
 
-        [HttpPost("select-team")]
+        [HttpPost("select-team/{*segments}")]
         public async Task<IActionResult> SelectTeam([FromForm] ApplicationSelectTeamModel selectTeamModel, CancellationToken cancellationToken)
         {
             selectTeamModel = await GetTeamSelectModel(cancellationToken);
@@ -154,7 +154,7 @@ namespace League.Controllers
             sessionModel.Team.IsNew = false;
             
             SaveModelToSession(sessionModel);
-            return RedirectToAction(nameof(EditTeam));
+            return RedirectToAction(nameof(EditTeam), new { Organization = _siteContext.UrlSegmentValue });
         }
 
         [HttpGet("edit-team/{teamId:long}")]
@@ -163,21 +163,21 @@ namespace League.Controllers
             var teamSelectModel = await GetTeamSelectModel(cancellationToken);
             if (teamSelectModel.TeamsManagedByUser.All(t => t.TeamId != teamId))
             {
-                return RedirectToAction(nameof(SelectTeam));
+                return RedirectToAction(nameof(SelectTeam), new { Organization = _siteContext.UrlSegmentValue });
             }
 
             var sessionModel = await GetNewSessionModel(cancellationToken);
             sessionModel.Team.Id = teamId;
             sessionModel.Team.IsNew = false;
             SaveModelToSession(sessionModel);
-            return RedirectToAction(nameof(EditTeam), new {teamId = string.Empty});
+            return RedirectToAction(nameof(EditTeam), new { Organization = _siteContext.UrlSegmentValue, teamId = string.Empty });
         }
 
         [HttpGet("edit-team")]
         public async Task<IActionResult> EditTeam(bool? isNew, CancellationToken cancellationToken)
         {
             var sessionModel = await GetModelFromSession(cancellationToken);
-            if (!sessionModel.IsFromSession) return RedirectToAction(nameof(SelectTeam));
+            if (!sessionModel.IsFromSession) return RedirectToAction(nameof(SelectTeam), new { Organization = _siteContext.UrlSegmentValue });
             ViewData["TournamentName"] = sessionModel.TournamentName;
 
             if (isNew.HasValue && isNew.Value)
@@ -194,7 +194,7 @@ namespace League.Controllers
                 teamEntity = await _appDb.TeamRepository.GetTeamEntityAsync(
                     new PredicateExpression(TeamFields.Id == sessionModel.Team.Id),
                     cancellationToken);
-                if (teamEntity == null) return RedirectToAction(nameof(SelectTeam));
+                if (teamEntity == null) return RedirectToAction(nameof(SelectTeam), new { Organization = _siteContext.UrlSegmentValue });
                 sessionModel.Team.MapEntityToFormFields(teamEntity);
             }
 
@@ -204,7 +204,7 @@ namespace League.Controllers
                     Authorization.TeamOperations.SignUpForSeason)).Succeeded)
                 {
                     return RedirectToAction(nameof(Error.AccessDenied), nameof(Error),
-                        new { ReturnUrl = Url.Action(nameof(EditTeam)) });
+                        new { ReturnUrl = Url.Action(nameof(EditTeam), nameof(TeamApplication), new { Organization = _siteContext.UrlSegmentValue }) });
                 }
             }
 
@@ -225,7 +225,7 @@ namespace League.Controllers
         public async Task<IActionResult> EditTeam([FromForm] TeamEditModel teamEditModel, CancellationToken cancellationToken)
         {
             var sessionModel = await GetModelFromSession(cancellationToken);
-            if (!sessionModel.IsFromSession) return RedirectToAction(nameof(SelectTeam));
+            if (!sessionModel.IsFromSession) return RedirectToAction(nameof(SelectTeam), new { Organization = _siteContext.UrlSegmentValue });
             ViewData["TournamentName"] = sessionModel.TournamentName;
 
             TeamEntity teamEntity = null;
@@ -234,14 +234,14 @@ namespace League.Controllers
                 teamEntity = await _appDb.TeamRepository.GetTeamEntityAsync(new PredicateExpression(TeamFields.Id == teamEditModel.Team.Id), cancellationToken);
                 if (teamEntity == null)
                 {
-                    return RedirectToAction(nameof(SelectTeam));
+                    return RedirectToAction(nameof(SelectTeam), new { Organization = _siteContext.UrlSegmentValue });
                 }
 
                 if (!(await _authorizationService.AuthorizeAsync(User, new TeamEntity(teamEntity.Id),
                     Authorization.TeamOperations.SignUpForSeason)).Succeeded)
                 {
                     return RedirectToAction(nameof(Error.AccessDenied), nameof(Error),
-                        new { ReturnUrl = Url.Action(nameof(EditTeam)) });
+                        new { ReturnUrl = Url.Action(nameof(EditTeam), nameof(TeamApplication), new { Organization = _siteContext.UrlSegmentValue }) });
                 }
 
                 teamEntity.TeamInRounds.AddRange(await _appDb.TeamInRoundRepository.GetTeamInRoundAsync(
@@ -283,14 +283,14 @@ namespace League.Controllers
             sessionModel.TeamIsSet = true;
             SaveModelToSession(sessionModel);
 
-            return RedirectToAction(nameof(SelectVenue));
+            return RedirectToAction(nameof(SelectVenue), new { Organization = _siteContext.UrlSegmentValue });
         }
 
         [HttpGet("select-venue")]
         public async Task<IActionResult> SelectVenue(CancellationToken cancellationToken)
         {
             var sessionModel = await GetModelFromSession(cancellationToken);
-            if (!sessionModel.IsFromSession) return RedirectToAction(nameof(SelectTeam));
+            if (!sessionModel.IsFromSession) return RedirectToAction(nameof(SelectTeam), new { Organization = _siteContext.UrlSegmentValue });
             ViewData["TournamentName"] = sessionModel.TournamentName;
 
             sessionModel.Venue.IsNew = true;
@@ -302,7 +302,7 @@ namespace League.Controllers
                 teamEntity = await _appDb.TeamRepository.GetTeamEntityAsync(
                     new PredicateExpression(TeamFields.Id == sessionModel.Team.Id),
                     cancellationToken);
-                if (teamEntity == null) return RedirectToAction(nameof(SelectTeam));
+                if (teamEntity == null) return RedirectToAction(nameof(SelectTeam), new { Organization = _siteContext.UrlSegmentValue });
             }
 
             return View(ViewNames.TeamApplication.SelectVenue, new TeamVenueSelectModel
@@ -323,7 +323,7 @@ namespace League.Controllers
             // Note: TeamId is not taken from TeamVenueSelectModel, but from ApplicationSessionModel
 
             var sessionModel = await GetModelFromSession(cancellationToken);
-            if (!sessionModel.IsFromSession) return RedirectToAction(nameof(SelectTeam));
+            if (!sessionModel.IsFromSession) return RedirectToAction(nameof(SelectTeam), new { Organization = _siteContext.UrlSegmentValue });
             ViewData["TournamentName"] = sessionModel.TournamentName;
 
             if (!sessionModel.Team.IsNew)
@@ -331,12 +331,12 @@ namespace League.Controllers
                 var teamEntity = await _appDb.TeamRepository.GetTeamEntityAsync(
                     new PredicateExpression(TeamFields.Id == sessionModel.Team.Id),
                     cancellationToken);
-                if (teamEntity == null) return RedirectToAction(nameof(SelectTeam));
+                if (teamEntity == null) return RedirectToAction(nameof(SelectTeam), new { Organization = _siteContext.UrlSegmentValue });
             }
 
             if (selectVenueModel.VenueId.HasValue && !await _appDb.VenueRepository.IsValidVenueIdAsync(selectVenueModel.VenueId, cancellationToken))
             {
-                return RedirectToAction(nameof(SelectVenue));
+                return RedirectToAction(nameof(SelectVenue), new { Organization = _siteContext.UrlSegmentValue });
             }
 
             selectVenueModel.TournamentId = sessionModel.PreviousTournamentId ?? _siteContext.ApplicationTournamentId;
@@ -351,14 +351,14 @@ namespace League.Controllers
             
             SaveModelToSession(sessionModel);
 
-            return RedirectToAction(nameof(EditVenue));
+            return RedirectToAction(nameof(EditVenue), new { Organization = _siteContext.UrlSegmentValue });
         }
 
         [HttpGet("edit-venue")]
         public async Task<IActionResult> EditVenue(bool? isNew, CancellationToken cancellationToken)
         {
             var sessionModel = await GetModelFromSession(cancellationToken);
-            if (!sessionModel.IsFromSession) return RedirectToAction(nameof(SelectTeam));
+            if (!sessionModel.IsFromSession) return RedirectToAction(nameof(SelectTeam), new { Organization = _siteContext.UrlSegmentValue });
             ViewData["TournamentName"] = sessionModel.TournamentName;
 
             if (isNew.HasValue && isNew.Value)
@@ -377,7 +377,7 @@ namespace League.Controllers
 
                 if (venueEntity == null)
                 {
-                    return RedirectToAction(nameof(SelectVenue));
+                    return RedirectToAction(nameof(SelectVenue), new { Organization = _siteContext.UrlSegmentValue });
                 }
 
                 venueTeams = await _appDb.VenueRepository.GetVenueTeamRowsAsync(new PredicateExpression(VenueTeamFields.VenueId == venueEntity.Id), cancellationToken);
@@ -397,7 +397,7 @@ namespace League.Controllers
         public async Task<IActionResult> EditVenue([FromForm] VenueEditModel venueEditModel, CancellationToken cancellationToken)
         {
             var sessionModel = await GetModelFromSession(cancellationToken);
-            if (!sessionModel.IsFromSession) return RedirectToAction(nameof(SelectTeam));
+            if (!sessionModel.IsFromSession) return RedirectToAction(nameof(SelectTeam), new { Organization = _siteContext.UrlSegmentValue });
             ViewData["TournamentName"] = sessionModel.TournamentName;
 
             var venueEntity = new VenueEntity();
@@ -409,7 +409,7 @@ namespace League.Controllers
 
                 if (venueEntity == null)
                 {
-                    return RedirectToAction(nameof(SelectVenue));
+                    return RedirectToAction(nameof(SelectVenue), new { Organization = _siteContext.UrlSegmentValue });
                 }
             }
 
@@ -446,14 +446,14 @@ namespace League.Controllers
             SaveModelToSession(sessionModel);
             sessionModel.VenueIsSet = true;
 
-            return RedirectToAction(nameof(Confirm));
+            return RedirectToAction(nameof(Confirm), new { Organization = _siteContext.UrlSegmentValue });
         }
 
         [HttpGet("[action]")]
         public async Task<IActionResult> Confirm(CancellationToken cancellationToken)
         {
             var sessionModel = await GetModelFromSession(cancellationToken);
-            if (!sessionModel.IsFromSession) return RedirectToAction(nameof(SelectTeam));
+            if (!sessionModel.IsFromSession) return RedirectToAction(nameof(SelectTeam), new { Organization = _siteContext.UrlSegmentValue });
             SaveModelToSession(sessionModel);
 
             var roundWithType = (await _appDb.RoundRepository.GetRoundsWithTypeAsync(
@@ -473,7 +473,7 @@ namespace League.Controllers
         public async Task<IActionResult> Confirm(bool done, CancellationToken cancellationToken)
         {
             var sessionModel = await GetModelFromSession(cancellationToken);
-            if (!sessionModel.IsFromSession) return RedirectToAction(nameof(SelectTeam));
+            if (!sessionModel.IsFromSession) return RedirectToAction(nameof(SelectTeam), new { Organization = _siteContext.UrlSegmentValue });
 
             var teamInRoundEntity = new TeamInRoundEntity();
             sessionModel.TeamInRound.MapFormFieldsToEntity(teamInRoundEntity);
@@ -509,7 +509,7 @@ namespace League.Controllers
                         TournamentName = sessionModel.TournamentName,
                         RoundId = teamInRoundEntity.RoundId,
                         OrganizationContext = _siteContext,
-                        UrlToEditApplication = Url.Action(nameof(EditTeam), nameof(TeamApplication), new {teamId = teamInRoundEntity.TeamId}, Request.Scheme, Request.Host.ToString())
+                        UrlToEditApplication = Url.Action(nameof(EditTeam), nameof(TeamApplication), new { Organization = _siteContext.UrlSegmentValue, teamId = teamInRoundEntity.TeamId}, Request.Scheme, Request.Host.ToString())
                     };
                     _teamApplicationEmailTask.Subject = _localizer["Registration for team '{0}'", _teamApplicationEmailTask.Model.TeamName].Value;
                     _teamApplicationEmailTask.EmailCultureInfo = CultureInfo.DefaultThreadCurrentUICulture;
@@ -517,7 +517,7 @@ namespace League.Controllers
                     _teamApplicationEmailTask.ViewNames = new[] {null, ViewNames.Emails.ConfirmTeamApplicationTxt};
                     _queue.QueueTask(_teamApplicationEmailTask);
 
-                    return RedirectToAction(nameof(List));
+                    return RedirectToAction(nameof(List), new { Organization = _siteContext.UrlSegmentValue });
                 }
 
                 throw new Exception($"Saving the {nameof(TeamInRoundEntity)} failed.");
@@ -533,7 +533,7 @@ namespace League.Controllers
                         AlertType = SiteAlertTagHelper.AlertType.Danger,
                         MessageId = TeamApplicationMessageModel.MessageId.ApplicationFailure
                     });
-                return RedirectToAction(nameof(List));
+                return RedirectToAction(nameof(List), new { Organization = _siteContext.UrlSegmentValue });
             }
         }
 

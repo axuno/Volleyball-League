@@ -6,16 +6,17 @@
 @model ExternalSignConfirmationViewModel
 @{
     ViewData["Title"] = Localizer["Associate social network account"];
+    var organizationRoute = ViewContext.RouteData.Values["organization"];
     List<SelectListItem> GenderList()
     {
-        return new List<SelectListItem> {new SelectListItem {Value = string.Empty, Text = Localizer["Please choose"].Value}, 
-            new SelectListItem {Value = "f", Text = Localizer["Mrs."].Value}, 
+        return new List<SelectListItem> {new SelectListItem {Value = string.Empty, Text = Localizer["Please choose"].Value},
+            new SelectListItem {Value = "f", Text = Localizer["Mrs."].Value},
             new SelectListItem {Value = "m", Text = Localizer["Mr."].Value}};
     }
 }
 <h2 class="h2">@(Localizer.GetHtml("Associate your <strong>{0}</strong> account", ViewData["LoginProvider"])).</h2>
 <hr />
-<form asp-controller="@nameof(Account)" asp-action="@nameof(Account.ExternalSignInConfirmation)" asp-route-returnurl="@ViewData["ReturnUrl"]" method="post" class="col-md-8 col-sm-10 col-12 pl-0" role="form">
+<form asp-controller="@nameof(Account)" asp-action="@nameof(Account.ExternalSignInConfirmation)" asp-route-organization="@organizationRoute" asp-route-returnurl="@ViewData["ReturnUrl"]" method="post" class="col-md-8 col-sm-10 col-12 pl-0" role="form">
     <site-alert type="Success">
         @(Localizer.GetHtml("You have successfully authenticated with <strong>{0}</strong>", ViewData["LoginProvider"])).
     </site-alert>

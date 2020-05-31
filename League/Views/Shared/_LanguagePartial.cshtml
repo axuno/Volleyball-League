@@ -15,7 +15,7 @@
                     var encodedCurrentRequest = WebUtility.UrlEncode($"{Context.Request.Path}{Context.Request.QueryString}");
                     foreach (var c in LocalizationOptions.Value.SupportedCultures)
                     {
-                        <a href="@Url.Action(nameof(League.Controllers.Language.Index), nameof(League.Controllers.Language), new {culture = c.TwoLetterISOLanguageName, uiCulture = c.TwoLetterISOLanguageName, returnUrl = encodedCurrentRequest})" class="dropdown-item">@(Html.Raw(c.DisplayName))</a>
+                        <a asp-action="@nameof(League.Controllers.Language.Index)" asp-controller="@nameof(League.Controllers.Language)" asp-route-culture="@c.TwoLetterISOLanguageName" asp-route-uiCulture="@c.TwoLetterISOLanguageName" asp-route-returnUrl="@encodedCurrentRequest" class="dropdown-item">@(Html.Raw(c.DisplayName))</a>
                     }
                 }
             </div>

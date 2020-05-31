@@ -2,13 +2,14 @@
 @using Microsoft.AspNetCore.Mvc.Localization
 @inject IViewLocalizer Localizer
 @model ChangeEmailViewModel
+@{var organizationRoute = ViewContext.RouteData.Values["organization"];}
 <!-- Modal -->
 <modal id="change-email" title="@Localizer["Delete Account"].Value" tabindex="-1">
     <modal-body>
         <div>
             <p>@Localizer["Once you delete your user account, there is no going back. Please be certain."]</p>
         </div>
-        <form asp-controller="@nameof(Manage)" asp-action="@nameof(Manage.DeleteAccountConfirmed)" method="post" role="form">
+        <form asp-controller="@nameof(Manage)" asp-action="@nameof(Manage.DeleteAccountConfirmed)" asp-route-organization="@organizationRoute" method="post" role="form">
         </form>
     </modal-body>
     <modal-footer show-dismiss="true" dismiss-text="@Localizer["Cancel"].Value">

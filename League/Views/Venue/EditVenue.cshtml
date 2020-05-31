@@ -6,12 +6,13 @@
 @model League.Models.VenueViewModels.VenueEditModel
 @{ ViewContext.ClientValidationEnabled = false;
     ViewData["Title"] = (Model.Venue.IsNew ? Localizer["Create venue"].Value : Localizer["Edit venue"].Value) + " - " + ViewData["TournamentName"];
+    var organizationRoute = ViewContext.RouteData.Values["organization"];
 }
 <div class="mb-0 pb-1">
     <h2 class="h2">@ViewData["Title"]</h2>
     <hr />
     @* Form with only 1 input field can be submitted with enter key. So we have to prevent default submit behavior and trigger a click on saveBtn *@
-    <form asp-controller="@nameof(Venue)" asp-action="@(Model.Venue.IsNew ? nameof(Venue.Create) : nameof(Venue.Edit))" method="post" role="form">
+    <form asp-controller="@nameof(Venue)" asp-action="@(Model.Venue.IsNew ? nameof(Venue.Create) : nameof(Venue.Edit))" asp-route-organization="@organizationRoute" method="post" role="form">
         <site-validation-summary show="All" warning="@Model.IsWarning" unique-error-text="true"></site-validation-summary>
         <input asp-for="TeamId" type="hidden" />
         <input asp-for="Hash" type="hidden" />

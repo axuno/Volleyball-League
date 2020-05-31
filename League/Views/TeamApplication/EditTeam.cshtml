@@ -6,11 +6,12 @@
 @model League.Models.TeamViewModels.TeamEditModel
 @{
     ViewData["Title"] = Localizer["Team Registration"].Value + " - " + ViewData["TournamentName"];
+    var organizationRoute = ViewContext.RouteData.Values["organization"];
 }
 <div class="mb-0 pb-1">
     <h2 class="h2">@ViewData["Title"]</h2>
     <hr class="mb-2" />
-    <form asp-controller="@nameof(TeamApplication)" asp-action="@nameof(TeamApplication.EditTeam)" method="post" role="form">
+    <form asp-controller="@nameof(TeamApplication)" asp-action="@nameof(TeamApplication.EditTeam)" asp-route-organization="@organizationRoute" method="post" role="form">
         <site-validation-summary show="All" warning="@Model.IsWarning" unique-error-text="true"></site-validation-summary>
         <input asp-for="Hash" type="hidden" />
         <input name="IsValid" type="hidden" value="@ViewData.ModelState.IsValid.ToString()" />
@@ -29,7 +30,7 @@
         @(await Component.InvokeAsync<TeamEditor>(Model.Team))
         <div class="row">
             <div class="form-group col-12 col-md-6 mt-2">
-                <a asp-controller="@nameof(TeamApplication)" asp-action="@nameof(TeamApplication.SelectTeam)" class="btn btn-secondary">@Localizer["Back"]</a>
+                <a asp-controller="@nameof(TeamApplication)" asp-action="@nameof(TeamApplication.SelectTeam)" asp-route-organization="@organizationRoute" class="btn btn-secondary">@Localizer["Back"]</a>
                 <button type="submit" class="btn btn-primary">@Localizer["Continue"]</button>
             </div>
         </div>
