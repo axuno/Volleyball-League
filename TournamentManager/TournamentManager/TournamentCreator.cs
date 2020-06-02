@@ -45,7 +45,6 @@ namespace TournamentManager.Data
 		/// not exist. For start and end date of leg data 1 year is added.
 		/// </summary>
 		/// <param name="fromTournamentId">Existing source tournament id.</param>
-		/// <param name="toTournamentId">New target tournament id.</param>
 		/// <returns>True, if creation was successful, false otherwise.</returns>
 		public async Task<bool> CopyTournament (long fromTournamentId)
 		{
@@ -68,8 +67,8 @@ namespace TournamentManager.Data
 		    tournament.NextTournamentId = newTournament.Id;
 		    tournament.ModifiedOn = now;
 
-            // save recursively (new tournament with new legs)
-            return _appDb.GenericRepository.SaveEntity(tournament, true, true);
+            // save last tournament
+            return _appDb.GenericRepository.SaveEntity(tournament, true, false);
 		}
 
 

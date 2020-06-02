@@ -114,6 +114,12 @@ namespace League.Controllers
                 // RFC5545 sect. 3.4.1: iCal default charset is UTF8.
                 // Important: no Byte Order Mark (BOM) for Android, Google, Apple
                 var encoding = new UTF8Encoding(false);
+                matches.ForEach(m =>
+                {
+                    // convert to local time
+                    m.PlannedStart = _timeZoneConverter.ToZonedTime(m.PlannedStart).DateTimeOffset.DateTime;
+                    m.PlannedEnd = _timeZoneConverter.ToZonedTime(m.PlannedEnd).DateTimeOffset.DateTime;
+                });
                 calendar.CreateEvents(matches).Serialize(stream, encoding); 
                 stream.Seek(0, SeekOrigin.Begin); 
                 return File(stream, $"text/calendar; charset={encoding.HeaderName}", $"Match_{matches[0].PlannedStart?.ToString("yyyy-MM-dd") ?? string.Empty}_{Guid.NewGuid():N}.ics");
@@ -145,6 +151,12 @@ namespace League.Controllers
                 // RFC5545 sect. 3.4.1: iCal default charset is UTF8.
                 // Important: no Byte Order Mark (BOM) for Android, Google, Apple
                 var encoding = new UTF8Encoding(false);
+                matches.ForEach(m =>
+                {
+                    // convert to local time
+                    m.PlannedStart = _timeZoneConverter.ToZonedTime(m.PlannedStart).DateTimeOffset.DateTime;
+                    m.PlannedEnd = _timeZoneConverter.ToZonedTime(m.PlannedEnd).DateTimeOffset.DateTime;
+                });
                 calendar.CreateEvents(matches).Serialize(stream, encoding);
                 stream.Seek(0, SeekOrigin.Begin);
                 return File(stream, $"text/calendar; charset={encoding.HeaderName}", $"Match_{Guid.NewGuid():N}.ics");

@@ -195,7 +195,7 @@ namespace League.Controllers
                         MessageId = isSuccess ? MyTeamMessageModel.MessageId.MemberAddSuccess : MyTeamMessageModel.MessageId.MemberAddFailure
                     });
 
-                return Url.Action(nameof(Team.MyTeam), nameof(Team), new { id = teamId });
+                return Url.Action(nameof(Team.MyTeam), nameof(Team), new { Organization = _siteContext.UrlSegmentValue, id = teamId });
             }
 
             if (method.Equals(nameof(Remove)) && returnUrl.Contains(Url.Action(nameof(Team.MyTeam), nameof(Team), new { Organization = _siteContext.UrlSegmentValue })))
