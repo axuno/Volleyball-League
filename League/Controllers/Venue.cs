@@ -5,20 +5,17 @@ using System.Globalization;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using AngleSharp.Html.Dom;
 using Axuno.Tools.GeoSpatial;
 using League.Components;
 using League.ConfigurationPoco;
 using League.DI;
 using League.Helpers;
-using League.Models.TeamApplicationViewModels;
 using League.Models.TeamViewModels;
 using League.Models.VenueViewModels;
 using League.TagHelpers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
@@ -36,7 +33,6 @@ namespace League.Controllers
     {
         private readonly SiteContext _siteContext;
         private readonly AppDb _appDb;
-        private readonly UserManager<Identity.ApplicationUser> _userManager;
         private readonly IAuthorizationService _authorizationService;
         private readonly IStringLocalizer<Venue> _localizer;
         private readonly RegionInfo _regionInfo;
@@ -45,15 +41,13 @@ namespace League.Controllers
         private readonly GoogleConfiguration _googleConfig;
         private readonly string _defaultReturnUrl;
 
-        public Venue(SiteContext siteContext,
-            SignInManager<Identity.ApplicationUser> signInManager,
-            IAuthorizationService authorizationService, IStringLocalizer<Venue> localizer, RegionInfo regionInfo,
+        public Venue(SiteContext siteContext, IAuthorizationService authorizationService, 
+            IStringLocalizer<Venue> localizer, RegionInfo regionInfo,
             IConfiguration configuration, ILogger<Venue> logger)
         {
             _defaultReturnUrl = "/";
             _siteContext = siteContext;
             _appDb = siteContext.AppDb;
-            _userManager = signInManager.UserManager;
             _authorizationService = authorizationService;
             _localizer = localizer;
             _regionInfo = regionInfo;

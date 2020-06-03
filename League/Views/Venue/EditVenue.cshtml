@@ -5,7 +5,7 @@
 @inject IViewLocalizer Localizer
 @model League.Models.VenueViewModels.VenueEditModel
 @{ ViewContext.ClientValidationEnabled = false;
-    ViewData["Title"] = (Model.Venue.IsNew ? Localizer["Create venue"].Value : Localizer["Edit venue"].Value) + " - " + ViewData["TournamentName"];
+    ViewData["Title"] = (Model.Venue.IsNew ? Localizer["Create venue"].Value : Localizer["Edit venue"].Value);
     var organizationRoute = ViewContext.RouteData.Values["organization"];
 }
 <div class="mb-0 pb-1">

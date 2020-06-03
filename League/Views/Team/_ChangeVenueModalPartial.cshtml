@@ -22,7 +22,7 @@
                     }
                 </div>
                 <div class="mb-4">
-                    <form asp-controller="@nameof(Team)" asp-action="@nameof(Team.SelectVenue)" asp-route-tid="@Model.TeamId" method="get" role="form">
+                    <form asp-controller="@nameof(Team)" asp-action="@nameof(Team.SelectVenue)" asp-route-organization="@organizationRoute" asp-route-tid="@Model.TeamId" method="get" role="form">
                         <button type="button" site-ajax-submit class="btn btn-primary btn-block">@Localizer["Select another venue"]</button>
                     </form>
                 </div>
