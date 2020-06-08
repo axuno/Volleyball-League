@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "name": "asp.net",
+  "name": "league",
   "private": true,
   "description": "league",
   "main": "index.js",
@@ -34,5 +34,7 @@
     "tempusdominus-bootstrap-4": "5.1.2",
     "tether": "1.4.7"
   },
-  "dependencies": {}
+  "dependencies": {
+    "npm-install-peers": "^1.2.1"
+  }
 }
