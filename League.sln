@@ -17,9 +17,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Axuno.Tools", "Axuno.Tools\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Axuno.Web", "Axuno.Web\Axuno.Web.csproj", "{EF406F0A-A26B-4583-A897-8D5B634237DD}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Axuno.BackgroundQueue", "Axuno.BackgroundTask\Axuno.BackgroundQueue.csproj", "{8447700D-1878-45D8-9FA2-5AE4E81949EC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Axuno.BackgroundTask", "Axuno.BackgroundTask\Axuno.BackgroundTask.csproj", "{8447700D-1878-45D8-9FA2-5AE4E81949EC}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Axuno.BackgroundQueue.Tests", "Axuno.BackgroundTask.Test\Axuno.BackgroundQueue.Tests.csproj", "{2EDD4835-C74D-4184-AFDD-406D45A914DD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Axuno.BackgroundTask.Tests", "Axuno.BackgroundTask.Test\Axuno.BackgroundTask.Tests.csproj", "{2EDD4835-C74D-4184-AFDD-406D45A914DD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -16,8 +16,8 @@
 
   <ItemGroup>
     <PackageReference Include="Ical.Net" Version="4.1.11" />
-    <PackageReference Include="libphonenumber-csharp" Version="8.12.2" />
-    <PackageReference Include="NLog.Extensions.Logging" Version="1.6.2" />
+    <PackageReference Include="libphonenumber-csharp" Version="8.12.4" />
+    <PackageReference Include="NLog.Extensions.Logging" Version="1.6.4" />
     <PackageReference Include="System.Data.SqlClient" Version="4.8.1" />
     <PackageReference Include="YAXLib" Version="2.15.0" />
     <PackageReference Include="ZedGraph" Version="6.0.0-alpha0001" />

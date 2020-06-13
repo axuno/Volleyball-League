@@ -4,7 +4,7 @@ using System.Text;
 using Axuno.BackgroundTask;
 using NUnit.Framework;
 
-namespace Axuno.BackgroundQueue.Tests
+namespace Axuno.BackgroundTask.Tests
 {
     [TestFixture]
     public class BackgroundQueueServiceConfigTests
