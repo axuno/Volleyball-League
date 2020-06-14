@@ -62,13 +62,13 @@ namespace Axuno.BackgroundTask
         }
 
         /// <summary>
-        /// Implement the job to run
+        /// Implement the job to run.
         /// </summary>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
         public virtual async Task ExecuteAsync(CancellationToken cancellationToken)
         {
-            await Task.Delay(1000, cancellationToken);
+            await Task.CompletedTask;
         }
 
         public virtual async Task StopAsync(CancellationToken cancellationToken)

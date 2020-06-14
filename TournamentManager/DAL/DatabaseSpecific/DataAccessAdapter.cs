@@ -108,7 +108,7 @@ namespace TournamentManager.DAL.DatabaseSpecific
 		/// <returns>connection string read</returns>
 		private static string ReadConnectionStringFromConfig()
 		{
-#if NETSTANDARD2_0
+#if NETSTANDARD
 			return RuntimeConfiguration.GetConnectionString(ConnectionStringKeyName);
 #else
 			return ConfigFileHelper.ReadConnectionStringFromConfig(ConnectionStringKeyName);
