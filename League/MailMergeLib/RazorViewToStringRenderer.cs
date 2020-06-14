@@ -1,9 +1,4 @@
-/* Copyright (c) .NET Foundation. All rights reserved.
-   Licensed under the Apache License, Version 2.0, http://www.apache.org/licenses/LICENSE-2.0. See License.txt in the project root for license information.
-   Source: https://github.com/aspnet/Entropy/blob/master/samples/Mvc.RenderViewToString/RazorViewToStringRenderer.cs
-   Original code modified by axuno. Modifications Copyright (c) by axuno, and licensed under MIT License.
-*/
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Abstractions;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
@@ -16,6 +11,12 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+
+/* Copyright (c) .NET Foundation. All rights reserved.
+   Licensed under the Apache License, Version 2.0, http://www.apache.org/licenses/LICENSE-2.0. See License.txt in the project root for license information.
+   Source: https://github.com/aspnet/Entropy/blob/master/samples/Mvc.RenderViewToString/RazorViewToStringRenderer.cs
+   Original code modified by axuno. Modifications Copyright (c) by axuno, and licensed under MIT License.
+*/
 
 namespace MailMergeLib.AspNet
 {
