@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<!--LLBLGen Pro v5.5 project file. Do not manually edit this file. Incorrect references could lead to an unloadable project file.-->
-<Project Version="5.5" TargetFrameworkName="LLBLGen Pro Runtime Framework">
+<!--LLBLGen Pro v5.7 project file. Do not manually edit this file. Incorrect references could lead to an unloadable project file.-->
+<Project Version="5.7" TargetFrameworkName="LLBLGen Pro Runtime Framework">
   <Properties>
     <Abbreviations />
     <Property Name="AdditionalTaskPerformerFolder" Value="" />
@@ -16,9 +16,15 @@
     <Property Name="AutoAddManyToManyRelationships" Value="false" />
     <Property Name="AutoAssignSequencesToIntegerPks" Value="true" />
     <Property Name="AutoAssignTypeConverterToFieldMapping" Value="true" />
+    <Property Name="AutomaticallyGenerateSourceCodeOnProjectSave" Value="false" />
     <Property Name="ConnectionStringKeyNamePattern" Value="ConnectionString.{$ProviderName}" />
+    <Property Name="DefaultDDLSQLScriptDestinationFolder" Value=".\DDLSQLScripts" />
     <Property Name="DefaultDeleteRuleAction" Value="1" />
+    <Property Name="DefaultSourceCodeDestinationFolder" Value=".\Code" />
     <Property Name="DefaultUpdateRuleAction" Value="0" />
+    <Property Name="DeleteObsoleteFiles" Value="true" />
+    <Property Name="ElementNamePrefixPattern" Value="{$SchemaName}" />
+    <Property Name="ElementNamePrefixPatternIsAppliedWhen" Value="1" />
     <Property Name="EncodingToUse" Value="0" />
     <Property Name="EntityActionCombinationDefaultForTable" Value="0" />
     <Property Name="EntityActionCombinationDefaultForView" Value="4" />
@@ -67,6 +73,7 @@
     <Property Name="StoredProcNameStripPattern" Value="{pr_, sp_}{}" />
     <Property Name="StoreTimeLastGeneratedIntoProject" Value="false" />
     <Property Name="StoreTimeLastSyncIntoProject" Value="true" />
+    <Property Name="SyncCustomFieldOrderingWithTableFieldIndex" Value="false" />
     <Property Name="SyncMappedElementNamesAfterRefresh_v5" Value="false" />
     <Property Name="SyncMappedElementNamesAfterRelationalModelDataSync_v5" Value="false" />
     <Property Name="SyncRelationalModelDataElementNameWithModelElementName_v5" Value="false" />
@@ -100,6 +107,7 @@
           <Binding Name="SD.TemplateBindings.MySqlSpecific.DDLSQL" />
           <Binding Name="SD.TemplateBindings.SharedTemplates.DDLSQL" />
         </TemplateBindings>
+        <AdhocTemplateSets />
       </LastUsedPreferences>
     </OutputType>
     <OutputType Value="3">
@@ -107,16 +115,17 @@
         <DestinationRootFolder Value=".\" />
         <FrameworkName Value="LLBLGen Pro Runtime Framework" />
         <LanguageName Value="C#" />
-        <PlatformName Value=".NET Standard 2.0" />
+        <PlatformName Value=".NET Standard 2.1" />
         <PresetName Value="SD.Presets.Adapter.General.Netstandard" />
         <RootNamespace Value="TournamentManager.DAL" />
         <TemplateGroup Value="Adapter" />
         <TemplateBindings>
-          <Binding Name="SD.TemplateBindings.SharedTemplates.Netstandard20" />
+          <Binding Name="SD.TemplateBindings.SharedTemplates.Netstandard21" />
           <Binding Name="SD.TemplateBindings.SharedTemplates" />
           <Binding Name="SD.TemplateBindings.SqlServerSpecific" />
           <Binding Name="SD.TemplateBindings.General" />
         </TemplateBindings>
+        <AdhocTemplateSets />
       </LastUsedPreferences>
     </OutputType>
     <OutputType Value="1">
@@ -133,9 +142,28 @@
           <Binding Name="SD.TemplateBindings.SqlServerSpecific.DDLSQL" />
           <Binding Name="SD.TemplateBindings.SharedTemplates.DDLSQL" />
         </TemplateBindings>
+        <AdhocTemplateSets />
       </LastUsedPreferences>
     </OutputType>
   </CodeGenerationCyclePreferences>
+  <AdditionalCodeGenerationCyclePreferences>
+    <Project>
+      <LastUsedPreferences>
+        <DestinationRootFolder Value=".\Code" />
+        <FrameworkName Value="Project" />
+        <LanguageName Value="Markdown" />
+        <PlatformName Value="Documentation" />
+        <PresetName Value="SD.Project.Documentation" />
+        <RootNamespace Value="TournamentManager" />
+        <TemplateGroup Value="General" />
+        <ForAdditionalCycleTask Value="true" />
+        <TemplateBindings>
+          <Binding Name="SD.Project.Documentation" />
+        </TemplateBindings>
+        <AdhocTemplateSets />
+      </LastUsedPreferences>
+    </Project>
+  </AdditionalCodeGenerationCyclePreferences>
   <OutputSettingValues>
     <SettingValues>
       <SettingValue Name="1:AdapterDbGenericProjectFileSuffix" Value=".DbGeneric" Type="18" />
@@ -540,12 +568,12 @@
           <FieldFieldRelationship FkField="VenueId" PkField="Id" />
         </FieldRelationships>
       </NormalRelationship>
-      <NormalRelationship Name="ExcludeMatchDate.Round-Round.ExcludeMatchDates" Start=":ExcludeMatchDate" End=":Round" StartNavigator="Round" EndNavigator="ExcludeMatchDates" Type="4" UpdateRuleAction="1" DeleteRuleAction="3">
+      <NormalRelationship Name="ExcludeMatchDate.Round-Round.ExcludeMatchDates" Start=":ExcludeMatchDate" End=":Round" StartNavigator="Round" EndNavigator="ExcludeMatchDates" Type="4" EndIsOptional="true" UpdateRuleAction="1" DeleteRuleAction="3">
         <FieldRelationships>
           <FieldFieldRelationship FkField="RoundId" PkField="Id" />
         </FieldRelationships>
       </NormalRelationship>
-      <NormalRelationship Name="ExcludeMatchDate.Team-Team.ExcludeMatchDates" Start=":ExcludeMatchDate" End=":Team" StartNavigator="Team" EndNavigator="ExcludeMatchDates" Type="4" UpdateRuleAction="1" DeleteRuleAction="3">
+      <NormalRelationship Name="ExcludeMatchDate.Team-Team.ExcludeMatchDates" Start=":ExcludeMatchDate" End=":Team" StartNavigator="Team" EndNavigator="ExcludeMatchDates" Type="4" EndIsOptional="true" UpdateRuleAction="1" DeleteRuleAction="3">
         <FieldRelationships>
           <FieldFieldRelationship FkField="TeamId" PkField="Id" />
         </FieldRelationships>
@@ -610,7 +638,7 @@
           <FieldFieldRelationship FkField="OrigVenueId" PkField="Id" />
         </FieldRelationships>
       </NormalRelationship>
-      <NormalRelationship Name="Match.RefereeTeam-Team.MatchReferee" Start=":Match" End=":Team" StartNavigator="RefereeTeam" EndNavigator="MatchReferee" Type="4">
+      <NormalRelationship Name="Match.RefereeTeam-Team.MatchReferee" Start=":Match" End=":Team" StartNavigator="RefereeTeam" EndNavigator="MatchReferee" Type="4" EndIsOptional="true">
         <FieldRelationships>
           <FieldFieldRelationship FkField="RefereeId" PkField="Id" />
         </FieldRelationships>
@@ -620,7 +648,7 @@
           <FieldFieldRelationship FkField="RoundId" PkField="Id" />
         </FieldRelationships>
       </NormalRelationship>
-      <NormalRelationship Name="Match.Venue-Venue.CurrentVenueMatches" Start=":Match" End=":Venue" StartNavigator="Venue" EndNavigator="CurrentVenueMatches" Type="4">
+      <NormalRelationship Name="Match.Venue-Venue.CurrentVenueMatches" Start=":Match" End=":Venue" StartNavigator="Venue" EndNavigator="CurrentVenueMatches" Type="4" EndIsOptional="true">
         <FieldRelationships>
           <FieldFieldRelationship FkField="VenueId" PkField="Id" />
         </FieldRelationships>
@@ -685,7 +713,7 @@
           <FieldFieldRelationship FkField="SetRuleId" PkField="Id" />
         </FieldRelationships>
       </NormalRelationship>
-      <NormalRelationship Name="Round.Tournament-Tournament.Rounds" Start=":Round" End=":Tournament" StartNavigator="Tournament" EndNavigator="Rounds" Type="4">
+      <NormalRelationship Name="Round.Tournament-Tournament.Rounds" Start=":Round" End=":Tournament" StartNavigator="Tournament" EndNavigator="Rounds" Type="4" EndIsOptional="true">
         <FieldRelationships>
           <FieldFieldRelationship FkField="TournamentId" PkField="Id" />
         </FieldRelationships>
@@ -700,7 +728,7 @@
           <FieldFieldRelationship FkField="MatchId" PkField="Id" />
         </FieldRelationships>
       </NormalRelationship>
-      <NormalRelationship Name="Team.Venue-Venue.Teams" Start=":Team" End=":Venue" StartNavigator="Venue" EndNavigator="Teams" Type="4">
+      <NormalRelationship Name="Team.Venue-Venue.Teams" Start=":Team" End=":Venue" StartNavigator="Venue" EndNavigator="Teams" Type="4" EndIsOptional="true">
         <FieldRelationships>
           <FieldFieldRelationship FkField="VenueId" PkField="Id" />
         </FieldRelationships>
@@ -720,7 +748,7 @@
           <FieldFieldRelationship FkField="NextTournamentId" PkField="Id" />
         </FieldRelationships>
       </NormalRelationship>
-      <NormalRelationship Name="Tournament.TournamentType-TournamentType.Tournaments" Start=":Tournament" End=":TournamentType" StartNavigator="TournamentType" EndNavigator="Tournaments" Type="4" UpdateRuleAction="1" DeleteRuleAction="3">
+      <NormalRelationship Name="Tournament.TournamentType-TournamentType.Tournaments" Start=":Tournament" End=":TournamentType" StartNavigator="TournamentType" EndNavigator="Tournaments" Type="4" EndIsOptional="true" UpdateRuleAction="1" DeleteRuleAction="3">
         <FieldRelationships>
           <FieldFieldRelationship FkField="TypeId" PkField="Id" />
         </FieldRelationships>
@@ -1074,7 +1102,7 @@
       <Catalogs>
         <Catalog Name="TestOrg">
           <Schemas>
-            <Schema Name="dbo" SyncSource="2" LastSyncWithDatabase="2020-05-05T21:32:31.2233822Z">
+            <Schema Name="dbo" SyncSource="2" LastSyncWithDatabase="2020-06-14T14:49:37.1064671Z">
               <Tables>
                 <Table Name="AvailableMatchDate">
                   <PkConstraintName Name="PK_378f3f14a1c871b25041c380344" />

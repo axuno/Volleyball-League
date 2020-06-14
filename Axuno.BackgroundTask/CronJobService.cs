@@ -12,7 +12,7 @@ namespace Axuno.BackgroundTask
     /// Abstract class for creating cron jobs as <see cref="IHostedService"/>s.
     /// </summary>
     /// <remarks>
-    /// Credits to Changhui Xu, https://github.com/changhuixu/dotnetlabs for his project licensed under MIT.
+    /// Credits to Changhui Xu, https://github.com/changhuixu/dotnetlabs for his project (licensed under MIT).
     /// The project description is published at https://codeburst.io/schedule-cron-jobs-using-hostedservice-in-asp-net-core-e17c47ba06
     /// </remarks>
     public abstract class CronJobService : IHostedService, IDisposable
