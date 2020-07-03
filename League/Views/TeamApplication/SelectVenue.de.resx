@@ -126,6 +126,9 @@
   <data name="Create a new venue" xml:space="preserve">
     <value>Neuen Spielort anlegen</value>
   </data>
+  <data name="No venue from the list applies" xml:space="preserve">
+    <value>Kein Spielort aus der Liste trifft zu</value>
+  </data>
   <data name="Team Registration" xml:space="preserve">
     <value>Team-Anmeldung</value>
   </data>
