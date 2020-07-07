@@ -15,35 +15,28 @@ namespace League.Controllers
     public class Captcha : AbstractController
 	{
 		public async Task<IActionResult> Index()
-		{
-            // Create a CAPTCHA image
-		    var stream = new MemoryStream();
-
-            await Task.Run(() =>
-            {
-                var ci = new CaptchaImageGenerator(null, 150, 50, "Arial", Color.FromArgb(0x01, 0x8D, 0xFF),
-                    Color.White, Color.FromArgb(0x01, 0x8D, 0xFF)) {AddNoise = true, WarpText = false};
-
-                var result = ci.SetTextWithMathCalc(5).ToString(); // GenerateRandomString(5)
-                HttpContext.Session.SetString(CaptchaSessionKeyName, result);
-
-                // Change the response headers to output an un-cached image.
-                HttpContext.Response.Clear();
-                HttpContext.Response.Headers.Add("Expires", DateTime.UtcNow.Date.AddDays(-1).ToString("R"));
-		        HttpContext.Response.Headers.Add("Cache-Control", "no-store, no-cache, must-revalidate");
-		        HttpContext.Response.Headers.Add("Pragma", "no-cache");
-
-                HttpContext.Response.ContentType = "image/jpeg";
-                
-                // Write the image to the response stream in JPEG format.
-                ci.Image.Save(stream, System.Drawing.Imaging.ImageFormat.Jpeg);
-		        // Dispose the CAPTCHA image object.
-		        ci.Dispose();
-            });
-		    stream.Position = 0;
-            return new FileStreamResult(stream, "image/jpeg");
+        {
+            return await GetSvgContent();
         }
 
-	    private string CaptchaSessionKeyName => CaptchaImageGenerator.CaptchaSessionKeyName;
+        private Task<ContentResult> GetSvgContent()
+        {
+            using var ci = new CaptchaSvgGenerator(null, 151, 51, Color.FromArgb(0x01, 0x8D, 0xFF),
+                Color.FromArgb(0, 255, 255, 255), Color.FromArgb(0x01, 0x8D, 0xFF));
+
+            var result = ci.SetTextWithMathCalc(5).ToString(); // GenerateRandomString(5)
+            HttpContext.Session.SetString(CaptchaSessionKeyName, result);
+
+            // Change the response headers to output an un-cached image.
+            HttpContext.Response.Clear();
+            HttpContext.Response.Headers.Add("Expires", DateTime.UtcNow.Date.AddDays(-1).ToString("R"));
+            HttpContext.Response.Headers.Add("Cache-Control", "no-store, no-cache, must-revalidate");
+            HttpContext.Response.Headers.Add("Pragma", "no-cache");
+
+            HttpContext.Response.ContentType = "image/svg+xml";
+            return Task.FromResult(Content(ci.Image));
+        }
+
+	    private string CaptchaSessionKeyName => CaptchaSvgGenerator.CaptchaSessionKeyName;
 	}
 }

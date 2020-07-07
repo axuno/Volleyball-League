@@ -706,8 +706,6 @@ namespace League
             if (bool.Parse(Configuration.GetSection("CultureInfo:CulturePerRequest").Value))
                 app.UseRequestLocalization(); // options are defined in services
 
-            // Action can be accessed with browser url, but links are generated wrong, see 3.1 issue at
-            // https://github.com/aspnet/AspNetCore/issues/14877
             app.UseRouting();
 
             // UseAuthentication and UseAuthorization: after UseRouting and UseCors, but before UseEndpoints

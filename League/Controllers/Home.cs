@@ -111,7 +111,7 @@ namespace League.Controllers
         [HttpPost("/[action]", Name = RouteNames.HomeGeneralContact)]
         public IActionResult Contact(ContactViewModel model)
         {
-            if (model.Captcha != HttpContext.Session.GetString(CaptchaImageGenerator.CaptchaSessionKeyName))
+            if (model.Captcha != HttpContext.Session.GetString(CaptchaSvgGenerator.CaptchaSessionKeyName))
             {
                 ModelState.AddModelError(nameof(CreateAccountViewModel.Captcha), _localizer["Math task result was incorrect"]);
             }
