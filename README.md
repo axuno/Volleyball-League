@@ -6,6 +6,9 @@
 Volleyball League is a platform that brings everything necessary to organize and to run a league.
 This is the 4th generation of the software developed over the last 20 years and a complete re-write.
 
+## Any questions?
+[![Join the chat at https://gitter.im/axuno/volleyball-league](https://badges.gitter.im/axuno/volleyball-league.svg)](https://gitter.im/axuno/volleyball-league?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 ## Features
 
  * Indoor and beach leagues
