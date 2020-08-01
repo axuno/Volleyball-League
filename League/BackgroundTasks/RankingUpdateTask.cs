@@ -166,18 +166,24 @@ namespace League.BackgroundTasks
                     /***** Chart file generation *****/
 
                     // without played matches, no chart can be generated
-                    if(ranking.MatchesPlayed.Count == 0) break;
+                    if (ranking.MatchesPlayed.Count == 0) break;
 
                     var chart = new RankingChart(ranking,
-                            teamsInRound.Select(tir => (tir.TeamId, tir.TeamNameForRound)).ToList(), 1.5f, "", "MD",
-                            "R")
+                            teamsInRound.Select(tir => (tir.TeamId, tir.TeamNameForRound)).ToList(),
+                            new RankingChart.ChartSettings
+                            {
+                                Title = null, XTitle = "MD", YTitle = "R", Width = 700, Height = 400,
+                                GraphBackgroundColorArgb = "#FFEFFFEF", PlotAreaBackgroundColorArgb = "#FFFFFFFF",
+                                FontName = "Arial, Helvetica, sans-serif", ShowLegend = false
+                            })
                         {UseMatchDayMarker = true};
 
-                    using var image = chart.GetImage();
-                    image.Save(
-                        Path.Combine(_webHostEnvironment.WebRootPath, RankingImageFolder,
-                            string.Format(RankingChartFilenameTemplate, SiteContext.OrganizationKey, roundId,
-                                DateTime.UtcNow.Ticks)), System.Drawing.Imaging.ImageFormat.Png);
+                    await using var chartStream = chart.GetPng();
+                    await using var fileStream = File.Create(Path.Combine(_webHostEnvironment.WebRootPath, RankingImageFolder,
+                        string.Format(RankingChartFilenameTemplate, SiteContext.OrganizationKey, roundId,
+                            DateTime.UtcNow.Ticks)));
+                    chartStream.Seek(0, SeekOrigin.Begin);
+                    await chartStream.CopyToAsync(fileStream, cancellationToken);
                 }
             }
             catch (Exception e)

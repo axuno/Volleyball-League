@@ -15,13 +15,14 @@
   </ItemGroup>
 
   <ItemGroup>
-	<PackageReference Include="System.Reflection.TypeExtensions" Version="4.3.0" />
+	<PackageReference Include="OxyPlot.Core" Version="1.0.0" />
+	<PackageReference Include="OxyPlot.SkiaSharp" Version="1.0.0" />
+	<PackageReference Include="System.Reflection.TypeExtensions" Version="4.7.0" />
 	<PackageReference Include="Ical.Net" Version="4.1.11" />
-    <PackageReference Include="libphonenumber-csharp" Version="8.12.4" />
+    <PackageReference Include="libphonenumber-csharp" Version="8.12.7" />
     <PackageReference Include="NLog.Extensions.Logging" Version="1.6.4" />
     <PackageReference Include="System.Data.SqlClient" Version="4.8.1" />
     <PackageReference Include="YAXLib" Version="2.15.0" />
-    <PackageReference Include="ZedGraph" Version="6.0.0-alpha0001" />
   </ItemGroup>
 
   <ItemGroup>

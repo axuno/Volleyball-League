@@ -724,13 +724,14 @@ namespace League
             var siteList = app.ApplicationServices.GetRequiredService<SiteList>();
             var queue = app.ApplicationServices.GetRequiredService<IBackgroundQueue>();
             
-            foreach (var orgSite in siteList.Where(ctx => !string.IsNullOrEmpty(ctx.OrganizationKey)))
+            foreach (var orgSite in siteList.Where(ctx => !string.IsNullOrEmpty(ctx.OrganizationKey)))  
             {
                 var siteContext = new SiteContext(orgSite.OrganizationKey, app.ApplicationServices.GetRequiredService<OrganizationContextResolver>(), siteList);
                 var rankingUpdateTask = app.ApplicationServices.GetRequiredService<RankingUpdateTask>();
                 rankingUpdateTask.SiteContext = siteContext.Resolve(orgSite.OrganizationKey);
                 rankingUpdateTask.TournamentId = siteContext.MatchResultTournamentId;
                 rankingUpdateTask.Timeout = TimeSpan.FromMinutes(5);
+                rankingUpdateTask.EnforceUpdate = false;
                 queue.QueueTask(rankingUpdateTask);
             }
             

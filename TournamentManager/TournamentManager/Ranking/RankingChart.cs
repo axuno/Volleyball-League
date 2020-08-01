@@ -1,167 +1,269 @@
 using System;
 using System.Collections.Generic;
-using ZedGraph;
-using System.Drawing;
+using System.IO;
 using System.Linq;
+using OxyPlot;
+using OxyPlot.Annotations;
+using OxyPlot.Axes;
+using OxyPlot.Legends;
+using OxyPlot.Series;
 
 namespace TournamentManager.Ranking
 {
 	/// <summary>
-	/// Class for creating a <see cref="RankingChart"/> image from a <see cref="Ranking"/>.
+	/// Class for creating a <see cref="RankingChart"/> image from a <see cref="Ranking"/> instance.
 	/// </summary>
 	public class RankingChart
 	{
-        private int _width = 800;
-		private int _height = 600;
-		private Color _fillColor;
-		private string _title;
-		private string _xTitle;
-		private string _yTitle;
-        private RankingHistory _rankingHistory;
-		private List<(long TeamId, string TeamName)> _teams;
+        private readonly RankingHistory _rankingHistory;
+		private readonly List<(long TeamId, string TeamName)> _teams;
 
-        public RankingChart(Ranking ranking, List<(long TeamId, string TeamName)> teams) : this(ranking, teams, 1.5f, "Chart", "Match Day", "Rank")
-		{}
+        public class ChartSettings
+        {
+            public ChartSettings()
+            {
+                GraphBackgroundColorArgb = OxyColor.FromRgb(0xEF, 0xFF, 0xEF).ToByteString();
+            }
+            /// <summary>
+            /// Gets or sets the width of the graph.
+            /// </summary>
+            public int Width { get; set; } = 800;
+            /// <summary>
+            /// Get or sets the height of the graph.
+            /// </summary>
+            public int Height { get; set; } = 600;
+            /// <summary>
+            /// Gets or sets the font name to use for rendering text.
+            /// </summary>
+            public string FontName { get; set; } = "Arial";
+            /// <summary>
+            /// Gets or sets the graph background color as a decimal byte string with decimal format &quot;{A},{R},{G},{B}&quot; or &quot;#AARRGGBB&quot; in hex format.
+            /// </summary>
+            public string GraphBackgroundColorArgb { get; set; }
+            /// <summary>
+            /// Gets or sets the plot area background color as a decimal byte string with decimal format &quot;{A},{R},{G},{B}&quot; or &quot;#AARRGGBB&quot; in hex format.
+            /// </summary>
+            public string PlotAreaBackgroundColorArgb { get; set; }
 
-		public RankingChart(Ranking ranking, List<(long TeamId, string TeamName)> teams, float scaleFactor, string title, string xTitle, string yTitle)
+            /// <summary>
+            /// Gets or sets whether the legend will be rendered.
+            /// </summary>
+            public bool ShowLegend { get; set; } = true;
+
+            /// <summary>
+            /// Gets or sets the title of the graph.
+            /// </summary>
+            public string Title { get; set; } = "Chart";
+
+            /// <summary>
+            /// Gets or sets the title of the x-axes.
+            /// </summary>
+            public string XTitle { get; set; } = "Match Days";
+
+            /// <summary>
+            /// Gets or sets the title of the y-axes.
+            /// </summary>
+            public string YTitle { get; set; } = "Rank";
+        }
+
+        /// <summary>
+        /// CTOR.
+        /// </summary>
+        /// <param name="ranking"></param>
+        /// <param name="teams"></param>
+        /// <param name="settings"></param>
+        public RankingChart(Ranking ranking, List<(long TeamId, string TeamName)> teams, ChartSettings settings)
         {
             Ranking = ranking;
+            Settings = settings;
             _rankingHistory = ranking.GetRankingHistory();
             _teams = teams ?? throw new ArgumentNullException(nameof(teams));
-			_width = (int)(_width / scaleFactor);
-			_height = (int)(_height / scaleFactor);
-            _fillColor = Color.FromArgb(0xEF, 0xFF, 0xEF);
-			_xTitle = xTitle ?? throw new ArgumentNullException(nameof(xTitle)); ;
-			_yTitle = yTitle ?? throw new ArgumentNullException(nameof(yTitle)); ;
-			_title = title ?? throw new ArgumentNullException(nameof(title)); ;
 		}
 
-		public Image GetImage()
+        /// <summary>
+        /// Gets the list of colors used for the lines in the chart from rank 1 (first in the list) to rank 10 (last) as ARGB integer.
+        /// Only 20 colors are defined, all others will be rendered in gray.
+        /// </summary>
+        public static readonly List<uint> LineColors = new List<uint>(new[]
+        {
+            // 10 best
+            OxyColors.Red.ToUint(), OxyColors.Green.ToUint(), OxyColors.Orange.ToUint(), 
+            OxyColors.Blue.ToUint(), OxyColors.Magenta.ToUint(), OxyColors.Gray.ToUint(), 
+            OxyColors.Gold.ToUint(), OxyColors.Brown.ToUint(), OxyColors.Aqua.ToUint(), 
+            OxyColors.Black.ToUint(),
+            // second best
+            OxyColors.CadetBlue.ToUint(), OxyColors.Chartreuse.ToUint(), OxyColors.Chocolate.ToUint(), 
+            OxyColors.DarkCyan.ToUint(), OxyColors.DarkOrchid.ToUint(), OxyColors.LightPink.ToUint(), 
+            OxyColors.Goldenrod.ToUint(), OxyColors.HotPink.ToUint(), OxyColors.Purple.ToUint(), 
+            OxyColors.SlateGray.ToUint()
+        });
+
+        /// <summary>
+        /// Gets the settings for creating the chart.
+        /// </summary>
+        public ChartSettings Settings { get; private set; }
+
+		public PlotModel CreatePlotModel()
 		{
             var dateHistory = _rankingHistory.GetByMatchDay();
             var maxNumOfEntries = dateHistory.Max(dh => dh.Count);
-
-            var graphPane = new GraphPane(new RectangleF(0, 0, _width, _height), _title, _xTitle, _yTitle);
-			graphPane.Fill.Color = _fillColor;
-			graphPane.Chart.Fill.Color = _fillColor;
-			graphPane.Title.FontSpec.Family = "Arial";
-			graphPane.Title.FontSpec.Size = 16f;
-			graphPane.Title.FontSpec.IsAntiAlias = true;
-			graphPane.Title.FontSpec.IsBold = true;
-			graphPane.Title.FontSpec.IsDropShadow = false;
-
-			graphPane.XAxis.MajorGrid.IsVisible = true;
-			graphPane.XAxis.Scale.Min = 1;
-			graphPane.XAxis.Scale.Max = dateHistory.Count + Ranking.MatchesToPlay.GroupBy(u => u.MatchDate?.Date ?? DateTime.MinValue).Count();
-            graphPane.XAxis.Scale.MajorStep = 1.0;
-			graphPane.XAxis.Scale.MinorStep = 1.0;
-			graphPane.XAxis.Scale.FontSpec.Family = "Arial";
-			graphPane.XAxis.Title.FontSpec.Family = "Arial";
-			graphPane.XAxis.Title.FontSpec.Size = 14f;
-			graphPane.XAxis.Title.FontSpec.IsAntiAlias = true;
-			graphPane.XAxis.Title.FontSpec.IsBold = false;
-			graphPane.XAxis.Title.FontSpec.IsDropShadow = false;
-
-			graphPane.YAxis.MajorGrid.IsVisible = true;
-			graphPane.YAxis.Scale.Min = 0.5f;
-			graphPane.YAxis.Scale.Max = (double)maxNumOfEntries + 0.5f;
-			graphPane.YAxis.Scale.MajorStep = 1.0;
-			graphPane.YAxis.Scale.MinorStep = 1.0;
-			graphPane.YAxis.Scale.IsReverse = true;
-			graphPane.YAxis.Scale.FontSpec.Family = "Arial";
-			graphPane.YAxis.Title.FontSpec.Family = "Arial";
-			graphPane.YAxis.Title.FontSpec.Size = 14f;
-			graphPane.YAxis.Title.FontSpec.IsAntiAlias = true;
-			graphPane.YAxis.Title.FontSpec.IsBold = false;
-			graphPane.YAxis.Title.FontSpec.IsDropShadow = false;
-
-			graphPane.Legend.Position = LegendPos.Bottom;
-			graphPane.Legend.IsHStack = false;
-			graphPane.Legend.FontSpec.Family = "Arial";
-			graphPane.Legend.FontSpec.Size = 12f;
-			graphPane.Legend.FontSpec.IsAntiAlias = true;
-			graphPane.Legend.FontSpec.IsBold = false;
-			graphPane.Legend.FontSpec.IsDropShadow = false;
-
-            var color = new List<Color>(new[]
+            
+            var model = new PlotModel
             {
-                Color.Red, Color.Green, Color.Orange, Color.Blue, Color.Magenta, Color.Gray, Color.Gold, Color.Brown,
-                Color.Aqua, Color.Black
+                Title = Settings.Title,
+                TitleFontSize = 18.0,
+                TitleFontWeight = 400.0,
+                DefaultFont = Settings.FontName,
+                PlotAreaBackground = OxyColor.Parse(Settings.PlotAreaBackgroundColorArgb),
+                Background = OxyColor.Parse(Settings.GraphBackgroundColorArgb)
+            };
+            model.Axes.Add(new LinearAxis { Position = AxisPosition.Bottom });
+            model.Axes.Add(new LinearAxis { Position = AxisPosition.Left });
+
+            model.Legends.Add(new Legend
+            {
+                LegendBackground = OxyColor.FromAColor(220, OxyColors.White),
+                LegendBorder = OxyColors.Black,
+                LegendBorderThickness = 1.0D, 
+                LegendPlacement = LegendPlacement.Outside,
+                LegendPosition = LegendPosition.BottomLeft,
+                LegendOrientation = LegendOrientation.Horizontal,
+                LegendLineSpacing = 6D,
+                LegendFontSize = 12D
+            });
+
+            model.Axes[0].Title = Settings.XTitle;
+            model.Axes[0].TitleFontSize = 18.0;
+            model.Axes[0].TitleFontWeight = 400.0;
+            model.Axes[0].AxisTitleDistance = 12D;
+            model.Axes[0].MajorStep = 1D;
+            model.Axes[0].MajorGridlineStyle = LineStyle.Dot;
+            model.Axes[0].MajorGridlineColor = OxyColors.LightGray;
+            model.Axes[0].MajorGridlineThickness = .25D;
+            model.Axes[0].MinorGridlineThickness = 0;
+            model.Axes[0].AbsoluteMinimum = 1D;
+            model.Axes[0].AbsoluteMaximum = dateHistory.Count + Ranking.MatchesToPlay.GroupBy(u => u.MatchDate?.Date ?? DateTime.MinValue).Count(); 
+            model.Axes[0].TextColor = OxyColors.Black;
+
+            model.Axes[1].Title = Settings.YTitle;
+            model.Axes[1].TitleFontSize = 18.0;
+            model.Axes[1].TitleFontWeight = 400.0;
+            model.Axes[1].AxisTitleDistance = 12D;
+            model.Axes[1].MajorStep = 1D;
+            model.Axes[1].MajorGridlineThickness = .25D;
+            model.Axes[1].MajorGridlineStyle = LineStyle.Dot;
+            model.Axes[1].MajorGridlineColor = OxyColors.LightGray;
+            model.Axes[1].MinorGridlineThickness = 0;
+            model.Axes[1].AbsoluteMinimum = 0D;
+            model.Axes[1].AbsoluteMaximum = maxNumOfEntries + .5D; // slightly bigger, so that bottom horizontal lines don't get cut
+            model.Axes[1].StartPosition = .93D;
+            model.Axes[1].EndPosition = .07D;
+            model.Axes[1].TextColor = OxyColors.Black;
+
+            model.Legends.Clear(); // remove auto-generated legend
+            model.Legends.Add(new Legend
+            {
+                LegendBackground = OxyColor.FromAColor(220, OxyColors.White),
+                LegendBorder = OxyColors.Black,
+                LegendBorderThickness = 1.0D, 
+                LegendPlacement = LegendPlacement.Outside,
+                LegendPosition = LegendPosition.BottomLeft,
+                LegendOrientation = LegendOrientation.Vertical,
+                LegendLineSpacing = 6D,
+                LegendFontSize = 14D
             });
 
 			foreach (var lastRank in Ranking.GetList(out var lastUpdatedOn))
 			{
-				var ppl = new PointPairList();
+                var lineSeries = new LineSeries
+                {
+                    RenderInLegend = Settings.ShowLegend, 
+                    Color = lastRank.Number < LineColors.Count ? OxyColor.FromUInt32(LineColors[lastRank.Number - 1]) : OxyColors.Gray,
+                    LineStyle = LineStyle.Solid,
+                    StrokeThickness = 3.0D
+                };
 
-				var count = 1;
+                var count = 1;
                 var teamRankingHistory = _rankingHistory.GetByTeam(lastRank.TeamId).Values;
-                // add point pairs for completed matches
+                // add data points for completed matches
                 foreach (var rank in teamRankingHistory)
 				{
-					ppl.Add(count++, rank.Number);
+					lineSeries.Points.Add(new DataPoint(count++, rank.Number));
 				}
 
-                // add point pairs for uncompleted matches
-                for (var i = count; i <= graphPane.XAxis.Scale.Max; i++)
+                // add data points for uncompleted matches
+                for (var i = count; i <= model.Axes[0].AbsoluteMaximum; i++)
                 {
-                    ppl.Add(i, teamRankingHistory.Last().Number);
+                    lineSeries.Points.Add(new DataPoint(i, teamRankingHistory.Last().Number));
                 }
 
                 var teamName = _teams.FirstOrDefault(t => t.TeamId == lastRank.TeamId).TeamName;
                 if (string.IsNullOrEmpty(teamName)) teamName = "?";
-
-                var curve = graphPane.AddCurve(teamName, ppl, color[lastRank.Number - 1], SymbolType.None);
-				curve.Line.Width = 4.0f;
-				curve.Line.IsAntiAlias = true;
-				curve.Symbol.Size = 14.0f;
+                lineSeries.Title = teamName;
+                model.Series.Add(lineSeries);
 			}
 			
-            // Mark the last completed match day with a vertical line
-            if (UseMatchDayMarker)
+            // Mark the last completed match day with a vertical line,
+            // unless there are no open matches
+            if (UseMatchDayMarker && dateHistory.Count < model.Axes[0].AbsoluteMaximum)
             {
-                double todayX = dateHistory.Count;
-
-                var pplToday = new PointPairList
+                var lastCompletedMatchLine = new LineAnnotation()
                 {
-                    {todayX, graphPane.YAxis.Scale.Min}, {todayX, graphPane.YAxis.Scale.Max}
+                    StrokeThickness = 2D,
+                    Color = OxyColors.Gray, 
+                    LineStyle = LineStyle.Dash,
+                    Type = LineAnnotationType.Vertical,
+                    Layer = AnnotationLayer.AboveSeries,    // use full y axes height
+                    ClipByYAxis = false,                    // use full y axes height
+                    X = dateHistory.Count
                 };
-                var curveToday = graphPane.AddCurve(string.Empty, pplToday, Color.Red, SymbolType.None);
-                curveToday.Line.Width = 1.0f;
-                curveToday.Line.IsAntiAlias = true;
-
-                // Add a text box with date at the right bottom of the GraphPane
                 if (ShowUpperDateLimit)
                 {
-                    var todayText = new TextObj(
-                        dateHistory[dateHistory.Count - 1].UpperDateLimit.ToShortDateString(),
-                        .99, .99, CoordType.PaneFraction, AlignH.Right, AlignV.Bottom)
-                    {
-                        FontSpec =
-                        {
-                            StringAlignment = StringAlignment.Near,
-                            Family = "Arial",
-                            Size = 16f,
-                            IsAntiAlias = true,
-                            IsBold = false,
-                            IsDropShadow = false,
-                            FontColor = Color.Black,
-                            Fill = {IsVisible = false},
-                            Border = {IsVisible = false}
-                        }
-                    };
-                    graphPane.GraphObjList.Add(todayText);
+                    lastCompletedMatchLine.Text = dateHistory[^1].UpperDateLimit.ToShortDateString(); // ^1 = dateHistory.Count - 1
                 }
+                model.Annotations.Add(lastCompletedMatchLine);
             }
 
-			return graphPane.GetImage();
-            // Example:
-            // graphPane.GetImage().Save(Response.OutputStream, ImageFormat.Png);
+            return model;
         }
 
+        /// <summary>
+        /// Gets a <see cref="Stream"/> of an image of type PNG.
+        /// </summary>
+        /// <returns></returns>
+        public Stream GetPng()
+        {
+            var stream = new MemoryStream();
+            var exporter = new OxyPlot.SkiaSharp.PngExporter { Width = Settings.Width, Height = Settings.Height };
+            exporter.Export(CreatePlotModel(), stream);
+            return stream;
+        }
+
+        /// <summary>
+        /// Gets a <see cref="Stream"/> of an image of type SVG.
+        /// </summary>
+        /// <returns></returns>
+        public Stream GetSvg()
+        {
+            var stream = new MemoryStream();
+            var exporter = new OxyPlot.SkiaSharp.SvgExporter { Width = Settings.Width, Height = Settings.Height };
+            exporter.Export(CreatePlotModel(), stream);
+            return stream;
+        }
+
+        /// <summary>
+        /// If <see langword="true"/> a vertical line will be inserted at the day where the last match took place.
+        /// </summary>
         public bool UseMatchDayMarker { get; set; } = true;
 
+        /// <summary>
+        /// If <see langword="true"/>, and <see cref="UseMatchDayMarker"/> is also <see langword="true"/>, the last match date is appended to the vertical line.
+        /// </summary>
         public bool ShowUpperDateLimit { get; set; } = false;
 
+        /// <summary>
+        /// Gets the <see cref="Ranking"/> instance used by the <see cref="RankingChart"/>.
+        /// </summary>
         public Ranking Ranking { get; }
     }
 }

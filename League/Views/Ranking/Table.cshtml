@@ -1,6 +1,9 @@
 ﻿@using League.BackgroundTasks
 @using League.Views
 @using Microsoft.AspNetCore.Mvc.Localization
+@using OxyPlot.Annotations
+@using TournamentManager.Ranking
+@using System.Drawing
 @inject IViewLocalizer Localizer
 @inject Axuno.Tools.DateAndTime.TimeZoneConverter TimeZoneConverter
 @model League.Models.RankingViewModels.RankingListModel
@@ -23,6 +26,16 @@
     var useRecentRoundCookie = !(Model.ActiveRoundId.HasValue && rounds.Any(r => r.RoundId == Model.ActiveRoundId));
     if (useRecentRoundCookie) { activeRoundId = rounds.FirstOrDefault()?.RoundId ?? 0; }
 }
+@functions {
+
+    System.Drawing.Color ToColor(uint argb)
+    {
+        return System.Drawing.Color.FromArgb((byte) ((argb & -16777216) >> 0x18),
+            (byte) ((argb & 0xff0000) >> 0x10),
+            (byte) ((argb & 0xff00) >> 8),
+            (byte) (argb & 0xff));
+    }
+}
 <div class="mb-0 pb-1">
     <h2 class="h2">@ViewData["Title"]</h2>
     <hr class="mb-4" />
@@ -38,79 +51,82 @@
     <div class="tab-content mt-1" id="ranking-table">
         @foreach (var r in rounds)
         {
-        <div class="tab-pane@{if (r.RoundId == activeRoundId) {<text> show active</text>}}" id="tab-@(r.RoundId)" role="tabpanel" aria-labelledby="@r.RoundDescription-tab">
-            <div class="text-success">@r.RoundTypeDescription</div>
-            <div class="rounded table-responsive">
-                <table class="table table-sm table-light table-bordered table">
-                    <thead class="rounded">
-                        <tr>
-                            <th class="rank">@Localizer["Rank"]</th>
-                            <th class="team">
-                                <div class="text-truncate">@Localizer["Team"]</div>
-                                <div class="text-truncate">@Localizer["Club"]</div>
-                            </th>
-                            <th class="result">
-                                <div>@Localizer["Match"]</div>
-                                <div>@Localizer["Pts."]</div>
-                            </th>
-                            <th class="result">
-                                <div>@Localizer["Set"]</div>
-                                <div>@Localizer["Pts."]</div>
-                            </th>
-                            <th class="result">
-                                <div>@Localizer["Ball"]</div>
-                                <div>@Localizer["Pts."]</div>
-                            </th>
-                            <th class="matches font-weight-light" data-toggle="tooltip" title="@Localizer["Matches played / to play"]">
-                                <i class="fas fa-circle"></i>/<i class="far fa-circle"></i>
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @{
-                            var rankingList = Model.RankingList.Where(m => m.RoundId == r.RoundId).OrderBy(m => m.Rank).ToList();
-                            for (var i = 0; i < rankingList.Count; i++)
-                            {
-                                var rankRow = rankingList[i];
-                                <tr>
-                                    <td class="rank">@rankRow.Rank</td>
-                                    <td class="team">
-                                        <div class="text-truncate">@rankRow.TeamNameForRound</div>
-                                        <div class="text-truncate">@rankRow.ClubName</div>
-                                    </td>
-                                    <td class="result">@rankRow.MatchPointsWon:@rankRow.MatchPointsLost</td>
-                                    <td class="result">@rankRow.SetPointsWon:@rankRow.SetPointsLost</td>
-                                    <td class="result">@rankRow.BallPointsWon:@rankRow.BallPointsLost</td>
-                                    <td class="matches">
-                                        <div>@rankRow.MatchesPlayed/@rankRow.MatchesToPlay</div>
-                                    </td>
-                                </tr>
+            <div class="tab-pane@{if (r.RoundId == activeRoundId) {<text> show active</text>}}" id="tab-@(r.RoundId)" role="tabpanel" aria-labelledby="@r.RoundDescription-tab">
+                <div class="text-success">@r.RoundTypeDescription</div>
+                <div class="rounded table-responsive">
+                    <table class="table table-sm table-light table-bordered table">
+                        <thead class="rounded">
+                            <tr>
+                                <th class="rank">@Localizer["Rank"]</th>
+                                <th class="team">
+                                    <div class="text-truncate">@Localizer["Team"]</div>
+                                    <div class="text-truncate">@Localizer["Club"]</div>
+                                </th>
+                                <th class="result">
+                                    <div>@Localizer["Match"]</div>
+                                    <div>@Localizer["Pts."]</div>
+                                </th>
+                                <th class="result">
+                                    <div>@Localizer["Set"]</div>
+                                    <div>@Localizer["Pts."]</div>
+                                </th>
+                                <th class="result">
+                                    <div>@Localizer["Ball"]</div>
+                                    <div>@Localizer["Pts."]</div>
+                                </th>
+                                <th class="matches font-weight-light" data-toggle="tooltip" title="@Localizer["Matches played / to play"]">
+                                    <i class="fas fa-circle"></i>/<i class="far fa-circle"></i>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @{
+                                var rankBgColors = RankingChart.LineColors;
+                                var rankingList = Model.RankingList.Where(m => m.RoundId == r.RoundId).OrderBy(m => m.Rank).ToList();
+                                for (var i = 0; i < rankingList.Count; i++)
+                                {
+                                    var bgColor = i < rankBgColors.Count ? ToColor(rankBgColors[i]) : Color.Gray;
+                                    var rankRow = rankingList[i];
+                                    <tr>
+                                        <td class="rank">@rankRow.Rank <span class="badge badge-pill" style="font-size: .7rem; background-color: rgba(@bgColor.R, @bgColor.G, @bgColor.B, @bgColor.A)">&nbsp;</span></td>
+                                        <td class="team">
+                                            <div class="text-truncate">@rankRow.TeamNameForRound</div>
+                                            <div class="text-truncate">@rankRow.ClubName</div>
+                                        </td>
+                                        <td class="result">@rankRow.MatchPointsWon:@rankRow.MatchPointsLost</td>
+                                        <td class="result">@rankRow.SetPointsWon:@rankRow.SetPointsLost</td>
+                                        <td class="result">@rankRow.BallPointsWon:@rankRow.BallPointsLost</td>
+                                        <td class="matches">
+                                            <div>@rankRow.MatchesPlayed/@rankRow.MatchesToPlay</div>
+                                        </td>
+                                    </tr>
+                                }
                             }
-                        }
-                    </tbody>
-                </table>
-            </div>
-            @{
-                var zonedMaxModifiedOn = TimeZoneConverter.ToZonedTime(
-                    Model.RankingList.Where(m => m.RoundId == r.RoundId).Max(m => m.ModifiedOn));
-                var zonedMaxMatchDate = TimeZoneConverter.ToZonedTime(
-                    Model.RankingList.Where(m => m.RoundId == r.RoundId).Max(m => m.ValuationDate));
-            }
-            @{
-                if (Model.ChartFileInfos.ContainsKey(r.RoundId))
-                {
-                    <figure>
-                        <img src="@Url.Content($"~/{RankingUpdateTask.RankingImageFolder}/{Model.ChartFileInfos[r.RoundId].Name}")" class="img-fluid shadow" alt="Chart @r.RoundDescription" />
-                        <figcaption>R = @Localizer["Rank"], MD = @Localizer["Match Days"] (@Localizer["until"] @zonedMaxMatchDate.DateTimeOffset.DateTime.ToShortDateString())</figcaption>
-                    </figure>
+                        </tbody>
+                    </table>
+                </div>
+                @{
+                    var zonedMaxModifiedOn = TimeZoneConverter.ToZonedTime(
+                        Model.RankingList.Where(m => m.RoundId == r.RoundId).Max(m => m.ModifiedOn));
+                    var zonedMaxMatchDate = TimeZoneConverter.ToZonedTime(
+                        Model.RankingList.Where(m => m.RoundId == r.RoundId).Max(m => m.ValuationDate));
                 }
-            }
+                @{
+                    if (Model.ChartFileInfos.ContainsKey(r.RoundId))
+                    {
+                        <figure>
+                            <h5 class="h5">@Localizer["Ranking History"]</h5>
+                            <img src="@Url.Content($"~/{RankingUpdateTask.RankingImageFolder}/{Model.ChartFileInfos[r.RoundId].Name}")" class="img-fluid" alt="@Localizer["Ranking History"] @r.RoundDescription"/>
+                            <figcaption class="small">R = @Localizer["Rank"], MD = @Localizer["Match Days"] (@Localizer["until"] @zonedMaxMatchDate.DateTimeOffset.DateTime.ToShortDateString())</figcaption>
+                        </figure>
+                    }
+                }
 
-            <div class="text-muted small">
-                @Localizer["Table created on"]: @zonedMaxModifiedOn.DateTimeOffset.DateTime.ToShortDateString() @zonedMaxModifiedOn.DateTimeOffset.DateTime.ToLongTimeString() @zonedMaxModifiedOn.Abbreviation
+                <div class="text-muted small">
+                    @Localizer["Table created on"]: @zonedMaxModifiedOn.DateTimeOffset.DateTime.ToShortDateString() @zonedMaxModifiedOn.DateTimeOffset.DateTime.ToLongTimeString() @zonedMaxModifiedOn.Abbreviation
+                </div>
             </div>
-        </div>
-         }
+        }
     </div>
 </div>
 @section styles

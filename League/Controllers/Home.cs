@@ -11,8 +11,6 @@ using League.Models.AccountViewModels;
 using League.Models.HomeViewModels;
 using League.Routing;
 using League.Views;
-using MailMergeLib;
-using MailMergeLib.AspNet;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Localization;

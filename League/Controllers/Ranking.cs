@@ -127,67 +127,6 @@ namespace League.Controllers
             }
         }
 
-
-        [Route("chart/{id}")]
-        [ResponseCache(Duration = 600)]
-        public async Task<FileStreamResult> Chart(string id, CancellationToken cancellationToken)
-        {
-            var stream = new MemoryStream();
-            var teams = new List<(long TeamId, string TeamName)>();
-
-            var tournamentEntity = await _appDb.TournamentRepository.GetTournamentWithRoundsAsync(_siteContext.MatchResultTournamentId, cancellationToken);
-            if (tournamentEntity == null)
-            {
-                _logger.LogCritical($"{nameof(_siteContext.MatchResultTournamentId)} '{_siteContext.MatchPlanTournamentId}' does not exist");
-                return new FileStreamResult(stream, "image/png");
-            }
-
-            if (!long.TryParse(id, out var roundId) || tournamentEntity.Rounds.All(r => r.Id != roundId))
-            {
-                return GetErrorPixel(stream);
-            }
-
-            try
-            {
-                var roundEntity = tournamentEntity.Rounds.First(r => r.Id == roundId);
-                var matchRule = await _appDb.RoundRepository.GetMatchRuleAsync(roundEntity.Id, cancellationToken);
-
-                var matchesPlayed = await _appDb.MatchRepository.GetMatchesCompleteAsync(new PredicateExpression(MatchCompleteRawFields.TournamentId == _siteContext.MatchResultTournamentId & MatchCompleteRawFields.RoundId == roundId), cancellationToken);
-                var matchesToPlay = await _appDb.MatchRepository.GetMatchesToPlayAsync(new PredicateExpression(MatchToPlayRawFields.TournamentId == _siteContext.MatchResultTournamentId & MatchToPlayRawFields.RoundId == roundId), cancellationToken);
-
-                _appDb.TeamRepository.GetTeamsAndRounds(tournamentEntity).ToList().ForEach(t => { teams.Add((t.TeamId, t.TeamNameForRound)); });
-
-                var chart = new RankingChart(
-                        new TournamentManager.Ranking.Ranking(matchesPlayed, matchesToPlay, (RankComparerEnum)matchRule.RankComparer),
-                        teams, 1.5f, tournamentEntity.Name + " * " + roundEntity.Description, "MD",
-                        "R")
-                    { UseMatchDayMarker = true };
-
-                using var image = chart.GetImage();
-                image.Save(stream, System.Drawing.Imaging.ImageFormat.Png);
-            }
-            catch (Exception e)
-            {
-                _logger.LogCritical(e, $"Ranking chart for round {roundId} could not be created.");
-                return GetErrorPixel(stream);
-            }
-
-            stream.Position = 0; 
-            Response.RegisterForDispose(stream);
-            return new FileStreamResult(stream, "image/png");
-        }
-
-        private FileStreamResult GetErrorPixel(Stream stream)
-        {
-            // send 1 pixel image in case of illegal round id
-            var bmp = new System.Drawing.Bitmap(1, 1, System.Drawing.Imaging.PixelFormat.Format32bppRgb);
-            bmp.SetPixel(0, 0, System.Drawing.Color.White);
-            bmp.Save(stream, System.Drawing.Imaging.ImageFormat.Gif);
-            stream.Position = 0;
-            Response.RegisterForDispose(stream);
-            return new FileStreamResult(stream, "image/gif");
-        }
-
         private async Task<List<RankingListRow>> GetRankingListCached(CancellationToken cancellationToken) => await _memoryCache.GetOrCreateAsync(
             string.Join("_", _siteContext.OrganizationKey, typeof(Ranking).FullName, nameof(RankingListRow)),
             cache =>

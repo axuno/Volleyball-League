@@ -156,4 +156,7 @@
   <data name="until" xml:space="preserve">
     <value>bis</value>
   </data>
+  <data name="Ranking History" xml:space="preserve">
+    <value>Platzierungsverlauf</value>
+  </data>
 </root>

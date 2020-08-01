@@ -34,7 +34,7 @@ namespace League.DI
             SiteList siteList) :
             this(ResolveOrganizationKey(httpContext, siteList), organizationContextResolver, siteList)
         {
-            SetMostRecentOrganizationCookie(httpContext, base.OrganizationKey);
+            SetMostRecentOrganizationCookie(httpContext, UrlSegmentValue);
         }
 
         /// <summary>
@@ -101,15 +101,15 @@ namespace League.DI
             return null;
         }
 
-        private static void SetMostRecentOrganizationCookie(HttpContext httpContext, string organizationKey)
+        private static void SetMostRecentOrganizationCookie(HttpContext httpContext, string urlSegmentValue)
         {
-            if (httpContext == null || organizationKey == null) return;
+            if (httpContext == null || urlSegmentValue == null) return;
             
-            if (organizationKey == string.Empty) httpContext.Response.Cookies.Delete(CookieNames.MostRecentOrganization);
+            if (urlSegmentValue == string.Empty) httpContext.Response.Cookies.Delete(CookieNames.MostRecentOrganization);
 
             httpContext.Response.Cookies.Append(
                 CookieNames.MostRecentOrganization,
-                organizationKey,
+                urlSegmentValue,
                 new CookieOptions()
                 {
                     Path = "/",
