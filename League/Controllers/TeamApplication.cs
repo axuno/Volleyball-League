@@ -474,17 +474,34 @@ namespace League.Controllers
         {
             var sessionModel = await GetModelFromSession(cancellationToken);
             if (!sessionModel.IsFromSession) return RedirectToAction(nameof(SelectTeam), new { Organization = _siteContext.UrlSegmentValue });
-
-            var teamInRoundEntity = new TeamInRoundEntity();
-            sessionModel.TeamInRound.MapFormFieldsToEntity(teamInRoundEntity);
-            teamInRoundEntity.Team = new TeamEntity();
-            sessionModel.Team.MapFormFieldsToEntity(teamInRoundEntity.Team);
-            teamInRoundEntity.Team.Venue = new VenueEntity();
-            sessionModel.Venue.MapFormFieldsToEntity(teamInRoundEntity.Team.Venue);
-
             try
             {
+                var teamInRoundEntity = new TeamInRoundEntity();
+                try
+                {
+                    // If the team had already been registered for another round, we have get the existing entity
+                    if (!sessionModel.TeamInRound.IsNew)
+                    {
+                        teamInRoundEntity =
+                            (await _appDb.TeamInRoundRepository.GetTeamInRoundAsync(
+                                new PredicateExpression(TeamInRoundFields.Id == sessionModel.TeamInRound.Id),
+                                cancellationToken)).First();
+                    }
+                }
+                catch (Exception e)
+                {
+                    _logger.LogCritical(e, $"{nameof(TeamInRoundEntity)} with ID {sessionModel.TeamInRound.Id} for team ID {sessionModel.TeamInRound.TeamId} not found");
+                    throw;
+                }
+                
                 var isNewApplication = teamInRoundEntity.IsNew;
+                sessionModel.TeamInRound.MapFormFieldsToEntity(teamInRoundEntity);
+                teamInRoundEntity.Team = new TeamEntity();
+                sessionModel.Team.MapFormFieldsToEntity(teamInRoundEntity.Team);
+                teamInRoundEntity.Team.Venue = new VenueEntity();
+                sessionModel.Venue.MapFormFieldsToEntity(teamInRoundEntity.Team.Venue);
+
+                
 
                 // Adds the current user as team manager, unless she already is team manager
                 await AddManagerToTeamEntity(teamInRoundEntity.Team, cancellationToken);

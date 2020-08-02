@@ -1,4 +1,5 @@
 ﻿using TournamentManager.DAL.EntityClasses;
+using TournamentManager.DAL.HelperClasses;
 
 namespace League.Models.TeamViewModels
 {
