@@ -4,9 +4,10 @@
 @model CreateAccountViewModel
 @inject SignInManager<ApplicationUser> SignInManager
 @inject IViewLocalizer Localizer
+@inject League.DI.SiteContext SiteContext
 @{
     ViewData["Title"] = Localizer["Create a new user account"];
-    var organizationRoute = ViewContext.RouteData.Values["organization"];
+    var organizationRoute = SiteContext.UrlSegmentValue;
 }
 <div>
     <h2 class="h2">@ViewData["Title"]</h2>
@@ -32,13 +33,13 @@
             }
         }
     }
-    </div>
-    <div>
-        <h3 class="h3">@Localizer["Register with your email address"]</h3>
-        <p>
-            @Localizer["We will send you a message containing the confirmation code to your email address."]<br/>
-            @Localizer["Once your email is confirmed, you can finalize the registration."]
-        </p>
+</div>
+<div>
+    <h3 class="h3">@Localizer["Register with your email address"]</h3>
+    <p>
+        @Localizer["We will send you a message containing the confirmation code to your email address."]<br />
+        @Localizer["Once your email is confirmed, you can finalize the registration."]
+    </p>
     <form asp-controller="@nameof(Account)" asp-action="@nameof(Account.CreateAccount)" asp-route-organization="@organizationRoute" asp-route-returnurl="@ViewData["ReturnUrl"]" method="post" class="col-md-8 col-sm-10 col-12 pl-0" role="form">
         <site-validation-summary show="All">
             <b>@Localizer["Input has some issues"]:</b>
@@ -64,7 +65,7 @@
                 <span class="input-group-append input-group-text">
                     <i class="fas fa-equals"></i>
                 </span>
-            </div>           
+            </div>
             <span asp-validation-for="Captcha" class="text-danger"></span>
         </div>
         <div class="form-group">

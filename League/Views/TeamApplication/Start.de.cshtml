@@ -4,11 +4,12 @@
 @using League.Views
 @using Microsoft.AspNetCore.Mvc.Localization
 @inject IViewLocalizer Localizer
+@inject League.DI.SiteContext SiteContext
 @inject TimeZoneConverter TimeZoneConverter
 @model League.Models.TeamApplicationViewModels.ApplicationSessionModel
 @{
     ViewData["Title"] = "Team-Anmeldung" + " - " + Model.TournamentName;
-    var organizationRoute = ViewContext.RouteData.Values["organization"];
+    var organizationRoute = SiteContext.UrlSegmentValue;
 }
 <div class="mb-0 pb-1">
     <h2 class="h2">@ViewData["Title"]</h2>
@@ -39,7 +40,8 @@
                 bitte folgendes beachten:
                 <ul>
                     <li>Alle Teams, die ein Feld eines Spielort zeitgleich nutzen, müssen diesen auswählen.</li>
-                    <li>Wenn an einem Spielort mehrere Felder zur Verfügung stehen, die <strong>zeitgleich</strong> genutzt werden können,
+                    <li>
+                        Wenn an einem Spielort mehrere Felder zur Verfügung stehen, die <strong>zeitgleich</strong> genutzt werden können,
                         soll für jedes Spielfeld ein eigener Spielort angelegt und dem nutzenden Team zuordnet werden.
                     </li>
                 </ul>
@@ -51,8 +53,10 @@
                     eine Stellvertretung geregelt ist.
                 </li>
                 <li>Die Teamkontakte werden den Mitgliedern anderer Teams angezeigt (und nur diesen).</li>
-                <li>Zusätzlich zu den Teamkontakten können jedem Team SpielerInnen zugeordnet werden. 
-                    Die Kontaktdaten der SpielerInnen sind nur den Teamkollegen zugänglich.</li>
+                <li>
+                    Zusätzlich zu den Teamkontakten können jedem Team SpielerInnen zugeordnet werden.
+                    Die Kontaktdaten der SpielerInnen sind nur den Teamkollegen zugänglich.
+                </li>
             </ul>
         </div>
         <div class="col-12">

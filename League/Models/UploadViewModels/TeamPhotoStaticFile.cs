@@ -1,13 +1,11 @@
 ﻿using System;
 using System.IO;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using League.DI;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
-using TournamentManager.Data;
 
 namespace League.Models.UploadViewModels
 {
@@ -50,7 +48,7 @@ namespace League.Models.UploadViewModels
         {
             var fullFilePath = Path.Combine(_webHostEnvironment.WebRootPath, _folder,
                 string.Format(_filenameTemplate, _siteContext.FolderName, teamId,
-                    DateTime.UtcNow.Ticks, extension));
+                    DateTime.UtcNow.Ticks, extension.TrimStart('.')));
 
             var filename = await SaveFileAsync(formFile, fullFilePath, cancellationToken);
 

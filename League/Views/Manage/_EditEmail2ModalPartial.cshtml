@@ -1,9 +1,12 @@
 ﻿@using League.Controllers
 @using Microsoft.AspNetCore.Mvc.Localization
 @inject IViewLocalizer Localizer
+@inject League.DI.SiteContext SiteContext
 @model EditEmail2ViewModel
 @{ const string BtnRemove = "btn-remove";
-ViewContext.ClientValidationEnabled = true; var organizationRoute = ViewContext.RouteData.Values["organization"];}
+    ViewContext.ClientValidationEnabled = true; 
+    var organizationRoute = SiteContext.UrlSegmentValue;
+}
 <!-- Modal -->
 <modal id="change-email" title="@Localizer["Change Additional Email Address"].Value" tabindex="-1">
     <modal-body>

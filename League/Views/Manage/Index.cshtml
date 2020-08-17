@@ -2,11 +2,12 @@
 @using League.Helpers
 @using Microsoft.AspNetCore.Mvc.Localization
 @inject IViewLocalizer Localizer
+@inject League.DI.SiteContext SiteContext
 @inject MetaDataHelper Metadata
 @model IndexViewModel
 @{
     ViewData["Title"] = Localizer["Change account settings"];
-    var organizationRoute = ViewContext.RouteData.Values["organization"];
+    var organizationRoute = SiteContext.UrlSegmentValue;
 }
 <div>
     <h2 class="h2">@ViewData["Title"]</h2>

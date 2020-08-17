@@ -16,7 +16,7 @@ namespace Axuno.Tools
         }
 
         /// <summary>
-        /// Constructor for private use.
+        /// Constructor for internal use.
         /// </summary>
         /// <param name="id">Nullable HolidayId</param>
         /// <param name="type">HolidayType</param>

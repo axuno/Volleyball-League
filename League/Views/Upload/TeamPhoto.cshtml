@@ -1,10 +1,11 @@
 ﻿@using League.Controllers
 @using Microsoft.AspNetCore.Mvc.Localization
 @inject IViewLocalizer Localizer
+@inject League.DI.SiteContext SiteContext
 @model League.Models.UploadViewModels.TeamPhotoViewModel
 @{
     ViewData["Title"] = Localizer["Upload Team Photo"].Value;
-    var organizationRoute = ViewContext.RouteData.Values["organization"];
+    var organizationRoute = SiteContext.UrlSegmentValue;
 }
 <div class="mb-0 pb-1">
     <h2 class="h2">@(ViewData["Title"])</h2>
@@ -31,7 +32,7 @@
             <div>@Localizer["Current team photo"]:</div>
             @if (string.IsNullOrEmpty(Model.PhotoFileUrl))
             {
-            <div>@Localizer["None"]</div>
+                <div>@Localizer["None"]</div>
             }
             else
             {
@@ -53,7 +54,7 @@
         <div>@Localizer["Delete the photo of team '{0}'?", Model.Team.Name]</div>
     </modal-body>
     <modal-footer show-dismiss="true" dismiss-text="@Localizer["Cancel"].Value">
-        <a class="btn btn-primary" asp-action="@nameof(Upload.RemoveTeamPhoto)" asp-controller="@nameof(Upload)" asp-route-organization="@organizationRoute" asp-route-id="@Model.Team.Id" >@Localizer["Delete team photo"]</a>
+        <a class="btn btn-primary" asp-action="@nameof(Upload.RemoveTeamPhoto)" asp-controller="@nameof(Upload)" asp-route-organization="@organizationRoute" asp-route-id="@Model.Team.Id">@Localizer["Delete team photo"]</a>
     </modal-footer>
 </modal>
 @section styles

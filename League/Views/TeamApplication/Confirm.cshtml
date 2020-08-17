@@ -5,10 +5,11 @@
 @using Microsoft.AspNetCore.Mvc.Localization
 @inject IViewLocalizer Localizer
 @inject TimeZoneConverter TimeZoneConverter
+@inject League.DI.SiteContext SiteContext
 @model League.Models.TeamApplicationViewModels.ApplicationConfirmModel
 @{
     ViewData["Title"] = Localizer["Team Registration"].Value + " - " + Model.SessionModel.TournamentName;
-    var organizationRoute = ViewContext.RouteData.Values["organization"];
+    var organizationRoute = SiteContext.UrlSegmentValue;
 }
 <div class="mb-0 pb-1">
     <h2 class="h2">@ViewData["Title"]</h2>
@@ -29,7 +30,7 @@
         {
             // MatchTime is defined as a zoned time, NOT UTC. It is always the same, never mind DST
             <div class="text-success col-md-3">@Localizer["Home match day"]</div>
-            <div class="col-md-9 mb-2"><i class="far fa-calendar-alt"></i><span class="d-inline-block mr-2"></span>@DateTimeFormatInfo.CurrentInfo?.GetDayName((DayOfWeek) Model.SessionModel.Team.MatchDayOfWeek), @(DateTime.UtcNow.Date.Add(Model.SessionModel.Team.MatchTime.Value).ToShortTimeString()) @(TimeZoneConverter.ToZonedTime(DateTime.UtcNow).Abbreviation)</div>
+            <div class="col-md-9 mb-2"><i class="far fa-calendar-alt"></i><span class="d-inline-block mr-2"></span>@DateTimeFormatInfo.CurrentInfo?.GetDayName((DayOfWeek)Model.SessionModel.Team.MatchDayOfWeek), @(DateTime.UtcNow.Date.Add(Model.SessionModel.Team.MatchTime.Value).ToShortTimeString()) @(TimeZoneConverter.ToZonedTime(DateTime.UtcNow).Abbreviation)</div>
         }
         <div class="text-success col-md-3">@(Model.SessionModel.Venue.IsNew ? Localizer["New venue"] : Localizer["Existing venue"])</div>
         <div class="col-md-7 mb-2">

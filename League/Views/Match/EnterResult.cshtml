@@ -4,11 +4,12 @@
 @using Microsoft.AspNetCore.Mvc.ModelBinding
 @inject RegionInfo RegionInfo
 @inject IViewLocalizer Localizer
+@inject League.DI.SiteContext SiteContext
 @{ ViewContext.ClientValidationEnabled = false;}  @* We rely on datepicker and server side validation *@
 @model League.Models.MatchViewModels.EnterResultViewModel
 @{
     ViewData["Title"] = Localizer["Enter Match Result"].Value + " - " + Model.Tournament.Name;
-    var organizationRoute = ViewContext.RouteData.Values["organization"];
+    var organizationRoute = SiteContext.UrlSegmentValue;
 
     string AddSetErr(int setIndex)
     {

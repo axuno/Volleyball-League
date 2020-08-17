@@ -1,10 +1,11 @@
 ﻿@using League.Controllers
 @using Microsoft.AspNetCore.Mvc.Localization
 @inject IViewLocalizer Localizer
+@inject League.DI.SiteContext SiteContext
 @model League.Models.RankingViewModels.AllTimeTeamModel
 @{
     ViewData["Title"] = Localizer["All-time Team Table"].Value;
-    var organizationRoute = ViewContext.RouteData.Values["organization"];
+    var organizationRoute = SiteContext.UrlSegmentValue;
     if (Model.RankingList.Count == 0)
     {
         <div class="mb-0 pb-1">
@@ -38,48 +39,48 @@
         <div class="rounded table-responsive">
             <table class="table table-sm table-light table-bordered table">
                 <thead class="rounded">
-                <tr>
-                    <th class="tournament">
-                        <div class="text-truncate">@Localizer["League"]</div>
-                    </th>
-                    <th class="round">@Localizer["Round"]</th>
-                    <th class="rank">@Localizer["Rank"]</th>
-                    <th class="result">
-                        <div>@Localizer["Match"]</div>
-                        <div>@Localizer["Pts."]</div>
-                    </th>
-                    <th class="result">
-                        <div>@Localizer["Set"]</div>
-                        <div>@Localizer["Pts."]</div>
-                    </th>
-                    <th class="result">
-                        <div>@Localizer["Ball"]</div>
-                        <div>@Localizer["Pts."]</div>
-                    </th>
-                </tr>
+                    <tr>
+                        <th class="tournament">
+                            <div class="text-truncate">@Localizer["League"]</div>
+                        </th>
+                        <th class="round">@Localizer["Round"]</th>
+                        <th class="rank">@Localizer["Rank"]</th>
+                        <th class="result">
+                            <div>@Localizer["Match"]</div>
+                            <div>@Localizer["Pts."]</div>
+                        </th>
+                        <th class="result">
+                            <div>@Localizer["Set"]</div>
+                            <div>@Localizer["Pts."]</div>
+                        </th>
+                        <th class="result">
+                            <div>@Localizer["Ball"]</div>
+                            <div>@Localizer["Pts."]</div>
+                        </th>
+                    </tr>
                 </thead>
                 <tbody>
-                @{
-                    @foreach (var rankRow in teamRankRows)
-                    {
-                        <tr>
-                            <td class="tournament">
-                                <div class="text-truncate">
-                                    <a asp-action="@nameof(Ranking.AllTimeTournament)" asp-controller="@nameof(Ranking)" asp-route-organization="@organizationRoute" asp-route-id="@rankRow.TournamentId">@rankRow.TournamentName</a>
-                                </div>
-                            </td>
-                            <td class="round">
-                                <div class="text-truncate">
-                                    @rankRow.RoundDescription
-                                </div>
-                            </td>
-                            <td class="rank">@rankRow.Rank</td>
-                            <td class="result">@rankRow.MatchPointsWon:@rankRow.MatchPointsLost</td>
-                            <td class="result">@rankRow.SetPointsWon:@rankRow.SetPointsLost</td>
-                            <td class="result">@rankRow.BallPointsWon:@rankRow.BallPointsLost</td>
-                        </tr>
+                    @{
+                        @foreach (var rankRow in teamRankRows)
+                        {
+                            <tr>
+                                <td class="tournament">
+                                    <div class="text-truncate">
+                                        <a asp-action="@nameof(Ranking.AllTimeTournament)" asp-controller="@nameof(Ranking)" asp-route-organization="@organizationRoute" asp-route-id="@rankRow.TournamentId">@rankRow.TournamentName</a>
+                                    </div>
+                                </td>
+                                <td class="round">
+                                    <div class="text-truncate">
+                                        @rankRow.RoundDescription
+                                    </div>
+                                </td>
+                                <td class="rank">@rankRow.Rank</td>
+                                <td class="result">@rankRow.MatchPointsWon:@rankRow.MatchPointsLost</td>
+                                <td class="result">@rankRow.SetPointsWon:@rankRow.SetPointsLost</td>
+                                <td class="result">@rankRow.BallPointsWon:@rankRow.BallPointsLost</td>
+                            </tr>
+                        }
                     }
-                }
                 </tbody>
             </table>
         </div>
@@ -91,7 +92,7 @@
         var rankColWidth = 10;
         var resultColWidth = 10;
         var roundColWidth = 15;
-        var tournamentColWidth = 100 - rankColWidth - roundColWidth -  3 * resultColWidth;
+        var tournamentColWidth = 100 - rankColWidth - roundColWidth - 3 * resultColWidth;
     }
     <style type="text/css">
         #ranking-table table tbody tr {border-bottom: solid 2px lightgray}
@@ -107,11 +108,11 @@
 }
 @section scripts
 {
-<script type="text/javascript">
-    //<![CDATA[
-    $(document).ready(function() {
-        $('[data-toggle="tooltip"]').tooltip();
-    });
-    //]]>
-</script>
+    <script type="text/javascript">
+        //<![CDATA[
+        $(document).ready(function () {
+            $('[data-toggle="tooltip"]').tooltip();
+        });
+        //]]>
+    </script>
 }

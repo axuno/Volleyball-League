@@ -6,7 +6,7 @@
 @model ExternalSignConfirmationViewModel
 @{
     ViewData["Title"] = Localizer["Associate social network account"];
-    var organizationRoute = ViewContext.RouteData.Values["organization"];
+    var organizationRoute = SiteContext.UrlSegmentValue;
     List<SelectListItem> GenderList()
     {
         return new List<SelectListItem> {new SelectListItem {Value = string.Empty, Text = Localizer["Please choose"].Value},

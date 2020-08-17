@@ -2,45 +2,46 @@
 @using Microsoft.AspNetCore.Mvc.Localization
 @using TournamentManager.DAL.TypedViewClasses
 @inject IViewLocalizer Localizer
+@inject League.DI.SiteContext SiteContext
 @model (long TeamId, long? VenueId)
-@{var organizationRoute = ViewContext.RouteData.Values["organization"];}
+@{var organizationRoute = SiteContext.UrlSegmentValue;}
 <!-- Modal -->
-    <modal id="change-venue" title="@Localizer["Change team venue"].Value" tabindex="-1">
-        <modal-body>
-            <div>
-                <div class="mb-4">
-                    @if (Model.VenueId.HasValue)
-                    {
-                        <a asp-action="@nameof(Venue.Edit)"
-                           asp-controller="@nameof(Venue)"
-                           asp-route-id="@Model.VenueId"
-                           asp-route-organization="@organizationRoute"
-                           asp-route-returnurl="@Url.Action(nameof(Team.MyTeam), nameof(Team), new { Organization = organizationRoute })"
-                           site-authorize-resource site-resource="@new List<VenueTeamRow>{{ new VenueTeamRow{ TeamId = Model.TeamId, VenueId = Model.VenueId.Value }}}"
-                           site-requirement="@League.Authorization.VenueOperations.EditVenue"
-                           class="btn btn-primary btn-block">@Localizer["Edit current venue"]</a>
-                    }
-                </div>
-                <div class="mb-4">
-                    <form asp-controller="@nameof(Team)" asp-action="@nameof(Team.SelectVenue)" asp-route-organization="@organizationRoute" asp-route-tid="@Model.TeamId" method="get" role="form">
-                        <button type="button" site-ajax-submit class="btn btn-primary btn-block">@Localizer["Select another venue"]</button>
-                    </form>
-                </div>
-                <div>
-                    <a asp-action="@nameof(Venue.Create)"
+<modal id="change-venue" title="@Localizer["Change team venue"].Value" tabindex="-1">
+    <modal-body>
+        <div>
+            <div class="mb-4">
+                @if (Model.VenueId.HasValue)
+                {
+                    <a asp-action="@nameof(Venue.Edit)"
                        asp-controller="@nameof(Venue)"
+                       asp-route-id="@Model.VenueId"
                        asp-route-organization="@organizationRoute"
-                       asp-route-tid="@Model.TeamId"
                        asp-route-returnurl="@Url.Action(nameof(Team.MyTeam), nameof(Team), new { Organization = organizationRoute })"
-                       site-authorize-resource site-resource="@new List<VenueTeamRow>()"
-                       site-requirement="@League.Authorization.VenueOperations.CreateVenue"
-                       class="btn btn-primary btn-block">@Localizer["Create new team venue"]</a>
-                    <div class="small text-muted">@Localizer["Please check the list of know venues, before creating a new one."]</div>
-                </div>
+                       site-authorize-resource site-resource="@new List<VenueTeamRow>{{ new VenueTeamRow{ TeamId = Model.TeamId, VenueId = Model.VenueId.Value }}}"
+                       site-requirement="@League.Authorization.VenueOperations.EditVenue"
+                       class="btn btn-primary btn-block">@Localizer["Edit current venue"]</a>
+                }
             </div>
-        </modal-body>
-        <modal-footer show-dismiss="true" dismiss-text="@Localizer["Cancel"].Value">
-        </modal-footer>
-    </modal>
+            <div class="mb-4">
+                <form asp-controller="@nameof(Team)" asp-action="@nameof(Team.SelectVenue)" asp-route-organization="@organizationRoute" asp-route-tid="@Model.TeamId" method="get" role="form">
+                    <button type="button" site-ajax-submit class="btn btn-primary btn-block">@Localizer["Select another venue"]</button>
+                </form>
+            </div>
+            <div>
+                <a asp-action="@nameof(Venue.Create)"
+                   asp-controller="@nameof(Venue)"
+                   asp-route-organization="@organizationRoute"
+                   asp-route-tid="@Model.TeamId"
+                   asp-route-returnurl="@Url.Action(nameof(Team.MyTeam), nameof(Team), new { Organization = organizationRoute })"
+                   site-authorize-resource site-resource="@new List<VenueTeamRow>()"
+                   site-requirement="@League.Authorization.VenueOperations.CreateVenue"
+                   class="btn btn-primary btn-block">@Localizer["Create new team venue"]</a>
+                <div class="small text-muted">@Localizer["Please check the list of know venues, before creating a new one."]</div>
+            </div>
+        </div>
+    </modal-body>
+    <modal-footer show-dismiss="true" dismiss-text="@Localizer["Cancel"].Value">
+    </modal-footer>
+</modal>
 
 

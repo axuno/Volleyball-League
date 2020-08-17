@@ -382,7 +382,7 @@ namespace League.Controllers
             var match = FillMatchEntity(model.PlannedMatch);
             match.SetPlannedStart(model.MatchDate.HasValue && model.MatchTime.HasValue
                 ? _timeZoneConverter.ToUtc(model.MatchDate.Value.Add(model.MatchTime.Value))
-                : null, _siteContext.FixtureRuleSet.PlannedDurationOfMatch);
+                : default(DateTime?), _siteContext.FixtureRuleSet.PlannedDurationOfMatch);
             match.SetVenueId(model.VenueId);
             if (match.IsDirty) match.ChangeSerial += 1;
 

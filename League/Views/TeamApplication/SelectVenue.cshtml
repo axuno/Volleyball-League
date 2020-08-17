@@ -1,15 +1,16 @@
 @using League.Controllers
 @using Microsoft.AspNetCore.Mvc.Localization
 @inject IViewLocalizer Localizer
+@inject League.DI.SiteContext SiteContext
 @model League.Models.TeamViewModels.TeamVenueSelectModel
 @{ ValueTuple<long, IList<long>, League.Components.VenueSelectorComponentModel.Criteria, League.Components.VenueSelectorComponentModel.Criteria, long?> componentModel =
-         (Model.TournamentId,
-             new List<long>(new[] {Model.TeamId}),
-             League.Components.VenueSelectorComponentModel.Criteria.VenuesOfTeams | League.Components.VenueSelectorComponentModel.Criteria.Active | League.Components.VenueSelectorComponentModel.Criteria.Unused,
-             League.Components.VenueSelectorComponentModel.Criteria.VenuesOfTeams | League.Components.VenueSelectorComponentModel.Criteria.Active | League.Components.VenueSelectorComponentModel.Criteria.Unused,
-             default(long?));
+          (Model.TournamentId,
+              new List<long>(new[] { Model.TeamId }),
+              League.Components.VenueSelectorComponentModel.Criteria.VenuesOfTeams | League.Components.VenueSelectorComponentModel.Criteria.Active | League.Components.VenueSelectorComponentModel.Criteria.Unused,
+              League.Components.VenueSelectorComponentModel.Criteria.VenuesOfTeams | League.Components.VenueSelectorComponentModel.Criteria.Active | League.Components.VenueSelectorComponentModel.Criteria.Unused,
+              default(long?));
     ViewData["Title"] = Localizer["Team Registration"].Value + " - " + ViewData["TournamentName"];
-    var organizationRoute = ViewContext.RouteData.Values["organization"];
+    var organizationRoute = SiteContext.UrlSegmentValue;
 }
 <div class="mb-0 pb-2">
     <h2 class="h2">@ViewData["Title"]</h2>
@@ -60,7 +61,7 @@
 }
 @section scripts
 {
-<script type="text/javascript" site-on-content-loaded="true">
+    <script type="text/javascript" site-on-content-loaded="true">
 
     function CheckUncheckItems() {
         $('#venue-list').find('tr[data-venue-id]').each(function(rowIndex, r) {
@@ -79,5 +80,5 @@
         });
 
     CheckUncheckItems();
-</script>
+    </script>
 }

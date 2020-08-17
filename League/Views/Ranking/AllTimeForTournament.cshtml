@@ -1,10 +1,11 @@
 ﻿@using League.Controllers
 @using Microsoft.AspNetCore.Mvc.Localization
 @inject IViewLocalizer Localizer
+@inject League.DI.SiteContext SiteContext
 @model League.Models.RankingViewModels.AllTimeTournamentModel
 @{
     ViewData["Title"] = Localizer["All-time Tournament Tables"].Value;
-    var organizationRoute = ViewContext.RouteData.Values["organization"];
+    var organizationRoute = SiteContext.UrlSegmentValue;
     if (Model.RankingList.Count == 0)
     {
         <div class="mb-0 pb-1">
@@ -26,30 +27,30 @@
         var tournamentCount = 0;
         var tournaments = Model.GetAllTournaments().OrderByDescending(t => Model.GetTournamentPeriod(t.Id).Start).ToList();
     }
-<div id="tournament-list">
-    @foreach (var (id, name, period) in tournaments)
-    {
-        if (period?.Start == null || period.End == null)
+    <div id="tournament-list">
+        @foreach (var (id, name, period) in tournaments)
         {
-            continue;
-        }
+            if (period?.Start == null || period.End == null)
+            {
+                continue;
+            }
 
-        tournamentCount++;
-        // Only display the most recent 5 tournaments
-        if (tournaments.Count > 5 && tournamentCount == 5)
-        {
-            <a id="btn-more-tournaments" class="btn btn-success btn-sm mr-2 mb-2" href="#" role="button">@Localizer["more..."]</a>
+            tournamentCount++;
+            // Only display the most recent 5 tournaments
+            if (tournaments.Count > 5 && tournamentCount == 5)
+            {
+                <a id="btn-more-tournaments" class="btn btn-success btn-sm mr-2 mb-2" href="#" role="button">@Localizer["more..."]</a>
+            }
+            if (tournamentCount >= 5)
+            {
+                <a class="btn btn-primary btn-sm mr-2 mb-2 d-none@(id == Model.SelectedTournamentId ? " active" : "")" asp-action="@nameof(League.Controllers.Ranking.AllTimeTournament)" asp-controller="@nameof(Ranking)" asp-route-organization="@organizationRoute" asp-route-id="@id" data-toggle="tooltip" title="@name" role="button">@($"{period.Start.Value.Year}.{period.Start.Value.Month} - {period.End.Value.Year}.{period.End.Value.Month}")</a>
+            }
+            else
+            {
+                <a class="btn btn-primary btn-sm mr-2 mb-2@(id == Model.SelectedTournamentId ? " active" : "")" asp-action="@nameof(League.Controllers.Ranking.AllTimeTournament)" asp-controller="@nameof(Ranking)" asp-route-organization="@organizationRoute" asp-route-id="@id" data-toggle="tooltip" title="@name" role="button">@($"{period.Start.Value.Year}.{period.Start.Value.Month} - {period.End.Value.Year}.{period.End.Value.Month}")</a>
+            }
         }
-        if (tournamentCount >= 5)
-        {
-            <a class="btn btn-primary btn-sm mr-2 mb-2 d-none@(id == Model.SelectedTournamentId ? " active" : "")" asp-action="@nameof(League.Controllers.Ranking.AllTimeTournament)" asp-controller="@nameof(Ranking)" asp-route-organization="@organizationRoute" asp-route-id="@id" data-toggle="tooltip" title="@name" role="button">@($"{period.Start.Value.Year}.{period.Start.Value.Month} - {period.End.Value.Year}.{period.End.Value.Month}")</a>
-        }
-        else
-        {
-            <a class="btn btn-primary btn-sm mr-2 mb-2@(id == Model.SelectedTournamentId ? " active" : "")" asp-action="@nameof(League.Controllers.Ranking.AllTimeTournament)" asp-controller="@nameof(Ranking)" asp-route-organization="@organizationRoute" asp-route-id="@id" data-toggle="tooltip" title="@name" role="button">@($"{period.Start.Value.Year}.{period.Start.Value.Month} - {period.End.Value.Year}.{period.End.Value.Month}")</a>
-        }
-    }
-</div>
+    </div>
     <div class="mt-4 mb-2">
         <h3 class="h3">@Model.GetAllTournaments().First(m => m.Id == Model.SelectedTournamentId).Name</h3>
         <div>@Localizer["Click on a team name to show the all time list of it"]</div>
@@ -102,7 +103,7 @@
                                         <td class="team">
                                             @{ var linkTitle = rankRow.TeamName != rankRow.TeamNameForRound ? Localizer["Team name in this round"].Value + ": \"" + rankRow.TeamNameForRound + "\"" : null;}
                                             <div class="text-truncate" data-toggle="tooltip" title="@linkTitle">
-                                                <a asp-action="@nameof(Ranking.AllTimeTeam)" asp-controller="@nameof(Ranking)" asp-route-organization="@organizationRoute" asp-route-id="@rankRow.TeamId" >@rankRow.TeamName</a>
+                                                <a asp-action="@nameof(Ranking.AllTimeTeam)" asp-controller="@nameof(Ranking)" asp-route-organization="@organizationRoute" asp-route-id="@rankRow.TeamId">@rankRow.TeamName</a>
                                             </div>
                                             <div class="text-truncate">@rankRow.ClubName</div>
                                         </td>
@@ -140,17 +141,17 @@
 }
 @section scripts
 {
-<script type="text/javascript">
-    //<![CDATA[
-    $(document).ready(function() {
-        $('[data-toggle="tooltip"]').tooltip();
-        $('#btn-more-tournaments').on('click',
-            function(e) {
-                $('#tournament-list > .btn').removeClass('d-none');
-                $('#btn-more-tournaments').addClass('d-none');
-                e.preventDefault();
-            });
-    });
-    //]]>
-</script>
+    <script type="text/javascript">
+        //<![CDATA[
+        $(document).ready(function () {
+            $('[data-toggle="tooltip"]').tooltip();
+            $('#btn-more-tournaments').on('click',
+                function (e) {
+                    $('#tournament-list > .btn').removeClass('d-none');
+                    $('#btn-more-tournaments').addClass('d-none');
+                    e.preventDefault();
+                });
+        });
+        //]]>
+    </script>
 }

@@ -2,7 +2,7 @@
     ViewData["Title"] = "Show Claims";
 }
 <div class="mb-0 pb-1">
-    <h2 class="h2">Claims</h2>
+    <h2 class="h2">Claims for current user</h2>
     <div>
         <ul>
             @foreach (var claim in ViewContext.HttpContext.User.Claims)

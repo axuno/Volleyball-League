@@ -3,10 +3,11 @@
 @using League.Controllers
 @using Microsoft.AspNetCore.Mvc.Localization
 @inject IViewLocalizer Localizer
+@inject League.DI.SiteContext SiteContext
 @model League.Models.VenueViewModels.VenueEditModel
 @{ ViewContext.ClientValidationEnabled = false;
     ViewData["Title"] = Localizer["Team Registration"].Value + " - " + ViewData["TournamentName"];
-    var organizationRoute = ViewContext.RouteData.Values["organization"];
+    var organizationRoute = SiteContext.UrlSegmentValue;
 }
 <div class="mb-0 pb-1">
     <h2 class="h2">@ViewData["Title"]</h2>
@@ -68,16 +69,17 @@
 </div>
 <modal id="show-vicinity-venues" title="@Localizer["Venues in direct vicinity"].Value" dialog-class="modal-xl">
     <modal-body>
-        <div class="table-responsive">@* Wrapping this way makes tables responsive and 100% width *@
-            <table id="venue-list" class="table table-sm table-light">
-                <thead class="rounded">
+        <div class="table-responsive">
+            @* Wrapping this way makes tables responsive and 100% width *@
+        <table id="venue-list" class="table table-sm table-light">
+            <thead class="rounded">
                 <tr>
                     <th>@Localizer["Name"]</th>
                     <th>@Localizer["Address"]</th>
                     <th style="text-align: right">@Localizer["Distance"]</th>
                 </tr>
-                </thead>
-                <tbody>
+            </thead>
+            <tbody>
                 @foreach (var v in Model.VenuesForDistance)
                 {
                     <tr>
@@ -86,32 +88,33 @@
                         <td style="text-align: right">@((int) (Math.Round(v.Distance, 1) * 1000))m</td>
                     </tr>
                 }
-                </tbody>
-            </table>
-        </div>
-    </modal-body>
+            </tbody>
+        </table>
+    </div>
+</modal-body>
 </modal>
 @section styles
 {
-<style type="text/css">
-    #venue-list tbody tr {
-        border-bottom: solid 2px lightgray
-    }
-    #venue-list thead {
-        background-color: lightgray
-    }
+    <style type="text/css">
+        #venue-list tbody tr {
+            border-bottom: solid 2px lightgray
+        }
 
-    /* Start: Change Bootstrap 4 default custom checkbox color */
-    .custom-checkbox .custom-control-input:checked ~ .custom-control-label::before {
-        background-color: var(--warning);
-        border-color: var(--warning);
-    }
+        #venue-list thead {
+            background-color: lightgray
+        }
 
-    .custom-control-input:checked ~ .custom-control-label::before {
-        color: #fff;
-        background-color: var(--warning);
-        border-color: var(--warning);
-    }
-    /* End: Change Bootstrap 4 default custom checkbox color */
-</style>
+        /* Start: Change Bootstrap 4 default custom checkbox color */
+        .custom-checkbox .custom-control-input:checked ~ .custom-control-label::before {
+            background-color: var(--warning);
+            border-color: var(--warning);
+        }
+
+        .custom-control-input:checked ~ .custom-control-label::before {
+            color: #fff;
+            background-color: var(--warning);
+            border-color: var(--warning);
+        }
+        /* End: Change Bootstrap 4 default custom checkbox color */
+    </style>
 }

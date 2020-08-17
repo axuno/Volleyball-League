@@ -2,9 +2,10 @@
 @using Microsoft.AspNetCore.Mvc.Localization
 @model PersonalDetailsViewModel
 @inject IViewLocalizer Localizer
+@inject League.DI.SiteContext SiteContext
 @{
     ViewContext.ClientValidationEnabled = true;
-    var organizationRoute = ViewContext.RouteData.Values["organization"];
+    var organizationRoute = SiteContext.UrlSegmentValue;
     List<SelectListItem> GenderList()
     {
         var genderList = new List<SelectListItem>();

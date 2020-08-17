@@ -3,10 +3,11 @@
 @using Microsoft.AspNetCore.Mvc.Localization
 @inject UserManager<ApplicationUser> UserManager
 @inject IViewLocalizer Localizer
+@inject League.DI.SiteContext SiteContext
 @inject IUserValidator<ApplicationUser> userValidator
 @{ var UserValidator = (LeagueUserValidator<ApplicationUser>)this.userValidator;
-ViewContext.ClientValidationEnabled = false; 
-var organizationRoute = ViewContext.RouteData.Values["organization"];}
+    ViewContext.ClientValidationEnabled = false;
+    var organizationRoute = SiteContext.UrlSegmentValue;}
 @model ChangeUsernameViewModel
 @{ var allowedUsernameCharacters = Axuno.Tools.StringFormatter.GroupedValidCharacters(UserManager.Options.User.AllowedUserNameCharacters);}
 <!-- Modal -->

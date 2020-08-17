@@ -22,10 +22,6 @@ namespace League.ViewNames
         public const string SignInRejected = "SignInRejected";
         public const string SignInRejectedEmailNotConfirmed = "SignInRejectedEmailNotConfirmed";
     }
-    public static class Admin
-    {
-        public const string ShowClaims = "ShowClaims";
-    }
     public static class Emails
     {
         public const string ConfirmNewPrimaryEmail = "ConfirmNewPrimaryEmail";
@@ -215,5 +211,25 @@ namespace League.ViewNames
     public static class Venue
     {
         public const string EditVenue = "EditVenue";
+    }
+    public static class Area
+    {
+        public static class Admin
+        {
+            public const string _ViewImports = "_ViewImports";
+            public const string _ViewStart = "_ViewStart";
+            public static class Impersonation
+            {
+                public const string Index = "Index";
+            }
+            public static class Shared
+            {
+                public const string _Layout = "_Layout";
+            }
+            public static class System
+            {
+                public const string ShowClaims = "ShowClaims";
+            }
+        }
     }
 }

@@ -3,10 +3,11 @@
 @using TournamentManager.DAL.EntityClasses
 @using TournamentManager.DAL.TypedViewClasses
 @inject IViewLocalizer Localizer
+@inject League.DI.SiteContext SiteContext
 @model League.Models.MatchViewModels.ResultsViewModel
 @{
     ViewData["Title"] = Localizer["Match Results"].Value + " - " + Model.Tournament.Name;
-    var organizationRoute = ViewContext.RouteData.Values["organization"];
+    var organizationRoute = SiteContext.UrlSegmentValue;
     if (Model.CompletedMatches.Count == 0)
     {
         <div class="mb-0 pb-1">
@@ -26,7 +27,7 @@
     if (useRecentRoundCookie) { activeRoundId = rounds.FirstOrDefault()?.RoundId ?? 0; }
     MatchEntity ToMatchEntity(CompletedMatchRow cmr)
     {
-        return new MatchEntity{Id = cmr.Id, HomeTeamId = cmr.HomeTeamId, GuestTeamId = cmr.GuestTeamId, VenueId = cmr.VenueId };
+        return new MatchEntity { Id = cmr.Id, HomeTeamId = cmr.HomeTeamId, GuestTeamId = cmr.GuestTeamId, VenueId = cmr.VenueId };
     }
 }
 <div class="mb-0 pb-1">
@@ -149,7 +150,7 @@
                                                 </a>
                                                 <div class="dropdown-menu shadow" role="menu" aria-labelledby="dropdownMenuLink">
                                                     <a href="#" tabindex="0" data-round-id="@match.RoundId" data-team-name="@match.GuestTeamNameForRound" class="dropdown-item filter-link">@Localizer["Filter matches for this team"]</a>
-                                                    <a asp-action=@nameof(League.Controllers.Match.EnterResult) asp-controller=@nameof(League.Controllers.Match) asp-route-organization="@organizationRoute" asp-route-id=@(match.Id) 
+                                                    <a asp-action=@nameof(League.Controllers.Match.EnterResult) asp-controller=@nameof(League.Controllers.Match) asp-route-organization="@organizationRoute" asp-route-id=@(match.Id)
                                                        tabindex="0" class="dropdown-item"
                                                        site-authorize-resource site-resource=@ToMatchEntity(match)
                                                        site-requirement=@League.Authorization.MatchOperations.EnterResult>@Localizer["Edit this match"]</a>
@@ -244,7 +245,7 @@
                     @* Bootstrap 4 flaw: otherwise tooltips remain visible on mobile devices *@
                     $(this).tooltip('hide');
                     @* hide() and show() do not work for d-inline-block *@
-                    $(this).removeClass('d-inline-block').addClass('d-none'); 
+                    $(this).removeClass('d-inline-block').addClass('d-none');
                     $(this).parent().find('table tbody > tr').show();
                     @* // striping
                     $(this).parent().find('table').find('tbody').find('tr').removeClass('odd').show();

@@ -1,11 +1,11 @@
-﻿@using System.Globalization
+﻿@inject League.DI.SiteContext SiteContext
 @using League.Controllers
 @using League.Views.Role
 @model League.Models.RoleViewModels.RoleAddModel
 @{
     var selectableRoleNames = new[] { League.Identity.Constants.ClaimType.PlaysInTeam, League.Identity.Constants.ClaimType.ManagesTeam };
     ViewContext.ClientValidationEnabled = false;
-    var organizationRoute = ViewContext.RouteData.Values["organization"];
+    var organizationRoute = SiteContext.UrlSegmentValue;
 }
 <!-- Modal -->
 <modal id="add-team-member" title="@_AddMemberModalPartial.Add_team_member" dialog-class="modal-md" tabindex="-1">
@@ -42,10 +42,10 @@
             $('select').selectpicker();
         </script>
         @{ if (ViewContext.ClientValidationEnabled)
-           {
-               /* register the modal form for validation */
-               <partial name="@nameof(League.ViewNames.Shared._ValidationScriptsPartial)" />
-           }
+            {
+                /* register the modal form for validation */
+                <partial name="@nameof(League.ViewNames.Shared._ValidationScriptsPartial)" />
+            }
         }
     </modal-footer>
 </modal>

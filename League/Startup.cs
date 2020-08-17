@@ -1,4 +1,6 @@
-﻿using cloudscribe.Web.Navigation;
+﻿#region ** Usings **
+
+using cloudscribe.Web.Navigation;
 using cloudscribe.Web.Navigation.Caching;
 using JSNLog;
 using League.DI;
@@ -47,6 +49,8 @@ using League.ConfigurationPoco;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Rewrite;
 using TournamentManager.DI;
+
+#endregion
 
 namespace League
 {
@@ -454,7 +458,7 @@ namespace League
             services.AddSingleton<NodaTime.TimeZones.DateTimeZoneCache>(sp =>
                 new NodaTime.TimeZones.DateTimeZoneCache(NodaTime.TimeZones.TzdbDateTimeZoneSource.Default));
             
-            var tzId = Configuration.GetSection("TimeZone").Value ?? "America/New York";
+            var tzId = Configuration.GetSection("TimeZone").Value ?? "America/New_York";
             // TimeZoneConverter will use the culture of the current scope
             services.AddScoped(sp => new Axuno.Tools.DateAndTime.TimeZoneConverter(
                 sp.GetRequiredService<NodaTime.TimeZones.DateTimeZoneCache>(), tzId, CultureInfo.CurrentCulture,

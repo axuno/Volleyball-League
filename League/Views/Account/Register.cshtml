@@ -2,9 +2,10 @@
 @using Microsoft.AspNetCore.Mvc.Localization
 @model RegisterViewModel
 @inject IViewLocalizer Localizer
+@inject League.DI.SiteContext SiteContext
 @{
     ViewData["Title"] = Localizer["Create a new user account"];
-    var organizationRoute = ViewContext.RouteData.Values["organization"];
+    var organizationRoute = SiteContext.UrlSegmentValue;
     List<SelectListItem> GenderList()
     {
         return new List<SelectListItem> {new SelectListItem {Value = string.Empty, Text = Localizer["Please choose"].Value},
@@ -21,12 +22,12 @@
         <site-validation-summary show="All">
             <b>@Localizer["Input has some issues"]:</b>
         </site-validation-summary>
-        <input asp-for="Code" type="hidden"/>
+        <input asp-for="Code" type="hidden" />
         <div class="form-group">
             <label asp-for="Email"></label>
-                <div>
-                    <strong>@Model.Email</strong>
-                </div>
+            <div>
+                <strong>@Model.Email</strong>
+            </div>
             <span asp-validation-for="Email" class="text-danger"></span>
         </div>
         <div class="form-group">
@@ -80,7 +81,7 @@
             <input asp-for="PhoneNumber" class="form-control" aria-describedby="phoneNumberHelpBlock" />
             <span asp-validation-for="PhoneNumber" class="text-danger"></span>
             <small id="phoneNumberHelpBlock" class="form-text text-muted">
-            @Localizer["Enter your mobile phone number, if applicable"]
+                @Localizer["Enter your mobile phone number, if applicable"]
             </small>
         </div>
         <div class="form-group">

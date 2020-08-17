@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -7,7 +8,10 @@ using System.Xml;
 using Microsoft.Extensions.Logging;
 using SD.LLBLGen.Pro.LinqSupportClasses;
 using SD.LLBLGen.Pro.ORMSupportClasses;
+using SD.LLBLGen.Pro.QuerySpec;
+using SD.LLBLGen.Pro.QuerySpec.Adapter;
 using TournamentManager.DAL.EntityClasses;
+using TournamentManager.DAL.FactoryClasses;
 using TournamentManager.DAL.HelperClasses;
 using TournamentManager.DAL.Linq;
 
@@ -165,6 +169,13 @@ namespace TournamentManager.Data
                     select u).FirstOrDefaultAsync();
                 return result != null;
             }
+        }
+
+        public virtual async Task<List<UserEntity>> FindUserAsync(IPredicateExpression filter, int limit, CancellationToken cancellationToken)
+        {
+            using var da = _dbContext.GetNewAdapter();
+            return (await da.FetchQueryAsync<UserEntity>(
+                new QueryFactory().User.Where(filter).Distinct().Limit(limit), cancellationToken)).Cast<UserEntity>().ToList();
         }
 
         /// <summary>

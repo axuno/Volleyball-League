@@ -5,10 +5,11 @@
 @using Microsoft.AspNetCore.Mvc.Localization
 @inject IViewLocalizer Localizer
 @inject TimeZoneConverter TimeZoneConverter
+@inject League.DI.SiteContext SiteContext
 @model League.Models.TeamApplicationViewModels.ApplicationSessionModel
 @{
     ViewData["Title"] = "Team-Registration" + " - " + Model.TournamentName;
-    var organizationRoute = ViewContext.RouteData.Values["organization"];
+    var organizationRoute = SiteContext.UrlSegmentValue;
 }
 <div class="mb-0 pb-1">
     <h2 class="h2">@ViewData["Title"]</h2>
@@ -17,7 +18,7 @@
         <div class="col-12">
             <h4 class="h4">Who can register</h4>
             <p>
-                Eligible team members can easily register their team for the next season. 
+                Eligible team members can easily register their team for the next season.
                 This applies to all teams that have ever participated in a season.
             </p>
             <p>
@@ -39,7 +40,7 @@
                 <ul>
                     <li>All teams using one field of a venue at the same time must select that venue.</li>
                     <li>
-                        If several fields are available at a venue that can be used simultaneously, 
+                        If several fields are available at a venue that can be used simultaneously,
                         a separate venue should be created for each field, and assigned to the using team.
                     </li>
                 </ul>
@@ -47,12 +48,12 @@
             <h4 class="h4">Team contacts</h4>
             <ul>
                 <li>
-                    At least 2 team contacts should be defined for each team, 
+                    At least 2 team contacts should be defined for each team,
                     so that a substitute is arranged for absence or other reasons.
                 </li>
                 <li>The team contacts are displayed to members of other teams (and only to them).</li>
                 <li>
-                    In addition to the team contacts, players can be assigned to each team. 
+                    In addition to the team contacts, players can be assigned to each team.
                     The contact details of the players are only accessible to team members.
                 </li>
             </ul>

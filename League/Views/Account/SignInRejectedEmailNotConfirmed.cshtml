@@ -1,8 +1,9 @@
 ﻿@using Microsoft.AspNetCore.Mvc.Localization
 @inject IViewLocalizer Localizer
+@inject League.DI.SiteContext SiteContext
 @{
     ViewData["Title"] = Localizer["Account is currently disabled"];
-    var organizationRoute = ViewContext.RouteData.Values["organization"];
+    var organizationRoute = SiteContext.UrlSegmentValue;
 }
 <h2 class="h2">@ViewData["Title"].</h2>
 <div>

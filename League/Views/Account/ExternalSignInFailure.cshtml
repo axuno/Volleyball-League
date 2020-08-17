@@ -1,11 +1,10 @@
 ﻿@using Microsoft.AspNetCore.Mvc.Localization
 @inject IViewLocalizer Localizer
-@{
-    ViewData["Title"] = Localizer["Sign-in with the social network account failed"];
-    var organizationRoute = ViewContext.RouteData.Values["organization"];
-}
+@inject League.DI.SiteContext SiteContext
+@{ ViewData["Title"] = Localizer["Sign-in with the social network account failed"];
+                var organizationRoute = SiteContext.UrlSegmentValue; }
 <h2 class="h2">@ViewData["Title"].</h2>
-<hr/>
+<hr />
 <div>
     <site-alert type="Danger">
         @(ViewData["Title"]).<br />

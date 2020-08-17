@@ -2,10 +2,11 @@
 @using League.Views
 @using Microsoft.AspNetCore.Mvc.Localization
 @inject IViewLocalizer Localizer
+@inject League.DI.SiteContext SiteContext
 @model League.Models.TeamApplicationViewModels.ApplicationSelectTeamModel
 @{
     ViewData["Title"] = Localizer["Team Registration"].Value + " - " + Model.TournamentName;
-    var organizationRoute = ViewContext.RouteData.Values["organization"];
+    var organizationRoute = SiteContext.UrlSegmentValue;
 }
 <div class="mb-0 pb-1">
     <h2 class="h2">@ViewData["Title"]</h2>
@@ -20,17 +21,17 @@
                     @* Wrapping this way make tables responsive and 100% width *@
                     <table class="table table-sm table-light mb-0">
                         <thead class="rounded">
-                        <tr>
-                            <th><i class="far fa-check-circle"></i></th>
-                            <th>@Localizer["Team"]</th>
-                            <th>@Localizer["Last registration for"]</th>
-                        </tr>
+                            <tr>
+                                <th><i class="far fa-check-circle"></i></th>
+                                <th>@Localizer["Team"]</th>
+                                <th>@Localizer["Last registration for"]</th>
+                            </tr>
                         </thead>
                         <tbody>
-                        @foreach (var team in Model.TeamsManagedByUser)
-                        {
-                            <tr><td class="text-center"><input asp-for="SelectedTeamId" value="@team.TeamId" type="radio" /></td><td>@team.TeamName</td><td>@team.TournamentName</td></tr>
-                        }
+                            @foreach (var team in Model.TeamsManagedByUser)
+                            {
+                                <tr><td class="text-center"><input asp-for="SelectedTeamId" value="@team.TeamId" type="radio" /></td><td>@team.TeamName</td><td>@team.TournamentName</td></tr>
+                            }
                         </tbody>
                     </table>
                     <div class="small text-muted">@Localizer["The team name can be changed in the next step"].</div>
@@ -61,9 +62,11 @@
         .table tbody tr {
             cursor: pointer;
         }
+
         .table tbody tr {
             border-bottom: solid 2px lightgray
         }
+
         .table thead {
             background-color: lightgray
         }
@@ -72,7 +75,7 @@
 @section scripts
 {
     <script type="text/javascript">
-        $('.table tbody tr').click(function(event) {
+        $('.table tbody tr').click(function (event) {
             if (event.target.type !== 'radio') {
                 $(':radio', this).trigger('click');
             }

@@ -2,8 +2,9 @@
 @using League.Views.Role
 @using Microsoft.AspNetCore.Mvc.Localization
 @inject IViewLocalizer Localizer
+@inject League.DI.SiteContext SiteContext
 @model League.Models.RoleViewModels.RoleRemoveModel
-@{ ViewContext.ClientValidationEnabled = false; var organizationRoute = ViewContext.RouteData.Values["organization"];}
+@{ ViewContext.ClientValidationEnabled = false; var organizationRoute = SiteContext.UrlSegmentValue;}
 <!-- Modal -->
 <modal id="edit-team" title="@_RemoveMemberModalPartial.Remove_team_member" dialog-class="modal-md" tabindex="-1">
     <modal-body>

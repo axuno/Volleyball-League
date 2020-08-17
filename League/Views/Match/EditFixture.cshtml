@@ -10,7 +10,7 @@
 @model League.Models.MatchViewModels.EditFixtureViewModel
 @{
     ViewData["Title"] = Localizer["Edit Fixture"].Value + " - " + Model.Tournament.Name;
-    var organizationRoute = ViewContext.RouteData.Values["organization"];
+    var organizationRoute = SiteContext.UrlSegmentValue;
 }
 <div class="mb-0 pb-1">
     <h2 class="h2">@ViewData["Title"]</h2>

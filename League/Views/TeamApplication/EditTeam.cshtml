@@ -3,10 +3,11 @@
 @using League.Views
 @using Microsoft.AspNetCore.Mvc.Localization
 @inject IViewLocalizer Localizer
+@inject League.DI.SiteContext SiteContext
 @model League.Models.TeamViewModels.TeamEditModel
 @{
     ViewData["Title"] = Localizer["Team Registration"].Value + " - " + ViewData["TournamentName"];
-    var organizationRoute = ViewContext.RouteData.Values["organization"];
+    var organizationRoute = SiteContext.UrlSegmentValue;
 }
 <div class="mb-0 pb-1">
     <h2 class="h2">@ViewData["Title"]</h2>
@@ -38,7 +39,7 @@
 </div>
 @section styles
 {
-    <link rel="stylesheet" href="~/lib/tempusdominus-bootstrap-4/tempusdominus-bootstrap-4.min.css"/>
+    <link rel="stylesheet" href="~/lib/tempusdominus-bootstrap-4/tempusdominus-bootstrap-4.min.css" />
     <style type="text/css">
         /* Start: Change Bootstrap 4 default custom checkbox color */
         .custom-checkbox .custom-control-input:checked ~ .custom-control-label::before {

@@ -1,10 +1,11 @@
 ﻿@using League.Views
 @using Microsoft.AspNetCore.Mvc.Localization
 @inject IViewLocalizer Localizer
+@inject League.DI.SiteContext SiteContext
 @model League.Models.TeamViewModels.TeamListModel
 @{
     ViewData["Title"] = Localizer["Teams"].Value + " - " + Model.Tournament.Name;
-    var organizationRoute = ViewContext.RouteData.Values["organization"];
+    var organizationRoute = SiteContext.UrlSegmentValue;
     if (Model.RoundsWithTeams.Count == 0)
     {
         <div class="mb-0 pb-1">
@@ -42,31 +43,31 @@
                 <div id="team-list" class="rounded table-responsive">
                     <table class="table table-sm table-light table-bordered table">
                         <thead class="rounded">
-                        <tr>
-                            <th>@Localizer["Team"]</th>
-                            <th>@Localizer["Club"]</th>
-                            <th class="text-center"><i class="fas fa-info-circle"></i></th>
-                        </tr>
+                            <tr>
+                                <th>@Localizer["Team"]</th>
+                                <th>@Localizer["Club"]</th>
+                                <th class="text-center"><i class="fas fa-info-circle"></i></th>
+                            </tr>
                         </thead>
                         <tbody>
-                        @{
-                            var teams = Model.RoundsWithTeams.Where(rd => rd.RoundId == r.RoundId).ToList();
-                            var teamsInThisRound = teams.Count;
-                            foreach (var t in teams)
-                            {
-                                <tr>
-                                    <td>@t.TeamNameForRound</td>
-                                    <td>@t.TeamClubName</td>
-                                    <td class="text-center"><a asp-action="@nameof(League.Controllers.Team.Single)" asp-controller="@nameof(League.Controllers.Team)" asp-route-organization="@organizationRoute" asp-route-id="@t.TeamId" class=""><i class="fas fa-ellipsis-h"></i></a></td>
-                                </tr>
+                            @{
+                                var teams = Model.RoundsWithTeams.Where(rd => rd.RoundId == r.RoundId).ToList();
+                                var teamsInThisRound = teams.Count;
+                                foreach (var t in teams)
+                                {
+                                    <tr>
+                                        <td>@t.TeamNameForRound</td>
+                                        <td>@t.TeamClubName</td>
+                                        <td class="text-center"><a asp-action="@nameof(League.Controllers.Team.Single)" asp-controller="@nameof(League.Controllers.Team)" asp-route-organization="@organizationRoute" asp-route-id="@t.TeamId" class=""><i class="fas fa-ellipsis-h"></i></a></td>
+                                    </tr>
+                                }
                             }
-                        }
                         </tbody>
                     </table>
                 </div>
                 @{ var maxModifiedOn = Model.TimeZoneConverter.ToZonedTime(Model.RoundsWithTeams.Where(m => m.RoundId == r.RoundId).Max(m => m.TeamModifiedOn)); }
                 <div class="text-muted">
-                    @Localizer[Model.RoundsWithTeams.Count > 1 ? "{0} out of {1} teams" : "{0} out of {1} team", teamsInThisRound, Model.RoundsWithTeams.Count]<br/>
+                    @Localizer[Model.RoundsWithTeams.Count > 1 ? "{0} out of {1} teams" : "{0} out of {1} team", teamsInThisRound, Model.RoundsWithTeams.Count]<br />
                     @Localizer["Last update"]: @maxModifiedOn.DateTimeOffset.DateTime.ToShortDateString() @maxModifiedOn.DateTimeOffset.DateTime.ToLongTimeString() @maxModifiedOn.Abbreviation
                 </div>
             </div>
@@ -76,12 +77,30 @@
 @section styles
 {
     <style type="text/css">
-        #round-tabs .nav-link:not(.active) {border:solid 1px lightgray;}
-        #team-list table tbody tr { border-bottom: solid 2px lightgray; cursor: pointer}
-        #team-list table thead {background-color: lightgray}
-        #team-list th:first-child, #team-list td:first-child {width: 50%}
-        #team-list th:nth-child(2), #team-list td:nth-child(2) {width: 45%}
-        #team-list th:nth-child(3), #team-list td:nth-child(3) { width: 5%}
+        #round-tabs .nav-link:not(.active) {
+            border: solid 1px lightgray;
+        }
+
+        #team-list table tbody tr {
+            border-bottom: solid 2px lightgray;
+            cursor: pointer
+        }
+
+        #team-list table thead {
+            background-color: lightgray
+        }
+
+        #team-list th:first-child, #team-list td:first-child {
+            width: 50%
+        }
+
+        #team-list th:nth-child(2), #team-list td:nth-child(2) {
+            width: 45%
+        }
+
+        #team-list th:nth-child(3), #team-list td:nth-child(3) {
+            width: 5%
+        }
     </style>
 }
 @section scripts
