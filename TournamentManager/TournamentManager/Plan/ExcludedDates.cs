@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Globalization;
 using System.IO;
 using TournamentManager.DAL.EntityClasses;
 using TournamentManager.DAL.HelperClasses;
@@ -13,7 +12,7 @@ namespace TournamentManager.Plan
         /// <see cref="ExcludeMatchDateEntity.TournamentId"/>, <see cref="ExcludeMatchDateEntity.RoundId"/> and <see cref="ExcludeMatchDateEntity.TeamId"/> will not be set.
         /// </summary>
         /// <param name="iCalendarString"></param>
-        /// <param name="defaultTimeZoneId">The time zone to use, if the it is not included in the start and end date/time of the event.</param>
+        /// <param name="defaultTimeZoneId">The time zone to use, if it is not included in the start and end date/time of the event.</param>
         /// <returns></returns>
         public EntityCollection<ExcludeMatchDateEntity> Import(string iCalendarString, string defaultTimeZoneId)
         {
@@ -27,7 +26,7 @@ namespace TournamentManager.Plan
         /// </summary>
         /// <param name="iCalendarStream">The <seealso cref="Stream"/>.</param>
         /// <param name="encoding">The <seealso cref="System.Text.Encoding"/> to use.</param>
-        /// <param name="defaultTimeZoneId">The time zone to use, if the it is not included in the start and end date/time of the event.</param>
+        /// <param name="defaultTimeZoneId">The time zone to use, if it is not included in the start and end date/time of the event.</param>
         /// <returns></returns>
         public EntityCollection<ExcludeMatchDateEntity> Import(Stream iCalendarStream, System.Text.Encoding encoding, string defaultTimeZoneId)
         {
@@ -51,15 +50,15 @@ namespace TournamentManager.Plan
         }
 
         /// <summary>
-        /// Creates an <see cref="ExcludeMatchDateEntity"/> from an <seealso cref="Ical.Net.CalendarComponents.CalendarEvent"/> if plausibility criteria are met.
-        /// The <seealso cref="ExcludeMatchDateEntity.DateFrom"/> and <seealso cref="ExcludeMatchDateEntity.DateTo"/> are in UTC. For whole day events,
-        /// <seealso cref="ExcludeMatchDateEntity.DateFrom"/> and <seealso cref="ExcludeMatchDateEntity.DateTo"/> represent the UTC start and end of the day.
+        /// Creates an <see cref="ExcludeMatchDateEntity"/> from an <see cref="Ical.Net.CalendarComponents.CalendarEvent"/> if plausibility criteria are met.
+        /// The <see cref="ExcludeMatchDateEntity.DateFrom"/> and <see cref="ExcludeMatchDateEntity.DateTo"/> are in UTC. For whole day events,
+        /// <seealso cref="ExcludeMatchDateEntity.DateFrom"/> and <see cref="ExcludeMatchDateEntity.DateTo"/> represent the UTC start and end of the day.
         /// </summary>
         /// <param name="calendarEvent"></param>
         /// <param name="defaultTimeZoneId">The time zone to use, if the it is not included in the start and end date/time of the event.</param>
         /// <param name="excludeMatchDate">The <see cref="ExcludeMatchDateEntity"/> set, if it can be filled successfully.</param>
         /// <returns>Returns <see langword="true"/>, if the <seealso cref="Ical.Net.CalendarComponents.CalendarEvent"/> could be processed successfully, else <see langword="false"/>.</returns>
-        private bool TryCreateEntity(Ical.Net.CalendarComponents.CalendarEvent calendarEvent, string defaultTimeZoneId, out ExcludeMatchDateEntity excludeMatchDate)
+        private static bool TryCreateEntity(Ical.Net.CalendarComponents.CalendarEvent calendarEvent, string defaultTimeZoneId, out ExcludeMatchDateEntity excludeMatchDate)
         {
             excludeMatchDate = new ExcludeMatchDateEntity();
 

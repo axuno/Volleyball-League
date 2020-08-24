@@ -151,6 +151,9 @@
 			<Generator>PublicResXFileCodeGenerator</Generator>
 			<LastGenOutput>ModelBindingMessageResource.Designer.cs</LastGenOutput>
 		</EmbeddedResource>
+		<EmbeddedResource Update="Views\Emails\ConfirmNewPrimaryEmail.de.resx">
+		  <Generator>PublicResXFileCodeGenerator</Generator>
+		</EmbeddedResource>
 		<EmbeddedResource Update="Views\Role\_RemoveMemberModalPartial.resx">
 			<LastGenOutput>_RemoveMemberModalPartial.Designer.cs</LastGenOutput>
 			<Generator>PublicResXFileCodeGenerator</Generator>
