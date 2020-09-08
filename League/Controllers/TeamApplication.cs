@@ -180,7 +180,7 @@ namespace League.Controllers
             if (!sessionModel.IsFromSession) return RedirectToAction(nameof(SelectTeam), new { Organization = _siteContext.UrlSegmentValue });
             ViewData["TournamentName"] = sessionModel.TournamentName;
 
-            if (isNew.HasValue && isNew.Value)
+            if (!isNew.HasValue || isNew.Value)
             {
                 sessionModel.Team = GetTeamEditorComponentModel(new TeamEntity());
                 sessionModel.TeamIsSet = false;
@@ -692,9 +692,9 @@ namespace League.Controllers
 
             return new ApplicationSessionModel
             {
-                TeamInRound = new League.Models.TeamViewModels.TeamInRoundModel(),
-                Team = new TeamEditorComponentModel {HtmlFieldPrefix = nameof(ApplicationSessionModel.Team)},
-                Venue = new VenueEditorComponentModel {HtmlFieldPrefix = nameof(ApplicationSessionModel.Venue)},
+                TeamInRound = new League.Models.TeamViewModels.TeamInRoundModel() {IsNew = true},
+                Team = new TeamEditorComponentModel {HtmlFieldPrefix = nameof(ApplicationSessionModel.Team), IsNew = true},
+                Venue = new VenueEditorComponentModel {HtmlFieldPrefix = nameof(ApplicationSessionModel.Venue), IsNew = true},
                 TournamentName = teamApplicationTournament.Name,
                 PreviousTournamentId = previousTournament?.Id
             };
