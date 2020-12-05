@@ -209,4 +209,7 @@
 	<PropertyGroup Condition=" '$(Configuration)' != '' AND '$(Configuration)' != 'Debug' ">
 		<EnvironmentName>Production</EnvironmentName>
 	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+	  <NoWarn>1701;1702;0436</NoWarn>
+	</PropertyGroup>
 </Project>
