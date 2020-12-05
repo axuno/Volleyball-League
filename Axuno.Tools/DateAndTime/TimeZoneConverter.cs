@@ -54,10 +54,11 @@ namespace Axuno.Tools.DateAndTime
         /// </summary>
         /// <remarks><see cref="DateTimeKind.Unspecified"/> will be treated like <see cref="DateTimeKind.Utc"/></remarks>
         /// <param name="dateTimeOfAnyKind"></param>
+        /// <param name="cultureInfo">The <see cref="CultureInfo"/> to use for time zone localization. If <see langword="null"/>, the default culture will be used.</param>
         /// <returns>Returns the converted <see cref="DateTime"/> as a <see cref="ZonedTime"/> instance or null, if the <see cref="dateTimeOfAnyKind"/> parameter is null.</returns>
-        public ZonedTime ToZonedTime(DateTime? dateTimeOfAnyKind)
+        public ZonedTime ToZonedTime(DateTime? dateTimeOfAnyKind, CultureInfo? cultureInfo = null)
         {
-            return ToZonedTime(dateTimeOfAnyKind, _timeZoneId, _cultureInfo, _dateTimeZoneProvider);
+            return ToZonedTime(dateTimeOfAnyKind, _timeZoneId, cultureInfo ?? _cultureInfo, _dateTimeZoneProvider);
         }
 
         /// <summary>
@@ -65,10 +66,11 @@ namespace Axuno.Tools.DateAndTime
         /// </summary>
         /// <remarks><see cref="DateTimeKind.Unspecified"/> will be treated like <see cref="DateTimeKind.Utc"/></remarks>
         /// <param name="dateTimeOfAnyKind"></param>
+        /// <param name="cultureInfo">The <see cref="CultureInfo"/> to use for time zone localization. If <see langword="null"/>, the default culture will be used.</param>
         /// <returns>Returns the converted <see cref="DateTime"/> as a <see cref="ZonedTime"/> instance.</returns>
-        public ZonedTime ToZonedTime(DateTime dateTimeOfAnyKind)
+        public ZonedTime ToZonedTime(DateTime dateTimeOfAnyKind, CultureInfo? cultureInfo = null)
         {
-            return ToZonedTime(dateTimeOfAnyKind, _timeZoneId, _cultureInfo, _dateTimeZoneProvider);
+            return ToZonedTime(dateTimeOfAnyKind, _timeZoneId, cultureInfo ?? _cultureInfo, _dateTimeZoneProvider);
         }
 
         /// <summary>
