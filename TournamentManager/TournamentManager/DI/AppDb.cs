@@ -36,5 +36,7 @@
         public virtual UserLoginRepository UserLoginRepository => new UserLoginRepository(DbContext);
         public virtual UserTokenRepository UserTokenRepository => new UserTokenRepository(DbContext);
         public virtual VenueRepository VenueRepository => new VenueRepository(DbContext);
+        public virtual ExcludedMatchDateRepository ExcludedMatchDateRepository => new ExcludedMatchDateRepository(DbContext);
+        public virtual AvailableMatchDateRepository AvailableMatchDateRepository => new AvailableMatchDateRepository(DbContext);
     }
 }

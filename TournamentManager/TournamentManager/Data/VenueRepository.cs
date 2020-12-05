@@ -40,53 +40,20 @@ namespace TournamentManager.Data
         /// <returns>Returns the matches (<see cref="PlannedMatchRow"/>s) for a venue, which are occupied within the given <see cref="DateTimePeriod"/> of a tournament.</returns>
         public virtual async Task<List<PlannedMatchRow>> GetOccupyingMatchesAsync(long venueId, DateTimePeriod searchPeriod, long tournamentId, CancellationToken cancellationToken)
         {
-            using (var da = _dbContext.GetNewAdapter())
-            {
-                var metaData = new LinqMetaData(da);
+            using var da = _dbContext.GetNewAdapter();
+            var metaData = new LinqMetaData(da);
 
-                var matchIds = await (from m in metaData.Match
-                    where m.Round.TournamentId == tournamentId && m.VenueId == venueId && !m.IsComplete && m.PlannedStart.HasValue && m.PlannedEnd.HasValue
-                          && (m.PlannedStart <= searchPeriod.End && searchPeriod.Start <= m.PlannedEnd) // overlapping periods
-                    select m.Id).ExecuteAsync<List<long>>(cancellationToken);
+            var matchIds = await (from m in metaData.Match
+                where m.Round.TournamentId == tournamentId && m.VenueId == venueId && !m.IsComplete && m.PlannedStart.HasValue && m.PlannedEnd.HasValue
+                      && (m.PlannedStart <= searchPeriod.End && searchPeriod.Start <= m.PlannedEnd) // overlapping periods
+                select m.Id).ExecuteAsync<List<long>>(cancellationToken);
 
-                var filter = new PredicateExpression(PlannedMatchFields.TournamentId == tournamentId);
-                filter.AddWithAnd(PlannedMatchFields.Id.In(matchIds));
-                return matchIds.Count > 0
-                    ? await new MatchRepository(_dbContext).GetPlannedMatchesAsync(filter, cancellationToken)
-                    : new List<PlannedMatchRow>();
-            }
+            var filter = new PredicateExpression(PlannedMatchFields.TournamentId == tournamentId);
+            filter.AddWithAnd(PlannedMatchFields.Id.In(matchIds));
+            return matchIds.Count > 0
+                ? await new MatchRepository(_dbContext).GetPlannedMatchesAsync(filter, cancellationToken)
+                : new List<PlannedMatchRow>();
         }
-
-        /// <summary>
-        /// Gets all tournament matches played at the given venue.
-        /// </summary>
-        /// <param name="venueId">Venue id to search for (needle). May be new.</param>
-        /// <param name="searchTime">DateSegment to find out overlapping times (match date/time (or auxiliary date/time if present). Can be null.</param>
-        /// <param name="tournamentId">Tournament id for which matches shall be searched (haystack).</param>
-        /// <returns></returns>
-        public virtual EntityCollection<MatchEntity> GetOccupyingMatches(long venueId, DateTimePeriod searchTime, long tournamentId)
-		{
-			using (var da = _dbContext.GetNewAdapter())
-			{
-				var metaData = new LinqMetaData(da);
-
-				IQueryable<MatchEntity> matches = from m in metaData.Match
-												  where m.Round.TournamentId == tournamentId && m.VenueId == venueId
-				                                  select m;
-
-				// select matches which have planned date/times overlapping with the given date/time
-				if (searchTime != null)
-				{
-					matches = from m in matches
-						where (
-							  (m.PlannedStart <= searchTime.Start && m.PlannedEnd >= searchTime.Start)
-							   || (m.PlannedStart <= searchTime.End && m.PlannedEnd >= searchTime.End))
-						select m;
-				}
-				da.CloseConnection();
-				return new EntityCollection<MatchEntity>(matches);
-			}
-		}
 
         public virtual async Task<bool> IsValidVenueIdAsync(long? venueId, CancellationToken cancellationToken)
         {

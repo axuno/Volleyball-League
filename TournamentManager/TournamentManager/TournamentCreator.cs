@@ -26,7 +26,7 @@ namespace TournamentManager.Data
 	public class TournamentCreator
 	{
 	    private readonly AppDb _appDb;
-	    private static TournamentCreator _instance;
+	    private static TournamentCreator? _instance;
 
         TournamentCreator(IAppDb appDb)
 	    {
@@ -35,7 +35,7 @@ namespace TournamentManager.Data
 
         public static TournamentCreator Instance(IAppDb appDb)
 	    {
-            _instance = _instance ?? new TournamentCreator(appDb);
+            _instance ??= new TournamentCreator(appDb);
 	        return _instance;
 	    }
 

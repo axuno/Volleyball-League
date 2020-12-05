@@ -190,7 +190,7 @@ namespace TournamentManager.Ranking
         /// <returns>Returns the list of match dates for all completed matches.</returns>
         public List<DateTime> GetMatchDays()
         {
-            var matchDates = MatchesPlayed.Where(m => m.MatchDate.HasValue).Select(m => m.MatchDate.Value.Date).Distinct().ToList();
+            var matchDates = MatchesPlayed.Where(m => m.MatchDate.HasValue).Select(m => m.MatchDate!.Value.Date).Distinct().ToList();
             matchDates.Sort();
             return matchDates;
 		}

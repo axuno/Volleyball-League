@@ -7,8 +7,8 @@ namespace TournamentManager.Ranking
 {
 	public class RankingHistory
 	{
-		private Ranking _ranking;
-		private List<RankingList> _history;
+		private readonly Ranking _ranking;
+		private List<RankingList> _history = new List<RankingList>();
 
 		internal RankingHistory(Ranking ranking)
 		{
@@ -19,7 +19,7 @@ namespace TournamentManager.Ranking
 		public void ReCalculate()
 		{
 			List<DateTime> days = GetMatchDays();
-			if (_history != null) _history.Clear();
+			_history.Clear();
 			_history = new List<RankingList>(days.Count);
 
 			foreach (var day in days)

@@ -20,73 +20,69 @@ namespace TournamentManager.Data
         public virtual bool SaveEntity<T>(T entityToSave, bool refetchAfterSave, bool recurse) where T:IEntity2
         {
             var transactionName = Guid.NewGuid().ToString("N");
-            using (var da = _dbContext.GetNewAdapter())
+            using var da = _dbContext.GetNewAdapter();
+            try
             {
-                try
-                {
-                    da.StartTransaction(IsolationLevel.ReadCommitted, transactionName);
-                    var success = da.SaveEntity(entityToSave, refetchAfterSave, recurse);
-                    da.Commit();
-                    return success;
-                }
-                catch (Exception)
-                {
-                    if (da.IsTransactionInProgress)
-                        da.Rollback();
+                da.StartTransaction(IsolationLevel.ReadCommitted, transactionName);
+                var success = da.SaveEntity(entityToSave, refetchAfterSave, recurse);
+                da.Commit();
+                return success;
+            }
+            catch (Exception)
+            {
+                if (da.IsTransactionInProgress)
+                    da.Rollback();
 
-                    da.CloseConnection();
-                    throw;
-                }
+                da.CloseConnection();
+                throw;
             }
         }
 
         public virtual async Task<bool> SaveEntityAsync<T>(T entityToSave, bool refetchAfterSave, bool recurse, CancellationToken cancellationToken) where T : IEntity2
         {
             var transactionName = Guid.NewGuid().ToString("N");
-            using (var da = _dbContext.GetNewAdapter())
+            using var da = _dbContext.GetNewAdapter();
+            try
             {
-                try
-                {
-                    await da.StartTransactionAsync(IsolationLevel.ReadCommitted, transactionName, cancellationToken);
-                    var success = await da.SaveEntityAsync(entityToSave, refetchAfterSave, recurse, cancellationToken);
-                    da.Commit();
-                    return success;
-                }
-                catch (Exception)
-                {
-                    if (da.IsTransactionInProgress)
-                        da.Rollback();
+                await da.StartTransactionAsync(IsolationLevel.ReadCommitted, transactionName, cancellationToken);
+                var success = await da.SaveEntityAsync(entityToSave, refetchAfterSave, recurse, cancellationToken);
+                da.Commit();
+                return success;
+            }
+            catch (Exception)
+            {
+                if (da.IsTransactionInProgress)
+                    da.Rollback();
 
-                    da.CloseConnection();
-                    throw;
-                }
+                da.CloseConnection();
+                throw;
             }
         }
 
         public virtual async Task SaveEntitiesAsync<T>(T entitiesToSave, bool refetchAfterSave, bool recurse, CancellationToken cancellationToken) where T : IEntityCollection2
         {
-            using (var da = _dbContext.GetNewAdapter())
-            {
-                // SaveEntityCollectionAsync uses a transaction automatically
-                var count = await da.SaveEntityCollectionAsync(entitiesToSave, refetchAfterSave, recurse, cancellationToken);
-            }
+            using var da = _dbContext.GetNewAdapter();
+            // SaveEntityCollectionAsync uses a transaction automatically
+            var count = await da.SaveEntityCollectionAsync(entitiesToSave, refetchAfterSave, recurse, cancellationToken);
         }
  
         public virtual async Task<bool> DeleteEntityAsync<T>(T entityToDelete, CancellationToken cancellationToken) where T : IEntity2
         {
-            using (var da = _dbContext.GetNewAdapter())
-            {
-                return await da.DeleteEntityAsync(entityToDelete, null, cancellationToken);
-            }
+            using var da = _dbContext.GetNewAdapter();
+            return await da.DeleteEntityAsync(entityToDelete, null, cancellationToken);
         }
 
         public virtual async Task DeleteEntitiesAsync<T>(T entitiesToDelete, CancellationToken cancellationToken) where T : IEntityCollection2
         {
-            using (var da = _dbContext.GetNewAdapter())
-            {
-                // DeleteEntityCollectionAsync uses a transaction automatically
-                var count = await da.DeleteEntityCollectionAsync(entitiesToDelete, cancellationToken);
-            }
+            using var da = _dbContext.GetNewAdapter();
+            // DeleteEntityCollectionAsync uses a transaction automatically
+            var count = await da.DeleteEntityCollectionAsync(entitiesToDelete, cancellationToken);
+        }
+
+        public virtual async Task<int> DeleteEntitiesDirectlyAsync(Type entityType, IRelationPredicateBucket filterBucket, CancellationToken cancellationToken)
+        {
+            using var da = _dbContext.GetNewAdapter();
+            return await da.DeleteEntitiesDirectlyAsync(entityType, filterBucket, cancellationToken);
         }
 
         /// <summary>
@@ -99,11 +95,9 @@ namespace TournamentManager.Data
         /// <returns>Returns the number of deleted table rows.</returns>
         public virtual async Task<int> DeleteEntitiesUsingConstraintAsync<T>(IPredicateExpression uniqueConstraintFilter, CancellationToken cancellationToken) where T : IEntity2
         {
-            using (var da = _dbContext.GetNewAdapter())
-            {
-                var bucket = new RelationPredicateBucket(uniqueConstraintFilter);
-                return await da.DeleteEntitiesDirectlyAsync(typeof(T), bucket, cancellationToken);
-            }
+            using var da = _dbContext.GetNewAdapter();
+            var bucket = new RelationPredicateBucket(uniqueConstraintFilter);
+            return await da.DeleteEntitiesDirectlyAsync(typeof(T), bucket, cancellationToken);
         }
     }
 }

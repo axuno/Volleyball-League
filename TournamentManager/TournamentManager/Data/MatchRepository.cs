@@ -159,7 +159,7 @@ namespace TournamentManager.Data
             return matches;
         }
 
-        public virtual RoundLegEntity GetLeg(MatchEntity match)
+        public virtual RoundLegEntity? GetLeg(MatchEntity match)
         {
             // if leg does not exist or no match.SequenceNo: result will be NULL!
 
@@ -287,39 +287,6 @@ namespace TournamentManager.Data
             }
         }
 
-        /// <summary>
-        /// Gets the first entry from a list of dates that are excluded as match dates, or NULL if no date is found.
-        /// Excluded dates may be related to a tournament, OR a round OR the home team OR the guest team.
-        /// </summary>
-        /// <param name="match">The <see cref="MatchEntity"/> where round and team IDs are taken.</param>
-        /// <param name="onlyUseDatePart">If true, only the date part is used, otherwise date and time.</param>
-        /// <param name="tournamentId">The tournament id to filter the result.</param>
-        /// <param name="cancellationToken"></param>
-        /// <returns>Returns the first <see cref="ExcludeMatchDateEntity"/> which matches the criteria, else NULL.</returns>
-        public virtual async Task<ExcludeMatchDateEntity> GetExcludedMatchDateAsync(MatchEntity match,
-            bool onlyUseDatePart, long tournamentId, CancellationToken cancellationToken)
-        {
-            using (var da = _dbContext.GetNewAdapter())
-            {
-                var filter = new PredicateExpression(
-                        ExcludeMatchDateFields.TournamentId == tournamentId |
-                        ExcludeMatchDateFields.RoundId == match.RoundId |
-                        ExcludeMatchDateFields.TeamId == match.HomeTeamId)
-                    .AddWithAnd(
-                        onlyUseDatePart
-                            ? new PredicateExpression(ExcludeMatchDateFields.DateFrom.Date()
-                                .Between(match.PlannedStart?.Date, match.PlannedEnd?.Date)
-                                .Or(ExcludeMatchDateFields.DateTo.Date()
-                                    .Between(match.PlannedStart?.Date, match.PlannedEnd?.Date)))
-                            : new PredicateExpression(ExcludeMatchDateFields.DateFrom
-                                .Between(match.PlannedStart, match.PlannedEnd)
-                                .Or(ExcludeMatchDateFields.DateFrom
-                                    .Between(match.PlannedStart, match.PlannedEnd))));
-
-                return (await da.FetchQueryAsync(new QueryFactory().ExcludeMatchDate.Where(filter).Limit(1),
-                    cancellationToken)).Cast<ExcludeMatchDateEntity>().FirstOrDefault();
-            }
-        }
 
         /// <summary>
         /// Gets the number of match records, matching the specified filter.

@@ -66,7 +66,7 @@ namespace TournamentManager.Match
         /// <summary>
         /// The footer at the end of the description text.
         /// </summary>
-        public string DescriptionFooter { get; set; }
+        public string DescriptionFooter { get; set; } = string.Empty;
 
         /// <summary>
         /// The <see cref="TimeSpan"/> before the event, when an alarm is displayed on the calendar client.

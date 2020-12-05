@@ -13,7 +13,7 @@ namespace TournamentManager
     /// </remarks>
     public static class AppLogging
     {
-        private static ILoggerFactory _factory;
+        private static ILoggerFactory? _factory;
         private static bool _useNullLogger;
         
         /// <summary>
@@ -48,7 +48,7 @@ namespace TournamentManager
                         Configure(new LoggerFactory());
                     
                 }
-                return _factory;
+                return _factory!;
             }
 
             set => _factory = value;

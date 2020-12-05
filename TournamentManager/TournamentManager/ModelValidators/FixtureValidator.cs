@@ -17,7 +17,7 @@ namespace TournamentManager.ModelValidators
 {
     public class FixtureValidator : AbstractValidator<MatchEntity, (OrganizationContext OrganizationContext, Axuno.Tools.DateAndTime.TimeZoneConverter TimeZoneConverter, PlannedMatchRow PlannedMatch), FixtureValidator.FactId>
     {
-        private List<TeamEntity> _teamsInMatch = null;
+        private List<TeamEntity> _teamsInMatch = new List<TeamEntity>();
         private readonly FactResult _successResult = new FactResult { Message = string.Empty, Success = true };
 
         public enum FactId
@@ -47,8 +47,7 @@ namespace TournamentManager.ModelValidators
 
         private async Task LoadTeamsInMatch(CancellationToken cancellationToken)
         {
-            _teamsInMatch = _teamsInMatch ?? 
-                       await Data.OrganizationContext.AppDb.TeamRepository.GetTeamEntitiesAsync(
+            _teamsInMatch = await Data.OrganizationContext.AppDb.TeamRepository.GetTeamEntitiesAsync(
                            new PredicateExpression(TeamFields.Id == Model.HomeTeamId |
                                                    TeamFields.Id == Model.GuestTeamId),
                            cancellationToken);
@@ -81,8 +80,7 @@ namespace TournamentManager.ModelValidators
                         if (!Model.PlannedStart.HasValue) return _successResult;
                         // MatchEntity.RoundId, MatchEntity.HomeTeamId, MatchEntity.GuestTeam must be set for the check to work
                         var excluded =
-                            await Data.OrganizationContext.AppDb.MatchRepository.GetExcludedMatchDateAsync(Model,
-                                Data.OrganizationContext.FixtureRuleSet.UseOnlyDatePartForTeamFreeBusyTimes,
+                            await Data.OrganizationContext.AppDb.ExcludedMatchDateRepository.GetExcludedMatchDateAsync(Model,
                                 Data.OrganizationContext.MatchPlanTournamentId, cancellationToken);
 
                         if (excluded == null)
@@ -115,7 +113,7 @@ namespace TournamentManager.ModelValidators
                     CheckAsync = (cancellationToken) => Task.FromResult(
                         new FactResult
                         {
-                            Message = FixtureValidatorResource.ResourceManager.GetString(nameof(FactId.PlannedStartIsFutureDate)),
+                            Message = FixtureValidatorResource.ResourceManager.GetString(nameof(FactId.PlannedStartIsFutureDate)) ?? string.Empty,
                             Success = !Model.PlannedStart.HasValue || Model.PlannedStart.Value.Date > CurrentDateTimeUtc.Date
                         })
                 });
@@ -282,7 +280,7 @@ namespace TournamentManager.ModelValidators
                     CheckAsync = async (cancellationToken) => 
                         new FactResult
                         {
-                            Message = FixtureValidatorResource.ResourceManager.GetString(nameof(FactId.PlannedVenueIsSet)),
+                            Message = FixtureValidatorResource.ResourceManager.GetString(nameof(FactId.PlannedVenueIsSet)) ?? string.Empty,
                             Success = Model.VenueId.HasValue && await Data.OrganizationContext.AppDb.VenueRepository.IsValidVenueIdAsync(Model.VenueId.Value, cancellationToken)
                         }
                 }

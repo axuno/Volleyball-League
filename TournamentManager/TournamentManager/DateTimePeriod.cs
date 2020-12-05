@@ -1,4 +1,8 @@
 using System;
+using System.Collections.Generic;
+using TournamentManager.DAL.EntityClasses;
+using TournamentManager.DAL.Linq;
+using TournamentManager.Data;
 
 namespace TournamentManager
 {
@@ -177,6 +181,7 @@ namespace TournamentManager
         /// <exception cref="NullReferenceException">Throws an exception if Start or End date are null.</exception>
         public TimeSpan Duration()
         {
+            if (!(Start.HasValue && End.HasValue)) throw new NullReferenceException();
             return End.Value - Start.Value;
         }
     }

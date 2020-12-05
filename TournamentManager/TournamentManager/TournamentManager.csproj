@@ -3,16 +3,18 @@
 	<PropertyGroup>
 		<TargetFramework>netstandard2.1</TargetFramework>
 		<NeutralLanguage></NeutralLanguage>
+    <Nullable>enable</Nullable>
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="OxyPlot.Core" Version="1.0.0" />
-		<PackageReference Include="OxyPlot.SkiaSharp" Version="1.0.0" />
+		<PackageReference Include="EPPlus" Version="5.4.1" />
+		<PackageReference Include="OxyPlot.Core" Version="2.1.0-Preview1" />
+		<PackageReference Include="OxyPlot.SkiaSharp" Version="2.1.0-Preview1" />
 		<PackageReference Include="System.Reflection.TypeExtensions" Version="4.7.0" />
 		<PackageReference Include="Ical.Net" Version="4.1.11" />
-		<PackageReference Include="libphonenumber-csharp" Version="8.12.7" />
-		<PackageReference Include="NLog.Extensions.Logging" Version="1.6.4" />
-		<PackageReference Include="System.Data.SqlClient" Version="4.8.1" />
+		<PackageReference Include="libphonenumber-csharp" Version="8.12.11" />
+		<PackageReference Include="NLog.Extensions.Logging" Version="1.6.5" />
+		<PackageReference Include="System.Data.SqlClient" Version="4.8.2" />
 		<PackageReference Include="YAXLib" Version="2.15.0" />
 	</ItemGroup>
 
@@ -58,15 +60,15 @@
 			<AutoGen>True</AutoGen>
 			<DependentUpon>SingleSetValidatorResource.resx</DependentUpon>
 		</Compile>
-		<Compile Update="ModelValidators\TeamValidatorResource - Copy.Designer.cs">
-			<DependentUpon>TeamValidatorResource.resx</DependentUpon>
-			<DesignTime>True</DesignTime>
-			<AutoGen>True</AutoGen>
-		</Compile>
 		<Compile Update="ModelValidators\TeamInRoundValidatorResource.Designer.cs">
 			<DesignTime>True</DesignTime>
 			<AutoGen>True</AutoGen>
 			<DependentUpon>TeamInRoundValidatorResource.resx</DependentUpon>
+		</Compile>
+		<Compile Update="ModelValidators\TeamValidatorResource.Designer.cs">
+		  <DesignTime>True</DesignTime>
+		  <AutoGen>True</AutoGen>
+		  <DependentUpon>TeamValidatorResource.resx</DependentUpon>
 		</Compile>
 		<Compile Update="ModelValidators\VenueValidatorResource.Designer.cs">
 			<DesignTime>True</DesignTime>
@@ -114,7 +116,7 @@
 		</EmbeddedResource>
 		<EmbeddedResource Update="ModelValidators\TeamValidatorResource.resx">
 			<Generator>PublicResXFileCodeGenerator</Generator>
-			<LastGenOutput>VenueValidator.Designer.cs</LastGenOutput>
+			<LastGenOutput>TeamValidatorResource.Designer.cs</LastGenOutput>
 		</EmbeddedResource>
 	</ItemGroup>
 

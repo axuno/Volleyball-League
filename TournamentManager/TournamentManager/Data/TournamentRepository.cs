@@ -75,5 +75,30 @@ namespace TournamentManager.Data
 			    return result;
 			}
 		}
+
+        public virtual async Task<TournamentEntity> GetTournamentEntityForMatchPlannerAsync(long tournamentId, CancellationToken cancellationToken)
+        {
+            var bucket = new RelationPredicateBucket(TournamentFields.Id == tournamentId);
+            bucket.Relations.Add(TournamentEntity.Relations.RoundEntityUsingTournamentId);
+            bucket.Relations.Add(RoundEntity.Relations.TeamInRoundEntityUsingRoundId);
+            bucket.Relations.Add(TeamInRoundEntity.Relations.TeamEntityUsingTeamId);
+            bucket.Relations.Add(TeamEntity.Relations.VenueEntityUsingVenueId);
+
+            var prefetchPathTournament = new PrefetchPath2(EntityType.TournamentEntity);
+            prefetchPathTournament.Add(TournamentEntity.PrefetchPathRounds);
+            prefetchPathTournament[0].SubPath.Add(RoundEntity.PrefetchPathRoundLegs);
+            prefetchPathTournament[0].SubPath.Add(RoundEntity.PrefetchPathTeamCollectionViaTeamInRound).SubPath
+                .Add(TeamEntity.PrefetchPathVenue);
+
+            var t = new EntityCollection<TournamentEntity>();
+            using var da = _dbContext.GetNewAdapter();
+            var qp = new QueryParameters(0, 0, 0, bucket)
+            {
+                CollectionToFetch = t,
+                PrefetchPathToUse = prefetchPathTournament
+            };
+            await da.FetchEntityCollectionAsync(qp, cancellationToken);
+            return t.FirstOrDefault();
+        }
 	}
 }

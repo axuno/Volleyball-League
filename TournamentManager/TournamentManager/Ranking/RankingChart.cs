@@ -36,14 +36,16 @@ namespace TournamentManager.Ranking
             /// Gets or sets the font name to use for rendering text.
             /// </summary>
             public string FontName { get; set; } = "Arial";
+
             /// <summary>
             /// Gets or sets the graph background color as a decimal byte string with decimal format &quot;{A},{R},{G},{B}&quot; or &quot;#AARRGGBB&quot; in hex format.
             /// </summary>
             public string GraphBackgroundColorArgb { get; set; }
+
             /// <summary>
             /// Gets or sets the plot area background color as a decimal byte string with decimal format &quot;{A},{R},{G},{B}&quot; or &quot;#AARRGGBB&quot; in hex format.
             /// </summary>
-            public string PlotAreaBackgroundColorArgb { get; set; }
+            public string PlotAreaBackgroundColorArgb { get; set; } = string.Empty;
 
             /// <summary>
             /// Gets or sets whether the legend will be rendered.

@@ -1,11 +1,12 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using TournamentManager.DAL.EntityClasses;
 using TournamentManager.DAL.HelperClasses;
 
-namespace TournamentManager.Plan
+namespace TournamentManager.Importers.ExcludedDates
 {
-    public class ExcludedDates
+    public class InternetCalendarImporter
     {
         /// <summary>
         /// Imports the <see langword="string"/> representation of an iCalendar.
@@ -13,11 +14,12 @@ namespace TournamentManager.Plan
         /// </summary>
         /// <param name="iCalendarString"></param>
         /// <param name="defaultTimeZoneId">The time zone to use, if it is not included in the start and end date/time of the event.</param>
+        /// <param name="dateLimits">The lower and upper UTC date limit to import.</param>
         /// <returns></returns>
-        public EntityCollection<ExcludeMatchDateEntity> Import(string iCalendarString, string defaultTimeZoneId)
+        public EntityCollection<ExcludeMatchDateEntity> Import(string iCalendarString, string defaultTimeZoneId, DateTimePeriod dateLimits)
         {
             var iCal = Ical.Net.Calendar.Load(iCalendarString);
-            return Map(iCal, defaultTimeZoneId);
+            return Map(iCal, defaultTimeZoneId, dateLimits);
         }
 
         /// <summary>
@@ -27,22 +29,25 @@ namespace TournamentManager.Plan
         /// <param name="iCalendarStream">The <seealso cref="Stream"/>.</param>
         /// <param name="encoding">The <seealso cref="System.Text.Encoding"/> to use.</param>
         /// <param name="defaultTimeZoneId">The time zone to use, if it is not included in the start and end date/time of the event.</param>
+        /// <param name="dateLimits">The lower and upper UTC date limit to import.</param>
         /// <returns></returns>
-        public EntityCollection<ExcludeMatchDateEntity> Import(Stream iCalendarStream, System.Text.Encoding encoding, string defaultTimeZoneId)
+        public EntityCollection<ExcludeMatchDateEntity> Import(Stream iCalendarStream, System.Text.Encoding encoding, string defaultTimeZoneId, DateTimePeriod dateLimits)
         {
             var iCal = Ical.Net.Calendar.Load(new StreamReader(iCalendarStream, encoding));
-            return Map(iCal, defaultTimeZoneId);
+            return Map(iCal, defaultTimeZoneId, dateLimits);
         }
 
-        private EntityCollection<ExcludeMatchDateEntity> Map(Ical.Net.Calendar iCal, string defaultTimeZoneId)
+        private EntityCollection<ExcludeMatchDateEntity> Map(Ical.Net.Calendar iCal, string defaultTimeZoneId, DateTimePeriod dateLimits)
         {
             var excluded = new EntityCollection<ExcludeMatchDateEntity>();
             
-            foreach (var calendarEvent in iCal.Events)
+            // small come before big date ranges
+            foreach (var calendarEvent in iCal.Events.OrderBy(e => e.DtStart.Date).ThenBy(e => e.Duration.Days))
             {
-                if (TryCreateEntity(calendarEvent, defaultTimeZoneId, out var excludeMatchDate))
+                var exclDate = CreateEntity(calendarEvent, defaultTimeZoneId);
+                if (dateLimits.Contains(exclDate.DateFrom) || dateLimits.Contains(exclDate.DateTo))
                 {
-                    excluded.Add(excludeMatchDate);
+                    excluded.Add(CreateEntity(calendarEvent, defaultTimeZoneId));
                 }
             }
 
@@ -51,22 +56,18 @@ namespace TournamentManager.Plan
 
         /// <summary>
         /// Creates an <see cref="ExcludeMatchDateEntity"/> from an <see cref="Ical.Net.CalendarComponents.CalendarEvent"/> if plausibility criteria are met.
-        /// The <see cref="ExcludeMatchDateEntity.DateFrom"/> and <see cref="ExcludeMatchDateEntity.DateTo"/> are in UTC. For whole day events,
-        /// <seealso cref="ExcludeMatchDateEntity.DateFrom"/> and <see cref="ExcludeMatchDateEntity.DateTo"/> represent the UTC start and end of the day.
+        /// The <see cref="ExcludeMatchDateEntity.DateFrom"/> and <see cref="ExcludeMatchDateEntity.DateTo"/> are in UTC.
         /// </summary>
         /// <param name="calendarEvent"></param>
         /// <param name="defaultTimeZoneId">The time zone to use, if the it is not included in the start and end date/time of the event.</param>
-        /// <param name="excludeMatchDate">The <see cref="ExcludeMatchDateEntity"/> set, if it can be filled successfully.</param>
-        /// <returns>Returns <see langword="true"/>, if the <seealso cref="Ical.Net.CalendarComponents.CalendarEvent"/> could be processed successfully, else <see langword="false"/>.</returns>
-        private static bool TryCreateEntity(Ical.Net.CalendarComponents.CalendarEvent calendarEvent, string defaultTimeZoneId, out ExcludeMatchDateEntity excludeMatchDate)
+        /// <returns>Returns the <see cref="ExcludeMatchDateEntity"/> created from the <see cref="Ical.Net.CalendarComponents.CalendarEvent"/>.</returns>
+        private static ExcludeMatchDateEntity CreateEntity(Ical.Net.CalendarComponents.CalendarEvent calendarEvent, string defaultTimeZoneId)
         {
-            excludeMatchDate = new ExcludeMatchDateEntity();
-
-            if (calendarEvent.Start == null) return false;
-
-            if (calendarEvent.Start.HasTime && calendarEvent.End != null && calendarEvent.End.HasTime)
+            var excludeMatchDate = new ExcludeMatchDateEntity();
+            
+            if (calendarEvent.Start == null)
             {
-                if (calendarEvent.Start.Equals(calendarEvent.End)) return false;
+                throw new ArgumentException($"Could not create {nameof(ExcludeMatchDateEntity)} from {nameof(Ical.Net.CalendarComponents.CalendarEvent)} Start={calendarEvent.Start}, End={calendarEvent.End}, Name={calendarEvent.Description}", nameof(calendarEvent));
             }
 
             calendarEvent.Start.TzId ??= defaultTimeZoneId;
@@ -76,11 +77,11 @@ namespace TournamentManager.Plan
             if (calendarEvent.End != null)
             {
                 calendarEvent.End.TzId ??= defaultTimeZoneId;
-                end = !calendarEvent.End.HasTime ? calendarEvent.End.AsUtc.AddDays(1).AddSeconds(-1) : calendarEvent.End.AsUtc;
+                end = calendarEvent.End.AsUtc;
             }
             else
             {
-                end = start.Date.AddDays(1).AddSeconds(-1);
+                end = start.Date;
             }
 
             // Swap if necessary
@@ -90,7 +91,7 @@ namespace TournamentManager.Plan
             excludeMatchDate.DateTo = end;
             excludeMatchDate.Reason = calendarEvent.Summary;
 
-            return true;
+            return excludeMatchDate;
         }
-    }
+     }
 }

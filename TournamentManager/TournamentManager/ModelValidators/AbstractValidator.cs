@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
@@ -35,7 +34,7 @@ namespace TournamentManager.ModelValidators
         /// <summary>
         /// The <see cref="Exception"/> which was thrown while <see cref="CheckAsync"/>ing.
         /// </summary>
-        Exception Exception { get; set; }
+        Exception? Exception { get; set; }
         /// <summary>
         /// The identifier for the <see cref="Fact{TFactId}"/>
         /// </summary>
@@ -75,10 +74,11 @@ namespace TournamentManager.ModelValidators
         /// <c>true</c> if the Check was successful.
         /// </summary>
         public bool Success { get; set; }
+
         /// <summary>
         /// The message in case the Check was not successful.
         /// </summary>
-        public string Message { get; set; }
+        public string Message { get; set; } = string.Empty;
     }
 
     /// <summary>
@@ -90,7 +90,7 @@ namespace TournamentManager.ModelValidators
         /// <summary>
         /// The identifier for this <see cref="Fact{TFactId}"/>.
         /// </summary>
-        public TFactId Id { get; set; }
+        public TFactId Id { get; set; } = default!;
         /// <summary>
         /// The field name that was checked. Empty string as default.
         /// </summary>
@@ -99,10 +99,11 @@ namespace TournamentManager.ModelValidators
         /// The type of the fact.
         /// </summary>
         public FactType Type { get; set; }
+
         /// <summary>
         /// The error message for the case where the <see cref="CheckAsync"/> was not successful.
         /// </summary>
-        public string Message { get; set; }
+        public string Message { get; set; } = string.Empty;
         /// <summary>
         /// <see cref="Fact{TFactId}"/>s will be processed, if <see cref="Enabled"/> is true.
         /// </summary>
@@ -126,11 +127,12 @@ namespace TournamentManager.ModelValidators
         /// <summary>
         /// The <see cref="Exception"/> which was thrown while <see cref="CheckAsync"/>ing.
         /// </summary>
-        public Exception Exception { get; set; }
+        public Exception? Exception { get; set; }
+
         /// <summary>
         /// The delegate which is invoked to perform the check.
         /// </summary>
-        public virtual Func<CancellationToken, Task<FactResult>> CheckAsync { get; set; }
+        public virtual Func<CancellationToken, Task<FactResult>> CheckAsync { get; set; } = token => Task.FromResult(new FactResult { Success = true });
     }
 
     /// <summary>
@@ -188,7 +190,7 @@ namespace TournamentManager.ModelValidators
         /// <returns>Return an instance of the <see cref="Fact{TFactId}"/> that was checked.</returns>
         public virtual async Task<Fact<TFactId>> CheckAsync(TFactId id, CancellationToken cancellationToken)
         {
-            var fact = Facts.First(f => f.Id.Equals(id));
+            var fact = Facts.First(f => f.Id!.Equals(id));
 
             if (!fact.Enabled) return fact;
 
@@ -198,7 +200,7 @@ namespace TournamentManager.ModelValidators
                 fact.Success = factResult.Success;
                 fact.Message = factResult.Message;
                 fact.IsChecked = true;
-                Logger.LogTrace($"Fact '{id.ToString()}': {fact.Success}");
+                Logger.LogTrace($"Fact '{id?.ToString()}': {fact.Success}");
             }
             catch (Exception e)
             {
@@ -206,7 +208,7 @@ namespace TournamentManager.ModelValidators
                 fact.IsChecked = true;
                 fact.Message = string.Empty;
                 fact.Exception = e;
-                Logger.LogCritical(e, $"Fact '{id.ToString()}': {fact.Success}");
+                Logger.LogCritical(e, $"Fact '{id?.ToString()}': {fact.Success}");
             }
 
             return fact;

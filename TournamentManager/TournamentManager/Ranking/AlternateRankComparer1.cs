@@ -9,10 +9,7 @@ namespace TournamentManager.Ranking
 	{
         private static bool _directCompareRankingInProgress = false;
 
-        internal AlternateRankComparer1()
-        { }
-
-        internal AlternateRankComparer1(Ranking ranking, DateTime upperDateLimit) : this()
+        internal AlternateRankComparer1(Ranking ranking, DateTime upperDateLimit)
         {
             Ranking = ranking;
             UpperDateLimit = upperDateLimit;
@@ -22,7 +19,7 @@ namespace TournamentManager.Ranking
 
         public Ranking Ranking { get; set; }
 
-		public int Compare(Rank x, Rank y)
+        public int Compare(Rank x, Rank y)
 		{
 			/*
 			BVV-Spielordnung 

@@ -43,23 +43,23 @@ namespace TournamentManager.Data
         /// <summary>
         /// The full name of the organization.
         /// </summary>
-        public virtual string Name { get; set; }
+        public virtual string Name { get; set; } = string.Empty;
 
         /// <summary>
         /// The short version of the organization's name.
         /// </summary>
-        public virtual string ShortName { get; set; }
+        public virtual string ShortName { get; set; } = string.Empty;
 
         /// <summary>
         /// A description of the organization.
         /// </summary>
-        public virtual string Description { get; set; }
+        public virtual string Description { get; set; } = string.Empty;
 
         /// <summary>
         /// Gives access to the repositories.
         /// </summary>
         [YAXLib.YAXDontSerialize]
-        public virtual AppDb AppDb { get; set; }
+        public virtual AppDb AppDb { get; set; } = null!;
 
         /// <summary>
         /// Organization key which can be used as the first path segment (the 'organization' segment) of a request path.
@@ -70,7 +70,7 @@ namespace TournamentManager.Data
         /// <summary>
         /// The homepage for the organization. E.g. used in emails, ics-calendars
         /// </summary>
-        public string HomepageUrl { get; set; }
+        public string HomepageUrl { get; set; } = string.Empty;
 
         /// <summary>
         /// The ID of the tournament which will be used for new teams' applications.
@@ -103,11 +103,11 @@ namespace TournamentManager.Data
         /// <summary>
         /// Details for team photos.
         /// </summary>
-        public Photos Photos { get; set; }
+        public Photos Photos { get; set; } = new Photos();
         /// <summary>
         /// Bank details of the organization, e.g. for payments of participation fees.
         /// </summary>
-        public BankDetails Bank { get; set; }
+        public BankDetails Bank { get; set; } = new BankDetails();
         /// <summary>
         /// The deadline for new teams' applications.
         /// </summary>
@@ -116,7 +116,7 @@ namespace TournamentManager.Data
         /// <summary>
         /// A set of rules for creating and editing fixtures.
         /// </summary>
-        public FixtureRuleSet FixtureRuleSet { get; set; }
+        public FixtureRuleSet FixtureRuleSet { get; set; } = new FixtureRuleSet();
 
         /// <summary>
         ///	The max. number of days after RealStart where results may be changed.
@@ -126,12 +126,12 @@ namespace TournamentManager.Data
         /// <summary>
         /// Rules for team master data
         /// </summary>
-        public TeamRules TeamRuleSet { get; set; }
+        public TeamRules TeamRuleSet { get; set; } = new TeamRules();
 
         /// <summary>
         /// Email contact details for an organization.
         /// </summary>
-        public Email Email { get; set; }
+        public Email Email { get; set; } = new Email();
     }
 
     /// <summary>
@@ -142,19 +142,19 @@ namespace TournamentManager.Data
         /// <summary>
         /// The Folder for team photos.
         /// </summary>
-        public string TeamPhotoFolder { get; set; }
+        public string TeamPhotoFolder { get; set; } = string.Empty;
         /// <summary>
         /// The name of the image file, which will be displayed if no team photo exists.
         /// </summary>
-        public string TeamDefaultFilename { get; set; }
+        public string TeamDefaultFilename { get; set; } = string.Empty;
         /// <summary>
         /// The Folder for person photos.
         /// </summary>
-        public string PersonPhotoFolder { get; set; }
+        public string PersonPhotoFolder { get; set; } = string.Empty;
         /// <summary>
         /// The name of the image file, which will be displayed if no person photo exists.
         /// </summary>
-        public string PersonDefaultFilename { get; set; }
+        public string PersonDefaultFilename { get; set; } = string.Empty;
     }
 
     /// <summary>
@@ -165,24 +165,24 @@ namespace TournamentManager.Data
         /// <summary>
         /// "From" mailbox address for the contact form
         /// </summary>
-        public MailAddress ContactFrom { get; set; }
+        public MailAddress ContactFrom { get; set; } = new MailAddress();
         /// <summary>
         /// "To" mailbox address for the contact form
         /// </summary>
-        public MailAddress ContactTo { get; set; }
+        public MailAddress ContactTo { get; set; } = new MailAddress();
         /// <summary>
         /// General "To" mailbox address for emails generated programmatically
         /// </summary>
-        public MailAddress GeneralTo { get; set; }
+        public MailAddress GeneralTo { get; set; } = new MailAddress();
         /// <summary>
         /// General "From" mailbox address for emails generated programmatically
         /// </summary>
-        public MailAddress GeneralFrom { get; set; }
+        public MailAddress GeneralFrom { get; set; } = new MailAddress();
         /// <summary>
         /// General "BCC" mailbox address for emails generated programmatically
         /// </summary>
         [YAXLib.YAXErrorIfMissed(YAXLib.YAXExceptionTypes.Ignore)]
-        public MailAddress GeneralBcc { get; set; }
+        public MailAddress GeneralBcc { get; set; } = new MailAddress();
     }
 
     /// <summary>
@@ -193,11 +193,12 @@ namespace TournamentManager.Data
         /// <summary>
         /// The display name.
         /// </summary>
-        public string DisplayName { get; set; }
+        public string DisplayName { get; set; } = string.Empty;
+
         /// <summary>
         /// The email address
         /// </summary>
-        public string Address { get; set; }
+        public string Address { get; set; } = string.Empty;
     }
 
     /// <summary>
@@ -209,22 +210,23 @@ namespace TournamentManager.Data
         /// If <see langword="true"/>, bank details are part of the confirmation email when registering a team.
         /// </summary>
         public bool ShowBankDetailsInConfirmationEmail { get; set; }
+
         /// <summary>
         /// The name of the payment recipient, usually the organization name.
         /// </summary>
-        public string Recipient { get; set; }
+        public string Recipient { get; set; } = string.Empty;
         /// <summary>
         /// The name of the bank where a payment is directed.
         /// </summary>
-        public string BankName { get; set; }
+        public string BankName { get; set; } = string.Empty;
         /// <summary>
         /// The BIC number of the bank account.
         /// </summary>
-        [YAXLib.YAXSerializeAs("BIC")] public string Bic { get; set; }
+        [YAXLib.YAXSerializeAs("BIC")] public string Bic { get; set; } = string.Empty;
         /// <summary>
         /// The IBAN number of the bank.
         /// </summary>
-        [YAXLib.YAXSerializeAs("IBAN")] public string Iban { get; set; }
+        [YAXLib.YAXSerializeAs("IBAN")] public string Iban { get; set; } = string.Empty;
         /// <summary>
         /// The participation fee, may be zero.
         /// </summary>
@@ -232,7 +234,7 @@ namespace TournamentManager.Data
         /// <summary>
         /// The currency for the participation fee.
         /// </summary>
-        public string Currency { get; set; }
+        public string Currency { get; set; } = string.Empty;
     }
 
     public class FixtureRuleSet
@@ -300,7 +302,7 @@ namespace TournamentManager.Data
         /// <summary>
         /// Rules for teams' home match time
         /// </summary>
-        public HomeMatchTime HomeMatchTime { get; set; }
+        public HomeMatchTime HomeMatchTime { get; set; } = new HomeMatchTime();
     }
 
     /// <summary>

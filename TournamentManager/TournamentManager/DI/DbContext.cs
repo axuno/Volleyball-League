@@ -20,23 +20,27 @@ namespace TournamentManager.Data
         /// The organization key the settings refer to.
         /// </summary>
         public string OrganizationKey { get; set; } = string.Empty;
+
         /// <summary>
         /// The connection key used to retrieve the <see cref="ConnectionString"/>.
         /// </summary>
-        public string ConnectionKey { get; set; }
+        public string ConnectionKey { get; set; } = string.Empty;
+
         /// <summary>
         /// The connection string for the database.
         /// </summary>
         [YAXLib.YAXDontSerialize]
-        public string ConnectionString { get; set; }
+        public string ConnectionString { get; set; } = string.Empty;
+
         /// <summary>
         /// The catalog aka database name.
         /// </summary>
-        public string Catalog { get; set; }
+        public string Catalog { get; set; } = string.Empty;
+
         /// <summary>
         /// The schema inside the database.
         /// </summary>
-        public string Schema { get; set; }
+        public string Schema { get; set; } = string.Empty;
         /// <summary>
         /// Gets or sets the timeout value to use with the command object(s) created by <see cref="IDataAccessAdapter"/>s.
         /// Default is 30 seconds

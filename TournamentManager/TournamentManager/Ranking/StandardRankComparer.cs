@@ -9,10 +9,7 @@ namespace TournamentManager.Ranking
 	{
         private static bool _directCompareRankingInProgress = false;
 
-        internal StandardRankComparer()
-        { }
-
-        internal StandardRankComparer(Ranking ranking, DateTime upperDateLimit) : this()
+        internal StandardRankComparer(Ranking ranking, DateTime upperDateLimit)
         {
             Ranking = ranking;
             UpperDateLimit = upperDateLimit;

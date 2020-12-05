@@ -2,7 +2,7 @@ namespace TournamentManager
 {
 	public class Opponent : IOpponent<string>
 	{
-        public Opponent() : this(null, null) { }
+        public Opponent() : this(string.Empty, string.Empty) { }
 
         public Opponent(string home, string guest, string separator = " : ")
         {

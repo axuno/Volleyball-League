@@ -13,6 +13,7 @@ namespace TournamentManager.DAL.EntityClasses
 		/// It is filled by an algorithm in order to determine the time span between matches.
 		/// </summary>
 		public TimeSpan MinTimeDiff { get; set; }
+
 		protected override void OnBeforeEntitySave()
         {
             var now = DateTime.UtcNow;
