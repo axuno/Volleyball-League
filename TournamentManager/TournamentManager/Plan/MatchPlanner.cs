@@ -58,12 +58,10 @@ namespace TournamentManager.Plan
         /// Generates dates which are excluded for the tournament with <see cref="OrganizationContext.MatchPlanTournamentId"/>
         /// and saves them to persistent storage. Existing entries for the tournament are removed.
         /// </summary>
-        /// <param name="specialHolidaysXmlFile"></param>
-        /// <param name="holidayFilter"></param>
+        /// <param name="excelImportFile"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async Task GenerateExcludedDates(string specialHolidaysXmlFile,
-            Predicate<Axuno.Tools.GermanHoliday> holidayFilter, CancellationToken cancellationToken)
+        public async Task GenerateExcludedDates(string excelImportFile, CancellationToken cancellationToken)
         {
             if (!AreEntitiesLoaded) await LoadEntitiesAsync(cancellationToken);
 
@@ -81,10 +79,10 @@ namespace TournamentManager.Plan
                 cancellationToken);
 
             var excludedDates = new EntityCollection<ExcludeMatchDateEntity>(
-                new Importers.ExcludedDates.GermanHolidayImporter(_timeZoneConverter,
-                    _loggerFactory.CreateLogger<Importers.ExcludedDates.GermanHolidayImporter>()).Import(
-                    specialHolidaysXmlFile,
-                    new DateTimePeriod(minDate, maxDate), holidayFilter));
+                new TournamentManager.Importers.ExcludedDates.ExcelImporter(
+                    _timeZoneConverter,
+                    _loggerFactory.CreateLogger<Importers.ExcludedDates.ExcelImporter>())
+                    .Import(excelImportFile, new DateTimePeriod(minDate, maxDate)));
 
             foreach (var excludeMatchDateEntity in excludedDates)
                 excludeMatchDateEntity.TournamentId = _organizationContext.MatchPlanTournamentId;

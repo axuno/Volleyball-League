@@ -6,7 +6,7 @@ using TournamentManager.DAL.EntityClasses;
 
 namespace TournamentManager.Importers.ExcludedDates
 {
-    [Obsolete("User ExcelImporter instead")]
+    [Obsolete("User ExcelImporter instead", true)]
     public class GermanHolidayImporter
     {
         private readonly Axuno.Tools.DateAndTime.TimeZoneConverter _timeZoneConverter;

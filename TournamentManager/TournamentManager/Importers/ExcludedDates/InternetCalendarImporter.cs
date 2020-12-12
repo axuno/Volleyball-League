@@ -15,7 +15,7 @@ namespace TournamentManager.Importers.ExcludedDates
         /// <param name="iCalendarString"></param>
         /// <param name="defaultTimeZoneId">The time zone to use, if it is not included in the start and end date/time of the event.</param>
         /// <param name="dateLimits">The lower and upper UTC date limit to import.</param>
-        /// <returns></returns>
+        /// <returns>Return an <see cref="EntityCollection"/> of type  <see cref="ExcludeMatchDateEntity"/> with imported dates.</returns>
         public EntityCollection<ExcludeMatchDateEntity> Import(string iCalendarString, string defaultTimeZoneId, DateTimePeriod dateLimits)
         {
             var iCal = Ical.Net.Calendar.Load(iCalendarString);
@@ -30,7 +30,7 @@ namespace TournamentManager.Importers.ExcludedDates
         /// <param name="encoding">The <seealso cref="System.Text.Encoding"/> to use.</param>
         /// <param name="defaultTimeZoneId">The time zone to use, if it is not included in the start and end date/time of the event.</param>
         /// <param name="dateLimits">The lower and upper UTC date limit to import.</param>
-        /// <returns></returns>
+        /// <returns>Return an <see cref="EntityCollection"/> of type  <see cref="ExcludeMatchDateEntity"/> with imported dates.</returns>
         public EntityCollection<ExcludeMatchDateEntity> Import(Stream iCalendarStream, System.Text.Encoding encoding, string defaultTimeZoneId, DateTimePeriod dateLimits)
         {
             var iCal = Ical.Net.Calendar.Load(new StreamReader(iCalendarStream, encoding));
