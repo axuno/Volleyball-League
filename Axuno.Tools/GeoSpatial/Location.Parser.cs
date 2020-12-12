@@ -5,11 +5,22 @@ using System.Text.RegularExpressions;
 namespace Axuno.Tools.GeoSpatial
 {
     /// <summary>
-    ///     Represents a Latitude/Longitude/Altitude coordinate.
+    /// Represents a Latitude/Longitude/Altitude coordinate.
     /// </summary>
     public partial class Location
     {
-        /// <summary>Allows parsing of strings.</summary>
+        /// <summary>Parsing latitude and longitude information.</summary>
+        /// <example>
+        /// User input:
+        /// 12° 34′ 56″ S This uses the ISO 31-1 symbols. 
+        /// -12° 34′ 56″  This uses a negative sign instead of 'S' 
+        /// -12°34′56″S   This uses a negative sign and an 'S' and omits the whitespace. We'll assume the coordinate is in the southern hemisphere. 
+        /// -12 34" 56'   This omits the degree symbol and uses quotation marks. This is probably the easiest to type as it doesn't use any special symbols not found on a normal keyboard. 
+        /// -12 34’ 56”   Same as above but uses smart quotes (think copying from Microsoft Word). 
+        /// +12 34 56 S   We can assume this is DMS format as there are three groups of numbers. 
+        /// S 12d34m56s   Some programs allow D for degree, M for minute and S for second, with the North/South suffix at the beginning. 
+        /// S 12* 34' 56" This is often seen in legal descriptions. 
+        /// </example>
         private static class Parser
         {
             private const string DegreePattern = @"
@@ -73,16 +84,16 @@ namespace Axuno.Tools.GeoSpatial
             private const RegexOptions Options =
                 RegexOptions.Compiled | RegexOptions.IgnorePatternWhitespace | RegexOptions.IgnoreCase;
 
-            private static readonly Regex degreeRegex =
+            private static readonly Regex DegreeRegex =
                 new Regex(DegreePattern, Options);
 
-            private static readonly Regex degreeMinuteRegex =
+            private static readonly Regex DegreeMinuteRegex =
                 new Regex(DegreeMinutePattern, Options);
 
-            private static readonly Regex degreeMinuteSecondRegex =
+            private static readonly Regex DegreeMinuteSecondRegex =
                 new Regex(DegreeMinuteSecondPattern, Options);
 
-            private static readonly Regex isoRegex =
+            private static readonly Regex IsoRegex =
                 new Regex(IsoPattern,
                     RegexOptions.Compiled | RegexOptions.CultureInvariant | RegexOptions.IgnorePatternWhitespace);
 
@@ -137,12 +148,11 @@ namespace Axuno.Tools.GeoSpatial
             private static Angle ParseAngle(IFormatProvider provider, string suffix, string degrees,
                 string minutes = null, string seconds = null)
             {
-                double degreeValue = 0;
                 double minuteValue = 0;
                 double secondValue = 0;
 
                 // First try parsing the values (minutes and seconds are optional)
-                if (!double.TryParse(degrees, NumberStyles.Float, provider, out degreeValue) ||
+                if (!double.TryParse(degrees, NumberStyles.Float, provider, out var degreeValue) ||
                     minutes != null && !double.TryParse(minutes, NumberStyles.Float, provider, out minuteValue) ||
                     seconds != null && !double.TryParse(seconds, NumberStyles.Float, provider, out secondValue))
                     return null;
@@ -186,7 +196,7 @@ namespace Axuno.Tools.GeoSpatial
             internal static Location ParseDegrees(string value, IFormatProvider provider)
             {
                 if (string.IsNullOrWhiteSpace(value)) return null;
-                return Parse(value, provider, degreeRegex);
+                return Parse(value, provider, DegreeRegex);
             }
 
             /// <summary>
@@ -203,7 +213,7 @@ namespace Axuno.Tools.GeoSpatial
             internal static Location ParseDegreesMinutes(string value, IFormatProvider provider)
             {
                 if (string.IsNullOrWhiteSpace(value)) return null;
-                return Parse(value, provider, degreeMinuteRegex);
+                return Parse(value, provider, DegreeMinuteRegex);
             }
 
             /// <summary>
@@ -220,7 +230,7 @@ namespace Axuno.Tools.GeoSpatial
             internal static Location ParseDegreesMinutesSeconds(string value, IFormatProvider provider)
             {
                 if (string.IsNullOrWhiteSpace(value)) return null;
-                return Parse(value, provider, degreeMinuteSecondRegex);
+                return Parse(value, provider, DegreeMinuteSecondRegex);
             }
 
             /// <summary>
@@ -235,7 +245,7 @@ namespace Axuno.Tools.GeoSpatial
             {
                 if (!string.IsNullOrWhiteSpace(value))
                 {
-                    var match = isoRegex.Match(value);
+                    var match = IsoRegex.Match(value);
                     if (match.Success)
                     {
                         var latitude = ParseIsoAngle(match.Groups[1].Value, 2);

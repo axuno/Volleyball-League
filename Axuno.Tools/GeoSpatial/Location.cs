@@ -8,12 +8,19 @@ using System.Xml.Serialization;
 namespace Axuno.Tools.GeoSpatial
 {
     /// <summary>
-    ///     Represents a Latitude/Longitude/Altitude coordinate.
+    /// Represents a Latitude/Longitude/Altitude coordinate.
     /// </summary>
+    /// <example>
+    /// var latitude = Latitude.FromDegrees(-5, -10, -15.1234);
+    /// Console.WriteLine("{0:DMS1}", latitude); // 5° 10′ 15.1″ S
+    /// Console.WriteLine("{0:DM3}", latitude);  // 5° 10.252′ S
+    /// Console.WriteLine("{0:D}", latitude);    // 5.17° S
+    /// Console.WriteLine("{0:ISO}", latitude);  // -051015.1234
+    /// </example>
     public sealed partial class Location : IEquatable<Location>, IFormattable, IXmlSerializable
     {
         // Equatorial = 6378137, polar = 6356752.
-        private const int _earthRadius = 6366710; // The mean radius of the Earth in meters.
+        private const int EarthRadius = 6366710; // The mean radius of the earth in meters.
 
         /// <summary>Initializes a new instance of the Location class.</summary>
         /// <param name="latitude">The latitude of the coordinate.</param>
@@ -296,7 +303,7 @@ namespace Axuno.Tools.GeoSpatial
 
         private static double MetersToRadians(double meters)
         {
-            return meters / _earthRadius;
+            return meters / EarthRadius;
         }
 
         /// <summary>
@@ -376,7 +383,7 @@ namespace Axuno.Tools.GeoSpatial
 
         private static double RadiansToMeters(double radians)
         {
-            return radians * _earthRadius;
+            return radians * EarthRadius;
         }
 
         /// <summary>

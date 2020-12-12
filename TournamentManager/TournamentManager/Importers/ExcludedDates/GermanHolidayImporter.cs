@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Extensions.Logging;
 using TournamentManager.DAL.EntityClasses;
-using TournamentManager.DAL.HelperClasses;
 
 namespace TournamentManager.Importers.ExcludedDates
 {
+    [Obsolete("User ExcelImporter instead")]
     public class GermanHolidayImporter
     {
         private readonly Axuno.Tools.DateAndTime.TimeZoneConverter _timeZoneConverter;
