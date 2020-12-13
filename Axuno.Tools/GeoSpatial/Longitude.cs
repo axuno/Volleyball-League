@@ -133,7 +133,7 @@ namespace Axuno.Tools.GeoSpatial
                 // negitive sign is in the current format provider
                 var numberFormat = GetNumberFormatInfo(formatProvider);
                 var negativeSign = numberFormat.NegativeSign;
-                formatted = formatted.Substring(negativeSign.Length);
+                formatted = formatted[negativeSign.Length..];
             }
 
             return formatted + " " + Direction;

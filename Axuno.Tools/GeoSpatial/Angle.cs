@@ -192,7 +192,7 @@ namespace Axuno.Tools.GeoSpatial
         /// </returns>
         public static bool operator ==(Angle angleA, Angle angleB)
         {
-            return angleA?.Equals(angleB) ?? object.ReferenceEquals(angleB, null);
+            return angleA?.Equals(angleB) ?? angleB is null;
         }
 
         /// <summary>
@@ -458,7 +458,7 @@ namespace Axuno.Tools.GeoSpatial
                 ++index;
             }
 
-            return int.TryParse(format.Substring(index), NumberStyles.None, CultureInfo.InvariantCulture,
+            return int.TryParse(format[index..], NumberStyles.None, CultureInfo.InvariantCulture,
                 out var precision)
                 ? Tuple.Create(format.Substring(0, index), precision)
                 : Tuple.Create(format, -1);

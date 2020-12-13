@@ -251,8 +251,8 @@ namespace Axuno.Tools
         {
             get
             {
-                Predicate<GermanHoliday> holidayFilter = h => h.Id.Value == holidayId;
-                return Find(holidayFilter);
+                bool HolidayFilter(GermanHoliday h) => h.Id.Value == holidayId;
+                return Find(HolidayFilter);
             }
         }
 
@@ -265,8 +265,8 @@ namespace Axuno.Tools
         {
             get
             {
-                Predicate<GermanHoliday> dateFilter = h => h.Date.Date.Equals(date.Date);
-                return FindAll(dateFilter).OrderBy(h => h.Date.Date).ToList();
+                bool DateFilter(GermanHoliday h) => h.Date.Date.Equals(date.Date);
+                return FindAll(DateFilter).OrderBy(h => h.Date.Date).ToList();
             }
         }
 
@@ -360,29 +360,16 @@ namespace Axuno.Tools
             // 4th Advent is the latest Sunday before 25th December
             var firstChristmasDay = new DateTime(Year, 12, 25);
 
-            switch (firstChristmasDay.DayOfWeek)
+            return firstChristmasDay.DayOfWeek switch
             {
-                default: // DayOfWeek.Monday
-                    return firstChristmasDay.AddDays(-1).AddDays(-7 * (4 - num));
-
-                case DayOfWeek.Tuesday:
-                    return firstChristmasDay.AddDays(-2).AddDays(-7 * (4 - num));
-
-                case DayOfWeek.Wednesday:
-                    return firstChristmasDay.AddDays(-3).AddDays(-7 * (4 - num));
-
-                case DayOfWeek.Thursday:
-                    return firstChristmasDay.AddDays(-4).AddDays(-7 * (4 - num));
-
-                case DayOfWeek.Friday:
-                    return firstChristmasDay.AddDays(-5).AddDays(-7 * (4 - num));
-
-                case DayOfWeek.Saturday:
-                    return firstChristmasDay.AddDays(-6).AddDays(-7 * (4 - num));
-
-                case DayOfWeek.Sunday:
-                    return firstChristmasDay.AddDays(-7).AddDays(-7 * (4 - num));
-            }
+                DayOfWeek.Tuesday => firstChristmasDay.AddDays(-2).AddDays(-7 * (4 - num)),
+                DayOfWeek.Wednesday => firstChristmasDay.AddDays(-3).AddDays(-7 * (4 - num)),
+                DayOfWeek.Thursday => firstChristmasDay.AddDays(-4).AddDays(-7 * (4 - num)),
+                DayOfWeek.Friday => firstChristmasDay.AddDays(-5).AddDays(-7 * (4 - num)),
+                DayOfWeek.Saturday => firstChristmasDay.AddDays(-6).AddDays(-7 * (4 - num)),
+                DayOfWeek.Sunday => firstChristmasDay.AddDays(-7).AddDays(-7 * (4 - num)),
+                _ => firstChristmasDay.AddDays(-1).AddDays(-7 * (4 - num))
+            };
         }
 
         /// <summary>
@@ -622,8 +609,10 @@ namespace Axuno.Tools
                 while (dateFrom <= dateTo)
                 {
                     var tmpDateFrom = new DateTime(dateFrom.Ticks);
-                    var germanHoliday = new GermanHoliday(holidayId, holidayType, name, () => tmpDateFrom);
-                    germanHoliday.PublicHolidayStateIds = germanFederalStateIds;
+                    var germanHoliday = new GermanHoliday(holidayId, holidayType, name, () => tmpDateFrom)
+                    {
+                        PublicHolidayStateIds = germanFederalStateIds
+                    };
                     switch (action)
                     {
                         case ActionType.Merge:

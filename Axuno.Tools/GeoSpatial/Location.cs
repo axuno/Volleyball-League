@@ -30,11 +30,8 @@ namespace Axuno.Tools.GeoSpatial
         /// </exception>
         public Location(Latitude latitude, Longitude longitude)
         {
-            if (latitude == null) throw new ArgumentNullException(nameof(latitude));
-            if (longitude == null) throw new ArgumentNullException(nameof(longitude));
-
-            Latitude = latitude;
-            Longitude = longitude;
+            Latitude = latitude ?? throw new ArgumentNullException(nameof(latitude));
+            Longitude = longitude ?? throw new ArgumentNullException(nameof(longitude));
         }
 
         /// <summary>Initializes a new instance of the Location class.</summary>
@@ -82,7 +79,7 @@ namespace Axuno.Tools.GeoSpatial
         /// </returns>
         public bool Equals(Location other)
         {
-            if (ReferenceEquals(other, null)) return false;
+            if (other is null) return false;
 
             return Altitude.Equals(other.Altitude) && Latitude.Equals(other.Latitude) &&
                    Longitude.Equals(other.Longitude);
@@ -317,7 +314,7 @@ namespace Axuno.Tools.GeoSpatial
         /// </returns>
         public static bool operator ==(Location locationA, Location locationB)
         {
-            return locationA?.Equals(locationB) ?? ReferenceEquals(locationB, null);
+            return locationA?.Equals(locationB) ?? locationB is null;
         }
 
         /// <summary>

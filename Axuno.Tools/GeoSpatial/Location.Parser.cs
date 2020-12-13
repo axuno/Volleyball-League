@@ -275,18 +275,18 @@ namespace Axuno.Tools.GeoSpatial
                 {
                     case 1: // sign only : value represents degrees
                         angle = Angle.FromDegrees(
-                            double.Parse(value.Substring(1), CultureInfo.InvariantCulture));
+                            double.Parse(value[1..], CultureInfo.InvariantCulture));
                         break;
                     case 3: // sign + MM : value is degrees and minutes
                         angle = Angle.FromDegrees(
                             int.Parse(value.Substring(1, degreeDigits), CultureInfo.InvariantCulture),
-                            double.Parse(value.Substring(degreeDigits + 1), CultureInfo.InvariantCulture));
+                            double.Parse(value[(degreeDigits + 1)..], CultureInfo.InvariantCulture));
                         break;
                     case 5: // sign + MM + SS : value is degrees, minutes and seconds
                         angle = Angle.FromDegrees(
                             int.Parse(value.Substring(1, degreeDigits), CultureInfo.InvariantCulture),
                             int.Parse(value.Substring(degreeDigits + 1, 2), CultureInfo.InvariantCulture),
-                            double.Parse(value.Substring(degreeDigits + 3), CultureInfo.InvariantCulture));
+                            double.Parse(value[(degreeDigits + 3)..], CultureInfo.InvariantCulture));
                         break;
                     default:
                         return null; // Invalid format

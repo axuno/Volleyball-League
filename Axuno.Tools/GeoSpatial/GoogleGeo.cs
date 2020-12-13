@@ -100,10 +100,8 @@ namespace Axuno.Tools.GeoSpatial
         /// <returns>Returns the <see cref="GeoResponse"/> from the Google API. If <see cref="GeoResponse.Success"/> the <see cref="GeoLocation"/> members will be set.</returns>
         public static async Task<GeoResponse> GetLocation(string country, string address, string apiKey, TimeSpan timeout)
         {
-            using (var client = new HttpClient())
-            {
-                return await GetLocation(client, country, address, apiKey, timeout);
-            }
+            using var client = new HttpClient();
+            return await GetLocation(client, country, address, apiKey, timeout);
         }
 
         /// <summary>
