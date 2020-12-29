@@ -13,7 +13,6 @@ namespace League.Test.Controllers
     {
         private readonly IStringLocalizer<Account> _mockLocalizer;
         private Account _controller;
-        private ViewResult _result;
 
         public AccountControllerTest()
         {

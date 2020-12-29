@@ -76,7 +76,7 @@ namespace Axuno.Tools.Password
 					if (hashBytes[i + 16] != hash[i])
 						return false;
 			}
-			catch (Exception e)
+			catch (Exception)
 			{
 				if (throwOnIllegalArgs)
 					throw;
