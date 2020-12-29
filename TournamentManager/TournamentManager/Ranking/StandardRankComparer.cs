@@ -9,6 +9,12 @@ namespace TournamentManager.Ranking
 	{
         private static bool _directCompareRankingInProgress = false;
 
+        /// <summary>
+        /// Required CTOR for Activator.CreateInstance(...)
+        /// </summary>
+        internal StandardRankComparer()
+        { }
+
         internal StandardRankComparer(Ranking ranking, DateTime upperDateLimit)
         {
             Ranking = ranking;

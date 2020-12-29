@@ -8,7 +8,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using League.BackgroundTasks;
 using League.BackgroundTasks.Email;
-using League.DI;
 using League.Helpers;
 using League.Models.MatchViewModels;
 using MailMergeLib.AspNet;
@@ -26,12 +25,15 @@ using TournamentManager.DAL.TypedViewClasses;
 using TournamentManager.Data;
 using TournamentManager.ExtensionMethods;
 using TournamentManager.ModelValidators;
+using TournamentManager.MultiTenancy;
+using SiteContext = League.DI.SiteContext;
 
 namespace League.Controllers
 {
     [Route("{organization:MatchingTenant}/[controller]")]
     public class Match : AbstractController
     {
+        private readonly ITenantContext _tenantContext;
         private readonly SiteContext _siteContext;
         private readonly TournamentManager.MultiTenancy.AppDb _appDb;
         private readonly IStringLocalizer<Match> _localizer;
@@ -44,10 +46,11 @@ namespace League.Controllers
         private readonly RankingUpdateTask _rankingUpdateTask;
         private readonly RazorViewToStringRenderer _razorViewToStringRenderer;
 
-        public Match(SiteContext siteContext, IStringLocalizer<Match> localizer, IAuthorizationService authorizationService,
+        public Match(ITenantContext tenantContext, SiteContext siteContext, IStringLocalizer<Match> localizer, IAuthorizationService authorizationService,
             Axuno.Tools.DateAndTime.TimeZoneConverter timeZoneConverter, Axuno.BackgroundTask.IBackgroundQueue queue,
             FixtureEmailTask fixtureEmailTask, ResultEmailTask resultEmailTask, RankingUpdateTask rankingUpdateTask, RazorViewToStringRenderer razorViewToStringRenderer, ILogger<Match> logger)
         {
+            _tenantContext = tenantContext;
             _siteContext = siteContext;
             _appDb = siteContext.AppDb;
             _localizer = localizer;
@@ -613,7 +616,7 @@ namespace League.Controllers
 
         private void UpdateRanking(in long roundId)
         {
-            _rankingUpdateTask.SiteContext = _siteContext;
+            _rankingUpdateTask.TenantContext = _tenantContext;
             _rankingUpdateTask.RoundId = roundId;
             _rankingUpdateTask.Timeout = TimeSpan.FromMinutes(2);
             _queue.QueueTask(_rankingUpdateTask);

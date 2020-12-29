@@ -8,7 +8,10 @@ namespace TournamentManager.Ranking
 	internal class AlternateRankComparer2 : IRankComparer
 	{
 		private static bool _directCompareRankingInProgress = false;
-
+        
+        /// <summary>
+        /// Required CTOR for Activator.CreateInstance(...)
+        /// </summary>
         internal AlternateRankComparer2()
         {
 			throw new NotImplementedException("This comparer is not implemented yet according to the given rules.");

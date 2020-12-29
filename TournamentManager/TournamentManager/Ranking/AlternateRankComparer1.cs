@@ -8,6 +8,12 @@ namespace TournamentManager.Ranking
 	internal class AlternateRankComparer1 : IRankComparer
 	{
         private static bool _directCompareRankingInProgress = false;
+        
+        /// <summary>
+        /// Required CTOR for Activator.CreateInstance(...)
+        /// </summary>
+        internal AlternateRankComparer1()
+        { }
 
         internal AlternateRankComparer1(Ranking ranking, DateTime upperDateLimit)
         {

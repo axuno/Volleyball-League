@@ -167,7 +167,7 @@ namespace League
             // DO NOT USE `options => options.ResourcesPath = "..."` because then resource files in other locations won't be recognized (e.g. resx in the same folder as the controller class)
             services.AddLocalization();
 
-            #region **** New Multi Tenancy *********************************************
+            #region **** New Multi Tenancy (new in v4.3.0) *****************************
 
             services.AddSingleton<TournamentManager.MultiTenancy.TenantStore>(sp =>
             {
@@ -186,7 +186,7 @@ namespace League
             
             #endregion
 
-            #region **** Old Multi Tenancy *********************************************
+            #region **** Obsolete Multi Tenancy (bridge to new Multi Tenancy) **********
             
             services.AddSingleton<OrganizationContextResolver>(sp =>
             {
@@ -236,7 +236,7 @@ namespace League
                 {
                     options.AppId = socialLogins.Facebook.AppId;
                     options.AppSecret = socialLogins.Facebook.AppSecret;
-                    options.CallbackPath = "/signin-facebook"; // this path is used by the middleware only, no route necessary
+                    options.CallbackPath = new PathString("/signin-facebook"); // this path is used by the middleware only, no route necessary
                     // add the facebook picture url as an additional claim
                     options.ClaimActions.MapJsonKey("urn:facebook:picture", "picture", "picture.data.url");
                     options.SaveTokens = true;
@@ -247,7 +247,7 @@ namespace League
                         var qsParameter =
                             new Dictionary<string, string>
                             {
-                                {"remoteError", context.Request.Query["error"]},
+                                {"remoteError", context.Request.Query["error"].ToString()},
                             }.Where(item => !string.IsNullOrEmpty(item.Value)).ToDictionary(i => i.Key, i => i.Value);
                         // joins query strings from RedirectUri and qsParameter
                         var redirectUri = QueryHelpers.AddQueryString(context.Properties?.RedirectUri ?? "/", qsParameter);
@@ -260,7 +260,7 @@ namespace League
                 {
                     options.ClientId = socialLogins.Google.ClientId;
                     options.ClientSecret = socialLogins.Google.ClientSecret;
-                    options.CallbackPath = "/signin-google"; // this path is used by the middleware only, no route necessary
+                    options.CallbackPath = new PathString("/signin-google"); // this path is used by the middleware only, no route necessary
                     options.ClaimActions.MapJsonKey("urn:google:picture", "picture", "url"); ;
                     options.SaveTokens = true;
                     options.CorrelationCookie.Name = ".CorrAuth.League";
@@ -270,7 +270,7 @@ namespace League
                         var qsParameter =
                             new Dictionary<string, string>
                             {
-                                {"remoteError", context.Request.Query["error"]},
+                                {"remoteError", context.Request.Query["error"].ToString()},
                             }.Where(item => !string.IsNullOrEmpty(item.Value)).ToDictionary(i => i.Key, i => i.Value);
                         // joins query strings from RedirectUri and qsParameter
                         var redirectUri = QueryHelpers.AddQueryString(context.Properties?.RedirectUri ?? "/", qsParameter);
@@ -283,7 +283,7 @@ namespace League
                 {
                     options.ClientId = socialLogins.Microsoft.ClientId;
                     options.ClientSecret = socialLogins.Microsoft.ClientSecret;
-                    options.CallbackPath = "/signin-microsoft"; // this path is used by the middleware only, no route necessary
+                    options.CallbackPath = new PathString("/signin-microsoft"); // this path is used by the middleware only, no route necessary
                     options.SaveTokens = true;
                     options.CorrelationCookie.Name = ".CorrAuth.League";
                     options.Events.OnRemoteFailure = context =>
@@ -292,7 +292,7 @@ namespace League
                         var qsParameter =
                             new Dictionary<string, string>
                             {
-                                {"remoteError", context.Request.Query["error"]},
+                                {"remoteError", context.Request.Query["error"].ToString()},
                             }.Where(item => !string.IsNullOrEmpty(item.Value)).ToDictionary(i => i.Key, i => i.Value);
                         // joins query strings from RedirectUri and qsParameter
                         var redirectUri = QueryHelpers.AddQueryString(context.Properties?.RedirectUri ?? "/", qsParameter);
@@ -380,30 +380,30 @@ namespace League
                 {
                     var returnUrl = "?ReturnUrl=" + context.Request.Path + context.Request.QueryString;
                     // fires with [Authorize] attribute, when the user is authenticated, but does not have enough privileges
-                    var siteContext = context.HttpContext.RequestServices.GetRequiredService<SiteContext>();
+                    var tenantContext = context.HttpContext.RequestServices.GetRequiredService<TenantContext>();
                     // other context properties can be set, but are not considered in the redirect, though
-                    context.Response.Redirect(new PathString($"/{siteContext.UrlSegmentValue}").Add(context.Options.AccessDeniedPath) + returnUrl);
+                    context.Response.Redirect(new PathString($"/{tenantContext.SiteContext.UrlSegmentValue}").Add(context.Options.AccessDeniedPath) + returnUrl);
                     return Task.CompletedTask;
                 };
                 options.Events.OnRedirectToLogin = context =>
                 {
                     var returnUrl = "?ReturnUrl=" + context.Request.Path + context.Request.QueryString;
                     // fires with [Authorize] attribute, when the user is not authenticated
-                    var siteContext = context.HttpContext.RequestServices.GetRequiredService<SiteContext>();
+                    var tenantContext = context.HttpContext.RequestServices.GetRequiredService<TenantContext>();
                     // other context properties can be set, but are not considered in the redirect, though
-                    context.Response.Redirect(new PathString($"/{siteContext.UrlSegmentValue}").Add(context.Options.LoginPath) + returnUrl);
+                    context.Response.Redirect(new PathString($"/{tenantContext.SiteContext.UrlSegmentValue}").Add(context.Options.LoginPath) + returnUrl);
                     return Task.CompletedTask;
                 };
                 options.Events.OnRedirectToLogout = context =>
                 {
-                    var siteContext = context.HttpContext.RequestServices.GetRequiredService<SiteContext>();
-                    context.Response.Redirect(new PathString($"/{siteContext.UrlSegmentValue}").Add(context.Options.LogoutPath));
+                    var tenantContext = context.HttpContext.RequestServices.GetRequiredService<TenantContext>();
+                    context.Response.Redirect(new PathString($"/{tenantContext.SiteContext.UrlSegmentValue}").Add(context.Options.LogoutPath));
                     return Task.CompletedTask;
                 };
                 options.Events.OnSignedIn += async context =>
                 {
-                    var siteContext = context.HttpContext.RequestServices.GetRequiredService<SiteContext>();
-                    var success = await siteContext.AppDb.UserRepository.SetLastLoginDateAsync(context.Principal.Identity.Name, null, CancellationToken.None);
+                    var tenantContext = context.HttpContext.RequestServices.GetRequiredService<TenantContext>();
+                    var success = await tenantContext.DbContext.AppDb.UserRepository.SetLastLoginDateAsync(context.Principal.Identity.Name, null, CancellationToken.None);
                 };
             });
             
@@ -426,24 +426,24 @@ namespace League
                 {
                     var returnUrl = "?ReturnUrl=" + context.Request.Path + context.Request.QueryString;
                     // fires with [Authorize] attribute, when the user is authenticated, but does not have enough privileges
-                    var siteContext = context.HttpContext.RequestServices.GetRequiredService<SiteContext>();
+                    var tenantContext = context.HttpContext.RequestServices.GetRequiredService<TenantContext>();
                     // other context properties can be set, but are not considered in the redirect, though
-                    context.Response.Redirect(new PathString($"/{siteContext.UrlSegmentValue}").Add(context.Options.AccessDeniedPath) + returnUrl);
+                    context.Response.Redirect(new PathString($"/{tenantContext.SiteContext.UrlSegmentValue}").Add(context.Options.AccessDeniedPath) + returnUrl);
                     return Task.CompletedTask;
                 };
                 options.Events.OnRedirectToLogin = context =>
                 {
                     var returnUrl = "?ReturnUrl=" + context.Request.Path + context.Request.QueryString;
                     // fires with [Authorize] attribute, when the user is not authenticated
-                    var siteContext = context.HttpContext.RequestServices.GetRequiredService<SiteContext>();
+                    var tenantContext = context.HttpContext.RequestServices.GetRequiredService<TenantContext>();
                     // other context properties can be set, but are not considered in the redirect, though
-                    context.Response.Redirect(new PathString($"/{siteContext.UrlSegmentValue}").Add(context.Options.LoginPath) + returnUrl);
+                    context.Response.Redirect(new PathString($"/{tenantContext.SiteContext.UrlSegmentValue}").Add(context.Options.LoginPath) + returnUrl);
                     return Task.CompletedTask;
                 };
                 options.Events.OnRedirectToLogout = context =>
                 {
-                    var siteContext = context.HttpContext.RequestServices.GetRequiredService<SiteContext>();
-                    context.Response.Redirect(new PathString($"/{siteContext.UrlSegmentValue}").Add(context.Options.LogoutPath));
+                    var tenantContext = context.HttpContext.RequestServices.GetRequiredService<TenantContext>();
+                    context.Response.Redirect(new PathString($"/{tenantContext.SiteContext.UrlSegmentValue}").Add(context.Options.LogoutPath));
                     return Task.CompletedTask;
                 };
             });
@@ -572,7 +572,7 @@ namespace League
                     // Replace ComplexTypeModelBinder with TrimmingModelBinder (trims all strings in models)
                     options.ModelBinderProviders[options.ModelBinderProviders.TakeWhile(p => !(p is Microsoft.AspNetCore.Mvc.ModelBinding.Binders.ComplexTypeModelBinderProvider)).Count()] = new ModelBinders.TrimmingComplexModelBinderProvider();
                 })
-                .AddControllersAsServices();
+                .AddControllersAsServices(); // will add controllers with ServiceLifetime.Transient
 #if DEBUG
             // Not to be added in production!
             if (WebHostEnvironment.IsDevelopment())
@@ -748,10 +748,9 @@ namespace League
             
             foreach (var tenant in tenantStore.GetTenants().Values.Where(tc => !(string.IsNullOrEmpty(tc.Identifier) || tc.IsDefault)))  
             {
-                var siteContext = new SiteContext(tenant.Identifier, app.ApplicationServices.GetRequiredService<OrganizationContextResolver>(), tenantStore);
                 var rankingUpdateTask = app.ApplicationServices.GetRequiredService<RankingUpdateTask>();
-                rankingUpdateTask.SiteContext = siteContext.Resolve(tenant.Identifier);
-                rankingUpdateTask.TournamentId = siteContext.MatchResultTournamentId;
+                rankingUpdateTask.TenantContext = tenant;
+                rankingUpdateTask.TournamentId = tenant.TournamentContext.MatchResultTournamentId;
                 rankingUpdateTask.Timeout = TimeSpan.FromMinutes(5);
                 rankingUpdateTask.EnforceUpdate = false;
                 queue.QueueTask(rankingUpdateTask);

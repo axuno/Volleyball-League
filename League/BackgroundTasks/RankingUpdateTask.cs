@@ -12,6 +12,7 @@ using SD.LLBLGen.Pro.ORMSupportClasses;
 using SD.LLBLGen.Pro.QuerySpec;
 using TournamentManager.DAL.EntityClasses;
 using TournamentManager.DAL.HelperClasses;
+using TournamentManager.MultiTenancy;
 using TournamentManager.Ranking;
 
 namespace League.BackgroundTasks
@@ -81,9 +82,9 @@ namespace League.BackgroundTasks
         public bool EnforceUpdate { get; set; }
 
         /// <summary>
-        /// Gets or sets the <see cref="SiteContext"/> to use for the update.
+        /// Gets or sets the <see cref="TournamentManager.MultiTenancy.TenantContext"/> to use for the update.
         /// </summary>
-        public SiteContext SiteContext { get; set; }
+        public ITenantContext TenantContext { get; set; }
 
         private async Task UpdateRankingAsync(CancellationToken cancellationToken)
         {
@@ -95,9 +96,9 @@ namespace League.BackgroundTasks
                 return; 
             }
 
-            if (SiteContext == null)
+            if (TenantContext == null)
             {
-                _logger.LogError($"{nameof(SiteContext)} is null. Cannot update ranking.");
+                _logger.LogError($"{nameof(TenantContext)} is null. Cannot update ranking.");
                 return;
             }
 #if DEBUG            
@@ -106,16 +107,16 @@ namespace League.BackgroundTasks
 #endif
             try
             {
-                var matchesPlayed = await SiteContext.AppDb.MatchRepository.GetMatchesCompleteAsync(
+                var matchesPlayed = await TenantContext.DbContext.AppDb.MatchRepository.GetMatchesCompleteAsync(
                     new PredicateExpression(TournamentId != null
                         ? MatchCompleteRawFields.TournamentId == TournamentId
                         : MatchCompleteRawFields.RoundId == RoundId), cancellationToken);
-                var matchesToPlay = await SiteContext.AppDb.MatchRepository.GetMatchesToPlayAsync(
+                var matchesToPlay = await TenantContext.DbContext.AppDb.MatchRepository.GetMatchesToPlayAsync(
                     new PredicateExpression(TournamentId != null
                         ? MatchToPlayRawFields.TournamentId == TournamentId
                         : MatchToPlayRawFields.RoundId == RoundId), cancellationToken);
                 // Get round id and date of creation for the ranking entry
-                var rankingCreatedOnTable = await SiteContext.AppDb.RankingRepository.GetRoundRanksCreatedOn(
+                var rankingCreatedOnTable = await TenantContext.DbContext.AppDb.RankingRepository.GetRoundRanksCreatedOn(
                     new PredicateExpression(TournamentId != null
                         ? RankingFields.TournamentId == TournamentId
                         : RankingFields.RoundId == RoundId), cancellationToken);
@@ -146,7 +147,7 @@ namespace League.BackgroundTasks
                 #endregion
 
                 var teamsInRound =
-                    await SiteContext.AppDb.TeamInRoundRepository.GetTeamInRoundAsync(
+                    await TenantContext.DbContext.AppDb.TeamInRoundRepository.GetTeamInRoundAsync(
                         new PredicateExpression(TeamInRoundFields.RoundId.In(roundIds)), cancellationToken);
 
                 foreach (var roundId in roundIds)
@@ -155,12 +156,12 @@ namespace League.BackgroundTasks
 
                     // rules can be different for every round
                     var matchRule =
-                        await SiteContext.AppDb.RoundRepository.GetMatchRuleAsync(roundId, cancellationToken);
+                        await TenantContext.DbContext.AppDb.RoundRepository.GetMatchRuleAsync(roundId, cancellationToken);
                     // filter matches to only contain a single round
                     var ranking = new Ranking(matchesPlayed.Where(mp => mp.RoundId == roundId),
                         matchesToPlay.Where(mtp => mtp.RoundId == roundId), (RankComparerEnum) matchRule.RankComparer);
                     // Update the ranking table
-                    await SiteContext.AppDb.RankingRepository.SaveAsync(ranking.GetList(out var lastUpdated),
+                    await TenantContext.DbContext.AppDb.RankingRepository.SaveAsync(ranking.GetList(out var lastUpdated),
                         roundId, cancellationToken);
 
                     /***** Chart file generation *****/
@@ -180,7 +181,7 @@ namespace League.BackgroundTasks
 
                     await using var chartStream = chart.GetPng();
                     await using var fileStream = File.Create(Path.Combine(_webHostEnvironment.WebRootPath, RankingImageFolder,
-                        string.Format(RankingChartFilenameTemplate, SiteContext.OrganizationKey, roundId,
+                        string.Format(RankingChartFilenameTemplate, TenantContext.Identifier, roundId,
                             DateTime.UtcNow.Ticks)));
                     chartStream.Seek(0, SeekOrigin.Begin);
                     await chartStream.CopyToAsync(fileStream, cancellationToken);
@@ -206,7 +207,7 @@ namespace League.BackgroundTasks
                 foreach (var roundId in roundIds)
                 {
                     var fileInfos = chartDirectory.GetFiles(string.Format(RankingChartFilenameTemplate,
-                        SiteContext.OrganizationKey, roundId, "*")).OrderByDescending(fi => fi.LastWriteTimeUtc);
+                        TenantContext.Identifier, roundId, "*")).OrderByDescending(fi => fi.LastWriteTimeUtc);
 
                     // Remove all files except for the most recent
                     foreach (var fileInfo in fileInfos.Skip(1))
