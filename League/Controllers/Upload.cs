@@ -19,7 +19,7 @@ using TournamentManager.DAL.HelperClasses;
 
 namespace League.Controllers
 {
-    [Route("{organization:ValidOrganizations}/[controller]")]
+    [Route("{organization:MatchingTenant}/[controller]")]
     public class Upload : AbstractController
     {
         private readonly SiteContext _siteContext;

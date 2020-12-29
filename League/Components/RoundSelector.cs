@@ -14,7 +14,7 @@ namespace League.Components
     public class RoundSelector : ViewComponent
     {
         private readonly SiteContext _siteContext;
-        private readonly AppDb _appDb;
+        private readonly TournamentManager.MultiTenancy.AppDb _appDb;
         private readonly ILogger<RoundSelector> _logger;
 
         public RoundSelector(SiteContext siteContext, ILogger<RoundSelector> logger)

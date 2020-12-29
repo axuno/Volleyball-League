@@ -1,9 +1,9 @@
 ﻿using System.IO;
-using League.DI;
 using League.Identity;
 using League.Test.Identity;
 using League.Test.TestComponents;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
@@ -13,7 +13,9 @@ using NLog;
 using NLog.Extensions.Logging;
 using SD.LLBLGen.Pro.ORMSupportClasses;
 using TournamentManager.Data;
+using TournamentManager.MultiTenancy;
 using ILogger = Microsoft.Extensions.Logging.ILogger;
+using SiteContext = League.DI.SiteContext;
 
 namespace League.Test
 {
@@ -26,15 +28,23 @@ namespace League.Test
         public UnitTestHelpers()
         {
             _configPath = DirectoryLocator.GetTargetConfigurationPath();
-            var orgSiteList = SiteList.DeserializeFromFile(Path.Combine(_configPath, "SiteList.Development.config"));
-            var dbContextList = DbContextList.DeserializeFromFile(Path.Combine(_configPath, "DbContextList.Development.config"));
-            foreach (var dbContext in dbContextList)
+            
+            var store = new TournamentManager.MultiTenancy.TenantStore(new ConfigurationSection(null, null), new NullLogger<TenantStore>())
             {
-                dbContext.Catalog = "LeagueIntegration";
+                GetTenantConfigurationFiles = () =>
+                    Directory.GetFiles(_configPath,
+                        $"Tenant.*.Development.config", SearchOption.TopDirectoryOnly)
+            }.LoadTenants();
+           
+
+            foreach (var tenant in store.GetTenants().Values)
+            {
+                tenant.DbContext.Catalog = "LeagueIntegration";
                 var msSqlPath = Path.Combine(DirectoryLocator.GetTargetProjectPath(), @"..\..\MsSqlDb");
-                dbContext.ConnectionString = string.Format("Server={0};Database={1};Integrated Security=true", $"(LocalDB)\\MSSQLLocalDB;AttachDbFilename={msSqlPath}\\LeagueIntegrationTest.mdf", dbContext.Catalog);
+                tenant.DbContext.ConnectionString =
+                    $"Server=(LocalDB)\\MSSQLLocalDB;AttachDbFilename={msSqlPath}\\LeagueIntegrationTest.mdf;Database={tenant.DbContext.Catalog};Integrated Security=true";
             }
-            var dbContextResolver = new DbContextResolver(dbContextList);
+            
 
             InitializeLlBlGenPro();
 
@@ -74,18 +84,18 @@ namespace League.Test
         {
             get
             {
-                return _serviceProvider ?? (_serviceProvider = new ServiceCollection()
-                           .AddLogging(builder =>
-                           {
-                               builder.SetMinimumLevel(Microsoft.Extensions.Logging.LogLevel.Trace);
-                               builder.AddNLog(new NLogProviderOptions
-                               {
-                                   CaptureMessageTemplates = true,
-                                   CaptureMessageProperties = true
-                               });
-                           })
-                           .AddLocalization()
-                           .BuildServiceProvider());
+                return _serviceProvider ??= new ServiceCollection()
+                    .AddLogging(builder =>
+                    {
+                        builder.SetMinimumLevel(Microsoft.Extensions.Logging.LogLevel.Trace);
+                        builder.AddNLog(new NLogProviderOptions
+                        {
+                            CaptureMessageTemplates = true,
+                            CaptureMessageProperties = true
+                        });
+                    })
+                    .AddLocalization()
+                    .BuildServiceProvider();
             }
         }
 

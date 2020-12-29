@@ -19,7 +19,7 @@ namespace TournamentManager.Plan
     public class MatchPlanner
     {
         private readonly OrganizationContext _organizationContext;
-        private readonly AppDb _appDb;
+        private readonly TournamentManager.MultiTenancy.AppDb _appDb;
         private static TournamentEntity _tournament = new TournamentEntity();
         private readonly ILoggerFactory _loggerFactory;
         private readonly ILogger<MatchPlanner> _logger;

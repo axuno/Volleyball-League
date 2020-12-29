@@ -12,7 +12,7 @@ namespace League.Components
     public class VenueEditor : ViewComponent
     {
         private readonly SiteContext _siteContext;
-        private readonly AppDb _appDb;
+        private readonly TournamentManager.MultiTenancy.AppDb _appDb;
         private readonly ILogger<VenueEditor> _logger;
 
         public VenueEditor(SiteContext siteContext, ILogger<VenueEditor> logger)

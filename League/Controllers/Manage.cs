@@ -21,7 +21,7 @@ using TournamentManager.DI;
 namespace League.Controllers
 {
     [Authorize]
-    [Route("{organization:ValidOrganizations}/[controller]")]
+    [Route("{organization:MatchingTenant}/[controller]")]
     public class Manage : AbstractController
     {
         private readonly UserManager<ApplicationUser> _userManager;

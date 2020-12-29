@@ -14,7 +14,7 @@ namespace TournamentManager.Plan
     public class AvailableMatchDates
     {
         private readonly OrganizationContext _organizationContext;
-        private readonly AppDb _appDb;
+        private readonly TournamentManager.MultiTenancy.AppDb _appDb;
         private readonly Axuno.Tools.DateAndTime.TimeZoneConverter _timeZoneConverter;
 
         private readonly ILogger<AvailableMatchDates> _logger;

@@ -3,29 +3,27 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Microsoft.Extensions.Logging;
+using TournamentManager.MultiTenancy;
 
 namespace TournamentManager.Data
 {
     /// <summary>
     /// Resolves the <see cref="OrganizationContext"/> for a given organization key.
     /// </summary>
-    public class OrganizationContextResolver : List<OrganizationContext>, IOrganizationContextResolver
+    public class OrganizationContextResolver : List<Data.OrganizationContext>, IOrganizationContextResolver
     {
-        private readonly DbContextResolver _dbContextResolver;
         private readonly ILogger<OrganizationContextResolver> _logger;
-        private readonly string _configPath;
+        private readonly TenantStore _tenantStore;
 
         /// <summary>
         /// CTOR
         /// </summary>
-        /// <param name="dbContextResolver">An instance of <see cref="DbContextResolver"/>, filled with a list of type <see cref="DbContextList"/>.</param>
+        /// <param name="tenantStore">An instance of <see cref="TournamentManager.MultiTenancy.TenantStore"/>.</param>
         /// <param name="logger">The <see cref="ILogger{TCategoryName}"/> to use.</param>
-        /// <param name="configPath">Path to the organization configuration files.</param>
-        public OrganizationContextResolver(DbContextResolver dbContextResolver, ILogger<OrganizationContextResolver> logger, string configPath)
+        public OrganizationContextResolver(TenantStore tenantStore, ILogger<OrganizationContextResolver> logger)
         {
-            _dbContextResolver = dbContextResolver;
             _logger = logger;
-            _configPath = configPath;
+            _tenantStore = tenantStore;
             FillOrganizationContext();
         }
 
@@ -33,18 +31,71 @@ namespace TournamentManager.Data
         {
             try
             {
-                foreach (var dbContext in _dbContextResolver.DbContextList)
+                foreach (var tenant in _tenantStore.GetTenants().Values)
                 {
-                    var appDb = new AppDb(_dbContextResolver.Resolve(dbContext.OrganizationKey));
-
-                    var orgCtx = !string.IsNullOrEmpty(dbContext.OrganizationKey)
-                        ? OrganizationContext.DeserializeFromFile(Path.Combine(_configPath,
-                            $"LeagueSettings.{dbContext.OrganizationKey}.config"))
-                        : new OrganizationContext();
-
-                    orgCtx.OrganizationKey = dbContext.OrganizationKey;
-                    orgCtx.AppDb = appDb;
-
+                    var orgCtx = new TournamentManager.Data.OrganizationContext
+                    {
+                        OrganizationKey = tenant.Identifier,
+                        Guid = tenant.Guid,
+                        Name = tenant.OrganizationContext.Name,
+                        ShortName = tenant.OrganizationContext.ShortName,
+                        Description = tenant.OrganizationContext.Description,
+                        HomepageUrl = tenant.OrganizationContext.HomepageUrl,
+                        ApplicationAllowed = tenant.TournamentContext.ApplicationAllowed,
+                        ApplicationDeadline = tenant.TournamentContext.ApplicationDeadline,
+                        ApplicationTournamentId = tenant.TournamentContext.ApplicationTournamentId,
+                        MapTournamentId = tenant.TournamentContext.MapTournamentId,
+                        MatchPlanTournamentId = tenant.TournamentContext.MatchPlanTournamentId,
+                        MatchResultTournamentId = tenant.TournamentContext.MatchPlanTournamentId,
+                        TeamTournamentId = tenant.TournamentContext.TeamTournamentId,
+                        Bank = new BankDetails
+                        {
+                            Amount = tenant.OrganizationContext.Bank.Amount,
+                            BankName = tenant.OrganizationContext.Bank.BankName,
+                            Bic = tenant.OrganizationContext.Bank.Bic,
+                            Currency = tenant.OrganizationContext.Bank.Currency,
+                            Iban = tenant.OrganizationContext.Bank.Iban,
+                            Recipient = tenant.OrganizationContext.Bank.Recipient,
+                            ShowBankDetailsInConfirmationEmail = tenant.OrganizationContext.Bank.ShowBankDetailsInConfirmationEmail
+                        },
+                        Email = new Email
+                        {
+                            ContactFrom = new MailAddress { Address = tenant.SiteContext.Email.ContactFrom.Address, DisplayName = tenant.SiteContext.Email.ContactFrom.DisplayName},
+                            ContactTo = new MailAddress { Address = tenant.SiteContext.Email.ContactTo.Address, DisplayName = tenant.SiteContext.Email.ContactTo.DisplayName},
+                            GeneralBcc = new MailAddress { Address = tenant.SiteContext.Email.GeneralBcc.Address, DisplayName = tenant.SiteContext.Email.GeneralBcc.DisplayName},
+                            GeneralFrom = new MailAddress { Address = tenant.SiteContext.Email.GeneralFrom.Address, DisplayName = tenant.SiteContext.Email.GeneralFrom.DisplayName},
+                            GeneralTo = new MailAddress { Address = tenant.SiteContext.Email.GeneralTo.Address, DisplayName = tenant.SiteContext.Email.GeneralTo.DisplayName}
+                        },
+                        FixtureRuleSet = new FixtureRuleSet
+                        {
+                            CheckForExcludedMatchDateTime = tenant.TournamentContext.FixtureRuleSet.CheckForExcludedMatchDateTime,
+                            PlannedDurationOfMatch = tenant.TournamentContext.FixtureRuleSet.PlannedDurationOfMatch,
+                            PlannedMatchDateTimeMustBeSet = tenant.TournamentContext.FixtureRuleSet.PlannedMatchDateTimeMustBeSet,
+                            PlannedMatchTimeMustStayInCurrentLegBoundaries = tenant.TournamentContext.FixtureRuleSet.PlannedMatchTimeMustStayInCurrentLegBoundaries,
+                            PlannedVenueMustBeSet = tenant.TournamentContext.FixtureRuleSet.PlannedVenueMustBeSet,
+                            RegularMatchStartTime = new RegularMatchStartTime {MinDayTime = tenant.TournamentContext.FixtureRuleSet.RegularMatchStartTime.MinDayTime, MaxDayTime = tenant.TournamentContext.FixtureRuleSet.RegularMatchStartTime.MaxDayTime},
+                            UseOnlyDatePartForTeamFreeBusyTimes = tenant.TournamentContext.FixtureRuleSet.UseOnlyDatePartForTeamFreeBusyTimes
+                        },
+                        MaxDaysForResultCorrection = tenant.TournamentContext.MaxDaysForResultCorrection,
+                        TeamRuleSet = new TeamRules
+                        {
+                            HomeMatchTime = new HomeMatchTime
+                            {
+                                DaysOfWeekRange = tenant.TournamentContext.TeamRuleSet.HomeMatchTime.DaysOfWeekRange,
+                                ErrorIfNotInDaysOfWeekRange = tenant.TournamentContext.TeamRuleSet.HomeMatchTime.ErrorIfNotInDaysOfWeekRange,
+                                IsEditable = tenant.TournamentContext.TeamRuleSet.HomeMatchTime.IsEditable,
+                                MustBeSet = tenant.TournamentContext.TeamRuleSet.HomeMatchTime.MustBeSet
+                            }
+                        },
+                        Photos = new Photos
+                        {
+                            PersonDefaultFilename = tenant.SiteContext.Photos.PeopleDefaultFilename,
+                            PersonPhotoFolder = tenant.SiteContext.Photos.PeoplePhotoFolder,
+                            TeamDefaultFilename = tenant.SiteContext.Photos.TeamDefaultFilename,
+                            TeamPhotoFolder = tenant.SiteContext.Photos.TeamPhotoFolder
+                        },
+                        AppDb = new AppDb(tenant.DbContext)
+                    };
                     Add(orgCtx);
                 }
             }
@@ -65,7 +116,7 @@ namespace TournamentManager.Data
         {
             try
             {
-                var organizationContext = this.FirstOrDefault(c => c.OrganizationKey == organizationKey) ??
+                var organizationContext = this.FirstOrDefault(c => c.OrganizationKey.Equals(organizationKey, StringComparison.InvariantCultureIgnoreCase)) ??
                                           this.FirstOrDefault(c => c.OrganizationKey == string.Empty);
 
                 if (organizationContext == null) throw new ArgumentException($"{nameof(organizationKey)} '{organizationKey}' is unknown and no default existing.");
@@ -86,7 +137,7 @@ namespace TournamentManager.Data
         /// <param name="derivedClassInstance">A class instance derived from <see cref="OrganizationContext"/>.</param>
         /// <param name="organizationKey"></param>
         /// <returns>Returns the <see cref="derivedClassInstance"/> with all properties from the base class set.</returns>
-        public T CopyContextTo<T>(T derivedClassInstance, string organizationKey) where T:OrganizationContext
+        public T CopyContextTo<T>(T derivedClassInstance, string organizationKey) where T:TournamentManager.Data.OrganizationContext
         {
             var organizationContext = Resolve(organizationKey);
             derivedClassInstance.AppDb = organizationContext.AppDb;

@@ -9,6 +9,7 @@ using NUnit.Framework;
 using TournamentManager.DAL.DatabaseSpecific;
 using TournamentManager.Data;
 using TournamentManager.DAL.EntityClasses;
+using TournamentManager.MultiTenancy;
 
 namespace League.Test.Identity
 {
@@ -19,7 +20,7 @@ namespace League.Test.Identity
     public class UserStoreTests
     {
         private readonly UnitTestHelpers _uth = new UnitTestHelpers();
-        private readonly SiteContext _orgCtx;
+        private readonly League.DI.SiteContext _orgCtx;
         private readonly AppDb _appDb;
         private readonly UserStore _store;
         private readonly RoleStore _roleStore;

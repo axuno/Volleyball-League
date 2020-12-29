@@ -23,8 +23,8 @@ namespace TournamentManager.Data
 	public class ExcludedMatchDateRepository
 	{
         private static readonly ILogger _logger = AppLogging.CreateLogger<ExcludedMatchDateRepository>();
-        private readonly IDbContext _dbContext;
-	    public ExcludedMatchDateRepository(IDbContext dbContext)
+        private readonly MultiTenancy.IDbContext _dbContext;
+	    public ExcludedMatchDateRepository(MultiTenancy.IDbContext dbContext)
 	    {
 	        _dbContext = dbContext;
 	    }

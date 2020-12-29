@@ -21,7 +21,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="cloudscribe.Web.Navigation" Version="4.1.1" />
+		<PackageReference Include="cloudscribe.Web.Navigation" Version="4.1.2" />
 		<PackageReference Include="JSNLog" Version="2.30.0" />
 		<PackageReference Include="MailMergeLib" Version="5.7.0.1" />
 		<PackageReference Include="Microsoft.AspNetCore.Authentication.Facebook" Version="3.1.8" />
@@ -30,7 +30,7 @@
 		<PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="3.1.8" />
 		<PackageReference Include="Microsoft.DotNet.PlatformAbstractions" Version="3.1.6" />
 		<PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.4" />
-		<PackageReference Include="NLog" Version="4.7.5" />
+		<PackageReference Include="NLog" Version="4.7.6" />
 		<PackageReference Include="NLog.Web.AspNetCore" Version="4.9.3" />
 		<PackageReference Include="PuppeteerSharp" Version="2.0.4" />
 		<PackageReference Include="StackifyMiddleware" Version="3.0.5.2" />
@@ -40,6 +40,7 @@
 		<DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="2.0.3" />
 	</ItemGroup>
 
+	<!---
 	<ItemGroup>
 		<Folder Include="Areas\Admin\Models\" />
 		<Folder Include="logs\" />
@@ -48,6 +49,7 @@
 		<Folder Include="wwwroot\lib\dropzone\" />
 		<Folder Include="wwwroot\lib\tempusdominus-bootstrap-4\" />
 	</ItemGroup>
+    -->
 
 	<ItemGroup>
 		<Content Include="Chromium-Win\**\*.*" Exclude="Chromium-Win\**\*.json">
@@ -56,9 +58,29 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <Content Remove="Configuration\Tenant.A-Beach.Development.config" />
+	  <Content Remove="Configuration\Tenant.A-Beach.Production.config" />
+	  <Content Remove="Configuration\Tenant.A-Indoor.Development.config" />
+	  <Content Remove="Configuration\Tenant.A-Indoor.Production.config" />
+	  <Content Remove="Configuration\Tenant.OtherOrg.Development.config" />
+	  <Content Remove="Configuration\Tenant.TestOrg.Development.config" />
+	  <Content Remove="Configuration\_Tenant.Default.Development.config" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<Content Include="app_offline_.htm">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Include="Configuration\Tenant.A-Beach.Production.config" />
+	  <None Include="Configuration\Tenant.A-Beach.Development.config" />
+	  <None Include="Configuration\Tenant.A-Indoor.Production.config" />
+	  <None Include="Configuration\Tenant.A-Indoor.Development.config" />
+	  <None Include="Configuration\_Tenant.Default.Development.config" />
+	  <None Include="Configuration\Tenant.OtherOrg.Development.config" />
+	  <None Include="Configuration\Tenant.TestOrg.Development.config" />
 	</ItemGroup>
 
 	<ItemGroup>

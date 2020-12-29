@@ -18,8 +18,8 @@ namespace TournamentManager.Data
 	public class TeamInRoundRepository
 	{
         private static readonly ILogger _logger = AppLogging.CreateLogger<TeamInRoundRepository>();
-        private readonly IDbContext _dbContext;
-        public TeamInRoundRepository(IDbContext dbContext)
+        private readonly MultiTenancy.IDbContext _dbContext;
+        public TeamInRoundRepository(MultiTenancy.IDbContext dbContext)
 	    {
 	        _dbContext = dbContext;
 	    }

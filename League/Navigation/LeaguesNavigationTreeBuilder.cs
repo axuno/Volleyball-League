@@ -25,17 +25,17 @@ namespace League.Navigation
             var topNode = new NavigationNode { Text = _localizer["League"], Url = "/#"};
             var treeNode = new TreeNode<NavigationNode>(topNode);
             treeNode.AddChild(new NavigationNode { Text = _localizer["Home"], Url = "/welcome", Key = "LeagueWelcome" });
-            foreach (var site in _siteContext.SiteList)
+            foreach (var tenant in _siteContext.TenantStore.GetTenants().Values)
             {
-                var siteContext = _siteContext.Resolve(site.OrganizationKey);
+                var siteContext = _siteContext.Resolve(tenant.Identifier);
                 if (!string.IsNullOrEmpty(siteContext.OrganizationKey) && !siteContext.HideInMenu)
                 {
                     treeNode.AddChild(
                         new NavigationNode
                         {
                             Text = siteContext.ShortName,
-                            Url = "/" + site.UrlSegmentValue,
-                            Key = "UrlSegment_" + site.UrlSegmentValue,
+                            Url = "/" + tenant.SiteContext.UrlSegmentValue,
+                            Key = "UrlSegment_" + tenant.SiteContext.UrlSegmentValue,
                             PreservedRouteParameters = "organization",
                         });
                 }

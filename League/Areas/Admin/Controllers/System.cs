@@ -12,7 +12,7 @@ namespace League.Areas.Admin.Controllers
 {
     [Authorize(Roles = Constants.RoleName.SystemManager)]
     [Area("Admin")]
-    [Route("{organization:ValidOrganizations}/[area]/[controller]")]
+    [Route("{organization:MatchingTenant}/[area]/[controller]")]
     public class System : AbstractController
     {
         [Route("")]

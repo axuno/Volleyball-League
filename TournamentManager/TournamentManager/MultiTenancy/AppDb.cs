@@ -1,4 +1,6 @@
-﻿namespace TournamentManager.Data
+﻿using TournamentManager.Data;
+
+namespace TournamentManager.MultiTenancy
 {
     /// <summary>
     /// Provides access to database repositories.
@@ -16,9 +18,8 @@
 
         /// <summary>
         /// Provides database-specific settings.
-        /// Usually instances are part of a <see cref="DbContextList"/>, created from a configuration file.
         /// </summary>
-        public virtual IDbContext DbContext { get; private set; }
+        public virtual IDbContext DbContext { get; }
 
         public virtual GenericRepository GenericRepository => new GenericRepository(DbContext);
         public virtual ManagerOfTeamRepository ManagerOfTeamRepository => new ManagerOfTeamRepository(DbContext);

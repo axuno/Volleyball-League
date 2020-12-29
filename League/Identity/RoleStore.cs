@@ -18,7 +18,7 @@ namespace League.Identity
     /// </summary>
     public class RoleStore : IRoleStore<ApplicationRole>, IRoleClaimStore<ApplicationRole>
     {
-        private readonly AppDb _appDb;
+        private readonly TournamentManager.MultiTenancy.AppDb _appDb;
         private readonly ILogger<UserStore> _logger;
         private readonly ILookupNormalizer _keyNormalizer;
         private readonly IdentityErrorDescriber _identityErrorDescriber;

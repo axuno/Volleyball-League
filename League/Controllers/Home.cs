@@ -6,9 +6,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using Axuno.Web;
 using League.BackgroundTasks.Email;
-using League.DI;
 using League.Models.AccountViewModels;
 using League.Models.HomeViewModels;
+using League.MultiTenancy;
 using League.Routing;
 using League.Views;
 using Microsoft.AspNetCore.Http;
@@ -16,6 +16,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
 using TournamentManager.Data;
+using TournamentManager.MultiTenancy;
+using SiteContext = League.DI.SiteContext;
 
 namespace League.Controllers
 {
@@ -28,9 +30,9 @@ namespace League.Controllers
         private readonly Axuno.BackgroundTask.IBackgroundQueue _queue;
         private readonly ContactEmailTask _contactEmailTask;
         private readonly ILogger<Home> _logger;
+        private readonly ITenantContext _tenantContext;
 
-
-        public Home(SiteContext siteContext, Axuno.BackgroundTask.IBackgroundQueue queue, ContactEmailTask contactEmailTask, ILogger<Home> logger, IStringLocalizer<Account> localizer)
+        public Home(SiteContext siteContext, Axuno.BackgroundTask.IBackgroundQueue queue, ContactEmailTask contactEmailTask, ILogger<Home> logger, IStringLocalizer<Account> localizer, ITenantContext tenantContext)
         {
             _siteContext = siteContext;
             _appDb = siteContext.AppDb;
@@ -38,12 +40,13 @@ namespace League.Controllers
             _contactEmailTask = contactEmailTask;
             _logger = logger;            
             _localizer = localizer;
+            _tenantContext = tenantContext;
         }
 
         [Route("")]
         public IActionResult Index()
         {
-            if (Request.Cookies.TryGetValue(CookieNames.MostRecentOrganization, out var urlSegmentValue) && _siteContext.SiteList.Any(sl => sl.UrlSegmentValue == urlSegmentValue))
+            if (Request.Cookies.TryGetValue(CookieNames.MostRecentOrganization, out var urlSegmentValue) && _siteContext.TenantStore.GetTenants().Any(sl => sl.Value.SiteContext.UrlSegmentValue == urlSegmentValue))
             {
                 if (!string.IsNullOrEmpty(urlSegmentValue)) return Redirect($"/{urlSegmentValue}");
             }
@@ -87,7 +90,7 @@ namespace League.Controllers
             return View(ViewNames.Home.PictureCredits);
         }
 
-        [HttpGet("{organization:ValidOrganizations}/[action]", Name = RouteNames.HomeOrganizationContact)]
+        [HttpGet("{organization:MatchingTenant}/[action]", Name = RouteNames.HomeOrganizationContact)]
         [HttpGet("/[action]", Name = RouteNames.HomeGeneralContact)]
         public IActionResult Contact()
         {
@@ -105,7 +108,7 @@ namespace League.Controllers
             return View(ViewNames.Home.Contact, model);
         }
 
-        [HttpPost("{organization:ValidOrganizations}/[action]", Name = RouteNames.HomeOrganizationContact)]
+        [HttpPost("{organization:MatchingTenant}/[action]", Name = RouteNames.HomeOrganizationContact)]
         [HttpPost("/[action]", Name = RouteNames.HomeGeneralContact)]
         public IActionResult Contact(ContactViewModel model)
         {
@@ -124,7 +127,7 @@ namespace League.Controllers
             return string.IsNullOrEmpty(_siteContext.OrganizationKey) ? RedirectToRoute(RouteNames.HomeGeneralContactConfirmation) : RedirectToRoute(RouteNames.HomeOrganizationContactConfirmation, new { Organization = _siteContext.UrlSegmentValue });
         }
 
-        [HttpGet("{organization:ValidOrganizations}/contact-confirmation", Name = RouteNames.HomeOrganizationContactConfirmation)]
+        [HttpGet("{organization:MatchingTenant}/contact-confirmation", Name = RouteNames.HomeOrganizationContactConfirmation)]
         [HttpGet("/contact-confirmation", Name = RouteNames.HomeGeneralContactConfirmation)]
         public IActionResult ContactConfirmation()
         {

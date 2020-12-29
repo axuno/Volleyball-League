@@ -46,9 +46,12 @@ using League.BackgroundTasks;
 using TournamentManager.Data;
 using League.BackgroundTasks.Email;
 using League.ConfigurationPoco;
+using League.MultiTenancy;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Rewrite;
 using TournamentManager.DI;
+using TournamentManager.MultiTenancy;
+using SiteContext = League.DI.SiteContext;
 
 #endregion
 
@@ -65,17 +68,14 @@ namespace League
         {
             Configuration = configuration;
             WebHostEnvironment = webHostEnvironment;
-            
-            ConfigureLlblgenPro();
         }
 
-        private void ConfigureLlblgenPro()
+        private void ConfigureLlblgenPro(TenantStore tenantStore)
         {
-            var dbContextList = DbContextList.DeserializeFromFile(Path.Combine(WebHostEnvironment.ContentRootPath, Program.ConfigurationFolder, $"DbContextList.{WebHostEnvironment.EnvironmentName}.config"));
-            foreach (var dbContext in dbContextList)
+            foreach (var tenant in tenantStore.GetTenants().Values)
             {
-                var connectionString = Configuration.GetConnectionString(dbContext.ConnectionKey);
-                RuntimeConfiguration.AddConnectionString(dbContext.ConnectionKey, connectionString);
+                var connectionString = Configuration.GetConnectionString(tenant.DbContext.ConnectionKey);
+                RuntimeConfiguration.AddConnectionString(tenant.DbContext.ConnectionKey, connectionString);
                 // Enable low-level (result set) caching when specified in selected queries
                 // The cache of a query can be overwritten using property 'OverwriteIfPresent'
                 CacheController.RegisterCache(connectionString, new ResultsetCache());
@@ -154,7 +154,7 @@ namespace League
                 fo.ValueLengthLimit = int.MaxValue;
                 fo.MultipartBodyLengthLimit = int.MaxValue;
             });
-
+            
             // The default region of this app is "us", unless configured differently
             // The region info is used for country-specific data like phone numbers
             var regionInfo = new RegionInfo(Configuration.GetSection("RegionInfo").Value ?? "us");
@@ -167,20 +167,38 @@ namespace League
             // DO NOT USE `options => options.ResourcesPath = "..."` because then resource files in other locations won't be recognized (e.g. resx in the same folder as the controller class)
             services.AddLocalization();
 
-            var dbContextList = DbContextList.DeserializeFromFile(Path.Combine(WebHostEnvironment.ContentRootPath, Program.ConfigurationFolder, $"DbContextList.{WebHostEnvironment.EnvironmentName}.config"));
-            foreach (var dbContext in dbContextList)
+            #region **** New Multi Tenancy *********************************************
+
+            services.AddSingleton<TournamentManager.MultiTenancy.TenantStore>(sp =>
             {
-                dbContext.ConnectionString = Configuration.GetConnectionString(dbContext.ConnectionKey);
-            }
+                var store = new TournamentManager.MultiTenancy.TenantStore(Configuration, sp.GetRequiredService<ILogger<TournamentManager.MultiTenancy.TenantStore>>())
+                {
+                    GetTenantConfigurationFiles = () =>
+                        Directory.GetFiles(Path.Combine(WebHostEnvironment.ContentRootPath, Program.ConfigurationFolder),
+                            $"Tenant.*.{WebHostEnvironment.EnvironmentName}.config", SearchOption.TopDirectoryOnly)
+                }.LoadTenants();
+                ConfigureLlblgenPro(store);
+                return store;
+            });
             
-            var dbContextResolver = new DbContextResolver(dbContextList);
-            services.AddSingleton<OrganizationContextResolver>(s => new OrganizationContextResolver(dbContextResolver, s.GetRequiredService<ILogger<OrganizationContextResolver>>(), Path.Combine(WebHostEnvironment.ContentRootPath, Program.ConfigurationFolder)));
+            services.AddScoped<MultiTenancy.TenantResolver>();
+            services.AddScoped<TournamentManager.MultiTenancy.ITenantContext>(sp => sp.GetRequiredService<MultiTenancy.TenantResolver>().Resolve());
+            
+            #endregion
 
-            services.AddSingleton<SiteList>(sp =>
-                SiteList.DeserializeFromFile(Path.Combine(WebHostEnvironment.ContentRootPath,
-                    Program.ConfigurationFolder, $"SiteList.{WebHostEnvironment.EnvironmentName}.config")));
+            #region **** Old Multi Tenancy *********************************************
+            
+            services.AddSingleton<OrganizationContextResolver>(sp =>
+            {
+                var tenantStore = sp.GetRequiredService<TournamentManager.MultiTenancy.TenantStore>();
+                return new OrganizationContextResolver(tenantStore,
+                        sp.GetRequiredService<ILogger<OrganizationContextResolver>>());
+            });
+
             services.AddScoped<SiteContext>();
-
+            
+            #endregion
+            
             services.Configure<IISOptions>(options => { });
 
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
@@ -523,7 +541,7 @@ namespace League
 
             services.AddRouting(options =>
                 {
-                    options.ConstraintMap.Add(OrganizationRouteConstraint.Name, typeof(OrganizationRouteConstraint));
+                    options.ConstraintMap.Add(TenantRouteConstraint.Name, typeof(TenantRouteConstraint));
                     options.LowercaseQueryStrings = false; // true does not work for UrlBase64 encoded strings!
                     options.LowercaseUrls = true;
                     options.AppendTrailingSlash = false;
@@ -725,14 +743,14 @@ namespace League
             
             #region *** Initialize ranking tables and charts ***
             
-            var siteList = app.ApplicationServices.GetRequiredService<SiteList>();
+            var tenantStore = app.ApplicationServices.GetRequiredService<TenantStore>();
             var queue = app.ApplicationServices.GetRequiredService<IBackgroundQueue>();
             
-            foreach (var orgSite in siteList.Where(ctx => !string.IsNullOrEmpty(ctx.OrganizationKey)))  
+            foreach (var tenant in tenantStore.GetTenants().Values.Where(tc => !(string.IsNullOrEmpty(tc.Identifier) || tc.IsDefault)))  
             {
-                var siteContext = new SiteContext(orgSite.OrganizationKey, app.ApplicationServices.GetRequiredService<OrganizationContextResolver>(), siteList);
+                var siteContext = new SiteContext(tenant.Identifier, app.ApplicationServices.GetRequiredService<OrganizationContextResolver>(), tenantStore);
                 var rankingUpdateTask = app.ApplicationServices.GetRequiredService<RankingUpdateTask>();
-                rankingUpdateTask.SiteContext = siteContext.Resolve(orgSite.OrganizationKey);
+                rankingUpdateTask.SiteContext = siteContext.Resolve(tenant.Identifier);
                 rankingUpdateTask.TournamentId = siteContext.MatchResultTournamentId;
                 rankingUpdateTask.Timeout = TimeSpan.FromMinutes(5);
                 rankingUpdateTask.EnforceUpdate = false;

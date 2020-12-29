@@ -16,13 +16,13 @@ using TournamentManager.Data;
 
 namespace League.Controllers
 {
-    [Route("{organization:ValidOrganizations}/[controller]")]
+    [Route("{organization:MatchingTenant}/[controller]")]
     public class Map : AbstractController
     {
         private readonly IConfiguration _configuration;
         private readonly ILogger<Map> _logger;
         private readonly SiteContext _siteContext;
-        private readonly AppDb _appDb;
+        private readonly TournamentManager.MultiTenancy.AppDb _appDb;
         private readonly IStringLocalizer<Map> _localizer;
         private readonly GoogleConfiguration _googleConfig;
 

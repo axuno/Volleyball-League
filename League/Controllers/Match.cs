@@ -29,11 +29,11 @@ using TournamentManager.ModelValidators;
 
 namespace League.Controllers
 {
-    [Route("{organization:ValidOrganizations}/[controller]")]
+    [Route("{organization:MatchingTenant}/[controller]")]
     public class Match : AbstractController
     {
         private readonly SiteContext _siteContext;
-        private readonly AppDb _appDb;
+        private readonly TournamentManager.MultiTenancy.AppDb _appDb;
         private readonly IStringLocalizer<Match> _localizer;
         private readonly IAuthorizationService _authorizationService;
         private readonly Axuno.Tools.DateAndTime.TimeZoneConverter _timeZoneConverter;

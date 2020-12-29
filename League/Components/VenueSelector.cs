@@ -15,7 +15,7 @@ namespace League.Components
     public class VenueSelector : ViewComponent
     {
         private readonly SiteContext _siteContext;
-        private readonly AppDb _appDb;
+        private readonly TournamentManager.MultiTenancy.AppDb _appDb;
         private readonly ILogger<VenueSelector> _logger;
 
         public VenueSelector(SiteContext siteContext, ILogger<VenueSelector> logger)

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using NLog;
+using TournamentManager.MultiTenancy;
 
 namespace TournamentManager.Data
 {
@@ -38,7 +39,7 @@ namespace TournamentManager.Data
         /// <summary>
         /// The identifier for this organization.
         /// </summary>
-        public virtual Guid Guid { get; set; }
+        public virtual Guid Guid { get; set; } = new Guid();
 
         /// <summary>
         /// The full name of the organization.

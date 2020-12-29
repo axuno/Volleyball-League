@@ -32,13 +32,13 @@ using TournamentManager.ModelValidators;
 
 namespace League.Controllers
 {
-    [Route("{organization:ValidOrganizations}/team-application")]
+    [Route("{organization:MatchingTenant}/team-application")]
     [ControllerAttributes.TeamApplicationAllowed] // if not allowed, all controller actions are redirected to action "list"
     [Authorize]
     public class TeamApplication : AbstractController
     {
         private readonly SiteContext _siteContext;
-        private readonly AppDb _appDb;
+        private readonly TournamentManager.MultiTenancy.AppDb _appDb;
         private readonly IStringLocalizer<TeamApplication> _localizer;
         private readonly IAuthorizationService _authorizationService;
         private readonly ILogger<TeamApplication> _logger;

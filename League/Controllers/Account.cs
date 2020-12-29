@@ -21,7 +21,7 @@ using TournamentManager.ModelValidators;
 namespace League.Controllers
 {
     [Authorize]
-    [Route("{organization:ValidOrganizations}/[controller]")]
+    [Route("{organization:MatchingTenant}/[controller]")]
     public class Account : AbstractController
     {
         #region *** Private Enums ***

@@ -25,9 +25,9 @@ namespace TournamentManager.Data
     public class MatchRepository
     {
         private static readonly ILogger _logger = AppLogging.CreateLogger<MatchRepository>();
-        private readonly IDbContext _dbContext;
+        private readonly MultiTenancy.IDbContext _dbContext;
 
-        public MatchRepository(IDbContext dbContext)
+        public MatchRepository(MultiTenancy.IDbContext dbContext)
         {
             _dbContext = dbContext;
         }

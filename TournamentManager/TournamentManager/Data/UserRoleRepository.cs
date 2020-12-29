@@ -17,9 +17,9 @@ namespace TournamentManager.Data
     public class UserRoleRepository
     {
         private static readonly ILogger _logger = AppLogging.CreateLogger<UserRoleRepository>();
-        private readonly IDbContext _dbContext;
+        private readonly MultiTenancy.IDbContext _dbContext;
 
-        public UserRoleRepository(IDbContext dbContext)
+        public UserRoleRepository(MultiTenancy.IDbContext dbContext)
         {
             _dbContext = dbContext;
         }

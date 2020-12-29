@@ -11,7 +11,7 @@ namespace League.Controllers
     /// <summary>
     /// This controller is able to return any organization-specific views from folder ~/Organization/
     /// </summary>
-    [Route("{organization:ValidOrganizations}")]
+    [Route("{organization:MatchingTenant}")]
     public class Organization : AbstractController
     {
         // Note:

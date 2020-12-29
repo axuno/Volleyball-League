@@ -23,8 +23,8 @@ namespace TournamentManager.Data
 	public class AvailableMatchDateRepository
 	{
         private static readonly ILogger _logger = AppLogging.CreateLogger<AvailableMatchDateRepository>();
-        private readonly IDbContext _dbContext;
-	    public AvailableMatchDateRepository(IDbContext dbContext)
+        private readonly MultiTenancy.IDbContext _dbContext;
+	    public AvailableMatchDateRepository(MultiTenancy.IDbContext dbContext)
 	    {
 	        _dbContext = dbContext;
 	    }

@@ -23,9 +23,9 @@ namespace TournamentManager.Data
     public class UserRepository
     {
         private static readonly ILogger _logger = AppLogging.CreateLogger<UserRepository>();
-        private readonly IDbContext _dbContext;
+        private readonly MultiTenancy.IDbContext _dbContext;
 
-        public UserRepository(IDbContext dbContext)
+        public UserRepository(MultiTenancy.IDbContext dbContext)
         {
             _dbContext = dbContext;
         }

@@ -20,7 +20,7 @@ namespace League.Identity
     /// </summary>
     public class UserStore : IUserStore<ApplicationUser>, IUserEmailStore<ApplicationUser>, IUserPhoneNumberStore<ApplicationUser>, IUserPasswordStore<ApplicationUser>, IUserRoleStore<ApplicationUser>, IUserClaimStore<ApplicationUser>, IUserSecurityStampStore<ApplicationUser>, IUserLoginStore<ApplicationUser>, IUserAuthenticationTokenStore<ApplicationUser>, IUserLockoutStore<ApplicationUser>
     {
-        private readonly AppDb _appDb;
+        private readonly TournamentManager.MultiTenancy.AppDb _appDb;
         private readonly ILogger<UserStore> _logger;
         private readonly ILookupNormalizer _keyNormalizer;
         private readonly IdentityErrorDescriber _identityErrorDescriber;

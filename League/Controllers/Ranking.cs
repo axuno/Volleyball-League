@@ -25,12 +25,12 @@ namespace League.Controllers
     /// <summary>
     /// The <see cref="Controller"/> for ranking tables.
     /// </summary>
-    [Route("{organization:ValidOrganizations}/[controller]")]
+    [Route("{organization:MatchingTenant}/[controller]")]
     public class Ranking : AbstractController
     {
         private readonly SiteContext _siteContext;
         private readonly IWebHostEnvironment _webHostEnvironment;
-        private readonly AppDb _appDb;
+        private readonly TournamentManager.MultiTenancy.AppDb _appDb;
         private readonly ILogger<Ranking> _logger;
         private readonly IMemoryCache _memoryCache;
 

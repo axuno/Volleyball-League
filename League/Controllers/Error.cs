@@ -58,7 +58,7 @@ namespace League.Controllers
             return View(ViewNames.Error.Index, viewModel);
         }
 
-        [Route("{organization:ValidOrganizations}/error/access-denied")]
+        [Route("{organization:MatchingTenant}/error/access-denied")]
         public IActionResult AccessDenied(string returnUrl)
         {
             ViewData["ReturnUrl"] = returnUrl;

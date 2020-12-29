@@ -21,9 +21,9 @@ namespace TournamentManager.Data
 	public class RoundRepository
 	{
         private static readonly ILogger _logger = AppLogging.CreateLogger<RoundRepository>();
-        private readonly IDbContext _dbContext;
+        private readonly MultiTenancy.IDbContext _dbContext;
 
-	    public RoundRepository(IDbContext dbContext)
+	    public RoundRepository(MultiTenancy.IDbContext dbContext)
 	    {
 	        _dbContext = dbContext;
 	    }

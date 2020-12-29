@@ -4,6 +4,8 @@ using League.Views;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Extensions;
 using TournamentManager.Data;
+using TournamentManager.MultiTenancy;
+using OrganizationContext = TournamentManager.Data.OrganizationContext;
 
 namespace League.DI
 {
@@ -11,7 +13,7 @@ namespace League.DI
     /// Provides organization-specific, site-specific data, and organization-specific access to the repositories.
     /// Content is available per HttpRequest with dependency injection.
     /// </summary>
-    public class SiteContext : OrganizationContext,  ISite
+    public class SiteContext : OrganizationContext, ISite
     {
         #region ** CTOR **
         /// <summary>
@@ -19,9 +21,9 @@ namespace League.DI
         /// </summary>
         /// <param name="httpContextAccessor"></param>
         /// <param name="organizationContextResolver"></param>
-        /// <param name="siteList"></param>
-        public SiteContext(IHttpContextAccessor httpContextAccessor, OrganizationContextResolver organizationContextResolver, SiteList siteList) :
-            this(httpContextAccessor?.HttpContext, organizationContextResolver, siteList)
+        /// <param name="tenantStore"></param>
+        public SiteContext(IHttpContextAccessor httpContextAccessor, OrganizationContextResolver organizationContextResolver, TenantStore tenantStore) :
+            this(httpContextAccessor?.HttpContext, organizationContextResolver, tenantStore)
         { }
 
         /// <summary>
@@ -29,23 +31,21 @@ namespace League.DI
         /// </summary>
         /// <param name="httpContext"></param>
         /// <param name="organizationContextResolver"></param>
-        /// <param name="siteList"></param>
+        /// <param name="tenantStore"></param>
         public SiteContext(HttpContext httpContext, OrganizationContextResolver organizationContextResolver,
-            SiteList siteList) :
-            this(ResolveOrganizationKey(httpContext, siteList), organizationContextResolver, siteList)
-        {
-            SetMostRecentOrganizationCookie(httpContext, UrlSegmentValue);
-        }
+            TenantStore tenantStore) :
+            this(ResolveOrganizationKey(httpContext, tenantStore), organizationContextResolver, tenantStore)
+        { }
 
         /// <summary>
         /// CTOR finally called by injection CTOR. Good to be used instantiating with DI.
         /// </summary>
         /// <param name="organizationKey"></param>
         /// <param name="organizationContextResolver"></param>
-        /// <param name="siteList"></param>
-        public SiteContext(string organizationKey, OrganizationContextResolver organizationContextResolver, SiteList siteList)
+        /// <param name="tenantStore"></param>
+        public SiteContext(string organizationKey, OrganizationContextResolver organizationContextResolver, TenantStore tenantStore)
         {
-            SiteList = siteList;
+            TenantStore = tenantStore;
             OrganizationContextResolver = organizationContextResolver;
             // copies the resolved OrganizationContext properties to this siteContext
             Resolve(this, organizationKey);
@@ -65,9 +65,9 @@ namespace League.DI
         /// Resolves the organization key from the <see cref="HttpRequest"/>.
         /// </summary>
         /// <param name="httpContext"></param>
-        /// <param name="siteList"><see cref="SiteList"/></param>
-        /// <returns>Returns the organization key, if found in the <see cref="SiteList"/>, else null.</returns>
-        public static string ResolveOrganizationKey(HttpContext httpContext, SiteList siteList)
+        /// <param name="tenantStore"><see cref="TournamentManager.MultiTenancy.TenantStore"/></param>
+        /// <returns>Returns the organization key, if found in the <see cref="TenantStore"/>, else null.</returns>
+        public static string ResolveOrganizationKey(HttpContext httpContext, TenantStore tenantStore)
         {
             if (httpContext == null) return null;
 
@@ -80,20 +80,20 @@ namespace League.DI
             var uri = new Uri(request.GetDisplayUrl());
             // used if site is identified by the first segment of the URI
             var siteSegment = uri.Segments.Length > 1 ? uri.Segments[1].TrimEnd('/') : string.Empty;
-            foreach (var site in siteList)
+            foreach (var tenant in tenantStore.GetTenants().Values)
             {
-                if (!string.IsNullOrEmpty(site.HostName))
+                if (!string.IsNullOrEmpty(tenant.SiteContext.HostName))
                 {
-                    if (site.HostName == host && (string.IsNullOrEmpty(site.UrlSegmentValue)))
+                    if (tenant.SiteContext.HostName.Equals(host, StringComparison.InvariantCultureIgnoreCase) && (string.IsNullOrEmpty(tenant.SiteContext.UrlSegmentValue)))
                     {
-                        return site.OrganizationKey;
+                        return tenant.Identifier;
                     }
                 }
                 else
                 {
-                    if (site.UrlSegmentValue == siteSegment)
+                    if (tenant.SiteContext.UrlSegmentValue.Equals(siteSegment, StringComparison.InvariantCultureIgnoreCase))
                     {
-                        return site.OrganizationKey;
+                        return tenant.Identifier;
                     }
                 }
             }
@@ -101,57 +101,37 @@ namespace League.DI
             return null;
         }
 
-        private static void SetMostRecentOrganizationCookie(HttpContext httpContext, string urlSegmentValue)
-        {
-            if (httpContext == null || urlSegmentValue == null) return;
-            
-            if (urlSegmentValue == string.Empty) httpContext.Response.Cookies.Delete(CookieNames.MostRecentOrganization);
-
-            httpContext.Response.Cookies.Append(
-                CookieNames.MostRecentOrganization,
-                urlSegmentValue,
-                new CookieOptions()
-                {
-                    Path = "/",
-                    HttpOnly = false,
-                    Secure = false,
-                    Expires = DateTimeOffset.Now.AddYears(1),
-                    IsEssential = true
-                }
-            );
-        }
-
         /// <summary>
         /// Resolves the <see cref="SiteContext"/> for the given organization key.
         /// </summary>
-        /// <param name="organizationKey"></param>
+        /// <param name="tenantIdentifier"></param>
         /// <returns>Returns the <see cref="SiteContext"/> if the organization key can be resolved, else null.</returns>
-        public SiteContext Resolve(string organizationKey)
+        public SiteContext Resolve(string tenantIdentifier)
         {
-            var osc = new SiteContext(organizationKey, OrganizationContextResolver, SiteList);
-            return Resolve(osc, organizationKey);
+            var osc = new SiteContext(tenantIdentifier, OrganizationContextResolver, TenantStore);
+            return Resolve(osc, tenantIdentifier);
         }
         
-        private SiteContext Resolve(SiteContext siteContext, string organizationKey)
+        private SiteContext Resolve(SiteContext siteContext, string tenantIdentifier)
         {
-            var siteSettings = SiteList.FirstOrDefault(sl => sl.OrganizationKey == (organizationKey ?? string.Empty));
-            if (siteSettings == null) return null;
+            var tenantContext = TenantStore.GetTenantByIdentifier(tenantIdentifier ?? string.Empty);
+            if (tenantContext == null) return null;
 
-            OrganizationContextResolver.CopyContextTo(siteContext, organizationKey); // shallow-copy all OrganizationContext properties
-            siteContext.HostName = siteSettings.HostName;
-            siteContext.UrlSegmentValue = siteSettings.UrlSegmentValue;
-            siteContext.FolderName = siteSettings.FolderName;
-            siteContext.IdentityCookieName = siteSettings.IdentityCookieName;
-            siteContext.SessionName = siteSettings.SessionName;
-            siteContext.HideInMenu = siteSettings.HideInMenu;
+            OrganizationContextResolver.CopyContextTo(siteContext, tenantIdentifier); // shallow-copy all OrganizationContext properties
+            siteContext.HostName = tenantContext.SiteContext.HostName;
+            siteContext.UrlSegmentValue = tenantContext.SiteContext.UrlSegmentValue;
+            siteContext.FolderName = tenantContext.SiteContext.FolderName;
+            siteContext.IdentityCookieName = tenantContext.SiteContext.IdentityCookieName;
+            siteContext.SessionName = tenantContext.SiteContext.SessionName;
+            siteContext.HideInMenu = tenantContext.SiteContext.HideInMenu;
 
             return siteContext;
         }
 
         /// <summary>
-        /// Gets the <see cref="SiteList"/>.
+        /// Gets the <see cref="TenantStore"/>.
         /// </summary>
-        public SiteList SiteList { get; private set; }
+        public TenantStore TenantStore { get; private set; }
 
         /// <summary>
         /// Gets the <see cref="OrganizationContextResolver"/>.

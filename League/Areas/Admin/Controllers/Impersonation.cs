@@ -26,7 +26,7 @@ using TournamentManager.Data;
 namespace League.Areas.Admin.Controllers
 {
     [Area("Admin")]
-    [Route("{organization:ValidOrganizations}/[area]/[controller]")]
+    [Route("{organization:MatchingTenant}/[area]/[controller]")]
     public class Impersonation : AbstractController
     {
         private readonly ILogger<Language> _logger;

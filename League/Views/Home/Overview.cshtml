@@ -1,17 +1,17 @@
-﻿@using League.DI
-@using League.Helpers
+﻿@using League.Helpers
 @using League.TagHelpers
 @using Microsoft.AspNetCore.Mvc.Localization
 @using TournamentManager.Data
+@using TournamentManager.MultiTenancy
 @inject IViewLocalizer Localizer
-@inject SiteList SiteList
+@inject TenantStore TenantStore
 @inject OrganizationContextResolver OrganizationContextResolver
 @{
     ViewData.Title(Localizer["Leagues"].Value);
     ViewData.Description(Localizer["Leagues using volleyball-liga.de"].Value);
-    var siteContextList = SiteList
-        .Where(ctx => !string.IsNullOrEmpty(ctx.OrganizationKey) && !ctx.HideInMenu)
-        .Select(orgSite => new SiteContext(orgSite.OrganizationKey, OrganizationContextResolver, SiteList))
+    var tenants = TenantStore.GetTenants().Values
+        .Where(tc => !string.IsNullOrEmpty(tc.Identifier) && !tc.SiteContext.HideInMenu)
+        .Select(tc => new League.DI.SiteContext(tc.Identifier, OrganizationContextResolver, TenantStore))
         .ToList();
 }
 <div>
@@ -20,7 +20,7 @@
     <hr />
 </div>
 <div class="mb-0 pb-1">
-        @foreach (var siteContext in siteContextList)
+        @foreach (var siteContext in tenants)
         {
             <div class="mb-4 p-2 border border-dark rounded league-entry">
                 <environment include="Production">

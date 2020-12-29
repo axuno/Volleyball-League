@@ -20,7 +20,7 @@ using TournamentManager.DAL.EntityClasses;
 
 namespace League.Controllers
 {
-    [Route("{organization:ValidOrganizations}/[controller]")]
+    [Route("{organization:MatchingTenant}/[controller]")]
     public class Role : AbstractController
     {
         private readonly SiteContext _siteContext;

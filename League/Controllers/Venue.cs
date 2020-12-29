@@ -28,11 +28,11 @@ using TournamentManager.ModelValidators;
 
 namespace League.Controllers
 {
-    [Route("{organization:ValidOrganizations}/[controller]")]
+    [Route("{organization:MatchingTenant}/[controller]")]
     public class Venue : AbstractController
     {
         private readonly SiteContext _siteContext;
-        private readonly AppDb _appDb;
+        private readonly TournamentManager.MultiTenancy.AppDb _appDb;
         private readonly IAuthorizationService _authorizationService;
         private readonly IStringLocalizer<Venue> _localizer;
         private readonly RegionInfo _regionInfo;
