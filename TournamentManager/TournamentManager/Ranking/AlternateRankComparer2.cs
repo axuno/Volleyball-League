@@ -25,7 +25,7 @@ namespace TournamentManager.Ranking
 
 		public DateTime UpperDateLimit { get; set; }
 
-		public Ranking Ranking { get; set; }
+		public Ranking? Ranking { get; set; }
 
 		public int Compare(Rank x, Rank y)
 		{

@@ -23,10 +23,12 @@ namespace TournamentManager.Ranking
 
         public DateTime UpperDateLimit { get; set; }
 
-        public Ranking Ranking { get; set; }
+        public Ranking? Ranking { get; set; }
 
         public int Compare(Rank x, Rank y)
 		{
+            if (Ranking is null) throw new NullReferenceException("Ranking property must not be null");
+            
             if (x == null || y == null) throw new NullReferenceException($"{nameof(Rank)} arguments must not be null");
 
             // sort down teams with no matches played
