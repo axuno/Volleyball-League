@@ -16,17 +16,17 @@ namespace TournamentManager.Tests.TestComponents
             return orgCtxMock;
         }
 
-        public static Mock<AppDb> GetAppDbMock()
+        public static Mock<MultiTenancy.AppDb> GetAppDbMock()
         {
             // recursive mock:
-            var dbAcc = Mock.Of<IDbContext>();
-            var appDbMock = new Mock<AppDb>(dbAcc) {DefaultValue = DefaultValue.Mock};
+            var dbAcc = Mock.Of<MultiTenancy.IDbContext>();
+            var appDbMock = new Mock<MultiTenancy.AppDb>(dbAcc) {DefaultValue = DefaultValue.Mock};
             return appDbMock;
         }
 
         public static Mock<T> GetRepo<T>() where T : class
         {
-            var dbAcc = Mock.Of<IDbContext>();
+            var dbAcc = Mock.Of<MultiTenancy.IDbContext>();
             var repoMock = new Mock<T>(dbAcc);
             return repoMock;
         }

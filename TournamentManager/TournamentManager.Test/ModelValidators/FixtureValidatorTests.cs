@@ -19,7 +19,7 @@ namespace TournamentManager.Tests.ModelValidators
     public class FixtureValidatorTests
     {
         private (OrganizationContext OrganizationContext, Axuno.Tools.DateAndTime.TimeZoneConverter TimeZoneConverter, PlannedMatchRow PlannedMatch) _data;
-        private readonly AppDb _appDb;
+        private readonly MultiTenancy.AppDb _appDb;
 
         private const string ExcludedDateReason = "Unit-Test";
 
@@ -54,11 +54,14 @@ namespace TournamentManager.Tests.ModelValidators
                     Task.FromResult(match.Id % 2 == 0 || !match.PlannedStart.HasValue
                                     ? new long[] {} 
                                     : new long[] { match.HomeTeamId }));
-            matchRepoMock.Setup(rep =>
-                    rep.GetExcludedMatchDateAsync(It.IsAny<MatchEntity>(), It.IsAny<bool>(), It.IsAny<long>(),
+            appDbMock.Setup(a => a.MatchRepository).Returns(matchRepoMock.Object);
+            
+            var excludedMatchDateRepoMock = TestMocks.GetRepo<ExcludedMatchDateRepository>();
+            excludedMatchDateRepoMock.Setup(rep =>
+                    rep.GetExcludedMatchDateAsync(It.IsAny<MatchEntity>(), It.IsAny<long>(),
                         It.IsAny<CancellationToken>()))
                 .Returns(
-                    (MatchEntity match, bool onlyDatePart, long tournamentId, CancellationToken cancellationToken) =>
+                    (MatchEntity match, long tournamentId, CancellationToken cancellationToken) =>
                         Task.FromResult(match.Id % 2 == 0 || !match.PlannedStart.HasValue
                             ? null
                             : new ExcludeMatchDateEntity
@@ -66,7 +69,7 @@ namespace TournamentManager.Tests.ModelValidators
                                 Id = 1, TournamentId = tournamentId, DateFrom = match.PlannedStart.Value.AddDays(-1),
                                 DateTo = match.PlannedStart.Value.AddDays(1), Reason = ExcludedDateReason
                             }));
-            appDbMock.Setup(a => a.MatchRepository).Returns(matchRepoMock.Object);
+            appDbMock.Setup(a => a.ExcludedMatchDateRepository).Returns(excludedMatchDateRepoMock.Object);
 
             var teamRepoMock = TestMocks.GetRepo<TeamRepository>();
             teamRepoMock

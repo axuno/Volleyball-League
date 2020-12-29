@@ -25,6 +25,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Axuno.Scripting", "Axuno.Sc
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TournamentManager.Play", "..\TournamentManager.Play\TournamentManager.Play.csproj", "{0B6187F0-19D5-4C46-906A-8A20E69F12FE}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TournamentManager.Tests", "TournamentManager\TournamentManager.Test\TournamentManager.Tests.csproj", "{30D5235D-766F-463C-BCE4-F49321EC22AB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -75,6 +77,10 @@ Global
 		{0B6187F0-19D5-4C46-906A-8A20E69F12FE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0B6187F0-19D5-4C46-906A-8A20E69F12FE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0B6187F0-19D5-4C46-906A-8A20E69F12FE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{30D5235D-766F-463C-BCE4-F49321EC22AB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{30D5235D-766F-463C-BCE4-F49321EC22AB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{30D5235D-766F-463C-BCE4-F49321EC22AB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{30D5235D-766F-463C-BCE4-F49321EC22AB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

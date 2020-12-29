@@ -9,7 +9,7 @@ namespace TournamentManager.Tests.TestComponents
 {
     public static class MockExtensions
     {
-        public static IReturnsResult<OrganizationContext> SetupAppDb(this Mock<OrganizationContext> orgCtxMock, Mock<AppDb> appDbMock)
+        public static IReturnsResult<OrganizationContext> SetupAppDb(this Mock<OrganizationContext> orgCtxMock, Mock<MultiTenancy.AppDb> appDbMock)
         {
             return orgCtxMock.Setup(o => o.AppDb).Returns(appDbMock.Object);
         }

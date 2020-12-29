@@ -17,7 +17,7 @@ namespace TournamentManager.Tests.ModelValidators
     public class TeamValidatorTests
     {
         private OrganizationContext _organizationContext;
-        private readonly AppDb _appDb;
+        private readonly MultiTenancy.AppDb _appDb;
 
         public TeamValidatorTests()
         {

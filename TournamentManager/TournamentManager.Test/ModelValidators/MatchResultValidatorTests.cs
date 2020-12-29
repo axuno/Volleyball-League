@@ -19,7 +19,7 @@ namespace TournamentManager.Tests.ModelValidators
     public class MatchResultValidatorTests
     {
         private (OrganizationContext OrganizationContext, Axuno.Tools.DateAndTime.TimeZoneConverter TimeZoneConverter, (MatchRuleEntity matchRule, SetRuleEntity setRule)) _data;
-        private readonly AppDb _appDb;
+        private readonly MultiTenancy.AppDb _appDb;
         private readonly ILogger _logger = new NullLogger<MatchResultValidatorTests>();
 
         public MatchResultValidatorTests()

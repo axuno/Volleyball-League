@@ -188,7 +188,9 @@ namespace League
 
             #region **** Obsolete Multi Tenancy (bridge to new Multi Tenancy) **********
             
+#pragma warning disable 618
             services.AddSingleton<OrganizationContextResolver>(sp =>
+
             {
                 var tenantStore = sp.GetRequiredService<TournamentManager.MultiTenancy.TenantStore>();
                 return new OrganizationContextResolver(tenantStore,
@@ -196,7 +198,7 @@ namespace League
             });
 
             services.AddScoped<SiteContext>();
-            
+#pragma warning restore 618           
             #endregion
             
             services.Configure<IISOptions>(options => { });
