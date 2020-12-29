@@ -22,33 +22,32 @@ namespace League.Test
     public class UnitTestHelpers
     {
         private ServiceProvider _serviceProvider;
-        private readonly SiteContext _siteContext;
+        private readonly TenantContext _tenantContext;
         private string _configPath;
 
         public UnitTestHelpers()
         {
             _configPath = DirectoryLocator.GetTargetConfigurationPath();
+            var msSqlPath = Path.Combine(DirectoryLocator.GetTargetProjectPath(), @"..\..\MsSqlDb");
+            _tenantContext = new TenantContext();
+            _tenantContext.DbContext.Catalog = "LeagueIntegration";
+            _tenantContext.DbContext.Schema = "dbo";
+            _tenantContext.DbContext.ConnectionKey = "dummy";
+            _tenantContext.DbContext.ConnectionString =
+                $"Server=(LocalDB)\\MSSQLLocalDB;AttachDbFilename={msSqlPath}\\LeagueIntegrationTest.mdf;Database={_tenantContext.DbContext.Catalog};Integrated Security=true";
             
-            var store = new TournamentManager.MultiTenancy.TenantStore(new ConfigurationSection(null, null), new NullLogger<TenantStore>())
-            {
-                GetTenantConfigurationFiles = () =>
-                    Directory.GetFiles(_configPath,
-                        $"Tenant.*.Development.config", SearchOption.TopDirectoryOnly)
-            }.LoadTenants();
-           
-
-            foreach (var tenant in store.GetTenants().Values)
-            {
-                tenant.DbContext.Catalog = "LeagueIntegration";
-                var msSqlPath = Path.Combine(DirectoryLocator.GetTargetProjectPath(), @"..\..\MsSqlDb");
-                tenant.DbContext.ConnectionString =
-                    $"Server=(LocalDB)\\MSSQLLocalDB;AttachDbFilename={msSqlPath}\\LeagueIntegrationTest.mdf;Database={tenant.DbContext.Catalog};Integrated Security=true";
-            }
+            // Make sure we can connect to the database
+            using (var connection = new Microsoft.Data.SqlClient.SqlConnection(_tenantContext.DbContext.ConnectionString))
+                try
+                {
+                    connection.Open();
+                }
+                finally
+                {
+                    connection.Close();
+                }
             
-
             InitializeLlBlGenPro();
-
-            _siteContext = new SiteContext(dbContextResolver.Resolve("dbo").OrganizationKey, new OrganizationContextResolver(dbContextResolver, new NullLogger<OrganizationContextResolver>(), _configPath), orgSiteList);
         }
 
         private void InitializeLlBlGenPro()
@@ -65,19 +64,19 @@ namespace League.Test
             TournamentManager.AppLogging.LoggerFactory = ServiceProvider.GetRequiredService<ILoggerFactory>();
         }
 
-        public SiteContext GetsiteContext()
+        public TenantContext GetTenantContext()
         {
-            return _siteContext;
+            return _tenantContext;
         }
 
         public UserStore GetUserStore()
         {
-            return new UserStore(_siteContext, new NullLogger<UserStore>(), new UpperInvariantLookupNormalizer(), new Mock<MultiLanguageIdentityErrorDescriber>(null).Object);
+            return new UserStore(_tenantContext, new NullLogger<UserStore>(), new UpperInvariantLookupNormalizer(), new Mock<MultiLanguageIdentityErrorDescriber>(null).Object);
         }
 
         public RoleStore GetRoleStore()
         {
-            return new RoleStore(_siteContext, new NullLogger<UserStore>(), new UpperInvariantLookupNormalizer(), new Mock<MultiLanguageIdentityErrorDescriber>(null).Object);
+            return new RoleStore(_tenantContext, new NullLogger<UserStore>(), new UpperInvariantLookupNormalizer(), new Mock<MultiLanguageIdentityErrorDescriber>(null).Object);
         }
 
         public ServiceProvider ServiceProvider

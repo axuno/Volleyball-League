@@ -23,15 +23,13 @@ namespace League.Test.Identity
     public class UserClaimStoreTests
     {
         private readonly UnitTestHelpers _uth = new UnitTestHelpers();
-        private readonly League.DI.SiteContext _orgCtx;
         private readonly AppDb _appDb; private ApplicationUser _user = null;
         private readonly UserStore _store;
         private TeamEntity _team = null;
 
         public UserClaimStoreTests()
         {
-            _orgCtx = _uth.GetsiteContext();
-            _appDb = _orgCtx.AppDb;
+            _appDb = _uth.GetTenantContext().DbContext.AppDb;
             _store = _uth.GetUserStore();
         }
 

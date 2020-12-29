@@ -22,15 +22,13 @@ namespace League.Test.Identity
     public class UserLoginStoreTests
     {
         private readonly UnitTestHelpers _uth = new UnitTestHelpers();
-        private readonly League.DI.SiteContext _orgCtx;
         private readonly AppDb _appDb;
         private readonly UserStore _store;
         private readonly RoleStore _roleStore;
         
         public UserLoginStoreTests()
         {
-            _orgCtx = _uth.GetsiteContext();
-            _appDb = _orgCtx.AppDb;
+            _appDb = _uth.GetTenantContext().DbContext.AppDb;
             _store = _uth.GetUserStore();
             _roleStore = _uth.GetRoleStore();
         }

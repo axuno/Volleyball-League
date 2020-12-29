@@ -12,6 +12,7 @@ using Microsoft.Extensions.Logging;
 using SD.LLBLGen.Pro.ORMSupportClasses;
 using TournamentManager.DAL.EntityClasses;
 using TournamentManager.DAL.HelperClasses;
+using TournamentManager.MultiTenancy;
 
 namespace League.Identity
 {
@@ -25,9 +26,9 @@ namespace League.Identity
         private readonly ILookupNormalizer _keyNormalizer;
         private readonly IdentityErrorDescriber _identityErrorDescriber;
 
-        public UserStore(SiteContext siteContext, ILogger<UserStore> logger, ILookupNormalizer keyNormalizer, IdentityErrorDescriber identityErrorDescriber)
+        public UserStore(ITenantContext tenantContext, ILogger<UserStore> logger, ILookupNormalizer keyNormalizer, IdentityErrorDescriber identityErrorDescriber)
         {
-            _appDb = siteContext.AppDb;
+            _appDb = tenantContext.DbContext.AppDb;
             _logger = logger;
             _keyNormalizer = keyNormalizer;
             _identityErrorDescriber = identityErrorDescriber as MultiLanguageIdentityErrorDescriber;
