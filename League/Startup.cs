@@ -380,7 +380,7 @@ namespace League
                 {
                     var returnUrl = "?ReturnUrl=" + context.Request.Path + context.Request.QueryString;
                     // fires with [Authorize] attribute, when the user is authenticated, but does not have enough privileges
-                    var tenantContext = context.HttpContext.RequestServices.GetRequiredService<TenantContext>();
+                    var tenantContext = context.HttpContext.RequestServices.GetRequiredService<ITenantContext>();
                     // other context properties can be set, but are not considered in the redirect, though
                     context.Response.Redirect(new PathString($"/{tenantContext.SiteContext.UrlSegmentValue}").Add(context.Options.AccessDeniedPath) + returnUrl);
                     return Task.CompletedTask;
@@ -389,20 +389,20 @@ namespace League
                 {
                     var returnUrl = "?ReturnUrl=" + context.Request.Path + context.Request.QueryString;
                     // fires with [Authorize] attribute, when the user is not authenticated
-                    var tenantContext = context.HttpContext.RequestServices.GetRequiredService<TenantContext>();
+                    var tenantContext = context.HttpContext.RequestServices.GetRequiredService<ITenantContext>();
                     // other context properties can be set, but are not considered in the redirect, though
                     context.Response.Redirect(new PathString($"/{tenantContext.SiteContext.UrlSegmentValue}").Add(context.Options.LoginPath) + returnUrl);
                     return Task.CompletedTask;
                 };
                 options.Events.OnRedirectToLogout = context =>
                 {
-                    var tenantContext = context.HttpContext.RequestServices.GetRequiredService<TenantContext>();
+                    var tenantContext = context.HttpContext.RequestServices.GetRequiredService<ITenantContext>();
                     context.Response.Redirect(new PathString($"/{tenantContext.SiteContext.UrlSegmentValue}").Add(context.Options.LogoutPath));
                     return Task.CompletedTask;
                 };
                 options.Events.OnSignedIn += async context =>
                 {
-                    var tenantContext = context.HttpContext.RequestServices.GetRequiredService<TenantContext>();
+                    var tenantContext = context.HttpContext.RequestServices.GetRequiredService<ITenantContext>();
                     var success = await tenantContext.DbContext.AppDb.UserRepository.SetLastLoginDateAsync(context.Principal.Identity.Name, null, CancellationToken.None);
                 };
             });
@@ -426,7 +426,7 @@ namespace League
                 {
                     var returnUrl = "?ReturnUrl=" + context.Request.Path + context.Request.QueryString;
                     // fires with [Authorize] attribute, when the user is authenticated, but does not have enough privileges
-                    var tenantContext = context.HttpContext.RequestServices.GetRequiredService<TenantContext>();
+                    var tenantContext = context.HttpContext.RequestServices.GetRequiredService<ITenantContext>();
                     // other context properties can be set, but are not considered in the redirect, though
                     context.Response.Redirect(new PathString($"/{tenantContext.SiteContext.UrlSegmentValue}").Add(context.Options.AccessDeniedPath) + returnUrl);
                     return Task.CompletedTask;
@@ -435,14 +435,14 @@ namespace League
                 {
                     var returnUrl = "?ReturnUrl=" + context.Request.Path + context.Request.QueryString;
                     // fires with [Authorize] attribute, when the user is not authenticated
-                    var tenantContext = context.HttpContext.RequestServices.GetRequiredService<TenantContext>();
+                    var tenantContext = context.HttpContext.RequestServices.GetRequiredService<ITenantContext>();
                     // other context properties can be set, but are not considered in the redirect, though
                     context.Response.Redirect(new PathString($"/{tenantContext.SiteContext.UrlSegmentValue}").Add(context.Options.LoginPath) + returnUrl);
                     return Task.CompletedTask;
                 };
                 options.Events.OnRedirectToLogout = context =>
                 {
-                    var tenantContext = context.HttpContext.RequestServices.GetRequiredService<TenantContext>();
+                    var tenantContext = context.HttpContext.RequestServices.GetRequiredService<ITenantContext>();
                     context.Response.Redirect(new PathString($"/{tenantContext.SiteContext.UrlSegmentValue}").Add(context.Options.LogoutPath));
                     return Task.CompletedTask;
                 };

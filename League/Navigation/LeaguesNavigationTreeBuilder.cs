@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
 using cloudscribe.Web.Navigation;
-using League.DI;
 using Microsoft.Extensions.Localization;
+using TournamentManager.MultiTenancy;
 
 namespace League.Navigation
 {
@@ -10,12 +10,12 @@ namespace League.Navigation
     /// </summary>
     public class LeaguesNavigationTreeBuilder : INavigationTreeBuilder
     {
-        private readonly SiteContext _siteContext;
+        private readonly TenantStore _tenantStore;
         private readonly IStringLocalizer<NavigationResource> _localizer;
 
-        public LeaguesNavigationTreeBuilder(SiteContext siteContext, IStringLocalizer<NavigationResource> localizer)
+        public LeaguesNavigationTreeBuilder(TenantStore tenantStore, IStringLocalizer<NavigationResource> localizer)
         {
-            _siteContext = siteContext;
+            _tenantStore = tenantStore;
             _localizer = localizer;
         }
         public string Name => string.Join(".", nameof(League), nameof(Navigation), nameof(LeaguesNavigationTreeBuilder));
@@ -25,15 +25,14 @@ namespace League.Navigation
             var topNode = new NavigationNode { Text = _localizer["League"], Url = "/#"};
             var treeNode = new TreeNode<NavigationNode>(topNode);
             treeNode.AddChild(new NavigationNode { Text = _localizer["Home"], Url = "/welcome", Key = "LeagueWelcome" });
-            foreach (var tenant in _siteContext.TenantStore.GetTenants().Values)
+            foreach (var tenant in _tenantStore.GetTenants().Values)
             {
-                var siteContext = _siteContext.Resolve(tenant.Identifier);
-                if (!string.IsNullOrEmpty(siteContext.OrganizationKey) && !siteContext.HideInMenu)
+                if (!string.IsNullOrEmpty(tenant.Identifier) && !tenant.SiteContext.HideInMenu)
                 {
                     treeNode.AddChild(
                         new NavigationNode
                         {
-                            Text = siteContext.ShortName,
+                            Text = tenant.OrganizationContext.ShortName,
                             Url = "/" + tenant.SiteContext.UrlSegmentValue,
                             Key = "UrlSegment_" + tenant.SiteContext.UrlSegmentValue,
                             PreservedRouteParameters = "organization",
