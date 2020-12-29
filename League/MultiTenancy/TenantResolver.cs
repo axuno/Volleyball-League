@@ -1,26 +1,37 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using League.Views;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Extensions;
-using Microsoft.Extensions.Configuration;
 using TournamentManager.MultiTenancy;
 
 namespace League.MultiTenancy
 {
+    /// <summary>
+    /// Resolves a tenant using the <see cref="TenantStore"/> and the <see cref="HttpContext"/> using the Base Path Strategy (i.e. the first path segment).
+    /// If a tenant could be resolved, a cookie named <see cref="CookieNames.MostRecentTenant"/> is added to the <see cref="HttpContext"/>.
+    /// </summary>
     public class TenantResolver
     {
         private readonly IReadOnlyDictionary<string, TenantContext> _tenants;
         private readonly HttpContext _httpContext;
         
+        /// <summary>
+        /// CTOR.
+        /// </summary>
+        /// <param name="tenantStore"></param>
+        /// <param name="httpContextAccessor"></param>
         public TenantResolver(TenantStore tenantStore, IHttpContextAccessor httpContextAccessor)
         {
             _tenants = tenantStore.GetTenants();
             _httpContext = httpContextAccessor.HttpContext;
         }
         
+        /// <summary>
+        /// Resolves the tenant using the Base Path Strategy (i.e. the first path segment).
+        /// </summary>
+        /// <returns>Returns the resolved <see cref="ITenantContext"/> if a tenant was resolved, otherwise <see langword="null"/>.</returns>
         public ITenantContext Resolve()
         {
             if (_httpContext == null) return _tenants.First(t => t.Value.IsDefault).Value;
@@ -36,14 +47,9 @@ namespace League.MultiTenancy
             var siteSegment = uri.Segments.Length > 1 ? uri.Segments[1].TrimEnd('/') : string.Empty;
             foreach (var tenant in _tenants.Values)
             {
-                if (!string.IsNullOrEmpty(tenant.SiteContext.HostName) && tenant.SiteContext.HostName == host)
-                {
-                    SetMostRecentOrganizationCookie(tenant);
-                    return tenant;
-                }
                 if (!string.IsNullOrEmpty(tenant.SiteContext.UrlSegmentValue) && tenant.SiteContext.UrlSegmentValue == siteSegment)
                 {
-                    SetMostRecentOrganizationCookie(tenant);
+                    SetMostRecentTenantCookie(tenant);
                     return tenant;
                 }
             }
@@ -51,14 +57,14 @@ namespace League.MultiTenancy
             return null;
         }
         
-        private void SetMostRecentOrganizationCookie(ITenantContext tenant)
+        private void SetMostRecentTenantCookie(ITenantContext tenant)
         {
             if (_httpContext == null) return;
             
-            if (tenant.SiteContext.UrlSegmentValue == string.Empty) _httpContext.Response.Cookies.Delete(CookieNames.MostRecentOrganization);
+            if (tenant.SiteContext.UrlSegmentValue == string.Empty) _httpContext.Response.Cookies.Delete(CookieNames.MostRecentTenant);
 
             _httpContext.Response.Cookies.Append(
-                CookieNames.MostRecentOrganization,
+                CookieNames.MostRecentTenant,
                 tenant.SiteContext.UrlSegmentValue,
                 new CookieOptions
                 {

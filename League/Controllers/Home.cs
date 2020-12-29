@@ -46,7 +46,7 @@ namespace League.Controllers
         [Route("")]
         public IActionResult Index()
         {
-            if (Request.Cookies.TryGetValue(CookieNames.MostRecentOrganization, out var urlSegmentValue) && _siteContext.TenantStore.GetTenants().Any(sl => sl.Value.SiteContext.UrlSegmentValue == urlSegmentValue))
+            if (Request.Cookies.TryGetValue(CookieNames.MostRecentTenant, out var urlSegmentValue) && _siteContext.TenantStore.GetTenants().Any(sl => sl.Value.SiteContext.UrlSegmentValue == urlSegmentValue))
             {
                 if (!string.IsNullOrEmpty(urlSegmentValue)) return Redirect($"/{urlSegmentValue}");
             }
