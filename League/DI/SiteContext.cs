@@ -13,6 +13,7 @@ namespace League.DI
     /// Provides organization-specific, site-specific data, and organization-specific access to the repositories.
     /// Content is available per HttpRequest with dependency injection.
     /// </summary>
+    [Obsolete("Implement with ITenantContext instead.")]
     public class SiteContext : OrganizationContext, ISite
     {
         #region ** CTOR **

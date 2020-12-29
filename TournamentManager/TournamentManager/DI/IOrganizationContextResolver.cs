@@ -1,10 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace TournamentManager.Data
 {
     /// <summary>
     /// Interface used for DB access resolvers./>
     /// </summary>
+    [Obsolete("Implement with ITenantContext instead.")]
     public interface IOrganizationContextResolver
     {
         /// <summary>

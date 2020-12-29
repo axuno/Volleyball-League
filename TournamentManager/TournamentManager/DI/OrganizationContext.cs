@@ -8,6 +8,7 @@ namespace TournamentManager.Data
     /// <summary>
     /// The class contains all configuration data for an organization.
     /// </summary>
+    [Obsolete("Implement with ITenantContext instead.")]
     [YAXLib.YAXSerializeAs("OrganizationContext")]
     public class OrganizationContext
     {

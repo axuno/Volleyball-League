@@ -1,9 +1,7 @@
 ﻿using System.IO;
 using League.Identity;
-using League.Test.Identity;
 using League.Test.TestComponents;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
@@ -12,10 +10,8 @@ using Moq;
 using NLog;
 using NLog.Extensions.Logging;
 using SD.LLBLGen.Pro.ORMSupportClasses;
-using TournamentManager.Data;
 using TournamentManager.MultiTenancy;
 using ILogger = Microsoft.Extensions.Logging.ILogger;
-using SiteContext = League.DI.SiteContext;
 
 namespace League.Test
 {
@@ -29,10 +25,17 @@ namespace League.Test
         {
             _configPath = DirectoryLocator.GetTargetConfigurationPath();
             var msSqlPath = Path.Combine(DirectoryLocator.GetTargetProjectPath(), @"..\..\MsSqlDb");
-            _tenantContext = new TenantContext();
-            _tenantContext.DbContext.Catalog = "LeagueIntegration";
-            _tenantContext.DbContext.Schema = "dbo";
-            _tenantContext.DbContext.ConnectionKey = "dummy";
+            
+            // For the unit tests we
+            _tenantContext = new TenantContext
+            {
+                DbContext =
+                {
+                    Catalog = "LeagueIntegration", 
+                    Schema = "dbo", 
+                    ConnectionKey = "dummy"
+                }
+            };
             _tenantContext.DbContext.ConnectionString =
                 $"Server=(LocalDB)\\MSSQLLocalDB;AttachDbFilename={msSqlPath}\\LeagueIntegrationTest.mdf;Database={_tenantContext.DbContext.Catalog};Integrated Security=true";
             

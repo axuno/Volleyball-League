@@ -1,9 +1,12 @@
 ﻿
+using System;
+
 namespace League.DI
 {
     /// <summary>
     /// Interface for site-specific settings
     /// </summary>
+    [Obsolete("Implement with ITenantContext instead.")]
     public interface ISite
     {
         /// <summary>

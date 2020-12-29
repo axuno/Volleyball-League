@@ -10,6 +10,7 @@ namespace TournamentManager.Data
     /// <summary>
     /// Resolves the <see cref="OrganizationContext"/> for a given organization key.
     /// </summary>
+    [Obsolete("Implement with ITenantContext instead.")]
     public class OrganizationContextResolver : List<Data.OrganizationContext>, IOrganizationContextResolver
     {
         private readonly ILogger<OrganizationContextResolver> _logger;
