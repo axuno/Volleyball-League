@@ -1,5 +1,6 @@
 ﻿@using League.Helpers
-@inject League.DI.SiteContext SiteContext
+@using TournamentManager.MultiTenancy
+@inject ITenantContext TenantContext
 @{
     ViewData.Title("Spielordnung");
 }
@@ -91,7 +92,7 @@
         kann nicht berücksichtigt werden.
     </p>
     <p>
-        6.4 Mit der Anmeldung ist das Startgeld von @SiteContext.Bank.Amount EUR auf das Konto von <I>@SiteContext.Bank.Recipient</I> zu überweisen.
+        6.4 Mit der Anmeldung ist das Startgeld von @TenantContext.OrganizationContext.Bank.Amount EUR auf das Konto von <I>@TenantContext.OrganizationContext.Bank.Recipient</I> zu überweisen.
         Die Bestätigungs-E-Mail zur Anmeldung enthält die Kontoverbindung.
         @*(IBAN @SiteContext.Bank.Iban, @SiteContext.Bank.BankName, BIC @SiteContext.Bank.Bic)*@
     </p>

@@ -8,7 +8,7 @@
 @using Microsoft.AspNetCore.Mvc.Localization
 @using Microsoft.Extensions.Options
 @*ValueTuple*@
-@model (ClaimsPrincipal ChangedByUser, TournamentManager.DAL.EntityClasses.MatchEntity Match, List<TournamentManager.DAL.TypedViewClasses.TeamUserRoundRow> TeamUserRound, TournamentManager.Data.OrganizationContext OrganizationContext)
+@model (ClaimsPrincipal ChangedByUser, TournamentManager.DAL.EntityClasses.MatchEntity Match, List<TournamentManager.DAL.TypedViewClasses.TeamUserRoundRow> TeamUserRound, TournamentManager.MultiTenancy.ITenantContext TenantContext)
 @{
     string FmtDate(DateTime? matchDate)
     {
@@ -32,7 +32,7 @@
     var PointsLabel = new[] { Localizer["Ball points"].Value, Localizer["Set points"].Value, Localizer["Match points"].Value };
     var TimeLabel = new[] { Localizer["Start of match"].Value, Localizer["End of match"].Value };
 }
-@Html.Raw(Model.OrganizationContext.Name) (@Html.Raw(Model.TeamUserRound.First(tur => tur.TeamId == Model.Match.HomeTeamId).RoundDescription)) @Html.Raw(NewLine)
+@Html.Raw(Model.TenantContext.OrganizationContext.Name) (@Html.Raw(Model.TeamUserRound.First(tur => tur.TeamId == Model.Match.HomeTeamId).RoundDescription)) @Html.Raw(NewLine)
 @Html.Raw(Model.TeamUserRound.First(tur => tur.TeamId == Model.Match.HomeTeamId).TeamNameForRound) : @Html.Raw(Model.TeamUserRound.First(tur => tur.TeamId == Model.Match.GuestTeamId).TeamNameForRound)
 @Html.Raw(NewLine)
 @{
@@ -88,7 +88,7 @@
 @Html.Raw(Localizer["Changes were submitted by"].Value)@(" ")@Html.Raw(GetUsername() ?? "?").
 @Html.Raw(Localizer["This notification has been sent to the contact persons of the teams"].Value).
 @Html.Raw(NewLine)
-@Html.Raw(Model.OrganizationContext.Name)
+@Html.Raw(Model.TenantContext.OrganizationContext.Name)
 @Html.Raw(NewLine)
 @Html.Raw(NewLine)
 @Html.Raw(Localizer["ID"].Value) #@Html.Raw(Model.Match.Id) - @Html.Raw(Localizer["Number of changes"].Value): @Html.Raw(Model.Match.ChangeSerial)

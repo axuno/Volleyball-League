@@ -5,7 +5,6 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using League.BackgroundTasks;
-using League.DI;
 using League.Models.RankingViewModels;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -17,7 +16,7 @@ using SD.LLBLGen.Pro.ORMSupportClasses;
 using SD.LLBLGen.Pro.QuerySpec;
 using TournamentManager.DAL.HelperClasses;
 using TournamentManager.DAL.TypedViewClasses;
-using TournamentManager.Data;
+using TournamentManager.MultiTenancy;
 using TournamentManager.Ranking;
 
 namespace League.Controllers
@@ -28,16 +27,16 @@ namespace League.Controllers
     [Route("{organization:MatchingTenant}/[controller]")]
     public class Ranking : AbstractController
     {
-        private readonly SiteContext _siteContext;
+        private readonly ITenantContext _tenantContext;
         private readonly IWebHostEnvironment _webHostEnvironment;
-        private readonly TournamentManager.MultiTenancy.AppDb _appDb;
+        private readonly AppDb _appDb;
         private readonly ILogger<Ranking> _logger;
         private readonly IMemoryCache _memoryCache;
 
-        public Ranking(SiteContext siteContext, IWebHostEnvironment webHostEnvironment, IStringLocalizer<Ranking> localizer, ILogger<Ranking> logger, IMemoryCache memoryCache)
+        public Ranking(ITenantContext tenantContext, IWebHostEnvironment webHostEnvironment, IStringLocalizer<Ranking> localizer, ILogger<Ranking> logger, IMemoryCache memoryCache)
         {
-            _siteContext = siteContext;
-            _appDb = siteContext.AppDb;
+            _tenantContext = tenantContext;
+            _appDb = tenantContext.DbContext.AppDb;
             _webHostEnvironment = webHostEnvironment;
             _logger = logger;
             _memoryCache = memoryCache;
@@ -45,7 +44,7 @@ namespace League.Controllers
 
         public IActionResult Index()
         {
-            return Redirect(Url.Action(nameof(Table), nameof(Ranking), new { Organization = _siteContext.UrlSegmentValue }));
+            return Redirect(Url.Action(nameof(Table), nameof(Ranking), new { Organization = _tenantContext.SiteContext.UrlSegmentValue }));
         }
 
         /// <summary>
@@ -58,13 +57,13 @@ namespace League.Controllers
             try
             {
                 var rankingList = await _appDb.RankingRepository.GetRankingListAsync(
-                    new PredicateExpression(RankingListFields.TournamentId == _siteContext.MatchResultTournamentId)
+                    new PredicateExpression(RankingListFields.TournamentId == _tenantContext.TournamentContext.MatchResultTournamentId)
                     , cancellationToken);
 
                 var model = new RankingListModel
                 {
                     Tournament =
-                        await _appDb.TournamentRepository.GetTournamentAsync(new PredicateExpression(TournamentFields.Id == _siteContext.MatchResultTournamentId),
+                        await _appDb.TournamentRepository.GetTournamentAsync(new PredicateExpression(TournamentFields.Id == _tenantContext.TournamentContext.MatchResultTournamentId),
                             cancellationToken),
                     RankingList = rankingList,
                     ChartFileInfos = GetChartFileInfos(rankingList.Select(rl => rl.RoundId).Distinct())
@@ -72,7 +71,7 @@ namespace League.Controllers
 
                 if (model.Tournament == null)
                 {
-                    throw new Exception($"{nameof(_siteContext.MatchResultTournamentId)} '{_siteContext.MatchResultTournamentId}' does not exist");
+                    throw new Exception($"{nameof(_tenantContext.TournamentContext.MatchResultTournamentId)} '{_tenantContext.TournamentContext.MatchResultTournamentId}' does not exist");
                 }
 
                 return View(ViewNames.Ranking.Table, model);
@@ -94,7 +93,7 @@ namespace League.Controllers
 
                 id ??= roundLegPeriods.Max(rlp => rlp.TournamentId);
                 if (roundLegPeriods.Count > 0 && roundLegPeriods.All(rlp => rlp.TournamentId != id))
-                    return RedirectToAction(nameof(AllTimeTournament), nameof(Ranking), new { Organization = _siteContext.UrlSegmentValue, id = string.Empty });
+                    return RedirectToAction(nameof(AllTimeTournament), nameof(Ranking), new { Organization = _tenantContext.SiteContext.UrlSegmentValue, id = string.Empty });
 
                 var model = new AllTimeTournamentModel(rankingList, roundLegPeriods) { SelectedTournamentId = id };
                 return View(ViewNames.Ranking.AllTimeForTournament, model);
@@ -115,7 +114,7 @@ namespace League.Controllers
                 var roundLegPeriods = await GetRoundLegPeriodsCached(rankingList, cancellationToken);
 
                 if (rankingList.Count > 0 && rankingList.All(rl => rl.TeamId != id))
-                    return RedirectToAction(nameof(AllTimeTournament), nameof(Ranking), new { Organization = _siteContext.UrlSegmentValue, id = string.Empty });
+                    return RedirectToAction(nameof(AllTimeTournament), nameof(Ranking), new { Organization = _tenantContext.SiteContext.UrlSegmentValue, id = string.Empty });
 
                 var model = new AllTimeTeamModel(rankingList, roundLegPeriods) { SelectedTeamId = id };
                 return View(ViewNames.Ranking.AllTimeForTeam, model);
@@ -128,7 +127,7 @@ namespace League.Controllers
         }
 
         private async Task<List<RankingListRow>> GetRankingListCached(CancellationToken cancellationToken) => await _memoryCache.GetOrCreateAsync(
-            string.Join("_", _siteContext.OrganizationKey, typeof(Ranking).FullName, nameof(RankingListRow)),
+            string.Join("_", _tenantContext.Identifier, typeof(Ranking).FullName, nameof(RankingListRow)),
             cache =>
             {
                 cache.AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(30);
@@ -143,7 +142,7 @@ namespace League.Controllers
 
         private async Task<List<RoundLegPeriodRow>> GetRoundLegPeriodsCached(List<RankingListRow> rankingList, CancellationToken cancellationToken) =>
             await _memoryCache.GetOrCreateAsync(
-                string.Join("_", _siteContext.OrganizationKey, typeof(Ranking).FullName,
+                string.Join("_", _tenantContext.Identifier, typeof(Ranking).FullName,
                     nameof(RoundLegPeriodRow)), cache =>
                 {
                     cache.AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(30);
@@ -166,7 +165,7 @@ namespace League.Controllers
                 foreach (var roundId in roundIds)
                 {
                     var fileInfo = chartDirectory.GetFiles(string.Format(RankingUpdateTask.RankingChartFilenameTemplate,
-                        _siteContext.FolderName, roundId, "*")).OrderByDescending(fi => fi.LastWriteTimeUtc).FirstOrDefault();
+                        _tenantContext.SiteContext.FolderName, roundId, "*")).OrderByDescending(fi => fi.LastWriteTimeUtc).FirstOrDefault();
 
                     if (fileInfo != null)
                     {

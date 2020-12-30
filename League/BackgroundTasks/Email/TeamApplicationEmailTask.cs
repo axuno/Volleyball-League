@@ -4,33 +4,33 @@ using System.Globalization;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using League.DI;
 using League.Identity;
 using MailMergeLib;
 using MailMergeLib.AspNet;
 using Microsoft.Extensions.Logging;
 using SD.LLBLGen.Pro.ORMSupportClasses;
 using TournamentManager.DAL.HelperClasses;
-using TournamentManager.Data;
+using TournamentManager.MultiTenancy;
 
 namespace League.BackgroundTasks.Email
 {
     public class TeamApplicationEmailTask : AbstractEmailTask
     {
-        private readonly SiteContext _siteContext;
+        private readonly ITenantContext _tenantContext;
 
         /// <summary>
         /// CTOR. None of the dependency injection parameters must have scoped lifetime.
         /// </summary>
         /// <param name="backgroundWebHost"></param>
         /// <param name="mailMergeService"></param>
+        /// <param name="tenantContext"></param>
         /// <param name="logger"></param>
         public TeamApplicationEmailTask(BackgroundWebHost backgroundWebHost, IMailMergeService mailMergeService,
-            SiteContext siteContext,
+            ITenantContext tenantContext,
             ILogger<TeamApplicationEmailTask> logger)
             : base(backgroundWebHost, mailMergeService, logger)
         {
-            _siteContext = siteContext;
+            _tenantContext = tenantContext;
         }
 
         /// <summary>
@@ -57,12 +57,12 @@ namespace League.BackgroundTasks.Email
         {
             SetThreadCulture();
 
-            var roundWithType = (await _siteContext.AppDb.RoundRepository.GetRoundsWithTypeAsync(
-                new PredicateExpression(RoundFields.TournamentId == _siteContext.ApplicationTournamentId &
+            var roundWithType = (await _tenantContext.DbContext.AppDb.RoundRepository.GetRoundsWithTypeAsync(
+                new PredicateExpression(RoundFields.TournamentId == _tenantContext.TournamentContext.ApplicationTournamentId &
                                         RoundFields.Id == Model.RoundId), cancellationToken)).First();
 
-            var teamUserRoundInfos = await _siteContext.AppDb.TeamRepository.GetTeamUserRoundInfosAsync(
-                new PredicateExpression(TeamUserRoundFields.TeamId == Model.TeamId & TeamUserRoundFields.TournamentId == _siteContext.ApplicationTournamentId), cancellationToken);
+            var teamUserRoundInfos = await _tenantContext.DbContext.AppDb.TeamRepository.GetTeamUserRoundInfosAsync(
+                new PredicateExpression(TeamUserRoundFields.TeamId == Model.TeamId & TeamUserRoundFields.TournamentId == _tenantContext.TournamentContext.ApplicationTournamentId), cancellationToken);
 
             var registeredBy = teamUserRoundInfos.First(tur => tur.UserId == Model.RegisteredByUserId);
             Model.RegisteredByName = $"{registeredBy.CompleteName} <{registeredBy.Email}>";
@@ -87,7 +87,7 @@ namespace League.BackgroundTasks.Email
                 {
                     // Send registration info to league administration
                     MailMessage.MailMergeAddresses.Add(new MailMergeAddress(MailAddressType.Bcc,
-                        _siteContext.Email.GeneralTo.DisplayName, _siteContext.Email.GeneralTo.Address));
+                        _tenantContext.SiteContext.Email.GeneralTo.DisplayName, _tenantContext.SiteContext.Email.GeneralTo.Address));
                 }
                 MailMessage.PlainText = await GetRenderer().RenderViewToStringAsync(ViewNames[1], Model);
                 // send the message

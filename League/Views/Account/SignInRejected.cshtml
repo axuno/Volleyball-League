@@ -1,9 +1,10 @@
 ﻿@using Microsoft.AspNetCore.Mvc.Localization
+@using TournamentManager.MultiTenancy
 @inject IViewLocalizer Localizer
-@inject League.DI.SiteContext SiteContext
+@inject ITenantContext TenantContext
 @model Microsoft.AspNetCore.Identity.SignInResult
 @{
-    var organizationRoute = SiteContext.UrlSegmentValue;
+    var organizationRoute = TenantContext.SiteContext.UrlSegmentValue;
     if (Model == Microsoft.AspNetCore.Identity.SignInResult.LockedOut)
     {
         ViewData["Title"] = Localizer["Account has been locked out"];

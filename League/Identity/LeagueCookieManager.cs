@@ -1,9 +1,8 @@
 ﻿using System;
-using League.DI;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
-using TournamentManager.Data;
+using TournamentManager.MultiTenancy;
 
 namespace League.Identity
 {
@@ -24,20 +23,20 @@ namespace League.Identity
 
         public void AppendResponseCookie(HttpContext context, string key, string value, CookieOptions options)
         {
-            var siteContext = context.RequestServices.GetRequiredService<SiteContext>();
-            _concreteManager.AppendResponseCookie(context, $"{key}{siteContext.IdentityCookieName}", value, options);
+            var siteContext = context.RequestServices.GetRequiredService<ITenantContext>();
+            _concreteManager.AppendResponseCookie(context, $"{key}{siteContext.SiteContext.IdentityCookieName}", value, options);
         }
 
         public void DeleteCookie(HttpContext context, string key, CookieOptions options)
         {
-            var siteContext = context.RequestServices.GetRequiredService<SiteContext>();
-            _concreteManager.DeleteCookie(context, $"{key}{siteContext.IdentityCookieName}", options);
+            var siteContext = context.RequestServices.GetRequiredService<ITenantContext>();
+            _concreteManager.DeleteCookie(context, $"{key}{siteContext.SiteContext.IdentityCookieName}", options);
         }
 
         public string GetRequestCookie(HttpContext context, string key)
         {
-            var siteContext = context.RequestServices.GetRequiredService<SiteContext>();
-            return _concreteManager.GetRequestCookie(context, $"{key}{siteContext.IdentityCookieName}");
+            var siteContext = context.RequestServices.GetRequiredService<ITenantContext>();
+            return _concreteManager.GetRequestCookie(context, $"{key}{siteContext.SiteContext.IdentityCookieName}");
         }
 
         #endregion

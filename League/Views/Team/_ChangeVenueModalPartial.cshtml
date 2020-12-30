@@ -1,10 +1,11 @@
 @using League.Controllers
 @using Microsoft.AspNetCore.Mvc.Localization
+@using TournamentManager.MultiTenancy
 @using TournamentManager.DAL.TypedViewClasses
 @inject IViewLocalizer Localizer
-@inject League.DI.SiteContext SiteContext
+@inject ITenantContext TenantContext
 @model (long TeamId, long? VenueId)
-@{var organizationRoute = SiteContext.UrlSegmentValue;}
+@{var organizationRoute = TenantContext.SiteContext.UrlSegmentValue;}
 <!-- Modal -->
 <modal id="change-venue" title="@Localizer["Change team venue"].Value" tabindex="-1">
     <modal-body>

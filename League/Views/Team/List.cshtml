@@ -1,11 +1,12 @@
 ﻿@using League.Views
 @using Microsoft.AspNetCore.Mvc.Localization
+@using TournamentManager.MultiTenancy
 @inject IViewLocalizer Localizer
-@inject League.DI.SiteContext SiteContext
+@inject ITenantContext TenantContext
 @model League.Models.TeamViewModels.TeamListModel
 @{
     ViewData["Title"] = Localizer["Teams"].Value + " - " + Model.Tournament.Name;
-    var organizationRoute = SiteContext.UrlSegmentValue;
+    var organizationRoute = TenantContext.SiteContext.UrlSegmentValue;
     if (Model.RoundsWithTeams.Count == 0)
     {
         <div class="mb-0 pb-1">

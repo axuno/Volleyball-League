@@ -2,7 +2,6 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 using TournamentManager.DAL;
-using TournamentManager.Data;
 using TournamentManager.DAL.EntityClasses;
 using TournamentManager.DAL.HelperClasses;
 using SD.LLBLGen.Pro.ORMSupportClasses;
@@ -10,6 +9,7 @@ using System.Collections.ObjectModel;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using TournamentManager.MultiTenancy;
 
 namespace TournamentManager.Plan
 {
@@ -18,8 +18,8 @@ namespace TournamentManager.Plan
     /// </summary>
     public class MatchPlanner
     {
-        private readonly OrganizationContext _organizationContext;
-        private readonly TournamentManager.MultiTenancy.AppDb _appDb;
+        private readonly ITenantContext _tenantContext;
+        private readonly AppDb _appDb;
         private static TournamentEntity _tournament = new TournamentEntity();
         private readonly ILoggerFactory _loggerFactory;
         private readonly ILogger<MatchPlanner> _logger;
@@ -31,16 +31,16 @@ namespace TournamentManager.Plan
         /// <summary>
         /// CTOR.
         /// </summary>
-        /// <param name="organizationContext"></param>
+        /// <param name="tenantContext"></param>
         /// <param name="timeZoneConverter"></param>
         /// <param name="loggerFactory"></param>
-        public MatchPlanner(OrganizationContext organizationContext,
+        public MatchPlanner(ITenantContext tenantContext,
             Axuno.Tools.DateAndTime.TimeZoneConverter timeZoneConverter, ILoggerFactory loggerFactory)
         {
-            _organizationContext = organizationContext;
-            _appDb = organizationContext.AppDb;
+            _tenantContext = tenantContext;
+            _appDb = tenantContext.DbContext.AppDb;
             _timeZoneConverter = timeZoneConverter;
-            _availableMatchDates = new AvailableMatchDates(organizationContext, timeZoneConverter, loggerFactory.CreateLogger<AvailableMatchDates>());
+            _availableMatchDates = new AvailableMatchDates(tenantContext, timeZoneConverter, loggerFactory.CreateLogger<AvailableMatchDates>());
             _loggerFactory = loggerFactory;
             _logger = loggerFactory.CreateLogger<MatchPlanner>();
         }
@@ -48,7 +48,7 @@ namespace TournamentManager.Plan
         private async Task LoadEntitiesAsync(CancellationToken cancellationToken)
         {
             _tournament = await _appDb.TournamentRepository.GetTournamentEntityForMatchPlannerAsync(
-                    _organizationContext.MatchPlanTournamentId, cancellationToken);
+                    _tenantContext.TournamentContext.MatchPlanTournamentId, cancellationToken);
             AreEntitiesLoaded = true;
         }
 
@@ -67,14 +67,14 @@ namespace TournamentManager.Plan
 
             var allRoundLegs = await _appDb.RoundRepository.GetRoundLegPeriodAsync(
                 new PredicateExpression(RoundLegPeriodFields.TournamentId ==
-                                        _organizationContext.MatchPlanTournamentId), cancellationToken);
+                                        _tenantContext.TournamentContext.MatchPlanTournamentId), cancellationToken);
 
             var minDate = allRoundLegs.Min(leg => leg.StartDateTime);
             var maxDate = allRoundLegs.Max(leg => leg.EndDateTime);
 
             // remove all existing excluded dates for the tournament
             var filter = new RelationPredicateBucket(ExcludeMatchDateFields.TournamentId ==
-                                                     _organizationContext.MatchPlanTournamentId);
+                                                     _tenantContext.TournamentContext.MatchPlanTournamentId);
             await _appDb.GenericRepository.DeleteEntitiesDirectlyAsync(typeof(ExcludeMatchDateEntity), filter,
                 cancellationToken);
 
@@ -85,7 +85,7 @@ namespace TournamentManager.Plan
                     .Import(excelImportFile, new DateTimePeriod(minDate, maxDate)));
 
             foreach (var excludeMatchDateEntity in excludedDates)
-                excludeMatchDateEntity.TournamentId = _organizationContext.MatchPlanTournamentId;
+                excludeMatchDateEntity.TournamentId = _tenantContext.TournamentContext.MatchPlanTournamentId;
             
             await _appDb.GenericRepository.SaveEntitiesAsync(excludedDates, false, false, cancellationToken);
         }
@@ -107,7 +107,7 @@ namespace TournamentManager.Plan
         {
             if (!AreEntitiesLoaded) await LoadEntitiesAsync(cancellationToken);
 
-            if (_appDb.MatchRepository.AnyCompleteMatchesExist(_organizationContext.MatchPlanTournamentId))
+            if (_appDb.MatchRepository.AnyCompleteMatchesExist(_tenantContext.TournamentContext.MatchPlanTournamentId))
                 throw new Exception("Completed matches exist for this tournament. Generating fixtures aborted.");
 
             foreach (var round in _tournament.Rounds)
@@ -211,7 +211,7 @@ namespace TournamentManager.Plan
                             RefereeId = combination.Referee,
                             PlannedStart = availableDates[index] != null ? availableDates[index]!.MatchStartTime : default(DateTime?),
                             PlannedEnd = availableDates[index] != null ? availableDates[index]!.MatchStartTime
-                                .Add(_organizationContext.FixtureRuleSet.PlannedDurationOfMatch) : default(DateTime?),
+                                .Add(_tenantContext.TournamentContext.FixtureRuleSet.PlannedDurationOfMatch) : default(DateTime?),
                             VenueId = availableDates[index] != null 
                                 ? availableDates[index]!.VenueId
                                 // take over the venue stored in the team entity (may also be null!)

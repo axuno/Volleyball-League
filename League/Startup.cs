@@ -3,7 +3,6 @@
 using cloudscribe.Web.Navigation;
 using cloudscribe.Web.Navigation.Caching;
 using JSNLog;
-using League.DI;
 using League.Identity;
 using League.ModelBinders;
 using League.Routing;
@@ -51,7 +50,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Rewrite;
 using TournamentManager.DI;
 using TournamentManager.MultiTenancy;
-using SiteContext = League.DI.SiteContext;
 
 #endregion
 
@@ -186,21 +184,6 @@ namespace League
             
             #endregion
 
-            #region **** Obsolete Multi Tenancy (bridge to new Multi Tenancy) **********
-            
-#pragma warning disable 618
-            services.AddSingleton<OrganizationContextResolver>(sp =>
-
-            {
-                var tenantStore = sp.GetRequiredService<TournamentManager.MultiTenancy.TenantStore>();
-                return new OrganizationContextResolver(tenantStore,
-                        sp.GetRequiredService<ILogger<OrganizationContextResolver>>());
-            });
-
-            services.AddScoped<SiteContext>();
-#pragma warning restore 618           
-            #endregion
-            
             services.Configure<IISOptions>(options => { });
 
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();

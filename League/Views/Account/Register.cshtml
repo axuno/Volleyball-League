@@ -1,11 +1,12 @@
 ﻿@using League.Controllers
 @using Microsoft.AspNetCore.Mvc.Localization
+@using TournamentManager.MultiTenancy
 @model RegisterViewModel
 @inject IViewLocalizer Localizer
-@inject League.DI.SiteContext SiteContext
+@inject ITenantContext TenantContext
 @{
     ViewData["Title"] = Localizer["Create a new user account"];
-    var organizationRoute = SiteContext.UrlSegmentValue;
+    var organizationRoute = TenantContext.SiteContext.UrlSegmentValue;
     List<SelectListItem> GenderList()
     {
         return new List<SelectListItem> {new SelectListItem {Value = string.Empty, Text = Localizer["Please choose"].Value},

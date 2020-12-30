@@ -2,12 +2,10 @@
 using System;
 using System.Threading.Tasks;
 using System.Threading;
-using TournamentManager.Data;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Security.Claims;
-using League.DI;
 using Microsoft.Extensions.Logging;
 using SD.LLBLGen.Pro.ORMSupportClasses;
 using TournamentManager.DAL.EntityClasses;

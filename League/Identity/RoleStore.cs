@@ -5,11 +5,8 @@ using System.Threading;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
-using League.DI;
 using Microsoft.Extensions.Logging;
-using TournamentManager.Data;
 using TournamentManager.DAL.EntityClasses;
-using TournamentManager.DAL.HelperClasses;
 using TournamentManager.MultiTenancy;
 
 namespace League.Identity

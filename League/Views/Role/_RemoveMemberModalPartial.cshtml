@@ -1,10 +1,11 @@
 ﻿@using League.Controllers
 @using League.Views.Role
 @using Microsoft.AspNetCore.Mvc.Localization
+@using TournamentManager.MultiTenancy
 @inject IViewLocalizer Localizer
-@inject League.DI.SiteContext SiteContext
+@inject ITenantContext TenantContext
 @model League.Models.RoleViewModels.RoleRemoveModel
-@{ ViewContext.ClientValidationEnabled = false; var organizationRoute = SiteContext.UrlSegmentValue;}
+@{ ViewContext.ClientValidationEnabled = false; var organizationRoute = TenantContext.SiteContext.UrlSegmentValue;}
 <!-- Modal -->
 <modal id="edit-team" title="@_RemoveMemberModalPartial.Remove_team_member" dialog-class="modal-md" tabindex="-1">
     <modal-body>

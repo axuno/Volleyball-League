@@ -1,11 +1,11 @@
-﻿@using League.DI
-@using League.Helpers
+﻿@using League.Helpers
 @using League.Navigation
 @using League.Routing
 @using League.ViewNames
 @using Microsoft.AspNetCore.Mvc.Localization
 @using Microsoft.Extensions.Localization
-@inject SiteContext SiteContext
+@using TournamentManager.MultiTenancy
+@inject ITenantContext TenantContext
 @inject IStringLocalizer<NavigationResource> NaviLocalizer;
 @inject IViewLocalizer Localizer
 <!DOCTYPE html>
@@ -35,7 +35,7 @@
     <header class="rounded site">
         <div class="d-flex flex-column flex-md-row justify-content-between h-100">
             <div class="my-auto order-2 order-md-1">
-                <h1 class="h4 header-organization">@(string.IsNullOrEmpty(SiteContext.OrganizationKey) ? NaviLocalizer["Volleyball League"] : SiteContext.Name)</h1>
+                <h1 class="h4 header-organization">@(TenantContext.IsDefault ? NaviLocalizer["Volleyball League"] : TenantContext.OrganizationContext.Name)</h1>
             </div>
             <div class="my-auto order-1 order-md-2 text-md-right header-logo">
                 <a class="d-block" href="@Url.Action(nameof(League.Controllers.Home.Welcome), nameof(League.Controllers.Home))" style="text-decoration: none">
@@ -63,13 +63,13 @@
         <div class="d-flex flex-row">
             <div class="text-center w-100">
                 @{
-                    if (string.IsNullOrEmpty(SiteContext.OrganizationKey))
+                    if (TenantContext.IsDefault)
                     {
                         <a asp-route="@RouteNames.HomeGeneralContact" class="d-inline-block mr-4">@Localizer["Contact"]</a>
                     }
                     else
                     {
-                        <a asp-route="@RouteNames.HomeOrganizationContact" asp-route-organization="@SiteContext.UrlSegmentValue" class="d-inline-block mr-4">@Localizer["Contact"]</a>
+                        <a asp-route="@RouteNames.HomeOrganizationContact" asp-route-organization="@TenantContext.SiteContext.UrlSegmentValue" class="d-inline-block mr-4">@Localizer["Contact"]</a>
                     }
                 }
                 <a asp-action="@nameof(Home.LegalDisclosure)" asp-controller="@nameof(Home)" class="d-inline-block mr-4">@Localizer["Legal Disclosure"]</a>

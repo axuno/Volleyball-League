@@ -1,10 +1,8 @@
 ﻿using System.Net;
-using League.DI;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.ViewEngines;
-using Microsoft.Extensions.FileProviders;
+using TournamentManager.MultiTenancy;
 
 namespace League.Controllers
 {
@@ -23,20 +21,20 @@ namespace League.Controllers
         // -> view files could also come from other providers, not only PhysicalFileProvider
         private readonly ICompositeViewEngine _viewEngine;
         private readonly ActionContext _actionContext;
-        private readonly SiteContext _siteContext;
+        private readonly ITenantContext _tenantContext;
 
-        public Organization(ICompositeViewEngine viewEngine, IActionContextAccessor actionContextAccessor, SiteContext siteContext)
+        public Organization(ICompositeViewEngine viewEngine, IActionContextAccessor actionContextAccessor, ITenantContext tenantContext)
         {
             _viewEngine = viewEngine;
             _actionContext = actionContextAccessor.ActionContext;
-            _siteContext = siteContext;
+            _tenantContext = tenantContext;
         }
 
         [Route("{section=home}/{content=index}")]
         public IActionResult Index(string section = "home", string content = "index")
         {
             // Note: Indicate the current controller-specific directory ("Organization") with the "./" prefix
-            var view = $"./{_siteContext.FolderName}/{section}/{content}";
+            var view = $"./{_tenantContext.SiteContext.FolderName}/{section}/{content}";
             var result = _viewEngine.FindView(_actionContext, view, false);
             if(!result.Success) return NotFound();
             

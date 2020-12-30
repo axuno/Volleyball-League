@@ -5,7 +5,6 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using System.Threading;
-using League.DI;
 using League.Identity;
 using NUnit.Framework;
 using SD.LLBLGen.Pro.ORMSupportClasses;

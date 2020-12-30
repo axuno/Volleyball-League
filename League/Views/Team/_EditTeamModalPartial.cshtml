@@ -1,11 +1,11 @@
-﻿@using System.Globalization
-@using League.Components
+﻿@using League.Components
 @using League.Controllers
 @using Microsoft.AspNetCore.Mvc.Localization
+@using TournamentManager.MultiTenancy
 @inject IViewLocalizer Localizer
-@inject League.DI.SiteContext SiteContext
+@inject ITenantContext TenantContext
 @model League.Models.TeamViewModels.TeamEditModel
-@{ ViewContext.ClientValidationEnabled = false; var organizationRoute = SiteContext.UrlSegmentValue;}
+@{ ViewContext.ClientValidationEnabled = false; var organizationRoute = TenantContext.SiteContext.UrlSegmentValue;}
 <!-- Modal -->
 <modal id="edit-team" title="@Localizer["Edit team"].Value" dialog-class="modal-xl" tabindex="-1">
     <modal-body>

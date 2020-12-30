@@ -1,14 +1,14 @@
 @using League.Controllers
-@using League.DI
 @using League.Identity
 @using Microsoft.AspNetCore.Mvc.Localization
+@using TournamentManager.MultiTenancy
 @model SignInViewModel
 @inject SignInManager<ApplicationUser> SignInManager
-@inject SiteContext SiteContext
+@inject ITenantContext TenantContext
 @inject IViewLocalizer Localizer
 @{
     ViewData["Title"] = Localizer["Sign in"];
-    var organizationRoute = SiteContext.UrlSegmentValue;
+    var organizationRoute = TenantContext.SiteContext.UrlSegmentValue;
 }
 <h2 class="h2">@ViewData["Title"]</h2>
 @{

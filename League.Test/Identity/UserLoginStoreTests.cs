@@ -4,7 +4,6 @@ using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Threading;
-using League.DI;
 using League.Identity;
 using NUnit.Framework;
 using TournamentManager.DAL.DatabaseSpecific;

@@ -1,9 +1,10 @@
 @using League.Controllers
 @using Microsoft.AspNetCore.Mvc.Localization
+@using TournamentManager.MultiTenancy
 @inject IViewLocalizer Localizer
-@inject League.DI.SiteContext SiteContext
+@inject ITenantContext TenantContext
 @model ManageLoginsViewModel
-@{var organizationRoute = SiteContext.UrlSegmentValue;}
+@{var organizationRoute = TenantContext.SiteContext.UrlSegmentValue;}
 <!-- Modal -->
 <modal id="change-email" title="@Localizer["Social Network Logins"].Value" tabindex="-1">
     <modal-body>

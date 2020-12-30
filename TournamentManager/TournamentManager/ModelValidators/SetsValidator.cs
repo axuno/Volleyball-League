@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using TournamentManager.DAL.EntityClasses;
-using TournamentManager.Data;
 using TournamentManager.ExtensionMethods;
 using TournamentManager.Match;
+using TournamentManager.MultiTenancy;
 
 namespace TournamentManager.ModelValidators
 {
-    public class SetsValidator : AbstractValidator<IList<SetEntity>, (OrganizationContext OrganizationContext,
+    public class SetsValidator : AbstractValidator<IList<SetEntity>, (ITenantContext TenantContext,
         (MatchRuleEntity MatchRule, SetRuleEntity SetRule) Rules), SetsValidator.FactId>
     {
         public enum FactId
@@ -22,7 +22,7 @@ namespace TournamentManager.ModelValidators
         }
 
         public SetsValidator(IList<SetEntity> model,
-            (OrganizationContext OrganizationContext, (MatchRuleEntity MatchRule, SetRuleEntity SetRule) Rules) data) : base(model, data)
+            (ITenantContext TenantContext, (MatchRuleEntity MatchRule, SetRuleEntity SetRule) Rules) data) : base(model, data)
         {
             CreateFacts();
         }
@@ -77,7 +77,7 @@ namespace TournamentManager.ModelValidators
                         foreach (var set in Model)
                         {
                             var singleSetValidator =
-                                new SingleSetValidator(set, (Data.OrganizationContext, Data.Rules.SetRule));
+                                new SingleSetValidator(set, (Data.TenantContext, Data.Rules.SetRule));
                             await singleSetValidator.CheckAsync(cancellationToken);
                             var errorFact = singleSetValidator.GetFailedFacts().FirstOrDefault();
                             if (errorFact != null)

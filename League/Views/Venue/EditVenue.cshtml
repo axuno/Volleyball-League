@@ -2,12 +2,13 @@
 @using League.Components
 @using League.Controllers
 @using Microsoft.AspNetCore.Mvc.Localization
+@using TournamentManager.MultiTenancy
 @inject IViewLocalizer Localizer
-@inject League.DI.SiteContext SiteContext
+@inject ITenantContext TenantContext
 @model League.Models.VenueViewModels.VenueEditModel
 @{ ViewContext.ClientValidationEnabled = false;
     ViewData["Title"] = (Model.Venue.IsNew ? Localizer["Create venue"].Value : Localizer["Edit venue"].Value);
-    var organizationRoute = SiteContext.UrlSegmentValue;
+    var organizationRoute = TenantContext.SiteContext.UrlSegmentValue;
 }
 <div class="mb-0 pb-1">
     <h2 class="h2">@ViewData["Title"]</h2>

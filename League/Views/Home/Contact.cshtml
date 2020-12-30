@@ -1,9 +1,9 @@
 ﻿@using League.Controllers
-@using League.DI
 @using League.Helpers
 @using Microsoft.AspNetCore.Mvc.Localization
+@using TournamentManager.MultiTenancy
 @model League.Models.HomeViewModels.ContactViewModel
-@inject SiteContext SiteContext
+@inject ITenantContext TenantContext
 @inject IViewLocalizer Localizer
 @{
     ViewData.Title(Localizer["Message"].Value);
@@ -16,7 +16,7 @@
 }
 <div>
     <h2 class="h2 d-inline-block">@ViewData.Title()</h2>
-    <h4 class="h4 d-inline-block">@Localizer["to"] @(string.IsNullOrEmpty(SiteContext.OrganizationKey) ? "volleyball-liga.de" : SiteContext.ShortName )</h4>
+    <h4 class="h4 d-inline-block">@Localizer["to"] @(TenantContext.IsDefault ? "volleyball-liga.de" : TenantContext.OrganizationContext.ShortName )</h4>
     <hr />
 </div>
 <div>

@@ -1,13 +1,14 @@
 ﻿@using League.Controllers
 @using League.Helpers
 @using Microsoft.AspNetCore.Mvc.Localization
+@using TournamentManager.MultiTenancy
 @inject IViewLocalizer Localizer
-@inject League.DI.SiteContext SiteContext
+@inject ITenantContext TenantContext
 @inject MetaDataHelper Metadata
 @model IndexViewModel
 @{
     ViewData["Title"] = Localizer["Change account settings"];
-    var organizationRoute = SiteContext.UrlSegmentValue;
+    var organizationRoute = TenantContext.SiteContext.UrlSegmentValue;
 }
 <div>
     <h2 class="h2">@ViewData["Title"]</h2>

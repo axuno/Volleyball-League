@@ -2,17 +2,17 @@
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
-using League.DI;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
+using TournamentManager.MultiTenancy;
 
 namespace League.Models.UploadViewModels
 {
     public class TeamPhotoStaticFile : AbstractStaticFile
     {
         private readonly IWebHostEnvironment _webHostEnvironment;
-        private readonly SiteContext _siteContext;
+        private readonly ITenantContext _tenantContext;
         private readonly ILogger<TeamPhotoStaticFile> _logger;
 
         /// <summary>
@@ -34,20 +34,20 @@ namespace League.Models.UploadViewModels
         /// CTOR.
         /// </summary>
         /// <param name="webHostEnvironment"></param>
-        /// <param name="siteContext"></param>
+        /// <param name="tenantContext"></param>
         /// <param name="logger"></param>
-        public TeamPhotoStaticFile(IWebHostEnvironment webHostEnvironment, SiteContext siteContext, ILogger<TeamPhotoStaticFile> logger) : base(logger)
+        public TeamPhotoStaticFile(IWebHostEnvironment webHostEnvironment, ITenantContext tenantContext, ILogger<TeamPhotoStaticFile> logger) : base(logger)
         {
             _webHostEnvironment = webHostEnvironment;
-            _siteContext = siteContext;
+            _tenantContext = tenantContext;
             _logger = logger;
-            _folder = _siteContext.Photos.TeamPhotoFolder;
+            _folder = _tenantContext.SiteContext.Photos.TeamPhotoFolder;
         }
 
         public async Task<string> SaveFileAsync(IFormFile formFile, string extension, long teamId, bool withRemoveObsoleteFiles, CancellationToken cancellationToken)
         {
             var fullFilePath = Path.Combine(_webHostEnvironment.WebRootPath, _folder,
-                string.Format(_filenameTemplate, _siteContext.FolderName, teamId,
+                string.Format(_filenameTemplate, _tenantContext.SiteContext.FolderName, teamId,
                     DateTime.UtcNow.Ticks, extension.TrimStart('.')));
 
             var filename = await SaveFileAsync(formFile, fullFilePath, cancellationToken);
@@ -62,7 +62,7 @@ namespace League.Models.UploadViewModels
             try
             {
                 DeleteMostRecentFile(new DirectoryInfo(Path.Combine(_webHostEnvironment.WebRootPath, _folder)),
-                    string.Format(_fileSearchPattern, _siteContext.FolderName, teamId));
+                    string.Format(_fileSearchPattern, _tenantContext.SiteContext.FolderName, teamId));
             }
             catch (Exception e)
             {
@@ -75,7 +75,7 @@ namespace League.Models.UploadViewModels
             try
             {
                DeleteObsoleteFiles(new DirectoryInfo(Path.Combine(_webHostEnvironment.WebRootPath, _folder)),
-                   string.Format(_fileSearchPattern, _siteContext.FolderName, teamId));
+                   string.Format(_fileSearchPattern, _tenantContext.SiteContext.FolderName, teamId));
             }
             catch (Exception e)
             {
@@ -86,7 +86,7 @@ namespace League.Models.UploadViewModels
         public (string Filename, DateTime Date) GetFileInfo(long teamId)
         {
             return GetFileInfo(new DirectoryInfo(Path.Combine(_webHostEnvironment.WebRootPath, _folder)),
-                string.Format(_fileSearchPattern, _siteContext.OrganizationKey, teamId));
+                string.Format(_fileSearchPattern, _tenantContext.Identifier, teamId));
         }
 
         public (string Uri, DateTime Date) GetUriInfo(long teamId)

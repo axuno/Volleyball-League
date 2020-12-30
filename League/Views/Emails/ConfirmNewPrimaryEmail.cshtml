@@ -12,7 +12,7 @@
 @using Microsoft.AspNetCore.Mvc.Localization
 @using Microsoft.Extensions.Options
 @*ValueTuple*@
-@model (string Email, string CallbackUrl, TournamentManager.Data.OrganizationContext OrganizationContext)
+@model (string Email, string CallbackUrl, TournamentManager.MultiTenancy.ITenantContext TenantContext)
 <!-- source: https://buttons.cm/ -->
 <div>
     <h3>@changeEmail</h3>
@@ -30,6 +30,6 @@
         @Localizer["The confirmation link can be used once until"] @deadline.
     </p>
     <p>
-        @Model.OrganizationContext.Name
+        @Model.TenantContext.OrganizationContext.Name
     </p>
 </div>

@@ -4,12 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TournamentManager.DAL.EntityClasses;
-using TournamentManager.Data;
 using TournamentManager.ExtensionMethods;
+using TournamentManager.MultiTenancy;
 
 namespace TournamentManager.ModelValidators
 {
-    public class TeamValidator : AbstractValidator<TeamEntity, OrganizationContext, TeamValidator.FactId>
+    public class TeamValidator : AbstractValidator<TeamEntity, ITenantContext, TeamValidator.FactId>
     {
         public enum FactId
         {
@@ -20,7 +20,7 @@ namespace TournamentManager.ModelValidators
             DayOfWeekWithinRange
         }
 
-        public TeamValidator(TeamEntity model, OrganizationContext organizationContext) : base(model, organizationContext)
+        public TeamValidator(TeamEntity model, ITenantContext tenantContext) : base(model, tenantContext)
         {
             CreateFacts();
         }
@@ -52,7 +52,7 @@ namespace TournamentManager.ModelValidators
                     Type = FactType.Critical,
                     CheckAsync = async (cancellationToken) =>
                     {
-                        var teamName = await Data.AppDb.TeamRepository.TeamNameExistsAsync(Model, cancellationToken);
+                        var teamName = await Data.DbContext.AppDb.TeamRepository.TeamNameExistsAsync(Model, cancellationToken);
                         return new FactResult
                         {
                             Message = string.Format(TeamValidatorResource.ResourceManager.GetString(
@@ -67,7 +67,7 @@ namespace TournamentManager.ModelValidators
                 {
                     Id = FactId.MatchDayOfWeekAndTimeIsSet,
                     FieldNames = new[] {nameof(Model.MatchDayOfWeek), nameof(Model.MatchTime)},
-                    Enabled = Data.TeamRuleSet.HomeMatchTime.IsEditable && Data.TeamRuleSet.HomeMatchTime.MustBeSet,
+                    Enabled = Data.TournamentContext.TeamRuleSet.HomeMatchTime.IsEditable && Data.TournamentContext.TeamRuleSet.HomeMatchTime.MustBeSet,
                     Type = FactType.Critical,
                     CheckAsync = (cancellationToken) => Task.FromResult(
                         new FactResult
@@ -83,8 +83,8 @@ namespace TournamentManager.ModelValidators
                 {
                     Id = FactId.DayOfWeekWithinRange,
                     FieldNames = new[] {nameof(Model.MatchDayOfWeek)},
-                    Enabled = Data.TeamRuleSet.HomeMatchTime.IsEditable && Data.TeamRuleSet.HomeMatchTime.MustBeSet,
-                    Type = Data.TeamRuleSet.HomeMatchTime.ErrorIfNotInDaysOfWeekRange
+                    Enabled = Data.TournamentContext.TeamRuleSet.HomeMatchTime.IsEditable && Data.TournamentContext.TeamRuleSet.HomeMatchTime.MustBeSet,
+                    Type = Data.TournamentContext.TeamRuleSet.HomeMatchTime.ErrorIfNotInDaysOfWeekRange
                         ? FactType.Error
                         : FactType.Warning,
                     CheckAsync = (cancellationToken) => Task.FromResult(
@@ -92,10 +92,10 @@ namespace TournamentManager.ModelValidators
                         {
                             Message = string.Format(TeamValidatorResource.ResourceManager.GetString(
                                     nameof(FactId.DayOfWeekWithinRange)) ?? string.Empty,
-                                Data.TeamRuleSet.HomeMatchTime.ErrorIfNotInDaysOfWeekRange
+                                Data.TournamentContext.TeamRuleSet.HomeMatchTime.ErrorIfNotInDaysOfWeekRange
                                     ? TeamValidatorResource.required
                                     : TeamValidatorResource.recommended),
-                            Success = Data.TeamRuleSet.HomeMatchTime.DaysOfWeekRange.Select(dow => (int?) dow).ToList()
+                            Success = Data.TournamentContext.TeamRuleSet.HomeMatchTime.DaysOfWeekRange.Select(dow => (int?) dow).ToList()
                                 .Contains(Model.MatchDayOfWeek)
                         })
                 });
@@ -105,7 +105,7 @@ namespace TournamentManager.ModelValidators
                 {
                     Id = FactId.MatchTimeWithinRange,
                     FieldNames = new[] {nameof(Model.MatchTime)},
-                    Enabled = Data.TeamRuleSet.HomeMatchTime.MustBeSet,
+                    Enabled = Data.TournamentContext.TeamRuleSet.HomeMatchTime.MustBeSet,
                     Type = FactType.Warning,
                     CheckAsync = (cancellationToken) => Task.FromResult(
                         new FactResult
@@ -113,11 +113,11 @@ namespace TournamentManager.ModelValidators
                             Message = string.Format(
                                 TeamValidatorResource.ResourceManager.GetString(
                                     nameof(FactId.MatchTimeWithinRange)) ?? string.Empty,
-                                Data.FixtureRuleSet.RegularMatchStartTime.MinDayTime.ToShortTimeString(),
-                                Data.FixtureRuleSet.RegularMatchStartTime.MaxDayTime.ToShortTimeString()),
+                                Data.TournamentContext.FixtureRuleSet.RegularMatchStartTime.MinDayTime.ToShortTimeString(),
+                                Data.TournamentContext.FixtureRuleSet.RegularMatchStartTime.MaxDayTime.ToShortTimeString()),
                                 // regular start time is given in local time
-                            Success = Model.MatchTime.HasValue && Model.MatchTime >= Data.FixtureRuleSet.RegularMatchStartTime.MinDayTime &&
-                                      Model.MatchTime <= Data.FixtureRuleSet.RegularMatchStartTime.MaxDayTime
+                            Success = Model.MatchTime.HasValue && Model.MatchTime >= Data.TournamentContext.FixtureRuleSet.RegularMatchStartTime.MinDayTime &&
+                                      Model.MatchTime <= Data.TournamentContext.FixtureRuleSet.RegularMatchStartTime.MaxDayTime
                         })
                 });
         }

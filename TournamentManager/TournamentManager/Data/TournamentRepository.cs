@@ -31,19 +31,17 @@ namespace TournamentManager.Data
 	    }
 
         [Obsolete("Use GetTournamentAsync instead", false)]
-        public virtual async Task<TournamentEntity> GetTournamentByIdAsync(long tournamentId, CancellationToken cancellationToken)
+        public virtual async Task<TournamentEntity?> GetTournamentByIdAsync(long tournamentId, CancellationToken cancellationToken)
         {
             return await GetTournamentAsync(new PredicateExpression(TournamentFields.Id == tournamentId),
                 cancellationToken);
         }
 
-        public virtual async Task<TournamentEntity> GetTournamentAsync(PredicateExpression filter, CancellationToken cancellationToken)
+        public virtual async Task<TournamentEntity?> GetTournamentAsync(PredicateExpression filter, CancellationToken cancellationToken)
         {
-            using (var da = _dbContext.GetNewAdapter())
-            {
-                return (await da.FetchQueryAsync<TournamentEntity>(
-                    new QueryFactory().Tournament.Where(filter), cancellationToken)).Cast<TournamentEntity>().FirstOrDefault();
-            }
+            using var da = _dbContext.GetNewAdapter();
+            return (await da.FetchQueryAsync<TournamentEntity>(
+                new QueryFactory().Tournament.Where(filter), cancellationToken)).Cast<TournamentEntity>().FirstOrDefault();
         }
 
         public virtual async Task<TournamentEntity> GetTournamentWithRoundsAsync(long tournamentId, CancellationToken cancellationToken)

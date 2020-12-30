@@ -25,15 +25,15 @@ namespace League.Views
             
             try
             {
-                var siteContext = (DI.SiteContext)context.ActionContext.HttpContext.RequestServices.GetService(typeof(DI.SiteContext));
+                var tenantContext = (TournamentManager.MultiTenancy.ITenantContext)context.ActionContext.HttpContext.RequestServices.GetService(typeof(TournamentManager.MultiTenancy.ITenantContext));
                 _organizationSearchPaths.Clear();
-                if (!string.IsNullOrEmpty(siteContext.OrganizationKey))
+                if (!tenantContext.IsDefault)
                 {
                     _organizationSearchPaths.AddRange(new[]
                     {
-                        $"/Views/{{1}}/{siteContext.FolderName}/{{0}}.cshtml",
-                        $"/Views/Emails/{siteContext.FolderName}/{{0}}.cshtml",
-                        $"/Views/shared/{siteContext.FolderName}/{{0}}.cshtml"
+                        $"/Views/{{1}}/{tenantContext.SiteContext.FolderName}/{{0}}.cshtml",
+                        $"/Views/Emails/{tenantContext.SiteContext.FolderName}/{{0}}.cshtml",
+                        $"/Views/shared/{tenantContext.SiteContext.FolderName}/{{0}}.cshtml"
                     });
                 }
             }

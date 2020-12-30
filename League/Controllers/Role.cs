@@ -5,7 +5,6 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
-using League.DI;
 using League.Helpers;
 using League.Models.RoleViewModels;
 using League.Models.TeamApplicationViewModels;
@@ -17,13 +16,14 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
 using TournamentManager.DAL.EntityClasses;
+using TournamentManager.MultiTenancy;
 
 namespace League.Controllers
 {
     [Route("{organization:MatchingTenant}/[controller]")]
     public class Role : AbstractController
     {
-        private readonly SiteContext _siteContext;
+        private readonly ITenantContext _tenantContext;
         private readonly Microsoft.AspNetCore.Identity.SignInManager<Identity.ApplicationUser> _signInManager;
         private readonly IAuthorizationService _authorizationService;
         private readonly IStringLocalizer<Role> _localizer;
@@ -31,12 +31,12 @@ namespace League.Controllers
         private readonly ILoggerFactory _loggerFactory;
         private const string _defaultReturnUrl = "/";
 
-        public Role(SiteContext siteContext,
+        public Role(ITenantContext tenantContext,
             Microsoft.AspNetCore.Identity.SignInManager<Identity.ApplicationUser> signInManager,
             IAuthorizationService authorizationService, IStringLocalizer<Role> localizer,
             ILoggerFactory loggerFactory)
         {
-            _siteContext = siteContext;
+            _tenantContext = tenantContext;
             _signInManager = signInManager;
             _authorizationService = authorizationService;
             _localizer = localizer;
@@ -87,7 +87,7 @@ namespace League.Controllers
             }
 
             if (model.ClaimType == Identity.Constants.ClaimType.ManagesTeam &&
-                (await _siteContext.AppDb.ManagerOfTeamRepository.GetManagerIdsOfTeamAsync(model.TeamId,
+                (await _tenantContext.DbContext.AppDb.ManagerOfTeamRepository.GetManagerIdsOfTeamAsync(model.TeamId,
                     cancellationToken)).Count <= 1)
             {
                 _logger.LogInformation("Rejected to remove last claim '{0}' for team id '{1}' and user id {2}",
@@ -186,7 +186,7 @@ namespace League.Controllers
 
         private string SetAdjustedReturnResult(string method, string returnUrl, long teamId, bool isSuccess)
         {
-            if (method.Equals(nameof(Add)) && returnUrl.Contains(Url.Action(nameof(Team.MyTeam), nameof(Team), new { Organization = _siteContext.UrlSegmentValue })))
+            if (method.Equals(nameof(Add)) && returnUrl.Contains(Url.Action(nameof(Team.MyTeam), nameof(Team), new { Organization = _tenantContext.SiteContext.UrlSegmentValue })))
             {
                 TempData.Put<MyTeamMessageModel.MyTeamMessage>(nameof(MyTeamMessageModel.MyTeamMessage),
                     new MyTeamMessageModel.MyTeamMessage
@@ -195,10 +195,10 @@ namespace League.Controllers
                         MessageId = isSuccess ? MyTeamMessageModel.MessageId.MemberAddSuccess : MyTeamMessageModel.MessageId.MemberAddFailure
                     });
 
-                return Url.Action(nameof(Team.MyTeam), nameof(Team), new { Organization = _siteContext.UrlSegmentValue, id = teamId });
+                return Url.Action(nameof(Team.MyTeam), nameof(Team), new { Organization = _tenantContext.SiteContext.UrlSegmentValue, id = teamId });
             }
 
-            if (method.Equals(nameof(Remove)) && returnUrl.Contains(Url.Action(nameof(Team.MyTeam), nameof(Team), new { Organization = _siteContext.UrlSegmentValue })))
+            if (method.Equals(nameof(Remove)) && returnUrl.Contains(Url.Action(nameof(Team.MyTeam), nameof(Team), new { Organization = _tenantContext.SiteContext.UrlSegmentValue })))
             {
                 TempData.Put<MyTeamMessageModel.MyTeamMessage>(nameof(MyTeamMessageModel.MyTeamMessage),
                     new MyTeamMessageModel.MyTeamMessage
@@ -207,7 +207,7 @@ namespace League.Controllers
                         MessageId = isSuccess ? MyTeamMessageModel.MessageId.MemberRemoveSuccess : MyTeamMessageModel.MessageId.MemberRemoveFailure
                     });
 
-                return Url.Action(nameof(Team.MyTeam), nameof(Team), new { Organization = _siteContext.UrlSegmentValue, id = teamId});
+                return Url.Action(nameof(Team.MyTeam), nameof(Team), new { Organization = _tenantContext.SiteContext.UrlSegmentValue, id = teamId});
             }
 
             return returnUrl;
@@ -215,7 +215,7 @@ namespace League.Controllers
 
         private string SetCannotRemoveLastTeamManagerReturnResult(string returnUrl, long teamId)
         {
-            if (returnUrl.Contains(Url.Action(nameof(Team.MyTeam), nameof(Team), new { Organization = _siteContext.UrlSegmentValue })))
+            if (returnUrl.Contains(Url.Action(nameof(Team.MyTeam), nameof(Team), new { Organization = _tenantContext.SiteContext.UrlSegmentValue })))
             {
                 TempData.Put<MyTeamMessageModel.MyTeamMessage>(nameof(MyTeamMessageModel.MyTeamMessage),
                     new MyTeamMessageModel.MyTeamMessage
@@ -224,7 +224,7 @@ namespace League.Controllers
                         MessageId = MyTeamMessageModel.MessageId.MemberCannotRemoveLastTeamManager
                     });
 
-                return Url.Action(nameof(Team.MyTeam), nameof(Team), new { Organization = _siteContext.UrlSegmentValue, id = teamId });
+                return Url.Action(nameof(Team.MyTeam), nameof(Team), new { Organization = _tenantContext.SiteContext.UrlSegmentValue, id = teamId });
             }
 
             return returnUrl;

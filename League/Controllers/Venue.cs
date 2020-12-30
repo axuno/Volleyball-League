@@ -8,7 +8,6 @@ using System.Threading.Tasks;
 using Axuno.Tools.GeoSpatial;
 using League.Components;
 using League.ConfigurationPoco;
-using League.DI;
 using League.Helpers;
 using League.Models.TeamViewModels;
 using League.Models.VenueViewModels;
@@ -23,16 +22,16 @@ using SD.LLBLGen.Pro.ORMSupportClasses;
 using TournamentManager.DAL.EntityClasses;
 using TournamentManager.DAL.HelperClasses;
 using TournamentManager.DAL.TypedViewClasses;
-using TournamentManager.Data;
 using TournamentManager.ModelValidators;
+using TournamentManager.MultiTenancy;
 
 namespace League.Controllers
 {
     [Route("{organization:MatchingTenant}/[controller]")]
     public class Venue : AbstractController
     {
-        private readonly SiteContext _siteContext;
-        private readonly TournamentManager.MultiTenancy.AppDb _appDb;
+        private readonly ITenantContext _tenantContext;
+        private readonly AppDb _appDb;
         private readonly IAuthorizationService _authorizationService;
         private readonly IStringLocalizer<Venue> _localizer;
         private readonly RegionInfo _regionInfo;
@@ -41,13 +40,13 @@ namespace League.Controllers
         private readonly GoogleConfiguration _googleConfig;
         private readonly string _defaultReturnUrl;
 
-        public Venue(SiteContext siteContext, IAuthorizationService authorizationService, 
+        public Venue(ITenantContext tenantContext, IAuthorizationService authorizationService, 
             IStringLocalizer<Venue> localizer, RegionInfo regionInfo,
             IConfiguration configuration, ILogger<Venue> logger)
         {
             _defaultReturnUrl = "/";
-            _siteContext = siteContext;
-            _appDb = siteContext.AppDb;
+            _tenantContext = tenantContext;
+            _appDb = tenantContext.DbContext.AppDb;
             _authorizationService = authorizationService;
             _localizer = localizer;
             _regionInfo = regionInfo;
@@ -239,7 +238,7 @@ namespace League.Controllers
         
         private string SetAdjustedReturnResult(string method, string returnUrl, bool isSuccess)
         {
-            if (method.Equals(nameof(Edit)) && returnUrl.Contains(Url.Action(nameof(Team.MyTeam), nameof(Team), new { Organization = _siteContext.UrlSegmentValue })))
+            if (method.Equals(nameof(Edit)) && returnUrl.Contains(Url.Action(nameof(Team.MyTeam), nameof(Team), new { Organization = _tenantContext.SiteContext.UrlSegmentValue })))
             {
                 TempData.Put<MyTeamMessageModel.MyTeamMessage>(nameof(MyTeamMessageModel.MyTeamMessage),
                     new MyTeamMessageModel.MyTeamMessage
@@ -251,7 +250,7 @@ namespace League.Controllers
                 return returnUrl;
             }
 
-            if (method.Equals(nameof(Create)) && returnUrl.Contains(Url.Action(nameof(Team.MyTeam), nameof(Team), new { Organization = _siteContext.UrlSegmentValue })))
+            if (method.Equals(nameof(Create)) && returnUrl.Contains(Url.Action(nameof(Team.MyTeam), nameof(Team), new { Organization = _tenantContext.SiteContext.UrlSegmentValue })))
             {
                 TempData.Put<MyTeamMessageModel.MyTeamMessage>(nameof(MyTeamMessageModel.MyTeamMessage),
                     new MyTeamMessageModel.MyTeamMessage

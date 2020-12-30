@@ -1,11 +1,12 @@
 ﻿@using League.Controllers
 @using Microsoft.AspNetCore.Mvc.Localization
+@using TournamentManager.MultiTenancy
 @inject IViewLocalizer Localizer
-@inject League.DI.SiteContext SiteContext
+@inject ITenantContext TenantContext
 @model League.Models.RankingViewModels.AllTimeTournamentModel
 @{
     ViewData["Title"] = Localizer["All-time Tournament Tables"].Value;
-    var organizationRoute = SiteContext.UrlSegmentValue;
+    var organizationRoute = TenantContext.SiteContext.UrlSegmentValue;
     if (Model.RankingList.Count == 0)
     {
         <div class="mb-0 pb-1">

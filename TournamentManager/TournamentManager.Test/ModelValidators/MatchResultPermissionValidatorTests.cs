@@ -6,8 +6,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using NUnit.Framework;
 using TournamentManager.DAL.EntityClasses;
-using TournamentManager.Data;
 using TournamentManager.ModelValidators;
+using TournamentManager.MultiTenancy;
 
 namespace TournamentManager.Tests.ModelValidators
 {
@@ -18,7 +18,7 @@ namespace TournamentManager.Tests.ModelValidators
         [TestCase(false, false)]
         public async Task Tournament_Is_In_Active_Mode(bool tournamentInPlanMode, bool failureExpected)
         {
-            var data = (new OrganizationContext(),
+            var data = (new TenantContext(),
                 (TournamentInPlanMode: tournamentInPlanMode, RoundIsCompleted: false,
                     CurrentDateUtc: new DateTime(2020, 07, 01, 20, 00, 00)));
             var match = new MatchEntity();
@@ -38,7 +38,7 @@ namespace TournamentManager.Tests.ModelValidators
         [TestCase(false, false)]
         public async Task Round_Is_Still_Running(bool roundCompleted, bool failureExpected)
         {
-            var data = (new OrganizationContext(),
+            var data = (new TenantContext(),
                 (TournamentInPlanMode: false, RoundIsCompleted: roundCompleted,
                     CurrentDateUtc: new DateTime(2020, 07, 01, 20, 00, 00)));
             var match = new MatchEntity();
@@ -59,7 +59,7 @@ namespace TournamentManager.Tests.ModelValidators
         [TestCase("2020-07-30 20:00:00", 0, true)]
         public async Task Current_Date_Is_Before_Result_Correction_Deadline(DateTime changeDate, int maxDaysForCorrection, bool failureExpected)
         {
-            var data = (new OrganizationContext {MaxDaysForResultCorrection = maxDaysForCorrection},
+            var data = (new TenantContext() { TournamentContext = new TournamentContext {MaxDaysForResultCorrection = maxDaysForCorrection}},
                 (TournamentInPlanMode: false, RoundIsCompleted: false,
                     CurrentDateUtc: changeDate));
             var match = new MatchEntity {RealStart = new DateTime(2020, 07, 01, 20, 00, 00) };

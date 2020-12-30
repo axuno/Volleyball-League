@@ -2,25 +2,24 @@
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using League.DI;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SD.LLBLGen.Pro.ORMSupportClasses;
 using TournamentManager.DAL.HelperClasses;
-using TournamentManager.Data;
+using TournamentManager.MultiTenancy;
 
 namespace League.Components
 {
     public class RoundSelector : ViewComponent
     {
-        private readonly SiteContext _siteContext;
-        private readonly TournamentManager.MultiTenancy.AppDb _appDb;
+        private readonly ITenantContext _tenantContext;
+        private readonly AppDb _appDb;
         private readonly ILogger<RoundSelector> _logger;
 
-        public RoundSelector(SiteContext siteContext, ILogger<RoundSelector> logger)
+        public RoundSelector(ITenantContext tenantContext, ILogger<RoundSelector> logger)
         {
-            _siteContext = siteContext;
-            _appDb = siteContext.AppDb;
+            _tenantContext = tenantContext;
+            _appDb = tenantContext.DbContext.AppDb;
             _logger = logger;
         }
 

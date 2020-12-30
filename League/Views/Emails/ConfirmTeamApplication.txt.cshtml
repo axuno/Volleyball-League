@@ -6,7 +6,7 @@
 }
 @Html.Raw(Model.IsNewApplication ? Localizer["Confirmation of the team registration"].Value : Localizer["Update of team registration"].Value)
 
-@Html.Raw(Model.OrganizationContext.Name)
+@Html.Raw(Model.TenantContext.OrganizationContext.Name)
 @Html.Raw(Model.TournamentName)
 @Html.Raw(Model.RoundDescription) (@Html.Raw(Model.RoundTypeDescription))
 
@@ -17,14 +17,14 @@
 @Html.Raw(Localizer["We wish you much success and good luck."].Value)
 
 @{
-if (Model.OrganizationContext.Bank.ShowBankDetailsInConfirmationEmail && Model.IsRegisteringUser)
+if (Model.TenantContext.OrganizationContext.Bank.ShowBankDetailsInConfirmationEmail && Model.IsRegisteringUser)
 {
 @Html.Raw(Localizer["Please transfer the participation fee to the following bank account:"].Value + Environment.NewLine)
-@Html.Raw(Localizer["Amount"].Value + ": " + Model.OrganizationContext.Bank.Amount + " " + Model.OrganizationContext.Bank.Currency + Environment.NewLine)
-@Html.Raw(Localizer["Recipient"].Value + ": " + Model.OrganizationContext.Bank.Recipient + Environment.NewLine) 
-@Html.Raw(Localizer["IBAN"].Value + ": ") @Html.Raw(Model.OrganizationContext.Bank.Iban + Environment.NewLine)
-@Html.Raw(Localizer["BIC"].Value + ": ") @Html.Raw(Model.OrganizationContext.Bank.Bic + Environment.NewLine)
-@Html.Raw(Localizer["Bank name"].Value + ": " + Model.OrganizationContext.Bank.BankName + Environment.NewLine)
+@Html.Raw(Localizer["Amount"].Value + ": " + Model.TenantContext.OrganizationContext.Bank.Amount + " " + Model.TenantContext.OrganizationContext.Bank.Currency + Environment.NewLine)
+@Html.Raw(Localizer["Recipient"].Value + ": " + Model.TenantContext.OrganizationContext.Bank.Recipient + Environment.NewLine) 
+@Html.Raw(Localizer["IBAN"].Value + ": ") @Html.Raw(Model.TenantContext.OrganizationContext.Bank.Iban + Environment.NewLine)
+@Html.Raw(Localizer["BIC"].Value + ": ") @Html.Raw(Model.TenantContext.OrganizationContext.Bank.Bic + Environment.NewLine)
+@Html.Raw(Localizer["Bank name"].Value + ": " + Model.TenantContext.OrganizationContext.Bank.BankName + Environment.NewLine)
 @Html.Raw(Environment.NewLine);
 @Html.Raw(Localizer["Thank you."].Value + Environment.NewLine + Environment.NewLine)
 }
@@ -35,4 +35,4 @@ if (Model.IsRegisteringUser)
 }
 }
 @Localizer["Sporting greetings"]
-@Model.OrganizationContext.ShortName
+@Model.TenantContext.OrganizationContext.ShortName

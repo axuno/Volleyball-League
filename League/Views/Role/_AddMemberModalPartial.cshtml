@@ -1,11 +1,12 @@
-﻿@inject League.DI.SiteContext SiteContext
+﻿@inject ITenantContext TenantContext
 @using League.Controllers
 @using League.Views.Role
+@using TournamentManager.MultiTenancy
 @model League.Models.RoleViewModels.RoleAddModel
 @{
     var selectableRoleNames = new[] { League.Identity.Constants.ClaimType.PlaysInTeam, League.Identity.Constants.ClaimType.ManagesTeam };
     ViewContext.ClientValidationEnabled = false;
-    var organizationRoute = SiteContext.UrlSegmentValue;
+    var organizationRoute = TenantContext.SiteContext.UrlSegmentValue;
 }
 <!-- Modal -->
 <modal id="add-team-member" title="@_AddMemberModalPartial.Add_team_member" dialog-class="modal-md" tabindex="-1">

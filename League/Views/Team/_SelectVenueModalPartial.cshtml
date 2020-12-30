@@ -1,9 +1,10 @@
 @using League.Controllers
 @using Microsoft.AspNetCore.Mvc.Localization
+@using TournamentManager.MultiTenancy
 @inject IViewLocalizer Localizer
-@inject League.DI.SiteContext SiteContext
+@inject ITenantContext TenantContext
 @model League.Models.TeamViewModels.TeamVenueSelectModel
-@{var organizationRoute = SiteContext.UrlSegmentValue;}
+@{var organizationRoute = TenantContext.SiteContext.UrlSegmentValue;}
 <!-- Modal -->
 <modal id="select-venue" title="@Localizer["Select team venue"].Value" dialog-class="modal-lg" tabindex="-1">
     <modal-body class="pb-0">

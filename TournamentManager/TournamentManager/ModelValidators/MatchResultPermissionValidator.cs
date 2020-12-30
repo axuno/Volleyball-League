@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
 using TournamentManager.DAL.EntityClasses;
-using TournamentManager.Data;
+using TournamentManager.MultiTenancy;
 
 namespace TournamentManager.ModelValidators
 {
-    public class MatchResultPermissionValidator : AbstractValidator<MatchEntity, (OrganizationContext OrganizationContext,
+    public class MatchResultPermissionValidator : AbstractValidator<MatchEntity, (ITenantContext TenantContext,
         (bool TournamentInPlanMode, bool RoundIsCompleted, DateTime CurrentDateUtc) Criteria), MatchResultPermissionValidator.FactId>
     {
         public enum FactId
@@ -17,7 +16,7 @@ namespace TournamentManager.ModelValidators
         }
 
         public MatchResultPermissionValidator(MatchEntity model,
-            (OrganizationContext OrganizationContext, (bool TournamentInPlanMode, bool RoundIsCompleted, DateTime CurrentDateUtc) Criteria) data) : base(model, data)
+            (ITenantContext TenantContext, (bool TournamentInPlanMode, bool RoundIsCompleted, DateTime CurrentDateUtc) Criteria) data) : base(model, data)
         {
             CreateFacts();
         }
@@ -78,13 +77,13 @@ namespace TournamentManager.ModelValidators
                         }
 
                         // negative values will allow unlimited corrections
-                        var maxCorrectionDate = Data.OrganizationContext.MaxDaysForResultCorrection >= 0 ? Model.RealStart.Value.AddDays(Data.OrganizationContext.MaxDaysForResultCorrection) : DateTime.MaxValue;
+                        var maxCorrectionDate = Data.TenantContext.TournamentContext.MaxDaysForResultCorrection >= 0 ? Model.RealStart.Value.AddDays(Data.TenantContext.TournamentContext.MaxDaysForResultCorrection) : DateTime.MaxValue;
 
                         if (maxCorrectionDate < Data.Criteria.CurrentDateUtc)
                         {
                             factResult.Success = false;
                             factResult.Message = string.Format(MatchResultPermissionValidatorResource.ResourceManager.GetString(
-                                nameof(FactId.CurrentDateIsBeforeResultCorrectionDeadline)) ?? string.Empty, Data.OrganizationContext.MaxDaysForResultCorrection);
+                                nameof(FactId.CurrentDateIsBeforeResultCorrectionDeadline)) ?? string.Empty, Data.TenantContext.TournamentContext.MaxDaysForResultCorrection);
                         }
 
                         return await Task.FromResult(factResult);

@@ -1,16 +1,16 @@
 ﻿@using System.Globalization
 @using League.Components
 @using League.Controllers
-@using League.DI
 @using Microsoft.AspNetCore.Mvc.Localization
+@using TournamentManager.MultiTenancy
 @inject RegionInfo RegionInfo
-@inject SiteContext SiteContext
+@inject ITenantContext TenantContext
 @inject IViewLocalizer Localizer
 @{ ViewContext.ClientValidationEnabled = false;}  @* We rely on datepicker and server side validation *@
 @model League.Models.MatchViewModels.EditFixtureViewModel
 @{
     ViewData["Title"] = Localizer["Edit Fixture"].Value + " - " + Model.Tournament.Name;
-    var organizationRoute = SiteContext.UrlSegmentValue;
+    var organizationRoute = TenantContext.SiteContext.UrlSegmentValue;
 }
 <div class="mb-0 pb-1">
     <h2 class="h2">@ViewData["Title"]</h2>
@@ -94,7 +94,7 @@
 <modal id="select-venue" title="@Localizer["Please select a venue"].Value" dialog-class="modal-lg">
     <modal-body>
         <div>
-            @{ ValueTuple<long, IList<long>, VenueSelectorComponentModel.Criteria, VenueSelectorComponentModel.Criteria, long?> m = (SiteContext.MatchPlanTournamentId, new List<long>(new long[] { Model.PlannedMatch.HomeTeamId, Model.PlannedMatch.GuestTeamId }), VenueSelectorComponentModel.Criteria.VenuesOfTeams | VenueSelectorComponentModel.Criteria.Active, VenueSelectorComponentModel.Criteria.VenuesOfTeams | VenueSelectorComponentModel.Criteria.Active, -1);}
+            @{ ValueTuple<long, IList<long>, VenueSelectorComponentModel.Criteria, VenueSelectorComponentModel.Criteria, long?> m = (TenantContext.TournamentContext.MatchPlanTournamentId, new List<long>(new long[] { Model.PlannedMatch.HomeTeamId, Model.PlannedMatch.GuestTeamId }), VenueSelectorComponentModel.Criteria.VenuesOfTeams | VenueSelectorComponentModel.Criteria.Active, VenueSelectorComponentModel.Criteria.VenuesOfTeams | VenueSelectorComponentModel.Criteria.Active, -1);}
             @(await Component.InvokeAsync<VenueSelector>(m))
         </div>
     </modal-body>

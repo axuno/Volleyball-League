@@ -13,6 +13,7 @@ using SD.LLBLGen.Pro.ORMSupportClasses;
 using TournamentManager.DAL.HelperClasses;
 using TournamentManager.DAL.TypedViewClasses;
 using TournamentManager.Data;
+using TournamentManager.MultiTenancy;
 
 namespace League.BackgroundTasks.Email
 {
@@ -57,7 +58,7 @@ namespace League.BackgroundTasks.Email
         /// <summary>
         /// Gets or sets the Model for creating the email content.
         /// </summary>
-        public (ClaimsPrincipal ChangedByUser, long MatchId, OrganizationContext OrganizationContext, PlannedMatchRow Fixture) Model { get; set; }
+        public (ClaimsPrincipal ChangedByUser, long MatchId, ITenantContext TenantContext, PlannedMatchRow Fixture) Model { get; set; }
 
         /// <summary>
         /// Sends the email message to the <see cref="ApplicationUser"/>.
@@ -72,7 +73,7 @@ namespace League.BackgroundTasks.Email
 
             var model = Model; // Necessary to re-assign structure members
 
-            model.Fixture = (await Model.OrganizationContext.AppDb.MatchRepository.GetPlannedMatchesAsync(
+            model.Fixture = (await Model.TenantContext.DbContext.AppDb.MatchRepository.GetPlannedMatchesAsync(
                 new PredicateExpression(PlannedMatchFields.Id == Model.MatchId), cancellationToken)).FirstOrDefault();
 
             if (model.Fixture == null)
@@ -81,7 +82,7 @@ namespace League.BackgroundTasks.Email
                 return;
             }
 
-            var teamUsers = await Model.OrganizationContext.AppDb.TeamRepository.GetTeamUserRoundInfosAsync(
+            var teamUsers = await Model.TenantContext.DbContext.AppDb.TeamRepository.GetTeamUserRoundInfosAsync(
                 new PredicateExpression(TeamUserRoundFields.TeamId == model.Fixture.HomeTeamId |
                                         TeamUserRoundFields.TeamId == model.Fixture.GuestTeamId), cancellationToken);
 
@@ -90,7 +91,7 @@ namespace League.BackgroundTasks.Email
             {
                 recipients.Add(new  {CompleteName = getCompleteUsername(teamUser), Email = teamUser.Email, Email2 = teamUser.Email2});
             }
-            recipients.Add( new { CompleteName = Model.OrganizationContext.Email.GeneralTo.DisplayName, Email = Model.OrganizationContext.Email.GeneralTo.Address, Email2 = string.Empty });
+            recipients.Add( new { CompleteName = Model.TenantContext.SiteContext.Email.GeneralTo.DisplayName, Email = Model.TenantContext.SiteContext.Email.GeneralTo.Address, Email2 = string.Empty });
 
             MailData = recipients;
 

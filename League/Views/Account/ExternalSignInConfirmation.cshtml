@@ -1,12 +1,12 @@
 ﻿@inject IViewLocalizer Localizer
-@inject SiteContext SiteContext
+@inject ITenantContext TenantContext
 @using League.Controllers
-@using League.DI
 @using Microsoft.AspNetCore.Mvc.Localization
+@using TournamentManager.MultiTenancy
 @model ExternalSignConfirmationViewModel
 @{
     ViewData["Title"] = Localizer["Associate social network account"];
-    var organizationRoute = SiteContext.UrlSegmentValue;
+    var organizationRoute = TenantContext.SiteContext.UrlSegmentValue;
     List<SelectListItem> GenderList()
     {
         return new List<SelectListItem> {new SelectListItem {Value = string.Empty, Text = Localizer["Please choose"].Value},
@@ -21,7 +21,7 @@
         @(Localizer.GetHtml("You have successfully authenticated with <strong>{0}</strong>", ViewData["LoginProvider"])).
     </site-alert>
     <p>
-        @(Localizer.GetHtml("Please enter your contact data below below to finish signing in with <strong>{0}</strong>", SiteContext.ShortName)).
+        @(Localizer.GetHtml("Please enter your contact data below below to finish signing in with <strong>{0}</strong>", TenantContext.OrganizationContext.ShortName)).
     </p>
     <site-validation-summary show="All">
         <b>@Localizer["Input has some issues"]:</b>

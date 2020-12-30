@@ -54,7 +54,7 @@ namespace League.MultiTenancy
                 }
             }
 
-            return null;
+            return _tenants.Values.FirstOrDefault(t => t.IsDefault);
         }
         
         private void SetMostRecentTenantCookie(ITenantContext tenant)

@@ -9,6 +9,7 @@ using MailMergeLib;
 using MailMergeLib.AspNet;
 using Microsoft.Extensions.Logging;
 using TournamentManager.Data;
+using TournamentManager.MultiTenancy;
 
 namespace League.BackgroundTasks.Email
 {
@@ -31,7 +32,7 @@ namespace League.BackgroundTasks.Email
         /// <returns>Return new <see cref="UserEmailTask"/> instance initialized like after dependency injection</returns>
         public UserEmailTask CreateNew()
         {
-            return new UserEmailTask(BackgroundWebHost, MailMergeService, (ILogger<UserEmailTask>) Logger) {Model = (string.Empty, string.Empty, Model.OrganizationContext)};
+            return new UserEmailTask(BackgroundWebHost, MailMergeService, (ILogger<UserEmailTask>) Logger) {Model = (string.Empty, string.Empty, Model.TenantContext)};
         }
 
         /// <summary>
@@ -47,7 +48,7 @@ namespace League.BackgroundTasks.Email
         /// <summary>
         /// Gets or sets the Model for creating the email content.
         /// </summary>
-        public (string Email, string CallbackUrl, OrganizationContext OrganizationContext) Model { get; set; }
+        public (string Email, string CallbackUrl, ITenantContext TenantContext) Model { get; set; }
 
         /// <summary>
         /// Gets or sets the recipient's email address.

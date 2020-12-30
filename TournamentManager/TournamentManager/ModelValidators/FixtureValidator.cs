@@ -10,12 +10,12 @@ using TournamentManager.DAL;
 using TournamentManager.DAL.EntityClasses;
 using TournamentManager.DAL.HelperClasses;
 using TournamentManager.DAL.TypedViewClasses;
-using TournamentManager.Data;
 using TournamentManager.ExtensionMethods;
+using TournamentManager.MultiTenancy;
 
 namespace TournamentManager.ModelValidators
 {
-    public class FixtureValidator : AbstractValidator<MatchEntity, (OrganizationContext OrganizationContext, Axuno.Tools.DateAndTime.TimeZoneConverter TimeZoneConverter, PlannedMatchRow PlannedMatch), FixtureValidator.FactId>
+    public class FixtureValidator : AbstractValidator<MatchEntity, (ITenantContext TenantContext, Axuno.Tools.DateAndTime.TimeZoneConverter TimeZoneConverter, PlannedMatchRow PlannedMatch), FixtureValidator.FactId>
     {
         private List<TeamEntity> _teamsInMatch = new List<TeamEntity>();
         private readonly FactResult _successResult = new FactResult { Message = string.Empty, Success = true };
@@ -39,7 +39,7 @@ namespace TournamentManager.ModelValidators
         /// </summary>
         public DateTime CurrentDateTimeUtc { get; set; }
 
-        public FixtureValidator(MatchEntity model, (OrganizationContext OrganizationContext, Axuno.Tools.DateAndTime.TimeZoneConverter TimeZoneConverter, PlannedMatchRow PlannedMatch) data, DateTime currentDateTimeUtc) : base(model, data)
+        public FixtureValidator(MatchEntity model, (ITenantContext TenantContext, Axuno.Tools.DateAndTime.TimeZoneConverter TimeZoneConverter, PlannedMatchRow PlannedMatch) data, DateTime currentDateTimeUtc) : base(model, data)
         {
             CurrentDateTimeUtc = currentDateTimeUtc;
             CreateFacts();
@@ -47,7 +47,7 @@ namespace TournamentManager.ModelValidators
 
         private async Task LoadTeamsInMatch(CancellationToken cancellationToken)
         {
-            _teamsInMatch = await Data.OrganizationContext.AppDb.TeamRepository.GetTeamEntitiesAsync(
+            _teamsInMatch = await Data.TenantContext.DbContext.AppDb.TeamRepository.GetTeamEntitiesAsync(
                            new PredicateExpression(TeamFields.Id == Model.HomeTeamId |
                                                    TeamFields.Id == Model.GuestTeamId),
                            cancellationToken);
@@ -60,7 +60,7 @@ namespace TournamentManager.ModelValidators
                 {
                     Id = FactId.PlannedStartIsSet,
                     FieldNames = new []{ nameof(Model.PlannedStart) },
-                    Enabled = Data.OrganizationContext.FixtureRuleSet.PlannedMatchDateTimeMustBeSet,
+                    Enabled = Data.TenantContext.TournamentContext.FixtureRuleSet.PlannedMatchDateTimeMustBeSet,
                     Type = FactType.Critical,
                     CheckAsync = (cancellationToken) => Task.FromResult(
                         new FactResult {
@@ -73,15 +73,15 @@ namespace TournamentManager.ModelValidators
                 {
                     Id = FactId.PlannedStartNotExcluded,
                     FieldNames = new[] { nameof(Model.PlannedStart) },
-                    Enabled = Data.OrganizationContext.FixtureRuleSet.CheckForExcludedMatchDateTime,
+                    Enabled = Data.TenantContext.TournamentContext.FixtureRuleSet.CheckForExcludedMatchDateTime,
                     Type = FactType.Error,
                     CheckAsync = async (cancellationToken) => 
                     {
                         if (!Model.PlannedStart.HasValue) return _successResult;
                         // MatchEntity.RoundId, MatchEntity.HomeTeamId, MatchEntity.GuestTeam must be set for the check to work
                         var excluded =
-                            await Data.OrganizationContext.AppDb.ExcludedMatchDateRepository.GetExcludedMatchDateAsync(Model,
-                                Data.OrganizationContext.MatchPlanTournamentId, cancellationToken);
+                            await Data.TenantContext.DbContext.AppDb.ExcludedMatchDateRepository.GetExcludedMatchDateAsync(Model,
+                                Data.TenantContext.TournamentContext.MatchPlanTournamentId, cancellationToken);
 
                         if (excluded == null)
                         {
@@ -94,7 +94,7 @@ namespace TournamentManager.ModelValidators
                         {
                             Message = string.Format(FixtureValidatorResource.ResourceManager.GetString(
                                     nameof(FactId.PlannedStartNotExcluded)) ?? string.Empty,
-                                Data.OrganizationContext.FixtureRuleSet.UseOnlyDatePartForTeamFreeBusyTimes
+                                Data.TenantContext.TournamentContext.FixtureRuleSet.UseOnlyDatePartForTeamFreeBusyTimes
                                     ? zonedPlannedStart?.ToShortDateString()
                                     : $"{zonedPlannedStart?.ToShortDateString()} {zonedPlannedStart?.ToShortTimeString()}",
                                 excluded.Reason),
@@ -128,14 +128,14 @@ namespace TournamentManager.ModelValidators
                     CheckAsync = async (cancellationToken) =>
                     {
                         var round =
-                            await Data.OrganizationContext.AppDb.RoundRepository.GetRoundWithLegsAsync(Model.RoundId,
+                            await Data.TenantContext.DbContext.AppDb.RoundRepository.GetRoundWithLegsAsync(Model.RoundId,
                                 cancellationToken);
 
                         if (!Model.PlannedStart.HasValue || round.RoundLegs.Count == 0) { return _successResult; }
 
                         round.RoundLegs.Sort((int) RoundLegFieldIndex.SequenceNo, ListSortDirection.Ascending);
 
-                        var stayWithinLegDates = Data.OrganizationContext.FixtureRuleSet.PlannedMatchTimeMustStayInCurrentLegBoundaries;
+                        var stayWithinLegDates = Data.TenantContext.TournamentContext.FixtureRuleSet.PlannedMatchTimeMustStayInCurrentLegBoundaries;
                         var currentLeg = round.RoundLegs.First(rl => rl.SequenceNo == Model.LegSequenceNo);
 
                         if ((stayWithinLegDates &&
@@ -161,7 +161,7 @@ namespace TournamentManager.ModelValidators
                             displayPeriods = round.RoundLegs.Aggregate(displayPeriods,
                                 (current, leg) =>
                                     current +
-                                    $"{Data.TimeZoneConverter.ToZonedTime(leg.StartDateTime).DateTimeOffset.DateTime.ToShortDateString()} - {Data.TimeZoneConverter.ToZonedTime(leg.EndDateTime).DateTimeOffset.DateTime.ToShortDateString()}{joinWith}");
+                                    $"{Data.TimeZoneConverter.ToZonedTime(leg.StartDateTime)?.DateTimeOffset.DateTime.ToShortDateString()} - {Data.TimeZoneConverter.ToZonedTime(leg.EndDateTime)?.DateTimeOffset.DateTime.ToShortDateString()}{joinWith}");
 
                             displayPeriods = displayPeriods.Substring(0, displayPeriods.Length - joinWith.Length);
                         }
@@ -186,11 +186,11 @@ namespace TournamentManager.ModelValidators
                     CheckAsync = (cancellationToken) => Task.FromResult(
                         new FactResult
                         {
-                            Message = string.Format(FixtureValidatorResource.ResourceManager.GetString(nameof(FactId.PlannedStartWithinDesiredTimeRange)) ?? string.Empty, Data.OrganizationContext.FixtureRuleSet.RegularMatchStartTime.MinDayTime.ToShortTimeString(), Data.OrganizationContext.FixtureRuleSet.RegularMatchStartTime.MaxDayTime.ToShortTimeString()),
+                            Message = string.Format(FixtureValidatorResource.ResourceManager.GetString(nameof(FactId.PlannedStartWithinDesiredTimeRange)) ?? string.Empty, Data.TenantContext.TournamentContext.FixtureRuleSet.RegularMatchStartTime.MinDayTime.ToShortTimeString(), Data.TenantContext.TournamentContext.FixtureRuleSet.RegularMatchStartTime.MaxDayTime.ToShortTimeString()),
                             // regular start time is given in local time
                             Success = !Model.PlannedStart.HasValue || 
-                                      Data.TimeZoneConverter.ToZonedTime(Model.PlannedStart)?.DateTimeOffset.TimeOfDay >= Data.OrganizationContext.FixtureRuleSet.RegularMatchStartTime.MinDayTime &&
-                                      Data.TimeZoneConverter.ToZonedTime(Model.PlannedStart)?.DateTimeOffset.TimeOfDay <= Data.OrganizationContext.FixtureRuleSet.RegularMatchStartTime.MaxDayTime
+                                      Data.TimeZoneConverter.ToZonedTime(Model.PlannedStart)?.DateTimeOffset.TimeOfDay >= Data.TenantContext.TournamentContext.FixtureRuleSet.RegularMatchStartTime.MinDayTime &&
+                                      Data.TimeZoneConverter.ToZonedTime(Model.PlannedStart)?.DateTimeOffset.TimeOfDay <= Data.TenantContext.TournamentContext.FixtureRuleSet.RegularMatchStartTime.MaxDayTime
                         })
                 }
             );
@@ -205,8 +205,8 @@ namespace TournamentManager.ModelValidators
                     CheckAsync = async (cancellationToken) =>
                     {
                         var busyTeams = Model.PlannedStart.HasValue
-                            ? await Data.OrganizationContext.AppDb.MatchRepository.AreTeamsBusyAsync(
-                                Model, Data.OrganizationContext.FixtureRuleSet.UseOnlyDatePartForTeamFreeBusyTimes, Data.OrganizationContext.MatchPlanTournamentId, cancellationToken)
+                            ? await Data.TenantContext.DbContext.AppDb.MatchRepository.AreTeamsBusyAsync(
+                                Model, Data.TenantContext.TournamentContext.FixtureRuleSet.UseOnlyDatePartForTeamFreeBusyTimes, Data.TenantContext.TournamentContext.MatchPlanTournamentId, cancellationToken)
                             : new long[]{};
 
                         return busyTeams.Length > 0
@@ -275,13 +275,13 @@ namespace TournamentManager.ModelValidators
                 {
                     Id = FactId.PlannedVenueIsSet,
                     FieldNames = new[] { nameof(Model.VenueId) },
-                    Enabled = Data.OrganizationContext.FixtureRuleSet.PlannedVenueMustBeSet,
+                    Enabled = Data.TenantContext.TournamentContext.FixtureRuleSet.PlannedVenueMustBeSet,
                     Type = FactType.Critical,
                     CheckAsync = async (cancellationToken) => 
                         new FactResult
                         {
                             Message = FixtureValidatorResource.ResourceManager.GetString(nameof(FactId.PlannedVenueIsSet)) ?? string.Empty,
-                            Success = Model.VenueId.HasValue && await Data.OrganizationContext.AppDb.VenueRepository.IsValidVenueIdAsync(Model.VenueId.Value, cancellationToken)
+                            Success = Model.VenueId.HasValue && await Data.TenantContext.DbContext.AppDb.VenueRepository.IsValidVenueIdAsync(Model.VenueId.Value, cancellationToken)
                         }
                 }
             );
@@ -295,9 +295,9 @@ namespace TournamentManager.ModelValidators
                     CheckAsync = async (cancellationToken) =>
                     {
                         var otherMatch = Model.VenueId.HasValue
-                            ? (await Data.OrganizationContext.AppDb.VenueRepository.GetOccupyingMatchesAsync(
+                            ? (await Data.TenantContext.DbContext.AppDb.VenueRepository.GetOccupyingMatchesAsync(
                                 Model.VenueId.Value, new DateTimePeriod(Model.PlannedStart, Model.PlannedEnd),
-                                Data.OrganizationContext.MatchPlanTournamentId, cancellationToken))
+                                Data.TenantContext.TournamentContext.MatchPlanTournamentId, cancellationToken))
                             .FirstOrDefault(m => m.Id != Model.Id)
                             : null;
 
