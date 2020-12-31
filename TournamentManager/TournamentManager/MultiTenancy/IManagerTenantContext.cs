@@ -6,12 +6,12 @@
     public interface IManagerTenantContext : ITenant
     {
         /// <summary>
-        /// Gets or sets the <see cref="IDbContext"/> for the <see cref="ManagerTenantContext"/>.
+        /// Gets or sets the <see cref="IDbContext"/> for the <see cref="IManagerTenantContext"/>.
         /// </summary>
         public DbContext DbContext { get; set; }
         
         /// <summary>
-        /// Gets or sets the <see cref="ITournamentContext"/> for the <see cref="ManagerTenantContext"/>.
+        /// Gets or sets the <see cref="ITournamentContext"/> for the <see cref="IManagerTenantContext"/>.
         /// </summary>
         public TournamentContext TournamentContext { get; set; }
 

@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.IO;
-using System.Text;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 
 namespace TournamentManager.MultiTenancy
 {
@@ -15,14 +14,17 @@ namespace TournamentManager.MultiTenancy
     public class AbstractTenantStore<T> where T: class, IManagerTenantContext 
     {
         protected readonly ConcurrentDictionary<string, T> Tenants = new ConcurrentDictionary<string, T>();
-        
+        protected ILogger Logger;
+
         /// <summary>
         /// CTOR.
         /// </summary>
         /// <param name="configuration"></param>
-        public AbstractTenantStore(IConfiguration configuration)
+        /// <param name="logger"></param>
+        public AbstractTenantStore(IConfiguration configuration, ILogger logger)
         {
             Configuration = configuration;
+            Logger = logger;
         }
         
         /// <summary>
@@ -44,7 +46,48 @@ namespace TournamentManager.MultiTenancy
         }
 
         /// <summary>
-        /// Loads tenant configurations from the file system using the <see cref="GetTenantConfigurationFiles"/> delegate.
+        /// Attempts to add the <see cref="ITenant"/> to the <seealso cref="TenantStore"/>.
+        /// </summary>
+        /// <param name="tenant">The <see cref="ITenant"/> to add.</param>
+        /// <returns>Returns <see langword="true"/>, if the <see cref="ITenant"/> was added, or <see langword="false"/> if the <see cref="ITenant.Identifier"/> already exists in the <see cref="TenantStore"/>.</returns>
+        public bool TryAddTenant(T tenant)
+        {
+            var success = Tenants.TryAdd(tenant.Identifier, tenant);
+            Logger.LogTrace($"Tenant with {nameof(tenant.Identifier)} '{tenant.Identifier}' {(success ? "added" : "failed to add")}.");
+            return success;
+        }
+        
+        /// <summary>
+        /// Attempts to remove the <see cref="ITenant"/> from the <seealso cref="TenantStore"/>.
+        /// </summary>
+        /// <param name="identifier">The <see cref="ITenant.Identifier"/> to remove.</param>
+        /// <returns>Returns <see langword="true"/>, if the <see cref="ITenant"/> was removed, or <see langword="false"/> if the <see cref="ITenant.Identifier"/> was not found in the <see cref="TenantStore"/>.</returns>
+        public bool TryRemoveTenant(string identifier)
+        {
+            var success = Tenants.TryRemove(identifier, out _);
+            Logger.LogTrace($"Tenant with {nameof(identifier)} '{identifier}' {(success ? "removed" : "failed to remove")}.");
+            return success;
+        }
+
+        /// <summary>
+        /// Attempts to update the <see cref="ITenant"/> with <see cref="ITenant.Identifier"/> in the <seealso cref="TenantStore"/>.
+        /// </summary>
+        /// <param name="identifier">The <see cref="ITenant.Identifier"/> to remove.</param>
+        /// <param name="newTenant">The new <see cref="ITenant"/>.</param>
+        /// <returns>Returns <see langword="true"/>, if the <see cref="ITenant"/> was updated, or <see langword="false"/> if the <see cref="ITenant.Identifier"/> was not found in the <see cref="TenantStore"/>.</returns>
+        public bool TryUpdateTenant(string identifier, T newTenant)
+        {
+            var success = false;
+            if (Tenants.TryGetValue(identifier, out T currentTenant))
+            {
+                success = Tenants.TryUpdate(identifier, newTenant, currentTenant);
+            }
+            Logger.LogTrace($"Tenant with {nameof(identifier)} '{identifier}' {(success ? "updated" : "failed to update")}.");
+            return success;
+        }
+        
+        /// <summary>
+        /// Clears any existing <see cref="ITenant"/>s from the <see cref="AbstractTenantStore{T}"/> and loads tenant configurations from the file system using the <see cref="GetTenantConfigurationFiles"/> delegate.
         /// <see cref="DbContext.ConnectionString"/>s are added to the <see cref="DbContext"/> using the <see cref="DbContext.ConnectionKey"/>.
         /// </summary>
         /// <returns>Returns the current implementation of a <see cref="AbstractTenantStore{T}"/>.</returns>
@@ -69,7 +112,7 @@ namespace TournamentManager.MultiTenancy
         }
 
         /// <summary>
-        /// Sets the tenant context in child contexts of the tenant if type <see cref="T"/>.
+        /// Sets the tenant context in child contexts of the tenant.
         /// </summary>
         /// <param name="tenantContext"></param>
         protected virtual void SetTenantForChildContexts(T tenantContext)

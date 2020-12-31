@@ -2,7 +2,6 @@
 using System;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using TournamentManager.MultiTenancy;
 
 namespace TournamentManager.MultiTenancy
 {
@@ -11,17 +10,13 @@ namespace TournamentManager.MultiTenancy
     /// </summary>
     public class TenantStore : AbstractTenantStore<TenantContext>
     {
-        private readonly ILogger<TenantStore> _logger;
-
         /// <summary>
         /// CTOR.
         /// </summary>
         /// <param name="configuration"></param>
         /// <param name="logger"></param>
-        public TenantStore(IConfiguration configuration, ILogger<TenantStore> logger) : base(configuration)
-        {
-            _logger = logger;
-        }
+        public TenantStore(IConfiguration configuration, ILogger<TenantStore> logger) : base(configuration, logger)
+        { }
         
         /// <summary>
         /// Sets the tenant context in child contexts of the tenant if type <see cref="TenantContext"/>.
@@ -41,11 +36,13 @@ namespace TournamentManager.MultiTenancy
         {
             try
             {
-                return (TenantStore) base.LoadTenants();
+                var store = (TenantStore) base.LoadTenants();
+                Logger.LogTrace($"Tenants loaded into the {nameof(TenantStore)}.");
+                return store;
             }
             catch (Exception e)
             {
-                _logger.LogCritical("Loading tenant configurations failed.", e);
+                Logger.LogCritical("Loading tenant configurations failed.", e);
                 throw;
             }
         }
