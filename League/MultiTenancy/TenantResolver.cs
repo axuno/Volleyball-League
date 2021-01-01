@@ -14,7 +14,7 @@ namespace League.MultiTenancy
     /// </summary>
     public class TenantResolver
     {
-        private readonly IReadOnlyDictionary<string, TenantContext> _tenants;
+        private readonly TenantStore _tenantStore;
         private readonly HttpContext _httpContext;
         
         /// <summary>
@@ -24,7 +24,7 @@ namespace League.MultiTenancy
         /// <param name="httpContextAccessor"></param>
         public TenantResolver(TenantStore tenantStore, IHttpContextAccessor httpContextAccessor)
         {
-            _tenants = tenantStore.GetTenants();
+            _tenantStore = tenantStore;
             _httpContext = httpContextAccessor.HttpContext;
         }
         
@@ -34,7 +34,7 @@ namespace League.MultiTenancy
         /// <returns>Returns the resolved <see cref="ITenantContext"/> if a tenant was resolved, otherwise <see langword="null"/>.</returns>
         public ITenantContext Resolve()
         {
-            if (_httpContext == null) return _tenants.First(t => t.Value.IsDefault).Value;
+            if (_httpContext == null) return _tenantStore.GetDefaultTenant() ?? throw new Exception("HttpContext is null and no default ITenantContext found.");
 
             var request = _httpContext.Request;
             // used if site is identified by host name (and port)
@@ -44,17 +44,15 @@ namespace League.MultiTenancy
             // third segment:  account/
             var uri = new Uri(request.GetDisplayUrl());
             // used if site is identified by the first segment of the URI
-            var siteSegment = uri.Segments.Length > 1 ? uri.Segments[1].TrimEnd('/') : string.Empty;
-            foreach (var tenant in _tenants.Values)
+            var urlSegmentValue = uri.Segments.Length > 1 ? uri.Segments[1].TrimEnd('/') : string.Empty;
+            var tenant = _tenantStore.GetTenantByUrlSegment(urlSegmentValue);
+            if (tenant != null)
             {
-                if (!string.IsNullOrEmpty(tenant.SiteContext.UrlSegmentValue) && tenant.SiteContext.UrlSegmentValue == siteSegment)
-                {
-                    SetMostRecentTenantCookie(tenant);
-                    return tenant;
-                }
+                SetMostRecentTenantCookie(tenant);
+                return tenant;
             }
-
-            return _tenants.Values.FirstOrDefault(t => t.IsDefault);
+            
+            return _tenantStore.GetDefaultTenant();
         }
         
         private void SetMostRecentTenantCookie(ITenantContext tenant)

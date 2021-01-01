@@ -10,11 +10,6 @@ namespace TournamentManager.MultiTenancy
         ITenant? Tenant { get; set; }
 
         /// <summary>
-        /// The host name used for the site.
-        /// </summary>
-        string HostName { get; set; }
-
-        /// <summary>
         /// The value of the Url segment used to identify the site. May be NULL or empty string.
         /// </summary>
         string UrlSegmentValue { get; set; }

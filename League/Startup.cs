@@ -167,9 +167,9 @@ namespace League
 
             #region **** New Multi Tenancy (new in v4.3.0) *****************************
 
-            services.AddSingleton<TournamentManager.MultiTenancy.TenantStore>(sp =>
+            services.AddSingleton<TenantStore>(sp =>
             {
-                var store = new TournamentManager.MultiTenancy.TenantStore(Configuration, sp.GetRequiredService<ILogger<TournamentManager.MultiTenancy.TenantStore>>())
+                var store = (TenantStore) new TenantStore(Configuration, sp.GetRequiredService<ILogger<TournamentManager.MultiTenancy.TenantStore>>())
                 {
                     GetTenantConfigurationFiles = () =>
                         Directory.GetFiles(Path.Combine(WebHostEnvironment.ContentRootPath, Program.ConfigurationFolder),

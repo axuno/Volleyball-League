@@ -22,7 +22,7 @@ namespace TournamentManager.Tests.ModelValidators
     public class TeamValidatorTests
     {
         private ITenantContext _tenantContext;
-        private readonly MultiTenancy.AppDb _appDb;
+        private readonly AppDb _appDb;
 
         public TeamValidatorTests()
         {
@@ -59,7 +59,7 @@ namespace TournamentManager.Tests.ModelValidators
         {
             var team = new TeamEntity {Name = teamName};
             
-            _tenantContext.TournamentContext.TeamRuleSet = new MultiTenancy.TeamRules{HomeMatchTime = new MultiTenancy.HomeMatchTime{}};
+            _tenantContext.TournamentContext.TeamRuleSet = new TeamRules{HomeMatchTime = new HomeMatchTime{}};
             var tv = new TeamValidator(team, _tenantContext);
 
             var factResult = await tv.CheckAsync(TeamValidator.FactId.TeamNameIsSet, CancellationToken.None);

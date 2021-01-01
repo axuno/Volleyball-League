@@ -20,7 +20,7 @@ namespace TournamentManager.Tests.ModelValidators
     public class TeamInRoundValidatorTests
     {
         private readonly ITenantContext _tenantContext;
-        private readonly MultiTenancy.AppDb _appDb;
+        private readonly AppDb _appDb;
 
         public TeamInRoundValidatorTests()
         {
