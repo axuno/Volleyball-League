@@ -104,7 +104,7 @@ namespace TournamentManager.MultiTenancy
             if (Tenants.TryGetValue(identifier, out T currentTenant))
             {
                 // Make sure the dictionary key and the tenant identifier are always equal
-                if (newTenant.Identifier != identifier) newTenant.Identifier = identifier;
+                newTenant.Identifier = identifier;
                 success = Tenants.TryUpdate(identifier, newTenant, currentTenant);
             }
             Logger.LogTrace($"Tenant with {nameof(identifier)} '{identifier}' {(success ? "updated" : "failed to update")}.");

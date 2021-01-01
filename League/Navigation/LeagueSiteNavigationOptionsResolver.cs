@@ -14,6 +14,7 @@ namespace League.Navigation
     {
         private readonly IWebHostEnvironment _hostingEnvironment;
         private readonly ITenantContext _tenantContext;
+        private readonly bool _useConfigFilePerTenant = false;
 
         public LeagueSiteNavigationOptionsResolver(IWebHostEnvironment hostingEnvironment, ITenantContext tenantContext)
         {
@@ -27,8 +28,8 @@ namespace League.Navigation
             {
                 var options = new NavigationOptions();
                 // file name must be relative to ContentRootPath!
-                var siteXmlFileName = Path.Combine(Program.ConfigurationFolder, "LeagueNavigation" + (_tenantContext.IsDefault ? string.Empty : $".{_tenantContext.Identifier}") + ".config");
-                var siteJsonFileName = Path.Combine(Program.ConfigurationFolder, "LeagueNavigation" + (_tenantContext.IsDefault ? string.Empty : $".{_tenantContext.Identifier}") + ".json");
+                var siteXmlFileName = Path.Combine(Program.ConfigurationFolder, "LeagueNavigation" + (_tenantContext.IsDefault || !_useConfigFilePerTenant ? string.Empty : $".{_tenantContext.Identifier}") + ".config");
+                var siteJsonFileName = Path.Combine(Program.ConfigurationFolder, "LeagueNavigation" + (_tenantContext.IsDefault || !_useConfigFilePerTenant ? string.Empty : $".{_tenantContext.Identifier}") + ".json");
 
                 options.NavigationMapXmlFileName = File.Exists(Path.Combine(_hostingEnvironment.ContentRootPath, siteXmlFileName)) ? siteXmlFileName : null;
                 options.NavigationMapJsonFileName = File.Exists(Path.Combine(_hostingEnvironment.ContentRootPath, siteJsonFileName)) ? siteJsonFileName : null;
