@@ -583,9 +583,9 @@ namespace League
             services.AddCloudscribeNavigation(null);
             services.AddScoped<IOptions<NavigationOptions>, Navigation.LeagueSiteNavigationOptionsResolver>(); // resolve navigation xml files per organization
             services.AddScoped<INavigationTreeBuilder, Navigation.HomeNavigationTreeBuilder>(); //add top nav home button per tenant
-            services.AddScoped<INavigationTreeBuilder, Navigation.LeaguesNavigationTreeBuilder>(); //add top nav item for per tenant
+            services.AddScoped<INavigationTreeBuilder, Navigation.LeaguesNavigationTreeBuilder>(); //add top nav item for leagues per tenant
             services.AddScoped<INavigationTreeBuilder, Navigation.InfosNavigationTreeBuilder>(); //add top nav item for info menu per tenant
-            services.AddScoped<ITreeCache, Navigation.LeagueMemoryTreeCache>(); // cache navigation tree per organization
+            services.AddScoped<ITreeCache, Navigation.LeagueMemoryTreeCache>(); // cache navigation tree per tenant
             #endregion
 
             #region *** HostedServices related ***
