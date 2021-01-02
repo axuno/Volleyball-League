@@ -8,13 +8,13 @@
 @model League.Models.VenueViewModels.VenueEditModel
 @{ ViewContext.ClientValidationEnabled = false;
     ViewData["Title"] = Localizer["Team Registration"].Value + " - " + ViewData["TournamentName"];
-    var organizationRoute = TenantContext.SiteContext.UrlSegmentValue;
+    var tenantUrlSegment = TenantContext.SiteContext.UrlSegmentValue;
 }
 <div class="mb-0 pb-1">
     <h2 class="h2">@ViewData["Title"]</h2>
     <hr />
     @* Form with only 1 input field can be submitted with enter key. So we have to prevent default submit behavior and trigger a click on saveBtn *@
-    <form asp-controller="@nameof(TeamApplication)" asp-action="@nameof(TeamApplication.EditVenue)" asp-route-organization="@organizationRoute" method="post" role="form">
+    <form asp-controller="@nameof(TeamApplication)" asp-action="@nameof(TeamApplication.EditVenue)" asp-route-organization="@tenantUrlSegment" method="post" role="form">
         <site-validation-summary show="All" warning="@Model.IsWarning" unique-error-text="true"></site-validation-summary>
         <input asp-for="TeamId" type="hidden" />
         <input asp-for="Hash" type="hidden" />
@@ -62,7 +62,7 @@
         }
         <div class="row">
             <div class="form-group col-12 col-md-6 mt-2">
-                <a asp-controller="@nameof(TeamApplication)" asp-action="@nameof(TeamApplication.SelectVenue)" asp-route-organization="@organizationRoute" class="btn btn-secondary">@Localizer["Back"]</a>
+                <a asp-controller="@nameof(TeamApplication)" asp-action="@nameof(TeamApplication.SelectVenue)" asp-route-organization="@tenantUrlSegment" class="btn btn-secondary">@Localizer["Back"]</a>
                 <button type="submit" class="btn btn-primary">@Localizer["Continue"]</button>
             </div>
         </div>

@@ -42,10 +42,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using Axuno.BackgroundTask;
 using League.BackgroundTasks;
-using TournamentManager.Data;
 using League.BackgroundTasks.Email;
 using League.ConfigurationPoco;
-using League.MultiTenancy;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Rewrite;
 using TournamentManager.DI;
@@ -165,15 +163,27 @@ namespace League
             // DO NOT USE `options => options.ResourcesPath = "..."` because then resource files in other locations won't be recognized (e.g. resx in the same folder as the controller class)
             services.AddLocalization();
 
-            #region **** New Multi Tenancy (new in v4.3.0) *****************************
+            #region **** New Multi Tenancy (since v4.3.0) *****************************
 
             services.AddSingleton<TenantStore>(sp =>
             {
                 var store = (TenantStore) new TenantStore(Configuration, sp.GetRequiredService<ILogger<TournamentManager.MultiTenancy.TenantStore>>())
                 {
                     GetTenantConfigurationFiles = () =>
-                        Directory.GetFiles(Path.Combine(WebHostEnvironment.ContentRootPath, Program.ConfigurationFolder),
-                            $"Tenant.*.{WebHostEnvironment.EnvironmentName}.config", SearchOption.TopDirectoryOnly)
+                    {
+                        var configFolderFiles = Directory.GetFiles(
+                            Path.Combine(WebHostEnvironment.ContentRootPath, Program.ConfigurationFolder),
+                            $"Tenant.*.{WebHostEnvironment.EnvironmentName}.config", SearchOption.TopDirectoryOnly).ToList();
+                        
+                        if (WebHostEnvironment.IsDevelopment())
+                        {
+                            configFolderFiles.AddRange(Directory.GetFiles(
+                                Path.Combine(Program.GetSecretsFolder()),
+                                $"Tenant.*.{WebHostEnvironment.EnvironmentName}.config", SearchOption.TopDirectoryOnly));
+                        }
+
+                        return configFolderFiles.ToArray();
+                    }
                 }.LoadTenants();
                 ConfigureLlblgenPro(store);
                 return store;

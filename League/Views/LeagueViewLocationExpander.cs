@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc.Razor;
 namespace League.Views
 {
     /// <summary>
-    /// Expands the default search path list by organization specific folders per HttpRequest.
+    /// Expands the default search path list by tenant-specific folders per HttpRequest.
     /// </summary>
     /// <code>
     /// The ViewLocationExpander must be added to <see cref="RazorViewEngineOptions"/> like so:
@@ -16,7 +16,7 @@ namespace League.Views
     /// </code>
     public class LeagueViewLocationExpander : IViewLocationExpander
     {
-        private readonly List<string> _organizationSearchPaths = new List<string>();
+        private readonly List<string> _tenantSearchPaths = new List<string>();
 
         public void PopulateValues(ViewLocationExpanderContext context)
         {
@@ -26,10 +26,10 @@ namespace League.Views
             try
             {
                 var tenantContext = (TournamentManager.MultiTenancy.ITenantContext)context.ActionContext.HttpContext.RequestServices.GetService(typeof(TournamentManager.MultiTenancy.ITenantContext));
-                _organizationSearchPaths.Clear();
+                _tenantSearchPaths.Clear();
                 if (!tenantContext.IsDefault)
                 {
-                    _organizationSearchPaths.AddRange(new[]
+                    _tenantSearchPaths.AddRange(new[]
                     {
                         $"/Views/{{1}}/{tenantContext.SiteContext.FolderName}/{{0}}.cshtml",
                         $"/Views/Emails/{tenantContext.SiteContext.FolderName}/{{0}}.cshtml",
@@ -45,7 +45,7 @@ namespace League.Views
 
         public IEnumerable<string> ExpandViewLocations(ViewLocationExpanderContext context, IEnumerable<string> viewLocations)
         {
-            return _organizationSearchPaths.Union(viewLocations); // in order to replace all existing locations, leave "Union" away.
+            return _tenantSearchPaths.Union(viewLocations); // in order to replace all existing locations, leave "Union" away.
         }
     }
 }

@@ -17,6 +17,8 @@ namespace League
         /// </summary>
         public const string ConfigurationFolder = "Configuration";
 
+        private static string _absoluteConfigurationPath = string.Empty;
+        
         public static void Main(string[] args)
         {
             // NLog: setup the logger first to catch all errors
@@ -49,24 +51,23 @@ namespace League
             Host.CreateDefaultBuilder(args)
                 .ConfigureAppConfiguration((hostingContext, config) =>
                 {
-                    var configPath = Path.Combine(hostingContext.HostingEnvironment.ContentRootPath, ConfigurationFolder);
-                    config.SetBasePath(configPath)
+                    _absoluteConfigurationPath = Path.Combine(hostingContext.HostingEnvironment.ContentRootPath, ConfigurationFolder);
+                    config.SetBasePath(_absoluteConfigurationPath)
                         .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
                         .AddJsonFile($"appsettings.{hostingContext.HostingEnvironment.EnvironmentName}.json", optional: true, reloadOnChange: true)
                         .AddJsonFile(@"credentials.json", optional: false, reloadOnChange: true)
                         .AddJsonFile($"credentials.{hostingContext.HostingEnvironment.EnvironmentName}.json", optional: false, reloadOnChange: true)
                         .AddEnvironmentVariables()
                         .AddCommandLine(args);
-
-                    var secretsFolder = Path.Combine(configPath,  @"..\..\..\Secrets");
+                    
                     if (hostingContext.HostingEnvironment.IsDevelopment())
                     {
-                        if (!Directory.Exists(secretsFolder)) throw new DirectoryNotFoundException("Secrets folder not found");
+                        var secretsFolder = GetSecretsFolder();    
                         config.AddJsonFile(Path.Combine(secretsFolder, @"credentials.json"), false);
                         config.AddJsonFile(Path.Combine(secretsFolder, $"credentials.{hostingContext.HostingEnvironment.EnvironmentName}.json"), false);
                     }
 
-                    NLogBuilder.ConfigureNLog(Path.Combine(configPath, $"NLog.{hostingContext.HostingEnvironment.EnvironmentName}.config"));
+                    NLogBuilder.ConfigureNLog(Path.Combine(_absoluteConfigurationPath, $"NLog.{hostingContext.HostingEnvironment.EnvironmentName}.config"));
                 })
                 .ConfigureWebHostDefaults(webHostBuilder =>
                 {
@@ -79,5 +80,19 @@ namespace League
                     logging.AddConfiguration(hostingContext.Configuration.GetSection("Logging"));
                 })
                 .UseNLog();  // NLog: Setup NLog for dependency injection;
+        
+        
+        /// <summary>
+        /// Gets the name of the folder containing credentials and other data of the live website.
+        /// </summary>
+        /// <returns>The name of the folder containing credentials and other data of the live website</returns>
+        /// <exception cref="DirectoryNotFoundException"></exception>
+        public static string GetSecretsFolder()
+        {
+            var folder = Path.Combine(_absoluteConfigurationPath, @"..\..\..\Secrets");
+            if (!Directory.Exists(folder)) throw new DirectoryNotFoundException("Secrets folder not found");
+            return folder;
+        }
     }
+   
 }

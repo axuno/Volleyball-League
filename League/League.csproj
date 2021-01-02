@@ -63,6 +63,7 @@
 	  <Content Remove="Configuration\Tenant.A-Indoor.Development.config" />
 	  <Content Remove="Configuration\Tenant.A-Indoor.Production.config" />
 	  <Content Remove="Configuration\Tenant.Default.Development.config" />
+	  <Content Remove="Configuration\Tenant.Default.Production.config" />
 	  <Content Remove="Configuration\Tenant.OtherOrg.Development.config" />
 	  <Content Remove="Configuration\Tenant.TestOrg.Development.config" />
 	</ItemGroup>
@@ -74,10 +75,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <None Include="Configuration\Tenant.A-Beach.Production.config" />
-	  <None Include="Configuration\Tenant.A-Beach.Development.config" />
-	  <None Include="Configuration\Tenant.A-Indoor.Production.config" />
-	  <None Include="Configuration\Tenant.A-Indoor.Development.config" />
+	  <None Include="Configuration\Tenant.Default.Production.config" />
 	  <None Include="Configuration\Tenant.Default.Development.config" />
 	  <None Include="Configuration\Tenant.OtherOrg.Development.config" />
 	  <None Include="Configuration\Tenant.TestOrg.Development.config" />

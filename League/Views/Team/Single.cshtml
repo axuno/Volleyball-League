@@ -9,7 +9,7 @@
 @model League.Models.TeamViewModels.TeamSingleModel
 @{
     ViewData["Title"] = Localizer["Team Details"].Value + " - " + Model.Tournament.Name;
-    var organizationRoute = TenantContext.SiteContext.UrlSegmentValue;
+    var tenantUrlSegment = TenantContext.SiteContext.UrlSegmentValue;
     string DisplayPhoneNo(string phoneNo)
     {
         return PhoneNumberService.Format(phoneNo, Region.TwoLetterISORegionName);
@@ -45,7 +45,7 @@
                 <div><i class="fas fa-map-marker-alt"></i><span class="d-inline-block mr-2"></span><span class="font-weight-bold">@Model.TeamVenueRoundInfo.VenueName</span> <span>@{if (!string.IsNullOrWhiteSpace(Model.TeamVenueRoundInfo.VenueExtension))
                     {<text>(@Model.TeamVenueRoundInfo.VenueExtension)</text>}}</span></div>
                 <div>@(string.Join(", ", Model.TeamVenueRoundInfo.VenuePostalCode, Model.TeamVenueRoundInfo.VenueCity, Model.TeamVenueRoundInfo.VenueStreet))</div>
-                <div><a class="link" asp-action="@nameof(League.Controllers.Map.Venue)" asp-controller="@nameof(League.Controllers.Map)" asp-route-organization="@organizationRoute" asp-route-id="@Model.TeamVenueRoundInfo.VenueId.Value">@Localizer["Direction"]</a></div>
+                <div><a class="link" asp-action="@nameof(League.Controllers.Map.Venue)" asp-controller="@nameof(League.Controllers.Map)" asp-route-organization="@tenantUrlSegment" asp-route-id="@Model.TeamVenueRoundInfo.VenueId.Value">@Localizer["Direction"]</a></div>
             </div>
         }
         @if (Model.TeamUserRoundInfos.Count > 0)

@@ -6,7 +6,7 @@
 @model League.Models.RankingViewModels.AllTimeTeamModel
 @{
     ViewData["Title"] = Localizer["All-time Team Table"].Value;
-    var organizationRoute = TenantContext.SiteContext.UrlSegmentValue;
+    var tenantUrlSegment = TenantContext.SiteContext.UrlSegmentValue;
     if (Model.RankingList.Count == 0)
     {
         <div class="mb-0 pb-1">
@@ -67,7 +67,7 @@
                             <tr>
                                 <td class="tournament">
                                     <div class="text-truncate">
-                                        <a asp-action="@nameof(Ranking.AllTimeTournament)" asp-controller="@nameof(Ranking)" asp-route-organization="@organizationRoute" asp-route-id="@rankRow.TournamentId">@rankRow.TournamentName</a>
+                                        <a asp-action="@nameof(Ranking.AllTimeTournament)" asp-controller="@nameof(Ranking)" asp-route-organization="@tenantUrlSegment" asp-route-id="@rankRow.TournamentId">@rankRow.TournamentName</a>
                                     </div>
                                 </td>
                                 <td class="round">

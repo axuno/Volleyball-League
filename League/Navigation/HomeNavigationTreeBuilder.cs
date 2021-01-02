@@ -35,7 +35,7 @@ namespace League.Navigation
             }
             else
             {
-                topNode = new NavigationNode { Text = string.Empty, Url = _tenantContext.SiteContext.UrlSegmentValue, IconCssClass = "fas fa-1x fa-home", Key = "Home"};
+                topNode = new NavigationNode { Text = string.Empty, Url = "/" + _tenantContext.SiteContext.UrlSegmentValue, IconCssClass = "fas fa-1x fa-home", Key = "Home"};
             }
            
             var treeNode = new TreeNode<NavigationNode>(topNode);

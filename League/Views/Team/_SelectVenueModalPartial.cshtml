@@ -4,7 +4,7 @@
 @inject IViewLocalizer Localizer
 @inject ITenantContext TenantContext
 @model League.Models.TeamViewModels.TeamVenueSelectModel
-@{var organizationRoute = TenantContext.SiteContext.UrlSegmentValue;}
+@{var tenantUrlSegment = TenantContext.SiteContext.UrlSegmentValue;}
 <!-- Modal -->
 <modal id="select-venue" title="@Localizer["Select team venue"].Value" dialog-class="modal-lg" tabindex="-1">
     <modal-body class="pb-0">
@@ -15,7 +15,7 @@
                      League.Components.VenueSelectorComponentModel.Criteria.VenuesOfTeams | League.Components.VenueSelectorComponentModel.Criteria.Active | League.Components.VenueSelectorComponentModel.Criteria.Unused,
                      default(long?)); }
         @(await Component.InvokeAsync<League.Components.VenueSelector>(componentModel))
-        <form asp-controller="@nameof(Team)" asp-action="@nameof(Team.SelectVenue)" asp-route-organization="@organizationRoute" method="post">
+        <form asp-controller="@nameof(Team)" asp-action="@nameof(Team.SelectVenue)" asp-route-organization="@tenantUrlSegment" method="post">
             <input asp-for="TeamId" type="hidden" />
             <input asp-for="VenueId" type="hidden" />
         </form>

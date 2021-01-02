@@ -5,12 +5,12 @@
 @inject IViewLocalizer Localizer
 @inject ITenantContext TenantContext
 @model League.Models.RoleViewModels.RoleRemoveModel
-@{ ViewContext.ClientValidationEnabled = false; var organizationRoute = TenantContext.SiteContext.UrlSegmentValue;}
+@{ ViewContext.ClientValidationEnabled = false; var tenantUrlSegment = TenantContext.SiteContext.UrlSegmentValue;}
 <!-- Modal -->
 <modal id="edit-team" title="@_RemoveMemberModalPartial.Remove_team_member" dialog-class="modal-md" tabindex="-1">
     <modal-body>
         @* Form with only 1 input field can be submitted with enter key. So we have to prevent default submit behavior and trigger a click on saveBtn *@
-        <form asp-controller="@nameof(Role)" asp-action="@nameof(Role.Remove)" asp-route-organization="@organizationRoute" method="post" role="form" onsubmit="$('#@(League.TagHelpers.Modal.SiteAjaxSubmitTagHelper.TagHelperAttributeName)').trigger('click');return false;">
+        <form asp-controller="@nameof(Role)" asp-action="@nameof(Role.Remove)" asp-route-organization="@tenantUrlSegment" method="post" role="form" onsubmit="$('#@(League.TagHelpers.Modal.SiteAjaxSubmitTagHelper.TagHelperAttributeName)').trigger('click');return false;">
             <input name="IsValid" type="hidden" value="@ViewData.ModelState.IsValid.ToString()" />
             <input asp-for="TeamId" type="hidden" />
             <input asp-for="UserId" type="hidden" />
