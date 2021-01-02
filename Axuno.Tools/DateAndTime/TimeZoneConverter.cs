@@ -4,7 +4,7 @@ using System.Globalization;
 using NodaTime;
 using NodaTime.TimeZones;
 using TzConverter = TimeZoneConverter;
-
+#nullable enable
 namespace Axuno.Tools.DateAndTime
 {
     /// <summary>
@@ -18,8 +18,8 @@ namespace Axuno.Tools.DateAndTime
     {
         private readonly IDateTimeZoneProvider _dateTimeZoneProvider;
         private readonly string _timeZoneId;
-        private readonly CultureInfo _cultureInfo;
-        private readonly ZoneLocalMappingResolver _resolver;
+        private readonly CultureInfo? _cultureInfo;
+        private readonly ZoneLocalMappingResolver? _resolver;
 
         /// <summary>
         /// CTOR.
@@ -29,7 +29,7 @@ namespace Axuno.Tools.DateAndTime
         /// <param name="cultureInfo">The <see cref="CultureInfo"/> to use for converting.</param>
         /// <param name="resolver">The <see cref="ZoneLocalMappingResolver"/> to use for converting.</param>
         public TimeZoneConverter(IDateTimeZoneProvider dateTimeZoneProvider, TimeZoneInfo timeZoneInfo,
-            CultureInfo cultureInfo = null, ZoneLocalMappingResolver resolver = null) : this(dateTimeZoneProvider,
+            CultureInfo? cultureInfo = null, ZoneLocalMappingResolver? resolver = null) : this(dateTimeZoneProvider,
             TzConverter.TZConvert.WindowsToIana(timeZoneInfo.Id), cultureInfo, resolver)
         {}
 
@@ -41,7 +41,7 @@ namespace Axuno.Tools.DateAndTime
         /// <param name="cultureInfo">The <see cref="CultureInfo"/> to use for converting.</param>
         /// <param name="resolver">The <see cref="ZoneLocalMappingResolver"/> to use for converting.</param>
         public TimeZoneConverter(IDateTimeZoneProvider dateTimeZoneProvider, string ianaTimeZoneId,
-            CultureInfo cultureInfo = null, ZoneLocalMappingResolver resolver = null)
+            CultureInfo? cultureInfo = null, ZoneLocalMappingResolver? resolver = null)
         {
             _dateTimeZoneProvider = dateTimeZoneProvider;
             _timeZoneId = ianaTimeZoneId;
@@ -56,7 +56,7 @@ namespace Axuno.Tools.DateAndTime
         /// <param name="dateTimeOfAnyKind"></param>
         /// <param name="cultureInfo">The <see cref="CultureInfo"/> to use for time zone localization. If <see langword="null"/>, the default culture will be used.</param>
         /// <returns>Returns the converted <see cref="DateTime"/> as a <see cref="ZonedTime"/> instance or null, if the <see cref="dateTimeOfAnyKind"/> parameter is null.</returns>
-        public ZonedTime ToZonedTime(DateTime? dateTimeOfAnyKind, CultureInfo? cultureInfo = null)
+        public ZonedTime? ToZonedTime(DateTime? dateTimeOfAnyKind, CultureInfo? cultureInfo = null)
         {
             return ToZonedTime(dateTimeOfAnyKind, _timeZoneId, cultureInfo ?? _cultureInfo, _dateTimeZoneProvider);
         }
@@ -68,7 +68,7 @@ namespace Axuno.Tools.DateAndTime
         /// <param name="dateTimeOfAnyKind"></param>
         /// <param name="cultureInfo">The <see cref="CultureInfo"/> to use for time zone localization. If <see langword="null"/>, the default culture will be used.</param>
         /// <returns>Returns the converted <see cref="DateTime"/> as a <see cref="ZonedTime"/> instance.</returns>
-        public ZonedTime ToZonedTime(DateTime dateTimeOfAnyKind, CultureInfo? cultureInfo = null)
+        public ZonedTime? ToZonedTime(DateTime dateTimeOfAnyKind, CultureInfo? cultureInfo = null)
         {
             return ToZonedTime(dateTimeOfAnyKind, _timeZoneId, cultureInfo ?? _cultureInfo, _dateTimeZoneProvider);
         }
@@ -131,8 +131,8 @@ namespace Axuno.Tools.DateAndTime
         /// </param>
         /// <returns>Returns the converted <see cref="DateTime"/> as a <see cref="ZonedTime"/> instance or null, if the <see cref="dateTimeOfAnyKind"/> parameter is null.</returns>
         /// <exception cref="DateTimeZoneNotFoundException">If <see cref="timeZoneId"/> is unknown.</exception>
-        public static ZonedTime ToZonedTime(DateTime? dateTimeOfAnyKind, string timeZoneId,
-            CultureInfo cultureInfo = null, IDateTimeZoneProvider timeZoneProvider = null)
+        public static ZonedTime? ToZonedTime(DateTime? dateTimeOfAnyKind, string timeZoneId,
+            CultureInfo? cultureInfo = null, IDateTimeZoneProvider? timeZoneProvider = null)
         {
             if (!dateTimeOfAnyKind.HasValue) return null;
 
@@ -167,8 +167,8 @@ namespace Axuno.Tools.DateAndTime
         /// </param>
         /// <returns>Returns the converted <see cref="DateTime"/> as a <see cref="ZonedTime"/> instance.</returns>
         /// <exception cref="DateTimeZoneNotFoundException">If <see cref="timeZoneId"/> is unknown.</exception>
-        public static ZonedTime ToZonedTime(DateTime dateTimeOfAnyKind, string timeZoneId,
-            CultureInfo cultureInfo = null, IDateTimeZoneProvider timeZoneProvider = null)
+        public static ZonedTime? ToZonedTime(DateTime dateTimeOfAnyKind, string timeZoneId,
+            CultureInfo? cultureInfo = null, IDateTimeZoneProvider? timeZoneProvider = null)
         {
             return ToZonedTime((DateTime?) dateTimeOfAnyKind, timeZoneId, cultureInfo, timeZoneProvider);
         }
@@ -186,8 +186,8 @@ namespace Axuno.Tools.DateAndTime
         /// </param>
         /// <returns>Returns the converted <see cref="Nullable{DateTimeOffset}"/> as a <see cref="ZonedTime"/> instance  or null, if the <see cref="dateTimeOffset"/> parameter is null.</returns>
         /// <exception cref="DateTimeZoneNotFoundException">If IANA <see cref="timeZoneId"/> is unknown.</exception>
-        public static ZonedTime ToZonedTime(DateTimeOffset? dateTimeOffset, string timeZoneId,
-            CultureInfo cultureInfo = null, IDateTimeZoneProvider timeZoneProvider = null)
+        public static ZonedTime? ToZonedTime(DateTimeOffset? dateTimeOffset, string timeZoneId,
+            CultureInfo? cultureInfo = null, IDateTimeZoneProvider? timeZoneProvider = null)
         {
             if (!dateTimeOffset.HasValue) return null;
 
@@ -236,8 +236,8 @@ namespace Axuno.Tools.DateAndTime
         /// </param>
         /// <returns>Returns the converted <see cref="Nullable{DateTimeOffset}"/> as a <see cref="ZonedTime"/> instance.</returns>
         /// <exception cref="DateTimeZoneNotFoundException">If IANA <see cref="timeZoneId"/> is unknown.</exception>
-        public static ZonedTime ToZonedTime(DateTimeOffset dateTimeOffset, string timeZoneId,
-            CultureInfo cultureInfo = null, IDateTimeZoneProvider timeZoneProvider = null)
+        public static ZonedTime? ToZonedTime(DateTimeOffset dateTimeOffset, string timeZoneId,
+            CultureInfo? cultureInfo = null, IDateTimeZoneProvider? timeZoneProvider = null)
         {
             return ToZonedTime((DateTimeOffset?) dateTimeOffset, timeZoneId, cultureInfo, timeZoneProvider);
         }
@@ -252,7 +252,7 @@ namespace Axuno.Tools.DateAndTime
         /// <returns>Returns the converted <see cref="DateTime"/> with <see cref="DateTimeKind.Utc"/> or null, if the <see cref="zoneDateTime"/> parameter is null.</returns>
         /// <exception cref="DateTimeZoneNotFoundException">If <see cref="timeZoneId"/> is unknown.</exception>
         public static DateTime? ToUtc(DateTime? zoneDateTime, string timeZoneId,
-            IDateTimeZoneProvider timeZoneProvider, ZoneLocalMappingResolver resolver = null)
+            IDateTimeZoneProvider? timeZoneProvider, ZoneLocalMappingResolver? resolver = null)
         {
             if (!zoneDateTime.HasValue) return null;
 
@@ -277,9 +277,9 @@ namespace Axuno.Tools.DateAndTime
         /// <returns>Returns the converted <see cref="DateTime"/> with <see cref="DateTimeKind.Utc"/>.</returns>
         /// <exception cref="DateTimeZoneNotFoundException">If <see cref="timeZoneId"/> is unknown.</exception>
         public static DateTime ToUtc(DateTime zoneDateTime, string timeZoneId,
-            IDateTimeZoneProvider timeZoneProvider, ZoneLocalMappingResolver resolver = null)
+            IDateTimeZoneProvider timeZoneProvider, ZoneLocalMappingResolver? resolver = null)
         {
-            return ToUtc((DateTime?)zoneDateTime, timeZoneId, timeZoneProvider, resolver).Value;
+            return ToUtc((DateTime?)zoneDateTime, timeZoneId, timeZoneProvider, resolver)!.Value;
         }
         
         /// <summary>
@@ -297,7 +297,7 @@ namespace Axuno.Tools.DateAndTime
         /// </summary>
         /// <param name="timeZoneProvider">The <see cref="IDateTimeZoneProvider"/> to use. Default is <see cref="DateTimeZoneProviders.Tzdb"/>.</param>
         /// <returns>Returns a collection of available <see cref="IDateTimeZoneProvider.Ids"/>.</returns>
-        public static IReadOnlyCollection<string> GetTimeZoneList(IDateTimeZoneProvider timeZoneProvider = null)
+        public static IReadOnlyCollection<string> GetTimeZoneList(IDateTimeZoneProvider? timeZoneProvider = null)
         {
             timeZoneProvider ??= DateTimeZoneProviders.Tzdb;
             return timeZoneProvider.Ids;

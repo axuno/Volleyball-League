@@ -5,13 +5,13 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using System.Threading;
-using League.DI;
 using League.Identity;
 using NUnit.Framework;
 using SD.LLBLGen.Pro.ORMSupportClasses;
 using TournamentManager.Data;
 using TournamentManager.DAL.EntityClasses;
 using TournamentManager.DAL.DatabaseSpecific;
+using TournamentManager.MultiTenancy;
 
 namespace League.Test.Identity
 {
@@ -22,15 +22,13 @@ namespace League.Test.Identity
     public class UserClaimStoreTests
     {
         private readonly UnitTestHelpers _uth = new UnitTestHelpers();
-        private readonly SiteContext _orgCtx;
         private readonly AppDb _appDb; private ApplicationUser _user = null;
         private readonly UserStore _store;
         private TeamEntity _team = null;
 
         public UserClaimStoreTests()
         {
-            _orgCtx = _uth.GetsiteContext();
-            _appDb = _orgCtx.AppDb;
+            _appDb = _uth.GetTenantContext().DbContext.AppDb;
             _store = _uth.GetUserStore();
         }
 

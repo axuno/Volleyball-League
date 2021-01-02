@@ -8,8 +8,8 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using NUnit.Framework;
 using TournamentManager.DAL.EntityClasses;
-using TournamentManager.Data;
 using TournamentManager.ModelValidators;
+using TournamentManager.MultiTenancy;
 
 namespace TournamentManager.Tests.ModelValidators
 {
@@ -21,7 +21,7 @@ namespace TournamentManager.Tests.ModelValidators
         [Test]
         public void All_Ids_Have_A_Check_Function()
         {
-            var sv = new SetsValidator(new List<SetEntity>(), (new OrganizationContext(), (new MatchRuleEntity(1), new SetRuleEntity(1))));
+            var sv = new SetsValidator(new List<SetEntity>(), (new TenantContext(), (new MatchRuleEntity(1), new SetRuleEntity(1))));
 
             var enums = Enum.GetNames(typeof(SetsValidator.FactId)).ToList();
             foreach (var e in enums)
@@ -44,7 +44,7 @@ namespace TournamentManager.Tests.ModelValidators
             {
                 sets.Add(new SetEntity());
             }
-            var sv = new SetsValidator(sets, (new OrganizationContext(), (new MatchRuleEntity {BestOf = false, NumOfSets = 3}, new SetRuleEntity())));
+            var sv = new SetsValidator(sets, (new TenantContext(), (new MatchRuleEntity {BestOf = false, NumOfSets = 3}, new SetRuleEntity())));
             await sv.CheckAsync(SetsValidator.FactId.MixAndMaxOfSetsPlayed, CancellationToken.None);
             Assert.Multiple(() =>
                 {
@@ -76,7 +76,7 @@ namespace TournamentManager.Tests.ModelValidators
                 sets.Add(new SetEntity());
             }
 
-            var sv = new SetsValidator(sets, (new OrganizationContext(), (new MatchRuleEntity { BestOf = true, NumOfSets = 3 }, new SetRuleEntity())));
+            var sv = new SetsValidator(sets, (new TenantContext(), (new MatchRuleEntity { BestOf = true, NumOfSets = 3 }, new SetRuleEntity())));
             await sv.CheckAsync(SetsValidator.FactId.BestOfMixAndMaxOfSetsPlayed, CancellationToken.None);
             Assert.Multiple(() =>
                 {
@@ -111,7 +111,7 @@ namespace TournamentManager.Tests.ModelValidators
 
             var matchRule = new MatchRuleEntity() {BestOf = true, NumOfSets = 2};
             
-            var sv = new SetsValidator(sets, (new OrganizationContext(), (matchRule, setRule)));
+            var sv = new SetsValidator(sets, (new TenantContext(), (matchRule, setRule)));
             await sv.CheckAsync(CancellationToken.None);
             var errorFacts = sv.GetFailedFacts();
             Assert.Multiple(() =>
@@ -135,7 +135,7 @@ namespace TournamentManager.Tests.ModelValidators
 
             var matchRule = new MatchRuleEntity() { BestOf = true, NumOfSets = 2 };
 
-            var sv = new SetsValidator(sets, (new OrganizationContext(), (matchRule, new SetRuleEntity())));
+            var sv = new SetsValidator(sets, (new TenantContext(), (matchRule, new SetRuleEntity())));
             await sv.CheckAsync(SetsValidator.FactId.BestOfRequiredTieBreakPlayed, CancellationToken.None);
             var factResult = sv.GetFailedFacts().First(f => f.Id == SetsValidator.FactId.BestOfRequiredTieBreakPlayed);
             Assert.Multiple(() =>
@@ -164,7 +164,7 @@ namespace TournamentManager.Tests.ModelValidators
             var setRule = new SetRuleEntity {PointsSetWon = 1, PointsSetLost = 0, PointsSetTie = 0};
             var matchRule = new MatchRuleEntity { BestOf = true, NumOfSets = 2 };
 
-            var sv = new SetsValidator(sets, (new OrganizationContext(), (matchRule, new SetRuleEntity())));
+            var sv = new SetsValidator(sets, (new TenantContext(), (matchRule, new SetRuleEntity())));
             await sv.CheckAsync(SetsValidator.FactId.BestOfNoMatchAfterBestOfReached, CancellationToken.None);
             var factResult = sv.GetFailedFacts().First(f => f.Id == SetsValidator.FactId.BestOfNoMatchAfterBestOfReached);
             Assert.Multiple(() =>
@@ -183,7 +183,7 @@ namespace TournamentManager.Tests.ModelValidators
         [Test]
         public void Check_FieldName_Of_Facts()
         {
-            var sv = new SetsValidator(new List<SetEntity>(), (new OrganizationContext(), (new MatchRuleEntity(), new SetRuleEntity())));
+            var sv = new SetsValidator(new List<SetEntity>(), (new TenantContext(), (new MatchRuleEntity(), new SetRuleEntity())));
 
             foreach (var fact in sv.Facts)
             {

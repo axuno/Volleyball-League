@@ -3,13 +3,14 @@
 @using League.Controllers
 @using League.Views
 @using Microsoft.AspNetCore.Mvc.Localization
+@using TournamentManager.MultiTenancy
 @inject IViewLocalizer Localizer
-@inject League.DI.SiteContext SiteContext
+@inject ITenantContext TenantContext
 @inject TimeZoneConverter TimeZoneConverter
 @model League.Models.TeamApplicationViewModels.ApplicationSessionModel
 @{
     ViewData["Title"] = "Team-Anmeldung" + " - " + Model.TournamentName;
-    var organizationRoute = SiteContext.UrlSegmentValue;
+    var tenantUrlSegment = TenantContext.SiteContext.UrlSegmentValue;
 }
 <div class="mb-0 pb-1">
     <h2 class="h2">@ViewData["Title"]</h2>
@@ -60,7 +61,7 @@
             </ul>
         </div>
         <div class="col-12">
-            <a asp-controller="@nameof(TeamApplication)" asp-action="@nameof(TeamApplication.SelectTeam)" asp-route-organization="@organizationRoute" class="btn btn-primary mb-2">Mit der Anmeldung beginnen</a>
+            <a asp-controller="@nameof(TeamApplication)" asp-action="@nameof(TeamApplication.SelectTeam)" asp-route-organization="@tenantUrlSegment" class="btn btn-primary mb-2">Mit der Anmeldung beginnen</a>
         </div>
     </div>
 </div>

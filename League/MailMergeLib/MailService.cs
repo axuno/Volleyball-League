@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Linq;
-using League.DI;
 using MailMergeLib;
 using MailMergeLib.MessageStore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
+using TournamentManager.MultiTenancy;
 
 namespace MailMergeLib.AspNet
 {
@@ -24,13 +24,13 @@ namespace MailMergeLib.AspNet
 
     public class MailMergeService : IMailMergeService
     {
-        private readonly SiteContext _siteContext;
+        private readonly ITenantContext _tenantContext;
 
-        public MailMergeService(IOptions<MailMergeServiceConfig> serviceConfig, SiteContext siteContext )
+        public MailMergeService(IOptions<MailMergeServiceConfig> serviceConfig, ITenantContext tenantContext )
         {
             Settings = serviceConfig.Value.Settings;
             MessageStore = serviceConfig.Value.MessageStore;
-            _siteContext = siteContext;
+            _tenantContext = tenantContext;
         }
         public Settings Settings { get; }
         public IMessageStore MessageStore { get; }
@@ -46,18 +46,18 @@ namespace MailMergeLib.AspNet
             };
             mmm.MailMergeAddresses.Clear();
 
-            if (_siteContext?.Email?.GeneralFrom?.Address != null)
+            if (_tenantContext?.SiteContext.Email.GeneralFrom.Address != null)
             {
                 mmm.MailMergeAddresses.Add(new MailMergeAddress(MailAddressType.From,
-                    _siteContext.Email.GeneralFrom.DisplayName,
-                    _siteContext.Email.GeneralFrom.Address));
+                    _tenantContext.SiteContext.Email.GeneralFrom.DisplayName,
+                    _tenantContext.SiteContext.Email.GeneralFrom.Address));
             }
 
-            if (_siteContext?.Email?.GeneralBcc != null)
+            if (_tenantContext?.SiteContext.Email.GeneralBcc != null)
             {
                 mmm.MailMergeAddresses.Add(new MailMergeAddress(MailAddressType.Bcc,
-                    _siteContext.Email.GeneralBcc.DisplayName,
-                    _siteContext.Email.GeneralBcc.Address));
+                    _tenantContext.SiteContext.Email.GeneralBcc.DisplayName,
+                    _tenantContext.SiteContext.Email.GeneralBcc.Address));
             }
 
             return mmm;

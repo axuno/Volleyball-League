@@ -54,6 +54,18 @@
             <div class="p-2 border rounded border-success"><a asp-route="@RouteNames.HomeGeneralContact" class="link font-weight-bolder">Contact us</a> to run a league on this platform.</div>
         </article>
     </div>
+    <div class="row">
+        <article class="col-8">
+            @{
+                var leagueAssembly = System.Reflection.Assembly.GetAssembly(typeof(League.Startup))?.GetName();
+                var tmAssembly = System.Reflection.Assembly.GetAssembly(typeof(TournamentManager.DateTimePeriod))?.GetName();
+                if (leagueAssembly != null && tmAssembly != null)
+                {
+                <div>Running @leagueAssembly.Name v@(leagueAssembly.Version) and @tmAssembly.Name v@(tmAssembly.Version)</div>
+                }
+            }
+        </article>
+    </div>
 </div>
 @section styles {
     <style type="text/css">

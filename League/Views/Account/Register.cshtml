@@ -1,11 +1,12 @@
 ﻿@using League.Controllers
 @using Microsoft.AspNetCore.Mvc.Localization
+@using TournamentManager.MultiTenancy
 @model RegisterViewModel
 @inject IViewLocalizer Localizer
-@inject League.DI.SiteContext SiteContext
+@inject ITenantContext TenantContext
 @{
     ViewData["Title"] = Localizer["Create a new user account"];
-    var organizationRoute = SiteContext.UrlSegmentValue;
+    var tenantUrlSegment = TenantContext.SiteContext.UrlSegmentValue;
     List<SelectListItem> GenderList()
     {
         return new List<SelectListItem> {new SelectListItem {Value = string.Empty, Text = Localizer["Please choose"].Value},
@@ -18,7 +19,7 @@
     <hr />
 </div>
 <div>
-    <form asp-controller="@nameof(Account)" asp-action="@nameof(Account.Register)" asp-route-organization="@organizationRoute" asp-route-returnurl="@ViewData["ReturnUrl"]" method="post" class="col-md-8 col-sm-10 col-12 pl-0" role="form">
+    <form asp-controller="@nameof(Account)" asp-action="@nameof(Account.Register)" asp-route-organization="@tenantUrlSegment" asp-route-returnurl="@ViewData["ReturnUrl"]" method="post" class="col-md-8 col-sm-10 col-12 pl-0" role="form">
         <site-validation-summary show="All">
             <b>@Localizer["Input has some issues"]:</b>
         </site-validation-summary>

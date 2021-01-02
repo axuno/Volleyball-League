@@ -3,12 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Abstractions;
 using NUnit.Framework;
 using TournamentManager.DAL.EntityClasses;
-using TournamentManager.Data;
 using TournamentManager.ModelValidators;
+using TournamentManager.MultiTenancy;
 
 namespace TournamentManager.Tests.ModelValidators
 {
@@ -19,7 +17,7 @@ namespace TournamentManager.Tests.ModelValidators
         public void All_Ids_Have_A_Check_Function()
         {
             var set = new SetEntity();
-            var sv = new SingleSetValidator(set, (new OrganizationContext(), new SetRuleEntity(1)));
+            var sv = new SingleSetValidator(set, (new TenantContext(), new SetRuleEntity(1)));
 
             var enums = Enum.GetNames(typeof(SingleSetValidator.FactId)).ToList();
             foreach (var e in enums)
@@ -37,7 +35,7 @@ namespace TournamentManager.Tests.ModelValidators
         public async Task Ball_Points_Are_Not_Negative(int homePoints, int guestPoints, bool expected)
         {
             var set = new SetEntity {HomeBallPoints = homePoints, GuestBallPoints = guestPoints};
-            var sv = new SingleSetValidator(set, (new OrganizationContext(), new SetRuleEntity(1)));
+            var sv = new SingleSetValidator(set, (new TenantContext(), new SetRuleEntity(1)));
             var factResult = await sv.CheckAsync(SingleSetValidator.FactId.BallPointsNotNegative, CancellationToken.None);
             Assert.Multiple(() =>
             {
@@ -58,7 +56,7 @@ namespace TournamentManager.Tests.ModelValidators
         public async Task Allow_Tie_In_Regular_Sets_If_Rule_Allows(int homePoints, int guestPoints, bool expected)
         {
             var set = new SetEntity { HomeBallPoints = homePoints, GuestBallPoints = guestPoints, IsTieBreak = false};
-            var sv = new SingleSetValidator(set, (new OrganizationContext(), new SetRuleEntity(1) { PointsDiffToWinRegular = 0, PointsDiffToWinTiebreak = 0 }));
+            var sv = new SingleSetValidator(set, (new TenantContext(), new SetRuleEntity(1) { PointsDiffToWinRegular = 0, PointsDiffToWinTiebreak = 0 }));
             var factResult = await sv.CheckAsync(SingleSetValidator.FactId.TieIsAllowed, CancellationToken.None);
             Assert.Multiple(() =>
             {
@@ -79,7 +77,7 @@ namespace TournamentManager.Tests.ModelValidators
         public async Task Disallow_Tie_In_Regular_Sets(int homePoints, int guestPoints, bool expected)
         {
             var set = new SetEntity { HomeBallPoints = homePoints, GuestBallPoints = guestPoints, IsTieBreak = false };
-            var sv = new SingleSetValidator(set, (new OrganizationContext(), new SetRuleEntity(1) { PointsDiffToWinRegular = 2, PointsDiffToWinTiebreak = 2 }));
+            var sv = new SingleSetValidator(set, (new TenantContext(), new SetRuleEntity(1) { PointsDiffToWinRegular = 2, PointsDiffToWinTiebreak = 2 }));
             var factResult = await sv.CheckAsync(SingleSetValidator.FactId.TieIsAllowed, CancellationToken.None);
             Assert.Multiple(() =>
             {
@@ -100,7 +98,7 @@ namespace TournamentManager.Tests.ModelValidators
         public async Task Allow_Tie_In_TieBreak_Sets_If_Rule_Allows(int homePoints, int guestPoints, bool expected)
         {
             var set = new SetEntity { HomeBallPoints = homePoints, GuestBallPoints = guestPoints, IsTieBreak = true };
-            var sv = new SingleSetValidator(set, (new OrganizationContext(), new SetRuleEntity(1) { PointsDiffToWinRegular = 0, PointsDiffToWinTiebreak = 0 }));
+            var sv = new SingleSetValidator(set, (new TenantContext(), new SetRuleEntity(1) { PointsDiffToWinRegular = 0, PointsDiffToWinTiebreak = 0 }));
             var factResult = await sv.CheckAsync(SingleSetValidator.FactId.TieIsAllowed, CancellationToken.None);
             Assert.Multiple(() =>
             {
@@ -121,7 +119,7 @@ namespace TournamentManager.Tests.ModelValidators
         public async Task Disallow_Tie_In_TieBreak_Sets(int homePoints, int guestPoints, bool expected)
         {
             var set = new SetEntity { HomeBallPoints = homePoints, GuestBallPoints = guestPoints, IsTieBreak = true };
-            var sv = new SingleSetValidator(set, (new OrganizationContext(), new SetRuleEntity(1) { PointsDiffToWinRegular = 2, PointsDiffToWinTiebreak = 2 }));
+            var sv = new SingleSetValidator(set, (new TenantContext(), new SetRuleEntity(1) { PointsDiffToWinRegular = 2, PointsDiffToWinTiebreak = 2 }));
             var factResult = await sv.CheckAsync(SingleSetValidator.FactId.TieIsAllowed, CancellationToken.None);
             Assert.Multiple(() =>
             {
@@ -144,7 +142,7 @@ namespace TournamentManager.Tests.ModelValidators
         public async Task Num_Of_BallPoints_To_Win_Is_Reached(int homePoints, int guestPoints, bool isTieBreak, bool expected)
         {
             var set = new SetEntity { HomeBallPoints = homePoints, GuestBallPoints = guestPoints, IsTieBreak = isTieBreak };
-            var sv = new SingleSetValidator(set, (new OrganizationContext(), new SetRuleEntity(1) { NumOfPointsToWinRegular = 25, NumOfPointsToWinTiebreak = 15 }));
+            var sv = new SingleSetValidator(set, (new TenantContext(), new SetRuleEntity(1) { NumOfPointsToWinRegular = 25, NumOfPointsToWinTiebreak = 15 }));
             var factResult = await sv.CheckAsync(SingleSetValidator.FactId.NumOfPointsToWinReached, CancellationToken.None);
             Assert.Multiple(() =>
             {
@@ -165,7 +163,7 @@ namespace TournamentManager.Tests.ModelValidators
         {
             // tie-break is ignored
             var set = new SetEntity { HomeBallPoints = homePoints, GuestBallPoints = guestPoints, IsTieBreak = isTieBreak };
-            var sv = new SingleSetValidator(set, (new OrganizationContext(), new SetRuleEntity(1) { NumOfPointsToWinRegular = 25, PointsDiffToWinRegular = 1, NumOfPointsToWinTiebreak = 15, PointsDiffToWinTiebreak = 1}));
+            var sv = new SingleSetValidator(set, (new TenantContext(), new SetRuleEntity(1) { NumOfPointsToWinRegular = 25, PointsDiffToWinRegular = 1, NumOfPointsToWinTiebreak = 15, PointsDiffToWinTiebreak = 1}));
             var factResult = await sv.CheckAsync(SingleSetValidator.FactId.RegularWinReachedWithOnePointAhead, CancellationToken.None);
             Assert.Multiple(() =>
             {
@@ -187,7 +185,7 @@ namespace TournamentManager.Tests.ModelValidators
         {
             // regular set is ignored
             var set = new SetEntity { HomeBallPoints = homePoints, GuestBallPoints = guestPoints, IsTieBreak = isTieBreak };
-            var sv = new SingleSetValidator(set, (new OrganizationContext(), new SetRuleEntity(1) { NumOfPointsToWinRegular = 25, PointsDiffToWinRegular = 1, NumOfPointsToWinTiebreak = 15, PointsDiffToWinTiebreak = 1 }));
+            var sv = new SingleSetValidator(set, (new TenantContext(), new SetRuleEntity(1) { NumOfPointsToWinRegular = 25, PointsDiffToWinRegular = 1, NumOfPointsToWinTiebreak = 15, PointsDiffToWinTiebreak = 1 }));
             var factResult = await sv.CheckAsync(SingleSetValidator.FactId.TieBreakWinReachedWithOnePointAhead, CancellationToken.None);
             Assert.Multiple(() =>
             {
@@ -209,7 +207,7 @@ namespace TournamentManager.Tests.ModelValidators
         {
             // tie-break is ignored
             var set = new SetEntity { HomeBallPoints = homePoints, GuestBallPoints = guestPoints, IsTieBreak = isTieBreak };
-            var sv = new SingleSetValidator(set, (new OrganizationContext(), new SetRuleEntity(1) { NumOfPointsToWinRegular = 25, PointsDiffToWinRegular = 2, NumOfPointsToWinTiebreak = 15, PointsDiffToWinTiebreak = 2 }));
+            var sv = new SingleSetValidator(set, (new TenantContext(), new SetRuleEntity(1) { NumOfPointsToWinRegular = 25, PointsDiffToWinRegular = 2, NumOfPointsToWinTiebreak = 15, PointsDiffToWinTiebreak = 2 }));
             var factResult = await sv.CheckAsync(SingleSetValidator.FactId.RegularWinReachedWithTwoPlusPointsAhead, CancellationToken.None);
             Assert.Multiple(() =>
             {
@@ -231,7 +229,7 @@ namespace TournamentManager.Tests.ModelValidators
         {
             // regular sets are ignored
             var set = new SetEntity { HomeBallPoints = homePoints, GuestBallPoints = guestPoints, IsTieBreak = isTieBreak };
-            var sv = new SingleSetValidator(set, (new OrganizationContext(), new SetRuleEntity(1) { NumOfPointsToWinRegular = 25, PointsDiffToWinRegular = 2, NumOfPointsToWinTiebreak = 15, PointsDiffToWinTiebreak = 2 }));
+            var sv = new SingleSetValidator(set, (new TenantContext(), new SetRuleEntity(1) { NumOfPointsToWinRegular = 25, PointsDiffToWinRegular = 2, NumOfPointsToWinTiebreak = 15, PointsDiffToWinTiebreak = 2 }));
             var factResult = await sv.CheckAsync(SingleSetValidator.FactId.TieBreakWinReachedWithTwoPlusPointsAhead, CancellationToken.None);
             Assert.Multiple(() =>
             {
@@ -254,7 +252,7 @@ namespace TournamentManager.Tests.ModelValidators
         public async Task Test_for_all_Facts(int homePoints, int guestPoints, bool isTieBreak, SingleSetValidator.FactId expected)
         {
             var set = new SetEntity { HomeBallPoints = homePoints, GuestBallPoints = guestPoints, IsTieBreak = isTieBreak };
-            var sv = new SingleSetValidator(set, (new OrganizationContext(), new SetRuleEntity(1) { NumOfPointsToWinRegular = 25, PointsDiffToWinRegular = 2, NumOfPointsToWinTiebreak = 15, PointsDiffToWinTiebreak = 2 }));
+            var sv = new SingleSetValidator(set, (new TenantContext(), new SetRuleEntity(1) { NumOfPointsToWinRegular = 25, PointsDiffToWinRegular = 2, NumOfPointsToWinTiebreak = 15, PointsDiffToWinTiebreak = 2 }));
             var result = await sv.CheckAsync(CancellationToken.None);
             Assert.AreEqual(expected, sv.GetFailedFacts().First(r => !r.Success).Id);
         }
@@ -266,7 +264,7 @@ namespace TournamentManager.Tests.ModelValidators
         public async Task Test_for_all_Facts_Should_Succeed(int homePoints, int guestPoints, bool isTieBreak)
         {
             var set = new SetEntity { HomeBallPoints = homePoints, GuestBallPoints = guestPoints, IsTieBreak = isTieBreak };
-            var sv = new SingleSetValidator(set, (new OrganizationContext(), new SetRuleEntity(1) { NumOfPointsToWinRegular = 25, PointsDiffToWinRegular = 2, NumOfPointsToWinTiebreak = 15, PointsDiffToWinTiebreak = 2 }));
+            var sv = new SingleSetValidator(set, (new TenantContext(), new SetRuleEntity(1) { NumOfPointsToWinRegular = 25, PointsDiffToWinRegular = 2, NumOfPointsToWinTiebreak = 15, PointsDiffToWinTiebreak = 2 }));
             var result = await sv.CheckAsync(CancellationToken.None);
             Assert.AreEqual(0, sv.GetFailedFacts().Count);
         }
@@ -274,7 +272,7 @@ namespace TournamentManager.Tests.ModelValidators
         [Test]
         public void Check_FieldName_Of_Facts()
         {
-            var fv = new SingleSetValidator(new SetEntity(),  (new OrganizationContext(), new SetRuleEntity()));
+            var fv = new SingleSetValidator(new SetEntity(),  (new TenantContext(), new SetRuleEntity()));
 
             foreach (var fact in fv.Facts)
             {

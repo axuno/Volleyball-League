@@ -2,10 +2,9 @@
 @{
     Layout = null;
 }
-@using League.DI
 @using Microsoft.AspNetCore.Mvc.Localization
 @*ValueTuple*@
-@model (string Email, string CallbackUrl, TournamentManager.Data.OrganizationContext OrganizationContext)
+@model (string Email, string CallbackUrl, TournamentManager.MultiTenancy.ITenantContext TenantContext)
 *** @Localizer["Your primary email"] ***
 
 @Localizer["Your primary email is about to be changed to"]
@@ -13,4 +12,4 @@
 
 @Localizer["We have sent a confirmation code to the new email address"].
 
-@Model.OrganizationContext.Name
+@Model.TenantContext.OrganizationContext.Name

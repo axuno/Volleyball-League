@@ -2,23 +2,22 @@
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using League.DI;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using TournamentManager.Data;
+using TournamentManager.MultiTenancy;
 
 namespace League.Components
 {
     public class TeamEditor : ViewComponent
     {
-        private readonly SiteContext _siteContext;
-        private readonly AppDb _appDb;
+        private readonly ITenantContext _tenantContext;
+        private readonly TournamentManager.MultiTenancy.AppDb _appDb;
         private readonly ILogger<TeamEditor> _logger;
 
-        public TeamEditor(SiteContext siteContext, ILogger<TeamEditor> logger)
+        public TeamEditor(ITenantContext tenantContext, ILogger<TeamEditor> logger)
         {
-            _siteContext = siteContext;
-            _appDb = siteContext.AppDb;
+            _tenantContext = tenantContext;
+            _appDb = tenantContext.DbContext.AppDb;
             _logger = logger;
         }
 

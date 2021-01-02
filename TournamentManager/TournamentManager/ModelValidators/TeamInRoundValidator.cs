@@ -7,19 +7,19 @@ using System.Threading.Tasks;
 using SD.LLBLGen.Pro.ORMSupportClasses;
 using TournamentManager.DAL.EntityClasses;
 using TournamentManager.DAL.HelperClasses;
-using TournamentManager.Data;
 using TournamentManager.ExtensionMethods;
+using TournamentManager.MultiTenancy;
 
 namespace TournamentManager.ModelValidators
 {
-    public class TeamInRoundValidator : AbstractValidator<TeamInRoundEntity, (OrganizationContext OrganizationContext, long TouramentId), TeamInRoundValidator.FactId>
+    public class TeamInRoundValidator : AbstractValidator<TeamInRoundEntity, (ITenantContext TenantContext, long TouramentId), TeamInRoundValidator.FactId>
     {
         public enum FactId
         {
             RoundBelongsToTournament
         }
 
-        public TeamInRoundValidator(TeamInRoundEntity model, (OrganizationContext organizationContext, long TournamentId) data) : base(model, data)
+        public TeamInRoundValidator(TeamInRoundEntity model, (ITenantContext TenantContext, long TournamentId) data) : base(model, data)
         {
             CreateFacts();
         }
@@ -35,7 +35,7 @@ namespace TournamentManager.ModelValidators
                     Type = FactType.Critical,
                     CheckAsync = async (cancellationToken) =>
                     {
-                        var roundWithTypeList = await Data.OrganizationContext.AppDb.RoundRepository.GetRoundsWithTypeAsync(
+                        var roundWithTypeList = await Data.TenantContext.DbContext.AppDb.RoundRepository.GetRoundsWithTypeAsync(
                             new PredicateExpression(RoundFields.TournamentId == Data.TouramentId),
                             cancellationToken);
 
@@ -49,14 +49,14 @@ namespace TournamentManager.ModelValidators
                         }
                         
                         var tournament =
-                            await Data.OrganizationContext.AppDb.TournamentRepository.GetTournamentAsync(new PredicateExpression(TournamentFields.Id == Data.TouramentId),
+                            await Data.TenantContext.DbContext.AppDb.TournamentRepository.GetTournamentAsync(new PredicateExpression(TournamentFields.Id == Data.TouramentId),
                                 cancellationToken);
 
                         return new FactResult
                         {
                             Message = string.Format(
                                 TeamInRoundValidatorResource.RoundBelongsToTournament ?? string.Empty,
-                                tournament.Description),
+                                tournament?.Description),
                             Success = false
                         };
                     }

@@ -21,9 +21,9 @@ namespace TournamentManager.Data
 	public class RoundRepository
 	{
         private static readonly ILogger _logger = AppLogging.CreateLogger<RoundRepository>();
-        private readonly IDbContext _dbContext;
+        private readonly MultiTenancy.IDbContext _dbContext;
 
-	    public RoundRepository(IDbContext dbContext)
+	    public RoundRepository(MultiTenancy.IDbContext dbContext)
 	    {
 	        _dbContext = dbContext;
 	    }
@@ -36,16 +36,14 @@ namespace TournamentManager.Data
             }
 		}
 
-        public virtual async Task<RoundEntity> GetRoundWithRulesAsync(long roundId, CancellationToken cancellationToken)
+        public virtual async Task<RoundEntity?> GetRoundWithRulesAsync(long roundId, CancellationToken cancellationToken)
         {
-            using (var da = _dbContext.GetNewAdapter())
-            {
-                var metaData = new LinqMetaData(da);
-                var round = await metaData.Round.Where(r => r.Id == roundId)
-                    .WithPath(new PathEdge<RoundEntity>(RoundEntity.PrefetchPathMatchRule), new PathEdge<RoundEntity>(RoundEntity.PrefetchPathSetRule))
-                    .FirstOrDefaultAsync<RoundEntity>(cancellationToken);
-                return round;
-            }
+            using var da = _dbContext.GetNewAdapter();
+            var metaData = new LinqMetaData(da);
+            var round = await metaData.Round.Where(r => r.Id == roundId)
+                .WithPath(new PathEdge<RoundEntity>(RoundEntity.PrefetchPathMatchRule), new PathEdge<RoundEntity>(RoundEntity.PrefetchPathSetRule))
+                .FirstOrDefaultAsync<RoundEntity>(cancellationToken);
+            return round;
         }
 
 		public virtual async Task<List<RoundLegPeriodRow>> GetRoundLegPeriodAsync(IPredicateExpression filter,

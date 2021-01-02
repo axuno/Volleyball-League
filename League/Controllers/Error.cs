@@ -1,10 +1,10 @@
 ﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using League.DI;
 using League.Models.Error;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Localization;
+using TournamentManager.MultiTenancy;
 
 namespace League.Controllers
 {
@@ -13,20 +13,20 @@ namespace League.Controllers
         private readonly ILogger _logger;
         private readonly IStringLocalizer<Error> _localizer;
         private readonly IWebHostEnvironment _environment;
-        private readonly SiteContext _siteContext;
+        private readonly ITenantContext _tenantContext;
 
-        public Error(ILogger<Error> logger, IStringLocalizer<Error> localizer, IWebHostEnvironment environment, SiteContext siteContext)
+        public Error(ILogger<Error> logger, IStringLocalizer<Error> localizer, IWebHostEnvironment environment, ITenantContext tenantContext)
         {
             _logger = logger;
             _environment = environment;
-            _siteContext = siteContext;
+            _tenantContext = tenantContext;
             _localizer = localizer;
         }
 
         [Route("error/{id?}")]
         public IActionResult Index(string id)
         {
-            ViewBag.TitleTagText = $"{_siteContext.ShortName} - {_localizer["Error"]}";
+            ViewBag.TitleTagText = $"{_tenantContext.OrganizationContext.ShortName} - {_localizer["Error"]}";
             id ??= string.Empty;
             id = id.Trim();
 
@@ -58,7 +58,7 @@ namespace League.Controllers
             return View(ViewNames.Error.Index, viewModel);
         }
 
-        [Route("{organization:ValidOrganizations}/error/access-denied")]
+        [Route("{organization:MatchingTenant}/error/access-denied")]
         public IActionResult AccessDenied(string returnUrl)
         {
             ViewData["ReturnUrl"] = returnUrl;

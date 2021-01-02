@@ -3,7 +3,6 @@
 using cloudscribe.Web.Navigation;
 using cloudscribe.Web.Navigation.Caching;
 using JSNLog;
-using League.DI;
 using League.Identity;
 using League.ModelBinders;
 using League.Routing;
@@ -43,12 +42,12 @@ using System.Threading;
 using System.Threading.Tasks;
 using Axuno.BackgroundTask;
 using League.BackgroundTasks;
-using TournamentManager.Data;
 using League.BackgroundTasks.Email;
 using League.ConfigurationPoco;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Rewrite;
 using TournamentManager.DI;
+using TournamentManager.MultiTenancy;
 
 #endregion
 
@@ -65,17 +64,14 @@ namespace League
         {
             Configuration = configuration;
             WebHostEnvironment = webHostEnvironment;
-            
-            ConfigureLlblgenPro();
         }
 
-        private void ConfigureLlblgenPro()
+        private void ConfigureLlblgenPro(TenantStore tenantStore)
         {
-            var dbContextList = DbContextList.DeserializeFromFile(Path.Combine(WebHostEnvironment.ContentRootPath, Program.ConfigurationFolder, $"DbContextList.{WebHostEnvironment.EnvironmentName}.config"));
-            foreach (var dbContext in dbContextList)
+            foreach (var tenant in tenantStore.GetTenants().Values)
             {
-                var connectionString = Configuration.GetConnectionString(dbContext.ConnectionKey);
-                RuntimeConfiguration.AddConnectionString(dbContext.ConnectionKey, connectionString);
+                var connectionString = Configuration.GetConnectionString(tenant.DbContext.ConnectionKey);
+                RuntimeConfiguration.AddConnectionString(tenant.DbContext.ConnectionKey, connectionString);
                 // Enable low-level (result set) caching when specified in selected queries
                 // The cache of a query can be overwritten using property 'OverwriteIfPresent'
                 CacheController.RegisterCache(connectionString, new ResultsetCache());
@@ -154,7 +150,7 @@ namespace League
                 fo.ValueLengthLimit = int.MaxValue;
                 fo.MultipartBodyLengthLimit = int.MaxValue;
             });
-
+            
             // The default region of this app is "us", unless configured differently
             // The region info is used for country-specific data like phone numbers
             var regionInfo = new RegionInfo(Configuration.GetSection("RegionInfo").Value ?? "us");
@@ -167,19 +163,36 @@ namespace League
             // DO NOT USE `options => options.ResourcesPath = "..."` because then resource files in other locations won't be recognized (e.g. resx in the same folder as the controller class)
             services.AddLocalization();
 
-            var dbContextList = DbContextList.DeserializeFromFile(Path.Combine(WebHostEnvironment.ContentRootPath, Program.ConfigurationFolder, $"DbContextList.{WebHostEnvironment.EnvironmentName}.config"));
-            foreach (var dbContext in dbContextList)
-            {
-                dbContext.ConnectionString = Configuration.GetConnectionString(dbContext.ConnectionKey);
-            }
-            
-            var dbContextResolver = new DbContextResolver(dbContextList);
-            services.AddSingleton<OrganizationContextResolver>(s => new OrganizationContextResolver(dbContextResolver, s.GetRequiredService<ILogger<OrganizationContextResolver>>(), Path.Combine(WebHostEnvironment.ContentRootPath, Program.ConfigurationFolder)));
+            #region **** New Multi Tenancy (since v4.3.0) *****************************
 
-            services.AddSingleton<SiteList>(sp =>
-                SiteList.DeserializeFromFile(Path.Combine(WebHostEnvironment.ContentRootPath,
-                    Program.ConfigurationFolder, $"SiteList.{WebHostEnvironment.EnvironmentName}.config")));
-            services.AddScoped<SiteContext>();
+            services.AddSingleton<TenantStore>(sp =>
+            {
+                var store = (TenantStore) new TenantStore(Configuration, sp.GetRequiredService<ILogger<TournamentManager.MultiTenancy.TenantStore>>())
+                {
+                    GetTenantConfigurationFiles = () =>
+                    {
+                        var configFolderFiles = Directory.GetFiles(
+                            Path.Combine(WebHostEnvironment.ContentRootPath, Program.ConfigurationFolder),
+                            $"Tenant.*.{WebHostEnvironment.EnvironmentName}.config", SearchOption.TopDirectoryOnly).ToList();
+                        
+                        if (WebHostEnvironment.IsDevelopment())
+                        {
+                            configFolderFiles.AddRange(Directory.GetFiles(
+                                Path.Combine(Program.GetSecretsFolder()),
+                                $"Tenant.*.{WebHostEnvironment.EnvironmentName}.config", SearchOption.TopDirectoryOnly));
+                        }
+
+                        return configFolderFiles.ToArray();
+                    }
+                }.LoadTenants();
+                ConfigureLlblgenPro(store);
+                return store;
+            });
+            
+            services.AddScoped<MultiTenancy.TenantResolver>();
+            services.AddScoped<TournamentManager.MultiTenancy.ITenantContext>(sp => sp.GetRequiredService<MultiTenancy.TenantResolver>().Resolve());
+            
+            #endregion
 
             services.Configure<IISOptions>(options => { });
 
@@ -218,7 +231,7 @@ namespace League
                 {
                     options.AppId = socialLogins.Facebook.AppId;
                     options.AppSecret = socialLogins.Facebook.AppSecret;
-                    options.CallbackPath = "/signin-facebook"; // this path is used by the middleware only, no route necessary
+                    options.CallbackPath = new PathString("/signin-facebook"); // this path is used by the middleware only, no route necessary
                     // add the facebook picture url as an additional claim
                     options.ClaimActions.MapJsonKey("urn:facebook:picture", "picture", "picture.data.url");
                     options.SaveTokens = true;
@@ -229,7 +242,7 @@ namespace League
                         var qsParameter =
                             new Dictionary<string, string>
                             {
-                                {"remoteError", context.Request.Query["error"]},
+                                {"remoteError", context.Request.Query["error"].ToString()},
                             }.Where(item => !string.IsNullOrEmpty(item.Value)).ToDictionary(i => i.Key, i => i.Value);
                         // joins query strings from RedirectUri and qsParameter
                         var redirectUri = QueryHelpers.AddQueryString(context.Properties?.RedirectUri ?? "/", qsParameter);
@@ -242,7 +255,7 @@ namespace League
                 {
                     options.ClientId = socialLogins.Google.ClientId;
                     options.ClientSecret = socialLogins.Google.ClientSecret;
-                    options.CallbackPath = "/signin-google"; // this path is used by the middleware only, no route necessary
+                    options.CallbackPath = new PathString("/signin-google"); // this path is used by the middleware only, no route necessary
                     options.ClaimActions.MapJsonKey("urn:google:picture", "picture", "url"); ;
                     options.SaveTokens = true;
                     options.CorrelationCookie.Name = ".CorrAuth.League";
@@ -252,7 +265,7 @@ namespace League
                         var qsParameter =
                             new Dictionary<string, string>
                             {
-                                {"remoteError", context.Request.Query["error"]},
+                                {"remoteError", context.Request.Query["error"].ToString()},
                             }.Where(item => !string.IsNullOrEmpty(item.Value)).ToDictionary(i => i.Key, i => i.Value);
                         // joins query strings from RedirectUri and qsParameter
                         var redirectUri = QueryHelpers.AddQueryString(context.Properties?.RedirectUri ?? "/", qsParameter);
@@ -265,7 +278,7 @@ namespace League
                 {
                     options.ClientId = socialLogins.Microsoft.ClientId;
                     options.ClientSecret = socialLogins.Microsoft.ClientSecret;
-                    options.CallbackPath = "/signin-microsoft"; // this path is used by the middleware only, no route necessary
+                    options.CallbackPath = new PathString("/signin-microsoft"); // this path is used by the middleware only, no route necessary
                     options.SaveTokens = true;
                     options.CorrelationCookie.Name = ".CorrAuth.League";
                     options.Events.OnRemoteFailure = context =>
@@ -274,7 +287,7 @@ namespace League
                         var qsParameter =
                             new Dictionary<string, string>
                             {
-                                {"remoteError", context.Request.Query["error"]},
+                                {"remoteError", context.Request.Query["error"].ToString()},
                             }.Where(item => !string.IsNullOrEmpty(item.Value)).ToDictionary(i => i.Key, i => i.Value);
                         // joins query strings from RedirectUri and qsParameter
                         var redirectUri = QueryHelpers.AddQueryString(context.Properties?.RedirectUri ?? "/", qsParameter);
@@ -362,30 +375,30 @@ namespace League
                 {
                     var returnUrl = "?ReturnUrl=" + context.Request.Path + context.Request.QueryString;
                     // fires with [Authorize] attribute, when the user is authenticated, but does not have enough privileges
-                    var siteContext = context.HttpContext.RequestServices.GetRequiredService<SiteContext>();
+                    var tenantContext = context.HttpContext.RequestServices.GetRequiredService<ITenantContext>();
                     // other context properties can be set, but are not considered in the redirect, though
-                    context.Response.Redirect(new PathString($"/{siteContext.UrlSegmentValue}").Add(context.Options.AccessDeniedPath) + returnUrl);
+                    context.Response.Redirect(new PathString($"/{tenantContext.SiteContext.UrlSegmentValue}").Add(context.Options.AccessDeniedPath) + returnUrl);
                     return Task.CompletedTask;
                 };
                 options.Events.OnRedirectToLogin = context =>
                 {
                     var returnUrl = "?ReturnUrl=" + context.Request.Path + context.Request.QueryString;
                     // fires with [Authorize] attribute, when the user is not authenticated
-                    var siteContext = context.HttpContext.RequestServices.GetRequiredService<SiteContext>();
+                    var tenantContext = context.HttpContext.RequestServices.GetRequiredService<ITenantContext>();
                     // other context properties can be set, but are not considered in the redirect, though
-                    context.Response.Redirect(new PathString($"/{siteContext.UrlSegmentValue}").Add(context.Options.LoginPath) + returnUrl);
+                    context.Response.Redirect(new PathString($"/{tenantContext.SiteContext.UrlSegmentValue}").Add(context.Options.LoginPath) + returnUrl);
                     return Task.CompletedTask;
                 };
                 options.Events.OnRedirectToLogout = context =>
                 {
-                    var siteContext = context.HttpContext.RequestServices.GetRequiredService<SiteContext>();
-                    context.Response.Redirect(new PathString($"/{siteContext.UrlSegmentValue}").Add(context.Options.LogoutPath));
+                    var tenantContext = context.HttpContext.RequestServices.GetRequiredService<ITenantContext>();
+                    context.Response.Redirect(new PathString($"/{tenantContext.SiteContext.UrlSegmentValue}").Add(context.Options.LogoutPath));
                     return Task.CompletedTask;
                 };
                 options.Events.OnSignedIn += async context =>
                 {
-                    var siteContext = context.HttpContext.RequestServices.GetRequiredService<SiteContext>();
-                    var success = await siteContext.AppDb.UserRepository.SetLastLoginDateAsync(context.Principal.Identity.Name, null, CancellationToken.None);
+                    var tenantContext = context.HttpContext.RequestServices.GetRequiredService<ITenantContext>();
+                    var success = await tenantContext.DbContext.AppDb.UserRepository.SetLastLoginDateAsync(context.Principal.Identity.Name, null, CancellationToken.None);
                 };
             });
             
@@ -408,24 +421,24 @@ namespace League
                 {
                     var returnUrl = "?ReturnUrl=" + context.Request.Path + context.Request.QueryString;
                     // fires with [Authorize] attribute, when the user is authenticated, but does not have enough privileges
-                    var siteContext = context.HttpContext.RequestServices.GetRequiredService<SiteContext>();
+                    var tenantContext = context.HttpContext.RequestServices.GetRequiredService<ITenantContext>();
                     // other context properties can be set, but are not considered in the redirect, though
-                    context.Response.Redirect(new PathString($"/{siteContext.UrlSegmentValue}").Add(context.Options.AccessDeniedPath) + returnUrl);
+                    context.Response.Redirect(new PathString($"/{tenantContext.SiteContext.UrlSegmentValue}").Add(context.Options.AccessDeniedPath) + returnUrl);
                     return Task.CompletedTask;
                 };
                 options.Events.OnRedirectToLogin = context =>
                 {
                     var returnUrl = "?ReturnUrl=" + context.Request.Path + context.Request.QueryString;
                     // fires with [Authorize] attribute, when the user is not authenticated
-                    var siteContext = context.HttpContext.RequestServices.GetRequiredService<SiteContext>();
+                    var tenantContext = context.HttpContext.RequestServices.GetRequiredService<ITenantContext>();
                     // other context properties can be set, but are not considered in the redirect, though
-                    context.Response.Redirect(new PathString($"/{siteContext.UrlSegmentValue}").Add(context.Options.LoginPath) + returnUrl);
+                    context.Response.Redirect(new PathString($"/{tenantContext.SiteContext.UrlSegmentValue}").Add(context.Options.LoginPath) + returnUrl);
                     return Task.CompletedTask;
                 };
                 options.Events.OnRedirectToLogout = context =>
                 {
-                    var siteContext = context.HttpContext.RequestServices.GetRequiredService<SiteContext>();
-                    context.Response.Redirect(new PathString($"/{siteContext.UrlSegmentValue}").Add(context.Options.LogoutPath));
+                    var tenantContext = context.HttpContext.RequestServices.GetRequiredService<ITenantContext>();
+                    context.Response.Redirect(new PathString($"/{tenantContext.SiteContext.UrlSegmentValue}").Add(context.Options.LogoutPath));
                     return Task.CompletedTask;
                 };
             });
@@ -523,7 +536,7 @@ namespace League
 
             services.AddRouting(options =>
                 {
-                    options.ConstraintMap.Add(OrganizationRouteConstraint.Name, typeof(OrganizationRouteConstraint));
+                    options.ConstraintMap.Add(TenantRouteConstraint.Name, typeof(TenantRouteConstraint));
                     options.LowercaseQueryStrings = false; // true does not work for UrlBase64 encoded strings!
                     options.LowercaseUrls = true;
                     options.AppendTrailingSlash = false;
@@ -554,7 +567,7 @@ namespace League
                     // Replace ComplexTypeModelBinder with TrimmingModelBinder (trims all strings in models)
                     options.ModelBinderProviders[options.ModelBinderProviders.TakeWhile(p => !(p is Microsoft.AspNetCore.Mvc.ModelBinding.Binders.ComplexTypeModelBinderProvider)).Count()] = new ModelBinders.TrimmingComplexModelBinderProvider();
                 })
-                .AddControllersAsServices();
+                .AddControllersAsServices(); // will add controllers with ServiceLifetime.Transient
 #if DEBUG
             // Not to be added in production!
             if (WebHostEnvironment.IsDevelopment())
@@ -579,9 +592,10 @@ namespace League
             //services.AddCloudscribeNavigation(Configuration.GetSection("NavigationOptions"));
             services.AddCloudscribeNavigation(null);
             services.AddScoped<IOptions<NavigationOptions>, Navigation.LeagueSiteNavigationOptionsResolver>(); // resolve navigation xml files per organization
-            services.AddScoped<INavigationTreeBuilder, Navigation.LeaguesNavigationTreeBuilder>(); //add top nav item for all leagues
-            services.AddScoped<INavigationTreeBuilder, Navigation.InfosNavigationTreeBuilder>(); //add top nav item for info menu
-            services.AddScoped<ITreeCache, Navigation.LeagueMemoryTreeCache>(); // cache navigation tree per organization
+            services.AddScoped<INavigationTreeBuilder, Navigation.HomeNavigationTreeBuilder>(); //add top nav home button per tenant
+            services.AddScoped<INavigationTreeBuilder, Navigation.LeaguesNavigationTreeBuilder>(); //add top nav item for leagues per tenant
+            services.AddScoped<INavigationTreeBuilder, Navigation.InfosNavigationTreeBuilder>(); //add top nav item for info menu per tenant
+            services.AddScoped<ITreeCache, Navigation.LeagueMemoryTreeCache>(); // cache navigation tree per tenant
             #endregion
 
             #region *** HostedServices related ***
@@ -725,15 +739,14 @@ namespace League
             
             #region *** Initialize ranking tables and charts ***
             
-            var siteList = app.ApplicationServices.GetRequiredService<SiteList>();
+            var tenantStore = app.ApplicationServices.GetRequiredService<TenantStore>();
             var queue = app.ApplicationServices.GetRequiredService<IBackgroundQueue>();
             
-            foreach (var orgSite in siteList.Where(ctx => !string.IsNullOrEmpty(ctx.OrganizationKey)))  
+            foreach (var tenant in tenantStore.GetTenants().Values.Where(tc => !(string.IsNullOrEmpty(tc.Identifier) || tc.IsDefault)))  
             {
-                var siteContext = new SiteContext(orgSite.OrganizationKey, app.ApplicationServices.GetRequiredService<OrganizationContextResolver>(), siteList);
                 var rankingUpdateTask = app.ApplicationServices.GetRequiredService<RankingUpdateTask>();
-                rankingUpdateTask.SiteContext = siteContext.Resolve(orgSite.OrganizationKey);
-                rankingUpdateTask.TournamentId = siteContext.MatchResultTournamentId;
+                rankingUpdateTask.TenantContext = tenant;
+                rankingUpdateTask.TournamentId = tenant.TournamentContext.MatchResultTournamentId;
                 rankingUpdateTask.Timeout = TimeSpan.FromMinutes(5);
                 rankingUpdateTask.EnforceUpdate = false;
                 queue.QueueTask(rankingUpdateTask);

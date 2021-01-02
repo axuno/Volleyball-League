@@ -5,25 +5,30 @@ using System.Threading;
 using System.Threading.Tasks;
 using NUnit.Framework;
 using TournamentManager.DAL.EntityClasses;
-using TournamentManager.Data;
 using TournamentManager.ModelValidators;
 using Moq;
+using TournamentManager.Data;
+using TournamentManager.MultiTenancy;
 using TournamentManager.ExtensionMethods;
 using TournamentManager.Tests.TestComponents;
+using FixtureRuleSet = TournamentManager.MultiTenancy.FixtureRuleSet;
+using HomeMatchTime = TournamentManager.MultiTenancy.HomeMatchTime;
+using RegularMatchStartTime = TournamentManager.MultiTenancy.RegularMatchStartTime;
+using TeamRules = TournamentManager.MultiTenancy.TeamRules;
 
 namespace TournamentManager.Tests.ModelValidators
 {
     [TestFixture]
     public class TeamValidatorTests
     {
-        private OrganizationContext _organizationContext;
+        private ITenantContext _tenantContext;
         private readonly AppDb _appDb;
 
         public TeamValidatorTests()
         {
             #region *** Mocks ***
 
-            var orgCtxMock = TestMocks.GetOrganizationContextMock();
+            var tenantContextMock = TestMocks.GetTenantContextMock();
             var appDbMock = TestMocks.GetAppDbMock();
 
             var teamRepoMock = TestMocks.GetRepo<TeamRepository>();
@@ -35,8 +40,12 @@ namespace TournamentManager.Tests.ModelValidators
                 });
             appDbMock.Setup(a => a.TeamRepository).Returns(teamRepoMock.Object);
 
-            orgCtxMock.SetupAppDb(appDbMock);
-            _organizationContext = orgCtxMock.Object;
+            var dbContextMock = TestMocks.GetDbContextMock();
+            dbContextMock.SetupAppDb(appDbMock);
+            
+            tenantContextMock.SetupDbContext(dbContextMock);
+            
+            _tenantContext = tenantContextMock.Object;
 
             _appDb = appDbMock.Object;
 
@@ -50,8 +59,8 @@ namespace TournamentManager.Tests.ModelValidators
         {
             var team = new TeamEntity {Name = teamName};
             
-            _organizationContext.TeamRuleSet = new TeamRules{HomeMatchTime = new HomeMatchTime{}};
-            var tv = new TeamValidator(team, _organizationContext);
+            _tenantContext.TournamentContext.TeamRuleSet = new TeamRules{HomeMatchTime = new HomeMatchTime{}};
+            var tv = new TeamValidator(team, _tenantContext);
 
             var factResult = await tv.CheckAsync(TeamValidator.FactId.TeamNameIsSet, CancellationToken.None);
             Assert.Multiple(() =>
@@ -69,8 +78,8 @@ namespace TournamentManager.Tests.ModelValidators
         {
             var team = new TeamEntity {Name = teamName, Id = teamId};
 
-            _organizationContext.TeamRuleSet = new TeamRules { HomeMatchTime = new HomeMatchTime { } };
-            var tv = new TeamValidator(team, _organizationContext);
+            _tenantContext.TournamentContext.TeamRuleSet = new TeamRules { HomeMatchTime = new HomeMatchTime { } };
+            var tv = new TeamValidator(team, _tenantContext);
 
             var factResult = await tv.CheckAsync(TeamValidator.FactId.TeamNameIsUnique, CancellationToken.None);
             Assert.Multiple(() =>
@@ -93,8 +102,8 @@ namespace TournamentManager.Tests.ModelValidators
         {
             var team = new TeamEntity { MatchTime = matchTime, MatchDayOfWeek = 1};
 
-            _organizationContext.TeamRuleSet = new TeamRules { HomeMatchTime = new HomeMatchTime { IsEditable = isEditable, MustBeSet = mustBeSet} };
-            var tv = new TeamValidator(team, _organizationContext);
+            _tenantContext.TournamentContext.TeamRuleSet = new TeamRules { HomeMatchTime = new HomeMatchTime { IsEditable = isEditable, MustBeSet = mustBeSet} };
+            var tv = new TeamValidator(team, _tenantContext);
 
             var factResult = await tv.CheckAsync(TeamValidator.FactId.MatchDayOfWeekAndTimeIsSet, CancellationToken.None);
             Assert.Multiple(() =>
@@ -121,14 +130,14 @@ namespace TournamentManager.Tests.ModelValidators
             // Note: all times are set and compared to local time
 
             var team = new TeamEntity();
-            _organizationContext.TeamRuleSet = new TeamRules { HomeMatchTime = new HomeMatchTime {IsEditable = true, MustBeSet = startTimeMustBeSet} };
-            _organizationContext.FixtureRuleSet = new FixtureRuleSet
+            _tenantContext.TournamentContext.TeamRuleSet = new TeamRules { HomeMatchTime = new HomeMatchTime {IsEditable = true, MustBeSet = startTimeMustBeSet} };
+            _tenantContext.TournamentContext.FixtureRuleSet = new FixtureRuleSet
             {
                 RegularMatchStartTime = new RegularMatchStartTime
                     {MinDayTime = new TimeSpan(19, 0, 0), 
                         MaxDayTime = new TimeSpan(21, 0, 0)}
             };
-            var tv = new TeamValidator(team, _organizationContext);
+            var tv = new TeamValidator(team, _tenantContext);
 
             team.MatchTime = startTime;
             var factResult = await tv.CheckAsync(TeamValidator.FactId.MatchTimeWithinRange, CancellationToken.None);
@@ -136,7 +145,7 @@ namespace TournamentManager.Tests.ModelValidators
             Assert.Multiple(() =>
             {
                 Assert.AreEqual(expected, factResult.IsChecked == startTimeMustBeSet &&
-                    factResult.Success && factResult.Message.Contains(_organizationContext.FixtureRuleSet
+                    factResult.Success && factResult.Message.Contains(_tenantContext.TournamentContext.FixtureRuleSet
                         .RegularMatchStartTime.MinDayTime.ToShortTimeString()));
                 Assert.IsNull(factResult.Exception);
             });
@@ -152,7 +161,7 @@ namespace TournamentManager.Tests.ModelValidators
         {
             var team = new TeamEntity { MatchDayOfWeek = dayOfWeek.HasValue ? (int) dayOfWeek : default(int?), MatchTime = new TimeSpan(18,0,0)};
 
-            _organizationContext.TeamRuleSet = new TeamRules
+            _tenantContext.TournamentContext.TeamRuleSet = new TeamRules
             {
                 HomeMatchTime = new HomeMatchTime
                 {
@@ -160,7 +169,7 @@ namespace TournamentManager.Tests.ModelValidators
                     MustBeSet = mustBeSet,
                 }
             };
-            var tv = new TeamValidator(team, _organizationContext);
+            var tv = new TeamValidator(team, _tenantContext);
 
             var factResult = await tv.CheckAsync(TeamValidator.FactId.DayOfWeekWithinRange, CancellationToken.None);
             Assert.Multiple(() =>
@@ -184,7 +193,7 @@ namespace TournamentManager.Tests.ModelValidators
         {
             var team = new TeamEntity { MatchDayOfWeek = dayOfWeek.HasValue ? (int)dayOfWeek : default(int?) };
 
-            _organizationContext.TeamRuleSet = new TeamRules
+            _tenantContext.TournamentContext.TeamRuleSet = new TeamRules
             {
                 HomeMatchTime = new HomeMatchTime
                 {
@@ -194,12 +203,12 @@ namespace TournamentManager.Tests.ModelValidators
                     DaysOfWeekRange = new List<DayOfWeek> { DayOfWeek.Monday, DayOfWeek.Tuesday }
                 }
             };
-            var tv = new TeamValidator(team, _organizationContext);
+            var tv = new TeamValidator(team, _tenantContext);
 
             var factResult = await tv.CheckAsync(TeamValidator.FactId.DayOfWeekWithinRange, CancellationToken.None);
             Assert.Multiple(() =>
             {
-                Assert.AreEqual(factResult.Enabled, _organizationContext.TeamRuleSet.HomeMatchTime.IsEditable && _organizationContext.TeamRuleSet.HomeMatchTime.MustBeSet);
+                Assert.AreEqual(factResult.Enabled, _tenantContext.TournamentContext.TeamRuleSet.HomeMatchTime.IsEditable && _tenantContext.TournamentContext.TeamRuleSet.HomeMatchTime.MustBeSet);
                 if (factResult.Enabled)
                 {
                     Assert.IsTrue(errorIfNotInRange ? factResult.Type == FactType.Error : factResult.Type == FactType.Warning);

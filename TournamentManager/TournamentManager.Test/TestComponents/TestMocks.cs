@@ -3,17 +3,24 @@ using System.Collections.Generic;
 using System.Text;
 using Moq;
 using Moq.Language.Flow;
-using TournamentManager.Data;
+using TournamentManager.MultiTenancy;
 
 namespace TournamentManager.Tests.TestComponents
 {
     public class TestMocks
     {
-        public static Mock<OrganizationContext> GetOrganizationContextMock()
+        public static Mock<ITenantContext> GetTenantContextMock()
         {
             // recursive mock:
-            var orgCtxMock = new Mock<OrganizationContext> {DefaultValue = DefaultValue.Mock};
+            var orgCtxMock = new Mock<ITenantContext> {DefaultValue = DefaultValue.Mock};
             return orgCtxMock;
+        }
+        
+        public static Mock<DbContext> GetDbContextMock()
+        {
+            // recursive mock:
+            var dbCtxMock = new Mock<DbContext> {DefaultValue = DefaultValue.Mock};
+            return dbCtxMock;
         }
 
         public static Mock<AppDb> GetAppDbMock()
@@ -30,6 +37,5 @@ namespace TournamentManager.Tests.TestComponents
             var repoMock = new Mock<T>(dbAcc);
             return repoMock;
         }
-
     }
 }

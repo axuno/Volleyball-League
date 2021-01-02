@@ -22,9 +22,9 @@ namespace TournamentManager.Data
 	public class ManagerOfTeamRepository
 	{
         private static readonly ILogger _logger = AppLogging.CreateLogger<ManagerOfTeamRepository>();
-        private readonly IDbContext _dbContext;
+        private readonly MultiTenancy.IDbContext _dbContext;
 
-	    public ManagerOfTeamRepository(IDbContext dbContext)
+	    public ManagerOfTeamRepository(MultiTenancy.IDbContext dbContext)
 	    {
 	        _dbContext = dbContext;
 	    }

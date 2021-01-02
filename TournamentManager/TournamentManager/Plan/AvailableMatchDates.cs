@@ -8,12 +8,13 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using TournamentManager.Data;
+using TournamentManager.MultiTenancy;
 
 namespace TournamentManager.Plan
 {
     public class AvailableMatchDates
     {
-        private readonly OrganizationContext _organizationContext;
+        private readonly ITenantContext _tenantContext;
         private readonly AppDb _appDb;
         private readonly Axuno.Tools.DateAndTime.TimeZoneConverter _timeZoneConverter;
 
@@ -31,11 +32,11 @@ namespace TournamentManager.Plan
         private readonly EntityCollection<ExcludeMatchDateEntity> _excludedMatchDateEntities =
             new EntityCollection<ExcludeMatchDateEntity>();
 
-        internal AvailableMatchDates(OrganizationContext organizationContext,
+        internal AvailableMatchDates(ITenantContext tenantContext,
             Axuno.Tools.DateAndTime.TimeZoneConverter timeZoneConverter, ILogger<AvailableMatchDates> logger)
         {
-            _organizationContext = organizationContext;
-            _appDb = organizationContext.AppDb;
+            _tenantContext = tenantContext;
+            _appDb = tenantContext.DbContext.AppDb;
             _timeZoneConverter = timeZoneConverter;
             _logger = logger;
         }
@@ -45,12 +46,12 @@ namespace TournamentManager.Plan
             _excludedMatchDateEntities.Clear();
             _excludedMatchDateEntities.AddRange(
                 await _appDb.ExcludedMatchDateRepository.GetExcludedMatchDatesAsync(
-                    _organizationContext.MatchPlanTournamentId, cancellationToken));
+                    _tenantContext.TournamentContext.MatchPlanTournamentId, cancellationToken));
 
             _availableMatchDateEntities.Clear();
             _availableMatchDateEntities.AddRange(
                 await _appDb.AvailableMatchDateRepository.GetAvailableMatchDatesAsync(
-                    _organizationContext.MatchPlanTournamentId, cancellationToken));
+                    _tenantContext.TournamentContext.MatchPlanTournamentId, cancellationToken));
 
             _generatedAvailableMatchDateEntities.Clear();
         }
@@ -69,7 +70,7 @@ namespace TournamentManager.Plan
             // tournament is always in the filter
             var filterAvailable = new RelationPredicateBucket();
             filterAvailable.PredicateExpression.Add(AvailableMatchDateFields.TournamentId ==
-                                                    _organizationContext.MatchPlanTournamentId);
+                                                    _tenantContext.TournamentContext.MatchPlanTournamentId);
 
             if (clear == ClearMatchDates.All)
             {
@@ -159,17 +160,17 @@ namespace TournamentManager.Plan
                             && !IsExcludedDate(matchDateAndTimeUtc, round.Id, team.Id)
                             && !await IsVenueOccupiedByMatchAsync(
                                 new DateTimePeriod(matchDateAndTimeUtc,
-                                    matchDateAndTimeUtc.Add(_organizationContext.FixtureRuleSet
+                                    matchDateAndTimeUtc.Add(_tenantContext.TournamentContext.FixtureRuleSet
                                         .PlannedDurationOfMatch)), team.VenueId, cancellationToken))
                         {
                             var av = new AvailableMatchDateEntity
                             {
-                                TournamentId = _organizationContext.MatchPlanTournamentId,
+                                TournamentId = _tenantContext.TournamentContext.MatchPlanTournamentId,
                                 HomeTeamId = team.Id,
                                 VenueId = team.VenueId,
                                 MatchStartTime = matchDateAndTimeUtc,
                                 MatchEndTime =
-                                    matchDateAndTimeUtc.Add(_organizationContext.FixtureRuleSet.PlannedDurationOfMatch),
+                                    matchDateAndTimeUtc.Add(_tenantContext.TournamentContext.FixtureRuleSet.PlannedDurationOfMatch),
                                 IsGenerated = true
                             };
 
@@ -193,7 +194,7 @@ namespace TournamentManager.Plan
             CancellationToken cancellationToken)
         {
             return (await _appDb.VenueRepository.GetOccupyingMatchesAsync(venueId, matchTime,
-                _organizationContext.MatchPlanTournamentId, cancellationToken)).Any();
+                _tenantContext.TournamentContext.MatchPlanTournamentId, cancellationToken)).Any();
         }
 
         private bool IsDateWithinRoundLegDateTime(RoundLegEntity leg, DateTime queryDate)
@@ -228,19 +229,19 @@ namespace TournamentManager.Plan
                 // Excluded for the whole tournament...
                 _excludedMatchDateEntities.Any(
                     excl => queryDate >= excl.DateFrom && queryDate <= excl.DateTo &&
-                            excl.TournamentId == _organizationContext.MatchPlanTournamentId && !excl.RoundId.HasValue &&
+                            excl.TournamentId == _tenantContext.TournamentContext.MatchPlanTournamentId && !excl.RoundId.HasValue &&
                             !excl.TeamId.HasValue)
                 ||
                 // OR excluded for a round...
                 _excludedMatchDateEntities.Any(
                     excl => queryDate >= excl.DateFrom && queryDate <= excl.DateTo &&
-                            excl.TournamentId == _organizationContext.MatchPlanTournamentId && excl.RoundId.HasValue &&
+                            excl.TournamentId == _tenantContext.TournamentContext.MatchPlanTournamentId && excl.RoundId.HasValue &&
                             roundId.HasValue && excl.RoundId == roundId)
                 ||
                 // OR excluded for a team
                 _excludedMatchDateEntities.Any(
                     excl => queryDate >= excl.DateFrom && queryDate <= excl.DateTo &&
-                            excl.TournamentId == _organizationContext.MatchPlanTournamentId && excl.TeamId.HasValue &&
+                            excl.TournamentId == _tenantContext.TournamentContext.MatchPlanTournamentId && excl.TeamId.HasValue &&
                             teamId.HasValue && excl.TeamId == teamId)
                 ;
         }
@@ -248,7 +249,7 @@ namespace TournamentManager.Plan
         internal List<DateTime> GetGeneratedAndManualAvailableMatchDateDays(RoundLegEntity leg)
         {
             var result = _generatedAvailableMatchDateEntities.Union(_availableMatchDateEntities)
-                .Where(gen => gen.TournamentId == _organizationContext.MatchPlanTournamentId
+                .Where(gen => gen.TournamentId == _tenantContext.TournamentContext.MatchPlanTournamentId
                               && gen.MatchStartTime >= leg.StartDateTime.Date &&
                               gen.MatchStartTime <= leg.EndDateTime.AddDays(1).AddSeconds(-1))
                 .OrderBy(gen => gen.MatchStartTime)
@@ -264,7 +265,7 @@ namespace TournamentManager.Plan
             if (!(datePeriod.Start.HasValue && datePeriod.End.HasValue)) throw new ArgumentNullException(nameof(datePeriod));
 
             var result = _generatedAvailableMatchDateEntities.Union(_availableMatchDateEntities)
-                .Where(gen => gen.TournamentId == _organizationContext.MatchPlanTournamentId
+                .Where(gen => gen.TournamentId == _tenantContext.TournamentContext.MatchPlanTournamentId
                               && gen.HomeTeamId == homeTeamId && gen.MatchStartTime >= datePeriod.Start.Value.Date &&
                               gen.MatchStartTime <=
                               datePeriod.End.Value.Date.AddDays(1).AddSeconds(-1))
@@ -282,7 +283,7 @@ namespace TournamentManager.Plan
             var resultTeams = new EntityCollection<TeamEntity>();
 
             var teamStartTime = team.MatchTime;
-            var teamEndTime = teamStartTime?.Add(_organizationContext.FixtureRuleSet.PlannedDurationOfMatch);
+            var teamEndTime = teamStartTime?.Add(_tenantContext.TournamentContext.FixtureRuleSet.PlannedDurationOfMatch);
 
             // get a list of other teams in this round with same venue and match day-of-the-week
             var otherTeams = round.TeamCollectionViaTeamInRound.FindMatches((TeamFields.VenueId == team.VenueId) &
@@ -293,7 +294,7 @@ namespace TournamentManager.Plan
             foreach (var index in otherTeams)
             {
                 var otherStartTime = round.TeamCollectionViaTeamInRound[index].MatchTime;
-                var otherEndTime = otherStartTime?.Add(_organizationContext.FixtureRuleSet.PlannedDurationOfMatch);
+                var otherEndTime = otherStartTime?.Add(_tenantContext.TournamentContext.FixtureRuleSet.PlannedDurationOfMatch);
 
                 if (otherStartTime <= teamStartTime && otherEndTime >= teamStartTime ||
                     otherStartTime <= teamEndTime && otherEndTime >= teamEndTime)

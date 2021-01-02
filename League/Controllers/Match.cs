@@ -8,7 +8,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using League.BackgroundTasks;
 using League.BackgroundTasks.Email;
-using League.DI;
 using League.Helpers;
 using League.Models.MatchViewModels;
 using MailMergeLib.AspNet;
@@ -26,13 +25,14 @@ using TournamentManager.DAL.TypedViewClasses;
 using TournamentManager.Data;
 using TournamentManager.ExtensionMethods;
 using TournamentManager.ModelValidators;
+using TournamentManager.MultiTenancy;
 
 namespace League.Controllers
 {
-    [Route("{organization:ValidOrganizations}/[controller]")]
+    [Route("{organization:MatchingTenant}/[controller]")]
     public class Match : AbstractController
     {
-        private readonly SiteContext _siteContext;
+        private readonly ITenantContext _tenantContext;
         private readonly AppDb _appDb;
         private readonly IStringLocalizer<Match> _localizer;
         private readonly IAuthorizationService _authorizationService;
@@ -44,12 +44,12 @@ namespace League.Controllers
         private readonly RankingUpdateTask _rankingUpdateTask;
         private readonly RazorViewToStringRenderer _razorViewToStringRenderer;
 
-        public Match(SiteContext siteContext, IStringLocalizer<Match> localizer, IAuthorizationService authorizationService,
+        public Match(ITenantContext tenantContext, IStringLocalizer<Match> localizer, IAuthorizationService authorizationService,
             Axuno.Tools.DateAndTime.TimeZoneConverter timeZoneConverter, Axuno.BackgroundTask.IBackgroundQueue queue,
             FixtureEmailTask fixtureEmailTask, ResultEmailTask resultEmailTask, RankingUpdateTask rankingUpdateTask, RazorViewToStringRenderer razorViewToStringRenderer, ILogger<Match> logger)
         {
-            _siteContext = siteContext;
-            _appDb = siteContext.AppDb;
+            _tenantContext = tenantContext;
+            _appDb = tenantContext.DbContext.AppDb;
             _localizer = localizer;
             _authorizationService = authorizationService;
             _timeZoneConverter = timeZoneConverter;
@@ -64,7 +64,7 @@ namespace League.Controllers
         [HttpGet("")]
         public IActionResult Index()
         {
-            return Redirect(Url.Action(nameof(Results), nameof(Match), new { Organization = _siteContext.UrlSegmentValue }));
+            return Redirect(Url.Action(nameof(Results), nameof(Match), new { Organization = _tenantContext.SiteContext.UrlSegmentValue }));
         }
 
         [HttpGet("[action]")]
@@ -74,7 +74,7 @@ namespace League.Controllers
             {
                 Tournament = await GetPlanTournament(cancellationToken),
                 PlannedMatches = await _appDb.MatchRepository.GetPlannedMatchesAsync(
-                    new PredicateExpression(PlannedMatchFields.TournamentId == _siteContext.MatchPlanTournamentId), cancellationToken),
+                    new PredicateExpression(PlannedMatchFields.TournamentId == _tenantContext.TournamentContext.MatchPlanTournamentId), cancellationToken),
                 // try to use the browser cookie
                 ActiveRoundId = null,
                 // Message to show after a fixture has been updated
@@ -88,7 +88,7 @@ namespace League.Controllers
 
             if (model.Tournament == null)
             {
-                _logger.LogCritical($"{nameof(_siteContext.MatchPlanTournamentId)} '{_siteContext.MatchPlanTournamentId}' does not exist. User ID: '{0}'", GetCurrentUserId());
+                _logger.LogCritical($"{nameof(_tenantContext.TournamentContext.MatchPlanTournamentId)} '{_tenantContext.TournamentContext.MatchPlanTournamentId}' does not exist. User ID: '{0}'", GetCurrentUserId());
             }
 
             return View(ViewNames.Match.Fixtures, model);
@@ -97,7 +97,7 @@ namespace League.Controllers
         [HttpGet("[action]")]
         public async Task<IActionResult> Calendar(long id, CancellationToken cancellationToken)
         {
-            var matches = await _appDb.MatchRepository.GetMatchCalendarAsync(_siteContext.MatchPlanTournamentId, id, null, null, cancellationToken);
+            var matches = await _appDb.MatchRepository.GetMatchCalendarAsync(_tenantContext.TournamentContext.MatchPlanTournamentId, id, null, null, cancellationToken);
             if (matches.Count != 1) return NoContent();
 
             try
@@ -108,7 +108,7 @@ namespace League.Controllers
                     Summary = _localizer["Volleyball Match"],
                     DescriptionGoogleMapsFormat = _localizer["Venue in Google Maps: https://maps.google.com?q={0},{1}"],
                     DescriptionOpponentsFormat = _localizer["Match '{0}' : '{1}'"],
-                    DescriptionFooter = "\n" + _siteContext.Name + "\n" + _siteContext.HomepageUrl
+                    DescriptionFooter = "\n" + _tenantContext.OrganizationContext.Name + "\n" + _tenantContext.OrganizationContext.HomepageUrl
                 };
                 var stream = new MemoryStream();
                 // RFC5545 sect. 3.4.1: iCal default charset is UTF8.
@@ -117,8 +117,8 @@ namespace League.Controllers
                 matches.ForEach(m =>
                 {
                     // convert to local time
-                    m.PlannedStart = _timeZoneConverter.ToZonedTime(m.PlannedStart).DateTimeOffset.DateTime;
-                    m.PlannedEnd = _timeZoneConverter.ToZonedTime(m.PlannedEnd).DateTimeOffset.DateTime;
+                    m.PlannedStart = _timeZoneConverter.ToZonedTime(m.PlannedStart)?.DateTimeOffset.DateTime;
+                    m.PlannedEnd = _timeZoneConverter.ToZonedTime(m.PlannedEnd)?.DateTimeOffset.DateTime;
                 });
                 calendar.CreateEvents(matches).Serialize(stream, encoding); 
                 stream.Seek(0, SeekOrigin.Begin); 
@@ -134,7 +134,7 @@ namespace League.Controllers
         [HttpGet("[action]")]
         public async Task<IActionResult> PublicCalendar(long? team, long? round, CancellationToken cancellationToken)
         {
-            var matches = await _appDb.MatchRepository.GetMatchCalendarAsync(_siteContext.MatchPlanTournamentId, null, team, round, cancellationToken);
+            var matches = await _appDb.MatchRepository.GetMatchCalendarAsync(_tenantContext.TournamentContext.MatchPlanTournamentId, null, team, round, cancellationToken);
             if (matches.Count == 0) return NoContent();
 
             try
@@ -145,7 +145,7 @@ namespace League.Controllers
                     Summary = _localizer["Volleyball Match"],
                     DescriptionGoogleMapsFormat = _localizer["Venue in Google Maps: https://maps.google.com?q={0},{1}"],
                     DescriptionOpponentsFormat = _localizer["Match '{0}' : '{1}'"],
-                    DescriptionFooter = "\n" + _siteContext.Name + "\n" + _siteContext.HomepageUrl
+                    DescriptionFooter = "\n" + _tenantContext.OrganizationContext.Name + "\n" + _tenantContext.OrganizationContext.HomepageUrl
                 };
                 var stream = new MemoryStream();
                 // RFC5545 sect. 3.4.1: iCal default charset is UTF8.
@@ -154,8 +154,8 @@ namespace League.Controllers
                 matches.ForEach(m =>
                 {
                     // convert to local time
-                    m.PlannedStart = _timeZoneConverter.ToZonedTime(m.PlannedStart).DateTimeOffset.DateTime;
-                    m.PlannedEnd = _timeZoneConverter.ToZonedTime(m.PlannedEnd).DateTimeOffset.DateTime;
+                    m.PlannedStart = _timeZoneConverter.ToZonedTime(m.PlannedStart)?.DateTimeOffset.DateTime;
+                    m.PlannedEnd = _timeZoneConverter.ToZonedTime(m.PlannedEnd)?.DateTimeOffset.DateTime;
                 });
                 calendar.CreateEvents(matches).Serialize(stream, encoding);
                 stream.Seek(0, SeekOrigin.Begin);
@@ -174,10 +174,10 @@ namespace League.Controllers
             var model = new ResultsViewModel(_timeZoneConverter)
             {
                 Tournament =
-                    await _appDb.TournamentRepository.GetTournamentAsync(new PredicateExpression(TournamentFields.Id == _siteContext.MatchPlanTournamentId),
+                    await _appDb.TournamentRepository.GetTournamentAsync(new PredicateExpression(TournamentFields.Id == _tenantContext.TournamentContext.MatchPlanTournamentId),
                         cancellationToken),
                 CompletedMatches = await _appDb.MatchRepository.GetCompletedMatchesAsync(
-                     new PredicateExpression(CompletedMatchFields.TournamentId == _siteContext.MatchResultTournamentId), cancellationToken),
+                     new PredicateExpression(CompletedMatchFields.TournamentId == _tenantContext.TournamentContext.MatchResultTournamentId), cancellationToken),
                 // try to use the browser cookie
                 ActiveRoundId = null,
                 // Message to show after a result has been entered
@@ -191,7 +191,7 @@ namespace League.Controllers
 
             if (model.Tournament == null)
             {
-                _logger.LogCritical($"{nameof(_siteContext.MatchPlanTournamentId)} '{_siteContext.MatchPlanTournamentId}' does not exist. User ID '{0}'", GetCurrentUserId());
+                _logger.LogCritical($"{nameof(_tenantContext.TournamentContext.MatchPlanTournamentId)} '{_tenantContext.TournamentContext.MatchPlanTournamentId}' does not exist. User ID '{0}'", GetCurrentUserId());
             }
             return View(ViewNames.Match.Results, model);
         }
@@ -215,7 +215,7 @@ namespace League.Controllers
                 
                 var model = await GetEnterResultViewModel(match, cancellationToken);
 
-                var permissionValidator = new MatchResultPermissionValidator(match, (_siteContext, (model.Tournament.IsPlanningMode, model.Round.IsComplete, DateTime.UtcNow)));
+                var permissionValidator = new MatchResultPermissionValidator(match, (_tenantContext, (model.Tournament.IsPlanningMode, model.Round.IsComplete, DateTime.UtcNow)));
                 await permissionValidator.CheckAsync(cancellationToken);
                 if (permissionValidator.GetFailedFacts().Any())
                 {
@@ -257,7 +257,7 @@ namespace League.Controllers
                     return View(ViewNames.Match.EnterResult, model);
                 }
 
-                var permissionValidator = new MatchResultPermissionValidator(match, (_siteContext, (model.Tournament.IsPlanningMode, model.Round.IsComplete, DateTime.UtcNow)));
+                var permissionValidator = new MatchResultPermissionValidator(match, (_tenantContext, (model.Tournament.IsPlanningMode, model.Round.IsComplete, DateTime.UtcNow)));
                 await permissionValidator.CheckAsync(cancellationToken);
                 if (permissionValidator.GetFailedFacts().Any())
                 {
@@ -269,7 +269,7 @@ namespace League.Controllers
                 ModelState.Clear();
 
                 if (!await model.ValidateAsync(new MatchResultValidator(model.Match,
-                    (_siteContext, _timeZoneConverter, (model.Round.MatchRule, model.Round.SetRule))), ModelState))
+                    (_tenantContext, _timeZoneConverter, (model.Round.MatchRule, model.Round.SetRule))), ModelState))
                 {
                     return View(ViewNames.Match.EnterResult, model);
                 }
@@ -309,7 +309,7 @@ namespace League.Controllers
             }
 
             // redirect to results overview, where success message is shown
-            return RedirectToAction(nameof(Results), nameof(Match), new { Organization = _siteContext.UrlSegmentValue });
+            return RedirectToAction(nameof(Results), nameof(Match), new { Organization = _tenantContext.SiteContext.UrlSegmentValue });
         }
 
         [Authorize(Policy = Authorization.PolicyName.MatchPolicy)]
@@ -382,17 +382,17 @@ namespace League.Controllers
             var match = FillMatchEntity(model.PlannedMatch);
             match.SetPlannedStart(model.MatchDate.HasValue && model.MatchTime.HasValue
                 ? _timeZoneConverter.ToUtc(model.MatchDate.Value.Add(model.MatchTime.Value))
-                : default(DateTime?), _siteContext.FixtureRuleSet.PlannedDurationOfMatch);
+                : default(DateTime?), _tenantContext.TournamentContext.FixtureRuleSet.PlannedDurationOfMatch);
             match.SetVenueId(model.VenueId);
             if (match.IsDirty) match.ChangeSerial += 1;
 
             ModelState.Clear();
 
             // Todo: This business logic should rather go into settings
-            _siteContext.FixtureRuleSet.PlannedMatchTimeMustStayInCurrentLegBoundaries = model.Tournament.IsPlanningMode;
+            _tenantContext.TournamentContext.FixtureRuleSet.PlannedMatchTimeMustStayInCurrentLegBoundaries = model.Tournament.IsPlanningMode;
 
             if (!await model.ValidateAsync(
-                new FixtureValidator(match, (_siteContext, _timeZoneConverter, model.PlannedMatch), DateTime.UtcNow),
+                new FixtureValidator(match, (_tenantContext, _timeZoneConverter, model.PlannedMatch), DateTime.UtcNow),
                 ModelState))
             {
                 return View(ViewNames.Match.EditFixture, await AddDisplayDataToEditFixtureViewModel(model, cancellationToken));
@@ -416,7 +416,7 @@ namespace League.Controllers
 
             // redirect to fixture overview, where success message is shown
             TempData.Put<EditFixtureViewModel.FixtureMessage>(nameof(EditFixtureViewModel.FixtureMessage), fixtureMessage);
-            return RedirectToAction(nameof(Fixtures), nameof(Match), new { Organization = _siteContext.UrlSegmentValue });
+            return RedirectToAction(nameof(Fixtures), nameof(Match), new { Organization = _tenantContext.SiteContext.UrlSegmentValue });
         }
 
         /// <summary>
@@ -467,7 +467,7 @@ namespace League.Controllers
             try
             {
                 // Get all venues and teams for a tournament and select in-memory is 40% faster compared to database selections
-                var venuesWithTeams = await _appDb.VenueRepository.GetVenueTeamRowsAsync(new PredicateExpression(VenueTeamFields.TournamentId == _siteContext.MatchPlanTournamentId),
+                var venuesWithTeams = await _appDb.VenueRepository.GetVenueTeamRowsAsync(new PredicateExpression(VenueTeamFields.TournamentId == _tenantContext.TournamentContext.MatchPlanTournamentId),
                     cancellationToken);
                 var allVenues = await _appDb.VenueRepository.GetVenuesAsync(null, cancellationToken);
 
@@ -495,11 +495,11 @@ namespace League.Controllers
         private async Task<TournamentEntity> GetPlanTournament(CancellationToken cancellationToken)
         {
             var tournament =
-                await _appDb.TournamentRepository.GetTournamentAsync(new PredicateExpression(TournamentFields.Id == _siteContext.MatchPlanTournamentId), cancellationToken);
+                await _appDb.TournamentRepository.GetTournamentAsync(new PredicateExpression(TournamentFields.Id == _tenantContext.TournamentContext.MatchPlanTournamentId), cancellationToken);
 
             if (tournament != null) return tournament;
 
-            _logger.LogCritical($"{nameof(_siteContext.MatchPlanTournamentId)} '{_siteContext.MatchPlanTournamentId}' does not exist. User ID '{0}'.", GetCurrentUserId());
+            _logger.LogCritical($"{nameof(_tenantContext.TournamentContext.MatchPlanTournamentId)} '{_tenantContext.TournamentContext.MatchPlanTournamentId}' does not exist. User ID '{0}'.", GetCurrentUserId());
             return null;
         }
 
@@ -515,10 +515,10 @@ namespace League.Controllers
             }
 
             var tournament = await _appDb.TournamentRepository.GetTournamentAsync(
-                new PredicateExpression(TournamentFields.Id == _siteContext.MatchResultTournamentId), cancellationToken);
+                new PredicateExpression(TournamentFields.Id == _tenantContext.TournamentContext.MatchResultTournamentId), cancellationToken);
             if (tournament == null)
             {
-                _logger.LogCritical($"{nameof(_siteContext.MatchResultTournamentId)} '{_siteContext.MatchPlanTournamentId}' does not exist");
+                _logger.LogCritical($"{nameof(_tenantContext.TournamentContext.MatchResultTournamentId)} '{_tenantContext.TournamentContext.MatchPlanTournamentId}' does not exist");
             }
 
             var roundWithRules =
@@ -541,7 +541,7 @@ namespace League.Controllers
         {
             try
             {
-                var model = await _appDb.MatchRepository.GetMatchReportSheetAsync(_siteContext.MatchPlanTournamentId, id, cancellationToken);
+                var model = await _appDb.MatchRepository.GetMatchReportSheetAsync(_tenantContext.TournamentContext.MatchPlanTournamentId, id, cancellationToken);
 
                 if (model == null) return NotFound();
                 
@@ -586,7 +586,7 @@ namespace League.Controllers
             _fixtureEmailTask.Subject = _localizer["Change of fixture {0}"].Value;
             _fixtureEmailTask.ViewNames = new[] { null, ViewNames.Emails.FixtureChangedEmailTxt };
             _fixtureEmailTask.LogMessage = "Send fixture notification";
-            _fixtureEmailTask.Model = (User, matchId, _siteContext, null);
+            _fixtureEmailTask.Model = (User, matchId, _tenantContext, null);
             _queue.QueueTask(_fixtureEmailTask);
             // Restore the culture
             (Thread.CurrentThread.CurrentCulture, Thread.CurrentThread.CurrentUICulture) = (currentCulture, currentUiCulture);
@@ -605,7 +605,7 @@ namespace League.Controllers
             _resultEmailTask.Subject = _localizer["Result of the match of {0}"].Value;
             _resultEmailTask.ViewNames = new[] { null, ViewNames.Emails.ResultEnteredEmailTxt };
             _resultEmailTask.LogMessage = "Send result notification";
-            _resultEmailTask.Model = (User, match, null, _siteContext);
+            _resultEmailTask.Model = (User, match, null, _tenantContext);
             _queue.QueueTask(_resultEmailTask);
             // Restore the culture
             (Thread.CurrentThread.CurrentCulture, Thread.CurrentThread.CurrentUICulture) = (currentCulture, currentUiCulture);
@@ -613,7 +613,7 @@ namespace League.Controllers
 
         private void UpdateRanking(in long roundId)
         {
-            _rankingUpdateTask.SiteContext = _siteContext;
+            _rankingUpdateTask.TenantContext = _tenantContext;
             _rankingUpdateTask.RoundId = roundId;
             _rankingUpdateTask.Timeout = TimeSpan.FromMinutes(2);
             _queue.QueueTask(_rankingUpdateTask);
@@ -626,9 +626,9 @@ namespace League.Controllers
         private string GetReturnUrl()
         {
             var returnUrl = HttpContext.Request.GetTypedHeaders().Referer.ToString();
-            return returnUrl == Url.Action(nameof(Results), nameof(Match), new { Organization = _siteContext.UrlSegmentValue }, Url.ActionContext.HttpContext.Request.Scheme)
-                ? Url.Action(nameof(Results), nameof(Match), new { Organization = _siteContext.UrlSegmentValue }) // editing a result is exceptional
-                : Url.Action(nameof(Fixtures), nameof(Match), new { Organization = _siteContext.UrlSegmentValue }); // coming from fixtures is normal
+            return returnUrl == Url.Action(nameof(Results), nameof(Match), new { Organization = _tenantContext.SiteContext.UrlSegmentValue }, Url.ActionContext.HttpContext.Request.Scheme)
+                ? Url.Action(nameof(Results), nameof(Match), new { Organization = _tenantContext.SiteContext.UrlSegmentValue }) // editing a result is exceptional
+                : Url.Action(nameof(Fixtures), nameof(Match), new { Organization = _tenantContext.SiteContext.UrlSegmentValue }); // coming from fixtures is normal
         }
     }
 }

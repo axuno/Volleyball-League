@@ -1,15 +1,14 @@
-﻿@using System.Globalization
-@using Axuno.Tools.DateAndTime
+﻿@using Axuno.Tools.DateAndTime
 @using League.Controllers
-@using League.Views
 @using Microsoft.AspNetCore.Mvc.Localization
+@using TournamentManager.MultiTenancy
 @inject IViewLocalizer Localizer
 @inject TimeZoneConverter TimeZoneConverter
-@inject League.DI.SiteContext SiteContext
+@inject ITenantContext TenantContext
 @model League.Models.TeamApplicationViewModels.ApplicationSessionModel
 @{
     ViewData["Title"] = "Team-Registration" + " - " + Model.TournamentName;
-    var organizationRoute = SiteContext.UrlSegmentValue;
+    var tenantUrlSegment = TenantContext.SiteContext.UrlSegmentValue;
 }
 <div class="mb-0 pb-1">
     <h2 class="h2">@ViewData["Title"]</h2>
@@ -59,7 +58,7 @@
             </ul>
         </div>
         <div class="col-12">
-            <a asp-controller="@nameof(TeamApplication)" asp-action="@nameof(TeamApplication.SelectTeam)" asp-route-organization="@organizationRoute" class="btn btn-primary mb-2">Start the registration</a>
+            <a asp-controller="@nameof(TeamApplication)" asp-action="@nameof(TeamApplication.SelectTeam)" asp-route-organization="@tenantUrlSegment" class="btn btn-primary mb-2">Start the registration</a>
         </div>
     </div>
 </div>

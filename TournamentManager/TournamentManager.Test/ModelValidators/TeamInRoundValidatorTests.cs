@@ -11,6 +11,7 @@ using Moq;
 using SD.LLBLGen.Pro.ORMSupportClasses;
 using TournamentManager.DAL.HelperClasses;
 using TournamentManager.ExtensionMethods;
+using TournamentManager.MultiTenancy;
 using TournamentManager.Tests.TestComponents;
 
 namespace TournamentManager.Tests.ModelValidators
@@ -18,14 +19,14 @@ namespace TournamentManager.Tests.ModelValidators
     [TestFixture]
     public class TeamInRoundValidatorTests
     {
-        private OrganizationContext _organizationContext;
+        private readonly ITenantContext _tenantContext;
         private readonly AppDb _appDb;
 
         public TeamInRoundValidatorTests()
         {
             #region *** Mocks ***
 
-            var orgCtxMock = TestMocks.GetOrganizationContextMock();
+            var tenantContextMock = TestMocks.GetTenantContextMock();
             var appDbMock = TestMocks.GetAppDbMock();
 
             var roundsRepoMock = TestMocks.GetRepo<RoundRepository>();
@@ -49,9 +50,11 @@ namespace TournamentManager.Tests.ModelValidators
                 });
             appDbMock.Setup(a => a.TournamentRepository).Returns(tournamentRepoMock.Object);
 
-            orgCtxMock.SetupAppDb(appDbMock);
-            _organizationContext = orgCtxMock.Object;
-
+            var dbContextMock = TestMocks.GetDbContextMock();
+            dbContextMock.SetupAppDb(appDbMock);
+            tenantContextMock.SetupDbContext(dbContextMock);
+            
+            _tenantContext = tenantContextMock.Object;
             _appDb = appDbMock.Object;
 
             #endregion
@@ -69,8 +72,8 @@ namespace TournamentManager.Tests.ModelValidators
 
             var team = new TeamInRoundEntity {TeamId = 1, RoundId = teamInRoundRoundId };
 
-            _organizationContext.TeamTournamentId = teamTournamentId;
-            var tv = new TeamInRoundValidator(team, (_organizationContext, teamTournamentId));
+            _tenantContext.TournamentContext.TeamTournamentId = teamTournamentId;
+            var tv = new TeamInRoundValidator(team, (_tenantContext, teamTournamentId));
 
             var factResult = await tv.CheckAsync(TeamInRoundValidator.FactId.RoundBelongsToTournament, CancellationToken.None);
             Assert.Multiple(() =>

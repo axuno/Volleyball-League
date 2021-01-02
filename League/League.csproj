@@ -6,22 +6,22 @@
 		<RootNamespace>League</RootNamespace>
 		<UserSecretsId>ceea2bf6-8147-49b9-be85-26fca01f9ed3</UserSecretsId>
 		<NeutralLanguage></NeutralLanguage>
-		<Version>4.1.0</Version>
+		<Version>4.3.0</Version>
 		<PackageId>Volleyball-League</PackageId>
 		<Authors>axuno gGmbH</Authors>
 		<Product>Volleyball-League</Product>
 		<Description>Volleyball League is an open source sports platform that brings everything necessary to organize and to run a league.</Description>
-		<Copyright>(C) 2000-2020 axuo gGmbH</Copyright>
+		<Copyright>(C) 2000-2021 axuo gGmbH</Copyright>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<PackageProjectUrl>https://github.com/axuno/Volleyball-League</PackageProjectUrl>
 		<RepositoryUrl>https://github.com/axuno/Volleyball-League</RepositoryUrl>
 		<PackageTags>volleyball league competition asp.net-core</PackageTags>
 		<PackageReleaseNotes>Production release for platform https://volleyball-liga.de/</PackageReleaseNotes>
-		<AssemblyVersion>4.1.0.0</AssemblyVersion>
+		<AssemblyVersion>4.3.0.0</AssemblyVersion>
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="cloudscribe.Web.Navigation" Version="4.1.1" />
+		<PackageReference Include="cloudscribe.Web.Navigation" Version="4.1.2" />
 		<PackageReference Include="JSNLog" Version="2.30.0" />
 		<PackageReference Include="MailMergeLib" Version="5.7.0.1" />
 		<PackageReference Include="Microsoft.AspNetCore.Authentication.Facebook" Version="3.1.8" />
@@ -30,7 +30,7 @@
 		<PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="3.1.8" />
 		<PackageReference Include="Microsoft.DotNet.PlatformAbstractions" Version="3.1.6" />
 		<PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.4" />
-		<PackageReference Include="NLog" Version="4.7.5" />
+		<PackageReference Include="NLog" Version="4.7.6" />
 		<PackageReference Include="NLog.Web.AspNetCore" Version="4.9.3" />
 		<PackageReference Include="PuppeteerSharp" Version="2.0.4" />
 		<PackageReference Include="StackifyMiddleware" Version="3.0.5.2" />
@@ -40,6 +40,7 @@
 		<DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="2.0.3" />
 	</ItemGroup>
 
+	<!---
 	<ItemGroup>
 		<Folder Include="Areas\Admin\Models\" />
 		<Folder Include="logs\" />
@@ -48,6 +49,7 @@
 		<Folder Include="wwwroot\lib\dropzone\" />
 		<Folder Include="wwwroot\lib\tempusdominus-bootstrap-4\" />
 	</ItemGroup>
+    -->
 
 	<ItemGroup>
 		<Content Include="Chromium-Win\**\*.*" Exclude="Chromium-Win\**\*.json">
@@ -56,9 +58,27 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <Content Remove="Configuration\Tenant.A-Beach.Development.config" />
+	  <Content Remove="Configuration\Tenant.A-Beach.Production.config" />
+	  <Content Remove="Configuration\Tenant.A-Indoor.Development.config" />
+	  <Content Remove="Configuration\Tenant.A-Indoor.Production.config" />
+	  <Content Remove="Configuration\Tenant.Default.Development.config" />
+	  <Content Remove="Configuration\Tenant.Default.Production.config" />
+	  <Content Remove="Configuration\Tenant.OtherOrg.Development.config" />
+	  <Content Remove="Configuration\Tenant.TestOrg.Development.config" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<Content Include="app_offline_.htm">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Include="Configuration\Tenant.Default.Production.config" />
+	  <None Include="Configuration\Tenant.Default.Development.config" />
+	  <None Include="Configuration\Tenant.OtherOrg.Development.config" />
+	  <None Include="Configuration\Tenant.TestOrg.Development.config" />
 	</ItemGroup>
 
 	<ItemGroup>

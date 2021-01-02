@@ -10,9 +10,9 @@ namespace TournamentManager.Data
     public class GenericRepository
     {
         private static readonly ILogger _logger = AppLogging.CreateLogger<GenericRepository>();
-        private readonly IDbContext _dbContext;
+        private readonly MultiTenancy.IDbContext _dbContext;
 
-        public GenericRepository(IDbContext dbContext)
+        public GenericRepository(MultiTenancy.IDbContext dbContext)
         {
             _dbContext = dbContext;
         }

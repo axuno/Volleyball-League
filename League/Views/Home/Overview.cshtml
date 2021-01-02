@@ -1,17 +1,14 @@
-﻿@using League.DI
-@using League.Helpers
+﻿@using League.Helpers
 @using League.TagHelpers
 @using Microsoft.AspNetCore.Mvc.Localization
-@using TournamentManager.Data
+@using TournamentManager.MultiTenancy
 @inject IViewLocalizer Localizer
-@inject SiteList SiteList
-@inject OrganizationContextResolver OrganizationContextResolver
+@inject TenantStore TenantStore
 @{
     ViewData.Title(Localizer["Leagues"].Value);
     ViewData.Description(Localizer["Leagues using volleyball-liga.de"].Value);
-    var siteContextList = SiteList
-        .Where(ctx => !string.IsNullOrEmpty(ctx.OrganizationKey) && !ctx.HideInMenu)
-        .Select(orgSite => new SiteContext(orgSite.OrganizationKey, OrganizationContextResolver, SiteList))
+    var tenants = TenantStore.GetTenants().Values
+        .Where(tc => !string.IsNullOrEmpty(tc.Identifier) && !tc.SiteContext.HideInMenu && !tc.IsDefault)
         .ToList();
 }
 <div>
@@ -20,16 +17,16 @@
     <hr />
 </div>
 <div class="mb-0 pb-1">
-        @foreach (var siteContext in siteContextList)
+        @foreach (var tenant in tenants)
         {
             <div class="mb-4 p-2 border border-dark rounded league-entry">
                 <environment include="Production">
-                    <h4 class="h4"><a href="@siteContext.HomepageUrl">@Html.Raw(siteContext.Name)</a></h4>
+                    <h4 class="h4"><a href="@tenant.OrganizationContext.HomepageUrl">@Html.Raw(tenant.OrganizationContext.Name)</a></h4>
                 </environment>
                 <environment include="Development">
-                    <h4 class="h4"><a href="/@(siteContext.UrlSegmentValue)" class="link">@Html.Raw(siteContext.Name)</a></h4>
+                    <h4 class="h4"><a href="/@(tenant.SiteContext.UrlSegmentValue)" class="link">@Html.Raw(tenant.OrganizationContext.Name)</a></h4>
                 </environment>               
-                <div>@Html.Raw(siteContext.Description)</div>
+                <div>@Html.Raw(tenant.OrganizationContext.Description)</div>
             </div>
         }
 </div>

@@ -7,7 +7,7 @@
 @using Microsoft.AspNetCore.Mvc.Localization
 @using Microsoft.Extensions.Options
 @*ValueTuple*@
-@model (ClaimsPrincipal ChangedByUser, long MatchId, TournamentManager.Data.OrganizationContext OrganizationContext, TournamentManager.DAL.TypedViewClasses.PlannedMatchRow Fixture)
+@model (ClaimsPrincipal ChangedByUser, long MatchId, TournamentManager.MultiTenancy.ITenantContext TenantContext, TournamentManager.DAL.TypedViewClasses.PlannedMatchRow Fixture)
 @{
     string FmtDate(DateTime? matchDate)
     {
@@ -26,7 +26,7 @@
     var MatchDateLabel = new[] { Localizer["Original fixture date"].Value, Localizer["Replacement fixture date"].Value };
     var VenueLabel = new[] { Localizer["Original venue"].Value, Localizer["New venue"].Value };
 }
-@Html.Raw(Model.OrganizationContext.Name) (@Html.Raw(Model.Fixture.RoundDescription)) @Html.Raw(Environment.NewLine)
+@Html.Raw(Model.TenantContext.OrganizationContext.Name) (@Html.Raw(Model.Fixture.RoundDescription)) @Html.Raw(Environment.NewLine)
 @Html.Raw(Model.Fixture.HomeTeamNameForRound) : @Html.Raw(Model.Fixture.GuestTeamNameForRound)
 @Html.Raw(Environment.NewLine)
 @if (Model.Fixture.OrigPlannedStart.HasValue)
@@ -58,7 +58,7 @@ else
 @Html.Raw(Localizer["Changes were submitted by"].Value)@(" ")@Html.Raw(Localizer["Changes were submitted by"].Value)@(" ")@Html.Raw(GetUsername() ?? "?").
 @Html.Raw(Localizer["This notification has been sent to the contact persons of the teams"].Value).
 @Html.Raw(Environment.NewLine)
-@Html.Raw(Model.OrganizationContext.Name)
+@Html.Raw(Model.TenantContext.OrganizationContext.Name)
 @Html.Raw(Environment.NewLine)
 @Html.Raw(Localizer["ID"].Value) #@Html.Raw(Model.Fixture.Id) - @Html.Raw(Localizer["Number of changes"].Value): @Html.Raw(Model.Fixture.ChangeSerial)
 @Html.Raw(Environment.NewLine)

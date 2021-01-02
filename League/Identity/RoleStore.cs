@@ -5,11 +5,9 @@ using System.Threading;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
-using League.DI;
 using Microsoft.Extensions.Logging;
-using TournamentManager.Data;
 using TournamentManager.DAL.EntityClasses;
-using TournamentManager.DAL.HelperClasses;
+using TournamentManager.MultiTenancy;
 
 namespace League.Identity
 {
@@ -18,14 +16,14 @@ namespace League.Identity
     /// </summary>
     public class RoleStore : IRoleStore<ApplicationRole>, IRoleClaimStore<ApplicationRole>
     {
-        private readonly AppDb _appDb;
+        private readonly TournamentManager.MultiTenancy.AppDb _appDb;
         private readonly ILogger<UserStore> _logger;
         private readonly ILookupNormalizer _keyNormalizer;
         private readonly IdentityErrorDescriber _identityErrorDescriber;
 
-        public RoleStore(SiteContext siteContext, ILogger<UserStore> logger, ILookupNormalizer keyNormalizer, IdentityErrorDescriber identityErrorDescriber)
+        public RoleStore(ITenantContext tenantContext, ILogger<UserStore> logger, ILookupNormalizer keyNormalizer, IdentityErrorDescriber identityErrorDescriber)
         {
-            _appDb = siteContext.AppDb;
+            _appDb = tenantContext.DbContext.AppDb;
             _logger = logger;
             _keyNormalizer = keyNormalizer;
             _identityErrorDescriber = identityErrorDescriber as MultiLanguageIdentityErrorDescriber;

@@ -1,8 +1,9 @@
 ﻿@using Microsoft.AspNetCore.Mvc.Localization
+@using TournamentManager.MultiTenancy
 @inject IViewLocalizer Localizer
-@inject League.DI.SiteContext SiteContext
+@inject ITenantContext TenantContext
 @{ ViewData["Title"] = Localizer["Sign-in with the social network account failed"];
-                var organizationRoute = SiteContext.UrlSegmentValue; }
+                var tenantUrlSegment = TenantContext.SiteContext.UrlSegmentValue; }
 <h2 class="h2">@ViewData["Title"].</h2>
 <hr />
 <div>
@@ -11,6 +12,6 @@
         @(Localizer["Please try to sign-in later, or use another account"]).<br />
     </site-alert>
     <p>
-        <a asp-controller="@nameof(League.Controllers.Account)" asp-action="@nameof(League.Controllers.Account.SignIn)" asp-route-organization="@organizationRoute" class="btn btn-lg btn-primary col-sm-8 col-md-5">@Localizer["Sign in"]</a>
+        <a asp-controller="@nameof(League.Controllers.Account)" asp-action="@nameof(League.Controllers.Account.SignIn)" asp-route-organization="@tenantUrlSegment" class="btn btn-lg btn-primary col-sm-8 col-md-5">@Localizer["Sign in"]</a>
     </p>
 </div>

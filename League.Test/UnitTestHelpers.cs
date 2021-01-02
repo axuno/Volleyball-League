@@ -1,7 +1,5 @@
 ﻿using System.IO;
-using League.DI;
 using League.Identity;
-using League.Test.Identity;
 using League.Test.TestComponents;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
@@ -12,7 +10,7 @@ using Moq;
 using NLog;
 using NLog.Extensions.Logging;
 using SD.LLBLGen.Pro.ORMSupportClasses;
-using TournamentManager.Data;
+using TournamentManager.MultiTenancy;
 using ILogger = Microsoft.Extensions.Logging.ILogger;
 
 namespace League.Test
@@ -20,25 +18,39 @@ namespace League.Test
     public class UnitTestHelpers
     {
         private ServiceProvider _serviceProvider;
-        private readonly SiteContext _siteContext;
+        private readonly TenantContext _tenantContext;
         private string _configPath;
 
         public UnitTestHelpers()
         {
             _configPath = DirectoryLocator.GetTargetConfigurationPath();
-            var orgSiteList = SiteList.DeserializeFromFile(Path.Combine(_configPath, "SiteList.Development.config"));
-            var dbContextList = DbContextList.DeserializeFromFile(Path.Combine(_configPath, "DbContextList.Development.config"));
-            foreach (var dbContext in dbContextList)
+            var msSqlPath = Path.Combine(DirectoryLocator.GetTargetProjectPath(), @"..\..\MsSqlDb");
+            
+            // For the unit tests we
+            _tenantContext = new TenantContext
             {
-                dbContext.Catalog = "LeagueIntegration";
-                var msSqlPath = Path.Combine(DirectoryLocator.GetTargetProjectPath(), @"..\..\MsSqlDb");
-                dbContext.ConnectionString = string.Format("Server={0};Database={1};Integrated Security=true", $"(LocalDB)\\MSSQLLocalDB;AttachDbFilename={msSqlPath}\\LeagueIntegrationTest.mdf", dbContext.Catalog);
-            }
-            var dbContextResolver = new DbContextResolver(dbContextList);
-
+                DbContext =
+                {
+                    Catalog = "LeagueIntegration", 
+                    Schema = "dbo", 
+                    ConnectionKey = "dummy"
+                }
+            };
+            _tenantContext.DbContext.ConnectionString =
+                $"Server=(LocalDB)\\MSSQLLocalDB;AttachDbFilename={msSqlPath}\\LeagueIntegrationTest.mdf;Database={_tenantContext.DbContext.Catalog};Integrated Security=true";
+            
+            // Make sure we can connect to the database
+            using (var connection = new Microsoft.Data.SqlClient.SqlConnection(_tenantContext.DbContext.ConnectionString))
+                try
+                {
+                    connection.Open();
+                }
+                finally
+                {
+                    connection.Close();
+                }
+            
             InitializeLlBlGenPro();
-
-            _siteContext = new SiteContext(dbContextResolver.Resolve("dbo").OrganizationKey, new OrganizationContextResolver(dbContextResolver, new NullLogger<OrganizationContextResolver>(), _configPath), orgSiteList);
         }
 
         private void InitializeLlBlGenPro()
@@ -55,37 +67,37 @@ namespace League.Test
             TournamentManager.AppLogging.LoggerFactory = ServiceProvider.GetRequiredService<ILoggerFactory>();
         }
 
-        public SiteContext GetsiteContext()
+        public TenantContext GetTenantContext()
         {
-            return _siteContext;
+            return _tenantContext;
         }
 
         public UserStore GetUserStore()
         {
-            return new UserStore(_siteContext, new NullLogger<UserStore>(), new UpperInvariantLookupNormalizer(), new Mock<MultiLanguageIdentityErrorDescriber>(null).Object);
+            return new UserStore(_tenantContext, new NullLogger<UserStore>(), new UpperInvariantLookupNormalizer(), new Mock<MultiLanguageIdentityErrorDescriber>(null).Object);
         }
 
         public RoleStore GetRoleStore()
         {
-            return new RoleStore(_siteContext, new NullLogger<UserStore>(), new UpperInvariantLookupNormalizer(), new Mock<MultiLanguageIdentityErrorDescriber>(null).Object);
+            return new RoleStore(_tenantContext, new NullLogger<UserStore>(), new UpperInvariantLookupNormalizer(), new Mock<MultiLanguageIdentityErrorDescriber>(null).Object);
         }
 
         public ServiceProvider ServiceProvider
         {
             get
             {
-                return _serviceProvider ?? (_serviceProvider = new ServiceCollection()
-                           .AddLogging(builder =>
-                           {
-                               builder.SetMinimumLevel(Microsoft.Extensions.Logging.LogLevel.Trace);
-                               builder.AddNLog(new NLogProviderOptions
-                               {
-                                   CaptureMessageTemplates = true,
-                                   CaptureMessageProperties = true
-                               });
-                           })
-                           .AddLocalization()
-                           .BuildServiceProvider());
+                return _serviceProvider ??= new ServiceCollection()
+                    .AddLogging(builder =>
+                    {
+                        builder.SetMinimumLevel(Microsoft.Extensions.Logging.LogLevel.Trace);
+                        builder.AddNLog(new NLogProviderOptions
+                        {
+                            CaptureMessageTemplates = true,
+                            CaptureMessageProperties = true
+                        });
+                    })
+                    .AddLocalization()
+                    .BuildServiceProvider();
             }
         }
 

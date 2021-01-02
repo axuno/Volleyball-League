@@ -2,26 +2,27 @@
 @using League.Components
 @using League.Helpers
 @using League.Routing
-@inject League.DI.SiteContext SiteContext
+@using TournamentManager.MultiTenancy
+@inject ITenantContext TenantContext
 @{
     ViewData.Title("Volleyball-Mixedliga Augsburg");
-    ViewData.Description(SiteContext.Description);
+    ViewData.Description(TenantContext.OrganizationContext.Description);
 }
 <div>
-    <h2 class="h2">@SiteContext.ShortName</h2>
+    <h2 class="h2">@TenantContext.OrganizationContext.ShortName</h2>
     <hr />
 </div>
 <div class="mb-0 pb-1">
     <div class="d-flex flex-column">
         <div>
-            <p>@Html.Raw(SiteContext.Description)</p>
+            <p>@Html.Raw(TenantContext.OrganizationContext.Description)</p>
             <p>
                 Interessiert, in der Liga mitzuspielen? Wir freuen uns über jedes Team.<br />
-                Einfach <a asp-controller="@nameof(League.Controllers.TeamApplication)" asp-action="@nameof(League.Controllers.TeamApplication.Start)" asp-route-organization="@SiteContext.UrlSegmentValue" class="link">direkt für die nächste Saison anmelden</a> oder <a asp-route="@RouteNames.HomeOrganizationContact" class="link">Kontakt mit uns aufnehmen</a>.
+                Einfach <a asp-controller="@nameof(League.Controllers.TeamApplication)" asp-action="@nameof(League.Controllers.TeamApplication.Start)" asp-route-organization="@TenantContext.SiteContext.UrlSegmentValue" class="link">direkt für die nächste Saison anmelden</a> oder <a asp-route="@RouteNames.HomeOrganizationContact" class="link">Kontakt mit uns aufnehmen</a>.
             </p>
         </div>
         <div class="py-2 mb-2">
-            <img src="@Url.Content("~/images/a-indoor.jpg")" class="img-fluid rounded" alt="@SiteContext.Name" />
+            <img src="@Url.Content("~/images/a-indoor.jpg")" class="img-fluid rounded" alt="@TenantContext.OrganizationContext.Name" />
         </div>
     </div>
 </div>

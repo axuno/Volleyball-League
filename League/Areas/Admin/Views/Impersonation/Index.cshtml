@@ -1,13 +1,14 @@
 ﻿@using Microsoft.AspNetCore.Http
 @using Microsoft.AspNetCore.Mvc.Localization
+@using TournamentManager.MultiTenancy
 @inject IHttpContextAccessor HttpContextAccessor
 @inject IViewLocalizer Localizer
-@inject League.DI.SiteContext SiteContext
+@inject ITenantContext TenantContext
 @{
     ViewData["Title"] = Localizer["User Impersonation"].Value;
     var search = @HttpContextAccessor.HttpContext.Request.Query["search"].ToString().Trim();
     int.TryParse(ViewData["Limit"]?.ToString(), out var limit);
-    var organizationRoute = SiteContext.UrlSegmentValue;
+    var organizationRoute = TenantContext.SiteContext.UrlSegmentValue;
 }
 @model List<TournamentManager.DAL.EntityClasses.UserEntity>
 <div class="mb-0 pb-1">

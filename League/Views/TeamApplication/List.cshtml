@@ -1,13 +1,12 @@
 ﻿@using System.Security.Policy
-@using League.DI
-@using League.Views
 @using Microsoft.AspNetCore.Mvc.Localization
+@using TournamentManager.MultiTenancy
 @inject IViewLocalizer Localizer
-@inject SiteContext SiteContext
+@inject ITenantContext TenantContext
 @model League.Models.TeamApplicationViewModels.ApplicationListModel
 @{
     ViewData["Title"] = Localizer["Team Registrations"].Value + " - " + Model.Tournament.Name;
-    var organizationRoute = SiteContext.UrlSegmentValue;
+    var tenantUrlSegment = TenantContext.SiteContext.UrlSegmentValue;
     string ZonedTimeString(long teamId)
     {
         return Model.TimeZoneConverter.ToZonedTime(Model.TeamRegisteredOn[teamId]).DateTimeOffset.DateTime.ToShortDateString();
@@ -17,9 +16,9 @@
         <h2 class="h2">@ViewData["Title"]</h2>
         <hr class="mb-2" />
         <partial name="@nameof(League.ViewNames.TeamApplication._TeamApplicationMessagesPartial)" />
-        @if (SiteContext.ApplicationAllowed)
+        @if (TenantContext.TournamentContext.ApplicationAllowed)
         {
-            <a asp-controller="@nameof(League.Controllers.TeamApplication)" asp-action="@nameof(League.Controllers.TeamApplication.Start)" asp-route-organization="@organizationRoute" class="btn btn-primary mb-2">@Localizer["Register team now"]</a>
+            <a asp-controller="@nameof(League.Controllers.TeamApplication)" asp-action="@nameof(League.Controllers.TeamApplication.Start)" asp-route-organization="@tenantUrlSegment" class="btn btn-primary mb-2">@Localizer["Register team now"]</a>
         }
         else
         {

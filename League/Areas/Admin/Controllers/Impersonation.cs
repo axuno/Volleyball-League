@@ -7,36 +7,31 @@ using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
 using League.Controllers;
-using League.DI;
 using League.Identity;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Localization;
-using Microsoft.Extensions.Options;
-using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 using SD.LLBLGen.Pro.ORMSupportClasses;
 using TournamentManager.DAL.EntityClasses;
 using TournamentManager.DAL.HelperClasses;
-using TournamentManager.Data;
+using TournamentManager.MultiTenancy;
 
 namespace League.Areas.Admin.Controllers
 {
     [Area("Admin")]
-    [Route("{organization:ValidOrganizations}/[area]/[controller]")]
+    [Route("{organization:MatchingTenant}/[area]/[controller]")]
     public class Impersonation : AbstractController
     {
         private readonly ILogger<Language> _logger;
         private readonly SignInManager<ApplicationUser> _signInManager;
-        private readonly SiteContext _siteContext;
+        private readonly ITenantContext _tenantContext;
 
-        public Impersonation(SignInManager<ApplicationUser> signInManager, SiteContext siteContext, ILogger<Language> logger)
+        public Impersonation(SignInManager<ApplicationUser> signInManager, ITenantContext tenantContext, ILogger<Language> logger)
         {
             _signInManager = signInManager;
-            _siteContext = siteContext;
+            _tenantContext = tenantContext;
             _logger = logger;
         }
 
@@ -53,7 +48,7 @@ namespace League.Areas.Admin.Controllers
                 pe.AddWithOr(new FieldLikePredicate(UserFields.FirstName, null, null, search){CaseSensitiveCollation = true});
                 pe.AddWithOr(new FieldLikePredicate(UserFields.LastName, null, null, search){CaseSensitiveCollation = true});
                 pe.AddWithOr(new FieldLikePredicate(UserFields.Nickname, null, null, search){CaseSensitiveCollation = true});
-                users = await _siteContext.AppDb.UserRepository.FindUserAsync(pe, limit + 1, CancellationToken.None);
+                users = await _tenantContext.DbContext.AppDb.UserRepository.FindUserAsync(pe, limit + 1, CancellationToken.None);
             }
             ViewData.Add("Limit", limit);
             return View(ViewNames.Area.Admin.Impersonation.Index, users);
@@ -79,7 +74,7 @@ namespace League.Areas.Admin.Controllers
             await _signInManager.Context.SignInAsync(IdentityConstants.ApplicationScheme, targetClaimsPrincipal);
             _logger.LogInformation($"User '{currentUser.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value}' now impersonates user '{targetClaimsPrincipal?.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value}'.");
 
-            return RedirectToLocal("/" + _siteContext.UrlSegmentValue);
+            return RedirectToLocal("/" + _tenantContext.SiteContext.UrlSegmentValue);
         }
 
         [HttpGet("[action]")]
@@ -96,7 +91,7 @@ namespace League.Areas.Admin.Controllers
                 await _signInManager.SignOutAsync();
             }
 
-            return RedirectToLocal("/" + _siteContext.UrlSegmentValue);
+            return RedirectToLocal("/" + _tenantContext.SiteContext.UrlSegmentValue);
         }
 
         private IActionResult RedirectToLocal(string returnUrl)

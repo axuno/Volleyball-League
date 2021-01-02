@@ -1,11 +1,12 @@
 ﻿@using League.Controllers
 @using Microsoft.AspNetCore.Mvc.Localization
+@using TournamentManager.MultiTenancy
 @inject IViewLocalizer Localizer
-@inject League.DI.SiteContext SiteContext
+@inject ITenantContext TenantContext
 @model League.Models.UploadViewModels.TeamPhotoViewModel
 @{
     ViewData["Title"] = Localizer["Upload Team Photo"].Value;
-    var organizationRoute = SiteContext.UrlSegmentValue;
+    var tenantUrlSegment = TenantContext.SiteContext.UrlSegmentValue;
 }
 <div class="mb-0 pb-1">
     <h2 class="h2">@(ViewData["Title"])</h2>
@@ -14,7 +15,7 @@
     <div class="row">
         <div class="col-md-9">
             <div id="dropzone pb-2">
-                <form asp-action="@nameof(Upload.TeamPhoto)" asp-controller="@nameof(Upload)" asp-route-organization="@organizationRoute" asp-route-id="" class="dropzone dz-clickable" id="teamPhotoUploader">
+                <form asp-action="@nameof(Upload.TeamPhoto)" asp-controller="@nameof(Upload)" asp-route-organization="@tenantUrlSegment" asp-route-id="" class="dropzone dz-clickable" id="teamPhotoUploader">
                     <input type="hidden" name="teamId" value="@Model.Team.Id" />
                     <div class="dz-message">
                         @Localizer["Drop files here or click to select"].
@@ -54,7 +55,7 @@
         <div>@Localizer["Delete the photo of team '{0}'?", Model.Team.Name]</div>
     </modal-body>
     <modal-footer show-dismiss="true" dismiss-text="@Localizer["Cancel"].Value">
-        <a class="btn btn-primary" asp-action="@nameof(Upload.RemoveTeamPhoto)" asp-controller="@nameof(Upload)" asp-route-organization="@organizationRoute" asp-route-id="@Model.Team.Id">@Localizer["Delete team photo"]</a>
+        <a class="btn btn-primary" asp-action="@nameof(Upload.RemoveTeamPhoto)" asp-controller="@nameof(Upload)" asp-route-organization="@tenantUrlSegment" asp-route-id="@Model.Team.Id">@Localizer["Delete team photo"]</a>
     </modal-footer>
 </modal>
 @section styles

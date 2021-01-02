@@ -4,12 +4,12 @@ using System.Globalization;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using League.DI;
 using League.Identity;
 using League.Models.HomeViewModels;
 using MailMergeLib;
 using MailMergeLib.AspNet;
 using Microsoft.Extensions.Logging;
+using TournamentManager.MultiTenancy;
 
 namespace League.BackgroundTasks.Email
 {
@@ -29,7 +29,7 @@ namespace League.BackgroundTasks.Email
         /// <summary>
         /// Gets or sets the model.
         /// </summary>
-        public (ContactViewModel Form, SiteContext SiteContext) Model { get; set; }
+        public (ContactViewModel Form, ITenantContext TenantContext) Model { get; set; }
 
         /// <summary>
         /// The view names for the HTML and plain text part of the email.
@@ -46,12 +46,12 @@ namespace League.BackgroundTasks.Email
             SetThreadCulture();
 
             // For empty OrganizationKey only ISite members are available
-            var siteContext = Model.SiteContext;
-            var emailTo = !string.IsNullOrEmpty(siteContext?.Email?.ContactTo?.Address)
-                ? siteContext.Email.ContactTo.Address
+            var tenantContext = Model.TenantContext;
+            var emailTo = !string.IsNullOrEmpty(tenantContext?.SiteContext.Email.ContactTo.Address)
+                ? tenantContext.SiteContext.Email.ContactTo.Address
                 : "contact@volleyball-liga.de";
-            var emailFrom = !string.IsNullOrEmpty(siteContext?.Email?.ContactFrom?.Address)
-                ? siteContext.Email.ContactFrom.Address
+            var emailFrom = !string.IsNullOrEmpty(tenantContext?.SiteContext.Email.ContactFrom.Address)
+                ? tenantContext.SiteContext.Email.ContactFrom.Address
                 : "noreply@volleyball-liga.de";
 
             MailMessage.Subject = Model.Form.Subject;

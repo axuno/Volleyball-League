@@ -4,6 +4,17 @@
 		<TargetFramework>netstandard2.1</TargetFramework>
 		<NeutralLanguage></NeutralLanguage>
     <Nullable>enable</Nullable>
+    <Version>4.3.0</Version>
+    <Authors>axuno gGmbH</Authors>
+    <Company>axuno gGmbH</Company>
+    <Copyright>(C) 2000-2021 axuo gGmbH</Copyright>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/axuno/Volleyball-League</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/axuno/Volleyball-League</RepositoryUrl>
+    <PackageTags>volleyball league competition asp.net-core</PackageTags>
+    <PackageReleaseNotes>Production release for platform https://volleyball-liga.de/</PackageReleaseNotes>
+    <Description>TournamentManager is the backend for Volleyball League.
+Volleyball League is an open source sports platform that brings everything necessary to organize and to run a league.</Description>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -123,6 +134,9 @@
 	<ItemGroup>
 		<AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
 			<_Parameter1>$(AssemblyName).Tests</_Parameter1>
+		</AssemblyAttribute>
+		<AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+			<_Parameter1>DynamicProxyGenAssembly2</_Parameter1>
 		</AssemblyAttribute>
 	</ItemGroup>
 

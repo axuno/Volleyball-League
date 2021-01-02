@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using SD.LLBLGen.Pro.ORMSupportClasses;
 using TournamentManager.DAL.EntityClasses;
 using TournamentManager.DAL.HelperClasses;
+using TournamentManager.MultiTenancy;
 
 
 namespace TournamentManager.Data
@@ -48,9 +49,10 @@ namespace TournamentManager.Data
 		/// <returns>True, if creation was successful, false otherwise.</returns>
 		public async Task<bool> CopyTournament (long fromTournamentId)
 		{
-			DateTime now = DateTime.Now;
+			var now = DateTime.Now;
 			var tournament = await _appDb.TournamentRepository.GetTournamentAsync(new PredicateExpression(TournamentFields.Id == fromTournamentId), CancellationToken.None);
-
+            if (tournament is null) throw new NullReferenceException($"'{fromTournamentId}' not found.");
+            
 			var newTournament = new TournamentEntity
              	{
              		IsPlanningMode = true,

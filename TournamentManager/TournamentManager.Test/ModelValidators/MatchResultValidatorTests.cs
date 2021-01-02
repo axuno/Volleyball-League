@@ -11,6 +11,7 @@ using TournamentManager.DAL.EntityClasses;
 using TournamentManager.Data;
 using TournamentManager.ExtensionMethods;
 using TournamentManager.ModelValidators;
+using TournamentManager.MultiTenancy;
 using TournamentManager.Tests.TestComponents;
 
 namespace TournamentManager.Tests.ModelValidators
@@ -18,7 +19,7 @@ namespace TournamentManager.Tests.ModelValidators
     [TestFixture]
     public class MatchResultValidatorTests
     {
-        private (OrganizationContext OrganizationContext, Axuno.Tools.DateAndTime.TimeZoneConverter TimeZoneConverter, (MatchRuleEntity matchRule, SetRuleEntity setRule)) _data;
+        private (ITenantContext TenantContext, Axuno.Tools.DateAndTime.TimeZoneConverter TimeZoneConverter, (MatchRuleEntity matchRule, SetRuleEntity setRule)) _data;
         private readonly AppDb _appDb;
         private readonly ILogger _logger = new NullLogger<MatchResultValidatorTests>();
 
@@ -34,7 +35,7 @@ namespace TournamentManager.Tests.ModelValidators
 
             #region *** Mocks ***
             
-            var orgCtxMock = TestMocks.GetOrganizationContextMock();
+            var tenantContextMock = TestMocks.GetTenantContextMock();
             var appDbMock = TestMocks.GetAppDbMock();
 
             var roundRepoMock = TestMocks.GetRepo<RoundRepository>();
@@ -59,8 +60,14 @@ namespace TournamentManager.Tests.ModelValidators
                 );
             appDbMock.Setup(a => a.RoundRepository).Returns(roundRepoMock.Object);
 
-            orgCtxMock.SetupAppDb(appDbMock);
-            _data.OrganizationContext = orgCtxMock.Object;
+            _appDb = appDbMock.Object;
+            
+            var dbContextMock = TestMocks.GetDbContextMock();
+            dbContextMock.SetupAppDb(appDbMock);
+            
+            tenantContextMock.SetupDbContext(dbContextMock);
+            
+            _data.TenantContext = tenantContextMock.Object;
 
             #endregion
         }
@@ -102,7 +109,7 @@ namespace TournamentManager.Tests.ModelValidators
 
             var matchRule = new MatchRuleEntity { BestOf = true, NumOfSets = 2 };
 
-            var mv = new MatchResultValidator(match, (_data.OrganizationContext, _data.TimeZoneConverter, (matchRule, setRule)));
+            var mv = new MatchResultValidator(match, (_data.TenantContext, _data.TimeZoneConverter, (matchRule, setRule)));
             await mv.CheckAsync(MatchResultValidator.FactId.SetsValidatorSuccessful, CancellationToken.None);
             var factResult = mv.GetFailedFacts().First(f => f.Id == MatchResultValidator.FactId.SetsValidatorSuccessful);
             Assert.Multiple(() =>
@@ -136,7 +143,7 @@ namespace TournamentManager.Tests.ModelValidators
 
             var matchRule = new MatchRuleEntity { BestOf = true, NumOfSets = 2 };
 
-            var mv = new MatchResultValidator(match, (_data.OrganizationContext, _data.TimeZoneConverter, (matchRule, setRule)));
+            var mv = new MatchResultValidator(match, (_data.TenantContext, _data.TimeZoneConverter, (matchRule, setRule)));
             var factResult = await mv.CheckAsync(MatchResultValidator.FactId.SetsValidatorSuccessful, CancellationToken.None);
             Assert.Multiple(() =>
             {

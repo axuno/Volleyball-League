@@ -1,7 +1,8 @@
 @using League.Controllers
 @using Microsoft.AspNetCore.Mvc.Localization
+@using TournamentManager.MultiTenancy
 @inject IViewLocalizer Localizer
-@inject League.DI.SiteContext SiteContext
+@inject ITenantContext TenantContext
 @model League.Models.TeamViewModels.TeamVenueSelectModel
 @{ ValueTuple<long, IList<long>, League.Components.VenueSelectorComponentModel.Criteria, League.Components.VenueSelectorComponentModel.Criteria, long?> componentModel =
           (Model.TournamentId,
@@ -10,13 +11,13 @@
               League.Components.VenueSelectorComponentModel.Criteria.VenuesOfTeams | League.Components.VenueSelectorComponentModel.Criteria.Active | League.Components.VenueSelectorComponentModel.Criteria.Unused,
               default(long?));
     ViewData["Title"] = Localizer["Team Registration"].Value + " - " + ViewData["TournamentName"];
-    var organizationRoute = SiteContext.UrlSegmentValue;
+    var tenantUrlSegment = TenantContext.SiteContext.UrlSegmentValue;
 }
 <div class="mb-0 pb-2">
     <h2 class="h2">@ViewData["Title"]</h2>
     <hr class="mb-3" />
     @(await Component.InvokeAsync<League.Components.VenueSelector>(componentModel))
-    <form asp-controller="@nameof(TeamApplication)" asp-action="@nameof(TeamApplication.SelectVenue)" asp-route-organization="@organizationRoute" method="post">
+    <form asp-controller="@nameof(TeamApplication)" asp-action="@nameof(TeamApplication.SelectVenue)" asp-route-organization="@tenantUrlSegment" method="post">
         <input asp-for="TeamId" type="hidden" />
         <input asp-for="VenueId" type="hidden" />
         <div class="row mt-3">
@@ -27,12 +28,12 @@
         <div class="row">
             <div class="form-group col-12 col-md-6">
                 <label class="mt-0">@Localizer["No venue from the list applies"]</label>
-                <a asp-controller="@nameof(TeamApplication)" asp-action="@nameof(TeamApplication.EditVenue)" asp-route-organization="@organizationRoute" asp-route-isnew="true" class="btn btn-primary">@Localizer["Create a new venue"]</a>
+                <a asp-controller="@nameof(TeamApplication)" asp-action="@nameof(TeamApplication.EditVenue)" asp-route-organization="@tenantUrlSegment" asp-route-isnew="true" class="btn btn-primary">@Localizer["Create a new venue"]</a>
             </div>
         </div>
         <div class="row">
             <div class="form-group col-12 col-md-6">
-                <a asp-controller="@nameof(TeamApplication)" asp-action="@nameof(TeamApplication.EditTeam)" asp-route-organization="@organizationRoute" class="btn btn-secondary">@Localizer["Back"]</a>
+                <a asp-controller="@nameof(TeamApplication)" asp-action="@nameof(TeamApplication.EditTeam)" asp-route-organization="@tenantUrlSegment" class="btn btn-secondary">@Localizer["Back"]</a>
             </div>
         </div>
     </form>

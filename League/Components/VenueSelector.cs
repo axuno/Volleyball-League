@@ -3,25 +3,24 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using League.DI;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SD.LLBLGen.Pro.ORMSupportClasses;
 using TournamentManager.DAL.HelperClasses;
-using TournamentManager.Data;
+using TournamentManager.MultiTenancy;
 
 namespace League.Components
 {
     public class VenueSelector : ViewComponent
     {
-        private readonly SiteContext _siteContext;
-        private readonly AppDb _appDb;
+        private readonly ITenantContext _tenantContext;
+        private readonly TournamentManager.MultiTenancy.AppDb _appDb;
         private readonly ILogger<VenueSelector> _logger;
 
-        public VenueSelector(SiteContext siteContext, ILogger<VenueSelector> logger)
+        public VenueSelector(ITenantContext tenantContext, ILogger<VenueSelector> logger)
         {
-            _siteContext = siteContext;
-            _appDb = siteContext.AppDb;
+            _tenantContext = tenantContext;
+            _appDb = tenantContext.DbContext.AppDb;
             _logger = logger;
         }
 

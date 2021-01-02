@@ -23,8 +23,8 @@ namespace TournamentManager.Data
 	public class VenueRepository
 	{
         private static readonly ILogger _logger = AppLogging.CreateLogger<VenueRepository>();
-        private readonly IDbContext _dbContext;
-	    public VenueRepository(IDbContext dbContext)
+        private readonly MultiTenancy.IDbContext _dbContext;
+	    public VenueRepository(MultiTenancy.IDbContext dbContext)
 	    {
 	        _dbContext = dbContext;
 	    }

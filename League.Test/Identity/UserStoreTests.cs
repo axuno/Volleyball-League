@@ -3,12 +3,11 @@ using System;
 using System.Data;
 using System.Threading.Tasks;
 using System.Threading;
-using League.DI;
 using League.Identity;
 using NUnit.Framework;
 using TournamentManager.DAL.DatabaseSpecific;
-using TournamentManager.Data;
 using TournamentManager.DAL.EntityClasses;
+using TournamentManager.MultiTenancy;
 
 namespace League.Test.Identity
 {
@@ -19,15 +18,13 @@ namespace League.Test.Identity
     public class UserStoreTests
     {
         private readonly UnitTestHelpers _uth = new UnitTestHelpers();
-        private readonly SiteContext _orgCtx;
         private readonly AppDb _appDb;
         private readonly UserStore _store;
         private readonly RoleStore _roleStore;
 
         public UserStoreTests()
         {
-            _orgCtx = _uth.GetsiteContext();
-            _appDb = _orgCtx.AppDb;
+            _appDb = _uth.GetTenantContext().DbContext.AppDb;
             _store = _uth.GetUserStore();
             _roleStore = _uth.GetRoleStore();
         }

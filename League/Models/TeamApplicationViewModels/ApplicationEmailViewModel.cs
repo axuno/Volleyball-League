@@ -1,6 +1,6 @@
 ﻿using System;
-using League.DI;
 using TournamentManager.Data;
+using TournamentManager.MultiTenancy;
 
 namespace League.Models.TeamApplicationViewModels
 {
@@ -23,7 +23,7 @@ namespace League.Models.TeamApplicationViewModels
         public bool IsRegisteringUser { get; set; }
         public long RegisteredByUserId { get; set; }
         public string RegisteredByName { get; set; }
-        public OrganizationContext OrganizationContext { get; set; }
+        public ITenantContext TenantContext { get; set; }
         public string UrlToEditApplication { get; set; }
     }
 }

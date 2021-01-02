@@ -9,6 +9,12 @@ namespace TournamentManager.Ranking
 	{
         private static bool _directCompareRankingInProgress = false;
 
+        /// <summary>
+        /// Required CTOR for Activator.CreateInstance(...)
+        /// </summary>
+        internal AlternateRankComparer1()
+        { }
+
         internal AlternateRankComparer1(Ranking ranking, DateTime upperDateLimit)
         {
             Ranking = ranking;
@@ -17,7 +23,7 @@ namespace TournamentManager.Ranking
 
         public DateTime UpperDateLimit { get; set; }
 
-        public Ranking Ranking { get; set; }
+        public Ranking? Ranking { get; set; }
 
         public int Compare(Rank x, Rank y)
 		{
@@ -48,7 +54,8 @@ namespace TournamentManager.Ranking
 			spielen; die Entscheidungsspiele sind dann maßgebend für die Platzierung.
 			Solche Entscheidungsspiele sollen auf neutralen Plätzen stattfinden.
 			*/
-
+            if (Ranking is null) throw new NullReferenceException("Ranking property must not be null");
+            
             if (x == null || y == null) throw new NullReferenceException($"{nameof(Rank)} arguments must not be null");
 
             // sort down teams with no matches played

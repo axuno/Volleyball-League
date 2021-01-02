@@ -12,6 +12,7 @@ using TournamentManager.DAL.EntityClasses;
 using TournamentManager.DAL.HelperClasses;
 using TournamentManager.DAL.TypedViewClasses;
 using TournamentManager.Data;
+using TournamentManager.MultiTenancy;
 
 namespace League.BackgroundTasks.Email
 {
@@ -56,7 +57,7 @@ namespace League.BackgroundTasks.Email
         /// <summary>
         /// Gets or sets the Model for creating the email content.
         /// </summary>
-        public (ClaimsPrincipal ChangedByUser, MatchEntity Match, List<TeamUserRoundRow> TeamUserRound, OrganizationContext OrganizationContext) Model { get; set; }
+        public (ClaimsPrincipal ChangedByUser, MatchEntity Match, List<TeamUserRoundRow> TeamUserRound, ITenantContext TenantContext) Model { get; set; }
 
         /// <summary>
         /// Sends the email message to the <see cref="ApplicationUser"/>.
@@ -71,7 +72,7 @@ namespace League.BackgroundTasks.Email
 
             var model = Model; // Necessary to re-assign structure members
             
-            model.TeamUserRound = await Model.OrganizationContext.AppDb.TeamRepository.GetTeamUserRoundInfosAsync(
+            model.TeamUserRound = await Model.TenantContext.DbContext.AppDb.TeamRepository.GetTeamUserRoundInfosAsync(
                 new PredicateExpression(TeamUserRoundFields.TeamId == model.Match.HomeTeamId |
                                         TeamUserRoundFields.TeamId == model.Match.GuestTeamId), cancellationToken);
 
@@ -80,12 +81,12 @@ namespace League.BackgroundTasks.Email
             {
                 recipients.Add(new  {CompleteName = getCompleteUsername(teamUser), Email = teamUser.Email, Email2 = teamUser.Email2});
             }
-            recipients.Add( new { CompleteName = Model.OrganizationContext.Email.GeneralTo.DisplayName, Email = Model.OrganizationContext.Email.GeneralTo.Address, Email2 = string.Empty });
+            recipients.Add( new { CompleteName = Model.TenantContext.SiteContext.Email.GeneralTo.DisplayName, Email = Model.TenantContext.SiteContext.Email.GeneralTo.Address, Email2 = string.Empty });
 
             MailData = recipients;
 
             MailMessage.Subject = string.Format(Subject,
-                _timeZoneConverter.ToZonedTime(model.Match.RealStart)
+                _timeZoneConverter.ToZonedTime(model.Match.RealStart)?
                     .DateTimeOffset.Date.ToShortDateString());
             MailMessage.Config.IgnoreIllegalRecipientAddresses = true;
             // FROM address is already set!

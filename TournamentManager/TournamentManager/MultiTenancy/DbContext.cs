@@ -3,44 +3,52 @@ using System.Collections.Generic;
 using System.Data.SqlClient;
 using SD.LLBLGen.Pro.ORMSupportClasses;
 using TournamentManager.DAL.DatabaseSpecific;
-using YAXLib;
 
-namespace TournamentManager.Data
+namespace TournamentManager.MultiTenancy
 {
     /// <summary>
-    /// Provides database-specific settings.
-    /// Usually instances are part of a <see cref="DbContextList"/>, created from a configuration file.
+    /// Provides database-specific data and methods.
     /// </summary>
     public class DbContext : IDbContext
     {
         private readonly object _locker = new object();
         private bool _cacheIsRegistered = false;
 
+        public DbContext()
+        {
+            AppDb = new AppDb(this);
+        }
+        
         /// <summary>
-        /// The organization key the settings refer to.
+        /// Gets or sets the <see cref="ITenant"/> this context refers to.
         /// </summary>
-        public string OrganizationKey { get; set; } = string.Empty;
-
+        [YAXLib.YAXDontSerialize]
+        public ITenant? Tenant { get; set; }
+        
         /// <summary>
         /// The connection key used to retrieve the <see cref="ConnectionString"/>.
         /// </summary>
-        public string ConnectionKey { get; set; } = string.Empty;
+        [YAXLib.YAXComment("The connection key used to retrieve the ConnectionString")]
+        public virtual string ConnectionKey { get; set; } = string.Empty;
 
         /// <summary>
         /// The connection string for the database.
         /// </summary>
         [YAXLib.YAXDontSerialize]
-        public string ConnectionString { get; set; } = string.Empty;
+        public virtual string ConnectionString { get; set; } = string.Empty;
 
         /// <summary>
         /// The catalog aka database name.
         /// </summary>
-        public string Catalog { get; set; } = string.Empty;
+        [YAXLib.YAXComment("The catalog aka database name")]
+        public virtual string Catalog { get; set; } = string.Empty;
 
         /// <summary>
         /// The schema inside the database.
         /// </summary>
-        public string Schema { get; set; } = string.Empty;
+        [YAXLib.YAXComment("The schema inside the database")]
+        public virtual string Schema { get; set; } = string.Empty;
+        
         /// <summary>
         /// Gets or sets the timeout value to use with the command object(s) created by <see cref="IDataAccessAdapter"/>s.
         /// Default is 30 seconds
@@ -48,13 +56,14 @@ namespace TournamentManager.Data
         /// <remarks>
         /// Set this prior to calling a method which executes database logic.
         /// </remarks>
-        [YAXLib.YAXErrorIfMissed(YAXExceptionTypes.Ignore)]
-        public int CommandTimeOut { get; set; } = 30;
+        [YAXLib.YAXComment("The timeout value to use with database commands")]
+        public virtual int CommandTimeOut { get; set; } = 30;
+        
         /// <summary>
         /// Gets a new instance of an <see cref="IDataAccessAdapter"/> which will be used to access repositories.
         ///  </summary>
         /// <returns>Returns a new instance of an <see cref="IDataAccessAdapter"/> which will be used to access repositories.</returns>
-        public IDataAccessAdapter GetNewAdapter()
+        public virtual IDataAccessAdapter GetNewAdapter()
         {
             lock (_locker)
             {
@@ -86,5 +95,11 @@ namespace TournamentManager.Data
                 };
             }
         }
+        
+        /// <summary>
+        /// Gives access to the repositories.
+        /// </summary>
+        [YAXLib.YAXDontSerialize]
+        public virtual AppDb AppDb { get; }
     }
 }

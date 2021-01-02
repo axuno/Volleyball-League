@@ -2,16 +2,15 @@
 using System;
 using System.Threading.Tasks;
 using System.Threading;
-using TournamentManager.Data;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Security.Claims;
-using League.DI;
 using Microsoft.Extensions.Logging;
 using SD.LLBLGen.Pro.ORMSupportClasses;
 using TournamentManager.DAL.EntityClasses;
 using TournamentManager.DAL.HelperClasses;
+using TournamentManager.MultiTenancy;
 
 namespace League.Identity
 {
@@ -20,14 +19,14 @@ namespace League.Identity
     /// </summary>
     public class UserStore : IUserStore<ApplicationUser>, IUserEmailStore<ApplicationUser>, IUserPhoneNumberStore<ApplicationUser>, IUserPasswordStore<ApplicationUser>, IUserRoleStore<ApplicationUser>, IUserClaimStore<ApplicationUser>, IUserSecurityStampStore<ApplicationUser>, IUserLoginStore<ApplicationUser>, IUserAuthenticationTokenStore<ApplicationUser>, IUserLockoutStore<ApplicationUser>
     {
-        private readonly AppDb _appDb;
+        private readonly TournamentManager.MultiTenancy.AppDb _appDb;
         private readonly ILogger<UserStore> _logger;
         private readonly ILookupNormalizer _keyNormalizer;
         private readonly IdentityErrorDescriber _identityErrorDescriber;
 
-        public UserStore(SiteContext siteContext, ILogger<UserStore> logger, ILookupNormalizer keyNormalizer, IdentityErrorDescriber identityErrorDescriber)
+        public UserStore(ITenantContext tenantContext, ILogger<UserStore> logger, ILookupNormalizer keyNormalizer, IdentityErrorDescriber identityErrorDescriber)
         {
-            _appDb = siteContext.AppDb;
+            _appDb = tenantContext.DbContext.AppDb;
             _logger = logger;
             _keyNormalizer = keyNormalizer;
             _identityErrorDescriber = identityErrorDescriber as MultiLanguageIdentityErrorDescriber;

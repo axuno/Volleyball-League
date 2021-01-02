@@ -4,12 +4,12 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using TournamentManager.DAL.EntityClasses;
-using TournamentManager.Data;
 using TournamentManager.ExtensionMethods;
+using TournamentManager.MultiTenancy;
 
 namespace TournamentManager.ModelValidators
 {
-    public class MatchResultValidator : AbstractValidator<MatchEntity, (OrganizationContext OrganizationContext,
+    public class MatchResultValidator : AbstractValidator<MatchEntity, (ITenantContext TenantContext,
         Axuno.Tools.DateAndTime.TimeZoneConverter TimeZoneConverter, (MatchRuleEntity MatchRule, SetRuleEntity SetRule) Rules), MatchResultValidator.FactId>
     {
         public enum FactId
@@ -22,9 +22,9 @@ namespace TournamentManager.ModelValidators
         }
 
         public MatchResultValidator(MatchEntity model,
-            (OrganizationContext OrganizationContext, Axuno.Tools.DateAndTime.TimeZoneConverter TimeZoneConverter, (MatchRuleEntity MatchRule, SetRuleEntity SetRule) Rules) data) : base(model, data)
+            (ITenantContext TenantContext, Axuno.Tools.DateAndTime.TimeZoneConverter TimeZoneConverter, (MatchRuleEntity MatchRule, SetRuleEntity SetRule) Rules) data) : base(model, data)
         {
-            SetsValidator = new SetsValidator(Model.Sets, (Data.OrganizationContext, Data.Rules));
+            SetsValidator = new SetsValidator(Model.Sets, (Data.TenantContext, Data.Rules));
             CreateFacts();
         }
 
@@ -63,7 +63,7 @@ namespace TournamentManager.ModelValidators
                         };
 
                         var round =
-                            await Data.OrganizationContext.AppDb.RoundRepository.GetRoundWithLegsAsync(Model.RoundId,
+                            await Data.TenantContext.DbContext.AppDb.RoundRepository.GetRoundWithLegsAsync(Model.RoundId,
                                 cancellationToken);
 
                         if (!Model.RealStart.HasValue || !Model.RealEnd.HasValue || round.RoundLegs.Count == 0)
@@ -85,7 +85,7 @@ namespace TournamentManager.ModelValidators
                         displayPeriods = round.RoundLegs.Aggregate(displayPeriods,
                             (current, leg) =>
                                 current +
-                                $"{Data.TimeZoneConverter.ToZonedTime(leg.StartDateTime).DateTimeOffset.DateTime.ToShortDateString()} - {Data.TimeZoneConverter.ToZonedTime(leg.EndDateTime).DateTimeOffset.DateTime.ToShortDateString()}{joinWith}");
+                                $"{Data.TimeZoneConverter.ToZonedTime(leg.StartDateTime)?.DateTimeOffset.DateTime.ToShortDateString()} - {Data.TimeZoneConverter.ToZonedTime(leg.EndDateTime)?.DateTimeOffset.DateTime.ToShortDateString()}{joinWith}");
                         displayPeriods = displayPeriods.Substring(0, displayPeriods.Length - joinWith.Length);
 
                         return new FactResult

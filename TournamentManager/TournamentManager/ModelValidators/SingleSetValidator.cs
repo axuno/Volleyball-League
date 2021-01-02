@@ -2,11 +2,11 @@
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using TournamentManager.DAL.EntityClasses;
-using TournamentManager.Data;
+using TournamentManager.MultiTenancy;
 
 namespace TournamentManager.ModelValidators
 {
-    public class SingleSetValidator : AbstractValidator<SetEntity, (OrganizationContext OrganizationContext,
+    public class SingleSetValidator : AbstractValidator<SetEntity, (ITenantContext TenantContext,
         SetRuleEntity SetRule), SingleSetValidator.FactId>
     {
         public enum FactId
@@ -24,7 +24,7 @@ namespace TournamentManager.ModelValidators
         }
 
         public SingleSetValidator(SetEntity model,
-            (OrganizationContext OrganizationContext, SetRuleEntity SetRule) data) : base(model, data)
+            (ITenantContext TenantContext, SetRuleEntity SetRule) data) : base(model, data)
         {
             CreateFacts();
         }

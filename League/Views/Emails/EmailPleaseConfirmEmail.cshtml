@@ -9,12 +9,11 @@
     var deadline = string.Format("{0:d} {0:HH:00 'h'} {1}", tokenExpiresOn.DateTimeOffset.DateTime, tokenExpiresOn.Abbreviation);
     var buttonText = Localizer["Confirm Email"];
 }
-@using League.DI
 @using Microsoft.AspNetCore.Mvc.Localization
 @using Microsoft.Extensions.Options
 @using TournamentManager.Data
 @*ValueTuple*@
-@model (string Email, string CallbackUrl, OrganizationContext OrganizationContext)
+@model (string Email, string CallbackUrl, TournamentManager.MultiTenancy.ITenantContext TenantContext)
 <!-- source: https://buttons.cm/ -->
 <div>
     <h3>@thankYou</h3>
@@ -32,6 +31,6 @@
         @Localizer["The confirmation link can be used until"] @deadline.
     </p>
     <p>
-        @Model.OrganizationContext.Name
+        @Model.TenantContext.OrganizationContext.Name
     </p>
 </div>

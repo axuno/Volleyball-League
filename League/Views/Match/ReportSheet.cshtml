@@ -1,7 +1,7 @@
-﻿@using League.DI
-@using Microsoft.AspNetCore.Mvc.Localization
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@using TournamentManager.MultiTenancy
 @inject IViewLocalizer Localizer
-@inject SiteContext SiteContext
+@inject ITenantContext TenantContext
 @inject Axuno.Tools.DateAndTime.TimeZoneConverter TimeZoneConverter
 @model TournamentManager.DAL.TypedViewClasses.MatchReportSheetRow
 @{
@@ -139,7 +139,7 @@
     <div class="container">
         <div class="row">
             <div class="col-12 text-center">
-                <div>@SiteContext.Name - @Model.TournamentName</div>
+                <div>@TenantContext.OrganizationContext.Name - @Model.TournamentName</div>
                 <div style="font-size: 14pt; font-weight: bold">@ViewData["Title"] - @Model.RoundDescription</div>
             </div>
             <div class="col-6 text-left" style="padding: 0">
@@ -280,7 +280,7 @@
                 </div>
             </div>
             <div class="col-12 text-center">
-                @($"{SiteContext.HomepageUrl}")
+                @($"{TenantContext.OrganizationContext.HomepageUrl}")
             </div>
         </div>
     </div>

@@ -1,21 +1,21 @@
 ﻿@using System.Globalization
 @using League.Components
 @using League.Controllers
-@using League.DI
 @using Microsoft.AspNetCore.Mvc.Localization
+@using TournamentManager.MultiTenancy
 @inject RegionInfo RegionInfo
-@inject SiteContext SiteContext
+@inject ITenantContext TenantContext
 @inject IViewLocalizer Localizer
 @{ ViewContext.ClientValidationEnabled = false;}  @* We rely on datepicker and server side validation *@
 @model League.Models.MatchViewModels.EditFixtureViewModel
 @{
     ViewData["Title"] = Localizer["Edit Fixture"].Value + " - " + Model.Tournament.Name;
-    var organizationRoute = SiteContext.UrlSegmentValue;
+    var tenantUrlSegment = TenantContext.SiteContext.UrlSegmentValue;
 }
 <div class="mb-0 pb-1">
     <h2 class="h2">@ViewData["Title"]</h2>
     <hr />
-    <form asp-controller="@nameof(Match)" asp-action="@nameof(Match.EditFixture)" asp-route-organization="@organizationRoute" method="post" role="form">
+    <form asp-controller="@nameof(Match)" asp-action="@nameof(Match.EditFixture)" asp-route-organization="@tenantUrlSegment" method="post" role="form">
         <site-validation-summary show="All" warning="@Model.IsWarning"></site-validation-summary>
         <input name="IsValid" type="hidden" value="@ViewData.ModelState.IsValid.ToString()" />@* needed for unobtrusive validation *@
         <input hidden="hidden" asp-for="Id" />
@@ -85,7 +85,7 @@
         </div>
         <div class="row">
             <div class="form-group col-12 col-md-6 mt-2">
-                <a asp-controller="@nameof(Match)" asp-action="@nameof(Match.Fixtures)" asp-route-organization="@organizationRoute" class="btn btn-lg btn-secondary">@Localizer["Cancel"]</a>
+                <a asp-controller="@nameof(Match)" asp-action="@nameof(Match.Fixtures)" asp-route-organization="@tenantUrlSegment" class="btn btn-lg btn-secondary">@Localizer["Cancel"]</a>
                 <button type="submit" class="btn btn-lg btn-primary">@Localizer["Save"]</button>
             </div>
         </div>
@@ -94,7 +94,7 @@
 <modal id="select-venue" title="@Localizer["Please select a venue"].Value" dialog-class="modal-lg">
     <modal-body>
         <div>
-            @{ ValueTuple<long, IList<long>, VenueSelectorComponentModel.Criteria, VenueSelectorComponentModel.Criteria, long?> m = (SiteContext.MatchPlanTournamentId, new List<long>(new long[] { Model.PlannedMatch.HomeTeamId, Model.PlannedMatch.GuestTeamId }), VenueSelectorComponentModel.Criteria.VenuesOfTeams | VenueSelectorComponentModel.Criteria.Active, VenueSelectorComponentModel.Criteria.VenuesOfTeams | VenueSelectorComponentModel.Criteria.Active, -1);}
+            @{ ValueTuple<long, IList<long>, VenueSelectorComponentModel.Criteria, VenueSelectorComponentModel.Criteria, long?> m = (TenantContext.TournamentContext.MatchPlanTournamentId, new List<long>(new long[] { Model.PlannedMatch.HomeTeamId, Model.PlannedMatch.GuestTeamId }), VenueSelectorComponentModel.Criteria.VenuesOfTeams | VenueSelectorComponentModel.Criteria.Active, VenueSelectorComponentModel.Criteria.VenuesOfTeams | VenueSelectorComponentModel.Criteria.Active, -1);}
             @(await Component.InvokeAsync<VenueSelector>(m))
         </div>
     </modal-body>

@@ -1,7 +1,7 @@
 ﻿using System;
-using League.DI;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
+using TournamentManager.MultiTenancy;
 
 namespace League.ControllerAttributes
 {
@@ -9,9 +9,9 @@ namespace League.ControllerAttributes
     {
 		public override void OnActionExecuting(ActionExecutingContext filterContext)
         {
-            if (filterContext.HttpContext.RequestServices.GetService(typeof(SiteContext)) is
-                    SiteContext siteContext &&
-                (!siteContext.ApplicationAllowed && (filterContext.RouteData.Values["controller"].ToString()
+            if (filterContext.HttpContext.RequestServices.GetService(typeof(ITenantContext)) is
+                    ITenantContext tenantContext &&
+                (!tenantContext.TournamentContext.ApplicationAllowed && (filterContext.RouteData.Values["controller"].ToString()
                                                          .Equals(nameof(League.Controllers.TeamApplication),
                                                              StringComparison.OrdinalIgnoreCase) &&
                                                      !filterContext.RouteData.Values["action"].ToString()
@@ -20,7 +20,7 @@ namespace League.ControllerAttributes
                     )))
             {
                 filterContext.Result = new RedirectToActionResult(nameof(Controllers.TeamApplication.List),
-                    nameof(Controllers.TeamApplication), new { Organization = siteContext.UrlSegmentValue });
+                    nameof(Controllers.TeamApplication), new { Organization = tenantContext.SiteContext.UrlSegmentValue });
             }
         }
 	}

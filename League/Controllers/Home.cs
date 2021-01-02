@@ -6,16 +6,17 @@ using System.Threading;
 using System.Threading.Tasks;
 using Axuno.Web;
 using League.BackgroundTasks.Email;
-using League.DI;
 using League.Models.AccountViewModels;
 using League.Models.HomeViewModels;
+using League.MultiTenancy;
 using League.Routing;
 using League.Views;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
-using TournamentManager.Data;
+using TournamentManager.MultiTenancy;
+
 
 namespace League.Controllers
 {
@@ -23,27 +24,29 @@ namespace League.Controllers
     public class Home : AbstractController
     {
         private readonly AppDb _appDb;
-        private readonly SiteContext _siteContext;
+        private readonly ITenantContext _tenantContext;
+        private readonly TenantStore _tenantStore;
         private readonly IStringLocalizer<Account> _localizer;
         private readonly Axuno.BackgroundTask.IBackgroundQueue _queue;
         private readonly ContactEmailTask _contactEmailTask;
         private readonly ILogger<Home> _logger;
 
-
-        public Home(SiteContext siteContext, Axuno.BackgroundTask.IBackgroundQueue queue, ContactEmailTask contactEmailTask, ILogger<Home> logger, IStringLocalizer<Account> localizer)
+        public Home(ITenantContext tenantContext, TenantStore tenantStore, Axuno.BackgroundTask.IBackgroundQueue queue, ContactEmailTask contactEmailTask, ILogger<Home> logger, IStringLocalizer<Account> localizer)
         {
-            _siteContext = siteContext;
-            _appDb = siteContext.AppDb;
+            _tenantContext = tenantContext;
+            _tenantStore = tenantStore;
+            _appDb = _tenantContext.DbContext.AppDb;
             _queue = queue;
             _contactEmailTask = contactEmailTask;
             _logger = logger;            
             _localizer = localizer;
+            _tenantContext = tenantContext;
         }
 
         [Route("")]
         public IActionResult Index()
         {
-            if (Request.Cookies.TryGetValue(CookieNames.MostRecentOrganization, out var urlSegmentValue) && _siteContext.SiteList.Any(sl => sl.UrlSegmentValue == urlSegmentValue))
+            if (Request.Cookies.TryGetValue(CookieNames.MostRecentTenant, out var urlSegmentValue) && _tenantStore.GetTenants().Any(sl => sl.Value.SiteContext.UrlSegmentValue == urlSegmentValue))
             {
                 if (!string.IsNullOrEmpty(urlSegmentValue)) return Redirect($"/{urlSegmentValue}");
             }
@@ -87,7 +90,7 @@ namespace League.Controllers
             return View(ViewNames.Home.PictureCredits);
         }
 
-        [HttpGet("{organization:ValidOrganizations}/[action]", Name = RouteNames.HomeOrganizationContact)]
+        [HttpGet("{organization:MatchingTenant}/[action]", Name = RouteNames.HomeOrganizationContact)]
         [HttpGet("/[action]", Name = RouteNames.HomeGeneralContact)]
         public IActionResult Contact()
         {
@@ -105,7 +108,7 @@ namespace League.Controllers
             return View(ViewNames.Home.Contact, model);
         }
 
-        [HttpPost("{organization:ValidOrganizations}/[action]", Name = RouteNames.HomeOrganizationContact)]
+        [HttpPost("{organization:MatchingTenant}/[action]", Name = RouteNames.HomeOrganizationContact)]
         [HttpPost("/[action]", Name = RouteNames.HomeGeneralContact)]
         public IActionResult Contact(ContactViewModel model)
         {
@@ -121,10 +124,10 @@ namespace League.Controllers
             SendEmail(model);
             _logger.LogTrace("Mail sent: {@model}", model);
 
-            return string.IsNullOrEmpty(_siteContext.OrganizationKey) ? RedirectToRoute(RouteNames.HomeGeneralContactConfirmation) : RedirectToRoute(RouteNames.HomeOrganizationContactConfirmation, new { Organization = _siteContext.UrlSegmentValue });
+            return _tenantContext.IsDefault ? RedirectToRoute(RouteNames.HomeGeneralContactConfirmation) : RedirectToRoute(RouteNames.HomeOrganizationContactConfirmation, new { Organization = _tenantContext.SiteContext.UrlSegmentValue });
         }
 
-        [HttpGet("{organization:ValidOrganizations}/contact-confirmation", Name = RouteNames.HomeOrganizationContactConfirmation)]
+        [HttpGet("{organization:MatchingTenant}/contact-confirmation", Name = RouteNames.HomeOrganizationContactConfirmation)]
         [HttpGet("/contact-confirmation", Name = RouteNames.HomeGeneralContactConfirmation)]
         public IActionResult ContactConfirmation()
         {
@@ -138,7 +141,7 @@ namespace League.Controllers
 
             _contactEmailTask.ViewNames = new[] { null, ViewNames.Emails.ContactEmailTxt };
             _contactEmailTask.LogMessage = "Send contact form as email";
-            _contactEmailTask.Model = (Form: model, SiteContext: _siteContext);
+            _contactEmailTask.Model = (Form: model, TenantContext: _tenantContext);
             _queue.QueueTask(_contactEmailTask);
         }
     }

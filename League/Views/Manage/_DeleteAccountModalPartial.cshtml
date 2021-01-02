@@ -1,16 +1,17 @@
 ﻿@using League.Controllers
 @using Microsoft.AspNetCore.Mvc.Localization
+@using TournamentManager.MultiTenancy
 @inject IViewLocalizer Localizer
-@inject League.DI.SiteContext SiteContext
+@inject ITenantContext TenantContext
 @model ChangeEmailViewModel
-@{var organizationRoute = SiteContext.UrlSegmentValue;}
+@{var tenantUrlSegment = TenantContext.SiteContext.UrlSegmentValue;}
 <!-- Modal -->
 <modal id="change-email" title="@Localizer["Delete Account"].Value" tabindex="-1">
     <modal-body>
         <div>
             <p>@Localizer["Once you delete your user account, there is no going back. Please be certain."]</p>
         </div>
-        <form asp-controller="@nameof(Manage)" asp-action="@nameof(Manage.DeleteAccountConfirmed)" asp-route-organization="@organizationRoute" method="post" role="form">
+        <form asp-controller="@nameof(Manage)" asp-action="@nameof(Manage.DeleteAccountConfirmed)" asp-route-organization="@tenantUrlSegment" method="post" role="form">
         </form>
     </modal-body>
     <modal-footer show-dismiss="true" dismiss-text="@Localizer["Cancel"].Value">

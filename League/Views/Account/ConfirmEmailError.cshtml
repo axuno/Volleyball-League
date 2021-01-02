@@ -1,9 +1,10 @@
 ﻿@using Microsoft.AspNetCore.Mvc.Localization
+@using TournamentManager.MultiTenancy
 @inject IViewLocalizer Localizer
-@inject League.DI.SiteContext SiteContext
+@inject ITenantContext TenantContext
 @{
     ViewData["Title"] = Localizer["Your email could not be confirmed"].Value;
-    var organizationRoute = SiteContext.UrlSegmentValue;
+    var tenantUrlSegment = TenantContext.SiteContext.UrlSegmentValue;
 }
 <h2 class="h2">@ViewData["Title"].</h2>
 <hr />
@@ -19,6 +20,6 @@
         @Localizer["Please consider to create an account again. Then, another confirmation email will be sent to you."]
     </p>
     <p>
-        <a asp-controller="@nameof(League.Controllers.Account)" asp-action="@nameof(League.Controllers.Account.CreateAccount)" asp-route-organization="@organizationRoute" class="btn btn-lg btn-primary col-sm-8 col-md-5">@Localizer["Create Account"]</a>
+        <a asp-controller="@nameof(League.Controllers.Account)" asp-action="@nameof(League.Controllers.Account.CreateAccount)" asp-route-organization="@tenantUrlSegment" class="btn btn-lg btn-primary col-sm-8 col-md-5">@Localizer["Create Account"]</a>
     </p>
 </div>

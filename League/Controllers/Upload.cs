@@ -4,7 +4,6 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using League.DI;
 using League.Models.UploadViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
@@ -16,24 +15,25 @@ using Microsoft.Net.Http.Headers;
 using SD.LLBLGen.Pro.ORMSupportClasses;
 using TournamentManager.DAL.EntityClasses;
 using TournamentManager.DAL.HelperClasses;
+using TournamentManager.MultiTenancy;
 
 namespace League.Controllers
 {
-    [Route("{organization:ValidOrganizations}/[controller]")]
+    [Route("{organization:MatchingTenant}/[controller]")]
     public class Upload : AbstractController
     {
-        private readonly SiteContext _siteContext;
+        private readonly ITenantContext _tenantContext;
         private readonly IWebHostEnvironment _webHostingEnvironment;
         private readonly IAuthorizationService _authorizationService;
         private readonly IStringLocalizer<Upload> _localizer;
         private readonly ILogger<Upload> _logger;
         private readonly ILoggerFactory _loggerFactory;
 
-        public Upload(SiteContext siteContext, IWebHostEnvironment webHostingEnvironment,
+        public Upload(ITenantContext tenantContext, IWebHostEnvironment webHostingEnvironment,
             IAuthorizationService authorizationService, IStringLocalizer<Upload> localizer,
             ILoggerFactory loggerFactory)
         {
-            _siteContext = siteContext;
+            _tenantContext = tenantContext;
             _webHostingEnvironment = webHostingEnvironment;
             _authorizationService = authorizationService;
             _localizer = localizer;
@@ -51,7 +51,7 @@ namespace League.Controllers
                 return Forbid();
             }
 
-            var team = await _siteContext.AppDb.TeamRepository.GetTeamEntityAsync(
+            var team = await _tenantContext.DbContext.AppDb.TeamRepository.GetTeamEntityAsync(
                 new PredicateExpression(TeamFields.Id == id), cancellationToken);
 
             if (team == null)
@@ -59,7 +59,7 @@ namespace League.Controllers
                 return NotFound();
             }
 
-            var teamPhoto = new TeamPhotoStaticFile(_webHostingEnvironment, _siteContext,
+            var teamPhoto = new TeamPhotoStaticFile(_webHostingEnvironment, _tenantContext,
                 _loggerFactory.CreateLogger<TeamPhotoStaticFile>());
 
             var model = new TeamPhotoViewModel
@@ -94,7 +94,7 @@ namespace League.Controllers
             }
 
             var teamInfo =
-                await _siteContext.AppDb.TeamRepository.GetTeamEntityAsync(
+                await _tenantContext.DbContext.AppDb.TeamRepository.GetTeamEntityAsync(
                     new PredicateExpression(TeamFields.Id == teamId), cancellationToken);
             if (teamInfo == null)
             {
@@ -116,7 +116,7 @@ namespace League.Controllers
                 return Json(new {error = _localizer["Maximum file size is 5 MB"].Value});
             }
 
-            var photoFile = new TeamPhotoStaticFile(_webHostingEnvironment, _siteContext,
+            var photoFile = new TeamPhotoStaticFile(_webHostingEnvironment, _tenantContext,
                 _loggerFactory.CreateLogger<TeamPhotoStaticFile>());
 
             var extension =
@@ -162,11 +162,11 @@ namespace League.Controllers
                 return Forbid();
             }
 
-            var photoFile = new TeamPhotoStaticFile(_webHostingEnvironment, _siteContext,
+            var photoFile = new TeamPhotoStaticFile(_webHostingEnvironment, _tenantContext,
                 _loggerFactory.CreateLogger<TeamPhotoStaticFile>());
             photoFile.DeleteMostRecentFile(id);
 
-            return RedirectToAction(nameof(TeamPhoto), nameof(Upload), new { Organization = _siteContext.UrlSegmentValue, id});
+            return RedirectToAction(nameof(TeamPhoto), nameof(Upload), new { Organization = _tenantContext.SiteContext.UrlSegmentValue, id});
         }
     }
 }

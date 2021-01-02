@@ -1,18 +1,19 @@
-﻿@inject League.DI.SiteContext SiteContext
+﻿@inject ITenantContext TenantContext
 @using League.Controllers
 @using League.Views.Role
+@using TournamentManager.MultiTenancy
 @model League.Models.RoleViewModels.RoleAddModel
 @{
     var selectableRoleNames = new[] { League.Identity.Constants.ClaimType.PlaysInTeam, League.Identity.Constants.ClaimType.ManagesTeam };
     ViewContext.ClientValidationEnabled = false;
-    var organizationRoute = SiteContext.UrlSegmentValue;
+    var tenantUrlSegment = TenantContext.SiteContext.UrlSegmentValue;
 }
 <!-- Modal -->
 <modal id="add-team-member" title="@_AddMemberModalPartial.Add_team_member" dialog-class="modal-md" tabindex="-1">
     <modal-body>
         <site-validation-summary show="All"></site-validation-summary>
         @* Form with only 1 input field can be submitted with enter key. So we have to prevent default submit behavior and trigger a click on saveBtn *@
-        <form asp-controller="@nameof(Role)" asp-action="@nameof(Role.Add)" asp-route-organization="@organizationRoute" method="post" role="form" onsubmit="$('#@(League.TagHelpers.Modal.SiteAjaxSubmitTagHelper.TagHelperAttributeName)').trigger('click');return false;">
+        <form asp-controller="@nameof(Role)" asp-action="@nameof(Role.Add)" asp-route-organization="@tenantUrlSegment" method="post" role="form" onsubmit="$('#@(League.TagHelpers.Modal.SiteAjaxSubmitTagHelper.TagHelperAttributeName)').trigger('click');return false;">
             <input name="IsValid" type="hidden" value="@ViewData.ModelState.IsValid.ToString()" />
             <input asp-for="TeamId" type="hidden" />
             <input asp-for="ReturnUrl" type="hidden" />
