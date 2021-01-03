@@ -1,0 +1,352 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Amount" xml:space="preserve">
+    <value>Betrag</value>
+    <comment>ConfirmTeamApplication</comment>
+  </data>
+  <data name="Ball points" xml:space="preserve">
+    <value>Ballpunkte</value>
+    <comment>ResultEnteredEmail</comment>
+  </data>
+  <data name="Bank name" xml:space="preserve">
+    <value>Name der Bank</value>
+    <comment>ConfirmTeamApplication</comment>
+  </data>
+  <data name="BIC" xml:space="preserve">
+    <value>BIC</value>
+    <comment>ConfirmTeamApplication</comment>
+  </data>
+  <data name="Change Password" xml:space="preserve">
+    <value>Passwort ändern</value>
+    <comment>EmailPasswordReset</comment>
+  </data>
+  <data name="Change your primary email address" xml:space="preserve">
+    <value>Primäre E-Mail-Adresse ändern</value>
+    <comment>ConfirmNewPrimaryEmail</comment>
+  </data>
+  <data name="Changes were submitted by" xml:space="preserve">
+    <value>Die Änderung wurde eingetragen von</value>
+    <comment>FixtureChangeEmail, ResultEnteredEmail</comment>
+  </data>
+  <data name="Confirm Email" xml:space="preserve">
+    <value>E-Mail bestätigen</value>
+    <comment>EmailPleaseConfirmEmail</comment>
+  </data>
+  <data name="Confirm New Email" xml:space="preserve">
+    <value>Neue E-Mail bestätigen</value>
+    <comment>ConfirmNewPrimaryEmail</comment>
+  </data>
+  <data name="Confirmation of the team registration" xml:space="preserve">
+    <value>Bestätigung der Teamanmeldung</value>
+    <comment>ConfirmTeamApplication</comment>
+  </data>
+  <data name="Contact form message to" xml:space="preserve">
+    <value>Nachricht per Kontaktformular an</value>
+    <comment>ContactEmail</comment>
+  </data>
+  <data name="Email" xml:space="preserve">
+    <value>E-Mail</value>
+    <comment>ContactEmail</comment>
+  </data>
+  <data name="End of match" xml:space="preserve">
+    <value>Spielende</value>
+    <comment>ResultEnteredEmail</comment>
+  </data>
+  <data name="Here is your password recovery code" xml:space="preserve">
+    <value>Hier ist der Code zum Zurücksetzen des Passworts</value>
+    <comment>EmailPasswordReset</comment>
+  </data>
+  <data name="IBAN" xml:space="preserve">
+    <value>IBAN</value>
+    <comment>ConfirmTeamApplication</comment>
+  </data>
+  <data name="ID" xml:space="preserve">
+    <value>Id</value>
+    <comment>FixtureChangeEmail, ResultEnteredEmail</comment>
+  </data>
+  <data name="In order to choose a new password, please click this link" xml:space="preserve">
+    <value>Um ein neues Passwort zu vergeben, bitte auf diesen Link klicken</value>
+    <comment>EmailPasswordReset</comment>
+  </data>
+  <data name="Match day of {0}" xml:space="preserve">
+    <value>Spieltag {0}</value>
+    <comment>ResultEnteredEmail</comment>
+  </data>
+  <data name="Match day of {0}, played on {1}" xml:space="preserve">
+    <value>Spieltag {0}, gespielt am {1}</value>
+    <comment>ResultEnteredEmail</comment>
+  </data>
+  <data name="Match points" xml:space="preserve">
+    <value>Spielpunkte</value>
+    <comment>ResultEnteredEmail</comment>
+  </data>
+  <data name="Message" xml:space="preserve">
+    <value>Nachricht</value>
+    <comment>ContactEmail</comment>
+  </data>
+  <data name="Mr." xml:space="preserve">
+    <value>Herr</value>
+    <comment>ContactEmail</comment>
+  </data>
+  <data name="Mrs." xml:space="preserve">
+    <value>Frau</value>
+    <comment>ContactEmail</comment>
+  </data>
+  <data name="New venue" xml:space="preserve">
+    <value>Neuer Spielort</value>
+    <comment>FixtureChangeEmail</comment>
+  </data>
+  <data name="No message included" xml:space="preserve">
+    <value>Keine Nachricht enthalten</value>
+    <comment>ContactEmail</comment>
+  </data>
+  <data name="Number of changes" xml:space="preserve">
+    <value>Anzahl Änderungen</value>
+    <comment>ResultEnteredEmail, FixtureChangeEmail</comment>
+  </data>
+  <data name="Original fixture date" xml:space="preserve">
+    <value>Spieldatum lt. Saisonplan</value>
+    <comment>FixtureChangeEmail</comment>
+  </data>
+  <data name="Original venue" xml:space="preserve">
+    <value>Ursprünglicher Spielort</value>
+    <comment>FixtureChangeEmail</comment>
+  </data>
+  <data name="Phone" xml:space="preserve">
+    <value>Telefon</value>
+    <comment>ContactEmail</comment>
+  </data>
+  <data name="Please confirm the new email address by clicking this link" xml:space="preserve">
+    <value>Bitte die neue E-Mail-Adresse durch Klicken auf folgenden Link bestätigen</value>
+    <comment>ConfirmNewPrimaryEmail</comment>
+  </data>
+  <data name="Please continue with your registration by clicking this link" xml:space="preserve">
+    <value>Bitte die Registrierung durch Klicken auf folgenden Link abschließen</value>
+    <comment>EmailPleaseConfirmEmail</comment>
+  </data>
+  <data name="Please transfer the participation fee to the following bank account:" xml:space="preserve">
+    <value>Bitte die Teilnahmegebühr auf folgendes Bankkonto überweisen:</value>
+    <comment>ConfirmTeamApplication</comment>
+  </data>
+  <data name="Recipient" xml:space="preserve">
+    <value>Empfänger</value>
+    <comment>ConfirmTeamApplication</comment>
+  </data>
+  <data name="Registered by" xml:space="preserve">
+    <value>Angemeldet von</value>
+    <comment>ConfirmTeamApplication</comment>
+  </data>
+  <data name="Remarks" xml:space="preserve">
+    <value>Anmerkungen</value>
+    <comment>ResultEnteredEmail</comment>
+  </data>
+  <data name="Replacement fixture date" xml:space="preserve">
+    <value>Neuer Ausweichspieltag</value>
+    <comment>FixtureChangeEmail</comment>
+  </data>
+  <data name="Result" xml:space="preserve">
+    <value>Ergebnis</value>
+    <comment>ResultEnteredEmail</comment>
+  </data>
+  <data name="Sender" xml:space="preserve">
+    <value>Absender</value>
+    <comment>ContactEmail</comment>
+  </data>
+  <data name="Set #{0}" xml:space="preserve">
+    <value>{0}. Satz</value>
+    <comment>ResultEnteredEmail</comment>
+  </data>
+  <data name="Set points" xml:space="preserve">
+    <value>Satzpunkte</value>
+    <comment>ResultEnteredEmail</comment>
+  </data>
+  <data name="Sporting greetings" xml:space="preserve">
+    <value>Sportliche Grüße</value>
+    <comment>ConfirmTeamApplication</comment>
+  </data>
+  <data name="Start of match" xml:space="preserve">
+    <value>Spielbeginn</value>
+    <comment>ResultEnteredEmail</comment>
+  </data>
+  <data name="Subject" xml:space="preserve">
+    <value>Betreff</value>
+    <comment>ContactEmail</comment>
+  </data>
+  <data name="Team name" xml:space="preserve">
+    <value>Teamname</value>
+    <comment>ConfirmTeamApplication</comment>
+  </data>
+  <data name="Thank you for creating an account" xml:space="preserve">
+    <value>Danke für das Anlegen eines Kontos</value>
+    <comment>EmailPleaseConfirmEmail</comment>
+  </data>
+  <data name="Thank you." xml:space="preserve">
+    <value>Vielen Dank.</value>
+    <comment>ConfirmTeamApplication</comment>
+  </data>
+  <data name="Thanks for registering your team." xml:space="preserve">
+    <value>Danke für die Anmeldung des Teams.</value>
+    <comment>ConfirmTeamApplication</comment>
+  </data>
+  <data name="The confirmation link can be used once until" xml:space="preserve">
+    <value>Der Bestätigungslink kann einmal verwendet werden bis zum</value>
+    <comment>ConfirmNewPrimaryEmail</comment>
+  </data>
+  <data name="The confirmation link can be used until" xml:space="preserve">
+    <value>Der Bestätigungslink kann verwendet werden bis zum</value>
+    <comment>EmailPleaseConfirmEmail</comment>
+  </data>
+  <data name="The recovery code can be used once until" xml:space="preserve">
+    <value>Der Schlüssel kann einmal verwendet werden bis zum</value>
+    <comment>EmailPasswordReset</comment>
+  </data>
+  <data name="The registration can be edited using this link:" xml:space="preserve">
+    <value>Die Anmeldung kann über folgenden Link bearbeitet werden:</value>
+    <comment>ConfirmTeamApplication</comment>
+  </data>
+  <data name="This notification has been sent to the contact persons of the teams" xml:space="preserve">
+    <value>Diese Nachricht wurde an die Ansprechpartner der Teams geschickt</value>
+    <comment>FixtureChangeEmail, ResultEnteredEmail</comment>
+  </data>
+  <data name="unknown" xml:space="preserve">
+    <value>offen</value>
+    <comment>FixtureChangeEmail, ResultEnteredEmail</comment>
+  </data>
+  <data name="Update of team registration" xml:space="preserve">
+    <value>Aktualisierung der Teamanmeldung</value>
+    <comment>ConfirmTeamApplication</comment>
+  </data>
+  <data name="We have sent a confirmation code to the new email address" xml:space="preserve">
+    <value>Wir haben einen Bestätigungs-Code an die neue E-Mail-Adresse geschickt</value>
+    <comment>NotifyCurrentPrimaryEmail</comment>
+  </data>
+  <data name="We wish you much success and good luck." xml:space="preserve">
+    <value>Wir wünschen viel Erfolg und alles Gute.</value>
+    <comment>ConfirmTeamApplication</comment>
+  </data>
+  <data name="Your primary email" xml:space="preserve">
+    <value>Primäre E-Mail-Adresse</value>
+    <comment>NotifyCurrentPrimaryEmail</comment>
+  </data>
+  <data name="Your primary email is about to be changed to" xml:space="preserve">
+    <value>Die primäre E-Mail-Adresse soll geändert werden in</value>
+    <comment>NotifyCurrentPrimaryEmail</comment>
+  </data>
+</root>

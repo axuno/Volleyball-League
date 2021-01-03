@@ -21,6 +21,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+		<PackageReference Include="Axuno.TextTemplating" Version="0.8.5" />
 		<PackageReference Include="cloudscribe.Web.Navigation" Version="4.1.2" />
 		<PackageReference Include="JSNLog" Version="2.30.0" />
 		<PackageReference Include="MailMergeLib" Version="5.7.0.1" />
@@ -110,6 +111,11 @@
 			<AutoGen>True</AutoGen>
 			<DependentUpon>ModelBindingMessageResource.resx</DependentUpon>
 		</Compile>
+		<Compile Update="Templates\Email\Localization\EmailResource.Designer.cs">
+		  <DesignTime>True</DesignTime>
+		  <AutoGen>True</AutoGen>
+		  <DependentUpon>EmailResource.resx</DependentUpon>
+		</Compile>
 		<Compile Update="Views\Role\_AddMemberModalPartial - Copy.Designer.cs">
 			<DependentUpon>_AddMemberModalPartial.resx</DependentUpon>
 			<DesignTime>True</DesignTime>
@@ -171,6 +177,10 @@
 			<Generator>PublicResXFileCodeGenerator</Generator>
 			<LastGenOutput>ModelBindingMessageResource.Designer.cs</LastGenOutput>
 		</EmbeddedResource>
+		<EmbeddedResource Update="Templates\Email\Localization\EmailResource.resx">
+		  <Generator>PublicResXFileCodeGenerator</Generator>
+		  <LastGenOutput>EmailResource.Designer.cs</LastGenOutput>
+		</EmbeddedResource>
 		<EmbeddedResource Update="Views\Emails\ConfirmNewPrimaryEmail.de.resx">
 		  <Generator>PublicResXFileCodeGenerator</Generator>
 		</EmbeddedResource>
@@ -191,6 +201,10 @@
 			<LastGenOutput>_MyTeamMessagesPartial.Designer.cs</LastGenOutput>
 		</EmbeddedResource>
 	</ItemGroup>
+
+	<ItemGroup>
+        <EmbeddedResource Include="Templates\Email\*.tpl" />
+    </ItemGroup>
 
 	<ItemGroup>
 		<None Update="app_offline_.htm">

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Reflection;
-
+#nullable enable
 namespace League.Test.TestComponents
 {
     public class DirectoryLocator
