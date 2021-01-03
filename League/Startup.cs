@@ -41,6 +41,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Axuno.BackgroundTask;
+using Axuno.VirtualFileSystem;
 using League.BackgroundTasks;
 using League.BackgroundTasks.Email;
 using League.ConfigurationPoco;
@@ -48,6 +49,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Rewrite;
 using TournamentManager.DI;
 using TournamentManager.MultiTenancy;
+using League.TextTemplatingModule;
 
 #endregion
 
@@ -504,7 +506,7 @@ namespace League
 
             #region *** Request Localization ***
 
-            if (bool.Parse(Configuration.GetSection("CultureInfo:CulturePerRequest").Value))
+            if (bool.TryParse(Configuration.GetSection("CultureInfo:CulturePerRequest").Value, out var isCulturePerRequest) && isCulturePerRequest)
             {
                 var supportedCultures = new[]
                 {
@@ -598,6 +600,19 @@ namespace League
             services.AddScoped<ITreeCache, Navigation.LeagueMemoryTreeCache>(); // cache navigation tree per tenant
             #endregion
 
+            #region *** Text Templating ***
+            
+            services.AddTextTemplatingModule(vfs =>
+                {
+                    // The complete Templates folder is embedded in the project file
+                    vfs.FileSets.AddEmbedded<Startup>(nameof(League));
+                    vfs.FileSets.AddPhysical(Path.Combine(Directory.GetCurrentDirectory(), @"Templates"));
+                },
+                locOpt =>
+                { });
+            
+            #endregion
+            
             #region *** HostedServices related ***
             
             services.AddSingleton<BackgroundWebHost>(sp => new BackgroundWebHost(services));
@@ -721,7 +736,7 @@ namespace League
             // Must be before UseMvc to avoid InvalidOperationException
             app.UseSession();
 
-            if (bool.Parse(Configuration.GetSection("CultureInfo:CulturePerRequest").Value))
+            if (bool.TryParse(Configuration.GetSection("CultureInfo:CulturePerRequest").Value, out var isCulturePerRequest) && isCulturePerRequest)
                 app.UseRequestLocalization(); // options are defined in services
 
             app.UseRouting();

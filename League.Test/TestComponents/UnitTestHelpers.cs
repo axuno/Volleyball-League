@@ -1,7 +1,12 @@
-﻿using System.IO;
+﻿using System.Globalization;
+using System.IO;
+using Axuno.VirtualFileSystem;
 using League.Identity;
 using League.Test.TestComponents;
+using League.TextTemplatingModule;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
@@ -18,7 +23,7 @@ namespace League.Test
     public class UnitTestHelpers
     {
         private ServiceProvider _serviceProvider;
-        private readonly TenantContext _tenantContext;
+        private readonly ITenantContext _tenantContext;
         private string _configPath;
 
         public UnitTestHelpers()
@@ -67,7 +72,7 @@ namespace League.Test
             TournamentManager.AppLogging.LoggerFactory = ServiceProvider.GetRequiredService<ILoggerFactory>();
         }
 
-        public TenantContext GetTenantContext()
+        public ITenantContext GetTenantContext()
         {
             return _tenantContext;
         }
@@ -97,10 +102,56 @@ namespace League.Test
                         });
                     })
                     .AddLocalization()
+                    .AddTextTemplatingModule()
                     .BuildServiceProvider();
             }
         }
 
+        public static ServiceProvider GetTextTemplatingServiceProvider(ITenantContext tenantContext)
+        {
+            return new ServiceCollection()
+                .AddLogging(builder =>
+                {
+                    builder.SetMinimumLevel(Microsoft.Extensions.Logging.LogLevel.Trace);
+                    builder.AddNLog(new NLogProviderOptions
+                    {
+                        CaptureMessageTemplates = true,
+                        CaptureMessageProperties = true
+                    });
+                })
+                .AddLocalization()
+                .AddSingleton(sp => new Axuno.Tools.DateAndTime.TimeZoneConverter(
+                    sp.GetRequiredService<NodaTime.TimeZones.DateTimeZoneCache>(), "Europe/Berlin",
+                    CultureInfo.CurrentCulture,
+                    NodaTime.TimeZones.Resolvers.LenientResolver))
+                .AddTransient<ITenantContext>(sp => tenantContext)
+                .AddTextTemplatingModule()
+                .AddTextTemplatingModule(vfs =>
+                    {
+                        // Test can run using the physical path or with embedded resources:
+                        
+                        // The Templates\Emails folder is embedded in the project file
+                        vfs.FileSets.AddEmbedded<Startup>($"{nameof(League)}.Templates");
+                        
+                        // Use the templates from the project "Templates" folder
+                        var leagueProjectPath = DirectoryLocator.GetTargetProjectPath();
+                        vfs.FileSets.AddPhysical(Path.Combine(leagueProjectPath, "Templates"));
+                    },
+                    locOpt =>
+                    {
+                    })
+                .BuildServiceProvider();
+        }
+        
+
+        public TestServer GetLeagueTestServer()
+        {
+            var server = new TestServer(new Microsoft.AspNetCore.Hosting.WebHostBuilder()
+                .UseStartup<Startup>());
+            
+            return server;
+        }
+        
         private void HowToUseServices()
         {
             var logger = (ILogger) ServiceProvider.GetRequiredService(typeof(ILogger<UnitTestHelpers>));
