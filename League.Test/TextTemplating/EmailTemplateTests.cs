@@ -5,9 +5,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Axuno.TextTemplating;
-using League.Models.TeamApplicationViewModels;
+using League.Emailing.TemplateModels;
 using League.Templates.Email;
 using League.Templates.Email.Localization;
+using League.Test.TestComponents;
 using League.TextTemplatingModule;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Localization;
@@ -66,13 +67,17 @@ namespace League.Test.TextTemplating
             var resources = System.Reflection.Assembly.GetAssembly(typeof(League.Startup)).GetManifestResourceNames();
             Assert.IsTrue(resources.Any(r => r.ToString().Contains("League.Templates.Email")));
         }
-        
+
         [Test]
         [TestCase("en")]
         [TestCase("de")]
         public void ConfirmNewPrimaryEmail_Test(string cultureName)
         {
-            var m = new {Email = "to@email.com", CallbackUrl= "https://axuno.net/callback", Deadline = new DateTime(2021,01,01,12,00,00) };
+            var m = new ChangeUserAccountModel
+            {
+                Email = "to@email.com", CallbackUrl = "https://axuno.net/callback",
+                Deadline = new DateTime(2021, 01, 01, 12, 00, 00)
+            };
             
             string text = string.Empty, html = string.Empty;
             Assert.Multiple( ()  =>
@@ -110,7 +115,7 @@ namespace League.Test.TextTemplating
                 {
                     _tenantContext.OrganizationContext.Bank.ShowBankDetailsInConfirmationEmail = showBank;
                     text = await _renderer.RenderAsync(TemplateName.ConfirmTeamApplicationTxt,
-                        new ApplicationEmailViewModel
+                        new ConfirmTeamApplicationModel
                         {
                             IsNewApplication = true,
                             TournamentName = "Summer Saison",
@@ -169,16 +174,17 @@ namespace League.Test.TextTemplating
         [TestCase("de", null, 1234)]
         public void FixtureChanged_Test(string cultureName, DateTime? origPlannedStart, long? origVenue)
         {
-            var m = new
+            var m = new ChangeFixtureModel
             {
-                Fixture = new
+                Username = "Changed-by-name",
+                Fixture = new TournamentManager.DAL.TypedViewClasses.PlannedMatchRow
                 {
                     Id = 9876, ChangeSerial = 2,
                     RoundDescription = "Round descr.", HomeTeamNameForRound = "Home Team Name",
-                    GuestTeamNameForRound = "Guest Team Name", PlannedStart = new DateTime(2021,03, 01, 19, 00, 00), OrigPlannedStart = origPlannedStart,
+                    GuestTeamNameForRound = "Guest Team Name", PlannedStart = new DateTime(2021, 03, 01, 19, 00, 00),
+                    OrigPlannedStart = origPlannedStart,
                     OrigVenueId = origVenue, VenueName = "Venue", OrigVenueName = "Orig-Venue"
-                },
-                Username = "Changed-by-name"
+                }
             };
             
             string text = string.Empty, html = string.Empty;
@@ -203,7 +209,11 @@ namespace League.Test.TextTemplating
         [TestCase("de")]
         public void NotifyCurrentPrimaryEmail_Test(string cultureName)
         {
-            var m = new {Email = "to@email.com", CallbackUrl= "https://axuno.net/callback", Deadline = new DateTime(2021,01,01,12,00,00) };
+            var m = new ChangeUserAccountModel
+            {
+                Email = "to@email.com", CallbackUrl = "https://axuno.net/callback",
+                Deadline = new DateTime(2021, 01, 01, 12, 00, 00)
+            };
             
             string text = string.Empty, html = string.Empty;
             Assert.Multiple( ()  =>
@@ -228,7 +238,11 @@ namespace League.Test.TextTemplating
         [TestCase("de")]
         public void PasswordReset_Test(string cultureName)
         {
-            var m = new {Email = "to@email.com", CallbackUrl= "https://axuno.net/callback", Deadline = new DateTime(2021,01,01,12,00,00) };
+            var m = new ChangeUserAccountModel
+            {
+                Email = "to@email.com", CallbackUrl = "https://axuno.net/callback",
+                Deadline = new DateTime(2021, 01, 01, 12, 00, 00)
+            };
             
             string text = string.Empty, html = string.Empty;
             
@@ -254,7 +268,11 @@ namespace League.Test.TextTemplating
         [TestCase("de")]
         public void PleaseConfirmEmail_Test(string cultureName)
         {
-            var m = new {Email = "to@email.com", CallbackUrl= "https://axuno.net/callback", Deadline = new DateTime(2021,01,01,12,00,00) };
+            var m = new ChangeUserAccountModel
+            {
+                Email = "to@email.com", CallbackUrl = "https://axuno.net/callback",
+                Deadline = new DateTime(2021, 01, 01, 12, 00, 00)
+            };
             
             string text = string.Empty, html = string.Empty;
             
@@ -275,6 +293,15 @@ namespace League.Test.TextTemplating
                 Assert.IsTrue(html.Contains(L("Thank you for creating an account", cultureName)));
             });
         }
+
+        public class ResultEnteredModel
+        {
+            public string Username { get; set; }
+            public string RoundDescription { get; set; }
+            public string HomeTeamName { get; set; }
+            public string GuestTeamName { get; set; }
+            public TournamentManager.DAL.EntityClasses.MatchEntity Match { get; set; }
+        }
         
         [TestCase("en", false, true)]
         [TestCase("en", false, false)]
@@ -287,26 +314,31 @@ namespace League.Test.TextTemplating
         public void ResultEntered_Test(string cultureName, bool isOrigStartSet, bool withRemarks)
         {
             var realStart = new DateTime(2021, 12, 24, 20, 00, 00);
-            
-            var m = new
+
+            var m = new ResultEnteredModel()
             {
-                RoundDescription = "Gruppenbeschreibung",
-                HomeTeamName = "Heimteam",
-                GuestTeamName = "Gastteam",
-                Match = new
+                Username = "User who entered",
+                RoundDescription = "Round description",
+                HomeTeamName = "Home Team",
+                GuestTeamName = "Guest Team",
+                Match = new TournamentManager.DAL.EntityClasses.MatchEntity
                 {
                     Id = 12345,
-                    PlannedStart = new DateTime(2020,12,24, 20, 00, 00),
+                    PlannedStart = new DateTime(2020, 12, 24, 20, 00, 00),
                     OrigPlannedStart = isOrigStartSet ? realStart.AddDays(-60) : (DateTime?) null,
                     RealStart = realStart,
                     RealEnd = realStart.AddHours(2),
                     HomePoints = 2, GuestPoints = 0,
-                    Sets = new[] { new { HomeBallPoints = 25, GuestBallPoints = 1, HomeSetPoints = 1, GuestSetPoints = 0}, new { HomeBallPoints = 25, GuestBallPoints = 2, HomeSetPoints = 1, GuestSetPoints = 0}, new { HomeBallPoints = 25, GuestBallPoints = 3, HomeSetPoints = 1, GuestSetPoints = 0}},
                     Remarks = withRemarks ? "Some remarks" : null,
                     ChangeSerial = 7
-                },
-                Username = "Benutzername"
+                }
             };
+            m.Match.Sets.AddRange(new []
+            {
+                new TournamentManager.DAL.EntityClasses.SetEntity {HomeBallPoints = 25, GuestBallPoints = 1, HomeSetPoints = 1, GuestSetPoints = 0},
+                new TournamentManager.DAL.EntityClasses.SetEntity {HomeBallPoints = 25, GuestBallPoints = 2, HomeSetPoints = 1, GuestSetPoints = 0},
+                new TournamentManager.DAL.EntityClasses.SetEntity {HomeBallPoints = 25, GuestBallPoints = 3, HomeSetPoints = 1, GuestSetPoints = 0}
+            });
             
             string text = string.Empty, html = string.Empty;
             
