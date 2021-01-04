@@ -197,10 +197,10 @@ namespace League.Test.TextTemplating
                     Console.WriteLine(text);
                 } );
 
-                Assert.IsTrue(text.Contains(L("Original fixture date", cultureName)));
+                Assert.IsTrue(text.Contains(L("Season fixture date", cultureName)));
                 if (origPlannedStart.HasValue) Assert.IsTrue(text.Contains(L("Replacement fixture date", cultureName))); else Assert.IsFalse(text.Contains(L("Replacement fixture date", cultureName)));
-                Assert.IsTrue(text.Contains(L("Original venue", cultureName)));
-                if (origVenue.HasValue) Assert.IsTrue(text.Contains(L("New venue", cultureName))); else Assert.IsFalse(text.Contains(L("New venue", cultureName)));
+                Assert.IsTrue(text.Contains(L("Season fixture venue", cultureName)));
+                if (origVenue.HasValue) Assert.IsTrue(text.Contains(L("Replacement venue", cultureName))); else Assert.IsFalse(text.Contains(L("Replacement venue", cultureName)));
             });
         }
         
