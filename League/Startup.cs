@@ -606,7 +606,7 @@ namespace League
                 {
                     // The complete Templates folder is embedded in the project file
                     vfs.FileSets.AddEmbedded<Startup>(nameof(League));
-                    vfs.FileSets.AddPhysical(Path.Combine(Directory.GetCurrentDirectory(), @"Templates"));
+                    // vfs.FileSets.AddPhysical(Path.Combine(Directory.GetCurrentDirectory(), "Templates"));
                 },
                 locOpt =>
                 { });

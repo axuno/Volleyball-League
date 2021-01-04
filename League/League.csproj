@@ -6,7 +6,8 @@
 		<RootNamespace>League</RootNamespace>
 		<UserSecretsId>ceea2bf6-8147-49b9-be85-26fca01f9ed3</UserSecretsId>
 		<NeutralLanguage></NeutralLanguage>
-		<Version>4.3.0</Version>
+		<Version>4.4.0</Version>
+        <AssemblyVersion>4.4.0.0</AssemblyVersion>
 		<PackageId>Volleyball-League</PackageId>
 		<Authors>axuno gGmbH</Authors>
 		<Product>Volleyball-League</Product>
@@ -17,7 +18,6 @@
 		<RepositoryUrl>https://github.com/axuno/Volleyball-League</RepositoryUrl>
 		<PackageTags>volleyball league competition asp.net-core</PackageTags>
 		<PackageReleaseNotes>Production release for platform https://volleyball-liga.de/</PackageReleaseNotes>
-		<AssemblyVersion>4.3.0.0</AssemblyVersion>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -41,32 +41,10 @@
 		<DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="2.0.3" />
 	</ItemGroup>
 
-	<!---
-	<ItemGroup>
-		<Folder Include="Areas\Admin\Models\" />
-		<Folder Include="logs\" />
-		<Folder Include="ControllerAttributes\" />
-		<Folder Include="wwwroot\images\" />
-		<Folder Include="wwwroot\lib\dropzone\" />
-		<Folder Include="wwwroot\lib\tempusdominus-bootstrap-4\" />
-	</ItemGroup>
-    -->
-
 	<ItemGroup>
 		<Content Include="Chromium-Win\**\*.*" Exclude="Chromium-Win\**\*.json">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
-	</ItemGroup>
-
-	<ItemGroup>
-	  <Content Remove="Configuration\Tenant.A-Beach.Development.config" />
-	  <Content Remove="Configuration\Tenant.A-Beach.Production.config" />
-	  <Content Remove="Configuration\Tenant.A-Indoor.Development.config" />
-	  <Content Remove="Configuration\Tenant.A-Indoor.Production.config" />
-	  <Content Remove="Configuration\Tenant.Default.Development.config" />
-	  <Content Remove="Configuration\Tenant.Default.Production.config" />
-	  <Content Remove="Configuration\Tenant.OtherOrg.Development.config" />
-	  <Content Remove="Configuration\Tenant.TestOrg.Development.config" />
 	</ItemGroup>
 
 	<ItemGroup>
