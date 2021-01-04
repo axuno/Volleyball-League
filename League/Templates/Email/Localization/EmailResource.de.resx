@@ -123,7 +123,7 @@
   </data>
   <data name="Ball points" xml:space="preserve">
     <value>Ballpunkte</value>
-    <comment>ResultEnteredEmail</comment>
+    <comment>ResultEntered</comment>
   </data>
   <data name="Bank name" xml:space="preserve">
     <value>Name der Bank</value>
@@ -135,7 +135,7 @@
   </data>
   <data name="Change Password" xml:space="preserve">
     <value>Passwort ändern</value>
-    <comment>EmailPasswordReset</comment>
+    <comment>PasswordReset</comment>
   </data>
   <data name="Change your primary email address" xml:space="preserve">
     <value>Primäre E-Mail-Adresse ändern</value>
@@ -143,11 +143,11 @@
   </data>
   <data name="Changes were submitted by" xml:space="preserve">
     <value>Die Änderung wurde eingetragen von</value>
-    <comment>FixtureChangeEmail, ResultEnteredEmail</comment>
+    <comment>FixtureChanged, ResultEntered</comment>
   </data>
   <data name="Confirm Email" xml:space="preserve">
     <value>E-Mail bestätigen</value>
-    <comment>EmailPleaseConfirmEmail</comment>
+    <comment>PleaseConfirmEmail</comment>
   </data>
   <data name="Confirm New Email" xml:space="preserve">
     <value>Neue E-Mail bestätigen</value>
@@ -159,19 +159,19 @@
   </data>
   <data name="Contact form message to" xml:space="preserve">
     <value>Nachricht per Kontaktformular an</value>
-    <comment>ContactEmail</comment>
+    <comment>ContactForm</comment>
   </data>
   <data name="Email" xml:space="preserve">
     <value>E-Mail</value>
-    <comment>ContactEmail</comment>
+    <comment>ContactForm</comment>
   </data>
   <data name="End of match" xml:space="preserve">
     <value>Spielende</value>
-    <comment>ResultEnteredEmail</comment>
+    <comment>ResultEntered</comment>
   </data>
   <data name="Here is your password recovery code" xml:space="preserve">
     <value>Hier ist der Code zum Zurücksetzen des Passworts</value>
-    <comment>EmailPasswordReset</comment>
+    <comment>PasswordReset</comment>
   </data>
   <data name="IBAN" xml:space="preserve">
     <value>IBAN</value>
@@ -179,59 +179,47 @@
   </data>
   <data name="ID" xml:space="preserve">
     <value>Id</value>
-    <comment>FixtureChangeEmail, ResultEnteredEmail</comment>
+    <comment>FixtureChanged, ResultEntered</comment>
   </data>
   <data name="In order to choose a new password, please click this link" xml:space="preserve">
     <value>Um ein neues Passwort zu vergeben, bitte auf diesen Link klicken</value>
-    <comment>EmailPasswordReset</comment>
+    <comment>PasswordReset</comment>
   </data>
   <data name="Match day of {0}" xml:space="preserve">
     <value>Spieltag {0}</value>
-    <comment>ResultEnteredEmail</comment>
+    <comment>ResultEntered</comment>
   </data>
   <data name="Match day of {0}, played on {1}" xml:space="preserve">
     <value>Spieltag {0}, gespielt am {1}</value>
-    <comment>ResultEnteredEmail</comment>
+    <comment>ResultEntered</comment>
   </data>
   <data name="Match points" xml:space="preserve">
     <value>Spielpunkte</value>
-    <comment>ResultEnteredEmail</comment>
+    <comment>ResultEntered</comment>
   </data>
   <data name="Message" xml:space="preserve">
     <value>Nachricht</value>
-    <comment>ContactEmail</comment>
+    <comment>ContactForm</comment>
   </data>
   <data name="Mr." xml:space="preserve">
     <value>Herr</value>
-    <comment>ContactEmail</comment>
+    <comment>ContactForm</comment>
   </data>
   <data name="Mrs." xml:space="preserve">
     <value>Frau</value>
-    <comment>ContactEmail</comment>
-  </data>
-  <data name="New venue" xml:space="preserve">
-    <value>Neuer Spielort</value>
-    <comment>FixtureChangeEmail</comment>
+    <comment>ContactForm</comment>
   </data>
   <data name="No message included" xml:space="preserve">
     <value>Keine Nachricht enthalten</value>
-    <comment>ContactEmail</comment>
+    <comment>ContactForm</comment>
   </data>
   <data name="Number of changes" xml:space="preserve">
     <value>Anzahl Änderungen</value>
-    <comment>ResultEnteredEmail, FixtureChangeEmail</comment>
-  </data>
-  <data name="Original fixture date" xml:space="preserve">
-    <value>Spieldatum lt. Saisonplan</value>
-    <comment>FixtureChangeEmail</comment>
-  </data>
-  <data name="Original venue" xml:space="preserve">
-    <value>Ursprünglicher Spielort</value>
-    <comment>FixtureChangeEmail</comment>
+    <comment>ResultEntered, FixtureChanged</comment>
   </data>
   <data name="Phone" xml:space="preserve">
     <value>Telefon</value>
-    <comment>ContactEmail</comment>
+    <comment>ContactForm</comment>
   </data>
   <data name="Please confirm the new email address by clicking this link" xml:space="preserve">
     <value>Bitte die neue E-Mail-Adresse durch Klicken auf folgenden Link bestätigen</value>
@@ -239,7 +227,7 @@
   </data>
   <data name="Please continue with your registration by clicking this link" xml:space="preserve">
     <value>Bitte die Registrierung durch Klicken auf folgenden Link abschließen</value>
-    <comment>EmailPleaseConfirmEmail</comment>
+    <comment>PleaseConfirmEmail</comment>
   </data>
   <data name="Please transfer the participation fee to the following bank account:" xml:space="preserve">
     <value>Bitte die Teilnahmegebühr auf folgendes Bankkonto überweisen:</value>
@@ -255,27 +243,39 @@
   </data>
   <data name="Remarks" xml:space="preserve">
     <value>Anmerkungen</value>
-    <comment>ResultEnteredEmail</comment>
+    <comment>ResultEntered</comment>
   </data>
   <data name="Replacement fixture date" xml:space="preserve">
     <value>Neuer Ausweichspieltag</value>
-    <comment>FixtureChangeEmail</comment>
+    <comment>FixtureChanged</comment>
+  </data>
+  <data name="Replacement venue" xml:space="preserve">
+    <value>Neuer Ausweichspielort</value>
+    <comment>FixtureChanged</comment>
   </data>
   <data name="Result" xml:space="preserve">
     <value>Ergebnis</value>
-    <comment>ResultEnteredEmail</comment>
+    <comment>ResultEntered</comment>
+  </data>
+  <data name="Season fixture date" xml:space="preserve">
+    <value>Spieldatum lt. Saisonplan</value>
+    <comment>FixtureChanged</comment>
+  </data>
+  <data name="Season fixture venue" xml:space="preserve">
+    <value>Spielort lt. Saisonplan</value>
+    <comment>FixtureChanged</comment>
   </data>
   <data name="Sender" xml:space="preserve">
     <value>Absender</value>
-    <comment>ContactEmail</comment>
+    <comment>ContactForm</comment>
   </data>
   <data name="Set #{0}" xml:space="preserve">
     <value>{0}. Satz</value>
-    <comment>ResultEnteredEmail</comment>
+    <comment>ResultEntered</comment>
   </data>
   <data name="Set points" xml:space="preserve">
     <value>Satzpunkte</value>
-    <comment>ResultEnteredEmail</comment>
+    <comment>ResultEntered</comment>
   </data>
   <data name="Sporting greetings" xml:space="preserve">
     <value>Sportliche Grüße</value>
@@ -283,11 +283,11 @@
   </data>
   <data name="Start of match" xml:space="preserve">
     <value>Spielbeginn</value>
-    <comment>ResultEnteredEmail</comment>
+    <comment>ResultEntered</comment>
   </data>
   <data name="Subject" xml:space="preserve">
     <value>Betreff</value>
-    <comment>ContactEmail</comment>
+    <comment>ContactForm</comment>
   </data>
   <data name="Team name" xml:space="preserve">
     <value>Teamname</value>
@@ -295,7 +295,7 @@
   </data>
   <data name="Thank you for creating an account" xml:space="preserve">
     <value>Danke für das Anlegen eines Kontos</value>
-    <comment>EmailPleaseConfirmEmail</comment>
+    <comment>PleaseConfirmEmail</comment>
   </data>
   <data name="Thank you." xml:space="preserve">
     <value>Vielen Dank.</value>
@@ -311,11 +311,11 @@
   </data>
   <data name="The confirmation link can be used until" xml:space="preserve">
     <value>Der Bestätigungslink kann verwendet werden bis zum</value>
-    <comment>EmailPleaseConfirmEmail</comment>
+    <comment>PleaseConfirmEmail</comment>
   </data>
   <data name="The recovery code can be used once until" xml:space="preserve">
     <value>Der Schlüssel kann einmal verwendet werden bis zum</value>
-    <comment>EmailPasswordReset</comment>
+    <comment>PasswordReset</comment>
   </data>
   <data name="The registration can be edited using this link:" xml:space="preserve">
     <value>Die Anmeldung kann über folgenden Link bearbeitet werden:</value>
@@ -323,11 +323,11 @@
   </data>
   <data name="This notification has been sent to the contact persons of the teams" xml:space="preserve">
     <value>Diese Nachricht wurde an die Ansprechpartner der Teams geschickt</value>
-    <comment>FixtureChangeEmail, ResultEnteredEmail</comment>
+    <comment>FixtureChanged, ResultEntered</comment>
   </data>
   <data name="unknown" xml:space="preserve">
     <value>offen</value>
-    <comment>FixtureChangeEmail, ResultEnteredEmail</comment>
+    <comment>FixtureChanged, ResultEntered</comment>
   </data>
   <data name="Update of team registration" xml:space="preserve">
     <value>Aktualisierung der Teamanmeldung</value>
