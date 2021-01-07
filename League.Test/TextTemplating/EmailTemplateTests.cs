@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Axuno.TextTemplating;
 using League.Emailing.TemplateModels;
+using League.Models.HomeViewModels;
 using League.Templates.Email;
 using League.Templates.Email.Localization;
 using League.Test.TestComponents;
@@ -123,6 +124,7 @@ namespace League.Test.TextTemplating
                             RoundTypeDescription = "6 ladies",
                             TeamName = "Team name",
                             RegisteredByName = "Registered-by-name",
+                            RegisteredByEmail = "email@registered-by.net",
                             IsRegisteringUser = isRegisteringUser,
                             UrlToEditApplication = "https://volleyball-liga.de/augsburg",
                         }, cultureName
@@ -143,10 +145,12 @@ namespace League.Test.TextTemplating
         [TestCase("de")]
         public void ContactForm_Test(string cultureName)
         {
-            var m = new
+            var m = new ContactViewModel
             {
-                Form = new {Gender = "m", FirstName = "John", LastName = "Specimen", Email = "my@email.com", PhoneNumber = "", Subject = "The subject", Message = "asdf"}
+                Gender = "m", FirstName = "John", LastName = "Specimen", Email = "my@email.com", PhoneNumber = "",
+                Subject = "The subject", Message = "asdf"
             };
+
             Console.WriteLine();
             
             string text = string.Empty, html = string.Empty;
@@ -172,7 +176,7 @@ namespace League.Test.TextTemplating
         [TestCase("de", "2021-02-02 19:00:00", 1234)]
         [TestCase("de", null, null)]
         [TestCase("de", null, 1234)]
-        public void FixtureChanged_Test(string cultureName, DateTime? origPlannedStart, long? origVenue)
+        public void ChangeFixture_Test(string cultureName, DateTime? origPlannedStart, long? origVenue)
         {
             var m = new ChangeFixtureModel
             {
@@ -192,8 +196,8 @@ namespace League.Test.TextTemplating
             {
                 Assert.DoesNotThrowAsync(async () =>
                 {
-                    text = await _renderer.RenderAsync(TemplateName.FixtureChangedTxt, m, cultureName);
-                    Console.WriteLine($"*** {TemplateName.FixtureChangedTxt} ***");
+                    text = await _renderer.RenderAsync(TemplateName.ChangeFixtureTxt, m, cultureName);
+                    Console.WriteLine($"*** {TemplateName.ChangeFixtureTxt} ***");
                     Console.WriteLine(text);
                 } );
 
@@ -292,15 +296,6 @@ namespace League.Test.TextTemplating
                 Assert.IsTrue(text.Contains(L("Thank you for creating an account", cultureName)));
                 Assert.IsTrue(html.Contains(L("Thank you for creating an account", cultureName)));
             });
-        }
-
-        public class ResultEnteredModel
-        {
-            public string Username { get; set; }
-            public string RoundDescription { get; set; }
-            public string HomeTeamName { get; set; }
-            public string GuestTeamName { get; set; }
-            public TournamentManager.DAL.EntityClasses.MatchEntity Match { get; set; }
         }
         
         [TestCase("en", false, true)]

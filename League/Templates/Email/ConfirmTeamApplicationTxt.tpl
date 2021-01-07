@@ -6,7 +6,7 @@
 
 {{ padright = [ L "Team name", L "Registered by" ] | array.map "size" | array.sort | array.last ~}}
 {{ L "Team name" | string.pad_right padright }}: {{ model.TeamName }}
-{{ L "Registered by" | string.pad_right padright }}: {{ model.RegisteredByName }}
+{{ L "Registered by" | string.pad_right padright }}: {{ model.RegisteredByName }} <{{ model.RegisteredByEmail }}>
 
 {{ L "Thanks for registering your team." }}
 {{ L "We wish you much success and good luck." ~}}

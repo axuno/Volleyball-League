@@ -6,9 +6,10 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Axuno.Tools.GeoSpatial;
-using League.BackgroundTasks.Email;
+using League.BackgroundTasks;
 using League.Components;
 using League.ConfigurationPoco;
+using League.Emailing.Creation;
 using League.Helpers;
 using League.Models.TeamApplicationViewModels;
 using League.Models.TeamViewModels;
@@ -26,7 +27,6 @@ using SD.LLBLGen.Pro.QuerySpec;
 using TournamentManager.DAL.EntityClasses;
 using TournamentManager.DAL.HelperClasses;
 using TournamentManager.DAL.TypedViewClasses;
-using TournamentManager.Data;
 using TournamentManager.ModelValidators;
 using TournamentManager.MultiTenancy;
 
@@ -46,7 +46,7 @@ namespace League.Controllers
         private readonly RegionInfo _regionInfo;
         private readonly GoogleConfiguration _googleConfig;
         private readonly Axuno.BackgroundTask.IBackgroundQueue _queue;
-        private readonly TeamApplicationEmailTask _teamApplicationEmailTask;
+        private readonly SendEmailTask _sendEmailTask;
         private const string TeamApplicationSessionName = "TeamApplicationSession";
 
         public TeamApplication(ITenantContext tenantContext,
@@ -54,7 +54,7 @@ namespace League.Controllers
             IStringLocalizer<TeamApplication> localizer, IAuthorizationService authorizationService,
             RegionInfo regionInfo,
             IConfiguration configuration, Axuno.BackgroundTask.IBackgroundQueue queue,
-            TeamApplicationEmailTask teamApplicationEmailTask, ILogger<TeamApplication> logger)
+            SendEmailTask sendEmailTask, ILogger<TeamApplication> logger)
         {
             _tenantContext = tenantContext;
             _timeZoneConverter = timeZoneConverter;
@@ -62,7 +62,7 @@ namespace League.Controllers
             _googleConfig = new GoogleConfiguration();
             configuration.Bind(nameof(GoogleConfiguration), _googleConfig);
             _queue = queue;
-            _teamApplicationEmailTask = teamApplicationEmailTask;
+            _sendEmailTask = sendEmailTask;
             _appDb = tenantContext.DbContext.AppDb;
             _localizer = localizer;
             _authorizationService = authorizationService;
@@ -517,22 +517,20 @@ namespace League.Controllers
                             MessageId = TeamApplicationMessageModel.MessageId.ApplicationSuccess
                         });
 
-                    _teamApplicationEmailTask.Model = new ApplicationEmailViewModel
+                    _sendEmailTask.SetMessageCreator(new ConfirmTeamApplicationCreator
                     {
-                        RegisteredByUserId = GetCurrentUserId(),
-                        TeamId = teamInRoundEntity.TeamId,
-                        TeamName = teamInRoundEntity.TeamNameForRound,
-                        IsNewApplication = isNewApplication,
-                        TournamentName = sessionModel.TournamentName,
-                        RoundId = teamInRoundEntity.RoundId,
-                        TenantContext = _tenantContext,
-                        UrlToEditApplication = Url.Action(nameof(EditTeam), nameof(TeamApplication), new { Organization = _tenantContext.SiteContext.UrlSegmentValue, teamId = teamInRoundEntity.TeamId}, Request.Scheme, Request.Host.ToString())
-                    };
-                    _teamApplicationEmailTask.Subject = _localizer["Registration for team '{0}'", _teamApplicationEmailTask.Model.TeamName].Value;
-                    _teamApplicationEmailTask.EmailCultureInfo = CultureInfo.DefaultThreadCurrentUICulture;
-                    _teamApplicationEmailTask.Timeout = TimeSpan.FromMinutes(5);
-                    _teamApplicationEmailTask.ViewNames = new[] {null, ViewNames.Emails.ConfirmTeamApplicationTxt};
-                    _queue.QueueTask(_teamApplicationEmailTask);
+                        Parameters =
+                        {
+                            CultureInfo = CultureInfo.DefaultThreadCurrentUICulture,
+                            TeamId = teamInRoundEntity.TeamId,
+                            IsNewApplication = isNewApplication,
+                            RoundId = teamInRoundEntity.RoundId,
+                            RegisteredByUserId = GetCurrentUserId(),
+                            UrlToEditApplication = Url.Action(nameof(EditTeam), nameof(TeamApplication), new { Organization = _tenantContext.SiteContext.UrlSegmentValue, teamId = teamInRoundEntity.TeamId}, Request.Scheme, Request.Host.ToString())
+                        }
+                    });
+                    
+                    _queue.QueueTask(_sendEmailTask);
 
                     return RedirectToAction(nameof(List), new { Organization = _tenantContext.SiteContext.UrlSegmentValue });
                 }

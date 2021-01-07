@@ -143,7 +143,7 @@
   </data>
   <data name="Changes were submitted by" xml:space="preserve">
     <value>Die Änderung wurde eingetragen von</value>
-    <comment>FixtureChanged, ResultEntered</comment>
+    <comment>ChangeFixture, ResultEntered</comment>
   </data>
   <data name="Confirm Email" xml:space="preserve">
     <value>E-Mail bestätigen</value>
@@ -155,7 +155,7 @@
   </data>
   <data name="Confirmation of the team registration" xml:space="preserve">
     <value>Bestätigung der Teamanmeldung</value>
-    <comment>ConfirmTeamApplication</comment>
+    <comment>ConfirmTeamApplication, ConfirmTeamApplicationCreator</comment>
   </data>
   <data name="Contact form message to" xml:space="preserve">
     <value>Nachricht per Kontaktformular an</value>
@@ -169,6 +169,10 @@
     <value>Spielende</value>
     <comment>ResultEntered</comment>
   </data>
+  <data name="Fixture Change" xml:space="preserve">
+    <value>Spielplanänderung</value>
+    <comment>ChangeFixtureCreator</comment>
+  </data>
   <data name="Here is your password recovery code" xml:space="preserve">
     <value>Hier ist der Code zum Zurücksetzen des Passworts</value>
     <comment>PasswordReset</comment>
@@ -179,7 +183,7 @@
   </data>
   <data name="ID" xml:space="preserve">
     <value>Id</value>
-    <comment>FixtureChanged, ResultEntered</comment>
+    <comment>ChangeFixture, ResultEntered</comment>
   </data>
   <data name="In order to choose a new password, please click this link" xml:space="preserve">
     <value>Um ein neues Passwort zu vergeben, bitte auf diesen Link klicken</value>
@@ -196,6 +200,10 @@
   <data name="Match points" xml:space="preserve">
     <value>Spielpunkte</value>
     <comment>ResultEntered</comment>
+  </data>
+  <data name="Match Result" xml:space="preserve">
+    <value>Spielergebnis</value>
+    <comment>ResultEnterdCreator</comment>
   </data>
   <data name="Message" xml:space="preserve">
     <value>Nachricht</value>
@@ -215,7 +223,7 @@
   </data>
   <data name="Number of changes" xml:space="preserve">
     <value>Anzahl Änderungen</value>
-    <comment>ResultEntered, FixtureChanged</comment>
+    <comment>ResultEntered, ChangeFixture</comment>
   </data>
   <data name="Phone" xml:space="preserve">
     <value>Telefon</value>
@@ -247,11 +255,11 @@
   </data>
   <data name="Replacement fixture date" xml:space="preserve">
     <value>Neuer Ausweichspieltag</value>
-    <comment>FixtureChanged</comment>
+    <comment>ChangeFixture</comment>
   </data>
   <data name="Replacement venue" xml:space="preserve">
     <value>Neuer Ausweichspielort</value>
-    <comment>FixtureChanged</comment>
+    <comment>ChangeFixture</comment>
   </data>
   <data name="Result" xml:space="preserve">
     <value>Ergebnis</value>
@@ -259,11 +267,11 @@
   </data>
   <data name="Season fixture date" xml:space="preserve">
     <value>Spieldatum lt. Saisonplan</value>
-    <comment>FixtureChanged</comment>
+    <comment>ChangeFixture</comment>
   </data>
   <data name="Season fixture venue" xml:space="preserve">
     <value>Spielort lt. Saisonplan</value>
-    <comment>FixtureChanged</comment>
+    <comment>ChangeFixture</comment>
   </data>
   <data name="Sender" xml:space="preserve">
     <value>Absender</value>
@@ -323,11 +331,11 @@
   </data>
   <data name="This notification has been sent to the contact persons of the teams" xml:space="preserve">
     <value>Diese Nachricht wurde an die Ansprechpartner der Teams geschickt</value>
-    <comment>FixtureChanged, ResultEntered</comment>
+    <comment>ChangeFixture, ResultEntered</comment>
   </data>
   <data name="unknown" xml:space="preserve">
     <value>offen</value>
-    <comment>FixtureChanged, ResultEntered</comment>
+    <comment>ChangeFixture, ResultEntered</comment>
   </data>
   <data name="Update of team registration" xml:space="preserve">
     <value>Aktualisierung der Teamanmeldung</value>

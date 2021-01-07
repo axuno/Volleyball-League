@@ -15,17 +15,15 @@ namespace League.Emailing.TemplateModels
         /// </summary>
         public bool IsNewApplication { get; set; }
         public string TournamentName { get; set; }
-        public long RoundId { get; set; }
         public string RoundDescription { get; set; }
         public string RoundTypeDescription { get; set; }
-        public long TeamId { get; set; }
         public string TeamName { get; set; }
         /// <summary>
         /// If <see langword="true"/>, specific content for the registering person is shown.
         /// </summary>
         public bool IsRegisteringUser { get; set; }
         public string RegisteredByName { get; set; }
-        public ITenantContext TenantContext { get; set; }
+        public string RegisteredByEmail { get; set; }
         public string UrlToEditApplication { get; set; }
     }
 }

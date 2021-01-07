@@ -15,9 +15,9 @@ namespace Axuno.BackgroundTask
         Task RunAsync(CancellationToken cancellationToken);
 
         /// <summary>
-        /// Gets or sets the timeout, after which e.g. a <see cref="TimeoutException"/> should be thrown by the caller,
-        /// or any other appropriate action.
-        /// Set the timeout to TimeSpan.FromMilliseconds(-1) indicating an infinite timeout.
+        /// Gets or sets the timeout, after which e.g. a <see cref="TimeoutException"/> should be thrown by the calling <see cref="IBackgroundQueue"/>
+        /// (or any other appropriate action).
+        /// Set the timeout to <see cref="TimeSpan.FromMilliseconds"/> with value -1 indicating an infinite timeout.
         /// </summary>
         TimeSpan Timeout { get; set; }
     }

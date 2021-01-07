@@ -14,7 +14,7 @@ namespace League.Templates.Email
         public const string PasswordResetTxt = nameof(PasswordResetTxt);
         public const string PleaseConfirmEmailHtml = nameof(PleaseConfirmEmailHtml);
         public const string PleaseConfirmEmailTxt = nameof(PleaseConfirmEmailTxt);
-        public const string FixtureChangedTxt = nameof(FixtureChangedTxt);
+        public const string ChangeFixtureTxt = nameof(ChangeFixtureTxt);
         public const string NotifyCurrentPrimaryEmailHtml = nameof(NotifyCurrentPrimaryEmailHtml);
         public const string NotifyCurrentPrimaryEmailTxt = nameof(NotifyCurrentPrimaryEmailTxt);
         public const string ResultEnteredTxt = nameof(ResultEnteredTxt);

@@ -5,9 +5,11 @@ using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
 using Axuno.Web;
-using League.BackgroundTasks.Email;
+using League.BackgroundTasks;
+using League.Emailing.Creation;
 using League.Identity;
 using League.Models.AccountViewModels;
+using League.Templates.Email;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -66,11 +68,11 @@ namespace League.Controllers
             /// <summary>
             /// Confirm the email address before creating the account
             /// </summary>
-            ConfirmYourEmail,
+            PleaseConfirmEmail,
             /// <summary>
             /// Email to reset the password
             /// </summary>
-            ForgotPassword
+            PasswordReset
         }
 
         #endregion
@@ -83,7 +85,7 @@ namespace League.Controllers
         private readonly ILogger<Account> _logger;
         private readonly ITenantContext _tenantContext;
         private readonly Axuno.BackgroundTask.IBackgroundQueue _queue;
-        private readonly UserEmailTask _userEmailTask;
+        private readonly SendEmailTask _sendEmailTask;
         private readonly DataProtection.DataProtector _dataProtector;
         private readonly TournamentManager.DI.PhoneNumberService _phoneNumberService;
         private readonly RegionInfo _regionInfo;
@@ -97,7 +99,7 @@ namespace League.Controllers
             ILogger<Account> logger,
             ITenantContext siteContext,
             Axuno.BackgroundTask.IBackgroundQueue queue,
-            UserEmailTask userEmailTask,
+            SendEmailTask sendEmailTask,
             DataProtection.DataProtector dataProtector,
             TournamentManager.DI.PhoneNumberService phoneNumberService,
             RegionInfo regionInfo)
@@ -108,7 +110,7 @@ namespace League.Controllers
             _logger = logger;
             _tenantContext = siteContext;
             _queue = queue;
-            _userEmailTask = userEmailTask;
+            _sendEmailTask = sendEmailTask;
             _dataProtector = dataProtector;
             _phoneNumberService = phoneNumberService;
             _regionInfo = regionInfo;
@@ -213,7 +215,7 @@ namespace League.Controllers
                 return View(model);
             }
 
-            await SendCodeByEmail(new ApplicationUser {Email = model.Email}, EmailPurpose.ConfirmYourEmail);
+            await SendCodeByEmail(new ApplicationUser {Email = model.Email}, EmailPurpose.PleaseConfirmEmail);
             return RedirectToAction(nameof(Message), nameof(Account), new { Organization = _tenantContext.SiteContext.UrlSegmentValue, messageTypeText = MessageType.PleaseConfirmEmail });
         }
 
@@ -489,7 +491,7 @@ namespace League.Controllers
                 return View(model);
             }
             
-            await SendCodeByEmail(user, EmailPurpose.ForgotPassword);
+            await SendCodeByEmail(user, EmailPurpose.PasswordReset);
 
             return RedirectToAction(nameof(Message), nameof(Account), new { Organization = _tenantContext.SiteContext.UrlSegmentValue, messageTypeText = MessageType.ForgotPassword });
         }
@@ -655,32 +657,54 @@ namespace League.Controllers
         private async Task SendCodeByEmail(ApplicationUser user, EmailPurpose purpose)
         {
             string code;
-            _userEmailTask.Timeout = TimeSpan.FromMinutes(1);
-            _userEmailTask.EmailCultureInfo = CultureInfo.CurrentUICulture;
-            _userEmailTask.ToEmail = user.Email;
-
+            var deadline = DateTime.UtcNow.Add(_dataProtectionTokenProviderOptions.Value.TokenLifespan);
+            // round down to full hours
+            deadline = new DateTime(deadline.Year, deadline.Month, deadline.Day, deadline.Hour, 0, 0);
+            
             switch (purpose)
             {
-                case EmailPurpose.ConfirmYourEmail:
-                    _userEmailTask.Subject = _localizer["Please confirm your email address"].Value;
-                    _userEmailTask.ViewNames = new [] { ViewNames.Emails.EmailPleaseConfirmEmail, ViewNames.Emails.EmailPleaseConfirmEmailTxt };
-                    _userEmailTask.LogMessage = "Send email confirmation mail";
+                case EmailPurpose.PleaseConfirmEmail:
                     code = _dataProtector.Encrypt(user.Email, DateTimeOffset.UtcNow.Add(_dataProtectionTokenProviderOptions.Value.TokenLifespan)).Base64UrlEncode();
-                    _userEmailTask.Model = (Email: user.Email, CallbackUrl: Url.Action(nameof(Register), nameof(Account), new { Organization = _tenantContext.SiteContext.UrlSegmentValue, code }, protocol: HttpContext.Request.Scheme), _tenantContext);
+                    _sendEmailTask.SetMessageCreator(new ChangeUserAccountCreator
+                    {
+                        Parameters =
+                        {
+                            Email = user.Email,
+                            Subject = _localizer["Please confirm your email address"].Value,
+                            CallbackUrl = Url.Action(nameof(Register), nameof(Account),
+                                new {Organization = _tenantContext.SiteContext.UrlSegmentValue, code},
+                                protocol: HttpContext.Request.Scheme),
+                            DeadlineUtc = deadline,
+                            CultureInfo = CultureInfo.CurrentUICulture,
+                            TemplateNameTxt = TemplateName.PleaseConfirmEmailTxt,
+                            TemplateNameHtml = TemplateName.PleaseConfirmEmailHtml
+                        }
+                    });
                     break;
-                case EmailPurpose.ForgotPassword:
-                    _userEmailTask.Subject = _localizer["This is your password recovery key"].Value;
-                    _userEmailTask.ViewNames = new [] { ViewNames.Emails.EmailPasswordReset, ViewNames.Emails.EmailPasswordResetTxt };
-                    _userEmailTask.LogMessage = "Password recovery email";
+                case EmailPurpose.PasswordReset:
                     code = (await _signInManager.UserManager.GeneratePasswordResetTokenAsync(user)).Base64UrlEncode();
-                    _userEmailTask.Model = (Email: user.Email, CallbackUrl: Url.Action(nameof(ResetPassword), nameof(Account), new { Organization = _tenantContext.SiteContext.UrlSegmentValue, id = user.Id, code }, protocol: HttpContext.Request.Scheme), _tenantContext);
+                    _sendEmailTask.SetMessageCreator(new ChangeUserAccountCreator
+                    {
+                        Parameters =
+                        {
+                            Email = user.Email,
+                            Subject = _localizer["Please confirm your email address"].Value,
+                            CallbackUrl = Url.Action(nameof(ResetPassword), nameof(Account),
+                                new {Organization = _tenantContext.SiteContext.UrlSegmentValue, id = user.Id, code},
+                                protocol: HttpContext.Request.Scheme),
+                            DeadlineUtc = deadline,
+                            CultureInfo = CultureInfo.CurrentUICulture,
+                            TemplateNameTxt = TemplateName.PasswordResetTxt,
+                            TemplateNameHtml = TemplateName.PasswordResetHtml
+                        }
+                    });
                     break;
                 default:
                     _logger.LogError($"Illegal enum type for {nameof(EmailPurpose)}");
                     break;
             }
 
-            _queue.QueueTask(_userEmailTask);
+            _queue.QueueTask(_sendEmailTask);
         }
 
         #endregion

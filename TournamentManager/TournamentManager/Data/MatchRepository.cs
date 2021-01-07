@@ -419,12 +419,12 @@ namespace TournamentManager.Data
         /// <param name="matchEntity"></param>
         /// <param name="cancellationToken"></param>
         /// <returns>Returns <see langword="true"/> if the transactions was successful, else <see langword="false"/>.</returns>
-        public virtual async Task<bool> SaveMatchResult(MatchEntity matchEntity, CancellationToken cancellationToken)
+        public virtual async Task<bool> SaveMatchResultAsync(MatchEntity matchEntity, CancellationToken cancellationToken)
         {
             using (var da = _dbContext.GetNewAdapter())
             {
                 da.StartTransaction(IsolationLevel.ReadCommitted,
-                    string.Concat(nameof(MatchRepository), nameof(SaveMatchResult), Guid.NewGuid().ToString()));
+                    string.Concat(nameof(MatchRepository), nameof(SaveMatchResultAsync), Guid.NewGuid().ToString()));
 
                 if (matchEntity.Sets.RemovedEntitiesTracker != null)
                 {

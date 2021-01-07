@@ -43,7 +43,6 @@ using System.Threading.Tasks;
 using Axuno.BackgroundTask;
 using Axuno.VirtualFileSystem;
 using League.BackgroundTasks;
-using League.BackgroundTasks.Email;
 using League.ConfigurationPoco;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Rewrite;
@@ -615,16 +614,14 @@ namespace League
             
             #region *** HostedServices related ***
             
-            services.AddSingleton<BackgroundWebHost>(sp => new BackgroundWebHost(services));
+            // RazorViewToStringRenderer must be used with the current HttpContext
+            // Todo: RazorViewToStringRenderer is currently only used for MatchReport
+            services.AddTransient<RazorViewToStringRenderer>();
             services.Configure<BackgroundQueueConfig>(config => config.OnException = null);
             services.AddSingleton<IBackgroundQueue, BackgroundQueue>();
             services.AddConcurrentBackgroundQueueService();
-            services.AddTransient<UserEmailTask>();
-            services.AddTransient<FixtureEmailTask>();
-            services.AddTransient<ResultEmailTask>();
+            services.AddTransient<SendEmailTask>();
             services.AddTransient<RankingUpdateTask>();
-            services.AddTransient<ContactEmailTask>();
-            services.AddTransient<TeamApplicationEmailTask>();
             
             #endregion
         }
