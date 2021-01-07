@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using League.BackgroundTasks;
-using League.BackgroundTasks.Email;
+using League.Emailing.Creation;
 using League.Helpers;
 using League.Models.MatchViewModels;
 using MailMergeLib.AspNet;
@@ -22,7 +22,6 @@ using SD.LLBLGen.Pro.QuerySpec;
 using TournamentManager.DAL.EntityClasses;
 using TournamentManager.DAL.HelperClasses;
 using TournamentManager.DAL.TypedViewClasses;
-using TournamentManager.Data;
 using TournamentManager.ExtensionMethods;
 using TournamentManager.ModelValidators;
 using TournamentManager.MultiTenancy;
@@ -39,14 +38,13 @@ namespace League.Controllers
         private readonly Axuno.Tools.DateAndTime.TimeZoneConverter _timeZoneConverter;
         private readonly ILogger<Match> _logger;
         private readonly Axuno.BackgroundTask.IBackgroundQueue _queue;
-        private readonly FixtureEmailTask _fixtureEmailTask;
-        private readonly ResultEmailTask _resultEmailTask;
+        private readonly SendEmailTask _sendMailTask;
         private readonly RankingUpdateTask _rankingUpdateTask;
         private readonly RazorViewToStringRenderer _razorViewToStringRenderer;
-
+        
         public Match(ITenantContext tenantContext, IStringLocalizer<Match> localizer, IAuthorizationService authorizationService,
             Axuno.Tools.DateAndTime.TimeZoneConverter timeZoneConverter, Axuno.BackgroundTask.IBackgroundQueue queue,
-            FixtureEmailTask fixtureEmailTask, ResultEmailTask resultEmailTask, RankingUpdateTask rankingUpdateTask, RazorViewToStringRenderer razorViewToStringRenderer, ILogger<Match> logger)
+            SendEmailTask sendMailTask, RankingUpdateTask rankingUpdateTask, RazorViewToStringRenderer razorViewToStringRenderer, ILogger<Match> logger)
         {
             _tenantContext = tenantContext;
             _appDb = tenantContext.DbContext.AppDb;
@@ -54,8 +52,7 @@ namespace League.Controllers
             _authorizationService = authorizationService;
             _timeZoneConverter = timeZoneConverter;
             _queue = queue;
-            _fixtureEmailTask = fixtureEmailTask;
-            _resultEmailTask = resultEmailTask;
+            _sendMailTask = sendMailTask;
             _rankingUpdateTask = rankingUpdateTask;
             _razorViewToStringRenderer = razorViewToStringRenderer;
             _logger = logger;
@@ -286,7 +283,7 @@ namespace League.Controllers
                 match.CalculateMatchPoints(model.Round.MatchRule);
                 
                 // save the match entity and sets
-                var success = await _appDb.MatchRepository.SaveMatchResult(match, cancellationToken);
+                var success = await _appDb.MatchRepository.SaveMatchResultAsync(match, cancellationToken);
                 _logger.LogInformation($"Result for match ID {match.Id} was entered by user ID '{0}'", GetCurrentUserId());
 
                 TempData.Put<EnterResultViewModel.MatchResultMessage>(nameof(EnterResultViewModel.MatchResultMessage),
@@ -576,39 +573,34 @@ namespace League.Controllers
 
         private void SendFixtureNotification(long matchId)
         {
-            // Change culture, so that the language of the subject equals the language of the notification
-            var (currentCulture, currentUiCulture) = (Thread.CurrentThread.CurrentCulture, Thread.CurrentThread.CurrentUICulture);
+            _sendMailTask.SetMessageCreator(new ChangeFixtureCreator
+            {
+                Parameters =
+                {
+                    CultureInfo = CultureInfo.DefaultThreadCurrentUICulture ?? CultureInfo.CurrentCulture,
+                    ChangedByUserId = GetCurrentUserId(),
+                    MatchId = matchId,
+                }
+            });
 
-            // Change culture, so that the language of the subject equals the language of the notification
-            (Thread.CurrentThread.CurrentCulture, Thread.CurrentThread.CurrentUICulture) = (CultureInfo.DefaultThreadCurrentCulture, CultureInfo.DefaultThreadCurrentUICulture);
-            _fixtureEmailTask.Timeout = TimeSpan.FromMinutes(1);
-            _fixtureEmailTask.EmailCultureInfo = CultureInfo.DefaultThreadCurrentUICulture;
-            _fixtureEmailTask.Subject = _localizer["Change of fixture {0}"].Value;
-            _fixtureEmailTask.ViewNames = new[] { null, ViewNames.Emails.FixtureChangedEmailTxt };
-            _fixtureEmailTask.LogMessage = "Send fixture notification";
-            _fixtureEmailTask.Model = (User, matchId, _tenantContext, null);
-            _queue.QueueTask(_fixtureEmailTask);
-            // Restore the culture
-            (Thread.CurrentThread.CurrentCulture, Thread.CurrentThread.CurrentUICulture) = (currentCulture, currentUiCulture);
+            _queue.QueueTask(_sendMailTask);
         }
 
         private void SendResultNotification(in MatchEntity match)
         {
             // Todo: Should we check whether an existing result was changed?
-
-            // Change culture, so that the language of the subject equals the language of the notification
-            var (currentCulture, currentUiCulture) = (Thread.CurrentThread.CurrentCulture, Thread.CurrentThread.CurrentUICulture);
             
-            (Thread.CurrentThread.CurrentCulture, Thread.CurrentThread.CurrentUICulture) = (CultureInfo.DefaultThreadCurrentCulture, CultureInfo.DefaultThreadCurrentUICulture);
-            _resultEmailTask.Timeout = TimeSpan.FromMinutes(1); // TimeSpan.FromMinutes(1);
-            _resultEmailTask.EmailCultureInfo = CultureInfo.DefaultThreadCurrentUICulture;
-            _resultEmailTask.Subject = _localizer["Result of the match of {0}"].Value;
-            _resultEmailTask.ViewNames = new[] { null, ViewNames.Emails.ResultEnteredEmailTxt };
-            _resultEmailTask.LogMessage = "Send result notification";
-            _resultEmailTask.Model = (User, match, null, _tenantContext);
-            _queue.QueueTask(_resultEmailTask);
-            // Restore the culture
-            (Thread.CurrentThread.CurrentCulture, Thread.CurrentThread.CurrentUICulture) = (currentCulture, currentUiCulture);
+            _sendMailTask.SetMessageCreator(new ResultEnteredCreator
+            {
+                Parameters =
+                {
+                    CultureInfo = CultureInfo.DefaultThreadCurrentUICulture ?? CultureInfo.CurrentCulture,
+                    ChangedByUserId = GetCurrentUserId(),
+                    Match = match,
+                }
+            });
+
+            _queue.QueueTask(_sendMailTask);
         }
 
         private void UpdateRanking(in long roundId)

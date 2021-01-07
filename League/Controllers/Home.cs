@@ -5,10 +5,9 @@ using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
 using Axuno.Web;
-using League.BackgroundTasks.Email;
+using League.BackgroundTasks;
 using League.Models.AccountViewModels;
 using League.Models.HomeViewModels;
-using League.MultiTenancy;
 using League.Routing;
 using League.Views;
 using Microsoft.AspNetCore.Http;
@@ -28,16 +27,16 @@ namespace League.Controllers
         private readonly TenantStore _tenantStore;
         private readonly IStringLocalizer<Account> _localizer;
         private readonly Axuno.BackgroundTask.IBackgroundQueue _queue;
-        private readonly ContactEmailTask _contactEmailTask;
+        private readonly SendEmailTask _sendEmailTask;
         private readonly ILogger<Home> _logger;
 
-        public Home(ITenantContext tenantContext, TenantStore tenantStore, Axuno.BackgroundTask.IBackgroundQueue queue, ContactEmailTask contactEmailTask, ILogger<Home> logger, IStringLocalizer<Account> localizer)
+        public Home(ITenantContext tenantContext, TenantStore tenantStore, Axuno.BackgroundTask.IBackgroundQueue queue, SendEmailTask sendEmailTask, ILogger<Home> logger, IStringLocalizer<Account> localizer)
         {
             _tenantContext = tenantContext;
             _tenantStore = tenantStore;
             _appDb = _tenantContext.DbContext.AppDb;
             _queue = queue;
-            _contactEmailTask = contactEmailTask;
+            _sendEmailTask = sendEmailTask;
             _logger = logger;            
             _localizer = localizer;
             _tenantContext = tenantContext;
@@ -136,13 +135,16 @@ namespace League.Controllers
 
         private void SendEmail(ContactViewModel model)
         {
-            _contactEmailTask.Timeout = TimeSpan.FromMinutes(1);
-            _contactEmailTask.EmailCultureInfo = CultureInfo.DefaultThreadCurrentUICulture;
+            _sendEmailTask.SetMessageCreator(new Emailing.Creation.ContactFormCreator
+            {
+                Parameters =
+                {
+                    ContactForm = model,
+                    CultureInfo = CultureInfo.DefaultThreadCurrentUICulture ?? CultureInfo.CurrentCulture
+                }
+            });
 
-            _contactEmailTask.ViewNames = new[] { null, ViewNames.Emails.ContactEmailTxt };
-            _contactEmailTask.LogMessage = "Send contact form as email";
-            _contactEmailTask.Model = (Form: model, TenantContext: _tenantContext);
-            _queue.QueueTask(_contactEmailTask);
+            _queue.QueueTask(_sendEmailTask);
         }
     }
 }

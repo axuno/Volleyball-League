@@ -16,6 +16,9 @@ using System.Threading.Tasks;
    Licensed under the Apache License, Version 2.0, http://www.apache.org/licenses/LICENSE-2.0. See License.txt in the project root for license information.
    Source: https://github.com/aspnet/Entropy/blob/master/samples/Mvc.RenderViewToString/RazorViewToStringRenderer.cs
    Original code modified by axuno. Modifications Copyright (c) by axuno.
+
+   See also a Controller extension:
+   https://github.com/RickStrahl/WestwindToolkit/blob/master/Westwind.Web.Mvc/Utils/ViewRenderer.cs   (MIT License)
 */
 
 namespace MailMergeLib.AspNet

@@ -4,16 +4,19 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Axuno.Web;
-using League.BackgroundTasks.Email;
+using League.BackgroundTasks;
+using League.Emailing.Creation;
 using League.Identity;
 using League.Helpers;
 using League.Models.ManageViewModels;
 using League.TagHelpers;
+using League.Templates.Email;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using TournamentManager.DAL.EntityClasses;
 using TournamentManager.DI;
 using TournamentManager.MultiTenancy;
@@ -29,8 +32,8 @@ namespace League.Controllers
         private readonly IStringLocalizer<Manage> _localizer;
         private readonly Axuno.Tools.DateAndTime.TimeZoneConverter _timeZoneConverter;
         private readonly Axuno.BackgroundTask.IBackgroundQueue _queue;
-        private readonly UserEmailTask _userEmailTask1;
-        private readonly UserEmailTask _userEmailTask2;
+        private readonly SendEmailTask _sendEmailTask;
+        private readonly IOptions<DataProtectionTokenProviderOptions> _dataProtectionTokenProviderOptions;
         private readonly MetaDataHelper _metaData;
         private readonly ITenantContext _tenantContext;
         private readonly ILogger<Manage> _logger;
@@ -41,7 +44,8 @@ namespace League.Controllers
             SignInManager<ApplicationUser> signInManager, IStringLocalizer<Manage> localizer,
             Axuno.Tools.DateAndTime.TimeZoneConverter timeZoneConverter,
             Axuno.BackgroundTask.IBackgroundQueue queue,
-            UserEmailTask userEmailTask,
+            SendEmailTask sendEmailTask,
+            IOptions<DataProtectionTokenProviderOptions> dataProtectionTokenProviderOptions,
             MetaDataHelper metaData, ITenantContext tenantContext, 
             RegionInfo regionInfo, PhoneNumberService phoneNumberService,
             ILogger<Manage> logger)
@@ -51,8 +55,8 @@ namespace League.Controllers
             _localizer = localizer;
             _timeZoneConverter = timeZoneConverter;
             _queue = queue;
-            _userEmailTask1 = userEmailTask;
-            _userEmailTask2 = userEmailTask.CreateNew();
+            _sendEmailTask = sendEmailTask;
+            _dataProtectionTokenProviderOptions = dataProtectionTokenProviderOptions;
             _metaData = metaData;
             _tenantContext = tenantContext;
             _phoneNumberService = phoneNumberService;
@@ -63,8 +67,6 @@ namespace League.Controllers
         [HttpGet("")]
         public async Task<IActionResult> Index()
         {
-            //TournamentManager.Validators.UserEntityValidatorResource.Culture = CultureInfo.CurrentCulture;
-            //var x = TournamentManager.EntityValidators.UserEntityValidatorResource.EmailMustBeSetAndValid;
             var ue = new TournamentManager.DAL.EntityClasses.UserEntity();
 
             ue.Fields[(int) TournamentManager.DAL.UserFieldIndex.UserName].Alias = _metaData.GetDisplayName<ChangeUsernameViewModel>(nameof(ChangeUsernameViewModel.Username));
@@ -714,36 +716,52 @@ namespace League.Controllers
         /// </summary>
         /// <param name="user">The <see cref="ApplicationUser"/> as the recipient of the email.</param>
         /// <param name="purpose">The <see cref="Account.EmailPurpose"/> of the email.</param>
-        /// <param name="model">The model parameter for the view.</param>
-        private async Task SendEmail(ApplicationUser user, EmailPurpose purpose, string model)
+        /// <param name="newEmail">The model parameter for the view.</param>
+        private async Task SendEmail(ApplicationUser user, EmailPurpose purpose, string newEmail)
         {
-            _userEmailTask1.Timeout = _userEmailTask2.Timeout = TimeSpan.FromMinutes(1);
-            _userEmailTask1.EmailCultureInfo = _userEmailTask2.EmailCultureInfo = CultureInfo.CurrentUICulture;
+            var deadline = DateTime.UtcNow.Add(_dataProtectionTokenProviderOptions.Value.TokenLifespan);
+            // round down to full hours
+            deadline = new DateTime(deadline.Year, deadline.Month, deadline.Day, deadline.Hour, 0, 0);
             
             switch (purpose)
             {
                 case EmailPurpose.NotifyCurrentPrimaryEmail:
-                    _userEmailTask1.ToEmail = user.Email;
-                    _userEmailTask1.Subject = _localizer["Your primary email is about to be changed"].Value;
-                    _userEmailTask1.ViewNames = new[] {ViewNames.Emails.NotifyCurrentPrimaryEmail, ViewNames.Emails.NotifyCurrentPrimaryEmailTxt };
-                    _userEmailTask1.LogMessage = "Notify current primary email about the requested change";
-                    _userEmailTask1.Model = (Email: model, CallbackUrl: string.Empty, TenantContext: _tenantContext);
-                    _queue.QueueTask(_userEmailTask1);
+                    _sendEmailTask.SetMessageCreator(new ChangeUserAccountCreator
+                    {
+                        Parameters =
+                        {
+                            Email = user.Email,
+                            Subject = _localizer["Your primary email is about to be changed"].Value,
+                            CallbackUrl = string.Empty, // not used
+                            DeadlineUtc = DateTime.UtcNow, // not used
+                            CultureInfo = CultureInfo.CurrentUICulture,
+                            TemplateNameTxt = TemplateName.NotifyCurrentPrimaryEmailTxt,
+                            TemplateNameHtml = TemplateName.NotifyCurrentPrimaryEmailHtml
+                        }
+                    });
                     break;
                 case EmailPurpose.ConfirmNewPrimaryEmail:
-                    var newEmail = model;
-                    _userEmailTask2.ToEmail = newEmail;
-                    _userEmailTask2.Subject = _localizer["Please confirm your new primary email"].Value;
-                    _userEmailTask2.ViewNames = new [] {ViewNames.Emails.ConfirmNewPrimaryEmail, ViewNames.Emails.ConfirmNewPrimaryEmailTxt };
-                    _userEmailTask2.LogMessage = "Email to confirm the new primary email";
                     var code = (await _userManager.GenerateChangeEmailTokenAsync(user, newEmail)).Base64UrlEncode();
-                    _userEmailTask2.Model = (Email: newEmail, CallbackUrl: Url.Action(nameof(ConfirmNewPrimaryEmail), nameof(Manage), new { Organization = _tenantContext.SiteContext.UrlSegmentValue, id = user.Id, code, e = newEmail.Base64UrlEncode()}, protocol: HttpContext.Request.Scheme), TenantContext: _tenantContext);
-                    _queue.QueueTask(_userEmailTask2);
+                    _sendEmailTask.SetMessageCreator(new ChangeUserAccountCreator
+                    {
+                        Parameters =
+                        {
+                            Email = newEmail,
+                            Subject = _localizer["Please confirm your new primary email"].Value,
+                            CallbackUrl = Url.Action(nameof(ConfirmNewPrimaryEmail), nameof(Manage), new { Organization = _tenantContext.SiteContext.UrlSegmentValue, id = user.Id, code, e = newEmail.Base64UrlEncode()}, protocol: HttpContext.Request.Scheme),
+                            DeadlineUtc = deadline,
+                            CultureInfo = CultureInfo.CurrentUICulture,
+                            TemplateNameTxt = TemplateName.ConfirmNewPrimaryEmailTxt,
+                            TemplateNameHtml = TemplateName.ConfirmNewPrimaryEmailHtml
+                        }
+                    });
                     break;
                 default:
-                    _logger.LogError($"Illegal enum type for {nameof(EmailPurpose)}");
+                    _logger.LogError($"Illegal enum type for {nameof(Manage.EmailPurpose)}");
                     break;
             }
+
+            _queue.QueueTask(_sendEmailTask);
         }
         #endregion
     }

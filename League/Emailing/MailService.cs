@@ -12,6 +12,7 @@ namespace MailMergeLib.AspNet
     public interface IMailMergeService
     {
         IMessageStore MessageStore { get; }
+        Settings Settings { get; }
         MailMergeSender Sender { get; }
         MailMergeMessage CreateStandardMessage();
     }
@@ -44,21 +45,6 @@ namespace MailMergeLib.AspNet
                 HtmlText = string.Empty,
                 Subject = string.Empty,
             };
-            mmm.MailMergeAddresses.Clear();
-
-            if (_tenantContext?.SiteContext.Email.GeneralFrom.Address != null)
-            {
-                mmm.MailMergeAddresses.Add(new MailMergeAddress(MailAddressType.From,
-                    _tenantContext.SiteContext.Email.GeneralFrom.DisplayName,
-                    _tenantContext.SiteContext.Email.GeneralFrom.Address));
-            }
-
-            if (_tenantContext?.SiteContext.Email.GeneralBcc != null)
-            {
-                mmm.MailMergeAddresses.Add(new MailMergeAddress(MailAddressType.Bcc,
-                    _tenantContext.SiteContext.Email.GeneralBcc.DisplayName,
-                    _tenantContext.SiteContext.Email.GeneralBcc.Address));
-            }
 
             return mmm;
         }
@@ -80,8 +66,6 @@ namespace MailMergeLib.AspNet
             // Null-checks are part the extension methods:
             services.Configure<MailMergeServiceConfig>(config);
             services.TryAddTransient<IMailMergeService, MailMergeService>();
-            // RazorViewToStringRenderer must be used with the current HttpContext
-            services.TryAddTransient<RazorViewToStringRenderer>();
             return services;
         }
     }

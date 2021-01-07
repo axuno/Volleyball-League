@@ -24,7 +24,7 @@ namespace TournamentManager.Data
             _dbContext = dbContext;
         }
 
-        public virtual async Task<IdentityRoleEntity> GetRoleByIdAsync(long id, CancellationToken cancellationToken)
+        public virtual async Task<IdentityRoleEntity?> GetRoleByIdAsync(long id, CancellationToken cancellationToken)
         {
             using (var da = _dbContext.GetNewAdapter())
             {
@@ -36,7 +36,7 @@ namespace TournamentManager.Data
             }
         }
 
-        public virtual async Task<IdentityRoleEntity> GetRoleByNameAsync(string roleName, CancellationToken cancellationToken)
+        public virtual async Task<IdentityRoleEntity?> GetRoleByNameAsync(string roleName, CancellationToken cancellationToken)
         {
             roleName = roleName.ToLowerInvariant();
             using (var da = _dbContext.GetNewAdapter())

@@ -117,10 +117,6 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Change of fixture {0}" xml:space="preserve">
-    <value>Änderung des Spieltags {0}</value>
-    <comment>Fixture</comment>
-  </data>
   <data name="Match '{0}' : '{1}'" xml:space="preserve">
     <value>Spiel '{0}' gg. '{1}'</value>
     <comment>Calendar</comment>
@@ -128,10 +124,6 @@
   <data name="Report Sheet" xml:space="preserve">
     <value>Spielbericht</value>
     <comment>ReportSheet</comment>
-  </data>
-  <data name="Result of the match of {0}" xml:space="preserve">
-    <value>Ergebnis des Spiels vom {0}</value>
-    <comment>Result</comment>
   </data>
   <data name="Venue in Google Maps: https://maps.google.com?q={0},{1}" xml:space="preserve">
     <value>Spielort in Google Maps: http://maps.google.de?q={0},{1}</value>

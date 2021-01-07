@@ -105,11 +105,11 @@ namespace League.TextTemplatingModule
 
             context.Add(
                 new TemplateDefinition(
-                    name: TemplateName.FixtureChangedTxt,
+                    name: TemplateName.ChangeFixtureTxt,
                     localizationResource: typeof(EmailResource),
                     defaultCultureName: CultureInfo.DefaultThreadCurrentCulture?.Name ?? fallbackCultureName
                 ).WithVirtualFilePath(
-                    "/Email/FixtureChangedTxt.tpl", //template content folder
+                    "/Email/ChangeFixtureTxt.tpl", //template content folder
                     isInlineLocalized: true
                 )
             );
