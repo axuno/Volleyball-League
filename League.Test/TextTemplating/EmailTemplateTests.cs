@@ -145,11 +145,11 @@ namespace League.Test.TextTemplating
         [TestCase("de")]
         public void ContactForm_Test(string cultureName)
         {
-            var m = new ContactViewModel
+            var m = new { Form = new ContactViewModel
             {
                 Gender = "m", FirstName = "John", LastName = "Specimen", Email = "my@email.com", PhoneNumber = "",
                 Subject = "The subject", Message = "asdf"
-            };
+            }};
 
             Console.WriteLine();
             

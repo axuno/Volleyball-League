@@ -79,8 +79,6 @@ namespace League
                 CacheController.CachingEnabled = true;
             }
 
-            //RuntimeConfiguration.SetDependencyInjectionInfo(new[] { typeof(TournamentManager.EntityValidators.UserEntityValidator).Assembly }, new[] { "TournamentManager.Validators" });
-            
             if (WebHostEnvironment.IsProduction())
             {
                 RuntimeConfiguration.ConfigureDQE<SD.LLBLGen.Pro.DQE.SqlServer.SQLServerDQEConfiguration>(c => c
@@ -604,7 +602,7 @@ namespace League
             services.AddTextTemplatingModule(vfs =>
                 {
                     // The complete Templates folder is embedded in the project file
-                    vfs.FileSets.AddEmbedded<Startup>(nameof(League));
+                    vfs.FileSets.AddEmbedded<Startup>(nameof(League) + ".Templates");
                     // vfs.FileSets.AddPhysical(Path.Combine(Directory.GetCurrentDirectory(), "Templates"));
                 },
                 locOpt =>
