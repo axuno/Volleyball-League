@@ -50,10 +50,6 @@ namespace League.Test.TextTemplating
             _services = UnitTestHelpers.GetTextTemplatingServiceProvider(_tenantContext);
             _renderer = (LeagueTemplateRenderer) _services.GetRequiredService<ITemplateRenderer>();
             _localizer = _services.GetRequiredService<IStringLocalizer<EmailResource>>();
-
-            // make sure errors are thrown
-            _renderer.MemberNotFoundAction = RenderErrorAction.ThrowError;
-            _renderer.VariableNotFoundAction = RenderErrorAction.ThrowError;
         }
 
         public string L(string toTranslate, string cultureName)
@@ -65,8 +61,8 @@ namespace League.Test.TextTemplating
         [Test]
         public void LeagueAssembly_Should_Contain_Embedded_Email_Templates()
         {
-            var resources = System.Reflection.Assembly.GetAssembly(typeof(League.Startup)).GetManifestResourceNames();
-            Assert.IsTrue(resources.Any(r => r.ToString().Contains("League.Templates.Email")));
+            var resources = System.Reflection.Assembly.GetAssembly(typeof(League.Startup))?.GetManifestResourceNames();
+            Assert.That(resources != null && resources.Any(r => r.ToString().Contains("League.Templates.Email")));
         }
 
         [Test]
@@ -93,8 +89,8 @@ namespace League.Test.TextTemplating
                     Console.WriteLine(html);
                 } );
                 
-                Assert.IsTrue(text.Contains(L("Change your primary email address", cultureName)));
-                Assert.IsTrue(html.Contains(L("Change your primary email address", cultureName)));
+                Assert.That(text.Contains(L("Change your primary email address", cultureName)));
+                Assert.That(html.Contains(L("Change your primary email address", cultureName)));
             });
         }
         
@@ -133,10 +129,10 @@ namespace League.Test.TextTemplating
                     Console.WriteLine(text);
                 });
 
-                Assert.IsTrue(text.Contains(L("Sporting greetings", cultureName)));
+                Assert.That(text.Contains(L("Sporting greetings", cultureName)));
                     
-                if(isRegisteringUser) Assert.IsTrue(text.Contains("Link", StringComparison.CurrentCultureIgnoreCase));
-                if(isRegisteringUser && showBank) Assert.IsTrue(text.Contains("Bank", StringComparison.CurrentCultureIgnoreCase) && text.Contains(_tenantContext.OrganizationContext.Bank.Amount.ToString(CultureInfo.GetCultureInfo(cultureName))));
+                if(isRegisteringUser) Assert.That(text.Contains("Link", StringComparison.CurrentCultureIgnoreCase));
+                if(isRegisteringUser && showBank) Assert.That(text.Contains("Bank", StringComparison.CurrentCultureIgnoreCase) && text.Contains(_tenantContext.OrganizationContext.Bank.Amount.ToString(CultureInfo.GetCultureInfo(cultureName))));
             });
         }
         
@@ -148,7 +144,7 @@ namespace League.Test.TextTemplating
             var m = new { Form = new ContactViewModel
             {
                 Gender = "m", FirstName = "John", LastName = "Specimen", Email = "my@email.com", PhoneNumber = "",
-                Subject = "The subject", Message = "asdf"
+                Subject = "The subject", Message = "Something to tell..."
             }};
 
             Console.WriteLine();
@@ -163,7 +159,7 @@ namespace League.Test.TextTemplating
                     Console.WriteLine(text);
                 } );
 
-                Assert.IsTrue(text.Contains(L("Mr.", cultureName)));
+                Assert.That(text.Contains(L("Mr.", cultureName)));
             });
         }
         
@@ -201,10 +197,10 @@ namespace League.Test.TextTemplating
                     Console.WriteLine(text);
                 } );
 
-                Assert.IsTrue(text.Contains(L("Season fixture date", cultureName)));
-                if (origPlannedStart.HasValue) Assert.IsTrue(text.Contains(L("Replacement fixture date", cultureName))); else Assert.IsFalse(text.Contains(L("Replacement fixture date", cultureName)));
-                Assert.IsTrue(text.Contains(L("Season fixture venue", cultureName)));
-                if (origVenue.HasValue) Assert.IsTrue(text.Contains(L("Replacement venue", cultureName))); else Assert.IsFalse(text.Contains(L("Replacement venue", cultureName)));
+                Assert.That(text.Contains(L("Season fixture date", cultureName)));
+                if (origPlannedStart.HasValue) Assert.That(text.Contains(L("Replacement fixture date", cultureName))); else Assert.IsFalse(text.Contains(L("Replacement fixture date", cultureName)));
+                Assert.That(text.Contains(L("Season fixture venue", cultureName)));
+                if (origVenue.HasValue) Assert.That(text.Contains(L("Replacement venue", cultureName))); else Assert.IsFalse(text.Contains(L("Replacement venue", cultureName)));
             });
         }
         
@@ -232,8 +228,8 @@ namespace League.Test.TextTemplating
                     Console.WriteLine(html);
                 } );
                 
-                Assert.IsTrue(text.Contains(L("Your primary email is about to be changed to", cultureName)));
-                Assert.IsTrue(html.Contains(L("Your primary email is about to be changed to", cultureName)));
+                Assert.That(text.Contains(L("Your primary email is about to be changed to", cultureName)));
+                Assert.That(html.Contains(L("Your primary email is about to be changed to", cultureName)));
             });
         }        
         
@@ -262,9 +258,8 @@ namespace League.Test.TextTemplating
                     Console.WriteLine($"*** {TemplateName.PasswordResetHtml} ***");
                     Console.WriteLine(html);
                 } );
-                
-                Assert.IsTrue(text.Contains(L("Here is your password recovery code", cultureName)));
-                Assert.IsTrue(html.Contains(L("Here is your password recovery code", cultureName)));
+                Assert.That(text.Contains(L("Here is your password recovery code", cultureName)));
+                Assert.That(html.Contains(L("Here is your password recovery code", cultureName)));
             });
         }
         
@@ -293,8 +288,8 @@ namespace League.Test.TextTemplating
                     Console.WriteLine(html);
                 } );
                 
-                Assert.IsTrue(text.Contains(L("Thank you for creating an account", cultureName)));
-                Assert.IsTrue(html.Contains(L("Thank you for creating an account", cultureName)));
+                Assert.That(text.Contains(L("Thank you for creating an account", cultureName)));
+                Assert.That(html.Contains(L("Thank you for creating an account", cultureName)));
             });
         }
         
@@ -346,9 +341,9 @@ namespace League.Test.TextTemplating
                     Console.WriteLine(text);
                 } );
                 
-                Assert.IsTrue(text.Contains(L("Result", cultureName)));
-                if (withRemarks) Assert.IsTrue(text.Contains(m.Match.Remarks));
-                if (isOrigStartSet) Assert.IsTrue(text.Contains(m.Match.OrigPlannedStart?.ToString("d", new CultureInfo(cultureName))));
+                Assert.That(text.Contains(L("Result", cultureName)));
+                if (withRemarks) Assert.That(text.Contains(m.Match.Remarks));
+                if (isOrigStartSet) Assert.That(text.Contains(m.Match.OrigPlannedStart?.ToString("d", new CultureInfo(cultureName))));
             });
         }
     }
