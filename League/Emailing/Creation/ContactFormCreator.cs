@@ -42,14 +42,14 @@ namespace League.Emailing.Creation
                 throw new ArgumentNullException(nameof(Parameters.ContactForm), "One or more required parameters are null");
             }
 
-            var model = Parameters.ContactForm;
+            var model = new {Form = Parameters.ContactForm};
             
             {
                 using var cs = new CultureSwitcher(Parameters.CultureInfo, Parameters.CultureInfo);
 
                 var mailMergeMessage = mailMergeService.CreateStandardMessage();
                 mailMergeMessage.EnableFormatter = false;
-                mailMergeMessage.Subject = model.Subject; // user-generated, cannot localize!
+                mailMergeMessage.Subject = model.Form.Subject; // user-generated, cannot localize!
                 
                 mailMergeMessage.MailMergeAddresses.Add(new MailMergeAddress(MailAddressType.From, tenantContext.SiteContext.Email.ContactFrom.Address));
                 mailMergeMessage.MailMergeAddresses.Add(new MailMergeAddress(MailAddressType.To, tenantContext.SiteContext.Email.ContactTo.Address));
