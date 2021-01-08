@@ -125,20 +125,19 @@ namespace League.Test
                     CultureInfo.CurrentCulture,
                     NodaTime.TimeZones.Resolvers.LenientResolver))
                 .AddTransient<ITenantContext>(sp => tenantContext)
-                .AddTextTemplatingModule()
                 .AddTextTemplatingModule(vfs =>
                     {
-                        // Test can run using the physical path or with embedded resources:
-                        
-                        // The Templates\Emails folder is embedded in the project file
-                        vfs.FileSets.AddEmbedded<Startup>($"{nameof(League)}.Templates");
-                        
-                        // Use the templates from the project "Templates" folder
-                        var leagueProjectPath = DirectoryLocator.GetTargetProjectPath();
-                        vfs.FileSets.AddPhysical(Path.Combine(leagueProjectPath, "Templates"));
+                        // The complete Templates folder is embedded in the project file
+                        vfs.FileSets.AddEmbedded<Startup>(nameof(League) + ".Templates");
+                        // vfs.FileSets.AddPhysical(Path.Combine(Directory.GetCurrentDirectory(), "Templates"));
                     },
                     locOpt =>
                     {
+                    },
+                    renderOptions =>
+                    {
+                        renderOptions.MemberNotFoundAction = RenderErrorAction.ThrowError;
+                        renderOptions.VariableNotFoundAction = RenderErrorAction.ThrowError;
                     })
                 .BuildServiceProvider();
         }

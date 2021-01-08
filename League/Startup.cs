@@ -598,7 +598,7 @@ namespace League
             #endregion
 
             #region *** Text Templating ***
-            
+
             services.AddTextTemplatingModule(vfs =>
                 {
                     // The complete Templates folder is embedded in the project file
@@ -606,7 +606,18 @@ namespace League
                     // vfs.FileSets.AddPhysical(Path.Combine(Directory.GetCurrentDirectory(), "Templates"));
                 },
                 locOpt =>
-                { });
+                {
+                },
+                renderOptions =>
+                {
+#if DEBUG
+                    renderOptions.MemberNotFoundAction = RenderErrorAction.ThrowError;
+                    renderOptions.VariableNotFoundAction = RenderErrorAction.ThrowError;
+#else
+                    renderOptions.MemberNotFoundAction = RenderErrorAction.MaintainToken;
+                    renderOptions.VariableNotFoundAction = RenderErrorAction.MaintainToken;
+#endif
+                });
             
             #endregion
             

@@ -14,10 +14,11 @@ namespace League.TextTemplatingModule
 {
     public static class TextTemplatingServiceCollectionExtensions
     {
-        public static IServiceCollection AddTextTemplatingModule(this IServiceCollection services, Action<VirtualFileSystemOptions>? virtualFileSystemOptions = null, Action<LocalizationOptions>? localizationOptions = null)
+        public static IServiceCollection AddTextTemplatingModule(this IServiceCollection services, Action<VirtualFileSystemOptions>? virtualFileSystemOptions = null, Action<LocalizationOptions>? localizationOptions = null, Action<LeagueTemplateRendererOptions>? renderOptions = null)
         {
             services.Configure<VirtualFileSystemOptions>(virtualFileSystemOptions ?? (options => { }));
             services.Configure<LocalizationOptions>(localizationOptions ?? (options => { }));
+            services.Configure<LeagueTemplateRendererOptions>(renderOptions ?? (options => { }));
 
             services.Configure<TextTemplatingOptions>(options =>
             {
@@ -31,13 +32,14 @@ namespace League.TextTemplatingModule
             services.AddSingleton<IDynamicFileProvider, DynamicFileProvider>();
             services.AddTransient<VirtualFileTemplateContentContributor>();
             services.AddSingleton<ILocalizedTemplateContentReaderFactory, LocalizedTemplateContentReaderFactory>();
-            services.AddSingleton<IStringLocalizerFactory>(s => new ResourceManagerStringLocalizerFactory(s.GetRequiredService<IOptions<LocalizationOptions>>(), NullLoggerFactory.Instance));
+           
             services.AddSingleton<ITemplateDefinitionManager, TemplateDefinitionManager>();
             services.AddTransient<ITemplateContentProvider, TemplateContentProvider>();
             services.AddTransient<ITemplateRenderer, LeagueTemplateRenderer>();
 
             // The following services have probably already been registered
             
+            services.TryAddSingleton<IStringLocalizerFactory>(s => new ResourceManagerStringLocalizerFactory(s.GetRequiredService<IOptions<LocalizationOptions>>(), NullLoggerFactory.Instance));
             services.TryAddSingleton(typeof(IStringLocalizer<>), typeof(StringLocalizer<>));
 
             #region ** Timezone service **

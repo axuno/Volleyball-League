@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Axuno.TextTemplating;
 using Microsoft.Extensions.Localization;
+using Microsoft.Extensions.Options;
 using Scriban;
 using Scriban.Parsing;
 using Scriban.Syntax;
@@ -23,24 +24,27 @@ namespace League.TextTemplatingModule
         /// Gets or sets the <see cref="VariableNotFoundAction"/> to be taken if variables cannot be found from the model or other scopes.
         /// Defaults to the Scriban <see cref="Template.RenderAsync(Scriban.TemplateContext)"/> default, which corresponds to <see cref="RenderErrorAction.ThrowError"/>.
         /// </summary>
-        public RenderErrorAction VariableNotFoundAction { get; set; } = RenderErrorAction.ThrowError;
+        protected RenderErrorAction VariableNotFoundAction { get; set; }
 
         /// <summary>
         /// Gets or sets the <see cref="MemberNotFoundAction"/> to be taken if a member cannot be found from the model.
         /// Defaults to the Scriban <see cref="Template.RenderAsync(Scriban.TemplateContext)"/> default, which corresponds to <see cref="RenderErrorAction.LeaveEmpty"/>.
         /// </summary>
-        public RenderErrorAction MemberNotFoundAction { get; set; } = RenderErrorAction.LeaveEmpty;
+        protected RenderErrorAction MemberNotFoundAction { get; set; }
 
         public LeagueTemplateRenderer(
             ITemplateContentProvider templateContentProvider,
             ITemplateDefinitionManager templateDefinitionManager,
             IStringLocalizerFactory stringLocalizerFactory,
             Axuno.Tools.DateAndTime.TimeZoneConverter timeZoneConverter,
-            TournamentManager.MultiTenancy.ITenantContext tenantContext) : base(templateContentProvider,
+            TournamentManager.MultiTenancy.ITenantContext tenantContext,
+            IOptions<LeagueTemplateRendererOptions> options) : base(templateContentProvider,
             templateDefinitionManager, stringLocalizerFactory)
         {
             _timeZoneConverter = timeZoneConverter;
             _tenantContext = tenantContext;
+            VariableNotFoundAction = options.Value.VariableNotFoundAction;
+            MemberNotFoundAction = options.Value.MemberNotFoundAction;
         }
 
         protected override TemplateContext CreateScribanTemplateContext(
