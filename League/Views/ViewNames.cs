@@ -22,21 +22,6 @@ namespace League.ViewNames
         public const string SignInRejected = "SignInRejected";
         public const string SignInRejectedEmailNotConfirmed = "SignInRejectedEmailNotConfirmed";
     }
-    public static class Emails
-    {
-        public const string ConfirmNewPrimaryEmail = "ConfirmNewPrimaryEmail";
-        public const string ConfirmNewPrimaryEmailTxt = "ConfirmNewPrimaryEmail.txt";
-        public const string ConfirmTeamApplicationTxt = "ConfirmTeamApplication.txt";
-        public const string ContactEmailTxt = "ContactEmail.txt";
-        public const string EmailPasswordReset = "EmailPasswordReset";
-        public const string EmailPasswordResetTxt = "EmailPasswordReset.txt";
-        public const string EmailPleaseConfirmEmail = "EmailPleaseConfirmEmail";
-        public const string EmailPleaseConfirmEmailTxt = "EmailPleaseConfirmEmail.txt";
-        public const string FixtureChangedEmailTxt = "FixtureChangedEmail.txt";
-        public const string NotifyCurrentPrimaryEmail = "NotifyCurrentPrimaryEmail";
-        public const string NotifyCurrentPrimaryEmailTxt = "NotifyCurrentPrimaryEmail.txt";
-        public const string ResultEnteredEmailTxt = "ResultEnteredEmail.txt";
-    }
     public static class Error
     {
         public const string AccessDenied = "AccessDenied";
