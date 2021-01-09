@@ -47,6 +47,7 @@ namespace League.Emailing.Creation
             var model = new ResultEnteredModel
             {
                 Match = Parameters.Match,
+                RoundDescription = teamUserRoundInfos.First(tur => tur.RoundId == Parameters.Match.RoundId).RoundDescription,
                 Username = teamUserRoundInfos.First(tur => tur.UserId == Parameters.ChangedByUserId).CompleteName,
                 HomeTeamName = teamUserRoundInfos.First(tur => tur.TeamId == Parameters.Match.HomeTeamId).TeamNameForRound,
                 GuestTeamName = teamUserRoundInfos.First(tur => tur.TeamId == Parameters.Match.GuestTeamId).TeamNameForRound

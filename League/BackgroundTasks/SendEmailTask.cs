@@ -46,6 +46,15 @@ namespace League.BackgroundTasks
         }
 
         /// <summary>
+        /// Creates a new <see cref="SendEmailTask"/> instance initialized like after dependency injection
+        /// </summary>
+        /// <returns>Return new <see cref="SendEmailTask"/> instance initialized like after dependency injection</returns>
+        public SendEmailTask CreateNewInstance()
+        {
+            return new SendEmailTask(_mailMergeService, _renderer, _tenantContext, _localizer, _logger);
+        }
+        
+        /// <summary>
         /// Set the <see cref="IMailMessageCreator"/> that will create the mail messages that <see cref="SendEmailTask"/> will send.
         /// </summary>
         /// <param name="mailMessageCreator">The <see cref="IMailMessageCreator"/>.</param>

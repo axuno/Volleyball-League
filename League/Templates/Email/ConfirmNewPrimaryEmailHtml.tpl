@@ -1,6 +1,6 @@
 ﻿<!-- source: https://buttons.cm/ -->
 <div>
-    <h3{{ L "Change your primary email address" }}</h3>
+    <h3>{{ L "Change your primary email address" }}</h3>
     <p>{{ L "Please confirm the new email address by clicking this link" }}</p>
     <!--[if mso]>
         <v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word" href="{{ model.CallbackUrl }}" style="height: 38px; v-text-anchor: middle; width: 200px;" arcsize="27%" strokecolor="#018dff" fillcolor="#018dff">
