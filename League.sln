@@ -21,8 +21,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Axuno.BackgroundTask", "Axu
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Axuno.BackgroundTask.Tests", "Axuno.BackgroundTask.Test\Axuno.BackgroundTask.Tests.csproj", "{2EDD4835-C74D-4184-AFDD-406D45A914DD}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Axuno.Scripting", "Axuno.Scripting\Axuno.Scripting.csproj", "{C0486F62-AD20-4A73-A90A-0DB5470AC382}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TournamentManager.Tests", "TournamentManager\TournamentManager.Test\TournamentManager.Tests.csproj", "{30D5235D-766F-463C-BCE4-F49321EC22AB}"
 EndProject
 Global
@@ -67,10 +65,6 @@ Global
 		{2EDD4835-C74D-4184-AFDD-406D45A914DD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2EDD4835-C74D-4184-AFDD-406D45A914DD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2EDD4835-C74D-4184-AFDD-406D45A914DD}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C0486F62-AD20-4A73-A90A-0DB5470AC382}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C0486F62-AD20-4A73-A90A-0DB5470AC382}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C0486F62-AD20-4A73-A90A-0DB5470AC382}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C0486F62-AD20-4A73-A90A-0DB5470AC382}.Release|Any CPU.Build.0 = Release|Any CPU
 		{30D5235D-766F-463C-BCE4-F49321EC22AB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{30D5235D-766F-463C-BCE4-F49321EC22AB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{30D5235D-766F-463C-BCE4-F49321EC22AB}.Release|Any CPU.ActiveCfg = Release|Any CPU
