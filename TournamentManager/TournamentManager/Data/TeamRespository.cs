@@ -30,57 +30,47 @@ namespace TournamentManager.Data
 
         public virtual async Task<List<TeamVenueRoundRow>> GetTeamVenueRoundInfoAsync(IPredicateExpression filter, CancellationToken cancellationToken)
         {
-            using (var da = _dbContext.GetNewAdapter())
-            {
-                return await da.FetchQueryAsync<TeamVenueRoundRow>(
-                    new QueryFactory().TeamVenueRound.Where(filter), cancellationToken);
-            }
+            using var da = _dbContext.GetNewAdapter();
+            return await da.FetchQueryAsync<TeamVenueRoundRow>(
+                new QueryFactory().TeamVenueRound.Where(filter), cancellationToken);
         }
 
         public virtual async Task<List<TeamUserRoundRow>> GetTeamUserRoundInfosAsync(IPredicateExpression filter, CancellationToken cancellationToken)
         {
-            using (var da = _dbContext.GetNewAdapter())
-            {
-                return await da.FetchQueryAsync<TeamUserRoundRow>(
-                    new QueryFactory().TeamUserRound.Where(filter), cancellationToken);
-            }
+            using var da = _dbContext.GetNewAdapter();
+            return await da.FetchQueryAsync<TeamUserRoundRow>(
+                new QueryFactory().TeamUserRound.Where(filter), cancellationToken);
         }
 
         public virtual async Task<List<LatestTeamTournamentRow>> GetLatestTeamTournamentAsync(IPredicateExpression filter, CancellationToken cancellationToken)
         {
-            using (var da = _dbContext.GetNewAdapter())
-            {
-                return await da.FetchQueryAsync<LatestTeamTournamentRow>(
-                    new QueryFactory().LatestTeamTournament.Where(filter), cancellationToken);
-            }
+            using var da = _dbContext.GetNewAdapter();
+            return await da.FetchQueryAsync<LatestTeamTournamentRow>(
+                new QueryFactory().LatestTeamTournament.Where(filter), cancellationToken);
         }
 
         public virtual async Task<List<TeamEntity>> GetTeamEntitiesAsync(PredicateExpression filter, CancellationToken cancellationToken)
         {
-            using (var da = _dbContext.GetNewAdapter())
-            {
-                return (await da.FetchQueryAsync<TeamEntity>(
-                    new QueryFactory().Team.Where(filter), cancellationToken)).Cast<TeamEntity>().ToList();
-            }
+            using var da = _dbContext.GetNewAdapter();
+            return (await da.FetchQueryAsync<TeamEntity>(
+                new QueryFactory().Team.Where(filter), cancellationToken)).Cast<TeamEntity>().ToList();
         }
 
-        public virtual async Task<TeamEntity> GetTeamEntityAsync(PredicateExpression filter, CancellationToken cancellationToken)
+        public virtual async Task<TeamEntity?> GetTeamEntityAsync(PredicateExpression filter, CancellationToken cancellationToken)
         {
             return (await GetTeamEntitiesAsync(filter, cancellationToken)).FirstOrDefault();
         }
 
         public virtual IQueryable<TeamEntity> GetTeamAsQuery(TournamentEntity t)
-		{
-			using (var da = _dbContext.GetNewAdapter())
-			{
-				var metaData = new LinqMetaData(da);
+        {
+            using var da = _dbContext.GetNewAdapter();
+            var metaData = new LinqMetaData(da);
 
-                var result = (metaData.TeamInRound.Where(tir => tir.Round.TournamentId == t.Id)
-                    .Select(tir => tir.Team));
-				da.CloseConnection();
-				return result;
-			}
-		}
+            var result = (metaData.TeamInRound.Where(tir => tir.Round.TournamentId == t.Id)
+                .Select(tir => tir.Team));
+            da.CloseConnection();
+            return result;
+        }
 
 		/// <summary>
 		/// Gets all rounds and their teams for a tournament prefetched.
@@ -95,24 +85,26 @@ namespace TournamentManager.Data
 		/// <returns>Returns the TeamInRoundEntity for the tournament id.</returns>
 		public virtual EntityCollection<TeamInRoundEntity> GetTeamsAndRounds(TournamentEntity tournament)
 		{
-			IPrefetchPath2 prefetchPathTeamInRound = new PrefetchPath2(EntityType.TeamInRoundEntity);
-			prefetchPathTeamInRound.Add(TeamInRoundEntity.PrefetchPathRound);
-			prefetchPathTeamInRound.Add(TeamInRoundEntity.PrefetchPathTeam);
+            IPrefetchPath2 prefetchPathTeamInRound = new PrefetchPath2(EntityType.TeamInRoundEntity)
+            {
+                TeamInRoundEntity.PrefetchPathRound,
+                TeamInRoundEntity.PrefetchPathTeam
+            };
 
-			var filter = new RelationPredicateBucket();
+            var filter = new RelationPredicateBucket();
 			filter.Relations.Add(TeamInRoundEntity.Relations.RoundEntityUsingRoundId);
 			filter.PredicateExpression.Add(RoundFields.TournamentId == tournament.Id);
 
-			IPrefetchPath2 prefetchPathTeam = new PrefetchPath2(EntityType.TeamEntity);
-			prefetchPathTeam.Add(TeamEntity.PrefetchPathTeamInRounds);
+            IPrefetchPath2 prefetchPathTeam = new PrefetchPath2(EntityType.TeamEntity)
+            {
+                TeamEntity.PrefetchPathTeamInRounds
+            };
 
-			var tir = new EntityCollection<TeamInRoundEntity>();
-			using (var da = _dbContext.GetNewAdapter())
-			{
-				da.FetchEntityCollection(tir, filter, prefetchPathTeamInRound);
-				da.CloseConnection();
-			}
-			return tir;
+            var tir = new EntityCollection<TeamInRoundEntity>();
+            using var da = _dbContext.GetNewAdapter();
+            da.FetchEntityCollection(tir, filter, prefetchPathTeamInRound);
+            da.CloseConnection();
+            return tir;
 		}
 
         public virtual async Task<bool> TeamExistsAsync(long teamId, CancellationToken cancellationToken)
@@ -121,12 +113,10 @@ namespace TournamentManager.Data
         }
 
 		public virtual async Task<IList<string>> GetTeamNamesAsync(PredicateExpression filter, CancellationToken cancellationToken)
-		{
-            using (var da = _dbContext.GetNewAdapter())
-            {
-                return await da.FetchQueryAsync<string>(new QueryFactory().Create().Select(() => TeamFields.Name.ToValue<string>()).Where(filter), cancellationToken);
-            }
-		}
+        {
+            using var da = _dbContext.GetNewAdapter();
+            return await da.FetchQueryAsync<string>(new QueryFactory().Create().Select(() => TeamFields.Name.ToValue<string>()).Where(filter), cancellationToken);
+        }
 
 		/// <summary>
 		/// Gets the first <see cref="TeamEntity.Name"/> from the database, which equals the sanitized representation
@@ -136,9 +126,9 @@ namespace TournamentManager.Data
 		/// <param name="cancellationToken"></param>
 		/// <returns>Returns the first <see cref="TeamEntity.Name"/> from the database, which equals the sanitized representation
         /// of the team name and which does not have the same <see cref="TeamEntity.Id"/> </returns>
-		public virtual async Task<string> TeamNameExistsAsync(TeamEntity teamEntity, CancellationToken cancellationToken)
+		public virtual async Task<string?> TeamNameExistsAsync(TeamEntity teamEntity, CancellationToken cancellationToken)
         {
-            string Sanitize(string name)
+            static string Sanitize(string name)
             {
 				var result = new System.Text.StringBuilder();
                 foreach (var c in name)
@@ -148,11 +138,9 @@ namespace TournamentManager.Data
                 return result.ToString();
             }
 
-            using (var da = _dbContext.GetNewAdapter())
-            {
-                var teamNames = await da.FetchQueryAsync<string>(new QueryFactory().Create().Select(() => TeamFields.Name.ToValue<string>()).Where(TeamFields.Id != teamEntity.Id), cancellationToken);
-                return teamNames.FirstOrDefault(tn => Sanitize(tn).Equals(Sanitize(teamEntity.Name)));
-            }
-		}
+            using var da = _dbContext.GetNewAdapter();
+            var teamNames = await da.FetchQueryAsync<string>(new QueryFactory().Create().Select(() => TeamFields.Name.ToValue<string>()).Where(TeamFields.Id != teamEntity.Id), cancellationToken);
+            return teamNames.FirstOrDefault(tn => Sanitize(tn).Equals(Sanitize(teamEntity.Name)));
+        }
 	}
 }

@@ -127,6 +127,8 @@ namespace League.Controllers
 
             // No existing team can be selected, so prepare to enter a new one
             sessionModel.Team.IsNew = true;
+            SaveModelToSession(sessionModel);
+            
             return RedirectToAction(nameof(EditTeam), new { Organization = _tenantContext.SiteContext.UrlSegmentValue });
         }
 
@@ -174,13 +176,13 @@ namespace League.Controllers
         }
 
         [HttpGet("edit-team")]
-        public async Task<IActionResult> EditTeam(bool? isNew, CancellationToken cancellationToken)
+        public async Task<IActionResult> EditTeam(CancellationToken cancellationToken)
         {
             var sessionModel = await GetModelFromSession(cancellationToken);
             if (!sessionModel.IsFromSession) return RedirectToAction(nameof(SelectTeam), new { Organization = _tenantContext.SiteContext.UrlSegmentValue });
             ViewData["TournamentName"] = sessionModel.TournamentName;
 
-            if (!isNew.HasValue || isNew.Value)
+            if (sessionModel.Team.IsNew)
             {
                 sessionModel.Team = GetTeamEditorComponentModel(new TeamEntity());
                 sessionModel.TeamIsSet = false;
