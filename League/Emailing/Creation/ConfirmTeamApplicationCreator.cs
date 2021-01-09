@@ -48,21 +48,28 @@ namespace League.Emailing.Creation
                 new PredicateExpression(TeamUserRoundFields.TeamId == Parameters.TeamId &
                                         TeamUserRoundFields.TournamentId ==
                                         tenantContext.TournamentContext.ApplicationTournamentId), cancellationToken);
-
+            var tournament =
+                await tenantContext.DbContext.AppDb.TournamentRepository.GetTournamentAsync(new PredicateExpression(TournamentFields.Id ==
+                    tenantContext.TournamentContext.ApplicationTournamentId), cancellationToken);
+            
             var registeredBy = teamUserRoundInfos.First(tur => tur.UserId == Parameters.RegisteredByUserId);
 
-            var model = new ConfirmTeamApplicationModel();
+            var model = new ConfirmTeamApplicationModel
+            {
+                IsNewApplication = Parameters.IsNewApplication,
+                RegisteredByName = registeredBy.CompleteName,
+                RegisteredByEmail = registeredBy.Email,
+                TeamName = teamUserRoundInfos.First(tur => tur.TeamId == Parameters.TeamId).TeamNameForRound,
+                TournamentName = tournament!.Name,
+                RoundDescription = roundWithType.Description,
+                RoundTypeDescription = roundWithType.RoundType.Description,
+                UrlToEditApplication = Parameters.UrlToEditApplication
+            };
 
             foreach (var tur in teamUserRoundInfos)
             {
                 using var cs = new CultureSwitcher(Parameters.CultureInfo, Parameters.CultureInfo);
-                
-                model.IsNewApplication = Parameters.IsNewApplication;
-                model.RegisteredByName = registeredBy.CompleteName;
-                model.RegisteredByEmail = registeredBy.Email;
-                model.RoundDescription = roundWithType.Description;
-                model.RoundTypeDescription = roundWithType.RoundType.Description;
-                
+               
                 model.IsRegisteringUser = Parameters.RegisteredByUserId == tur.UserId;
 
                 var mailMergeMessage = mailMergeService.CreateStandardMessage();
@@ -88,7 +95,7 @@ namespace League.Emailing.Creation
                         tenantContext.SiteContext.Email.GeneralBcc.Address));
                 }
 
-                mailMergeMessage.PlainText = await renderer.RenderAsync(Templates.Email.TemplateName.ConfirmNewPrimaryEmailTxt, model,
+                mailMergeMessage.PlainText = await renderer.RenderAsync(Templates.Email.TemplateName.ConfirmTeamApplicationTxt, model,
                     Parameters.CultureInfo.TwoLetterISOLanguageName);
 
                 yield return mailMergeMessage;
