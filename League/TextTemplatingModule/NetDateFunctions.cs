@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using Scriban;
 using Scriban.Runtime;
 using Scriban.Syntax;
-
+#nullable enable
 namespace League.TextTemplatingModule
 {
     public class NetDateTimeFunctions : ScriptObject, IScriptCustomFunction
@@ -307,7 +307,7 @@ namespace League.TextTemplatingModule
         private string? GetTimeZoneAbbreviation(DateTime? date, string? culture = null)
         {
             // use a separate method to allow for optional arguments
-            return _timeZoneConverter?.ToZonedTime(date, string.IsNullOrWhiteSpace(culture) ? CultureInfo.CurrentUICulture : CultureInfo.GetCultureInfo(culture)).Abbreviation;
+            return _timeZoneConverter?.ToZonedTime(date, string.IsNullOrWhiteSpace(culture) ? CultureInfo.CurrentUICulture : CultureInfo.GetCultureInfo(culture))?.Abbreviation;
         }
     }
 }

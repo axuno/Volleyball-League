@@ -49,6 +49,7 @@ using Microsoft.AspNetCore.Rewrite;
 using TournamentManager.DI;
 using TournamentManager.MultiTenancy;
 using League.TextTemplatingModule;
+using NLog.Extensions.Logging;
 
 #endregion
 
@@ -65,6 +66,13 @@ namespace League
         {
             Configuration = configuration;
             WebHostEnvironment = webHostEnvironment;
+            
+            var loggerFactory = LoggerFactory.Create(builder =>
+            {
+                builder.AddNLog();                
+            });
+
+            Logger = loggerFactory.CreateLogger<Startup>();
         }
 
         private void ConfigureLlblgenPro(TenantStore tenantStore)
@@ -105,6 +113,11 @@ namespace League
         /// Gets the information about the web hosting environment of this application.
         /// </summary>
         public IWebHostEnvironment WebHostEnvironment { get; }
+        
+        /// <summary>
+        /// Gets the logger for class <see cref="Startup"/>.
+        /// </summary>
+        public ILogger<Startup> Logger { get; }
 
         /// <summary>
         /// This method gets called by the runtime. Use this method to add services to the container.
@@ -180,11 +193,21 @@ namespace League
                                 Path.Combine(Program.GetSecretsFolder()),
                                 $"Tenant.*.{WebHostEnvironment.EnvironmentName}.config", SearchOption.TopDirectoryOnly));
                         }
-
+                        Logger.LogInformation("{Tenant configurations}", configFolderFiles);
                         return configFolderFiles.ToArray();
                     }
                 }.LoadTenants();
+                
+                var tenants = store.GetTenants().Values.ToList();
+                if (!tenants.Any(t => t.IsDefault)) Logger.LogCritical("No default tenant configuration found.");
+                tenants.ForEach(t =>
+                {
+                    if (string.IsNullOrWhiteSpace(t.DbContext.ConnectionString))
+                        Logger.LogCritical("Tenant '{0}': Connection string for key '{0}' not found.", t.Identifier, t.DbContext.ConnectionKey);
+                });
+                
                 ConfigureLlblgenPro(store);
+                
                 return store;
             });
             
