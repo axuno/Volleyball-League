@@ -233,6 +233,10 @@
     <value>Bitte die neue E-Mail-Adresse durch Klicken auf folgenden Link bestätigen</value>
     <comment>ConfirmNewPrimaryEmail</comment>
   </data>
+  <data name="Please confirm your new primary email" xml:space="preserve">
+    <value>Bitte die neue primäre E-Mail-Adresse bestätigen</value>
+    <comment>ChangePrimaryUserEmailCreator</comment>
+  </data>
   <data name="Please continue with your registration by clicking this link" xml:space="preserve">
     <value>Bitte die Registrierung durch Klicken auf folgenden Link abschließen</value>
     <comment>PleaseConfirmEmail</comment>
@@ -352,6 +356,10 @@
   <data name="Your primary email" xml:space="preserve">
     <value>Primäre E-Mail-Adresse</value>
     <comment>NotifyCurrentPrimaryEmail</comment>
+  </data>
+  <data name="Your primary email is about to be changed" xml:space="preserve">
+    <value>Die primäre E-Mail soll geändert werden</value>
+    <comment>ChangePrimaryUserEmailCreator</comment>
   </data>
   <data name="Your primary email is about to be changed to" xml:space="preserve">
     <value>Die primäre E-Mail-Adresse soll geändert werden in</value>

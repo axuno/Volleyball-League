@@ -186,8 +186,7 @@ namespace League.Controllers
                 return PartialView(ViewNames.Manage._ChangeEmailModalPartial, model);
             }
 
-            await SendEmail(user, EmailPurpose.NotifyCurrentPrimaryEmail, model.Email);
-            await SendEmail(user, EmailPurpose.ConfirmNewPrimaryEmail, model.Email);
+            await SendEmail(user, model.Email);
 
             TempData.Put<ManageMessage>(nameof(ManageMessage), new ManageMessage { AlertType = SiteAlertTagHelper.AlertType.Success, MessageId = MessageId.ChangeEmailConfirmationSent });
             return JsonAjaxRedirectForModal(Url.Action(nameof(Index), nameof(Manage), new { Organization = _tenantContext.SiteContext.UrlSegmentValue }));
@@ -693,76 +692,37 @@ namespace League.Controllers
                 ModelState.AddModelError(string.Empty, error.Description);
             }
         }
-
-        private enum EmailPurpose
-        {
-            /// <summary>
-            /// Send a notification to the current primary email, that a request to change is pending
-            /// </summary>
-            NotifyCurrentPrimaryEmail,
-            /// <summary>
-            /// Email with a code to change the primary email
-            /// </summary>
-            ConfirmNewPrimaryEmail
-        }
-
+ 
         private async Task<ApplicationUser> GetCurrentUserAsync()
         {
             return await _userManager.GetUserAsync(HttpContext.User);
         }
 
         /// <summary>
-        /// Sends an email for the given <see cref="Account.EmailPurpose"/> to the <see cref="ApplicationUser"/>
+        /// Sends mail messages to current and new email address
         /// </summary>
-        /// <param name="user">The <see cref="ApplicationUser"/> as the recipient of the email.</param>
-        /// <param name="purpose">The <see cref="Account.EmailPurpose"/> of the email.</param>
-        /// <param name="newEmail">The model parameter for the view.</param>
-        private async Task SendEmail(ApplicationUser user, EmailPurpose purpose, string newEmail)
+        /// <param name="user">The <see cref="ApplicationUser"/> as the recipient of the notification email.</param>
+        /// <param name="newEmail">The new email address for the user that must be confirmed.</param>
+        private async Task SendEmail(ApplicationUser user, string newEmail)
         {
             var deadline = DateTime.UtcNow.Add(_dataProtectionTokenProviderOptions.Value.TokenLifespan);
             // round down to full hours
             deadline = new DateTime(deadline.Year, deadline.Month, deadline.Day, deadline.Hour, 0, 0);
-            
-            switch (purpose)
-            {
-                case EmailPurpose.NotifyCurrentPrimaryEmail:
-                    _sendEmailTask.SetMessageCreator(new ChangeUserAccountCreator
-                    {
-                        Parameters =
-                        {
-                            Email = user.Email,
-                            Subject = _localizer["Your primary email is about to be changed"].Value,
-                            CallbackUrl = string.Empty, // not used
-                            DeadlineUtc = DateTime.UtcNow, // not used
-                            CultureInfo = CultureInfo.CurrentUICulture,
-                            TemplateNameTxt = TemplateName.NotifyCurrentPrimaryEmailTxt,
-                            TemplateNameHtml = TemplateName.NotifyCurrentPrimaryEmailHtml
-                        }
-                    });
-                    break;
-                case EmailPurpose.ConfirmNewPrimaryEmail:
-                    var code = (await _userManager.GenerateChangeEmailTokenAsync(user, newEmail)).Base64UrlEncode();
-                    _sendEmailTask.SetMessageCreator(new ChangeUserAccountCreator
-                    {
-                        Parameters =
-                        {
-                            Email = newEmail,
-                            Subject = _localizer["Please confirm your new primary email"].Value,
-                            CallbackUrl = Url.Action(nameof(ConfirmNewPrimaryEmail), nameof(Manage), new { Organization = _tenantContext.SiteContext.UrlSegmentValue, id = user.Id, code, e = newEmail.Base64UrlEncode()}, protocol: HttpContext.Request.Scheme),
-                            DeadlineUtc = deadline,
-                            CultureInfo = CultureInfo.CurrentUICulture,
-                            TemplateNameTxt = TemplateName.ConfirmNewPrimaryEmailTxt,
-                            TemplateNameHtml = TemplateName.ConfirmNewPrimaryEmailHtml
-                        }
-                    });
-                    break;
-                default:
-                    _logger.LogError($"Illegal enum type for {nameof(Manage.EmailPurpose)}");
-                    break;
-            }
+            var code = (await _userManager.GenerateChangeEmailTokenAsync(user, newEmail)).Base64UrlEncode();
 
+            _sendEmailTask.SetMessageCreator(new ChangePrimaryUserEmailCreator
+            {
+                Parameters =
+                {
+                    Email = user.Email,
+                    NewEmail = newEmail,
+                    CallbackUrl = Url.Action(nameof(ConfirmNewPrimaryEmail), nameof(Manage), new { Organization = _tenantContext.SiteContext.UrlSegmentValue, id = user.Id, code, e = newEmail.Base64UrlEncode()}, protocol: HttpContext.Request.Scheme),
+                    DeadlineUtc = deadline,
+                    CultureInfo = CultureInfo.CurrentUICulture,
+                }
+            });
+ 
             _queue.QueueTask(_sendEmailTask);
-            _sendEmailTask = _sendEmailTask.CreateNewInstance();
         }
         #endregion
     }
