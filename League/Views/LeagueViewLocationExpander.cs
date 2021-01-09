@@ -32,14 +32,12 @@ namespace League.Views
                     _tenantSearchPaths.AddRange(new[]
                     {
                         $"/Views/{{1}}/{tenantContext.SiteContext.FolderName}/{{0}}.cshtml",
-                        $"/Views/Emails/{tenantContext.SiteContext.FolderName}/{{0}}.cshtml",
-                        $"/Views/shared/{tenantContext.SiteContext.FolderName}/{{0}}.cshtml"
                     });
                 }
             }
             catch
             {
-                // DI.siteContext cannot be resolved
+                // SiteContext cannot be resolved
             }
         }
 

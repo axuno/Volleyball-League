@@ -498,7 +498,7 @@ namespace League
             services.Configure<RazorViewEngineOptions>(options =>
                 {
                     options.ViewLocationExpanders.Add(new Views.LeagueViewLocationExpander()); // R# will not resolve
-                    options.ViewLocationFormats.Add("/Views/Emails/{0}.cshtml"); // R# will resolve
+                    // R# will resolve: options.ViewLocationFormats.Add("/Views/Path/{0}.cshtml"); 
                 });
 
             #region *** Request Localization ***
@@ -624,7 +624,7 @@ namespace League
             #region *** HostedServices related ***
             
             // RazorViewToStringRenderer must be used with the current HttpContext
-            // Todo: RazorViewToStringRenderer is currently only used for MatchReport
+            // Note: RazorViewToStringRenderer is currently only used for MatchReport
             services.AddTransient<RazorViewToStringRenderer>();
             services.Configure<BackgroundQueueConfig>(config => config.OnException = null);
             services.AddSingleton<IBackgroundQueue, BackgroundQueue>();
