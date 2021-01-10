@@ -193,7 +193,7 @@ namespace League
                                 Path.Combine(Program.GetSecretsFolder()),
                                 $"Tenant.*.{WebHostEnvironment.EnvironmentName}.config", SearchOption.TopDirectoryOnly));
                         }
-                        Logger.LogInformation("{Tenant configurations}", configFolderFiles);
+                        Logger.LogInformation("Tenant config files: {Config}", configFolderFiles);
                         return configFolderFiles.ToArray();
                     }
                 }.LoadTenants();

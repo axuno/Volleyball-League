@@ -69,7 +69,7 @@ namespace League.Test
             RuntimeConfiguration.Tracing.SetTraceLevel("ORMPlainSQLQueryExecution", System.Diagnostics.TraceLevel.Verbose);
 
             LogManager.Configuration = new NLog.Config.XmlLoggingConfiguration(Path.Combine(DirectoryLocator.GetTargetConfigurationPath(), "NLog.Internal.config"));
-            TournamentManager.AppLogging.LoggerFactory = ServiceProvider.GetRequiredService<ILoggerFactory>();
+            TournamentManager.AppLogging.LoggerFactory = GetStandardServiceProvider().GetRequiredService<ILoggerFactory>();
         }
 
         public ITenantContext GetTenantContext()
@@ -87,24 +87,20 @@ namespace League.Test
             return new RoleStore(_tenantContext, new NullLogger<UserStore>(), new UpperInvariantLookupNormalizer(), new Mock<MultiLanguageIdentityErrorDescriber>(null).Object);
         }
 
-        public ServiceProvider ServiceProvider
+        public ServiceProvider GetStandardServiceProvider()
         {
-            get
-            {
-                return _serviceProvider ??= new ServiceCollection()
-                    .AddLogging(builder =>
+            return _serviceProvider ??= new ServiceCollection()
+                .AddLogging(builder =>
+                {
+                    builder.SetMinimumLevel(Microsoft.Extensions.Logging.LogLevel.Trace);
+                    builder.AddNLog(new NLogProviderOptions
                     {
-                        builder.SetMinimumLevel(Microsoft.Extensions.Logging.LogLevel.Trace);
-                        builder.AddNLog(new NLogProviderOptions
-                        {
-                            CaptureMessageTemplates = true,
-                            CaptureMessageProperties = true
-                        });
-                    })
-                    .AddLocalization()
-                    .AddTextTemplatingModule()
-                    .BuildServiceProvider();
-            }
+                        CaptureMessageTemplates = true,
+                        CaptureMessageProperties = true
+                    });
+                })
+                .AddLocalization()
+                .BuildServiceProvider();
         }
 
         public static ServiceProvider GetTextTemplatingServiceProvider(ITenantContext tenantContext)
@@ -153,12 +149,12 @@ namespace League.Test
         
         private void HowToUseServices()
         {
-            var logger = (ILogger) ServiceProvider.GetRequiredService(typeof(ILogger<UnitTestHelpers>));
+            var logger = (ILogger) GetStandardServiceProvider().GetRequiredService(typeof(ILogger<UnitTestHelpers>));
             logger.LogError("error");
-            var localizer = (IStringLocalizer)ServiceProvider.GetRequiredService(typeof(IStringLocalizer<League.Controllers.Account>));
+            var localizer = (IStringLocalizer)GetStandardServiceProvider().GetRequiredService(typeof(IStringLocalizer<League.Controllers.Account>));
             var translated = localizer["This is your password recovery key"].Value;
 
-            var mlLoc = new MultiLanguageIdentityErrorDescriber((IStringLocalizer<MultiLanguageIdentityErrorDescriberResource>)ServiceProvider.GetRequiredService(typeof(IStringLocalizer<MultiLanguageIdentityErrorDescriberResource>)));
+            var mlLoc = new MultiLanguageIdentityErrorDescriber((IStringLocalizer<MultiLanguageIdentityErrorDescriberResource>)GetStandardServiceProvider().GetRequiredService(typeof(IStringLocalizer<MultiLanguageIdentityErrorDescriberResource>)));
             translated = mlLoc.ConcurrencyFailure().Description;
         }
     }
