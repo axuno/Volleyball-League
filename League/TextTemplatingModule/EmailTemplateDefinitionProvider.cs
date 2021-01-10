@@ -17,7 +17,7 @@ namespace League.TextTemplatingModule
                     TemplateName.ConfirmNewPrimaryEmailHtml, 
                         localizationResource: typeof(EmailResource),
                         defaultCultureName: CultureInfo.DefaultThreadCurrentCulture?.Name ?? fallbackCultureName,
-                        layout: "HtmlLayout")
+                        layout: TemplateName.HtmlLayout)
                     .WithVirtualFilePath(
                         "/Email/ConfirmNewPrimaryEmailHtml.tpl", //template content path
                         isInlineLocalized: true
@@ -62,7 +62,7 @@ namespace League.TextTemplatingModule
                     TemplateName.PasswordResetHtml, 
                         localizationResource: typeof(EmailResource),
                         defaultCultureName: CultureInfo.DefaultThreadCurrentCulture?.Name ?? fallbackCultureName,
-                        layout: "HtmlLayout")
+                        layout: TemplateName.HtmlLayout)
                     .WithVirtualFilePath(
                         "/Email/PasswordResetHtml.tpl", //template content path
                         isInlineLocalized: true
@@ -85,7 +85,7 @@ namespace League.TextTemplatingModule
                     TemplateName.PleaseConfirmEmailHtml, 
                         localizationResource: typeof(EmailResource),
                         defaultCultureName: CultureInfo.DefaultThreadCurrentCulture?.Name ?? fallbackCultureName,
-                        layout: "HtmlLayout")
+                        layout: TemplateName.HtmlLayout)
                     .WithVirtualFilePath(
                         "/Email/PleaseConfirmEmailHtml.tpl", //template content path
                         isInlineLocalized: true
@@ -119,7 +119,7 @@ namespace League.TextTemplatingModule
                     TemplateName.NotifyCurrentPrimaryEmailHtml, 
                         localizationResource: typeof(EmailResource),
                         defaultCultureName: CultureInfo.DefaultThreadCurrentCulture?.Name ?? fallbackCultureName,
-                        layout: "HtmlLayout")
+                        layout: TemplateName.HtmlLayout)
                     .WithVirtualFilePath(
                         "/Email/NotifyCurrentPrimaryEmailHtml.tpl", //template content path
                         isInlineLocalized: true
