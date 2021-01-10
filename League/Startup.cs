@@ -199,11 +199,11 @@ namespace League
                 }.LoadTenants();
                 
                 var tenants = store.GetTenants().Values.ToList();
-                if (!tenants.Any(t => t.IsDefault)) Logger.LogCritical("No default tenant configuration found.");
+                if (!tenants.Any(t => t.IsDefault)) throw new Exception("No default tenant configuration found.");
                 tenants.ForEach(t =>
                 {
                     if (string.IsNullOrWhiteSpace(t.DbContext.ConnectionString))
-                        Logger.LogCritical("Tenant '{0}': Connection string for key '{0}' not found.", t.Identifier, t.DbContext.ConnectionKey);
+                        throw new Exception($"Tenant '{t.Identifier}': Connection string for key '{t.DbContext.ConnectionKey}' not found.");
                 });
                 
                 ConfigureLlblgenPro(store);
