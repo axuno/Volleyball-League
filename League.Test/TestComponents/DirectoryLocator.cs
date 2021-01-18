@@ -11,13 +11,12 @@ namespace League.Test.TestComponents
         /// Assumes that the test project is on the same directory level as the target project
         /// </summary>
         /// <returns>The full path to the target project.</returns>
-        public static string GetTargetProjectPath()
+        public static string GetTargetProjectPath(Type classFromTargetAssembly)
         {
-            var startupType = typeof(Startup);
-            var startupAssembly = startupType.GetTypeInfo().Assembly;
+            var targetAssembly = classFromTargetAssembly.GetTypeInfo().Assembly;
 
             // Get name of the target project which we want to test
-            var projectName = startupAssembly.GetName().Name;
+            var projectName = targetAssembly.GetName().Name;
 
             // Get currently executing test project path
             var applicationBasePath = System.AppContext.BaseDirectory;
@@ -49,7 +48,7 @@ namespace League.Test.TestComponents
         /// <returns>Returns the full path to the folder that contains configuration files.</returns>
         public static string GetTargetConfigurationPath()
         {
-            return new DirectoryInfo(Path.Combine(GetTargetProjectPath(), Program.ConfigurationFolder)).FullName;
+            return new DirectoryInfo(Path.Combine(GetTargetProjectPath(typeof(Program)), Program.ConfigurationFolder)).FullName;
         }
     }
 }

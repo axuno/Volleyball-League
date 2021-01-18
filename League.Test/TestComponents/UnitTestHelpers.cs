@@ -29,7 +29,7 @@ namespace League.Test
         public UnitTestHelpers()
         {
             _configPath = DirectoryLocator.GetTargetConfigurationPath();
-            var msSqlPath = Path.Combine(DirectoryLocator.GetTargetProjectPath(), @"..\..\MsSqlDb");
+            var msSqlPath = Path.Combine(DirectoryLocator.GetTargetProjectPath(typeof(Program)), @"..\..\MsSqlDb");
             
             // For the unit tests we
             _tenantContext = new TenantContext
