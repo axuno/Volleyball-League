@@ -21,7 +21,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Axuno.TextTemplating" Version="1.0.0" />
+		<PackageReference Include="Axuno.TextTemplating" Version="1.1.0" />
 		<PackageReference Include="cloudscribe.Web.Navigation" Version="4.1.4" />
 		<PackageReference Include="JSNLog" Version="2.30.0" />
 		<PackageReference Include="MailMergeLib" Version="5.7.1" />
