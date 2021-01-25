@@ -12,6 +12,7 @@ using MailMergeLib;
 using MailMergeLib.AspNet;
 using Microsoft.Extensions.Localization;
 using SD.LLBLGen.Pro.ORMSupportClasses;
+using SD.LLBLGen.Pro.QuerySpec;
 using TournamentManager.DAL.EntityClasses;
 using TournamentManager.DAL.HelperClasses;
 using TournamentManager.DAL.TypedViewClasses;
@@ -42,10 +43,12 @@ namespace League.Emailing.Creators
         public async IAsyncEnumerable<MailMergeMessage> GetMailMergeMessages(ITenantContext tenantContext, ITemplateRenderer renderer, IMailMergeService mailMergeService, IStringLocalizer<EmailResource> localizer, [EnumeratorCancellation] CancellationToken cancellationToken)
         {
             if (Parameters.Match is null) throw new Exception($"Input parameter {nameof(ResultEnteredModel.Match)} must not be null");;
-            
+
             var teamUserRoundInfos = await tenantContext.DbContext.AppDb.TeamRepository.GetTeamUserRoundInfosAsync(
-                new PredicateExpression(TeamUserRoundFields.TeamId == Parameters.Match.HomeTeamId |
-                                        TeamUserRoundFields.TeamId == Parameters.Match.GuestTeamId), cancellationToken);
+                new PredicateExpression((TeamUserRoundFields.TeamId == Parameters.Match.HomeTeamId |
+                                         TeamUserRoundFields.TeamId == Parameters.Match.GuestTeamId)
+                    .And(TeamUserRoundFields.TournamentId == tenantContext.TournamentContext.MatchResultTournamentId)),
+                cancellationToken);
 
             var model = new ResultEnteredModel
             {

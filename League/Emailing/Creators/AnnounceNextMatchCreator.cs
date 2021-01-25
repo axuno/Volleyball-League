@@ -36,7 +36,9 @@ namespace League.Emailing.Creators
                 new PredicateExpression(PlannedMatchFields.PlannedStart
                     .Between(Parameters.ReferenceDateUtc, Parameters.ReferenceDateUtc.AddDays(1).AddSeconds(-1))
                     .And(PlannedMatchFields.PlannedStart.IsNotNull()
-                        .And(PlannedMatchFields.PlannedEnd.IsNotNull()))),
+                        .And(PlannedMatchFields.PlannedEnd.IsNotNull().And(PlannedMatchFields.TournamentId ==
+                                                                           tenantContext.TournamentContext
+                                                                               .MatchPlanTournamentId)))),
                 cancellationToken);
 
             if(!fixtures.Any()) yield break;
@@ -49,13 +51,13 @@ namespace League.Emailing.Creators
             });
             
             var teamUserRoundInfos = await tenantContext.DbContext.AppDb.TeamRepository.GetTeamUserRoundInfosAsync(
-                new PredicateExpression(TeamUserRoundFields.TeamId.In(teamIds)), cancellationToken);
+                new PredicateExpression(TeamUserRoundFields.TeamId.In(teamIds).And(TeamUserRoundFields.TournamentId == tenantContext.TournamentContext.MatchPlanTournamentId)), cancellationToken);
             
             foreach (var fixture in fixtures)
             {
                 var model = new AnnounceNextMatchModel
                 {
-                    IcsCalendarUrl = Parameters.IcsCalendarUrl.Replace("{0}", fixture.Id.ToString()),
+                    IcsCalendarUrl = Parameters.IcsCalendarBaseUrl + "?id=" + fixture.Id,
                     Fixture = fixture,
                     Venue = (await tenantContext.DbContext.AppDb.VenueRepository.GetVenuesAsync(new PredicateExpression(VenueFields.Id == fixture.VenueId), cancellationToken)).FirstOrDefault()
                 };
@@ -114,7 +116,10 @@ namespace League.Emailing.Creators
         /// </summary>
         public class AnnounceNextMatchParameters
         {
-            public string IcsCalendarUrl { get; set; } = string.Empty;
+            /// <summary>
+            /// The Url to the Ics Calendar, without the &quot;id&quot;" querystring
+            /// </summary>
+            public string IcsCalendarBaseUrl { get; set; } = string.Empty;
             
             /// <summary>
             /// <see cref="PlannedMatchRow"/>s will be selected,

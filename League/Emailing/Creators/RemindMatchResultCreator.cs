@@ -36,7 +36,9 @@ namespace League.Emailing.Creators
                 new PredicateExpression(PlannedMatchFields.PlannedStart
                     .Between(Parameters.ReferenceDateUtc, Parameters.ReferenceDateUtc.AddDays(1).AddSeconds(-1))
                     .And(PlannedMatchFields.PlannedStart.IsNotNull()
-                        .And(PlannedMatchFields.PlannedEnd.IsNotNull()))),
+                        .And(PlannedMatchFields.PlannedEnd.IsNotNull().And(PlannedMatchFields.TournamentId ==
+                                                                           tenantContext.TournamentContext
+                                                                               .MatchPlanTournamentId)))),
                 cancellationToken);
 
             if(!fixtures.Any()) yield break;
@@ -49,7 +51,7 @@ namespace League.Emailing.Creators
             });
             
             var teamUserRoundInfos = await tenantContext.DbContext.AppDb.TeamRepository.GetTeamUserRoundInfosAsync(
-                new PredicateExpression(TeamUserRoundFields.TeamId.In(teamIds)), cancellationToken);
+                new PredicateExpression(TeamUserRoundFields.TeamId.In(teamIds).And(TeamUserRoundFields.TournamentId == tenantContext.TournamentContext.MatchPlanTournamentId)), cancellationToken);
             
             foreach (var fixture in fixtures)
             {
@@ -60,8 +62,7 @@ namespace League.Emailing.Creators
 
                 var recipientGroups = new[]
                 {
-                    teamUserRoundInfos.Where(tur => tur.TeamId == fixture.HomeTeamId && tur.IsManager), // home team managers
-                    teamUserRoundInfos.Where(tur => tur.TeamId == fixture.GuestTeamId && tur.IsManager) // guest team managers
+                    teamUserRoundInfos.Where(tur => tur.TeamId == fixture.HomeTeamId || tur.TeamId == fixture.GuestTeamId && tur.IsManager), // all team managers
                 };
                 
                 var plainTextContent = await renderer.RenderAsync(

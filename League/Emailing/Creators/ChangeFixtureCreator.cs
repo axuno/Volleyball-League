@@ -13,6 +13,7 @@ using MailMergeLib;
 using MailMergeLib.AspNet;
 using Microsoft.Extensions.Localization;
 using SD.LLBLGen.Pro.ORMSupportClasses;
+using SD.LLBLGen.Pro.QuerySpec;
 using TournamentManager.DAL.HelperClasses;
 using TournamentManager.DAL.TypedViewClasses;
 using TournamentManager.MultiTenancy;
@@ -49,10 +50,12 @@ namespace League.Emailing.Creators
             };
             
             if (model.Fixture is null) throw new Exception($"No fixture found for match id '{Parameters.MatchId}'");;
-            
+
             var teamUserRoundInfos = await tenantContext.DbContext.AppDb.TeamRepository.GetTeamUserRoundInfosAsync(
-                new PredicateExpression(TeamUserRoundFields.TeamId == model.Fixture.HomeTeamId |
-                                        TeamUserRoundFields.TeamId == model.Fixture.GuestTeamId), cancellationToken);
+                new PredicateExpression((TeamUserRoundFields.TeamId == model.Fixture.HomeTeamId |
+                                         TeamUserRoundFields.TeamId == model.Fixture.GuestTeamId)
+                    .And(TeamUserRoundFields.TournamentId == tenantContext.TournamentContext.MatchPlanTournamentId)),
+                cancellationToken);
 
             model.Username = teamUserRoundInfos.First(tur => tur.UserId == Parameters.ChangedByUserId).CompleteName;
             
