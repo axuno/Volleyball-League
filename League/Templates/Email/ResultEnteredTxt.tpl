@@ -38,7 +38,7 @@
 
 {{ end ~}}
 {{ L "Changes were submitted by" }} {{ model.Username ? model.Username : "?" }}.
-{{ L "This notification has been sent to the contact persons of the teams" }}.
+{{ L "This notification has been sent to the contact persons and players of the teams" }}.
 
 {{ org_ctx.Name }}
 

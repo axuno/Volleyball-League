@@ -9,7 +9,7 @@ using Axuno.Tools.GeoSpatial;
 using League.BackgroundTasks;
 using League.Components;
 using League.ConfigurationPoco;
-using League.Emailing.Creation;
+using League.Emailing.Creators;
 using League.Helpers;
 using League.Models.TeamApplicationViewModels;
 using League.Models.TeamViewModels;

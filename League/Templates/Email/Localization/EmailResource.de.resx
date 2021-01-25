@@ -133,6 +133,10 @@
     <value>BIC</value>
     <comment>ConfirmTeamApplication</comment>
   </data>
+  <data name="Canceled match day '{0}' vs. '{1}" xml:space="preserve">
+    <value>Ausgefallener Spieltag '{0}' vs. '{1}</value>
+    <comment>UrgeMatchResultCreator</comment>
+  </data>
   <data name="Change Password" xml:space="preserve">
     <value>Passwort ändern</value>
     <comment>PasswordReset</comment>
@@ -169,8 +173,8 @@
     <value>Spielende</value>
     <comment>ResultEntered</comment>
   </data>
-  <data name="Fixture Change" xml:space="preserve">
-    <value>Spielplanänderung</value>
+  <data name="Fixture change for team '{0}'" xml:space="preserve">
+    <value>Spielplanänderung für Team '{0}'</value>
     <comment>ChangeFixtureCreator</comment>
   </data>
   <data name="Here is your password recovery code" xml:space="preserve">
@@ -201,13 +205,17 @@
     <value>Spielpunkte</value>
     <comment>ResultEntered</comment>
   </data>
-  <data name="Match Result" xml:space="preserve">
-    <value>Spielergebnis</value>
+  <data name="Match result '{0}' vs. '{1}'" xml:space="preserve">
+    <value>Spielergebnis '{0}' gg. '{1}'</value>
     <comment>ResultEnterdCreator</comment>
   </data>
   <data name="Message" xml:space="preserve">
     <value>Nachricht</value>
     <comment>ContactForm</comment>
+  </data>
+  <data name="Missing result for match '{0}' vs. '{1}'" xml:space="preserve">
+    <value>Fehlendes Ergebnis für Spiel '{0}' gg. '{1}'</value>
+    <comment>RemindMatchResultCreator</comment>
   </data>
   <data name="Mr." xml:space="preserve">
     <value>Herr</value>
@@ -216,6 +224,10 @@
   <data name="Mrs." xml:space="preserve">
     <value>Frau</value>
     <comment>ContactForm</comment>
+  </data>
+  <data name="Next match day for team '{0}'" xml:space="preserve">
+    <value>Nächster Spieltag für Team '{0}'</value>
+    <comment>AnnounceNextMatchCreator</comment>
   </data>
   <data name="No message included" xml:space="preserve">
     <value>Keine Nachricht enthalten</value>
@@ -333,8 +345,8 @@
     <value>Die Anmeldung kann über folgenden Link bearbeitet werden:</value>
     <comment>ConfirmTeamApplication</comment>
   </data>
-  <data name="This notification has been sent to the contact persons of the teams" xml:space="preserve">
-    <value>Diese Nachricht wurde an die Ansprechpartner der Teams geschickt</value>
+  <data name="This notification has been sent to the contact persons and players of the teams" xml:space="preserve">
+    <value>Diese Nachricht wurde an die Ansprechpartner und Spieler der Teams geschickt</value>
     <comment>ChangeFixture, ResultEntered</comment>
   </data>
   <data name="unknown" xml:space="preserve">

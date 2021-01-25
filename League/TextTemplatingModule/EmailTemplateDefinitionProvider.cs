@@ -147,6 +147,39 @@ namespace League.TextTemplatingModule
                     isInlineLocalized: true
                 )
             );
+            
+            context.Add(
+                new TemplateDefinition(
+                    name: TemplateName.AnnounceNextMatchTxt,
+                    localizationResource: null,
+                    defaultCultureName: CultureInfo.DefaultThreadCurrentCulture?.Name ?? fallbackCultureName
+                ).WithVirtualFilePath(
+                    "/Email/AnnounceNextMatchTxt", //template content folder
+                    isInlineLocalized: false
+                )
+            );
+            
+            context.Add(
+                new TemplateDefinition(
+                    name: TemplateName.RemindMatchResultTxt,
+                    localizationResource: null,
+                    defaultCultureName: CultureInfo.DefaultThreadCurrentCulture?.Name ?? fallbackCultureName
+                ).WithVirtualFilePath(
+                    "/Email/RemindMatchResultTxt", //template content folder
+                    isInlineLocalized: false
+                )
+            );
+            
+            context.Add(
+                new TemplateDefinition(
+                    name: TemplateName.UrgeMatchResultTxt,
+                    localizationResource: null,
+                    defaultCultureName: CultureInfo.DefaultThreadCurrentCulture?.Name ?? fallbackCultureName
+                ).WithVirtualFilePath(
+                    "/Email/UrgeMatchResultTxt", //template content folder
+                    isInlineLocalized: false
+                )
+            );
 
             context.Add(
                 new TemplateDefinition(

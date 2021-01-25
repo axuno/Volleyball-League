@@ -44,5 +44,10 @@ namespace TournamentManager.MultiTenancy
         /// Email contact details for an organization.
         /// </summary>
         Email Email { get; set; }
+        
+        /// <summary>
+        /// Notifications sent before and after matches.
+        /// </summary>
+        MatchNotifications MatchNotifications { get; set; }
     }
 }

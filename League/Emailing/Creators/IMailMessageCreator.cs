@@ -10,7 +10,7 @@ using MailMergeLib.AspNet;
 using Microsoft.Extensions.Localization;
 using TournamentManager.MultiTenancy;
 
-namespace League.Emailing.Creation
+namespace League.Emailing.Creators
 {
     public interface IMailMessageCreator
     {

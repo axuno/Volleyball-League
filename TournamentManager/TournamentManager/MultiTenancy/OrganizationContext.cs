@@ -32,9 +32,9 @@ namespace TournamentManager.MultiTenancy
         public virtual string Description { get; set; } = string.Empty;
         
         /// <summary>
-        /// The homepage for the organization. E.g. used in emails, ics-calendars
+        /// The homepage for the organization (NOT the league website).
         /// </summary>
-        [YAXLib.YAXComment("The homepage for the organization. E.g. used in emails, ics-calendars")]
+        [YAXLib.YAXComment("The homepage for the organization (NOT the league website).")]
         public string HomepageUrl { get; set; } = string.Empty;
         
         /// <summary>
