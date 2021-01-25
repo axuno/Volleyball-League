@@ -16,7 +16,7 @@ using TournamentManager.DAL.HelperClasses;
 using TournamentManager.MultiTenancy;
 #nullable enable
 
-namespace League.Emailing.Creation
+namespace League.Emailing.Creators
 {
     /// <summary>
     /// Creates <see cref="MailMergeMessage"/>s for the given input <see cref="Parameters"/>.

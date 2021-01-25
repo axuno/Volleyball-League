@@ -135,7 +135,7 @@ namespace League.Controllers
 
         private void SendEmail(ContactViewModel model)
         {
-            _sendEmailTask.SetMessageCreator(new Emailing.Creation.ContactFormCreator
+            _sendEmailTask.SetMessageCreator(new Emailing.Creators.ContactFormCreator
             {
                 Parameters =
                 {

@@ -5,7 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Axuno.Web;
 using League.BackgroundTasks;
-using League.Emailing.Creation;
+using League.Emailing.Creators;
 using League.Identity;
 using League.Helpers;
 using League.Models.ManageViewModels;

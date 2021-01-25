@@ -6,7 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Axuno.BackgroundTask;
 using Axuno.TextTemplating;
-using League.Emailing.Creation;
+using League.Emailing.Creators;
 using League.Templates.Email.Localization;
 using MailMergeLib.AspNet;
 using Microsoft.Extensions.Localization;
@@ -46,12 +46,12 @@ namespace League.BackgroundTasks
         }
 
         /// <summary>
-        /// Creates a new <see cref="SendEmailTask"/> instance initialized like after dependency injection
+        /// Creates a new <see cref="SendEmailTask"/> instance (shallow-copy) initialized like after dependency injection
         /// </summary>
         /// <returns>Return new <see cref="SendEmailTask"/> instance initialized like after dependency injection</returns>
         public SendEmailTask CreateNewInstance()
         {
-            return new SendEmailTask(_mailMergeService, _renderer, _tenantContext, _localizer, _logger);
+            return new SendEmailTask(_mailMergeService, _renderer, _tenantContext, _localizer, _logger) {Timeout = Timeout};
         }
         
         /// <summary>
@@ -87,7 +87,7 @@ namespace League.BackgroundTasks
                 }
                 catch (Exception e)
                 {
-                    _logger.LogError(e, "Mail failure. {recipients}\nSubject: {subject}\nMessage: {message}",
+                    _logger.LogError(e, "Mail sender failure. {recipients}\nSubject: {subject}\nMessage: {message}",
                         mmm.MailMergeAddresses, mmm.Subject, mmm.PlainText);
                     throw;
                 }

@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using League.BackgroundTasks;
-using League.Emailing.Creation;
+using League.Emailing.Creators;
 using League.Helpers;
 using League.Models.MatchViewModels;
 using MailMergeLib.AspNet;

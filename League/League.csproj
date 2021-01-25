@@ -182,6 +182,21 @@
     </ItemGroup>
 
 	<ItemGroup>
+	  <None Remove="Templates\Email\AnnounceNextMatchTxt\en.tpl" />
+	  <None Remove="Templates\Email\RemindMatchResultTxt\en.tpl" />
+	  <None Remove="Templates\Email\UrgeMatchResultTxt\en.tpl" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <EmbeddedResource Include="Templates\Email\AnnounceNextMatchTxt\en.tpl" />
+	  <EmbeddedResource Include="Templates\Email\AnnounceNextMatchTxt\de.tpl" />
+	  <EmbeddedResource Include="Templates\Email\RemindMatchResultTxt\en.tpl" />
+	  <EmbeddedResource Include="Templates\Email\RemindMatchResultTxt\de.tpl" />
+	  <EmbeddedResource Include="Templates\Email\UrgeMatchResultTxt\en.tpl" />
+	  <EmbeddedResource Include="Templates\Email\UrgeMatchResultTxt\de.tpl" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<None Update="app_offline_.htm">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</None>

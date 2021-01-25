@@ -6,6 +6,7 @@ using System.Runtime.CompilerServices;
 using System.Threading;
 using Axuno.TextTemplating;
 using Axuno.TextTemplating.Localization;
+using League.Emailing.Creators;
 using League.Emailing.TemplateModels;
 using League.Templates.Email.Localization;
 using MailMergeLib;
@@ -13,10 +14,11 @@ using MailMergeLib.AspNet;
 using Microsoft.Extensions.Localization;
 using SD.LLBLGen.Pro.ORMSupportClasses;
 using TournamentManager.DAL.HelperClasses;
+using TournamentManager.DAL.TypedViewClasses;
 using TournamentManager.MultiTenancy;
 #nullable enable
 
-namespace League.Emailing.Creation
+namespace League.Emailing.Creators
 {
     /// <summary>
     /// Creates <see cref="MailMergeMessage"/>s for the given input <see cref="Parameters"/>.
@@ -54,30 +56,48 @@ namespace League.Emailing.Creation
 
             model.Username = teamUserRoundInfos.First(tur => tur.UserId == Parameters.ChangedByUserId).CompleteName;
             
-            foreach (var tur in teamUserRoundInfos)
-            {
-                using var cs = new CultureSwitcher(Parameters.CultureInfo, Parameters.CultureInfo);
+            var plainTextContent = await renderer.RenderAsync(Templates.Email.TemplateName.ChangeFixtureTxt, model,
+                Parameters.CultureInfo.TwoLetterISOLanguageName);
 
+            var recipientGroups = new[]
+            {
+                teamUserRoundInfos.Where(tur => tur.TeamId == model.Fixture.HomeTeamId), // home team users
+                teamUserRoundInfos.Where(tur => tur.TeamId == model.Fixture.GuestTeamId) // guest team users
+            };
+            
+            // each recipient group will get the same email text
+            foreach (var recipients in recipientGroups)
+            {
                 var mailMergeMessage = mailMergeService.CreateStandardMessage();
                 mailMergeMessage.EnableFormatter = false;
-                mailMergeMessage.Subject = localizer["Fixture Change"].Value;
-                
                 mailMergeMessage.MailMergeAddresses.Add(new MailMergeAddress(MailAddressType.From, tenantContext.SiteContext.Email.GeneralFrom.DisplayName, tenantContext.SiteContext.Email.GeneralFrom.Address));
-                mailMergeMessage.MailMergeAddresses.Add(new MailMergeAddress(MailAddressType.To,
-                    $"{tur.CompleteName}, Team '{tur.TeamNameForRound}'", tur.Email));
-                if (!string.IsNullOrEmpty(tur.Email2))
-                {
-                    mailMergeMessage.MailMergeAddresses.Add(new MailMergeAddress(MailAddressType.CC,
-                        $"{tur.CompleteName}, Team '{tur.TeamNameForRound}'", tur.Email2));
-                }
 
+                foreach (var tur in recipients)
+                {
+                    if (string.IsNullOrWhiteSpace(mailMergeMessage.Subject))
+                    {
+                        using (new CultureSwitcher(Parameters.CultureInfo, Parameters.CultureInfo))
+                        {
+                            mailMergeMessage.Subject = localizer["Fixture change for team '{0}'", tur.TeamNameForRound].Value;
+                        }
+                    }
+                    
+                    mailMergeMessage.MailMergeAddresses.Add(new MailMergeAddress(MailAddressType.To,
+                        $"{tur.CompleteName}", tur.Email));    
+                        
+                    if (!string.IsNullOrEmpty(tur.Email2))
+                    {
+                        mailMergeMessage.MailMergeAddresses.Add(new MailMergeAddress(MailAddressType.CC,
+                            $"{tur.CompleteName}", tur.Email2));
+                    }
+                }
+                
                 // Send registration info also to league administration
                 mailMergeMessage.MailMergeAddresses.Add(new MailMergeAddress(MailAddressType.Bcc,
                     tenantContext.SiteContext.Email.GeneralBcc.DisplayName,
                     tenantContext.SiteContext.Email.GeneralBcc.Address));
-
-                mailMergeMessage.PlainText = await renderer.RenderAsync(Templates.Email.TemplateName.ChangeFixtureTxt, model,
-                    Parameters.CultureInfo.TwoLetterISOLanguageName);
+                
+                mailMergeMessage.PlainText = plainTextContent;
 
                 yield return mailMergeMessage;
             }

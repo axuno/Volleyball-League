@@ -14,6 +14,7 @@ using League.TextTemplatingModule;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Localization;
 using NUnit.Framework;
+using TournamentManager.DAL.TypedViewClasses;
 using TournamentManager.MultiTenancy;
 
 namespace League.Test.TextTemplating
@@ -305,7 +306,7 @@ namespace League.Test.TextTemplating
         {
             var realStart = new DateTime(2021, 12, 24, 20, 00, 00);
 
-            var m = new ResultEnteredModel()
+            var m = new ResultEnteredModel
             {
                 Username = "User who entered",
                 RoundDescription = "Round description",
@@ -344,6 +345,113 @@ namespace League.Test.TextTemplating
                 Assert.That(text.Contains(L("Result", cultureName)));
                 if (withRemarks) Assert.That(text.Contains(m.Match.Remarks));
                 if (isOrigStartSet) Assert.That(text.Contains(m.Match.OrigPlannedStart?.ToString("d", new CultureInfo(cultureName))));
+            });
+        }
+
+        [TestCase("en", true)]
+        [TestCase("en", false)]
+        [TestCase("de", true)]
+        [TestCase("de", false)]
+        public void AnnounceNextMatch_Test(string cultureName, bool venueIsSet)
+        {
+            var m = new AnnounceNextMatchModel
+            {
+                Fixture = new PlannedMatchRow
+                {
+                    Id = 1000,
+                    PlannedStart = new DateTime(2021, 05, 05, 19, 00, 00),
+                    HomeTeamNameForRound = "HomeTeam",
+                    GuestTeamNameForRound = "GuestTeam"
+                },
+                Venue = new TournamentManager.DAL.EntityClasses.VenueEntity
+                {
+                    Name = "Venue Name",
+                    Extension = "Venue Ext.",
+                    Street = "Venue Street",
+                    PostalCode = "PostalCode",
+                    City = "Venue City"
+                }
+            };
+
+            m.IcsCalendarUrl = $"https://ics-calendar-url/{m.Fixture.Id}";
+            if (!venueIsSet) m.Venue = null;
+            
+            string text = string.Empty, html = string.Empty;
+            
+            Assert.Multiple( ()  =>
+            {
+                Assert.DoesNotThrowAsync(async () =>
+                {
+                    text = await _renderer.RenderAsync(TemplateName.AnnounceNextMatchTxt, m, cultureName);
+                    Console.WriteLine($"*** {TemplateName.AnnounceNextMatchTxt} ***");
+                    Console.WriteLine(text);
+                } );
+                
+                Assert.That(text.Contains(cultureName == "en" ? "Hello" : "Hallo"));
+                Assert.That(text.Contains(m.IcsCalendarUrl));
+            });
+        }
+
+        [TestCase("en")]
+        [TestCase("de")]
+
+        public void RemindMatchResult_Test(string cultureName)
+        {
+            var m = new RemindMatchResultModel
+            {
+                Fixture = new PlannedMatchRow
+                {
+                    Id = 1000,
+                    PlannedStart = new DateTime(2021, 05, 05, 19, 00, 00),
+                    HomeTeamNameForRound = "HomeTeam",
+                    GuestTeamNameForRound = "GuestTeam"
+                }
+            };
+
+            string text = string.Empty, html = string.Empty;
+            
+            Assert.Multiple( ()  =>
+            {
+                Assert.DoesNotThrowAsync(async () =>
+                {
+                    text = await _renderer.RenderAsync(TemplateName.RemindMatchResultTxt, m, cultureName);
+                    Console.WriteLine($"*** {TemplateName.RemindMatchResultTxt} ***");
+                    Console.WriteLine(text);
+                } );
+                
+                Assert.That(text.Contains(cultureName == "en" ? "Hello" : "Hallo"));
+                Assert.That(text.Contains(m.Fixture.HomeTeamNameForRound));
+            });
+        }
+        
+        [TestCase("en")]
+        [TestCase("de")]
+
+        public void UrgeMatchResult_Test(string cultureName)
+        {
+            var m = new UrgeMatchResultModel
+            {
+                Fixture = new PlannedMatchRow
+                {
+                    Id = 1000,
+                    PlannedStart = new DateTime(2021, 05, 05, 19, 00, 00),
+                    HomeTeamNameForRound = "HomeTeam",
+                    GuestTeamNameForRound = "GuestTeam"
+                }
+            };
+            
+            string text = string.Empty, html = string.Empty;
+            
+            Assert.Multiple( ()  =>
+            {
+                Assert.DoesNotThrowAsync(async () =>
+                {
+                    text = await _renderer.RenderAsync(TemplateName.UrgeMatchResultTxt, m, cultureName);
+                    Console.WriteLine($"*** {TemplateName.UrgeMatchResultTxt} ***");
+                    Console.WriteLine(text);
+                } );
+                
+                Assert.That(text.Contains(cultureName == "en" ? "Hello" : "Hallo"));
             });
         }
     }
