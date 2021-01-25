@@ -39,7 +39,6 @@ namespace League.Controllers
     {
         private readonly ITenantContext _tenantContext;
         private readonly AppDb _appDb;
-        private readonly IStringLocalizer<TeamApplication> _localizer;
         private readonly IAuthorizationService _authorizationService;
         private readonly ILogger<TeamApplication> _logger;
         private readonly Axuno.Tools.DateAndTime.TimeZoneConverter _timeZoneConverter;
@@ -64,7 +63,6 @@ namespace League.Controllers
             _queue = queue;
             _sendEmailTask = sendEmailTask;
             _appDb = tenantContext.DbContext.AppDb;
-            _localizer = localizer;
             _authorizationService = authorizationService;
             _logger = logger;
         }
