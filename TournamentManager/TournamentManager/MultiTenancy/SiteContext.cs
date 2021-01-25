@@ -42,11 +42,19 @@ namespace TournamentManager.MultiTenancy
         /// <summary>
         /// Location for photos.
         /// </summary>
+        [YAXLib.YAXComment("Location for photos.")]
         public Photos Photos { get; set; } = new Photos();
         /// <summary>
-        /// Email contact details for an organization.
+        /// Email contact details.
         /// </summary>
+        [YAXLib.YAXComment("Email contact details.")]
         public Email Email { get; set; } = new Email();
+
+        /// <summary>
+        /// Notifications sent before and after matches.
+        /// </summary>
+        [YAXLib.YAXComment("Notifications sent before and after matches.")]
+        public MatchNotifications MatchNotifications { get; set; } = new MatchNotifications();
     }
     
     public class Photos
@@ -112,5 +120,29 @@ namespace TournamentManager.MultiTenancy
         /// </summary>
         [YAXLib.YAXComment("The email address of a recipient.")]
         public string Address { get; set; } = string.Empty;
+    }
+
+    /// <summary>
+    /// Notifications sent before and after matches.
+    /// </summary>
+    public class MatchNotifications
+    {
+        /// <summary>
+        /// Number of days before the next match will be announced. 0 for none, negative number days.
+        /// </summary>
+        [YAXLib.YAXComment("Number of days before the next match will be announced. 0 for none, negative number days.")]
+        public int DaysBeforeNextmatch { get; set; } = 0;
+        
+        /// <summary>
+        /// Number of days to remind 1st time for missing match results. 0 for none, positive number of days.
+        /// </summary>
+        [YAXLib.YAXComment("Number of days to remind 1st time for missing match results. 0 for none, positive number of days.")]
+        public int DaysForMatchResultReminder1 { get; set; } = 0;
+        
+        /// <summary>
+        /// Number of days to remind 2nd time for missing match results. 0 for none, positive number of days.
+        /// </summary>
+        [YAXLib.YAXComment("Number of days to remind 2nd time for missing match results. 0 for none, positive number of days.")]
+        public int DaysForMatchResultReminder2 { get; set; } = 0;
     }
 }

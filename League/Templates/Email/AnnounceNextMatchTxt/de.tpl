@@ -14,7 +14,7 @@ Austragungsort:  Noch nicht festgelegt!
 Die Angaben entsprechen dem Stand zum Zeitpunkt des Versands dieser Mail. 
 Aktuelle Angaben sind dem Spielplan auf der Website zu entnehmen.
 
-Den Spielberichtsbogen könnt über die Website herunterladen.
+Den Spielberichtsbogen könnt Ihr über die Website herunterladen.
 Spieltag als Termin im ics-Format in alle gängigen Kalenderprogramme importieren:
 {{ model.IcsCalendarUrl }}
 
