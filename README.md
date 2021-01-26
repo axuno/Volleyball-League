@@ -2,7 +2,7 @@
 
 # Volleyball League
 
-![build](https://github.com/axuno/Volleyball-League/workflows/build/badge.svg)
+[![build](https://github.com/axuno/Volleyball-League/workflows/build/badge.svg)](https://github.com/axuno/Volleyball-League/actions?query=workflow%3Abuild)
 
 ## What is it?
 Volleyball League is a platform that brings everything necessary to organize and to run a league.
