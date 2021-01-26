@@ -4,7 +4,7 @@
 		<TargetFramework>netstandard2.1</TargetFramework>
 		<NeutralLanguage></NeutralLanguage>
     <Nullable>enable</Nullable>
-    <Version>4.4.0</Version>
+    <Version>4.5.0</Version>
     <Authors>axuno gGmbH</Authors>
     <Company>axuno gGmbH</Company>
     <Copyright>(C) 2000-2021 axuo gGmbH</Copyright>
