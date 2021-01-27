@@ -9,6 +9,7 @@ using League.Emailing.Creators;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using TournamentManager.MultiTenancy;
 
@@ -19,7 +20,7 @@ namespace League.Controllers
     {
         private readonly ITenantContext _tenantContext;
         private readonly IAuthorizationService _authorizationService;
-        private readonly Axuno.Tools.DateAndTime.TimeZoneConverter _timeZoneConverter;
+        private readonly IConfiguration _configuration;
         private readonly ILogger<Cron> _logger;
         private readonly Axuno.BackgroundTask.IBackgroundQueue _queue;
         private readonly SendEmailTask _sendMailTask;
@@ -28,12 +29,12 @@ namespace League.Controllers
         private const int DoNotExecute = 0; // zero would mean a notification on the match day
         
         public Cron(TenantStore tenantStore, ITenantContext tenantContext, IAuthorizationService authorizationService,
-            Axuno.Tools.DateAndTime.TimeZoneConverter timeZoneConverter, Axuno.BackgroundTask.IBackgroundQueue queue,
+            IConfiguration configuration, Axuno.BackgroundTask.IBackgroundQueue queue,
             SendEmailTask sendMailTask, IMemoryCache cache, ILogger<Cron> logger)
         {
             _tenantContext = tenantContext;
             _authorizationService = authorizationService;
-            _timeZoneConverter = timeZoneConverter;
+            _configuration = configuration;
             _queue = queue;
             _sendMailTask = sendMailTask;
             _tenantStore = tenantStore;
@@ -41,9 +42,11 @@ namespace League.Controllers
             _logger = logger;
         }
         
-        [HttpGet("/cron/automail/all")]
-        public async Task<ContentResult> RunAll()
+        [HttpGet("/cron/automail/all/{key}")]
+        public async Task<IActionResult> RunAll(string key)
         {
+            if(!IsAuthorized(key)) return StatusCode(Microsoft.AspNetCore.Http.StatusCodes.Status401Unauthorized, "Incorrect authorization key");
+            
             var urlSegments = new List<string>();
             foreach (var (_, tenant) in _tenantStore.GetTenants())
             {
@@ -81,9 +84,11 @@ namespace League.Controllers
         }
         
         
-        [HttpGet("{organization:MatchingTenant}/cron/automail/{datetime?}")]
-        public ContentResult AutoMail(string? datetime)
+        [HttpGet("{organization:MatchingTenant}/cron/automail/{key}/{datetime?}")]
+        public IActionResult AutoMail(string key, string? datetime)
         {
+            if(!IsAuthorized(key)) return StatusCode(Microsoft.AspNetCore.Http.StatusCodes.Status401Unauthorized, "Incorrect authorization key");
+            
             var forceDate = datetime?.EndsWith("!") ?? false;
 
             if (datetime == null || !DateTime.TryParse(datetime.TrimEnd('!'), out var cronDateTime))
@@ -192,7 +197,7 @@ namespace League.Controllers
             try
             {
                 url = Url.Action(nameof(AutoMail), nameof(Cron),
-                    new {organization = urlSegmentValue}, Uri.UriSchemeHttps);
+                    new {organization = urlSegmentValue, key = GetAuthKey() }, Uri.UriSchemeHttps);
 
                 await httpClient.GetAsync(url);
             }
@@ -204,6 +209,24 @@ namespace League.Controllers
 
             _logger.LogInformation("Get request for {0} completed.", url);
             return (true, url);
+        }
+
+        private bool IsAuthorized(string key)
+        {
+            if (key == GetAuthKey())
+            {
+                _logger.LogInformation("Scheduled task was authorized");
+                return true;
+            }
+            _logger.LogInformation("Scheduled task could not be authorized");
+            return false;
+        }
+
+        private string GetAuthKey()
+        {
+            var key = _configuration.GetSection("ScheduledTaskKey").Value;
+            if (string.IsNullOrWhiteSpace(key)) _logger.LogCritical("ScheduledTaskKey is null or whitespace");
+            return key;
         }
     }
 }
