@@ -75,7 +75,6 @@ namespace League.ApiControllers
                 if (!tenant.IsDefault) urlSegments.Add(tenant.SiteContext.UrlSegmentValue);
             }
 
-            urlSegments[^1] = urlSegments[^1] + "abc";
             var tasks = new Task<InvocationResult>[urlSegments.Count];
             for (var i = 0; i < tasks.Length; i++)
             {
