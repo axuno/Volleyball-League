@@ -248,7 +248,8 @@ namespace League.ApiControllers
                     Success = true, Url = url,
                     QueuingResult = new QueuingResult
                         {Success = false, ReferenceDate = new DateTime(now.Year, now.Month, now.Day), Message = message},
-                    Exception = new Exception(e.Message){Source = e.Source}
+                    // depth of inner exceptions could lead to JSON serialization exception, so create a new one
+                    Exception = new Exception(e.Message){Source = e.Source} 
                 };
             }
         }
