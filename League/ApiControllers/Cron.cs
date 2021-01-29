@@ -75,13 +75,14 @@ namespace League.ApiControllers
                 if (!tenant.IsDefault) urlSegments.Add(tenant.SiteContext.UrlSegmentValue);
             }
 
+            urlSegments[^1] = urlSegments[^1] + "abc";
             var tasks = new Task<InvocationResult>[urlSegments.Count];
             for (var i = 0; i < tasks.Length; i++)
             {
                 tasks[i] = InvokeUrl(urlSegments[i]);
             }
 
-            var results = new List<object>();
+            var results = new List<InvocationResult>();
             
             try
             {
@@ -89,12 +90,12 @@ namespace League.ApiControllers
                 
                 foreach (var task in tasks)
                 {
-                    results.Add(new {task.Result.Success, task.Result.Url, task.Result.QueuingResult });
+                    results.Add(task.Result);
                 }
             }
             catch (AggregateException e)
             {
-                results.Add(new {Success = false, Url = string.Empty, Value = e.InnerExceptions});
+                _logger.LogCritical("Failure invoking automail urls", e);
             }
             
             return Ok(results);
@@ -232,19 +233,22 @@ namespace League.ApiControllers
                 {
                     Success = true, Url = url,
                     QueuingResult =
-                        JsonConvert.DeserializeObject<QueuingResult>(await result.Content.ReadAsStringAsync() ?? string.Empty)
+                        JsonConvert.DeserializeObject<QueuingResult>(await result.Content.ReadAsStringAsync() ?? string.Empty),
+                    Exception = null
                 };
             }
-            catch
+            catch(Exception e)
             {
                 var message = $"Error after sending get request for url '{(string.IsNullOrWhiteSpace(url) ? urlSegmentValue : url)}'";
-                _logger.LogError(message);
+                _logger.LogError(e, message);
                 var now = DateTime.UtcNow;
+                
                 return new InvocationResult
                 {
                     Success = true, Url = url,
                     QueuingResult = new QueuingResult
-                        {Success = false, ReferenceDate = new DateTime(now.Year, now.Month, now.Day), Message = message}
+                        {Success = false, ReferenceDate = new DateTime(now.Year, now.Month, now.Day), Message = message},
+                    Exception = new Exception(e.Message){Source = e.Source}
                 };
             }
         }
@@ -286,6 +290,11 @@ namespace League.ApiControllers
             /// Gets or set the result of the <see cref="Cron.AutoMail"/> api call.
             /// </summary>
             public QueuingResult QueuingResult { get; set; } = new QueuingResult();
+            
+            /// <summary>
+            /// Gets or sets any invocation exception
+            /// </summary>
+            public Exception? Exception { get; set; }
         }
 
         /// <summary>
