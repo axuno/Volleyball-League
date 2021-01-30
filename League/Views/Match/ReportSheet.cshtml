@@ -148,7 +148,17 @@
                 <div>@Localizer["Team"] <span class="team-circle-small">B</span><strong> @Model.GuestTeamNameForRound</strong></div>
             </div>
             <div class="col-6" style="padding: 0">
-                <div class="text-right">@(Model.OrigPlannedStart.HasValue ? $"{Localizer["Changed date"].Value}:" : $"{Localizer["Date"].Value}:") @($"{TimeZoneConverter.ToZonedTime(Model.PlannedStart).DateTimeOffset.DateTime:D} - {TimeZoneConverter.ToZonedTime(Model.PlannedStart).DateTimeOffset.DateTime:t}")</div>
+                <div class="text-right">
+                    @(Model.OrigPlannedStart.HasValue ? $"{Localizer["Changed date"].Value}:" : $"{Localizer["Date"].Value}:")
+                    @if (Model.PlannedStart.HasValue && TimeZoneConverter != null)
+                    {
+                        @($"{TimeZoneConverter.ToZonedTime(Model.PlannedStart)!.DateTimeOffset.DateTime:D} - {TimeZoneConverter.ToZonedTime(Model.PlannedStart)!.DateTimeOffset.DateTime:t}")
+                    }
+                    else
+                    {
+                        <text>___________</text>
+                    }
+                </div>
                 <div class="text-right">@Localizer["Start time"]: ___________</div>
                 <div class="text-right">@Localizer["End time"]: ___________</div>
             </div>
