@@ -9,6 +9,9 @@ using Microsoft.Extensions.Logging;
 
 namespace League.Models.UploadViewModels
 {
+    /// <summary>
+    /// Abstract class for managing static files.
+    /// </summary>
     public abstract class AbstractStaticFile
     {
         private readonly ILogger<AbstractStaticFile> _logger;
@@ -24,6 +27,13 @@ namespace League.Models.UploadViewModels
             _logger = logger;
         }
 
+        /// <summary>
+        /// Saves an <see cref="IFormFile"/> the the <see ref="fullFilePath"/>.
+        /// </summary>
+        /// <param name="formFile"></param>
+        /// <param name="fullFilePath"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         protected async Task<string> SaveFileAsync(IFormFile formFile, string fullFilePath, CancellationToken cancellationToken)
         {
             try
@@ -39,6 +49,11 @@ namespace League.Models.UploadViewModels
             }
         }
 
+        /// <summary>
+        /// Deletes all but the latest 2 files from the specified <see cref="DirectoryInfo"/>.
+        /// </summary>
+        /// <param name="dirInfo"></param>
+        /// <param name="searchPattern"></param>
         protected void DeleteObsoleteFiles(DirectoryInfo dirInfo, string searchPattern)
         {
             var fileInfos = dirInfo.GetFiles(searchPattern).OrderByDescending(fi => fi.LastWriteTimeUtc);
@@ -58,6 +73,11 @@ namespace League.Models.UploadViewModels
             }
         }
 
+        /// <summary>
+        /// Deletes the most recent file from the specified <see cref="DirectoryInfo"/>.
+        /// </summary>
+        /// <param name="dirInfo"></param>
+        /// <param name="searchPattern"></param>
         protected void DeleteMostRecentFile(DirectoryInfo dirInfo, string searchPattern)
         {
             var fileInfo = dirInfo.GetFiles(searchPattern).OrderByDescending(fi => fi.LastWriteTimeUtc).FirstOrDefault();
@@ -75,6 +95,12 @@ namespace League.Models.UploadViewModels
             }
         }
 
+        /// <summary>
+        /// Gets a <see cref="ValueTuple"/> with the file name and the date extracted from the <see cref="DateTime.Ticks"/> part of the file name.
+        /// </summary>
+        /// <param name="dirInfo"></param>
+        /// <param name="searchPattern"></param>
+        /// <returns></returns>
         protected (string Filename, DateTime Date) GetFileInfo(DirectoryInfo dirInfo, string searchPattern)
         {
             var fileInfo = dirInfo.GetFiles(searchPattern).OrderByDescending(fi => fi.LastWriteTimeUtc)
