@@ -142,7 +142,7 @@ namespace League.ApiControllers
         /// Checks, whether the job was already run at the given date. The date per <see cref="TenantContext.Identifier"/> will be cached.
         /// </summary>
         /// <param name="referenceDate">The date to check. Hours/minutes/seconds must be set to zero.</param>
-        /// <returns>Returns <see langword="true" /> if the <see cref="referenceDate"/> exists in the <see cref="IMemoryCache"/> for the <see cref="TenantContext.Identifier"/></returns>
+        /// <returns>Returns <see langword="true" /> if the <see ref="referenceDate"/> exists in the <see cref="IMemoryCache"/> for the <see cref="TenantContext.Identifier"/></returns>
         private bool HasAlreadyRun(DateTime referenceDate)
         {
             // This is not fool-proof because we use the application cache,

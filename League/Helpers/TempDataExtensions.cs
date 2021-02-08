@@ -9,7 +9,7 @@ namespace League.Helpers
     public static class TempDataExtensions
     {
         /// <summary>
-        /// Stores the instance of type <see cref="T"/> to the <see cref="ITempDataDictionary"/>.
+        /// Stores the instance of type <see ref="T"/> to the <see cref="ITempDataDictionary"/>.
         /// The type must be serializable by <see cref="JsonConvert"/>.
         /// </summary>
         /// <typeparam name="T"></typeparam>
@@ -22,13 +22,13 @@ namespace League.Helpers
         }
 
         /// <summary>
-        /// Restore a new instance of type <see cref="T"/> from the <see cref="ITempDataDictionary"/>.
+        /// Restore a new instance of type <see ref="T"/> from the <see cref="ITempDataDictionary"/>.
         /// The type must be deserializable by <see cref="JsonConvert"/>.
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="tempData"></param>
         /// <param name="key"></param>
-        /// <returns>Returns a new instance of type <see cref="T"/> from the <see cref="ITempDataDictionary"/></returns>
+        /// <returns>Returns a new instance of type <see ref="T"/> from the <see cref="ITempDataDictionary"/></returns>
         public static T Get<T>(this ITempDataDictionary tempData, string key) where T : class
         {
             tempData.TryGetValue(key, out object obj);

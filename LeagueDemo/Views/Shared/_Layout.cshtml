@@ -1,0 +1,90 @@
+﻿@using League.Helpers
+@using League.Navigation
+@using League.Routing
+@using League.ViewNames
+@using Microsoft.AspNetCore.Mvc.Localization
+@using Microsoft.Extensions.Localization
+@using TournamentManager.MultiTenancy
+@inject ITenantContext TenantContext
+@inject IStringLocalizer<NavigationResource> NaviLocalizer;
+@inject IViewLocalizer Localizer
+<!DOCTYPE html>
+<html lang="@System.Threading.Thread.CurrentThread.CurrentUICulture.TwoLetterISOLanguageName">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=0" />
+    <title>@ViewData.Title()</title>
+    @if (ViewData.Description() != null)
+    {
+    <meta name="description" content="@ViewData.Description()" />
+    }
+    <partial name="@League.ViewNames.Shared._FavIcons" />
+    <link rel="stylesheet" href="~/lib/bootstrap/bootstrap.min.css">
+    <link rel="stylesheet" href="~/css/site.min.css" />
+    <style type="text/css">
+        .site-sticky-top {
+            position: -webkit-sticky;
+            position: sticky;
+            top: 0;
+            z-index: 1020;
+        }
+    </style>
+    @await RenderSectionAsync("styles", required: false)
+</head>
+<body>
+    <header class="rounded site">
+        <div class="d-flex flex-column flex-md-row justify-content-between h-100">
+            <div class="my-auto order-2 order-md-1">
+                <h1 class="h4 header-organization">@(TenantContext.IsDefault ? NaviLocalizer["Volleyball League"] : TenantContext.OrganizationContext.Name)</h1>
+            </div>
+            <div class="my-auto order-1 order-md-2 text-md-right header-logo">
+                <a class="d-block" href="@Url.Action(nameof(League.Controllers.Home.Welcome), nameof(League.Controllers.Home))" style="text-decoration: none">
+                    <span class="d-inline-block part1">volleyball league</span>
+                    <span class="d-inline-block part2">demo</span>
+                    <img class="d-none d-md-inline-block" src="@Url.Content("~/images/logo-volleyball-league.svg")" alt="Logo" height="50"/>
+                </a>
+            </div>
+        </div>
+    </header>
+    <nav id="nav-main" class="navbar navbar-expand-md navbar-dark rounded pl-2 site-sticky-top">
+        @* bootstrap 4 class "sticky-top" interferes with modal, that's why we use our identical "site-sticky-top" *@
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-header" aria-controls="navbar-header" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div id="navbar-header" class="collapse navbar-collapse">
+            @* <a class="navbar-brand" href="#">axuno</a>*@
+            @await (Component.InvokeAsync<NavigationViewComponent>(new { viewName = League.ViewNames.Shared.Components.Navigation.BootstrapTopNavWithDropdowns, filterName = NamedNavigationFilters.TopNav }))
+        </div>
+    </nav>
+    <div id="content" class="container-fluid rounded pb-1">
+        @RenderBody()
+    </div>
+    <footer class="container-fluid rounded site py-1 mb-4">
+        <div class="d-flex flex-row">
+            <div class="text-center w-100">
+                @{
+                    if (TenantContext.IsDefault)
+                    {
+                        <a asp-route="@RouteNames.HomeGeneralContact" class="d-inline-block mr-4">@Localizer["Contact"]</a>
+                    }
+                    else
+                    {
+                        <a asp-route="@RouteNames.HomeOrganizationContact" asp-route-organization="@TenantContext.SiteContext.UrlSegmentValue" class="d-inline-block mr-4">@Localizer["Contact"]</a>
+                    }
+                }
+                <a asp-action="@nameof(Home.LegalDisclosure)" asp-controller="@nameof(Home)" class="d-inline-block mr-4">@Localizer["Legal Disclosure"]</a>
+                <a asp-action="@nameof(Home.Privacy)" asp-controller="@nameof(Home)" class="d-inline-block mr-4">@Localizer["Privacy"]</a>
+                <a asp-action="@nameof(Home.PictureCredits)" asp-controller="@nameof(Home)" class="d-inline-block mr-4">@Localizer["Picture Credits"]</a>
+            </div>
+        </div>
+    </footer>
+    <jl-javascript-logger-definitions request-id="@ViewContext.HttpContext.TraceIdentifier" />
+    <script src="~/lib/jsnlog/jsnlog.min.js"></script>
+    <script src="~/lib/jquery/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/bootstrap-all.min.js"></script>
+    <script src="~/lib/i18n/i18n-all.min.js"></script>
+    <script src="~/js/site.min.js"></script>
+    <environment include="Production"><partial name="@League.ViewNames.Shared._GoogleAnalyticsScriptsPartial" /></environment>
+    @await RenderSectionAsync("scripts", required: false)
+</body>
+</html>

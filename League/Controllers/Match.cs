@@ -541,8 +541,7 @@ namespace League.Controllers
         [HttpGet("[action]/{id:long}")]
         public async Task<IActionResult> ReportSheet(long id, CancellationToken cancellationToken)
         {
-            var pathToChromium = Path.Combine(Directory.GetCurrentDirectory(),_configuration["Chromium:ExecutablePath"]);
-            MatchReportSheetRow model = null;
+            var pathToChromium = Path.Combine(Directory.GetCurrentDirectory(), @"Chromium-Win\chrome.exe");
             
             try
             {
@@ -556,13 +555,13 @@ namespace League.Controllers
 
                     var options = new PuppeteerSharp.LaunchOptions
                     {
-                        // --use-cmd-decoder=passthrough causes Chromium error
-                        Headless = true, Args = new[] {"--no-sandbox", "--disable-gpu", "--disable-extensions", "--use-cmd-decoder=validating"},
+                        Headless = true, Args = new[] {"--no-sandbox", "--disable-gpu", "--disable-extensions"},
                         ExecutablePath = pathToChromium, Timeout = 10000
                     };
                     // Use Puppeteer as a wrapper for the Chromium browser, which can generate PDF from HTML
-                    using var browser = await PuppeteerSharp.Puppeteer.LaunchAsync(options).ConfigureAwait(false);
-                    using var page = await browser.NewPageAsync().ConfigureAwait(false);
+                    await using var browser = await PuppeteerSharp.Puppeteer.LaunchAsync(options);
+                    await using var page = await browser.NewPageAsync();
+
                     // page.GoToAsync("url");
                     var html = await _razorViewToStringRenderer.RenderViewToStringAsync(
                         $"~/Views/{nameof(Match)}/{ViewNames.Match.ReportSheet}.cshtml", model);
@@ -571,28 +570,16 @@ namespace League.Controllers
                     contentDisposition.SetHttpFileName($"{_localizer["Report Sheet"].Value} {model.Id}.pdf");
                     Response.Headers[Microsoft.Net.Http.Headers.HeaderNames.ContentDisposition] =
                         contentDisposition.ToString();
-                    browser.Process?.Refresh();
-                    _logger.LogInformation(
-                        "Chromium Process physical memory: {0:#,0} bytes. Start arguments: {1}",
-                        browser.Process?.WorkingSet64, browser.Process?.StartInfo.Arguments);
-                    
-                    // Test, whether the chromium browser renders at all
-                    /* return new FileStreamResult(
-                        await page.ScreenshotStreamAsync(new PuppeteerSharp.ScreenshotOptions
-                            {FullPage = true, Quality = 100, Type = ScreenshotType.Jpeg}).ConfigureAwait(false),
-                        "image/jpeg");
-                    */
-                    
-                    // Todo: This part works on the development machine, but throws on the external web server
-                    var result = new FileStreamResult(
+
+                    return new FileStreamResult(
                         await page.PdfStreamAsync(new PuppeteerSharp.PdfOptions
-                            {Scale = 1.0M, Format = PaperFormat.A4}).ConfigureAwait(false),
+                            {Scale = 1.0M, Format = PaperFormat.A4}),
                         "application/pdf");
-                    _logger.LogInformation("PDF stream created with length {0}", result.FileStream.Length);
-                    await browser.CloseAsync();
-                    return result;
-                    
-                    /* Todo: This is a working fallback code, which acts with Chromium directly, and requires the Url to the HTML content
+
+                    #endregion
+                }
+				
+				/* Todo: This is a working fallback code, which acts with Chromium directly, and requires the Url to the HTML content
 var tempdir = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
 if (Directory.Exists(tempdir)) Directory.CreateDirectory(tempdir);
 var tempFile = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
@@ -604,10 +591,11 @@ proc.WaitForExit(5000);
 _logger.LogInformation("{0}", proc.ExitCode);
 var stream = System.IO.File.OpenRead(tempFile);
 return new FileStreamResult(stream, "application/pdf");
-                    */
-                    
-                    #endregion
-                }
+                */
+
+                // without Chromium installed: return HTML
+                return View(ViewNames.Match.ReportSheet, model);
+
             }
             catch (Exception e)
             {

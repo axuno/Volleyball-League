@@ -1,5 +1,7 @@
 ﻿@using Microsoft.AspNetCore.Mvc.Localization
 @using TournamentManager.MultiTenancy
+@using Microsoft.AspNetCore.Http
+@using Microsoft.AspNetCore.Http.Extensions
 @inject IViewLocalizer Localizer
 @inject ITenantContext TenantContext
 @inject Axuno.Tools.DateAndTime.TimeZoneConverter TimeZoneConverter
@@ -306,7 +308,7 @@
                 </div>
             </div>
             <div class="col-12 text-center">
-                @($"{TenantContext.OrganizationContext.HomepageUrl}")
+                https://www.volleyball-liga.de/@TenantContext.SiteContext.UrlSegmentValue
             </div>
         </div>
     </div>
