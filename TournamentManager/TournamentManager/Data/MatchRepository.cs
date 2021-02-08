@@ -78,16 +78,14 @@ namespace TournamentManager.Data
             }
         }
 
-        public virtual async Task<MatchReportSheetRow> GetMatchReportSheetAsync(long tournamentId, long id,
+        public virtual async Task<MatchReportSheetRow?> GetMatchReportSheetAsync(long tournamentId, long id,
             CancellationToken cancellationToken)
         {
-            using (var da = _dbContext.GetNewAdapter())
-            {
-                return (await da.FetchQueryAsync(
-                    new QueryFactory().MatchReportSheet.Where(
-                        MatchReportSheetFields.TournamentId == tournamentId & MatchReportSheetFields.Id == id),
-                    cancellationToken)).FirstOrDefault();
-            }
+            using var da = _dbContext.GetNewAdapter();
+            return (await da.FetchQueryAsync(
+                new QueryFactory().MatchReportSheet.Where(
+                    MatchReportSheetFields.TournamentId == tournamentId & MatchReportSheetFields.Id == id),
+                cancellationToken)).FirstOrDefault();
         }
 
         public virtual async Task<List<CalendarRow>> GetMatchCalendarAsync(long tournamentId, long? matchId,

@@ -1,5 +1,6 @@
 ﻿// Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
+// Taken from: https://github.com/dotnet/aspnetcore/blob/main/src/Mvc/Mvc.Localization/src/ViewLocalizer.cs
 // 2021-02-07: Modifications by axuno 
 
 using System;
