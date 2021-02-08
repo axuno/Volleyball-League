@@ -81,7 +81,7 @@ namespace League.Controllers
                 model.PhotoFileUrl = null;
             }
 
-            return View(ViewNames.Upload.TeamPhoto, model);
+            return View(Views.ViewNames.Upload.TeamPhoto, model);
         }
 
         [HttpPost("team-photo/{*segments}")]

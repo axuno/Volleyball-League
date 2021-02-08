@@ -51,7 +51,7 @@ namespace League.Areas.Admin.Controllers
                 users = await _tenantContext.DbContext.AppDb.UserRepository.FindUserAsync(pe, limit + 1, CancellationToken.None);
             }
             ViewData.Add("Limit", limit);
-            return View(ViewNames.Area.Admin.Impersonation.Index, users);
+            return View(Views.ViewNames.Area.Admin.Impersonation.Index, users);
         }
 
         [Authorize(Roles = Constants.RoleName.SystemManager)]

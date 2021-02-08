@@ -16,6 +16,9 @@ namespace League.Models.UploadViewModels
     {
         private readonly ILogger<AbstractStaticFile> _logger;
 
+        /// <summary>
+        /// The token that is used to append the <see cref="DateTime.Ticks"/> to file name.
+        /// </summary>
         protected string DateTimeTicksMarker = "_t";
 
         /// <summary>

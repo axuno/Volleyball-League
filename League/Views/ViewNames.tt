@@ -75,9 +75,13 @@ void CreateAreas(string areaPath)
  * Contains constants for strongly typed views in controllers.
  * Directories (may be nested) are static class names, views are constant strings.
  */
+ #pragma warning disable CS1591
 
-namespace League.ViewNames
+namespace League.Views
 {
-<# ProcessFiles(viewsFolderPath, true, 1); #>
+    public class ViewNames
+    {
+<# ProcessFiles(viewsFolderPath, true, 2); #>
 <# CreateAreas(areaFolderPath);#>
+    }
 }

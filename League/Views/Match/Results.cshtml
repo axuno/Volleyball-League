@@ -34,7 +34,7 @@
 <div class="mb-0 pb-1">
     <h2 class="h2">@ViewData["Title"]</h2>
     <hr class="mb-4" />
-    <partial name="@League.ViewNames.Match._ResultMessagesPartial" model="@Model.MatchResultMessage" />
+    <partial name="@League.Views.ViewNames.Match._ResultMessagesPartial" model="@Model.MatchResultMessage" />
     <ul class="nav nav-tabs" id="round-tabs" role="tablist">
         @foreach (var r in rounds)
         {

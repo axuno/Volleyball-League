@@ -74,7 +74,7 @@ namespace League.Controllers
                     throw new Exception($"{nameof(_tenantContext.TournamentContext.MatchResultTournamentId)} '{_tenantContext.TournamentContext.MatchResultTournamentId}' does not exist");
                 }
 
-                return View(ViewNames.Ranking.Table, model);
+                return View(Views.ViewNames.Ranking.Table, model);
             }
             catch (Exception e)
             {
@@ -96,7 +96,7 @@ namespace League.Controllers
                     return RedirectToAction(nameof(AllTimeTournament), nameof(Ranking), new { Organization = _tenantContext.SiteContext.UrlSegmentValue, id = string.Empty });
 
                 var model = new AllTimeTournamentModel(rankingList, roundLegPeriods) { SelectedTournamentId = id };
-                return View(ViewNames.Ranking.AllTimeForTournament, model);
+                return View(Views.ViewNames.Ranking.AllTimeForTournament, model);
             }
             catch (Exception e)
             {
@@ -117,7 +117,7 @@ namespace League.Controllers
                     return RedirectToAction(nameof(AllTimeTournament), nameof(Ranking), new { Organization = _tenantContext.SiteContext.UrlSegmentValue, id = string.Empty });
 
                 var model = new AllTimeTeamModel(rankingList, roundLegPeriods) { SelectedTeamId = id };
-                return View(ViewNames.Ranking.AllTimeForTeam, model);
+                return View(Views.ViewNames.Ranking.AllTimeForTeam, model);
             }
             catch (Exception e)
             {

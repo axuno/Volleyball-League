@@ -26,7 +26,7 @@
 <div class="mb-0 pb-2">
     <h2 class="h2">@ViewData["Title"]</h2>
     <hr class="mb-3" />
-    <partial name="@nameof(League.ViewNames.Team._MyTeamMessagesPartial)" />
+    <partial name="@nameof(League.Views.ViewNames.Team._MyTeamMessagesPartial)" />
     @if (Model.TeamVenueRoundInfos.Count > 1)
     {
         <ul class="nav nav-tabs mb-3" id="team-tabs" role="tablist">
@@ -294,5 +294,5 @@
     @* moment and tempusdominus-bootstrap-4 are required for EditTeam modal *@
     <script type="text/javascript" src="~/lib/Moment/moment.min.js"></script>
     <script type="text/javascript" src="~/lib/tempusdominus-bootstrap-4/tempusdominus-bootstrap-4.min.js"></script>
-    <partial name="@nameof(League.ViewNames.Shared._DateTimePickerScriptPartial)" />
+    <partial name="@nameof(League.Views.ViewNames.Shared._DateTimePickerScriptPartial)" />
 }

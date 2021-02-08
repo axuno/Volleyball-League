@@ -10,6 +10,7 @@ using League.Emailing.Creators;
 using League.Identity;
 using League.Models.AccountViewModels;
 using League.Templates.Email;
+using League.Views;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;

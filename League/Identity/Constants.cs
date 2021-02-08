@@ -6,6 +6,9 @@ using System.Reflection;
 
 namespace League.Identity
 {
+    /// <summary>
+    /// Class for <see cref="League.Identity"/> constants.
+    /// </summary>
     public class Constants
     {
         /// <summary>
@@ -13,9 +16,21 @@ namespace League.Identity
         /// </summary>
         public class RoleName
         {
+            /// <summary>
+            /// Role name for <see ref="Player"/>s.
+            /// </summary>
             public const string Player = nameof(Player);
+            /// <summary>
+            /// Role name for <see ref="TeamManager"/>s.
+            /// </summary>
             public const string TeamManager = nameof(TeamManager);
+            /// <summary>
+            /// Role name for <see ref="TournamentManager"/>s.
+            /// </summary>           
             public const string TournamentManager = nameof(TournamentManager);
+            /// <summary>
+            /// Role name for <see ref="SystemManager"/>s.
+            /// </summary>  
             public const string SystemManager = nameof(SystemManager);
 
             /// <summary>
