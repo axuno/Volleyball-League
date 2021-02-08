@@ -24,7 +24,7 @@ namespace League.Areas.Admin.Controllers
         [Route("[action]")]
         public IActionResult ShowClaims()
         {
-            return View(ViewNames.Area.Admin.System.ShowClaims);
+            return View(Views.ViewNames.Area.Admin.System.ShowClaims);
         }
 
     }

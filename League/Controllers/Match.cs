@@ -10,6 +10,7 @@ using League.BackgroundTasks;
 using League.Emailing.Creators;
 using League.Helpers;
 using League.Models.MatchViewModels;
+using League.Views;
 using MailMergeLib.AspNet;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;

@@ -79,7 +79,7 @@ namespace League.Controllers
 
             model.Venue.MapEntityToFormFields(model.VenueEntity);
 
-            return View(ViewNames.Venue.EditVenue, model);
+            return View(Views.ViewNames.Venue.EditVenue, model);
         }
 
         [HttpPost("[action]/{*segments}")]
@@ -110,7 +110,7 @@ namespace League.Controllers
             // sync input with new model instance
             if (!await TryUpdateModelAsync(model))
             {
-                return View(ViewNames.Venue.EditVenue, model);
+                return View(Views.ViewNames.Venue.EditVenue, model);
             }
 
             ModelState.Clear();
@@ -127,7 +127,7 @@ namespace League.Controllers
                 ModelState,
                 cancellationToken))
             {
-                return View(ViewNames.Venue.EditVenue, model);
+                return View(Views.ViewNames.Venue.EditVenue, model);
             }
 
             if (await _appDb.GenericRepository.SaveEntityAsync<VenueEntity>(model.VenueEntity, false, false,
@@ -136,7 +136,7 @@ namespace League.Controllers
                 return Redirect(SetAdjustedReturnResult(nameof(Edit), model.ReturnUrl, true));
             }
             
-            return View(ViewNames.Venue.EditVenue, model);
+            return View(Views.ViewNames.Venue.EditVenue, model);
         }
 
         [HttpGet("[action]/{tid:long?}")]
@@ -159,7 +159,7 @@ namespace League.Controllers
             
             var model = GetEditModel(true, new VenueEntity(), teamEntity, new string[]{}, returnUrl);
 
-            return View(ViewNames.Venue.EditVenue, model);
+            return View(Views.ViewNames.Venue.EditVenue, model);
         }
 
         [HttpPost("[action]/{*segments}")]
@@ -188,7 +188,7 @@ namespace League.Controllers
             // sync input with new model instance
             if (!await TryUpdateModelAsync(model))
             {
-                return View(ViewNames.Venue.EditVenue, model);
+                return View(Views.ViewNames.Venue.EditVenue, model);
             }
             ModelState.Clear();
             model.Venue.MapFormFieldsToEntity(model.VenueEntity);
@@ -205,7 +205,7 @@ namespace League.Controllers
                 ModelState,
                 cancellationToken))
             {
-                return View(ViewNames.Venue.EditVenue, model);
+                return View(Views.ViewNames.Venue.EditVenue, model);
             }
 
             try

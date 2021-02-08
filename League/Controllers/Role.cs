@@ -66,7 +66,7 @@ namespace League.Controllers
                     new {model.ReturnUrl}));
             }
 
-            return PartialView(ViewNames.Role._RemoveMemberModalPartial, model);
+            return PartialView(Views.ViewNames.Role._RemoveMemberModalPartial, model);
         }
 
         [HttpPost("[action]/{*segments}")]
@@ -132,7 +132,7 @@ namespace League.Controllers
                     new {model.ReturnUrl}));
             }
 
-            return PartialView(ViewNames.Role._AddMemberModalPartial, model);
+            return PartialView(Views.ViewNames.Role._AddMemberModalPartial, model);
         }
 
         [HttpPost("[action]/{*segments}")]
@@ -141,7 +141,7 @@ namespace League.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return PartialView(ViewNames.Role._AddMemberModalPartial, model);
+                return PartialView(Views.ViewNames.Role._AddMemberModalPartial, model);
             }
 
             model.ClaimType = Identity.Constants.ClaimType.ManagesTeam.ToLowerInvariant() ==
@@ -178,7 +178,7 @@ namespace League.Controllers
 
             if (!ModelState.IsValid)
             {
-                return PartialView(ViewNames.Role._AddMemberModalPartial, model);
+                return PartialView(Views.ViewNames.Role._AddMemberModalPartial, model);
             }
 
             return JsonAjaxRedirectForModal(SetAdjustedReturnResult(nameof(Add), model.ReturnUrl, model.TeamId, true));

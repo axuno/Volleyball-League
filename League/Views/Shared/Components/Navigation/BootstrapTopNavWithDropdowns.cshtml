@@ -30,10 +30,10 @@
                     <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="@Url.Content(Model.AdjustUrl(node))" role="button">
                         @Html.Raw(Model.GetIcon(node.Value))@Localizer[Model.AdjustText(node)]@Model.UpdateTempNode(node)
                     </a>
-                    <partial name="@League.ViewNames.Shared.NavigationNodeChildDropdownPartial" model="Model" />
+                    <partial name="@League.Views.ViewNames.Shared.NavigationNodeChildDropdownPartial" model="Model" />
                 </li>
             }
         }
-        <partial name="@League.ViewNames.Shared._LanguagePartial"/>
+        <partial name="@League.Views.ViewNames.Shared._LanguagePartial"/>
     }
 </ul>

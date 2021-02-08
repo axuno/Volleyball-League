@@ -25,7 +25,7 @@
             else
             {
                 <a href="@Url.Content(Model.AdjustUrl(childNode))" class="@Model.GetClass(childNode.Value, "dropdown-item", "active", true)">@Localizer[Model.AdjustText(childNode)]</a>
-                @Model.UpdateTempNode(childNode)<partial name="@League.ViewNames.Shared.NavigationNodeChildDropdownPartial" model="Model" /> @*recursion*@
+                @Model.UpdateTempNode(childNode)<partial name="@League.Views.ViewNames.Shared.NavigationNodeChildDropdownPartial" model="Model" /> @*recursion*@
             }
         }
     </div>

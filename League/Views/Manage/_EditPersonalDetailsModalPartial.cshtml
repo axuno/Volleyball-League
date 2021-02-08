@@ -51,4 +51,4 @@
         <button site-ajax-submit class="btn btn-primary">@Localizer["Save"].Value</button>
     </modal-footer>
 </modal>
-@{ if (ViewContext.ClientValidationEnabled) { await Html.RenderPartialAsync(League.ViewNames.Shared._ValidationScriptsPartial); } /* register the modal form for validation */ }
+@{ if (ViewContext.ClientValidationEnabled) { await Html.RenderPartialAsync(League.Views.ViewNames.Shared._ValidationScriptsPartial); } /* register the modal form for validation */ }

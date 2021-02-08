@@ -694,17 +694,12 @@ namespace League
             if (env.IsDevelopment())
             {
                 app.UseMiddleware<StackifyMiddleware.RequestTracerMiddleware>();
-                // Turn production error behavior on=false/off=true
-                if (true)
-                {
-                    app.UseDeveloperExceptionPage();
-                    app.UseStatusCodePages();
-                }
-                else
-                {
-                    app.UseStatusCodePagesWithReExecute($"/{nameof(Controllers.Error)}/{{0}}");
-                    app.UseExceptionHandler($"/{nameof(Controllers.Error)}/500");  
-                }
+                
+                app.UseDeveloperExceptionPage();
+                app.UseStatusCodePages();
+                
+                //app.UseStatusCodePagesWithReExecute($"/{nameof(Controllers.Error)}/{{0}}");
+                //app.UseExceptionHandler($"/{nameof(Controllers.Error)}/500");  
             }
             else
             {
