@@ -5,10 +5,17 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace League.Helpers
 {
+    /// <summary>
+    /// Helper class for model meta data.
+    /// </summary>
     public class MetaDataHelper
     {
         private readonly IModelMetadataProvider _metadataProvider;
 
+        /// <summary>
+        /// CTOR.
+        /// </summary>
+        /// <param name="metadataProvider"></param>
         public MetaDataHelper(IModelMetadataProvider metadataProvider)
         {
             _metadataProvider = metadataProvider;
