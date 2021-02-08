@@ -3,6 +3,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace League.Controllers
 {
+    /// <summary>
+    /// Abstract class for controllers, derived from <see cref="Controller"/>.
+    /// </summary>
     public abstract class AbstractController : Controller
     {
         /// <summary>
