@@ -14,7 +14,7 @@
     <h2 class="h2">@ViewData["Title"]</h2>
     <hr />
 </div>
-<partial name="@League.ViewNames.Manage._IndexMessagesPartial" model="@Model.ManageMessage" />
+<partial name="@League.Views.ViewNames.Manage._IndexMessagesPartial" model="@Model.ManageMessage" />
 <div class="mb-0 pb-1">
     <ul class="list-inline no-gutters">
         <li class="list-inline-item text-success col-md-3">@(Metadata.GetDisplayName<ChangeUsernameViewModel>(nameof(ChangeUsernameViewModel.Username)))</li>

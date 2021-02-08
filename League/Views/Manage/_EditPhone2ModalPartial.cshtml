@@ -28,7 +28,7 @@
             $('#@BtnRemove').on('click', function () { $('#@nameof(Model.PhoneNumber2)').val(''); });
             //# sourceURL=dynamic.js
         </script>
-        @{ if (ViewContext.ClientValidationEnabled) { await Html.RenderPartialAsync(League.ViewNames.Shared._ValidationScriptsPartial); } /* register the modal form for validation */ }
+        @{ if (ViewContext.ClientValidationEnabled) { await Html.RenderPartialAsync(League.Views.ViewNames.Shared._ValidationScriptsPartial); } /* register the modal form for validation */ }
     </modal-body>
     <modal-footer show-dismiss="true" dismiss-text="@Localizer["Cancel"].Value">
         <button site-ajax-submit id="@BtnRemove" class="btn btn-info" type="button">@Localizer["Remove"].Value</button>

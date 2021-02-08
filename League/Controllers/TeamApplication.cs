@@ -94,7 +94,7 @@ namespace League.Controllers
                 return NotFound();
             }
 
-            return View(ViewNames.TeamApplication.List, model);
+            return View(Views.ViewNames.TeamApplication.List, model);
         }
 
         [HttpGet("[action]")]
@@ -103,7 +103,7 @@ namespace League.Controllers
             var sessionModel = await GetNewSessionModel(cancellationToken);
             SaveModelToSession(sessionModel);
 
-            return View(ViewNames.TeamApplication.Start, sessionModel);
+            return View(Views.ViewNames.TeamApplication.Start, sessionModel);
         }
         
         [HttpGet("select-team")]
@@ -120,7 +120,7 @@ namespace League.Controllers
 
             if (teamSelectModel.TeamsManagedByUser.Any())
             {
-                return View(ViewNames.TeamApplication.SelectTeam, teamSelectModel);
+                return View(Views.ViewNames.TeamApplication.SelectTeam, teamSelectModel);
             }
 
             // No existing team can be selected, so prepare to enter a new one
@@ -136,7 +136,7 @@ namespace League.Controllers
             selectTeamModel = await GetTeamSelectModel(cancellationToken);
             if (!await TryUpdateModelAsync(selectTeamModel))
             {
-                return View(ViewNames.TeamApplication.SelectTeam, selectTeamModel);
+                return View(Views.ViewNames.TeamApplication.SelectTeam, selectTeamModel);
             }
 
             // The SelectedTeamId is a required field => must have a value now
@@ -217,7 +217,7 @@ namespace League.Controllers
             if(sessionModel.TeamInRoundIsSet) teamEditModel.Round.SelectedRoundId = sessionModel.TeamInRound.RoundId;
             if (sessionModel.TeamIsSet) teamEditModel.Team = sessionModel.Team;
             
-            return View(ViewNames.TeamApplication.EditTeam, teamEditModel);
+            return View(Views.ViewNames.TeamApplication.EditTeam, teamEditModel);
         }
 
         [HttpPost("edit-team/{*segments}")]
@@ -261,7 +261,7 @@ namespace League.Controllers
             // sync input with new model instance
             if (!await TryUpdateModelAsync(teamEditModel))
             {
-                return View(ViewNames.TeamApplication.EditTeam, teamEditModel);
+                return View(Views.ViewNames.TeamApplication.EditTeam, teamEditModel);
             }
 
             teamEditModel.MapFormFieldsToEntity();
@@ -269,7 +269,7 @@ namespace League.Controllers
 
             if (!await teamEditModel.ValidateAsync(new TeamValidator(teamEditModel.TeamEntity, _tenantContext), _tenantContext.TournamentContext.ApplicationTournamentId, ModelState, cancellationToken))
             {
-                return View(ViewNames.TeamApplication.EditTeam, teamEditModel);
+                return View(Views.ViewNames.TeamApplication.EditTeam, teamEditModel);
             }
 
             if (teamEntity.TeamInRounds.Any())
@@ -305,7 +305,7 @@ namespace League.Controllers
                 if (teamEntity == null) return RedirectToAction(nameof(SelectTeam), new { Organization = _tenantContext.SiteContext.UrlSegmentValue });
             }
 
-            return View(ViewNames.TeamApplication.SelectVenue, new TeamVenueSelectModel
+            return View(Views.ViewNames.TeamApplication.SelectVenue, new TeamVenueSelectModel
                 {
                     TournamentId = sessionModel.PreviousTournamentId ?? _tenantContext.TournamentContext.ApplicationTournamentId,
                     TeamId = teamEntity.Id,
@@ -343,7 +343,7 @@ namespace League.Controllers
 
             if (!ModelState.IsValid)
             {
-                return View(ViewNames.TeamApplication.SelectVenue, selectVenueModel);
+                return View(Views.ViewNames.TeamApplication.SelectVenue, selectVenueModel);
             }
 
             sessionModel.Venue.IsNew = !selectVenueModel.VenueId.HasValue;
@@ -389,7 +389,7 @@ namespace League.Controllers
             venueEditModel.Venue.MapEntityToFormFields(venueEditModel.VenueEntity);
             if (sessionModel.VenueIsSet) venueEditModel.Venue = sessionModel.Venue;
             
-            return View(ViewNames.TeamApplication.EditVenue, venueEditModel);
+            return View(Views.ViewNames.TeamApplication.EditVenue, venueEditModel);
         }
 
         [HttpPost("edit-venue/{*segments}")]
@@ -422,7 +422,7 @@ namespace League.Controllers
             // sync input with new model instance
             if (!await TryUpdateModelAsync(venueEditModel))
             {
-                return View(ViewNames.TeamApplication.EditVenue, venueEditModel);
+                return View(Views.ViewNames.TeamApplication.EditVenue, venueEditModel);
             }
 
             ModelState.Clear();
@@ -439,7 +439,7 @@ namespace League.Controllers
                 ModelState,
                 cancellationToken))
             {
-                return View(ViewNames.TeamApplication.EditVenue, venueEditModel);
+                return View(Views.ViewNames.TeamApplication.EditVenue, venueEditModel);
             }
 
             sessionModel.Venue.MapEntityToFormFields(venueEditModel.VenueEntity);
@@ -459,7 +459,7 @@ namespace League.Controllers
             var roundWithType = (await _appDb.RoundRepository.GetRoundsWithTypeAsync(
                 new PredicateExpression(RoundFields.Id == sessionModel.TeamInRound.RoundId), cancellationToken)).FirstOrDefault();
 
-            return View(ViewNames.TeamApplication.Confirm,
+            return View(Views.ViewNames.TeamApplication.Confirm,
                 new ApplicationConfirmModel
                 {
                     RoundDescription = roundWithType?.Description,

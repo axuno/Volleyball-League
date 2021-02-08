@@ -11,6 +11,7 @@ using League.Helpers;
 using League.Models.ManageViewModels;
 using League.TagHelpers;
 using League.Templates.Email;
+using League.Views;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;

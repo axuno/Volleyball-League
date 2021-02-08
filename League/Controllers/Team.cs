@@ -76,7 +76,7 @@ namespace League.Controllers
                 return NotFound();
             }
 
-            return View(ViewNames.Team.List, model);
+            return View(Views.ViewNames.Team.List, model);
         }
 
         [Authorize(nameof(Authorization.PolicyName.MyTeamPolicy))]
@@ -107,7 +107,7 @@ namespace League.Controllers
 
             if (teamUserRoundInfos.Count == 0)
             {
-                return View(ViewNames.Team.MyTeamNotFound, await _appDb.TournamentRepository.GetTournamentAsync(
+                return View(Views.ViewNames.Team.MyTeamNotFound, await _appDb.TournamentRepository.GetTournamentAsync(
                     new PredicateExpression(TournamentFields.Id == _tenantContext.TournamentContext.TeamTournamentId)
                     , cancellationToken));
             }
@@ -126,7 +126,7 @@ namespace League.Controllers
                     new TeamPhotoStaticFile(_webHostEnvironment, _tenantContext, new NullLogger<TeamPhotoStaticFile>())
             };
 
-            return View(ViewNames.Team.MyTeam, model);
+            return View(Views.ViewNames.Team.MyTeam, model);
         }
 
         [HttpGet("{id:long}")]
@@ -154,7 +154,7 @@ namespace League.Controllers
 
             model.PhotoUriInfo = new TeamPhotoStaticFile(_webHostEnvironment, _tenantContext, new NullLogger<TeamPhotoStaticFile>()).GetUriInfo(id);
 
-            return View(ViewNames.Team.Single, model);
+            return View(Views.ViewNames.Team.Single, model);
         }
 
         [HttpGet("[action]/{teamId:long}")]
@@ -179,7 +179,7 @@ namespace League.Controllers
                 Team = GetTeamEditorComponentModel(team)
             };
 
-            return PartialView(ViewNames.Team._EditTeamModalPartial, model);
+            return PartialView(Views.ViewNames.Team._EditTeamModalPartial, model);
         }
 
         [HttpPost("[action]/{*segments}")]
@@ -219,7 +219,7 @@ namespace League.Controllers
             // sync input with new model instance
             if (!await TryUpdateModelAsync(model))
             {
-                return PartialView(ViewNames.Team._EditTeamModalPartial, model);
+                return PartialView(Views.ViewNames.Team._EditTeamModalPartial, model);
             }
 
             model.MapFormFieldsToEntity();
@@ -227,7 +227,7 @@ namespace League.Controllers
 
             if (!await model.ValidateAsync(new TeamValidator(model.TeamEntity, _tenantContext), _tenantContext.TournamentContext.TeamTournamentId, ModelState, cancellationToken))
             {
-                return PartialView(ViewNames.Team._EditTeamModalPartial, model);
+                return PartialView(Views.ViewNames.Team._EditTeamModalPartial, model);
             }
 
             try
@@ -246,7 +246,7 @@ namespace League.Controllers
             }
 
             // We never should come this far
-            return PartialView(ViewNames.Team._EditTeamModalPartial, model);
+            return PartialView(Views.ViewNames.Team._EditTeamModalPartial, model);
         }
 
         [HttpGet("[action]/{tid}")]
@@ -260,7 +260,7 @@ namespace League.Controllers
                 return NotFound();
             }
 
-            return PartialView(ViewNames.Team._ChangeVenueModalPartial, (TeamId: teamEntity.Id, VenueId: teamEntity.VenueId));
+            return PartialView(Views.ViewNames.Team._ChangeVenueModalPartial, (TeamId: teamEntity.Id, VenueId: teamEntity.VenueId));
         }
 
         [HttpGet("[action]/{tid}")]
@@ -281,7 +281,7 @@ namespace League.Controllers
                     new { ReturnUrl = Url.Action(nameof(MyTeam), nameof(Team), new { Organization = _tenantContext.SiteContext.UrlSegmentValue, tid}) });
             }
 
-            return PartialView(ViewNames.Team._SelectVenueModalPartial,
+            return PartialView(Views.ViewNames.Team._SelectVenueModalPartial,
                 new TeamVenueSelectModel
                 {
                     TournamentId = _tenantContext.TournamentContext.TeamTournamentId, TeamId = teamEntity.Id, VenueId = teamEntity.VenueId,
@@ -318,7 +318,7 @@ namespace League.Controllers
 
             if (!ModelState.IsValid)
             {
-                return PartialView(ViewNames.Team._SelectVenueModalPartial, model);
+                return PartialView(Views.ViewNames.Team._SelectVenueModalPartial, model);
             }
             
             TempData.Put<MyTeamMessageModel.MyTeamMessage>(nameof(MyTeamMessageModel.MyTeamMessage), new MyTeamMessageModel.MyTeamMessage { AlertType = SiteAlertTagHelper.AlertType.Danger, MessageId = MyTeamMessageModel.MessageId.TeamDataFailure});

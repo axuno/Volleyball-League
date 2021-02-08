@@ -92,7 +92,7 @@
 </div>
 @section Scripts {
     @{
-        await Html.RenderPartialAsync(League.ViewNames.Shared._ValidationScriptsPartial);
+        await Html.RenderPartialAsync(League.Views.ViewNames.Shared._ValidationScriptsPartial);
     }
     <script type="text/javascript">
         $('#@Html.IdFor(m => m.ConfirmPassword)').attr("type", "password");
