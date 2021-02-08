@@ -6,6 +6,10 @@
 
   <ItemGroup>
     <PackageReference Include="NodaTime" Version="3.0.3" />
+    <PackageReference Include="NuGetizer" Version="0.6.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
     <PackageReference Include="TimeZoneConverter" Version="3.3.0" />
     <PackageReference Include="TimeZoneNames" Version="4.1.0" />
   </ItemGroup>

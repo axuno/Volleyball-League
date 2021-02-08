@@ -49,6 +49,7 @@ using Microsoft.AspNetCore.Rewrite;
 using TournamentManager.DI;
 using TournamentManager.MultiTenancy;
 using League.TextTemplatingModule;
+using Microsoft.AspNetCore.Mvc.Localization;
 using NLog.Extensions.Logging;
 
 #endregion
@@ -567,6 +568,9 @@ namespace League
 
             services.AddRazorPages().AddRazorPagesOptions(options => {  });
 
+            // Custom ViewLocalizer, necessary for views located in a library:
+            services.AddTransient<IViewLocalizer, League.Views.ViewLocalizer>();
+            
             var mvcBuilder = services.AddMvc(options =>
                 {
                     options.EnableEndpointRouting = true;
@@ -587,7 +591,7 @@ namespace League
                     options.ModelBinderProviders.Insert(0, new TimeSpanModelBinderProvider());
                     options.ModelBinderProviders.Insert(0, new DateTimeModelBinderProvider());
                     // Replace ComplexTypeModelBinder with TrimmingModelBinder (trims all strings in models)
-                    options.ModelBinderProviders[options.ModelBinderProviders.TakeWhile(p => !(p is Microsoft.AspNetCore.Mvc.ModelBinding.Binders.ComplexTypeModelBinderProvider)).Count()] = new ModelBinders.TrimmingComplexModelBinderProvider();
+                    options.ModelBinderProviders[options.ModelBinderProviders.TakeWhile(p => !(p is Microsoft.AspNetCore.Mvc.ModelBinding.Binders.ComplexTypeModelBinderProvider)).Count() - 1] = new ModelBinders.TrimmingComplexModelBinderProvider();
                 })
                 .AddControllersAsServices(); // will add controllers with ServiceLifetime.Transient
 #if DEBUG

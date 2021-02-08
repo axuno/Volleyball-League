@@ -133,7 +133,6 @@ namespace League.ViewNames
         public const string _GoogleAnalyticsScriptsPartial = "_GoogleAnalyticsScriptsPartial";
         public const string _LanguagePartial = "_LanguagePartial";
         public const string _Layout = "_Layout";
-        public const string _LayoutEmail = "_LayoutEmail";
         public const string _passwordRules = "_passwordRules";
         public const string _ValidationScriptsPartial = "_ValidationScriptsPartial";
         public static class Components

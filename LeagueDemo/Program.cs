@@ -1,15 +1,14 @@
-﻿using System;
-using System.IO;
-using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using System;
+using System.IO;
 using NLog.Web;
 
-namespace League
+namespace LeagueDemo
 {
-    public class Program
+   public class Program
     {
         /// <summary>
         /// The name of the configuration folder, which is relative to HostingEnvironment.ContentRootPath.
@@ -17,8 +16,6 @@ namespace League
         /// </summary>
         public const string ConfigurationFolder = "Configuration";
 
-        private static string _absoluteConfigurationPath = string.Empty;
-        
         public static void Main(string[] args)
         {
             // NLog: setup the logger first to catch all errors
@@ -29,13 +26,10 @@ namespace League
 
             // Allows for <target name="file" xsi:type="File" fileName = "${var:logDirectory}logfile.log"... >
             NLog.LogManager.Configuration.Variables["logDirectory"] = currentDir + "\\";
-            
-            // http://zuga.net/articles/cs-how-to-determine-if-a-program-process-or-file-is-32-bit-or-64-bit/
-            logger.Info($"This app runs as {(Environment.Is64BitProcess ? "64-bit" : "32-bit")} process.");
 
             try
             {
-                logger.Trace($"Configuration of {nameof(WebHost)} starting.");
+                logger.Trace($"Configuration of {nameof(Microsoft.AspNetCore.WebHost)} starting.");
                 CreateHostBuilder(args).Build().Run();
             }
             catch (Exception e)
@@ -54,8 +48,8 @@ namespace League
             Host.CreateDefaultBuilder(args)
                 .ConfigureAppConfiguration((hostingContext, config) =>
                 {
-                    _absoluteConfigurationPath = Path.Combine(hostingContext.HostingEnvironment.ContentRootPath, ConfigurationFolder);
-                    config.SetBasePath(_absoluteConfigurationPath)
+                    var absoluteConfigurationPath = Path.Combine(hostingContext.HostingEnvironment.ContentRootPath, ConfigurationFolder);
+                    config.SetBasePath(absoluteConfigurationPath)
                         .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
                         .AddJsonFile($"appsettings.{hostingContext.HostingEnvironment.EnvironmentName}.json", optional: true, reloadOnChange: true)
                         .AddJsonFile(@"credentials.json", optional: false, reloadOnChange: true)
@@ -70,11 +64,11 @@ namespace League
                         config.AddJsonFile(Path.Combine(secretsFolder, $"credentials.{hostingContext.HostingEnvironment.EnvironmentName}.json"), false);
                     }
 
-                    NLogBuilder.ConfigureNLog(Path.Combine(_absoluteConfigurationPath, $"NLog.{hostingContext.HostingEnvironment.EnvironmentName}.config"));
+                    NLogBuilder.ConfigureNLog(Path.Combine(absoluteConfigurationPath, $"NLog.{hostingContext.HostingEnvironment.EnvironmentName}.config"));
                 })
                 .ConfigureWebHostDefaults(webHostBuilder =>
                 {
-                    webHostBuilder.UseStartup<Startup>();
+                    webHostBuilder.UseStartup<LeagueDemo.Startup>();
                 })
                 .ConfigureLogging((hostingContext, logging) =>
                 {
@@ -97,5 +91,4 @@ namespace League
             return folder;
         }
     }
-   
 }

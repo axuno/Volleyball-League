@@ -69,6 +69,7 @@ namespace League.MultiTenancy
                     Path = "/",
                     HttpOnly = false,
                     Secure = false,
+                    SameSite = SameSiteMode.Lax,
                     Expires = DateTimeOffset.Now.AddYears(1),
                     IsEssential = true
                 }
