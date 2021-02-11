@@ -48,10 +48,11 @@ The platform software is Open Source under the [MIT license](LICENSE)
   
   There is a [live website](https://volleyball-liga.de/) running the platform software.
   
-## Demo website
+## Development demo website
   
-  Admin login when using the demo databases:
-  * User:     demo
+  **Admin login** when using the demo databases:
+  * Username: demo
+  * Email: demo@axuno.net
   * Password: demodemo
   
 ## Thanks!
