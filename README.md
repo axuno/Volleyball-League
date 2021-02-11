@@ -48,6 +48,12 @@ The platform software is Open Source under the [MIT license](LICENSE)
   
   There is a [live website](https://volleyball-liga.de/) running the platform software.
   
+## Demo website
+  
+  Admin login when using the demo databases:
+  * User:     demo
+  * Password: demodemo
+  
 ## Thanks!
 
 We would like to thank [JetBrains](https://www.jetbrains.com/?from=Volleyball-League) for supporting the project with free licenses of their fantastic tools ReSharper and DotCover.
