@@ -1,10 +1,10 @@
 ﻿@using League.Helpers
 @using League.Navigation
 @using League.Routing
-@using League.ViewNames
 @using Microsoft.AspNetCore.Mvc.Localization
 @using Microsoft.Extensions.Localization
 @using TournamentManager.MultiTenancy
+@using League.Controllers
 @inject ITenantContext TenantContext
 @inject IStringLocalizer<NavigationResource> NaviLocalizer;
 @inject IViewLocalizer Localizer
@@ -18,7 +18,7 @@
     {
     <meta name="description" content="@ViewData.Description()" />
     }
-    <partial name="@League.ViewNames.Shared._FavIcons" />
+    <partial name="@League.Views.ViewNames.Shared._FavIcons" />
     <link rel="stylesheet" href="~/lib/bootstrap/bootstrap.min.css">
     <link rel="stylesheet" href="~/css/site.min.css" />
     <style type="text/css">
@@ -53,7 +53,7 @@
         </button>
         <div id="navbar-header" class="collapse navbar-collapse">
             @* <a class="navbar-brand" href="#">axuno</a>*@
-            @await (Component.InvokeAsync<NavigationViewComponent>(new { viewName = League.ViewNames.Shared.Components.Navigation.BootstrapTopNavWithDropdowns, filterName = NamedNavigationFilters.TopNav }))
+            @await (Component.InvokeAsync<NavigationViewComponent>(new { viewName = League.Views.ViewNames.Shared.Components.Navigation.BootstrapTopNavWithDropdowns, filterName = NamedNavigationFilters.TopNav }))
         </div>
     </nav>
     <div id="content" class="container-fluid rounded pb-1">
@@ -84,7 +84,7 @@
     <script src="~/lib/bootstrap/bootstrap-all.min.js"></script>
     <script src="~/lib/i18n/i18n-all.min.js"></script>
     <script src="~/js/site.min.js"></script>
-    <environment include="Production"><partial name="@League.ViewNames.Shared._GoogleAnalyticsScriptsPartial" /></environment>
+    <environment include="Production"><partial name="@League.Views.ViewNames.Shared._GoogleAnalyticsScriptsPartial" /></environment>
     @await RenderSectionAsync("scripts", required: false)
 </body>
 </html>
