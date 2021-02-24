@@ -147,7 +147,7 @@ namespace League.Controllers
             if (user == null)
             {
                 _logger.LogInformation($"No account found for '{model.EmailOrUsername}'.");
-                ModelState.AddModelError(string.Empty, _localizer["No account found for these credentials."]);
+                ModelState.AddModelError(string.Empty, _localizer["No account found for these credentials."].Value);
                 return View(model);
             }
 
@@ -174,7 +174,7 @@ namespace League.Controllers
 
             // PasswordSignIn failed
             _logger.LogInformation($"Wrong password for '{model.EmailOrUsername}'.");
-            ModelState.AddModelError(string.Empty, _localizer["No account found for these credentials."]);
+            ModelState.AddModelError(string.Empty, _localizer["No account found for these credentials."].Value);
             return View(model);
         }
 
@@ -202,12 +202,12 @@ namespace League.Controllers
 
             if (model.Captcha != HttpContext.Session.GetString(CaptchaSvgGenerator.CaptchaSessionKeyName))
             {
-                ModelState.AddModelError(nameof(CreateAccountViewModel.Captcha), _localizer["Math task result was incorrect"]);
+                ModelState.AddModelError(nameof(CreateAccountViewModel.Captcha), _localizer["Math task result was incorrect"].Value);
             }
 
             if (await _signInManager.UserManager.FindByEmailAsync(model.Email) != null)
             {
-                ModelState.AddModelError(nameof(CreateAccountViewModel.Email), _localizer["This email is not available for a new account"]);
+                ModelState.AddModelError(nameof(CreateAccountViewModel.Email), _localizer["This email is not available for a new account"].Value);
             }
 
             if (!ModelState.IsValid)
@@ -250,7 +250,7 @@ namespace League.Controllers
             model.Email = email;
             if (await _signInManager.UserManager.FindByEmailAsync(model.Email) != null)
             {
-                ModelState.AddModelError(nameof(RegisterViewModel.Email), _localizer["The email is no longer available for registration. Have you registered already?"]);
+                ModelState.AddModelError(nameof(RegisterViewModel.Email), _localizer["The email is no longer available for registration. Have you registered already?"].Value);
             }
 
             if (!string.IsNullOrWhiteSpace(model.PhoneNumber))
@@ -318,14 +318,14 @@ namespace League.Controllers
             {
                 _logger.LogInformation($"{nameof(ExternalSignInCallback)} failed: {remoteError}.");
                 return SocialMediaSignInFailure($"Remote error: {remoteError}",
-                    _localizer["Failed to sign-in with the social network account"] + $" ({remoteError})");
+                    _localizer["Failed to sign-in with the social network account"].Value + $" ({remoteError})");
             }
             var info = await _signInManager.GetExternalLoginInfoAsync();
             if (info == null)
             {
                 _logger.LogInformation($"{nameof(ExternalSignInCallback)} failed to get external sign-in information");
                 return SocialMediaSignInFailure("Failed to get external sign-in information",
-                    _localizer["Failed to sign-in with the social network account"]);
+                    _localizer["Failed to sign-in with the social network account"].Value);
             }
             
             // Sign-in user if provider represents a valid already registered user
@@ -356,7 +356,7 @@ namespace League.Controllers
                     {
                         _logger.LogInformation($"{nameof(ExternalSignInCallback)} {existingUser.Email} is already associated with another account");
                         return SocialMediaSignInFailure($"Social network account for {existingUser.Email} is already associated with another account",
-                            _localizer.GetString("Your {0} account is already associated with another account at {1}", info.LoginProvider, _tenantContext.OrganizationContext.ShortName));
+                            _localizer.GetString("Your {0} account is already associated with another account at {1}", info.LoginProvider, _tenantContext.OrganizationContext.ShortName).Value);
                     }
 
                     await UpdateUserFromExternalLogin(existingUser, info);
