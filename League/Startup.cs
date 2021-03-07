@@ -1,7 +1,5 @@
 ﻿#region ** Usings **
 
-using cloudscribe.Web.Navigation;
-using cloudscribe.Web.Navigation.Caching;
 using JSNLog;
 using League.Identity;
 using League.ModelBinders;
@@ -605,24 +603,6 @@ namespace League
             {
                 options.RedirectStatusCode = StatusCodes.Status301MovedPermanently;
             });
-
-            #region *** Add CloudScribeNavigation ***
-
-            // CloudscribeNavigation requires:
-            // ~/Views/Shared/NavigationNodeChildDropdownPartial.cshtml
-            // ~/Views/Shared/NavigationNodeChildTreePartial.cshtml
-            // ~/Views/Shared/NavigationNodeSideNavPartial.cshtml
-            // ~/Views/Shared/Components/Navigation/*.cshtml
-            // ~/Views/_ViewImports.cshtml: @using cloudscribe.Web.Navigation
-
-            //services.AddCloudscribeNavigation(Configuration.GetSection("NavigationOptions"));
-            services.AddCloudscribeNavigation(null);
-            services.AddScoped<IOptions<NavigationOptions>, Navigation.LeagueSiteNavigationOptionsResolver>(); // resolve navigation xml files per organization
-            services.AddScoped<INavigationTreeBuilder, Navigation.HomeNavigationTreeBuilder>(); //add top nav home button per tenant
-            services.AddScoped<INavigationTreeBuilder, Navigation.LeaguesNavigationTreeBuilder>(); //add top nav item for leagues per tenant
-            services.AddScoped<INavigationTreeBuilder, Navigation.InfosNavigationTreeBuilder>(); //add top nav item for info menu per tenant
-            services.AddScoped<ITreeCache, Navigation.LeagueMemoryTreeCache>(); // cache navigation tree per tenant
-            #endregion
 
             #region *** Text Templating ***
 

@@ -18,7 +18,7 @@
             <p>@Html.Raw(TenantContext.OrganizationContext.Description)</p>
             <p>
                 Interessiert, in der Liga mitzuspielen? Wir freuen uns über jedes Team.<br />
-                Einfach <a asp-route="@RouteNames.HomeOrganizationContact" class="link">Kontakt mit uns aufnehmen</a>.
+                Einfach <a asp-route="@RouteNames.TenantContact" asp-route-organization="@TenantContext.SiteContext.UrlSegmentValue" class="link">Kontakt mit uns aufnehmen</a>.
             </p>
         </div>
         <div class="py-2 mb-2">

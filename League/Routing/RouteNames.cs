@@ -2,9 +2,9 @@
 {
     public static class RouteNames
     {
-        public const string HomeGeneralContact = nameof(HomeGeneralContact);
-        public const string HomeGeneralContactConfirmation = nameof(HomeGeneralContactConfirmation);
-        public const string HomeOrganizationContact = nameof(HomeOrganizationContact);
-        public const string HomeOrganizationContactConfirmation = nameof(HomeOrganizationContactConfirmation);
+        public const string GeneralContact = nameof(GeneralContact);
+        public const string GeneralContactConfirmation = nameof(GeneralContactConfirmation);
+        public const string TenantContact = nameof(TenantContact);
+        public const string TenantContactConfirmation = nameof(TenantContactConfirmation);
     }
 }

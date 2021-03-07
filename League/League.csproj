@@ -22,6 +22,7 @@
         <IsPackable>true</IsPackable>
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
 		<GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+		<GenerateEmbeddedFilesManifest>true</GenerateEmbeddedFilesManifest>
 	</PropertyGroup>
 
     <PropertyGroup>
@@ -45,6 +46,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="cloudscribe.Web.Navigation" Version="4.1.8" />
+		<PackageReference Include="Axuno.TextTemplating" Version="1.1.0" />
 		<PackageReference Include="JSNLog" Version="2.30.0" />
 		<PackageReference Include="MailMergeLib" Version="5.7.1" />
 		<PackageReference Include="Microsoft.AspNetCore.Authentication.Facebook" Version="3.1.13" />
