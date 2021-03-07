@@ -69,6 +69,8 @@ namespace LeagueDemo
                 .ConfigureWebHostDefaults(webHostBuilder =>
                 {
                     webHostBuilder.UseStartup<LeagueDemo.Startup>();
+                    // Use static web assets from League (and other referenced projects or packages)
+                    webHostBuilder.UseStaticWebAssets();
                 })
                 .ConfigureLogging((hostingContext, logging) =>
                 {

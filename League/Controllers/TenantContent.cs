@@ -7,10 +7,10 @@ using TournamentManager.MultiTenancy;
 namespace League.Controllers
 {
     /// <summary>
-    /// This controller is able to return any organization-specific views from folder ~/Organization/
+    /// This controller is able to return any tenant-specific content from <see cref="Scriban"/> templates.
     /// </summary>
     [Route("{organization:MatchingTenant}")]
-    public class Organization : AbstractController
+    public class TenantContent : AbstractController
     {
         // Note:
         // We cannot search a view by 'File.Exists' because this won't work with precompiled views.
@@ -23,18 +23,18 @@ namespace League.Controllers
         private readonly ActionContext _actionContext;
         private readonly ITenantContext _tenantContext;
 
-        public Organization(ICompositeViewEngine viewEngine, IActionContextAccessor actionContextAccessor, ITenantContext tenantContext)
+        public TenantContent(ICompositeViewEngine viewEngine, IActionContextAccessor actionContextAccessor, ITenantContext tenantContext)
         {
             _viewEngine = viewEngine;
             _actionContext = actionContextAccessor.ActionContext;
             _tenantContext = tenantContext;
         }
 
-        [Route("{section=home}/{content=index}")]
-        public IActionResult Index(string section = "home", string content = "index")
+        [Route("{category=home}/{topic=index}")]
+        public IActionResult Index(string category = "home", string topic = "index")
         {
             // Note: Indicate the current controller-specific directory ("Organization") with the "./" prefix
-            var view = $"./{_tenantContext.SiteContext.FolderName}/{section}/{content}";
+            var view = $"./{_tenantContext.SiteContext.FolderName}/{category}_{topic}";
             var result = _viewEngine.FindView(_actionContext, view, false);
             if(!result.Success) return NotFound();
             
