@@ -58,5 +58,5 @@ The platform software is Open Source under the [MIT license](LICENSE)
 
 We would like to thank [JetBrains](https://www.jetbrains.com/?from=Volleyball-League) for supporting the project with free licenses of their fantastic tools ReSharper and DotCover.
 
-<img src="https://github.com/axuno/Volleyball-League/blob/master/jetbrains.svg" alt="JetBrains" width="100" />
+<img src="https://raw.githubusercontent.com/axuno/Volleyball-League/main/jetbrains.svg" alt="JetBrains" width="100" />
   
