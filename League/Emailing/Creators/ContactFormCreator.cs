@@ -66,7 +66,7 @@ namespace League.Emailing.Creators
         /// </summary>
         public class ContactFormParameters
         {
-            public Models.HomeViewModels.ContactViewModel? ContactForm { get; set; }
+            public Models.ContactViewModels.ContactViewModel? ContactForm { get; set; }
             public CultureInfo CultureInfo { get; set; } = CultureInfo.CurrentUICulture;
         }
     }

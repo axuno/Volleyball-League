@@ -1,9 +1,7 @@
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.Design;
 using System.Data;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
@@ -168,40 +166,6 @@ namespace TournamentManager.Data
             }
         }
 
-        public virtual MatchEntity GetMatchWithDateRelatedEntities(long matchId, long tournamentId)
-        {
-            return GetMatchWithDateRelatedEntities(MatchFields.Id == matchId, tournamentId);
-        }
-
-        private MatchEntity GetMatchWithDateRelatedEntities(IPredicate filter, long tournamentId)
-        {
-            var prefetchPathMatch = new PrefetchPath2(EntityType.MatchEntity) {MatchEntity.PrefetchPathHomeTeam};
-            prefetchPathMatch[^1].SubPath.Add(TeamEntity.PrefetchPathVenue);
-            prefetchPathMatch[^1].SubPath.Add(TeamEntity.PrefetchPathManagerOfTeams);
-            prefetchPathMatch[^1].SubPath[1].SubPath.Add(ManagerOfTeamEntity.PrefetchPathUser);
-            prefetchPathMatch.Add(MatchEntity.PrefetchPathGuestTeam);
-            prefetchPathMatch[^1].SubPath.Add(TeamEntity.PrefetchPathVenue);
-            prefetchPathMatch[^1].SubPath.Add(TeamEntity.PrefetchPathManagerOfTeams);
-            prefetchPathMatch[^1].SubPath[1].SubPath.Add(ManagerOfTeamEntity.PrefetchPathUser);
-            prefetchPathMatch.Add(MatchEntity.PrefetchPathSets);
-            prefetchPathMatch.Add(MatchEntity.PrefetchPathVenue);
-            prefetchPathMatch.Add(MatchEntity.PrefetchPathOrigVenue);
-            prefetchPathMatch.Add(MatchEntity.PrefetchPathRound);
-            prefetchPathMatch[^1].SubPath.Add(RoundEntity.PrefetchPathRoundLegs);
-            prefetchPathMatch[^1].SubPath.Add(RoundEntity.PrefetchPathTournament);
-
-            MatchEntity match;
-            using var da = _dbContext.GetNewAdapter();
-            // filter based for MatchEntity
-            var bucket = new RelationPredicateBucket(filter);
-            // filter based relation to RoundEntity
-            bucket.Relations.Add(MatchEntity.Relations.RoundEntityUsingRoundId);
-            bucket.PredicateExpression.AddWithAnd(RoundFields.TournamentId == tournamentId);
-            match = da.FetchNewEntity<MatchEntity>(bucket, prefetchPathMatch);
-            da.CloseConnection();
-
-            return match;
-        }
 
         public virtual async Task<MatchEntity> GetMatchWithSetsAsync(long matchId, CancellationToken cancellationToken)
         {
@@ -215,14 +179,14 @@ namespace TournamentManager.Data
         }
 
         /// <summary>
-        /// Finds any not completed matches, where home or guest team of the given match are involved,
+        /// Finds not completed matches, where home or guest team of the given match are involved,
         /// and where the match date/time are overlapping.
         /// </summary>
         /// <param name="match">The match to use for finding.</param>
         /// <param name="onlyUseDatePart">If true, only the date part is used, otherwise date and time.</param>
         /// <param name="tournamentId">The tournament id to filter the result.</param>
         /// <param name="cancellationToken"></param>
-        /// <returns>Returns team ID of any matches, where home or guest team of the given match are involved,
+        /// <returns>Returns team ID of matches, where home or guest team of the given match are involved,
         /// and where the match date/time are overlapping.</returns>
         public virtual async Task<long[]> AreTeamsBusyAsync(MatchEntity match, bool onlyUseDatePart, long tournamentId,
             CancellationToken cancellationToken)
@@ -247,7 +211,8 @@ namespace TournamentManager.Data
             var q = qf.Match.From(QueryTarget.LeftJoin(qf.Round).On(MatchFields.RoundId == RoundFields.Id))
                 .Where(filter).Select(() => new
                 {
-                    Id = MatchFields.Id.ToValue<long>(), HomeTeamId = MatchFields.HomeTeamId.ToValue<long>(),
+                    Id = MatchFields.Id.ToValue<long>(),
+                    HomeTeamId = MatchFields.HomeTeamId.ToValue<long>(),
                     GuestTeamId = MatchFields.GuestTeamId.ToValue<long>()
                 });
             var matches = await da.FetchQueryAsync(q, cancellationToken);

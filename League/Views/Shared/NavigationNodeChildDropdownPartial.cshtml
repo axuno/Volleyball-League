@@ -1,31 +1,28 @@
-﻿@using League.Navigation
-@using Microsoft.Extensions.Localization
-@model NavigationViewModel
-@addTagHelper *, cloudscribe.Web.Navigation
-@inject IStringLocalizer<NavigationResource> Localizer
-@if (Model.TempNode != null && await Model.HasVisibleChildren(Model.TempNode))
+﻿@using League.Components
+@model (League.Components.MainNavigationComponentModel MainNav, League.Components.MainNavigationComponentModel.NavigationNode Node)
+@if (Model.MainNav != null && Model.Node.HasVisibleChildNodes())
 {
     <div class="dropdown-menu shadow@(ViewData["dropdown-menu-right"])" style="margin-top: -0.3rem">
-        @foreach (var childNode in Model.TempNode.Children)
+        @foreach (var childNode in Model.Node.ChildNodes)
         {
-            if (!await Model.ShouldAllowView(childNode))
+            if (!childNode.IsVisible)
             {
                 continue;
             }
 
-            if (childNode.Value.Text == "Separator")
+            if (childNode.Text == "Separator")
             {
                 <div class="dropdown-divider"></div>
                 continue;
             }
-            if (!await Model.HasVisibleChildren(childNode))
+            if (childNode.HasVisibleChildNodes())
             {
-                <a href="@Url.Content(Model.AdjustUrl(childNode))" class="@Model.GetClass(childNode.Value, "dropdown-item", "active", true)">@Localizer[Model.AdjustText(childNode)]</a>
+                <a href="@Url.Content(childNode.Url)" class="@Model.MainNav.GetClass(Context, childNode, "dropdown-item", "active", true)">@childNode.Text</a>
             }
             else
             {
-                <a href="@Url.Content(Model.AdjustUrl(childNode))" class="@Model.GetClass(childNode.Value, "dropdown-item", "active", true)">@Localizer[Model.AdjustText(childNode)]</a>
-                @Model.UpdateTempNode(childNode)<partial name="@League.Views.ViewNames.Shared.NavigationNodeChildDropdownPartial" model="Model" /> @*recursion*@
+                <a href="@Url.Content(childNode.Url)" class="@Model.MainNav.GetClass(Context, childNode, "dropdown-item", "active", true)">@childNode.Text</a>
+                <partial name="@League.Views.ViewNames.Shared.NavigationNodeChildDropdownPartial" model="(Model.MainNav, childNode)" /> @*recursion*@
             }
         }
     </div>

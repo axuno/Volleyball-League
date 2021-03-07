@@ -25,6 +25,11 @@ namespace League.Views
             public const string SignInRejected = "SignInRejected";
             public const string SignInRejectedEmailNotConfirmed = "SignInRejectedEmailNotConfirmed";
         }
+        public static class Contact
+        {
+            public const string ContactConfirmation = "ContactConfirmation";
+            public const string Index = "Index";
+        }
         public static class Error
         {
             public const string AccessDenied = "AccessDenied";
@@ -34,8 +39,6 @@ namespace League.Views
         {
             public const string AboutLeague = "AboutLeague";
             public const string AboutLeaguede = "AboutLeague.de";
-            public const string Contact = "Contact";
-            public const string ContactConfirmation = "ContactConfirmation";
             public const string LegalDisclosure = "LegalDisclosure";
             public const string LegalDisclosurede = "LegalDisclosure.de";
             public const string Overview = "Overview";
@@ -74,47 +77,6 @@ namespace League.Views
             public const string _FixtureMessagesPartial = "_FixtureMessagesPartial";
             public const string _ResultMessagesPartial = "_ResultMessagesPartial";
         }
-        public static class Organization
-        {
-            public static class a_beach
-            {
-                public static class Home
-                {
-                    public const string Index = "Index";
-                }
-                public static class Info
-                {
-                    public const string News = "News";
-                    public const string RuleOfGame = "RuleOfGame";
-                }
-            }
-            public static class a_indoor
-            {
-                public static class Home
-                {
-                    public const string Index = "Index";
-                }
-                public static class Info
-                {
-                    public const string News = "News";
-                    public const string RuleOfGame = "RuleOfGame";
-                }
-            }
-            public static class OtherOrg
-            {
-                public static class Home
-                {
-                    public const string Index = "Index";
-                }
-            }
-            public static class TestOrg
-            {
-                public static class Home
-                {
-                    public const string Index = "Index";
-                }
-            }
-        }
         public static class Ranking
         {
             public const string AllTimeForTeam = "AllTimeForTeam";
@@ -129,8 +91,6 @@ namespace League.Views
         public static class Shared
         {
             public const string NavigationNodeChildDropdownPartial = "NavigationNodeChildDropdownPartial";
-            public const string NavigationNodeChildTreePartial = "NavigationNodeChildTreePartial";
-            public const string NavigationNodeSideNavPartial = "NavigationNodeSideNavPartial";
             public const string _DateTimePickerScriptPartial = "_DateTimePickerScriptPartial";
             public const string _FavIcons = "_FavIcons";
             public const string _GoogleAnalyticsScriptsPartial = "_GoogleAnalyticsScriptsPartial";
@@ -140,15 +100,9 @@ namespace League.Views
             public const string _ValidationScriptsPartial = "_ValidationScriptsPartial";
             public static class Components
             {
-                public static class Navigation
+                public static class MainNavigation
                 {
-                    public const string BootstrapBreadcrumbs = "BootstrapBreadcrumbs";
-                    public const string BootstrapTopNav = "BootstrapTopNav";
-                    public const string BootstrapTopNavWithDropdowns = "BootstrapTopNavWithDropdowns";
-                    public const string ChildTree = "ChildTree";
                     public const string Default = "Default";
-                    public const string SideNav = "SideNav";
-                    public const string SiteMap = "SiteMap";
                 }
                 public static class RoundSelector
                 {

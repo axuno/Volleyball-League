@@ -1,12 +1,12 @@
 ﻿@using League.Helpers
-@using League.Navigation
 @using League.Routing
 @using Microsoft.AspNetCore.Mvc.Localization
 @using Microsoft.Extensions.Localization
 @using TournamentManager.MultiTenancy
 @using League.Controllers
+@using League.Components
 @inject ITenantContext TenantContext
-@inject IStringLocalizer<NavigationResource> NaviLocalizer;
+@inject IStringLocalizer<MainNavigation> NaviLocalizer;
 @inject IViewLocalizer Localizer
 <!DOCTYPE html>
 <html lang="@System.Threading.Thread.CurrentThread.CurrentUICulture.TwoLetterISOLanguageName">
@@ -53,7 +53,7 @@
         </button>
         <div id="navbar-header" class="collapse navbar-collapse">
             @* <a class="navbar-brand" href="#">axuno</a>*@
-            @await (Component.InvokeAsync<NavigationViewComponent>(new { viewName = League.Views.ViewNames.Shared.Components.Navigation.BootstrapTopNavWithDropdowns, filterName = NamedNavigationFilters.TopNav }))
+            @await (Component.InvokeAsync<League.Components.MainNavigation>())
         </div>
     </nav>
     <div id="content" class="container-fluid rounded pb-1">
@@ -65,11 +65,11 @@
                 @{
                     if (TenantContext.IsDefault)
                     {
-                        <a asp-route="@RouteNames.HomeGeneralContact" class="d-inline-block mr-4">@Localizer["Contact"]</a>
+                        <a asp-route="@RouteNames.GeneralContact" class="d-inline-block mr-4">@Localizer["Contact"]</a>
                     }
                     else
                     {
-                        <a asp-route="@RouteNames.HomeOrganizationContact" asp-route-organization="@TenantContext.SiteContext.UrlSegmentValue" class="d-inline-block mr-4">@Localizer["Contact"]</a>
+                        <a asp-route="@RouteNames.TenantContact" asp-route-organization="@TenantContext.SiteContext.UrlSegmentValue" class="d-inline-block mr-4">@Localizer["Contact"]</a>
                     }
                 }
                 <a asp-action="@nameof(Home.LegalDisclosure)" asp-controller="@nameof(Home)" class="d-inline-block mr-4">@Localizer["Legal Disclosure"]</a>

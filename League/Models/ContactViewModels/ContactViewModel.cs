@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using League.Resources;
 
-namespace League.Models.HomeViewModels
+namespace League.Models.ContactViewModels
 {
     public class ContactViewModel
     {

@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using League.Components;
 
 
 namespace LeagueDemo
@@ -57,6 +58,7 @@ namespace LeagueDemo
         {
             // Initialize the League RCL
             League.ConfigureServices(services);
+            services.AddScoped<IMainNavigationNodeBuilder, LeagueDemo.ViewComponents.DemoMainNavigationNodeBuilder>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
