@@ -58,8 +58,11 @@ namespace LeagueDemo.ViewComponents
                 }
             });
 
-            // Insert the individual node before the Top_Teams node
-            InsertTopNavigationNode(node, "Top_Teams");
+            if (!TenantContext.IsDefault)
+            {
+                // Insert the individual node before the Top_Teams node
+                InsertTopNavigationNode(node, "Top_Teams");
+            }
         }
     }
 }
