@@ -360,13 +360,24 @@ namespace League.Components
             #endregion
 
             Logger.LogTrace($"League standard list of {nameof(MainNavigationComponentModel.NavigationNode)}s created.");
-            
-            NavigationNodes.AddRange(new List<MainNavigationComponentModel.NavigationNode>(new[]
+
+            if (TenantContext.IsDefault)
             {
-                home, leagues, teamInfos, teamOverview, rankingTables,
-                new MainNavigationComponentModel.NavigationNode {Key = "RightAlignSeparator"}, 
-                account
-            }));
+                NavigationNodes.AddRange(new List<MainNavigationComponentModel.NavigationNode>(new[]
+                {
+                    home, leagues, 
+                    new MainNavigationComponentModel.NavigationNode {Key = "RightAlignSeparator"}, 
+                }));
+            }
+            else
+            {
+                NavigationNodes.AddRange(new List<MainNavigationComponentModel.NavigationNode>(new[]
+                {
+                    home, leagues, teamInfos, teamOverview, rankingTables,
+                    new MainNavigationComponentModel.NavigationNode {Key = "RightAlignSeparator"}, 
+                    account
+                }));
+            }
         }
     }
 }
