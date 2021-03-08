@@ -17,7 +17,7 @@ namespace League.Components
         /// <returns></returns>
         public static bool HasVisibleChildNodes(this MainNavigationComponentModel.NavigationNode node)
         {
-            return node.ChildNodes.Any(childNode => childNode.IsVisible);
+            return node.ChildNodes.Any(childNode => childNode.ShouldShow());
         }
 
         /// <summary>
@@ -38,7 +38,7 @@ namespace League.Components
                     if (found != null) return found;
                 }
                 // Second check if this node contains the url
-                if (node.Url.Equals(httpContext.Request.Path.Value)) return node;
+                if (node.Url != null && node.Url.Equals(httpContext.Request.Path.Value)) return node;
             }
 
             return null;
@@ -94,6 +94,16 @@ namespace League.Components
         {
             var currentNode = model.GetActiveNode(httpContext).Result;
             return node != null && currentNode != null && node.Key.Equals(currentNode.Key);
+        }
+
+        /// <summary>
+        /// Checks, whether the node is visible and the node url is not null.
+        /// </summary>
+        /// <param name="node"></param>
+        /// <returns><see langref="true"/> if the node is visible and the node url is not null.</returns>
+        public static bool ShouldShow(this MainNavigationComponentModel.NavigationNode? node)
+        {
+            return node != null && (node.IsVisible && node.Url != null || node.ChildNodes.Any(n => n.ShouldShow()));
         }
 
         /// <summary>

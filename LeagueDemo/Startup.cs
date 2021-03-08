@@ -1,17 +1,12 @@
+using System;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using NLog.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using League.Components;
-
 
 namespace LeagueDemo
 {
@@ -48,6 +43,7 @@ namespace LeagueDemo
             {
                 builder.AddNLog();                
             });
+            Logger = LoggerFactory.CreateLogger<Startup>();
             
             League = new League.Startup(Configuration, WebHostEnvironment);
         }
@@ -83,12 +79,9 @@ namespace LeagueDemo
 
             app.UseAuthorization();
 
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapControllerRoute(
-                    name: "default",
-                    pattern: "{controller=Home}/{action=Index}/{id?}");
-            });
+            // DO NOT add the default endpoints! => Url.Action(...) could produce Urls violating attribute routes
+            // and e.g. showing wrong navigation links:
+            // app.UseEndpoints(endpoints => { endpoints.MapControllerRoute(name: "default", pattern: "{controller=Home}/{action=Index}/{id?}"); });
         }
     }
 }

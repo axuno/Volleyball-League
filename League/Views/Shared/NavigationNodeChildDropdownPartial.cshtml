@@ -5,7 +5,7 @@
     <div class="dropdown-menu shadow@(ViewData["dropdown-menu-right"])" style="margin-top: -0.3rem">
         @foreach (var childNode in Model.Node.ChildNodes)
         {
-            if (!childNode.IsVisible)
+            if (!childNode.ShouldShow())
             {
                 continue;
             }
@@ -17,11 +17,11 @@
             }
             if (childNode.HasVisibleChildNodes())
             {
-                <a href="@Url.Content(childNode.Url)" class="@Model.MainNav.GetClass(Context, childNode, "dropdown-item", "active", true)">@childNode.Text</a>
+                <a href="@Url.Content(childNode.Url!)" class="@Model.MainNav.GetClass(Context, childNode, "dropdown-item", "active", true)">@childNode.Text</a>
             }
             else
             {
-                <a href="@Url.Content(childNode.Url)" class="@Model.MainNav.GetClass(Context, childNode, "dropdown-item", "active", true)">@childNode.Text</a>
+                <a href="@Url.Content(childNode.Url!)" class="@Model.MainNav.GetClass(Context, childNode, "dropdown-item", "active", true)">@childNode.Text</a>
                 <partial name="@League.Views.ViewNames.Shared.NavigationNodeChildDropdownPartial" model="(Model.MainNav, childNode)" /> @*recursion*@
             }
         }
