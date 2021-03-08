@@ -11,17 +11,17 @@
             <li class="ml-md-auto"></li>
         }
 
-        if (!node.IsVisible) { continue; }
+        if (!node.ShouldShow()) { continue; }
         if (!node.HasVisibleChildNodes())
         {
             <li class="@Model.GetClass(Context, node, "nav-item", "active", true)">
-                <a class="nav-link" href="@Url.Content(node.Url)">@Html.Raw(node.GetIcon())@node.Text</a>
+                <a class="nav-link" href="@Url.Content(node.Url!)">@Html.Raw(node.GetIcon())@node.Text</a>
             </li>
         }
         else
         {
             <li class="@Model.GetClass(Context, node, "nav-item dropdown", "active", true)">
-                <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="@Url.Content(node.Url)" role="button">
+                <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="@Url.Content(node.Url!)" role="button">
                     @Html.Raw(node.GetIcon())@node.Text
                 </a>
                 <partial name="@League.Views.ViewNames.Shared.NavigationNodeChildDropdownPartial" model="(Model, node)" />
