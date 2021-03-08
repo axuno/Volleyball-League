@@ -7,10 +7,11 @@ using League.Authorization;
 using League.Controllers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Routing;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
 using TournamentManager.MultiTenancy;
+#nullable enable
 
 namespace League.Components
 {
@@ -35,19 +36,19 @@ namespace League.Components
         protected readonly ILogger<MainNavigationNodeBuilder> Logger;
         
         /// <summary>
-        /// Gets the <see cref="LinkGenerator"/>.
+        /// Gets the <see cref="HttpContext"/>.
         /// </summary>
-        protected readonly LinkGenerator LinkGenerator;
+        protected readonly HttpContext HttpContext;
+        
+        /// <summary>
+        /// Gets the <see cref="IUrlHelper"/>.
+        /// </summary>
+        protected readonly IUrlHelper UrlHelper;
         
         /// <summary>
         /// Gets the <see cref="AuthorizationService"/>.
         /// </summary>
         protected readonly IAuthorizationService AuthorizationService;
-        
-        /// <summary>
-        /// Gets the <see cref="HttpContext"/>.
-        /// </summary>
-        protected readonly HttpContext HttpContext;
         
         /// <summary>
         /// Gets the <see cref="ClaimsPrincipal"/> for the current request.
@@ -64,26 +65,26 @@ namespace League.Components
         /// </summary>
         protected readonly IStringLocalizer<MainNavigationNodeBuilder> Localizer;
         
+        // To ensure that nodes can be only added once
         private bool _standardNavigationNodesAdded;
-        
+
         /// <summary>
         /// CTOR.
         /// </summary>
         /// <param name="tenantStore"></param>
         /// <param name="tenantContext"></param>
-        /// <param name="httpContextAccessor"></param>
         /// <param name="authorizationService"></param>
-        /// <param name="linkGenerator"></param>
+        /// <param name="urlHelper"></param>
         /// <param name="localizer"></param>
         /// <param name="logger"></param>
-        public MainNavigationNodeBuilder(TenantStore tenantStore, ITenantContext tenantContext, IHttpContextAccessor httpContextAccessor, IAuthorizationService authorizationService, LinkGenerator linkGenerator, IStringLocalizer<MainNavigationNodeBuilder> localizer, ILogger<MainNavigationNodeBuilder> logger)
+        public MainNavigationNodeBuilder(TenantStore tenantStore, ITenantContext tenantContext, IAuthorizationService authorizationService, IUrlHelper urlHelper, IStringLocalizer<MainNavigationNodeBuilder> localizer, ILogger<MainNavigationNodeBuilder> logger)
         {
             TenantStore = tenantStore;
             TenantContext = tenantContext;
-            HttpContext = httpContextAccessor.HttpContext;
-            UserClaimsPrincipal = httpContextAccessor.HttpContext.User;
+            UserClaimsPrincipal = urlHelper.ActionContext.HttpContext.User;
             AuthorizationService = authorizationService;
-            LinkGenerator = linkGenerator;
+            UrlHelper = urlHelper;
+            HttpContext = urlHelper.ActionContext.HttpContext;
             Logger = logger;
             NavigationNodes = new List<MainNavigationComponentModel.NavigationNode>();
             Localizer = localizer;
@@ -133,7 +134,7 @@ namespace League.Components
                 ? new MainNavigationComponentModel.NavigationNode
                 {
                     Text = string.Empty,
-                    Url =  LinkGenerator.GetPathByAction(HttpContext, nameof(League.Controllers.Home.Welcome), nameof(League.Controllers.Home),
+                    Url =  UrlHelper.Action(nameof(League.Controllers.Home.Welcome), nameof(League.Controllers.Home),
                         new {organization = TenantContext.SiteContext.UrlSegmentValue}),
                     IconCssClass = "fas fa-1x fa-home", Key = "Home_League"
                 }
@@ -180,7 +181,7 @@ namespace League.Components
                 ParentNode = null,
                 Key = "Top_Teams",
                 Text = Localizer["Teams"],
-                Url = LinkGenerator.GetPathByAction(HttpContext, nameof(Team.Index), nameof(Team),
+                Url = UrlHelper.Action(nameof(Team.Index), nameof(Team),
                     new {organization = TenantContext.SiteContext.UrlSegmentValue})
             };
             teamInfos.ChildNodes.AddRange(new []
@@ -190,7 +191,7 @@ namespace League.Components
                     ParentNode = teamInfos,
                     Key = "Teams_MyTeam",
                     Text = Localizer["My team"],
-                    Url = LinkGenerator.GetPathByAction(HttpContext, nameof(Team.MyTeam), nameof(Team),
+                    Url = UrlHelper.Action(nameof(Team.MyTeam), nameof(Team),
                         new {organization = TenantContext.SiteContext.UrlSegmentValue}),
                     IsVisible = (await AuthorizationService.AuthorizeAsync(UserClaimsPrincipal, PolicyName.MyTeamAdminPolicy)).Succeeded
                 },
@@ -199,7 +200,7 @@ namespace League.Components
                     ParentNode = teamInfos,
                     Key = "Teams_Application",
                     Text = Localizer["Register team for next season"],
-                    Url = LinkGenerator.GetPathByAction(HttpContext, nameof(TeamApplication.List), nameof(TeamApplication),
+                    Url = UrlHelper.Action(nameof(TeamApplication.List), nameof(TeamApplication),
                         new {organization = TenantContext.SiteContext.UrlSegmentValue})
                 },
                 new MainNavigationComponentModel.NavigationNode
@@ -207,7 +208,7 @@ namespace League.Components
                     ParentNode = teamInfos,
                     Key = "Teams_Contact",
                     Text = Localizer["Contact teams"],
-                    Url = LinkGenerator.GetPathByAction(HttpContext, nameof(Team.List), nameof(Team),
+                    Url = UrlHelper.Action(nameof(Team.List), nameof(Team),
                         new {organization = TenantContext.SiteContext.UrlSegmentValue})
                 },
                 new MainNavigationComponentModel.NavigationNode
@@ -215,7 +216,7 @@ namespace League.Components
                     ParentNode = teamInfos,
                     Key = "Teams_Map",
                     Text = Localizer["Geographical spread"],
-                    Url = LinkGenerator.GetPathByAction(HttpContext, nameof(Map.Index), nameof(Map),
+                    Url = UrlHelper.Action(nameof(Map.Index), nameof(Map),
                         new {organization = TenantContext.SiteContext.UrlSegmentValue})
                 }
             });
@@ -227,7 +228,7 @@ namespace League.Components
                 ParentNode = null,
                 Key = "Top_Matches",
                 Text = Localizer["Matches"],
-                Url = LinkGenerator.GetPathByAction(HttpContext, nameof(Match.Index), nameof(Match),
+                Url = UrlHelper.Action(nameof(Match.Index), nameof(Match),
                     new {organization = TenantContext.SiteContext.UrlSegmentValue})
             };
             teamOverview.ChildNodes.AddRange(new[]
@@ -237,7 +238,7 @@ namespace League.Components
                     ParentNode = teamOverview,
                     Key = "Matches_Fixtures",
                     Text = Localizer["Fixtures"],
-                    Url = LinkGenerator.GetPathByAction(HttpContext, nameof(Match.Fixtures), nameof(Match),
+                    Url = UrlHelper.Action(nameof(Match.Fixtures), nameof(Match),
                         new {organization = TenantContext.SiteContext.UrlSegmentValue})
                 },
                 new MainNavigationComponentModel.NavigationNode
@@ -245,7 +246,7 @@ namespace League.Components
                     ParentNode = teamOverview,
                     Key = "Matches_Results",
                     Text = Localizer["Match results"],
-                    Url = LinkGenerator.GetPathByAction(HttpContext, nameof(Match.Results), nameof(Match),
+                    Url = UrlHelper.Action(nameof(Match.Results), nameof(Match),
                         new {organization = TenantContext.SiteContext.UrlSegmentValue})
                 }
             });
@@ -257,7 +258,7 @@ namespace League.Components
                 ParentNode = null,
                 Key = "Top_Ranking",
                 Text = Localizer["Tables"],
-                Url = LinkGenerator.GetPathByAction(HttpContext, nameof(Ranking.Index), nameof(Ranking),
+                Url = UrlHelper.Action(nameof(Ranking.Index), nameof(Ranking),
                     new {organization = TenantContext.SiteContext.UrlSegmentValue})
             };
             rankingTables.ChildNodes.AddRange(new[]
@@ -267,7 +268,7 @@ namespace League.Components
                     ParentNode = rankingTables,
                     Key = "Ranking_Table",
                     Text = Localizer["Current season"],
-                    Url = LinkGenerator.GetPathByAction(HttpContext, nameof(Ranking.Table), nameof(Ranking),
+                    Url = UrlHelper.Action(nameof(Ranking.Table), nameof(Ranking),
                         new {organization = TenantContext.SiteContext.UrlSegmentValue})
                 },
                 new MainNavigationComponentModel.NavigationNode
@@ -275,7 +276,7 @@ namespace League.Components
                     ParentNode = rankingTables,
                     Key = "Ranking_AllTimeTable",
                     Text = Localizer["All-time tables"],
-                    Url = LinkGenerator.GetPathByAction(HttpContext, nameof(Ranking.AllTimeTournament), nameof(Ranking),
+                    Url = UrlHelper.Action(nameof(Ranking.AllTimeTournament), nameof(Ranking),
                         new {organization = TenantContext.SiteContext.UrlSegmentValue})
                 }
             });
@@ -292,7 +293,7 @@ namespace League.Components
                     ParentNode = null,
                     Key = "Top_Account",
                     Text = string.Empty,
-                    Url = LinkGenerator.GetPathByAction(HttpContext, nameof(Manage.Index), nameof(Manage),
+                    Url = UrlHelper.Action(nameof(Manage.Index), nameof(Manage),
                         new {organization = TenantContext.SiteContext.UrlSegmentValue}),
                     IconCssClass = "fas fa-1x fa-user-check",
                     CssClass = "dropdown-menu-right"
@@ -304,7 +305,7 @@ namespace League.Components
                         ParentNode = account,
                         Key = "Account_Auth_Manage",
                         Text = Localizer["Manage account"],
-                        Url = LinkGenerator.GetPathByAction(HttpContext, nameof(Manage.Index), nameof(Manage),
+                        Url = UrlHelper.Action(nameof(Manage.Index), nameof(Manage),
                             new {organization = TenantContext.SiteContext.UrlSegmentValue})
                     },
                     new MainNavigationComponentModel.NavigationNode
@@ -312,7 +313,7 @@ namespace League.Components
                         ParentNode = account,
                         Key = "Account_Auth_SignIn",
                         Text = Localizer["Sign in with other account"],
-                        Url = LinkGenerator.GetPathByAction(HttpContext, nameof(Account.SignIn), nameof(Account),
+                        Url = UrlHelper.Action(nameof(Account.SignIn), nameof(Account),
                             new {organization = TenantContext.SiteContext.UrlSegmentValue})
                     },
                     new MainNavigationComponentModel.NavigationNode
@@ -320,7 +321,7 @@ namespace League.Components
                         ParentNode = account,
                         Key = "Account_Auth_SignOut",
                         Text = Localizer["Sign out"],
-                        Url = LinkGenerator.GetPathByAction(HttpContext, nameof(Account.SignOut), nameof(Account),
+                        Url = UrlHelper.Action(nameof(Account.SignOut), nameof(Account),
                             new {organization = TenantContext.SiteContext.UrlSegmentValue})
                     }
                 });
@@ -332,7 +333,7 @@ namespace League.Components
                     ParentNode = null,
                     Key = "Top_Account",
                     Text = string.Empty,
-                    Url = LinkGenerator.GetPathByAction(HttpContext, nameof(Account.SignIn), nameof(Account),
+                    Url = UrlHelper.Action(nameof(Account.SignIn), nameof(Account),
                         new {organization = TenantContext.SiteContext.UrlSegmentValue}),
                     IconCssClass = "fas fa-user-plus",
                     CssClass = "dropdown-menu-right"
@@ -344,7 +345,7 @@ namespace League.Components
                         ParentNode = account,
                         Key = "Account_Anonymous_SignIn",
                         Text = Localizer["Sign in"],
-                        Url = LinkGenerator.GetPathByAction(HttpContext, nameof(Account.SignIn), nameof(Account),
+                        Url = UrlHelper.Action(nameof(Account.SignIn), nameof(Account),
                             new {organization = TenantContext.SiteContext.UrlSegmentValue})
                     },
                     new MainNavigationComponentModel.NavigationNode
@@ -352,7 +353,7 @@ namespace League.Components
                         ParentNode = account,
                         Key = "Account_Anonymous_Create",
                         Text = Localizer["Create account"],
-                        Url = LinkGenerator.GetPathByAction(HttpContext, nameof(Account.CreateAccount), nameof(Account),
+                        Url = UrlHelper.Action(nameof(Account.CreateAccount), nameof(Account),
                             new {organization = TenantContext.SiteContext.UrlSegmentValue})
                     }
                 });

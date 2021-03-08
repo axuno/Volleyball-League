@@ -27,11 +27,11 @@ namespace League.Components
             /// <summary>
             /// The target url which will be used in the link element.
             /// </summary>
-            public string Url { get; set; } = string.Empty;
+            public string? Url { get; set; }
             /// <summary>
             /// The display text of the navigation node. The text should be blank if an <see cref="IconCssClass"/> is set.
             /// </summary>
-            public string Text { get; set; } = string.Empty;
+            public string? Text { get; set; }
             /// <summary>
             /// The description text of navigation node. Can e.g. be rendered as title attribute of a menu element.
             /// </summary>
