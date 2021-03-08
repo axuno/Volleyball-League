@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using League.Components;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
@@ -19,7 +20,7 @@ namespace LeagueDemo.ViewComponents
     public class DemoMainNavigationNodeBuilder : MainNavigationNodeBuilder
     {
         /// <inheritdoc />>
-        public DemoMainNavigationNodeBuilder(TenantStore tenantStore, ITenantContext tenantContext, IHttpContextAccessor httpContextAccessor, IAuthorizationService authorizationService, LinkGenerator linkGenerator, IStringLocalizer<MainNavigationNodeBuilder> localizer, ILogger<MainNavigationNodeBuilder> logger) : base(tenantStore, tenantContext, httpContextAccessor, authorizationService, linkGenerator, localizer, logger)
+        public DemoMainNavigationNodeBuilder(TenantStore tenantStore, ITenantContext tenantContext, IAuthorizationService authorizationService, IUrlHelper urlHelper, IStringLocalizer<MainNavigationNodeBuilder> localizer, ILogger<MainNavigationNodeBuilder> logger) : base(tenantStore, tenantContext, authorizationService, urlHelper, localizer, logger)
         { }
 
         /// <inheritdoc />>
@@ -28,7 +29,7 @@ namespace LeagueDemo.ViewComponents
             // Create the standard league navigation
             await base.CreateStandardNavigationNodes();
             
-            // The view must exist in "~/Views/TenantContent/"
+            // The views must exist in "~/Views/TenantContent/"
             // and named with $"./{_tenantContext.SiteContext.FolderName}/{category}_{topic}"
             
             // Create an individual "Info" node
@@ -36,7 +37,7 @@ namespace LeagueDemo.ViewComponents
             {
                 Key = "Top_Info",
                 Text = Localizer["Info"],
-                Url = LinkGenerator.GetPathByAction(HttpContext, nameof(League.Controllers.TenantContent.Index),
+                Url = UrlHelper.Action(nameof(League.Controllers.TenantContent.Index),
                     nameof(League.Controllers.TenantContent),
                     new { organization = TenantContext.SiteContext.UrlSegmentValue, category = "info", content = string.Empty })
             };
@@ -46,14 +47,14 @@ namespace LeagueDemo.ViewComponents
                 {
                     Key = "Info_RuleOfGame",
                     Text = Localizer["Rule of game"],
-                    Url = LinkGenerator.GetPathByAction(HttpContext, nameof(League.Controllers.TenantContent.Index), nameof(League.Controllers.TenantContent),
+                    Url = UrlHelper.Action(nameof(League.Controllers.TenantContent.Index), nameof(League.Controllers.TenantContent),
                         new { organization = TenantContext.SiteContext.UrlSegmentValue, category = "info", topic = "ruleofgame" })
                 },
                 new MainNavigationComponentModel.NavigationNode
                 {
                     Key = "Info_News",
                     Text = Localizer["News"],
-                    Url = LinkGenerator.GetPathByAction(HttpContext, nameof(League.Controllers.TenantContent.Index), nameof(League.Controllers.TenantContent),
+                    Url = UrlHelper.Action(nameof(League.Controllers.TenantContent.Index), nameof(League.Controllers.TenantContent),
                         new { organization = TenantContext.SiteContext.UrlSegmentValue, category = "info", topic = "news"})
                 }
             });
