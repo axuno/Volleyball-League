@@ -30,6 +30,9 @@ namespace LeagueDemo
             try
             {
                 logger.Trace($"Configuration of {nameof(Microsoft.AspNetCore.WebHost)} starting.");
+                // http://zuga.net/articles/cs-how-to-determine-if-a-program-process-or-file-is-32-bit-or-64-bit/
+                logger.Info($"This app runs as {(Environment.Is64BitProcess ? "64-bit" : "32-bit")} process.\n\n");
+                
                 CreateHostBuilder(args).Build().Run();
             }
             catch (Exception e)
