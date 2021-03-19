@@ -14,6 +14,7 @@ using MailMergeLib.AspNet;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
 using PuppeteerSharp.Media;
@@ -41,10 +42,13 @@ namespace League.Controllers
         private readonly SendEmailTask _sendMailTask;
         private readonly RankingUpdateTask _rankingUpdateTask;
         private readonly RazorViewToStringRenderer _razorViewToStringRenderer;
-        
-        public Match(ITenantContext tenantContext, IStringLocalizer<Match> localizer, IAuthorizationService authorizationService,
+        private readonly IConfiguration _configuration;
+
+        public Match(ITenantContext tenantContext, IStringLocalizer<Match> localizer,
+            IAuthorizationService authorizationService,
             Axuno.Tools.DateAndTime.TimeZoneConverter timeZoneConverter, Axuno.BackgroundTask.IBackgroundQueue queue,
-            SendEmailTask sendMailTask, RankingUpdateTask rankingUpdateTask, RazorViewToStringRenderer razorViewToStringRenderer, ILogger<Match> logger)
+            SendEmailTask sendMailTask, RankingUpdateTask rankingUpdateTask,
+            RazorViewToStringRenderer razorViewToStringRenderer, IConfiguration configuration, ILogger<Match> logger)
         {
             _tenantContext = tenantContext;
             _appDb = tenantContext.DbContext.AppDb;
@@ -55,6 +59,7 @@ namespace League.Controllers
             _sendMailTask = sendMailTask;
             _rankingUpdateTask = rankingUpdateTask;
             _razorViewToStringRenderer = razorViewToStringRenderer;
+            _configuration = configuration;
             _logger = logger;
         }
 
@@ -536,7 +541,7 @@ namespace League.Controllers
         [HttpGet("[action]/{id:long}")]
         public async Task<IActionResult> ReportSheet(long id, CancellationToken cancellationToken)
         {
-            var pathToChromium = Path.Combine(Directory.GetCurrentDirectory(), @"Chromium-Win\chrome.exe");
+            var pathToChromium = Path.Combine(Directory.GetCurrentDirectory(),_configuration["Chromium:ExecutablePath"]);
             MatchReportSheetRow model = null;
             try
             {
@@ -566,9 +571,9 @@ namespace League.Controllers
                         contentDisposition.ToString();
                     return new FileStreamResult(
                         await page.PdfStreamAsync(new PuppeteerSharp.PdfOptions
-                            {Scale = 1.0M, Format = PaperFormat.A4}),
+                            {Scale = 1.0M, Format = PaperFormat.A4}).ConfigureAwait(false),
                         "application/pdf");
-
+                    
                     #endregion
                 }
             }
@@ -578,6 +583,7 @@ namespace League.Controllers
             }
             
             // without Chromium installed or throwing exception: return HTML
+            Response.Clear();
             return View(ViewNames.Match.ReportSheet, model);
         }
 
