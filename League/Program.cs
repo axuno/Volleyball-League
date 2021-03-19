@@ -29,6 +29,9 @@ namespace League
 
             // Allows for <target name="file" xsi:type="File" fileName = "${var:logDirectory}logfile.log"... >
             NLog.LogManager.Configuration.Variables["logDirectory"] = currentDir + "\\";
+            
+            // http://zuga.net/articles/cs-how-to-determine-if-a-program-process-or-file-is-32-bit-or-64-bit/
+            logger.Info($"This app runs as {(Environment.Is64BitProcess ? "64-bit" : "32-bit")} process.");
 
             try
             {
