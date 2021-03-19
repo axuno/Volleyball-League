@@ -536,39 +536,50 @@ namespace League.Controllers
         [HttpGet("[action]/{id:long}")]
         public async Task<IActionResult> ReportSheet(long id, CancellationToken cancellationToken)
         {
+            var pathToChromium = Path.Combine(Directory.GetCurrentDirectory(), @"Chromium-Win\chrome.exe");
+            MatchReportSheetRow model;
             try
             {
-                var model = await _appDb.MatchRepository.GetMatchReportSheetAsync(_tenantContext.TournamentContext.MatchPlanTournamentId, id, cancellationToken);
+                model = await _appDb.MatchRepository.GetMatchReportSheetAsync(_tenantContext.TournamentContext.MatchPlanTournamentId, id, cancellationToken);
 
                 if (model == null) return NotFound();
-                
-                #region ** Puppeteer PDF generation using Chromium **
-                var options = new PuppeteerSharp.LaunchOptions
+
+                if (System.IO.File.Exists(pathToChromium))
                 {
-                    Headless = true, Args = new[] {"--no-sandbox", "--disable-gpu", "--disable-extensions"},
-                    ExecutablePath = Path.Combine(Directory.GetCurrentDirectory(), @"Chromium-Win\chrome.exe"), Timeout = 10000
-                };
-                // Use Puppeteer as a wrapper for the Chromium browser, which can generate PDF from HTML
-                using var browser = await PuppeteerSharp.Puppeteer.LaunchAsync(options);
-                using var page = await browser.NewPageAsync();
-                // page.GoToAsync("url");
-                var html = await _razorViewToStringRenderer.RenderViewToStringAsync(
-                    $"~/Views/{nameof(Match)}/{ViewNames.Match.ReportSheet}.cshtml", model);
-                await page.SetContentAsync(html); // Bootstrap 4 is loaded from CDN
-                var contentDisposition = new Microsoft.Net.Http.Headers.ContentDispositionHeaderValue("attachment");
-                contentDisposition.SetHttpFileName($"{_localizer["Report Sheet"].Value} {model.Id}.pdf");
-                Response.Headers[Microsoft.Net.Http.Headers.HeaderNames.ContentDisposition] = contentDisposition.ToString();
-                return new FileStreamResult(await page.PdfStreamAsync(new PuppeteerSharp.PdfOptions {Scale = 1.0M, Format = PaperFormat.A4}),
-                    "application/pdf");
-                #endregion
-                // For development: return HTML
-                // return View(ViewNames.Match.ReportSheet, model);
+                    #region ** Puppeteer PDF generation using Chromium **
+
+                    var options = new PuppeteerSharp.LaunchOptions
+                    {
+                        Headless = true, Args = new[] {"--no-sandbox", "--disable-gpu", "--disable-extensions"},
+                        ExecutablePath = pathToChromium, Timeout = 10000
+                    };
+                    // Use Puppeteer as a wrapper for the Chromium browser, which can generate PDF from HTML
+                    await using var browser = await PuppeteerSharp.Puppeteer.LaunchAsync(options);
+                    await using var page = await browser.NewPageAsync();
+                    // page.GoToAsync("url");
+                    var html = await _razorViewToStringRenderer.RenderViewToStringAsync(
+                        $"~/Views/{nameof(Match)}/{ViewNames.Match.ReportSheet}.cshtml", model);
+                    await page.SetContentAsync(html); // Bootstrap 4 is loaded from CDN
+                    var contentDisposition = new Microsoft.Net.Http.Headers.ContentDispositionHeaderValue("attachment");
+                    contentDisposition.SetHttpFileName($"{_localizer["Report Sheet"].Value} {model.Id}.pdf");
+                    Response.Headers[Microsoft.Net.Http.Headers.HeaderNames.ContentDisposition] =
+                        contentDisposition.ToString();
+                    return new FileStreamResult(
+                        await page.PdfStreamAsync(new PuppeteerSharp.PdfOptions
+                            {Scale = 1.0M, Format = PaperFormat.A4}),
+                        "application/pdf");
+
+                    #endregion
+                }
             }
             catch (Exception e)
             {
                 _logger.LogCritical(e, $"{nameof(ReportSheet)} failed for match ID '{id}'");
                 throw;
             }
+            
+            // without Chromium installed or throwing exception: return HTML
+            return View(ViewNames.Match.ReportSheet, model);
         }
 
         private void SendFixtureNotification(long matchId)
