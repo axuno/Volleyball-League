@@ -61,7 +61,7 @@
     @* moment and tempusdominus-bootstrap-4 are required for EditTeam *@
     <script type="text/javascript" src="~/lib/Moment/moment.min.js"></script>
     <script type="text/javascript" src="~/lib/tempusdominus-bootstrap-4/tempusdominus-bootstrap-4.min.js"></script>
-    <partial name="@nameof(League.ViewNames.Shared._DateTimePickerScriptPartial)" />
+    <partial name="@nameof(League.Views.ViewNames.Shared._DateTimePickerScriptPartial)" />
     <script type="text/javascript" site-on-content-loaded="true">
         @* Focus the 'Round.SelectedRoundId' selectpicker button *@
         $('button[data-id=@Html.IdFor(m => m.Round.SelectedRoundId)]').focus();

@@ -53,7 +53,7 @@ namespace League.Controllers
             {
                 _logger.LogCritical($"{nameof(_tenantContext.TournamentContext.MapTournamentId)} '{_tenantContext.TournamentContext.MapTournamentId}' does not exist");
             }
-            return View(ViewNames.Map.Index, model);
+            return View(Views.ViewNames.Map.Index, model);
         }
 
         [Route("[action]/{id}")]
@@ -76,7 +76,7 @@ namespace League.Controllers
                 _logger.LogCritical($"{nameof(_tenantContext.TournamentContext.MapTournamentId)} '{_tenantContext.TournamentContext.MapTournamentId}' does not exist");
             }
 
-            return View(ViewNames.Map.Index, model);
+            return View(Views.ViewNames.Map.Index, model);
         }
     }
 }

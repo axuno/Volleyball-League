@@ -55,14 +55,14 @@ namespace League.Controllers
             viewModel.StatusText = Models.ErrorViewModels.StatusCodes.ResourceManager.GetString("E"+id) ?? _localizer["Error"];
             viewModel.Description = Models.ErrorViewModels.StatusDescriptions.ResourceManager.GetString("E"+id) ?? _localizer["An error has occured"];
 
-            return View(ViewNames.Error.Index, viewModel);
+            return View(Views.ViewNames.Error.Index, viewModel);
         }
 
         [Route("{organization:MatchingTenant}/error/access-denied")]
         public IActionResult AccessDenied(string returnUrl)
         {
             ViewData["ReturnUrl"] = returnUrl;
-            return View(ViewNames.Error.AccessDenied);
+            return View(Views.ViewNames.Error.AccessDenied);
         }
     }
 }

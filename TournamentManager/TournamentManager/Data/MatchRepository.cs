@@ -1,9 +1,7 @@
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.Design;
 using System.Data;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
@@ -182,44 +180,6 @@ namespace TournamentManager.Data
             }
         }
 
-        public virtual MatchEntity GetMatchWithDateRelatedEntities(long matchId, long tournamentId)
-        {
-            return GetMatchWithDateRelatedEntities(MatchFields.Id == matchId, tournamentId);
-        }
-
-        private MatchEntity GetMatchWithDateRelatedEntities(IPredicate filter, long tournamentId)
-        {
-            var prefetchPathMatch = new PrefetchPath2(EntityType.MatchEntity);
-            prefetchPathMatch.Add(MatchEntity.PrefetchPathHomeTeam);
-            prefetchPathMatch[prefetchPathMatch.Count - 1].SubPath.Add(TeamEntity.PrefetchPathVenue);
-            prefetchPathMatch[prefetchPathMatch.Count - 1].SubPath.Add(TeamEntity.PrefetchPathManagerOfTeams);
-            prefetchPathMatch[prefetchPathMatch.Count - 1].SubPath[1].SubPath.Add(ManagerOfTeamEntity.PrefetchPathUser);
-            prefetchPathMatch.Add(MatchEntity.PrefetchPathGuestTeam);
-            prefetchPathMatch[prefetchPathMatch.Count - 1].SubPath.Add(TeamEntity.PrefetchPathVenue);
-            prefetchPathMatch[prefetchPathMatch.Count - 1].SubPath.Add(TeamEntity.PrefetchPathManagerOfTeams);
-            prefetchPathMatch[prefetchPathMatch.Count - 1].SubPath[1].SubPath.Add(ManagerOfTeamEntity.PrefetchPathUser);
-            prefetchPathMatch.Add(MatchEntity.PrefetchPathSets);
-            prefetchPathMatch.Add(MatchEntity.PrefetchPathVenue);
-            prefetchPathMatch.Add(MatchEntity.PrefetchPathOrigVenue);
-            prefetchPathMatch.Add(MatchEntity.PrefetchPathRound);
-            prefetchPathMatch[prefetchPathMatch.Count - 1].SubPath.Add(RoundEntity.PrefetchPathRoundLegs);
-            prefetchPathMatch[prefetchPathMatch.Count - 1].SubPath.Add(RoundEntity.PrefetchPathTournament);
-
-            MatchEntity match;
-            using (var da = _dbContext.GetNewAdapter())
-            {
-                // filter based for MatchEntity
-                var bucket = new RelationPredicateBucket(filter);
-                // filter based relation to RoundEntity
-                bucket.Relations.Add(MatchEntity.Relations.RoundEntityUsingRoundId);
-                bucket.PredicateExpression.AddWithAnd(RoundFields.TournamentId == tournamentId);
-                match = da.FetchNewEntity<MatchEntity>(bucket, prefetchPathMatch);
-                da.CloseConnection();
-            }
-
-            return match;
-        }
-
         public virtual async Task<MatchEntity> GetMatchWithSetsAsync(long matchId, CancellationToken cancellationToken)
         {
             using (var da = _dbContext.GetNewAdapter())
@@ -234,55 +194,54 @@ namespace TournamentManager.Data
         }
 
         /// <summary>
-        /// Finds any not completed matches, where home or guest team of the given match are involved,
+        /// Finds not completed matches, where home or guest team of the given match are involved,
         /// and where the match date/time are overlapping.
         /// </summary>
         /// <param name="match">The match to use for finding.</param>
         /// <param name="onlyUseDatePart">If true, only the date part is used, otherwise date and time.</param>
         /// <param name="tournamentId">The tournament id to filter the result.</param>
         /// <param name="cancellationToken"></param>
-        /// <returns>Returns team ID of any matches, where home or guest team of the given match are involved,
+        /// <returns>Returns team ID of matches, where home or guest team of the given match are involved,
         /// and where the match date/time are overlapping.</returns>
         public virtual async Task<long[]> AreTeamsBusyAsync(MatchEntity match, bool onlyUseDatePart, long tournamentId,
             CancellationToken cancellationToken)
         {
-            using (var da = _dbContext.GetNewAdapter())
-            {
-                var filter = new PredicateExpression(MatchFields.Id != match.Id & MatchFields.IsComplete == false &
-                                                     (MatchFields.HomeTeamId == match.HomeTeamId |
-                                                      MatchFields.GuestTeamId == match.HomeTeamId |
-                                                      MatchFields.HomeTeamId == match.GuestTeamId |
-                                                      MatchFields.GuestTeamId == match.GuestTeamId))
-                    .AddWithAnd(RoundFields.TournamentId == tournamentId)
-                    .AddWithAnd(
-                        onlyUseDatePart
-                            ? new PredicateExpression(MatchFields.PlannedStart.Date()
-                                .Between(match.PlannedStart?.Date, match.PlannedEnd?.Date).Or(MatchFields.PlannedEnd
-                                    .Date().Between(match.PlannedStart?.Date, match.PlannedEnd?.Date)))
-                            : new PredicateExpression(MatchFields.PlannedStart
-                                .Between(match.PlannedStart, match.PlannedEnd)
-                                .Or(MatchFields.PlannedEnd.Between(match.PlannedStart, match.PlannedEnd))));
+            using var da = _dbContext.GetNewAdapter();
+            var filter = new PredicateExpression(MatchFields.Id != match.Id & MatchFields.IsComplete == false &
+                                                 (MatchFields.HomeTeamId == match.HomeTeamId |
+                                                  MatchFields.GuestTeamId == match.HomeTeamId |
+                                                  MatchFields.HomeTeamId == match.GuestTeamId |
+                                                  MatchFields.GuestTeamId == match.GuestTeamId))
+                .AddWithAnd(RoundFields.TournamentId == tournamentId)
+                .AddWithAnd(
+                    onlyUseDatePart
+                        ? new PredicateExpression(MatchFields.PlannedStart.Date()
+                            .Between(match.PlannedStart?.Date, match.PlannedEnd?.Date).Or(MatchFields.PlannedEnd
+                                .Date().Between(match.PlannedStart?.Date, match.PlannedEnd?.Date)))
+                        : new PredicateExpression(MatchFields.PlannedStart
+                            .Between(match.PlannedStart, match.PlannedEnd)
+                            .Or(MatchFields.PlannedEnd.Between(match.PlannedStart, match.PlannedEnd))));
 
-                var qf = new QueryFactory();
-                var q = qf.Match.From(QueryTarget.LeftJoin(qf.Round).On(MatchFields.RoundId == RoundFields.Id))
-                    .Where(filter).Select(() => new
-                    {
-                        Id = MatchFields.Id.ToValue<long>(), HomeTeamId = MatchFields.HomeTeamId.ToValue<long>(),
-                        GuestTeamId = MatchFields.GuestTeamId.ToValue<long>()
-                    });
-                var matches = await da.FetchQueryAsync(q, cancellationToken);
-
-                var teamIds = new List<long>();
-                matches.ForEach(m =>
+            var qf = new QueryFactory();
+            var q = qf.Match.From(QueryTarget.LeftJoin(qf.Round).On(MatchFields.RoundId == RoundFields.Id))
+                .Where(filter).Select(() => new
                 {
-                    _logger.LogTrace(
-                        $"{nameof(AreTeamsBusyAsync)}: {(onlyUseDatePart ? match.PlannedStart?.ToString("'Date='yyyy-MM-dd") : match.PlannedStart?.ToString("'DateTime='yyyy-MM-dd HH:mm:ss"))} MatchId={m.Id}, HomeTeamId={m.HomeTeamId}, GuestTeamId={m.GuestTeamId}");
-                    teamIds.Add(m.HomeTeamId);
-                    teamIds.Add(m.GuestTeamId);
+                    Id = MatchFields.Id.ToValue<long>(),
+                    HomeTeamId = MatchFields.HomeTeamId.ToValue<long>(),
+                    GuestTeamId = MatchFields.GuestTeamId.ToValue<long>()
                 });
-                return teamIds.Where(tid => tid.Equals(match.HomeTeamId) || tid.Equals(match.GuestTeamId)).Distinct()
-                    .ToArray();
-            }
+            var matches = await da.FetchQueryAsync(q, cancellationToken);
+
+            var teamIds = new List<long>();
+            matches.ForEach(m =>
+            {
+                _logger.LogTrace(
+                    $"{nameof(AreTeamsBusyAsync)}: {(onlyUseDatePart ? match.PlannedStart?.ToString("'Date='yyyy-MM-dd") : match.PlannedStart?.ToString("'DateTime='yyyy-MM-dd HH:mm:ss"))} MatchId={m.Id}, HomeTeamId={m.HomeTeamId}, GuestTeamId={m.GuestTeamId}");
+                teamIds.Add(m.HomeTeamId);
+                teamIds.Add(m.GuestTeamId);
+            });
+            return teamIds.Where(tid => tid.Equals(match.HomeTeamId) || tid.Equals(match.GuestTeamId)).Distinct()
+                .ToArray();
         }
 
 

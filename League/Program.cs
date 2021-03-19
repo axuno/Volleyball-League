@@ -92,7 +92,7 @@ namespace League
         /// <exception cref="DirectoryNotFoundException"></exception>
         public static string GetSecretsFolder()
         {
-            var folder = Path.Combine(_absoluteConfigurationPath, @"..\..\..\Secrets");
+            var folder = Path.Combine(Directory.GetCurrentDirectory(), @"..\..\Secrets");
             if (!Directory.Exists(folder)) throw new DirectoryNotFoundException("Secrets folder not found");
             return folder;
         }

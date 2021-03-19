@@ -137,10 +137,10 @@
 {
     <script type="text/javascript" src="~/lib/Moment/moment.min.js"></script>
     <script type="text/javascript" src="~/lib/tempusdominus-bootstrap-4/tempusdominus-bootstrap-4.min.js"></script>
-    <partial name="@nameof(League.ViewNames.Shared._DateTimePickerScriptPartial)" />
+    <partial name="@nameof(League.Views.ViewNames.Shared._DateTimePickerScriptPartial)" />
     @if (ViewContext.ClientValidationEnabled)
     {
-        <partial name="@nameof(League.ViewNames.Shared._ValidationScriptsPartial)" />
+        <partial name="@nameof(League.Views.ViewNames.Shared._ValidationScriptsPartial)" />
     }
     <script type="text/javascript">
         $(document).ready(function () {

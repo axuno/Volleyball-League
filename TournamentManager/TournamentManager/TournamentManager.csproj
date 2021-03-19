@@ -19,6 +19,10 @@ Volleyball League is an open source sports platform that brings everything neces
 
 	<ItemGroup>
 		<PackageReference Include="EPPlus" Version="5.4.2" />
+		<PackageReference Include="NuGetizer" Version="0.6.0">
+		  <PrivateAssets>all</PrivateAssets>
+		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
 		<PackageReference Include="OxyPlot.Core" Version="2.1.0-Preview1" />
 		<PackageReference Include="OxyPlot.SkiaSharp" Version="2.1.0-Preview1" />
 		<PackageReference Include="System.Reflection.TypeExtensions" Version="4.7.0" />

@@ -15,7 +15,7 @@
     <div class="mb-0 pb-1">
         <h2 class="h2">@ViewData["Title"]</h2>
         <hr class="mb-2" />
-        <partial name="@nameof(League.ViewNames.TeamApplication._TeamApplicationMessagesPartial)" />
+        <partial name="@nameof(League.Views.ViewNames.TeamApplication._TeamApplicationMessagesPartial)" />
         @if (TenantContext.TournamentContext.ApplicationAllowed)
         {
             <a asp-controller="@nameof(League.Controllers.TeamApplication)" asp-action="@nameof(League.Controllers.TeamApplication.Start)" asp-route-organization="@tenantUrlSegment" class="btn btn-primary mb-2">@Localizer["Register team now"]</a>

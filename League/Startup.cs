@@ -1,7 +1,5 @@
 ﻿#region ** Usings **
 
-using cloudscribe.Web.Navigation;
-using cloudscribe.Web.Navigation.Caching;
 using JSNLog;
 using League.Identity;
 using League.ModelBinders;
@@ -49,6 +47,7 @@ using Microsoft.AspNetCore.Rewrite;
 using TournamentManager.DI;
 using TournamentManager.MultiTenancy;
 using League.TextTemplatingModule;
+using Microsoft.AspNetCore.Mvc.Localization;
 using NLog.Extensions.Logging;
 
 #endregion
@@ -567,6 +566,9 @@ namespace League
 
             services.AddRazorPages().AddRazorPagesOptions(options => {  });
 
+            // Custom ViewLocalizer, necessary for views located in a library:
+            services.AddTransient<IViewLocalizer, League.Views.ViewLocalizer>();
+            
             var mvcBuilder = services.AddMvc(options =>
                 {
                     options.EnableEndpointRouting = true;
@@ -587,7 +589,7 @@ namespace League
                     options.ModelBinderProviders.Insert(0, new TimeSpanModelBinderProvider());
                     options.ModelBinderProviders.Insert(0, new DateTimeModelBinderProvider());
                     // Replace ComplexTypeModelBinder with TrimmingModelBinder (trims all strings in models)
-                    options.ModelBinderProviders[options.ModelBinderProviders.TakeWhile(p => !(p is Microsoft.AspNetCore.Mvc.ModelBinding.Binders.ComplexTypeModelBinderProvider)).Count()] = new ModelBinders.TrimmingComplexModelBinderProvider();
+                    options.ModelBinderProviders[options.ModelBinderProviders.TakeWhile(p => !(p is Microsoft.AspNetCore.Mvc.ModelBinding.Binders.ComplexTypeModelBinderProvider)).Count() - 1] = new ModelBinders.TrimmingComplexModelBinderProvider();
                 })
                 .AddControllersAsServices(); // will add controllers with ServiceLifetime.Transient
 #if DEBUG
@@ -601,24 +603,6 @@ namespace League
             {
                 options.RedirectStatusCode = StatusCodes.Status301MovedPermanently;
             });
-
-            #region *** Add CloudScribeNavigation ***
-
-            // CloudscribeNavigation requires:
-            // ~/Views/Shared/NavigationNodeChildDropdownPartial.cshtml
-            // ~/Views/Shared/NavigationNodeChildTreePartial.cshtml
-            // ~/Views/Shared/NavigationNodeSideNavPartial.cshtml
-            // ~/Views/Shared/Components/Navigation/*.cshtml
-            // ~/Views/_ViewImports.cshtml: @using cloudscribe.Web.Navigation
-
-            //services.AddCloudscribeNavigation(Configuration.GetSection("NavigationOptions"));
-            services.AddCloudscribeNavigation(null);
-            services.AddScoped<IOptions<NavigationOptions>, Navigation.LeagueSiteNavigationOptionsResolver>(); // resolve navigation xml files per organization
-            services.AddScoped<INavigationTreeBuilder, Navigation.HomeNavigationTreeBuilder>(); //add top nav home button per tenant
-            services.AddScoped<INavigationTreeBuilder, Navigation.LeaguesNavigationTreeBuilder>(); //add top nav item for leagues per tenant
-            services.AddScoped<INavigationTreeBuilder, Navigation.InfosNavigationTreeBuilder>(); //add top nav item for info menu per tenant
-            services.AddScoped<ITreeCache, Navigation.LeagueMemoryTreeCache>(); // cache navigation tree per tenant
-            #endregion
 
             #region *** Text Templating ***
 
@@ -690,17 +674,12 @@ namespace League
             if (env.IsDevelopment())
             {
                 app.UseMiddleware<StackifyMiddleware.RequestTracerMiddleware>();
-                // Turn production error behavior on=false/off=true
-                if (true)
-                {
-                    app.UseDeveloperExceptionPage();
-                    app.UseStatusCodePages();
-                }
-                else
-                {
-                    app.UseStatusCodePagesWithReExecute($"/{nameof(Controllers.Error)}/{{0}}");
-                    app.UseExceptionHandler($"/{nameof(Controllers.Error)}/500");  
-                }
+                
+                app.UseDeveloperExceptionPage();
+                app.UseStatusCodePages();
+                
+                //app.UseStatusCodePagesWithReExecute($"/{nameof(Controllers.Error)}/{{0}}");
+                //app.UseExceptionHandler($"/{nameof(Controllers.Error)}/500");  
             }
             else
             {
