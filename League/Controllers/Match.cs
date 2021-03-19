@@ -537,7 +537,7 @@ namespace League.Controllers
         public async Task<IActionResult> ReportSheet(long id, CancellationToken cancellationToken)
         {
             var pathToChromium = Path.Combine(Directory.GetCurrentDirectory(), @"Chromium-Win\chrome.exe");
-            MatchReportSheetRow model;
+            MatchReportSheetRow model = null;
             try
             {
                 model = await _appDb.MatchRepository.GetMatchReportSheetAsync(_tenantContext.TournamentContext.MatchPlanTournamentId, id, cancellationToken);
@@ -554,8 +554,8 @@ namespace League.Controllers
                         ExecutablePath = pathToChromium, Timeout = 10000
                     };
                     // Use Puppeteer as a wrapper for the Chromium browser, which can generate PDF from HTML
-                    await using var browser = await PuppeteerSharp.Puppeteer.LaunchAsync(options);
-                    await using var page = await browser.NewPageAsync();
+                    await using var browser = await PuppeteerSharp.Puppeteer.LaunchAsync(options).ConfigureAwait(false);
+                    await using var page = await browser.NewPageAsync().ConfigureAwait(false);
                     // page.GoToAsync("url");
                     var html = await _razorViewToStringRenderer.RenderViewToStringAsync(
                         $"~/Views/{nameof(Match)}/{ViewNames.Match.ReportSheet}.cshtml", model);
@@ -575,7 +575,6 @@ namespace League.Controllers
             catch (Exception e)
             {
                 _logger.LogCritical(e, $"{nameof(ReportSheet)} failed for match ID '{id}'");
-                throw;
             }
             
             // without Chromium installed or throwing exception: return HTML
