@@ -109,33 +109,27 @@ namespace TournamentManager.Data
 
         private async Task<long> GetTournamentIdOfRoundAsync(long roundId, CancellationToken cancellationToken)
         {
-            using (var da = _dbContext.GetNewAdapter())
-            {
-                var metaData = new LinqMetaData(da);
-                return await (from r in metaData.Round
+            using var da = _dbContext.GetNewAdapter();
+            var metaData = new LinqMetaData(da);
+            return await (from r in metaData.Round
                 where r.Id == roundId
                 select r.TournamentId).ExecuteAsync<long>(cancellationToken);
-            }
         }
 
         public virtual async Task<List<RankingListRow>> GetRankingListAsync(IPredicateExpression filter, CancellationToken cancellationToken)
         {
-            using (var da = _dbContext.GetNewAdapter())
-            {
-                return (await da.FetchQueryAsync(
-                    new QueryFactory().RankingList.Where(filter).OrderBy(RankingListFields.TournamentId.Ascending(), RankingListFields.RoundName.Ascending(), RankingListFields.Rank.Ascending()), cancellationToken));
-            }
+            using var da = _dbContext.GetNewAdapter();
+            return (await da.FetchQueryAsync(
+                new QueryFactory().RankingList.Where(filter).OrderBy(RankingListFields.TournamentId.Ascending(), RankingListFields.RoundName.Ascending(), RankingListFields.Rank.Ascending()), cancellationToken));
         }
 
         public virtual async Task<List<(long RoundId, DateTime CreatedOn)>> GetRoundRanksCreatedOn(IPredicateExpression filter,
             CancellationToken cancellationToken)
         {
-            using (var da = _dbContext.GetNewAdapter())
-            {
-                return (await da.FetchQueryAsync<RankingEntity>(
-                    new QueryFactory().Ranking.Where(filter)
-                    ,cancellationToken)).Cast<RankingEntity>().Select(r => (RoundId: r.RoundId, CreatedOn: r.CreatedOn)).Distinct().ToList();
-            }
+            using var da = _dbContext.GetNewAdapter();
+            return (await da.FetchQueryAsync<RankingEntity>(
+                new QueryFactory().Ranking.Where(filter)
+                ,cancellationToken)).Cast<RankingEntity>().Select(r => (RoundId: r.RoundId, CreatedOn: r.CreatedOn)).Distinct().ToList();
         }
     }
 }

@@ -46,33 +46,29 @@ namespace TournamentManager.Data
 
         public virtual async Task<TournamentEntity> GetTournamentWithRoundsAsync(long tournamentId, CancellationToken cancellationToken)
         {
-            using (var da = _dbContext.GetNewAdapter())
-            {
-                var metaData = new LinqMetaData(da);
-                var q = (metaData.Tournament.Where(t => t.Id == tournamentId))
-                    .WithPath(new PathEdge<TournamentEntity>(TournamentEntity.PrefetchPathRounds,
-                        new IPathEdge[] {new PathEdge<RoundEntity>(RoundEntity.PrefetchPathRoundType)}));
+            using var da = _dbContext.GetNewAdapter();
+            var metaData = new LinqMetaData(da);
+            var q = (metaData.Tournament.Where(t => t.Id == tournamentId))
+                .WithPath(new PathEdge<TournamentEntity>(TournamentEntity.PrefetchPathRounds,
+                    new IPathEdge[] {new PathEdge<RoundEntity>(RoundEntity.PrefetchPathRoundType)}));
 
-                return (await q.ExecuteAsync<IList<TournamentEntity>>(cancellationToken)).FirstOrDefault();
-            }
+            return (await q.ExecuteAsync<IList<TournamentEntity>>(cancellationToken)).FirstOrDefault();
         }
 
 		public virtual EntityCollection<RoundEntity> GetTournamentRounds(long tournamentId)
-		{
-			using (var da = _dbContext.GetNewAdapter())
-			{
-				//var selectedRounds = new EntityCollection<RoundEntity>();
-				var metaData = new LinqMetaData(da);
+        {
+            using var da = _dbContext.GetNewAdapter();
+            //var selectedRounds = new EntityCollection<RoundEntity>();
+            var metaData = new LinqMetaData(da);
 
-				IQueryable<RoundEntity> q = (from r in metaData.Round
-											 where r.TournamentId == tournamentId
-				                             select r);
+            IQueryable<RoundEntity> q = (from r in metaData.Round
+                where r.TournamentId == tournamentId
+                select r);
 
-                var result = new EntityCollection<RoundEntity>(q);
-                da.CloseConnection();
-			    return result;
-			}
-		}
+            var result = new EntityCollection<RoundEntity>(q);
+            da.CloseConnection();
+            return result;
+        }
 
         public virtual async Task<TournamentEntity> GetTournamentEntityForMatchPlannerAsync(long tournamentId, CancellationToken cancellationToken)
         {

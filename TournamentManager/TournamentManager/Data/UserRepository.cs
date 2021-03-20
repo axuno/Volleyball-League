@@ -38,101 +38,91 @@ namespace TournamentManager.Data
         /// <returns>Returns a User or the Manager subtype, or null if not found.</returns>
         public virtual async Task<UserEntity> GetLoginUserAsync(long id, CancellationToken cancellationToken)
         {
-            using (var da = _dbContext.GetNewAdapter())
+            using var da = _dbContext.GetNewAdapter();
+            var metaData = new LinqMetaData(da);
+
+            var result = await (from u in metaData.User
+                where
+                    u.Id == id
+                select u).WithPath(new IPathEdge[]
             {
-                var metaData = new LinqMetaData(da);
+                new PathEdge<UserEntity>(UserEntity.PrefetchPathManagerOfTeams),
+                new PathEdge<UserEntity>(UserEntity.PrefetchPathPlayerInTeams)
+            }).ExecuteAsync<EntityCollection<UserEntity>>(cancellationToken);
 
-                var result = await (from u in metaData.User
-                    where
-                        u.Id == id
-                    select u).WithPath(new IPathEdge[]
-                {
-                    new PathEdge<UserEntity>(UserEntity.PrefetchPathManagerOfTeams),
-                    new PathEdge<UserEntity>(UserEntity.PrefetchPathPlayerInTeams)
-                }).ExecuteAsync<EntityCollection<UserEntity>>(cancellationToken);
-
-                da.CloseConnection();
-                return result.FirstOrDefault();
-            }
+            da.CloseConnection();
+            return result.FirstOrDefault();
         }
 
         public virtual async Task<UserEntity> GetLoginUserByEmailAsync(string email, CancellationToken cancellationToken)
         {
             email = email.ToLowerInvariant().Trim();
-            using (var da = _dbContext.GetNewAdapter())
-            {
-                var metaData = new LinqMetaData(da);
+            using var da = _dbContext.GetNewAdapter();
+            var metaData = new LinqMetaData(da);
 
-                var result = await (from u in metaData.User
-                    where
-                        u.Email.ToLower() == email
-                    select u).WithPath(new IPathEdge[]
-                {
-                    new PathEdge<UserEntity>(UserEntity.PrefetchPathManagerOfTeams),
-                    new PathEdge<UserEntity>(UserEntity.PrefetchPathPlayerInTeams)
-                }).ExecuteAsync<EntityCollection<UserEntity>>(cancellationToken);
-                da.CloseConnection();
-                return result.FirstOrDefault();
-            }
+            var result = await (from u in metaData.User
+                where
+                    u.Email.ToLower() == email
+                select u).WithPath(new IPathEdge[]
+            {
+                new PathEdge<UserEntity>(UserEntity.PrefetchPathManagerOfTeams),
+                new PathEdge<UserEntity>(UserEntity.PrefetchPathPlayerInTeams)
+            }).ExecuteAsync<EntityCollection<UserEntity>>(cancellationToken);
+            da.CloseConnection();
+            return result.FirstOrDefault();
         }
 
         public virtual async Task<UserEntity> GetLoginUserByEmail2Async(string email, CancellationToken cancellationToken)
         {
             email = email.ToLowerInvariant().Trim();
-            using (var da = _dbContext.GetNewAdapter())
-            {
-                var metaData = new LinqMetaData(da);
+            using var da = _dbContext.GetNewAdapter();
+            var metaData = new LinqMetaData(da);
 
-                var result = await (from u in metaData.User
-                    where
-                        u.Email2.ToLower() == email
-                    select u).WithPath(new IPathEdge[]
-                {
-                    new PathEdge<UserEntity>(UserEntity.PrefetchPathManagerOfTeams),
-                    new PathEdge<UserEntity>(UserEntity.PrefetchPathPlayerInTeams)
-                }).ExecuteAsync<EntityCollection<UserEntity>>(cancellationToken);
-                da.CloseConnection();
-                return result.FirstOrDefault();
-            }
+            var result = await (from u in metaData.User
+                where
+                    u.Email2.ToLower() == email
+                select u).WithPath(new IPathEdge[]
+            {
+                new PathEdge<UserEntity>(UserEntity.PrefetchPathManagerOfTeams),
+                new PathEdge<UserEntity>(UserEntity.PrefetchPathPlayerInTeams)
+            }).ExecuteAsync<EntityCollection<UserEntity>>(cancellationToken);
+            da.CloseConnection();
+            return result.FirstOrDefault();
         }
 
         public virtual async Task<UserEntity> GetLoginUserByUserNameAsync(string userName, CancellationToken cancellationToken)
         {
             userName = userName.ToLowerInvariant().Trim();
-            using (var da = _dbContext.GetNewAdapter())
-            {
-                var metaData = new LinqMetaData(da);
+            using var da = _dbContext.GetNewAdapter();
+            var metaData = new LinqMetaData(da);
 
-                var result = await (from u in metaData.User
-                    where
-                        u.UserName.ToLower() == userName
-                    select u).WithPath(new IPathEdge[]
-                {
-                    new PathEdge<UserEntity>(UserEntity.PrefetchPathManagerOfTeams),
-                    new PathEdge<UserEntity>(UserEntity.PrefetchPathPlayerInTeams)
-                }).ExecuteAsync<EntityCollection<UserEntity>>(cancellationToken);
-                da.CloseConnection();
-                return result.FirstOrDefault();
-            }
+            var result = await (from u in metaData.User
+                where
+                    u.UserName.ToLower() == userName
+                select u).WithPath(new IPathEdge[]
+            {
+                new PathEdge<UserEntity>(UserEntity.PrefetchPathManagerOfTeams),
+                new PathEdge<UserEntity>(UserEntity.PrefetchPathPlayerInTeams)
+            }).ExecuteAsync<EntityCollection<UserEntity>>(cancellationToken);
+            da.CloseConnection();
+            return result.FirstOrDefault();
         }
 
         public virtual async Task<UserEntity> GetLoginUserByGuidAsync(string guid, CancellationToken cancellationToken)
         {
-            using (var da = _dbContext.GetNewAdapter())
-            {
-                var metaData = new LinqMetaData(da);
+            using var da = _dbContext.GetNewAdapter();
+            var metaData = new LinqMetaData(da);
 
-                var result = await (from u in metaData.User
-                    where
-                        u.Guid == guid
-                    select u).WithPath(new IPathEdge[]
-                {
-                    new PathEdge<UserEntity>(UserEntity.PrefetchPathManagerOfTeams),
-                    new PathEdge<UserEntity>(UserEntity.PrefetchPathPlayerInTeams)
-                }).ExecuteAsync<EntityCollection<UserEntity>>(cancellationToken);
-                da.CloseConnection();
-                return result.FirstOrDefault();
-            }
+            var result = await (from u in metaData.User
+                where
+                    u.Guid == guid
+                select u).WithPath(new IPathEdge[]
+            {
+                new PathEdge<UserEntity>(UserEntity.PrefetchPathManagerOfTeams),
+                new PathEdge<UserEntity>(UserEntity.PrefetchPathPlayerInTeams)
+            }).ExecuteAsync<EntityCollection<UserEntity>>(cancellationToken);
+            da.CloseConnection();
+            return result.FirstOrDefault();
         }
 
         /// <summary>
@@ -143,14 +133,12 @@ namespace TournamentManager.Data
         public virtual async Task<bool> UsernameExistsAsync(string username)
         {
             username = username.ToLowerInvariant();
-            using (var da = _dbContext.GetNewAdapter())
-            {
-                var metaData = new LinqMetaData(da);
-                var result = await (from u in metaData.User
-                    where username == u.UserName.ToLower()
-                    select u).FirstOrDefaultAsync();
-                return result != null;
-            }
+            using var da = _dbContext.GetNewAdapter();
+            var metaData = new LinqMetaData(da);
+            var result = await (from u in metaData.User
+                where username == u.UserName.ToLower()
+                select u).FirstOrDefaultAsync();
+            return result != null;
         }
 
         /// <summary>
@@ -161,14 +149,12 @@ namespace TournamentManager.Data
         public virtual async Task<bool> EmailExistsAsync(string email)
         {
             email = email.ToLowerInvariant();
-            using (var da = _dbContext.GetNewAdapter())
-            {
-                var metaData = new LinqMetaData(da);
-                var result = await (from u in metaData.User
-                    where email == u.Email.ToLower()
-                    select u).FirstOrDefaultAsync();
-                return result != null;
-            }
+            using var da = _dbContext.GetNewAdapter();
+            var metaData = new LinqMetaData(da);
+            var result = await (from u in metaData.User
+                where email == u.Email.ToLower()
+                select u).FirstOrDefaultAsync();
+            return result != null;
         }
 
         public virtual async Task<List<UserEntity>> FindUserAsync(IPredicateExpression filter, int limit, CancellationToken cancellationToken)
@@ -191,27 +177,25 @@ namespace TournamentManager.Data
             if (user == null) return false;
 
             var count = 0;
-            using (var da = _dbContext.GetNewAdapter())
+            using var da = _dbContext.GetNewAdapter();
+            user = new UserEntity(user.Id) {IsNew = false, LastLoginOn = loginDateTime ?? DateTime.UtcNow };
+            try
             {
-                user = new UserEntity(user.Id) {IsNew = false, LastLoginOn = loginDateTime ?? DateTime.UtcNow };
-                try
-                {
-                    count = await da.UpdateEntitiesDirectlyAsync(user,
-                        new RelationPredicateBucket(UserFields.Id == user.Id), cancellationToken);
-                }
-                catch
-                {
-                    // Count variable indicates success
-                }
+                count = await da.UpdateEntitiesDirectlyAsync(user,
+                    new RelationPredicateBucket(UserFields.Id == user.Id), cancellationToken);
+            }
+            catch
+            {
+                // Count variable indicates success
+            }
 
-                if (count == 1)
-                {
-                    _logger.LogInformation($"Sign-in date for user id '{user.Id}' updated.");
-                }
-                else
-                {
-                    _logger.LogError($"Sign-in date for user id '{user.Id}' could not be updated.");
-                }
+            if (count == 1)
+            {
+                _logger.LogInformation($"Sign-in date for user id '{user.Id}' updated.");
+            }
+            else
+            {
+                _logger.LogError($"Sign-in date for user id '{user.Id}' could not be updated.");
             }
 
             return count == 1;

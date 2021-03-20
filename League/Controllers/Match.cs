@@ -10,11 +10,11 @@ using League.BackgroundTasks;
 using League.Emailing.Creators;
 using League.Helpers;
 using League.Models.MatchViewModels;
-using League.Views;
 using MailMergeLib.AspNet;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
 using PuppeteerSharp.Media;
@@ -42,10 +42,13 @@ namespace League.Controllers
         private readonly SendEmailTask _sendMailTask;
         private readonly RankingUpdateTask _rankingUpdateTask;
         private readonly RazorViewToStringRenderer _razorViewToStringRenderer;
-        
-        public Match(ITenantContext tenantContext, IStringLocalizer<Match> localizer, IAuthorizationService authorizationService,
+        private readonly IConfiguration _configuration;
+
+        public Match(ITenantContext tenantContext, IStringLocalizer<Match> localizer,
+            IAuthorizationService authorizationService,
             Axuno.Tools.DateAndTime.TimeZoneConverter timeZoneConverter, Axuno.BackgroundTask.IBackgroundQueue queue,
-            SendEmailTask sendMailTask, RankingUpdateTask rankingUpdateTask, RazorViewToStringRenderer razorViewToStringRenderer, ILogger<Match> logger)
+            SendEmailTask sendMailTask, RankingUpdateTask rankingUpdateTask,
+            RazorViewToStringRenderer razorViewToStringRenderer, IConfiguration configuration, ILogger<Match> logger)
         {
             _tenantContext = tenantContext;
             _appDb = tenantContext.DbContext.AppDb;
@@ -56,6 +59,7 @@ namespace League.Controllers
             _sendMailTask = sendMailTask;
             _rankingUpdateTask = rankingUpdateTask;
             _razorViewToStringRenderer = razorViewToStringRenderer;
+            _configuration = configuration;
             _logger = logger;
         }
 
@@ -537,11 +541,12 @@ namespace League.Controllers
         [HttpGet("[action]/{id:long}")]
         public async Task<IActionResult> ReportSheet(long id, CancellationToken cancellationToken)
         {
-            var pathToChromium = Path.Combine(Directory.GetCurrentDirectory(), @"Chromium-Win\chrome.exe");
+            var pathToChromium = Path.Combine(Directory.GetCurrentDirectory(),_configuration["Chromium:ExecutablePath"]);
+            MatchReportSheetRow model = null;
             
             try
             {
-                var model = await _appDb.MatchRepository.GetMatchReportSheetAsync(_tenantContext.TournamentContext.MatchPlanTournamentId, id, cancellationToken);
+                model = await _appDb.MatchRepository.GetMatchReportSheetAsync(_tenantContext.TournamentContext.MatchPlanTournamentId, id, cancellationToken);
 
                 if (model == null) return NotFound();
 
@@ -551,12 +556,12 @@ namespace League.Controllers
 
                     var options = new PuppeteerSharp.LaunchOptions
                     {
-                        Headless = true, Args = new[] {"--no-sandbox", "--disable-gpu", "--disable-extensions"},
+                        Headless = true, Args = new[] {"--no-sandbox", "--disable-gpu", "--disable-extensions", "--use-cmd-decoder=validating"},
                         ExecutablePath = pathToChromium, Timeout = 10000
                     };
                     // Use Puppeteer as a wrapper for the Chromium browser, which can generate PDF from HTML
-                    await using var browser = await PuppeteerSharp.Puppeteer.LaunchAsync(options);
-                    await using var page = await browser.NewPageAsync();
+                    using var browser = await PuppeteerSharp.Puppeteer.LaunchAsync(options).ConfigureAwait(false);
+                    using var page = await browser.NewPageAsync().ConfigureAwait(false);
                     // page.GoToAsync("url");
                     var html = await _razorViewToStringRenderer.RenderViewToStringAsync(
                         $"~/Views/{nameof(Match)}/{ViewNames.Match.ReportSheet}.cshtml", model);
@@ -565,22 +570,38 @@ namespace League.Controllers
                     contentDisposition.SetHttpFileName($"{_localizer["Report Sheet"].Value} {model.Id}.pdf");
                     Response.Headers[Microsoft.Net.Http.Headers.HeaderNames.ContentDisposition] =
                         contentDisposition.ToString();
-                    return new FileStreamResult(
+                    browser.Process?.Refresh();
+                    _logger.LogInformation(
+                        "Chromium Process physical memory: {0:#,0} bytes. Start arguments: {1}",
+                        browser.Process?.WorkingSet64, browser.Process?.StartInfo.Arguments);
+                    
+                    // Test, whether the chromium browser renders at all
+                    /* return new FileStreamResult(
+                        await page.ScreenshotStreamAsync(new PuppeteerSharp.ScreenshotOptions
+                            {FullPage = true, Quality = 100, Type = ScreenshotType.Jpeg}).ConfigureAwait(false),
+                        "image/jpeg");
+                    */
+                    
+                    // Todo: This part works on the development machine, but throws on the external web server
+                    var result = new FileStreamResult(
                         await page.PdfStreamAsync(new PuppeteerSharp.PdfOptions
-                            {Scale = 1.0M, Format = PaperFormat.A4}),
+                            {Scale = 1.0M, Format = PaperFormat.A4}).ConfigureAwait(false),
                         "application/pdf");
-
+                    _logger.LogInformation("PDF stream created with length {0}", result.FileStream.Length);
+                    await browser.CloseAsync();
+                    return result;
+                    
                     #endregion
                 }
-
-                // without Chromium installed: return HTML
-                return View(ViewNames.Match.ReportSheet, model);
             }
             catch (Exception e)
             {
                 _logger.LogCritical(e, $"{nameof(ReportSheet)} failed for match ID '{id}'");
-                throw;
             }
+            
+            // without Chromium installed or throwing exception: return HTML
+            Response.Clear();
+            return View(ViewNames.Match.ReportSheet, model);
         }
 
         private void SendFixtureNotification(long matchId)

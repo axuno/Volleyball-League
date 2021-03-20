@@ -32,15 +32,13 @@ namespace TournamentManager.Data
         /// <returns>Returns an <see cref="IList{T}"/> of <see cref="TeamInRoundEntity"/>s matching the filter criteria.</returns>
         public virtual async Task<IList<TeamInRoundEntity>> GetTeamInRoundAsync(IPredicateExpression filter, CancellationToken cancellationToken)
         {
-            using (var da = _dbContext.GetNewAdapter())
-            {
-                var qf = new QueryFactory();
-                var q = qf.TeamInRound.From(QueryTarget.InnerJoin(qf.Round)
-                    .On(TeamInRoundFields.RoundId == RoundFields.Id)).Where(filter);
+            using var da = _dbContext.GetNewAdapter();
+            var qf = new QueryFactory();
+            var q = qf.TeamInRound.From(QueryTarget.InnerJoin(qf.Round)
+                .On(TeamInRoundFields.RoundId == RoundFields.Id)).Where(filter);
 
-                return (IList<TeamInRoundEntity>) await da.FetchQueryAsync<TeamInRoundEntity>(
-                    q, cancellationToken);
-            }
+            return (IList<TeamInRoundEntity>) await da.FetchQueryAsync<TeamInRoundEntity>(
+                q, cancellationToken);
         }
 	}
 }

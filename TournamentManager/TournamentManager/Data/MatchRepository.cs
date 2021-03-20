@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.Design;
 using System.Data;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
@@ -33,47 +35,39 @@ namespace TournamentManager.Data
         public virtual async Task<List<CompletedMatchRow>> GetCompletedMatchesAsync(IPredicateExpression filter,
             CancellationToken cancellationToken)
         {
-            using (var da = _dbContext.GetNewAdapter())
-            {
-                return await da.FetchQueryAsync<CompletedMatchRow>(
-                    new QueryFactory().CompletedMatch.Where(filter), cancellationToken);
-            }
+            using var da = _dbContext.GetNewAdapter();
+            return await da.FetchQueryAsync<CompletedMatchRow>(
+                new QueryFactory().CompletedMatch.Where(filter), cancellationToken);
         }
 
         public virtual async Task<List<MatchToPlayRawRow>> GetMatchesToPlayAsync(IPredicateExpression filter,
             CancellationToken cancellationToken)
         {
-            using (var da = _dbContext.GetNewAdapter())
-            {
-                var mtp = await da.FetchQueryAsync<MatchToPlayRawRow>(
-                    new QueryFactory().MatchToPlayRaw.Where(filter), cancellationToken);
+            using var da = _dbContext.GetNewAdapter();
+            var mtp = await da.FetchQueryAsync<MatchToPlayRawRow>(
+                new QueryFactory().MatchToPlayRaw.Where(filter), cancellationToken);
 
-                return mtp.ToList();
-            }
+            return mtp.ToList();
         }
 
         public virtual async Task<List<MatchCompleteRawRow>> GetMatchesCompleteAsync(IPredicateExpression filter,
             CancellationToken cancellationToken)
         {
-            using (var da = _dbContext.GetNewAdapter())
-            {
-                var mtp = await da.FetchQueryAsync<MatchCompleteRawRow>(
-                    new QueryFactory().MatchCompleteRaw.Where(filter), cancellationToken);
+            using var da = _dbContext.GetNewAdapter();
+            var mtp = await da.FetchQueryAsync<MatchCompleteRawRow>(
+                new QueryFactory().MatchCompleteRaw.Where(filter), cancellationToken);
 
-                return mtp.ToList();
-            }
+            return mtp.ToList();
         }
 
         public virtual async Task<List<PlannedMatchRow>> GetPlannedMatchesAsync(IPredicateExpression filter,
             CancellationToken cancellationToken)
         {
-            using (var da = _dbContext.GetNewAdapter())
-            {
-                return await da.FetchQueryAsync<PlannedMatchRow>(
-                    new QueryFactory().PlannedMatch.Where(filter), cancellationToken);
+            using var da = _dbContext.GetNewAdapter();
+            return await da.FetchQueryAsync<PlannedMatchRow>(
+                new QueryFactory().PlannedMatch.Where(filter), cancellationToken);
 
-                // return await Task.Run(() => GetPlannedMatches(tournamentId), cancellationToken);
-            }
+            // return await Task.Run(() => GetPlannedMatches(tournamentId), cancellationToken);
         }
 
         public virtual async Task<MatchReportSheetRow?> GetMatchReportSheetAsync(long tournamentId, long id,
@@ -107,11 +101,9 @@ namespace TournamentManager.Data
                 filter = CalendarFields.TournamentId == tournamentId;
             }
 
-            using (var da = _dbContext.GetNewAdapter())
-            {
-                return (await da.FetchQueryAsync(
-                    new QueryFactory().Calendar.Where(filter), cancellationToken));
-            }
+            using var da = _dbContext.GetNewAdapter();
+            return (await da.FetchQueryAsync(
+                new QueryFactory().Calendar.Where(filter), cancellationToken));
         }
 
         public virtual EntityCollection<MatchEntity> GetMatches(long tournamentId)
@@ -128,11 +120,9 @@ namespace TournamentManager.Data
             bucket.PredicateExpression.AddWithAnd(roundFilter);
 
             var matches = new EntityCollection<MatchEntity>();
-            using (var da = _dbContext.GetNewAdapter())
-            {
-                da.FetchEntityCollection(matches, bucket);
-                da.CloseConnection();
-            }
+            using var da = _dbContext.GetNewAdapter();
+            da.FetchEntityCollection(matches, bucket);
+            da.CloseConnection();
 
             return matches;
         }
@@ -146,11 +136,9 @@ namespace TournamentManager.Data
             bucket.PredicateExpression.AddWithAnd(roundFilter);
 
             var matches = new EntityCollection<MatchEntity>();
-            using (var da = _dbContext.GetNewAdapter())
-            {
-                da.FetchEntityCollection(matches, bucket);
-                da.CloseConnection();
-            }
+            using var da = _dbContext.GetNewAdapter();
+            da.FetchEntityCollection(matches, bucket);
+            da.CloseConnection();
 
             return matches;
         }
@@ -167,7 +155,7 @@ namespace TournamentManager.Data
                 return match.Round.RoundLegs.First(l => l.SequenceNo == match.LegSequenceNo);
             }
 
-            using (var da = _dbContext.GetNewAdapter())
+            using var da = _dbContext.GetNewAdapter();
             {
                 var metaData = new LinqMetaData(da);
                 IQueryable<RoundLegEntity> q = from l in metaData.RoundLeg
@@ -180,28 +168,61 @@ namespace TournamentManager.Data
             }
         }
 
+        public virtual MatchEntity GetMatchWithDateRelatedEntities(long matchId, long tournamentId)
+        {
+            return GetMatchWithDateRelatedEntities(MatchFields.Id == matchId, tournamentId);
+        }
+
+        private MatchEntity GetMatchWithDateRelatedEntities(IPredicate filter, long tournamentId)
+        {
+            var prefetchPathMatch = new PrefetchPath2(EntityType.MatchEntity) {MatchEntity.PrefetchPathHomeTeam};
+            prefetchPathMatch[^1].SubPath.Add(TeamEntity.PrefetchPathVenue);
+            prefetchPathMatch[^1].SubPath.Add(TeamEntity.PrefetchPathManagerOfTeams);
+            prefetchPathMatch[^1].SubPath[1].SubPath.Add(ManagerOfTeamEntity.PrefetchPathUser);
+            prefetchPathMatch.Add(MatchEntity.PrefetchPathGuestTeam);
+            prefetchPathMatch[^1].SubPath.Add(TeamEntity.PrefetchPathVenue);
+            prefetchPathMatch[^1].SubPath.Add(TeamEntity.PrefetchPathManagerOfTeams);
+            prefetchPathMatch[^1].SubPath[1].SubPath.Add(ManagerOfTeamEntity.PrefetchPathUser);
+            prefetchPathMatch.Add(MatchEntity.PrefetchPathSets);
+            prefetchPathMatch.Add(MatchEntity.PrefetchPathVenue);
+            prefetchPathMatch.Add(MatchEntity.PrefetchPathOrigVenue);
+            prefetchPathMatch.Add(MatchEntity.PrefetchPathRound);
+            prefetchPathMatch[^1].SubPath.Add(RoundEntity.PrefetchPathRoundLegs);
+            prefetchPathMatch[^1].SubPath.Add(RoundEntity.PrefetchPathTournament);
+
+            MatchEntity match;
+            using var da = _dbContext.GetNewAdapter();
+            // filter based for MatchEntity
+            var bucket = new RelationPredicateBucket(filter);
+            // filter based relation to RoundEntity
+            bucket.Relations.Add(MatchEntity.Relations.RoundEntityUsingRoundId);
+            bucket.PredicateExpression.AddWithAnd(RoundFields.TournamentId == tournamentId);
+            match = da.FetchNewEntity<MatchEntity>(bucket, prefetchPathMatch);
+            da.CloseConnection();
+
+            return match;
+        }
+
         public virtual async Task<MatchEntity> GetMatchWithSetsAsync(long matchId, CancellationToken cancellationToken)
         {
-            using (var da = _dbContext.GetNewAdapter())
-            {
-                var metaData = new LinqMetaData(da);
-                var match = await (from m in metaData.Match
-                        where m.Id == matchId
-                        select m).WithPath(new PathEdge<MatchEntity>(MatchEntity.PrefetchPathSets))
-                    .FirstOrDefaultAsync<MatchEntity>(cancellationToken);
-                return match;
-            }
+            using var da = _dbContext.GetNewAdapter();
+            var metaData = new LinqMetaData(da);
+            var match = await (from m in metaData.Match
+                    where m.Id == matchId
+                    select m).WithPath(new PathEdge<MatchEntity>(MatchEntity.PrefetchPathSets))
+                .FirstOrDefaultAsync<MatchEntity>(cancellationToken);
+            return match;
         }
 
         /// <summary>
-        /// Finds not completed matches, where home or guest team of the given match are involved,
+        /// Finds any not completed matches, where home or guest team of the given match are involved,
         /// and where the match date/time are overlapping.
         /// </summary>
         /// <param name="match">The match to use for finding.</param>
         /// <param name="onlyUseDatePart">If true, only the date part is used, otherwise date and time.</param>
         /// <param name="tournamentId">The tournament id to filter the result.</param>
         /// <param name="cancellationToken"></param>
-        /// <returns>Returns team ID of matches, where home or guest team of the given match are involved,
+        /// <returns>Returns team ID of any matches, where home or guest team of the given match are involved,
         /// and where the match date/time are overlapping.</returns>
         public virtual async Task<long[]> AreTeamsBusyAsync(MatchEntity match, bool onlyUseDatePart, long tournamentId,
             CancellationToken cancellationToken)
@@ -226,8 +247,7 @@ namespace TournamentManager.Data
             var q = qf.Match.From(QueryTarget.LeftJoin(qf.Round).On(MatchFields.RoundId == RoundFields.Id))
                 .Where(filter).Select(() => new
                 {
-                    Id = MatchFields.Id.ToValue<long>(),
-                    HomeTeamId = MatchFields.HomeTeamId.ToValue<long>(),
+                    Id = MatchFields.Id.ToValue<long>(), HomeTeamId = MatchFields.HomeTeamId.ToValue<long>(),
                     GuestTeamId = MatchFields.GuestTeamId.ToValue<long>()
                 });
             var matches = await da.FetchQueryAsync(q, cancellationToken);
@@ -259,17 +279,15 @@ namespace TournamentManager.Data
         /// </example>
         public virtual async Task<int> GetMatchCountAsync(PredicateExpression filter, CancellationToken cancellationToken)
         {
-            using (var da = _dbContext.GetNewAdapter())
-            {
-                var qf = new QueryFactory();
-                var q = qf.Create()
-                    .Select(MatchFields.Id.Count())
-                    .From(qf.Match.InnerJoin(qf.Round)
-                        .On(MatchFields.RoundId == RoundFields.Id))
-                    .Where(filter);
+            using var da = _dbContext.GetNewAdapter();
+            var qf = new QueryFactory();
+            var q = qf.Create()
+                .Select(MatchFields.Id.Count())
+                .From(qf.Match.InnerJoin(qf.Round)
+                    .On(MatchFields.RoundId == RoundFields.Id))
+                .Where(filter);
 
-                return await da.FetchScalarAsync<int>(q, cancellationToken);
-            }
+            return await da.FetchScalarAsync<int>(q, cancellationToken);
         }
 
         /// <summary>
@@ -279,19 +297,17 @@ namespace TournamentManager.Data
         /// <returns>Returns true if matches were found, else false.</returns>
         public virtual bool AnyCompleteMatchesExist(long tournamentId)
         {
-            using (var da = _dbContext.GetNewAdapter())
+            using var da = _dbContext.GetNewAdapter();
+            var metaData = new LinqMetaData(da);
+            if ((from matchEntity in metaData.Match
+                where matchEntity.Round.TournamentId == tournamentId && matchEntity.IsComplete
+                select matchEntity.Id).AsEnumerable().Any())
             {
-                var metaData = new LinqMetaData(da);
-                if ((from matchEntity in metaData.Match
-                    where matchEntity.Round.TournamentId == tournamentId && matchEntity.IsComplete
-                    select matchEntity.Id).AsEnumerable().Any())
-                {
-                    da.CloseConnection();
-                    return true;
-                }
-
                 da.CloseConnection();
+                return true;
             }
+
+            da.CloseConnection();
 
             return false;
         }
@@ -304,19 +320,17 @@ namespace TournamentManager.Data
         /// <returns>Returns true if matches were found, else false.</returns>
         public virtual bool AnyCompleteMatchesExist(RoundEntity round)
         {
-            using (var da = _dbContext.GetNewAdapter())
+            using var da = _dbContext.GetNewAdapter();
+            var metaData = new LinqMetaData(da);
+            if ((from matchEntity in metaData.Match
+                where matchEntity.Round.Id == round.Id && matchEntity.IsComplete
+                select matchEntity.Id).AsEnumerable().Any())
             {
-                var metaData = new LinqMetaData(da);
-                if ((from matchEntity in metaData.Match
-                    where matchEntity.Round.Id == round.Id && matchEntity.IsComplete
-                    select matchEntity.Id).AsEnumerable().Any())
-                {
-                    da.CloseConnection();
-                    return true;
-                }
-
                 da.CloseConnection();
+                return true;
             }
+
+            da.CloseConnection();
 
             return false;
         }
@@ -327,20 +341,18 @@ namespace TournamentManager.Data
         /// <returns>Returns true if all matches are completed, else false.</returns>
         public virtual bool AllMatchesCompleted(TournamentEntity tournament)
         {
-            using (var da = _dbContext.GetNewAdapter())
+            using var da = _dbContext.GetNewAdapter();
+            var metaData = new LinqMetaData(da);
+
+            if ((from matchEntity in metaData.Match
+                where matchEntity.Round.TournamentId == tournament.Id && !matchEntity.IsComplete
+                select matchEntity.Id).AsEnumerable().Any())
             {
-                var metaData = new LinqMetaData(da);
-
-                if ((from matchEntity in metaData.Match
-                    where matchEntity.Round.TournamentId == tournament.Id && !matchEntity.IsComplete
-                    select matchEntity.Id).AsEnumerable().Any())
-                {
-                    da.CloseConnection();
-                    return false;
-                }
-
                 da.CloseConnection();
+                return false;
             }
+
+            da.CloseConnection();
 
             return true;
         }
@@ -351,20 +363,18 @@ namespace TournamentManager.Data
         /// <returns>Returns true if all matches are completed, else false.</returns>
         public virtual bool AllMatchesCompleted(RoundEntity round)
         {
-            using (var da = _dbContext.GetNewAdapter())
+            using var da = _dbContext.GetNewAdapter();
+            var metaData = new LinqMetaData(da);
+
+            if ((from matchEntity in metaData.Match
+                where matchEntity.Round.Id == round.Id && !matchEntity.IsComplete
+                select matchEntity.Id).AsEnumerable().Any())
             {
-                var metaData = new LinqMetaData(da);
-
-                if ((from matchEntity in metaData.Match
-                    where matchEntity.Round.Id == round.Id && !matchEntity.IsComplete
-                    select matchEntity.Id).AsEnumerable().Any())
-                {
-                    da.CloseConnection();
-                    return false;
-                }
-
                 da.CloseConnection();
+                return false;
             }
+
+            da.CloseConnection();
 
             return true;
         }
@@ -378,21 +388,19 @@ namespace TournamentManager.Data
         /// <returns>Returns <see langword="true"/> if the transactions was successful, else <see langword="false"/>.</returns>
         public virtual async Task<bool> SaveMatchResultAsync(MatchEntity matchEntity, CancellationToken cancellationToken)
         {
-            using (var da = _dbContext.GetNewAdapter())
+            using var da = _dbContext.GetNewAdapter();
+            await da.StartTransactionAsync(IsolationLevel.ReadCommitted,
+                string.Concat(nameof(MatchRepository), nameof(SaveMatchResultAsync), Guid.NewGuid().ToString()), cancellationToken);
+
+            if (matchEntity.Sets.RemovedEntitiesTracker != null)
             {
-                da.StartTransaction(IsolationLevel.ReadCommitted,
-                    string.Concat(nameof(MatchRepository), nameof(SaveMatchResultAsync), Guid.NewGuid().ToString()));
-
-                if (matchEntity.Sets.RemovedEntitiesTracker != null)
-                {
-                    await da.DeleteEntityCollectionAsync(matchEntity.Sets.RemovedEntitiesTracker, cancellationToken);
-                    matchEntity.Sets.RemovedEntitiesTracker.Clear();
-                }
-
-                var success = await da.SaveEntityAsync(matchEntity, false, true, cancellationToken);
-                da.Commit();
-                return success;
+                await da.DeleteEntityCollectionAsync(matchEntity.Sets.RemovedEntitiesTracker, cancellationToken);
+                matchEntity.Sets.RemovedEntitiesTracker.Clear();
             }
+
+            var success = await da.SaveEntityAsync(matchEntity, false, true, cancellationToken);
+            da.Commit();
+            return success;
         }
     }
 }

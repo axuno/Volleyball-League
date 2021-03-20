@@ -93,67 +93,65 @@ namespace TournamentManager.Data
 			// get the rounds of SOURCE tournament
 			var roundIds = _appDb.TournamentRepository.GetTournamentRounds(fromTournamentId).Select(r => r.Id).ToList();
 
-			using (var da = _appDb.DbContext.GetNewAdapter())
-			{
-				// da.StartTransaction(System.Data.IsolationLevel.ReadUncommitted, transactionName);
-				var roundsWithLegs = new Queue<RoundEntity>();
-                foreach (var r in roundIds)
-                {
-					roundsWithLegs.Enqueue(_appDb.RoundRepository.GetRoundWithLegs(r));
-                }
+            using var da = _appDb.DbContext.GetNewAdapter();
+            // da.StartTransaction(System.Data.IsolationLevel.ReadUncommitted, transactionName);
+            var roundsWithLegs = new Queue<RoundEntity>();
+            foreach (var r in roundIds)
+            {
+                roundsWithLegs.Enqueue(_appDb.RoundRepository.GetRoundWithLegs(r));
+            }
 				
-				foreach (var r in roundIds)
+            foreach (var r in roundIds)
+            {
+                var round = roundsWithLegs.Dequeue();
+
+                // skip excluded round id's
+                if (excludeRoundId.Contains(r))
+                    continue;
+
+                // create new round and overtake data of source round
+                var newRound = new RoundEntity()
                 {
-                    var round = roundsWithLegs.Dequeue();
+                    TournamentId = toTournamentId,
+                    Name = round.Name,
+                    Description = round.Description,
+                    TypeId = round.TypeId,
+                    NumOfLegs = round.NumOfLegs,
+                    MatchRuleId = round.MatchRuleId,
+                    SetRuleId = round.MatchRuleId,
+                    IsComplete = false,
+                    CreatedOn = now,
+                    ModifiedOn = now,
+                    NextRoundId = null
+                };
 
-                    // skip excluded round id's
-					if (excludeRoundId.Contains(r))
-						continue;
+                // create the round leg records based on the TARGET tournament legs
+                foreach (var rl in round.RoundLegs)
+                {
+                    var newRoundLeg = new RoundLegEntity()
+                    {
+                        SequenceNo = rl.SequenceNo,
+                        Description = rl.Description,
+                        StartDateTime = rl.StartDateTime,
+                        EndDateTime = rl.EndDateTime,
+                        CreatedOn = now,
+                        ModifiedOn = now
+                    };
+                    newRound.RoundLegs.Add(newRoundLeg);
+                }
 
-					// create new round and overtake data of source round
-					var newRound = new RoundEntity()
-					{
-						TournamentId = toTournamentId,
-						Name = round.Name,
-						Description = round.Description,
-						TypeId = round.TypeId,
-						NumOfLegs = round.NumOfLegs,
-						MatchRuleId = round.MatchRuleId,
-						SetRuleId = round.MatchRuleId,
-						IsComplete = false,
-						CreatedOn = now,
-						ModifiedOn = now,
-						NextRoundId = null
-					};
+                // save recursively (new round with its new round legs)
+                if (! da.SaveEntity(newRound, true, true))
+                {
+                    // roll back if any round fails
+                    da.Rollback(transactionName);
+                    return false;
+                }
+            }
 
-					// create the round leg records based on the TARGET tournament legs
-					foreach (var rl in round.RoundLegs)
-					{
-						var newRoundLeg = new RoundLegEntity()
-						{
-							SequenceNo = rl.SequenceNo,
-							Description = rl.Description,
-							StartDateTime = rl.StartDateTime,
-							EndDateTime = rl.EndDateTime,
-							CreatedOn = now,
-							ModifiedOn = now
-						};
-						newRound.RoundLegs.Add(newRoundLeg);
-					}
-
-					// save recursively (new round with its new round legs)
-					if (! da.SaveEntity(newRound, true, true))
-					{
-						// roll back if any round fails
-						da.Rollback(transactionName);
-						return false;
-					}
-				}
-
-				// commit only after all rounds are processed successfully
-				da.Commit();
-			}
-			return true;
+            // commit only after all rounds are processed successfully
+            da.Commit();
+            return true;
 		}
 
 		public bool SetLegDates(IEnumerable<RoundEntity> rounds , int sequenceNo, DateTime start, DateTime end)
@@ -177,29 +175,27 @@ namespace TournamentManager.Data
 			if (!tournamentId.HasValue)
 				return false;
 
-			using (var da = _appDb.DbContext.GetNewAdapter())
-			{
-                //da.StartTransaction(System.Data.IsolationLevel.ReadUncommitted, transactionName);
+            using var da = _appDb.DbContext.GetNewAdapter();
+            //da.StartTransaction(System.Data.IsolationLevel.ReadUncommitted, transactionName);
                 
-				foreach (var round in roundEntities)
-				{
-					foreach (var leg in round.RoundLegs.Where(l => l.SequenceNo == sequenceNo))
-					{
-						leg.StartDateTime = start;
-						leg.EndDateTime = end;
-						leg.ModifiedOn = now;
+            foreach (var round in roundEntities)
+            {
+                foreach (var leg in round.RoundLegs.Where(l => l.SequenceNo == sequenceNo))
+                {
+                    leg.StartDateTime = start;
+                    leg.EndDateTime = end;
+                    leg.ModifiedOn = now;
 
-						if (!da.SaveEntity(leg, false, false))
-						{
-							da.Rollback();
-							return false;
-						}
-					}
-				}
-				//da.Commit();
-			}
-			
-			return true;
+                    if (!da.SaveEntity(leg, false, false))
+                    {
+                        da.Rollback();
+                        return false;
+                    }
+                }
+            }
+            //da.Commit();
+
+            return true;
 		}
 
         /// <summary>
@@ -226,12 +222,10 @@ namespace TournamentManager.Data
             tournament.IsComplete = true;
             tournament.ModifiedOn = now;
 
-            using (var da = _appDb.DbContext.GetNewAdapter())
+            using var da = _appDb.DbContext.GetNewAdapter();
+            if (!da.SaveEntity(tournament))
             {
-                if (!da.SaveEntity(tournament))
-                {
-                    throw new ArgumentException($"Tournament Id {tournamentId} could not be saved to persistent storage.");
-                }
+                throw new ArgumentException($"Tournament Id {tournamentId} could not be saved to persistent storage.");
             }
         }
 
@@ -240,14 +234,12 @@ namespace TournamentManager.Data
             if (!new MatchRepository(_appDb.DbContext).AllMatchesCompleted(round))
                 throw new ArgumentException($"Round {round.Id} has uncompleted matches.");
 
-            using (var da = _appDb.DbContext.GetNewAdapter())
-            {
-                da.FetchEntity(round);
-                round.IsComplete = true;
-                round.ModifiedOn = DateTime.Now;
-                da.SaveEntity(round);
-                da.CloseConnection();
-            }
+            using var da = _appDb.DbContext.GetNewAdapter();
+            da.FetchEntity(round);
+            round.IsComplete = true;
+            round.ModifiedOn = DateTime.Now;
+            da.SaveEntity(round);
+            da.CloseConnection();
         }
 	}
 }

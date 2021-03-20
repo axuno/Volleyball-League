@@ -63,11 +63,9 @@ namespace TournamentManager.Data
 
         public virtual async Task<List<VenueEntity>> GetVenuesAsync(IPredicateExpression filter, CancellationToken cancellationToken)
         {
-            using (var da = _dbContext.GetNewAdapter())
-            {
-                return (await da.FetchQueryAsync<VenueEntity>(
-                    new QueryFactory().Venue.Where(filter), cancellationToken)).Cast<VenueEntity>().ToList();
-            }
+            using var da = _dbContext.GetNewAdapter();
+            return (await da.FetchQueryAsync<VenueEntity>(
+                new QueryFactory().Venue.Where(filter), cancellationToken)).Cast<VenueEntity>().ToList();
         }
 
         /// <summary>
@@ -86,20 +84,16 @@ namespace TournamentManager.Data
             await da.FetchProjectionAsync<VenueDistanceResultRow>(
                     RetrievalProcedures.GetQueryForVenueDistanceResultTypedView(maxDistance, latitude, longitude), cancellationToken);
             */
-            using (var da = _dbContext.GetNewAdapter())
-            {
-                return await da.FetchProjectionAsync<VenueDistanceResultRow>(
-                    RetrievalProcedures.GetVenueDistanceCallAsQuery(maxDistance, latitude, longitude, da), cancellationToken);
-            }
+            using var da = _dbContext.GetNewAdapter();
+            return await da.FetchProjectionAsync<VenueDistanceResultRow>(
+                RetrievalProcedures.GetVenueDistanceCallAsQuery(maxDistance, latitude, longitude, da), cancellationToken);
         }
 
         public virtual async Task<List<VenueTeamRow>> GetVenueTeamRowsAsync(IPredicateExpression filter, CancellationToken cancellationToken)
         {
-            using (var da = _dbContext.GetNewAdapter())
-            {
-                return await da.FetchQueryAsync<VenueTeamRow>(
-                    new QueryFactory().VenueTeam.Where(filter), cancellationToken);
-            }
+            using var da = _dbContext.GetNewAdapter();
+            return await da.FetchQueryAsync<VenueTeamRow>(
+                new QueryFactory().VenueTeam.Where(filter), cancellationToken);
         }
 	}
 }

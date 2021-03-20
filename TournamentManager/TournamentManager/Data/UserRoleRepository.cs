@@ -26,58 +26,50 @@ namespace TournamentManager.Data
 
         public virtual async Task<IList<IdentityRoleEntity>> GetUserRolesAsync(long userId, CancellationToken cancellationToken)
         {
-            using (var da = _dbContext.GetNewAdapter())
-            {
-                var metaData = new LinqMetaData(da);
+            using var da = _dbContext.GetNewAdapter();
+            var metaData = new LinqMetaData(da);
 
-                var result = await (from ur in metaData.IdentityUserRole
-                    where ur.UserId == userId
-                    select ur.IdentityRole).ToListAsync(cancellationToken);
-                da.CloseConnection();
-                return result;
-            }
+            var result = await (from ur in metaData.IdentityUserRole
+                where ur.UserId == userId
+                select ur.IdentityRole).ToListAsync(cancellationToken);
+            da.CloseConnection();
+            return result;
         }
 
         public virtual async Task<List<UserEntity>> GetUsersInRoleAsync(string roleName, CancellationToken cancellationToken)
         {
-            using (var da = _dbContext.GetNewAdapter())
-            {
-                var metaData = new LinqMetaData(da);
+            using var da = _dbContext.GetNewAdapter();
+            var metaData = new LinqMetaData(da);
 
-                var result = await (from ur in metaData.IdentityUserRole
-                    where ur.IdentityRole.Name == roleName
-                    select ur.User).ToListAsync(cancellationToken);
+            var result = await (from ur in metaData.IdentityUserRole
+                where ur.IdentityRole.Name == roleName
+                select ur.User).ToListAsync(cancellationToken);
 
-                return result;
-            }
+            return result;
         }
 
         public virtual async Task<bool> AddUserToRoleAsync(long userId, string roleName, CancellationToken cancellationToken)
         {
-            using (var da = _dbContext.GetNewAdapter())
-            {
-                var metaData = new LinqMetaData(da);
+            using var da = _dbContext.GetNewAdapter();
+            var metaData = new LinqMetaData(da);
 
-                var role = await (from r in metaData.IdentityRole where r.Name == roleName select r).FirstOrDefaultAsync(cancellationToken);
-                if (role == null) throw new ArgumentException($"Role '{roleName}' does not exist");
+            var role = await (from r in metaData.IdentityRole where r.Name == roleName select r).FirstOrDefaultAsync(cancellationToken);
+            if (role == null) throw new ArgumentException($"Role '{roleName}' does not exist");
 
-                var ur = new IdentityUserRoleEntity {UserId = userId, RoleId = role.Id};
-                return await da.SaveEntityAsync(ur, cancellationToken);
-            }
+            var ur = new IdentityUserRoleEntity {UserId = userId, RoleId = role.Id};
+            return await da.SaveEntityAsync(ur, cancellationToken);
         }
 
         public virtual async Task<bool> RemoveUserFromRoleAsync(long userId, string roleName, CancellationToken cancellationToken)
         {
-            using (var da = _dbContext.GetNewAdapter())
-            {
-                var metaData = new LinqMetaData(da);
+            using var da = _dbContext.GetNewAdapter();
+            var metaData = new LinqMetaData(da);
                 
-                var role = await (from r in metaData.IdentityRole where r.Name == roleName select r).FirstOrDefaultAsync(cancellationToken);
-                if (role == null) return false;
+            var role = await (from r in metaData.IdentityRole where r.Name == roleName select r).FirstOrDefaultAsync(cancellationToken);
+            if (role == null) return false;
                 
-                var ur = new IdentityUserRoleEntity(role.Id, userId);
-                return await da.DeleteEntityAsync(ur, cancellationToken);
-            }
+            var ur = new IdentityUserRoleEntity(role.Id, userId);
+            return await da.DeleteEntityAsync(ur, cancellationToken);
         }
     }
 }

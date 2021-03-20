@@ -22,15 +22,13 @@ namespace TournamentManager.Data
 
         public virtual async Task<IdentityUserTokenEntity> GetTokenAsync(long userId, string loginProvider, string name, CancellationToken cancellationToken)
         {
-            using (var da = _dbContext.GetNewAdapter())
-            {
-                var metaData = new LinqMetaData(da);
-                var result = await
-                    (from token in metaData.IdentityUserToken
-                     where token.LoginProvider == loginProvider && token.Name == name
-                        select token).FirstOrDefaultAsync(cancellationToken);
-                return result;
-            }
+            using var da = _dbContext.GetNewAdapter();
+            var metaData = new LinqMetaData(da);
+            var result = await
+                (from token in metaData.IdentityUserToken
+                    where token.LoginProvider == loginProvider && token.Name == name
+                    select token).FirstOrDefaultAsync(cancellationToken);
+            return result;
         }
     }
 }
