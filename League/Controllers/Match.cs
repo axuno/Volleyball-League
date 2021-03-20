@@ -556,6 +556,7 @@ namespace League.Controllers
 
                     var options = new PuppeteerSharp.LaunchOptions
                     {
+                        // --use-cmd-decoder=passthrough causes Chromium error
                         Headless = true, Args = new[] {"--no-sandbox", "--disable-gpu", "--disable-extensions", "--use-cmd-decoder=validating"},
                         ExecutablePath = pathToChromium, Timeout = 10000
                     };
