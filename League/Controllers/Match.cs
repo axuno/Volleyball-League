@@ -543,6 +543,7 @@ namespace League.Controllers
         {
             var pathToChromium = Path.Combine(Directory.GetCurrentDirectory(),_configuration["Chromium:ExecutablePath"]);
             MatchReportSheetRow model = null;
+            
             try
             {
                 model = await _appDb.MatchRepository.GetMatchReportSheetAsync(_tenantContext.TournamentContext.MatchPlanTournamentId, id, cancellationToken);
@@ -555,12 +556,12 @@ namespace League.Controllers
 
                     var options = new PuppeteerSharp.LaunchOptions
                     {
-                        Headless = true, Args = new[] {"--no-sandbox", "--disable-gpu", "--disable-extensions"},
+                        Headless = true, Args = new[] {"--no-sandbox", "--disable-gpu", "--disable-extensions", "--use-cmd-decoder=validating"},
                         ExecutablePath = pathToChromium, Timeout = 10000
                     };
                     // Use Puppeteer as a wrapper for the Chromium browser, which can generate PDF from HTML
-                    await using var browser = await PuppeteerSharp.Puppeteer.LaunchAsync(options).ConfigureAwait(false);
-                    await using var page = await browser.NewPageAsync().ConfigureAwait(false);
+                    using var browser = await PuppeteerSharp.Puppeteer.LaunchAsync(options).ConfigureAwait(false);
+                    using var page = await browser.NewPageAsync().ConfigureAwait(false);
                     // page.GoToAsync("url");
                     var html = await _razorViewToStringRenderer.RenderViewToStringAsync(
                         $"~/Views/{nameof(Match)}/{ViewNames.Match.ReportSheet}.cshtml", model);
@@ -569,10 +570,26 @@ namespace League.Controllers
                     contentDisposition.SetHttpFileName($"{_localizer["Report Sheet"].Value} {model.Id}.pdf");
                     Response.Headers[Microsoft.Net.Http.Headers.HeaderNames.ContentDisposition] =
                         contentDisposition.ToString();
-                    return new FileStreamResult(
+                    browser.Process?.Refresh();
+                    _logger.LogInformation(
+                        "Chromium Process physical memory: {0:#,0} bytes. Start arguments: {1}",
+                        browser.Process?.WorkingSet64, browser.Process?.StartInfo.Arguments);
+                    
+                    // Test, whether the chromium browser renders at all
+                    /* return new FileStreamResult(
+                        await page.ScreenshotStreamAsync(new PuppeteerSharp.ScreenshotOptions
+                            {FullPage = true, Quality = 100, Type = ScreenshotType.Jpeg}).ConfigureAwait(false),
+                        "image/jpeg");
+                    */
+                    
+                    // Todo: This part works on the development machine, but throws on the external web server
+                    var result = new FileStreamResult(
                         await page.PdfStreamAsync(new PuppeteerSharp.PdfOptions
                             {Scale = 1.0M, Format = PaperFormat.A4}).ConfigureAwait(false),
                         "application/pdf");
+                    _logger.LogInformation("PDF stream created with length {0}", result.FileStream.Length);
+                    await browser.CloseAsync();
+                    return result;
                     
                     #endregion
                 }

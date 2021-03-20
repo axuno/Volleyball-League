@@ -32,7 +32,7 @@ namespace League.Controllers
         private readonly IStringLocalizer<Manage> _localizer;
         private readonly Axuno.Tools.DateAndTime.TimeZoneConverter _timeZoneConverter;
         private readonly Axuno.BackgroundTask.IBackgroundQueue _queue;
-        private SendEmailTask _sendEmailTask; // new instance will be created after an email was sent
+        private readonly SendEmailTask _sendEmailTask;
         private readonly IOptions<DataProtectionTokenProviderOptions> _dataProtectionTokenProviderOptions;
         private readonly MetaDataHelper _metaData;
         private readonly ITenantContext _tenantContext;

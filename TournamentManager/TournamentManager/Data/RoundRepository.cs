@@ -30,11 +30,9 @@ namespace TournamentManager.Data
 
         public virtual async Task<MatchRuleEntity> GetMatchRuleAsync(long roundId, CancellationToken cancellationToken)
         {
-            using (var da = _dbContext.GetNewAdapter())
-            {
-				return await new LinqMetaData(da).Round.Select(r => r.MatchRule).ExecuteAsync<MatchRuleEntity>(cancellationToken);
-            }
-		}
+            using var da = _dbContext.GetNewAdapter();
+            return await new LinqMetaData(da).Round.Select(r => r.MatchRule).ExecuteAsync<MatchRuleEntity>(cancellationToken);
+        }
 
         public virtual async Task<RoundEntity?> GetRoundWithRulesAsync(long roundId, CancellationToken cancellationToken)
         {
@@ -49,24 +47,20 @@ namespace TournamentManager.Data
 		public virtual async Task<List<RoundLegPeriodRow>> GetRoundLegPeriodAsync(IPredicateExpression filter,
             CancellationToken cancellationToken)
         {
-            using (var da = _dbContext.GetNewAdapter())
-            {
-                var result = (await da.FetchQueryAsync(
-                    new QueryFactory().RoundLegPeriod.Where(filter)
-                        ,cancellationToken)).ToList();
-                return result;
-            }
-		}
+            using var da = _dbContext.GetNewAdapter();
+            var result = (await da.FetchQueryAsync(
+                new QueryFactory().RoundLegPeriod.Where(filter)
+                ,cancellationToken)).ToList();
+            return result;
+        }
 
 		public virtual async Task<RoundEntity> GetRoundWithLegsAsync(long roundId, CancellationToken cancellationToken)
         {
-            using (var da = _dbContext.GetNewAdapter())
-            {
-                var result = (await da.FetchQueryAsync(
-                        new QueryFactory().Round.Where(RoundFields.Id == roundId)
-                            .WithPath(RoundEntity.PrefetchPathRoundLegs), cancellationToken)).Cast<RoundEntity>().ToList();
-                return result.FirstOrDefault();
-            }
+            using var da = _dbContext.GetNewAdapter();
+            var result = (await da.FetchQueryAsync(
+                new QueryFactory().Round.Where(RoundFields.Id == roundId)
+                    .WithPath(RoundEntity.PrefetchPathRoundLegs), cancellationToken)).Cast<RoundEntity>().ToList();
+            return result.FirstOrDefault();
         }
 
 		public virtual RoundEntity GetRoundWithLegs(long roundId)
@@ -75,46 +69,38 @@ namespace TournamentManager.Data
 			IPrefetchPath2 prefetchPathRoundLegs = new PrefetchPath2(EntityType.RoundEntity);
 			prefetchPathRoundLegs.Add(RoundEntity.PrefetchPathRoundLegs);
 
-			using (var da = _dbContext.GetNewAdapter())
-			{
-				da.FetchEntity(round, prefetchPathRoundLegs);
-				da.CloseConnection();
-				return round;
-			}
-		}
+            using var da = _dbContext.GetNewAdapter();
+            da.FetchEntity(round, prefetchPathRoundLegs);
+            da.CloseConnection();
+            return round;
+        }
 
 		public virtual EntityCollection<RoundEntity> GetRoundsOfTeam(long? teamId)
 		{
 			if (!teamId.HasValue) return new EntityCollection<RoundEntity>();
 
-			using (var da = _dbContext.GetNewAdapter())
-			{
-				var rounds = (from tir in new LinqMetaData(da).TeamInRound
-							  where tir.TeamId == teamId
-							  orderby tir.RoundId
-							  select tir.Round);
+            using var da = _dbContext.GetNewAdapter();
+            var rounds = (from tir in new LinqMetaData(da).TeamInRound
+                where tir.TeamId == teamId
+                orderby tir.RoundId
+                select tir.Round);
 
-				da.CloseConnection();
-				return new EntityCollection<RoundEntity>(rounds);
-			}
-		}
+            da.CloseConnection();
+            return new EntityCollection<RoundEntity>(rounds);
+        }
  
         public virtual async Task<List<RoundTeamRow>> GetRoundsWithTeamsAsync(PredicateExpression filter, CancellationToken cancellationToken)
         {
-                using (var da = _dbContext.GetNewAdapter())
-                {
-                    return await da.FetchQueryAsync<RoundTeamRow>(
-                        new QueryFactory().RoundTeam.Where(filter), cancellationToken);
-                }
+            using var da = _dbContext.GetNewAdapter();
+            return await da.FetchQueryAsync<RoundTeamRow>(
+                new QueryFactory().RoundTeam.Where(filter), cancellationToken);
         }
 
         public virtual async Task<List<RoundEntity>> GetRoundsWithTypeAsync(PredicateExpression filter, CancellationToken cancellationToken)
         {
-            using (var da = _dbContext.GetNewAdapter())
-            {
-                return ((EntityCollection<RoundEntity>)  await da.FetchQueryAsync<RoundEntity>(
-                    new QueryFactory().Round.WithPath(RoundEntity.PrefetchPathRoundType).Where(filter), cancellationToken)).ToList();
-            }
+            using var da = _dbContext.GetNewAdapter();
+            return ((EntityCollection<RoundEntity>)  await da.FetchQueryAsync<RoundEntity>(
+                new QueryFactory().Round.WithPath(RoundEntity.PrefetchPathRoundType).Where(filter), cancellationToken)).ToList();
         }
     }
 }

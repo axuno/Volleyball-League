@@ -24,49 +24,43 @@ namespace TournamentManager.Data
 
         public virtual async Task<IList<UserEntity>> GetPlayersInTeamAsync(long teamId, CancellationToken cancellationToken)
         {
-            using (var da = _dbContext.GetNewAdapter())
-            {
-                var metaData = new LinqMetaData(da);
+            using var da = _dbContext.GetNewAdapter();
+            var metaData = new LinqMetaData(da);
 
-                var result = await (from pit in metaData.PlayerInTeam
-                    where pit.TeamId == teamId
-                    select pit.User).ToListAsync(cancellationToken);
+            var result = await (from pit in metaData.PlayerInTeam
+                where pit.TeamId == teamId
+                select pit.User).ToListAsync(cancellationToken);
 
-                _logger.LogTrace("{0} player(s) found for team id {1}", result.Count, teamId);
+            _logger.LogTrace("{0} player(s) found for team id {1}", result.Count, teamId);
 
-                return result;
-            }
+            return result;
         }
 
         public virtual async Task<List<long>> GetTeamIdsForPlayerAsync(long userId, CancellationToken cancellationToken)
         {
-            using (var da = _dbContext.GetNewAdapter())
-            {
-                var metaData = new LinqMetaData(da);
+            using var da = _dbContext.GetNewAdapter();
+            var metaData = new LinqMetaData(da);
 
-                var result = await (from pit in metaData.PlayerInTeam
-                    where pit.UserId == userId
-                    select pit.TeamId).ToListAsync(cancellationToken);
+            var result = await (from pit in metaData.PlayerInTeam
+                where pit.UserId == userId
+                select pit.TeamId).ToListAsync(cancellationToken);
 
-                _logger.LogTrace("{0} team(s) found for user id {1}", userId, result.Count);
+            _logger.LogTrace("{0} team(s) found for user id {1}", userId, result.Count);
 
-                return result;
-            }
+            return result;
         }
 
         public virtual async Task<List<UserEntity>> GetPlayersAsync(CancellationToken cancellationToken)
         {
-            using (var da = _dbContext.GetNewAdapter())
-            {
-                var metaData = new LinqMetaData(da);
+            using var da = _dbContext.GetNewAdapter();
+            var metaData = new LinqMetaData(da);
 
-                var result = await (from pit in metaData.PlayerInTeam
-                    select pit.User).ToListAsync(cancellationToken);
+            var result = await (from pit in metaData.PlayerInTeam
+                select pit.User).ToListAsync(cancellationToken);
 
-                _logger.LogTrace("{0} player(s) found", result.Count);
+            _logger.LogTrace("{0} player(s) found", result.Count);
 
-                return result;
-            }
+            return result;
         }
     }
 }

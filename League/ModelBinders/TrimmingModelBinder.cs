@@ -20,7 +20,7 @@ namespace League.ModelBinders
     /// </summary>
     public class TrimmingComplexModelBinder : ComplexTypeModelBinder
     {
-        private ILogger<TrimmingComplexModelBinder> _logger;
+        private readonly ILogger<TrimmingComplexModelBinder> _logger;
 
         public TrimmingComplexModelBinder(IDictionary<ModelMetadata, IModelBinder> propertyBinders,
             ILoggerFactory loggerFactory) : base(propertyBinders, loggerFactory)

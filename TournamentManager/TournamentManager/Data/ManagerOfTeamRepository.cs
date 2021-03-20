@@ -30,66 +30,56 @@ namespace TournamentManager.Data
 	    }
 
         public virtual async Task<IList<UserEntity>> GetTeamManagersAsync(long teamId, CancellationToken cancellationToken)
-		{
-			using (var da = _dbContext.GetNewAdapter())
-			{
-				var metaData = new LinqMetaData(da);
+        {
+            using var da = _dbContext.GetNewAdapter();
+            var metaData = new LinqMetaData(da);
 
-				var result = await (from mot in metaData.ManagerOfTeam
-					where mot.TeamId == teamId
-					select mot.User).ToListAsync(cancellationToken);
+            var result = await (from mot in metaData.ManagerOfTeam
+                where mot.TeamId == teamId
+                select mot.User).ToListAsync(cancellationToken);
 				
-				return result;
-			}
-		}
+            return result;
+        }
 
 		public virtual async Task<List<UserEntity>> GetTeamManagersAsync(CancellationToken cancellation)
         {
-            using (var da = _dbContext.GetNewAdapter())
-            {
-                var metaData = new LinqMetaData(da);
+            using var da = _dbContext.GetNewAdapter();
+            var metaData = new LinqMetaData(da);
 
-                var result = await (from mot in metaData.ManagerOfTeam
-                    select mot.User).ToListAsync(cancellation);
-                return result;
-            }
+            var result = await (from mot in metaData.ManagerOfTeam
+                select mot.User).ToListAsync(cancellation);
+            return result;
         }
 
         public virtual async Task<List<long>> GetTeamIdsOfManagerAsync(long userId, CancellationToken cancellationToken)
         {
-            using (var da = _dbContext.GetNewAdapter())
-            {
-                var metaData = new LinqMetaData(da);
+            using var da = _dbContext.GetNewAdapter();
+            var metaData = new LinqMetaData(da);
 
-                var result = await (from mot in metaData.ManagerOfTeam
-                    where mot.UserId == userId
-                    select mot.TeamId).ToListAsync(cancellationToken);
+            var result = await (from mot in metaData.ManagerOfTeam
+                where mot.UserId == userId
+                select mot.TeamId).ToListAsync(cancellationToken);
 
-                return result;
-            }
+            return result;
         }
 
         public virtual async Task<IList<long>> GetManagerIdsOfTeamAsync(long teamId, CancellationToken cancellationToken)
         {
-            using (var da = _dbContext.GetNewAdapter())
-            {
-                var metaData = new LinqMetaData(da);
+            using var da = _dbContext.GetNewAdapter();
+            var metaData = new LinqMetaData(da);
 
-                var result = await (from mot in metaData.ManagerOfTeam
-                    where mot.TeamId == teamId
-                    select mot.UserId).ToListAsync(cancellationToken);
+            var result = await (from mot in metaData.ManagerOfTeam
+                where mot.TeamId == teamId
+                select mot.UserId).ToListAsync(cancellationToken);
 
-                return result;
-            }
+            return result;
         }
 
         public virtual async Task<List<ManagerOfTeamEntity>> GetManagerOfTeamEntitiesAsync(PredicateExpression filter, CancellationToken cancellationToken)
         {
-            using (var da = _dbContext.GetNewAdapter())
-            {
-                return (await da.FetchQueryAsync<ManagerOfTeamEntity>(
-                    new QueryFactory().ManagerOfTeam.Where(filter), cancellationToken)).Cast<ManagerOfTeamEntity>().ToList();
-            }
+            using var da = _dbContext.GetNewAdapter();
+            return (await da.FetchQueryAsync<ManagerOfTeamEntity>(
+                new QueryFactory().ManagerOfTeam.Where(filter), cancellationToken)).Cast<ManagerOfTeamEntity>().ToList();
         }
     }
 }
