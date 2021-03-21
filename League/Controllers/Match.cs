@@ -592,6 +592,20 @@ namespace League.Controllers
                     await browser.CloseAsync();
                     return result;
                     
+                    /* Todo: This is a working fallback code, which acts with Chromium directly, and requires the Url to the HTML content
+var tempdir = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
+if (Directory.Exists(tempdir)) Directory.CreateDirectory(tempdir);
+var tempFile = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
+var si = new System.Diagnostics.ProcessStartInfo(pathToChromium,
+        $"--disable-background-networking --enable-features=NetworkService,NetworkServiceInProcess --disable-background-timer-throttling --disable-backgrounding-occluded-windows --disable-breakpad --disable-client-side-phishing-detection --disable-component-extensions-with-background-pages --disable-default-apps --disable-dev-shm-usage --disable-extensions --disable-features=TranslateUI --disable-hang-monitor --disable-ipc-flooding-protection --disable-popup-blocking --disable-prompt-on-repost --disable-renderer-backgrounding --disable-sync --force-color-profile=srgb --metrics-recording-only --no-first-run --enable-automation --password-store=basic --use-mock-keychain --headless --hide-scrollbars --mute-audio --no-sandbox --disable-gpu --disable-extensions --use-cmd-decoder=validating --no-margins --user-data-dir={tempdir} --print-to-pdf={tempFile} https://volleyball-liga.de/")
+    {CreateNoWindow = true, UseShellExecute = false};
+var proc = System.Diagnostics.Process.Start(si);
+proc.WaitForExit(5000);
+_logger.LogInformation("{0}", proc.ExitCode);
+var stream = System.IO.File.OpenRead(tempFile);
+return new FileStreamResult(stream, "application/pdf");
+                    */
+                    
                     #endregion
                 }
             }

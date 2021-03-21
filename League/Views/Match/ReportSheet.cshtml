@@ -67,11 +67,27 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
     @*<link rel="stylesheet" media="all" href="@Url.Content("~/lib/bootstrap/bootstrap.min.css")">*@
     <style type="text/css">
+        @@media print {
+            @@page {
+                size: 210mm 297mm;
+                margin: 0; /* removes header and footer when printing with browsers */
+            }
+
+            div.container {
+                padding: 5mm 8mm 0 8mm !important
+            }
+        }
+
+        @@media screen {
+            body {
+                margin-top: 1rem;
+            }
+        }
+
         body {
             background-color: white;
             font-family: Arial, Helvetica, sans-serif;
             font-size: 12pt;
-            margin-top: 1rem;
         }
 
         .team-circle {
@@ -197,9 +213,9 @@
             {
                 for (var i = 1; i <= numberOfSets; i++)
                 {
-        <div class="col text-center border border-top-0">
-            @Repeat("O ", numOfTimeOuts)&nbsp;&nbsp;&#x1F551;&nbsp;&nbsp;@Repeat(" O", numOfTimeOuts)&nbsp;
-        </div>
+                    <div class="col text-center border border-top-0">
+                        @Repeat("O ", numOfTimeOuts)&nbsp;&nbsp;&#x1F551;&nbsp;&nbsp;@Repeat(" O", numOfTimeOuts)&nbsp;
+                    </div>
                 }
             }
             @if (numOfSubstitutions > 0)
