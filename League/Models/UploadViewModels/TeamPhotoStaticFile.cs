@@ -11,6 +11,8 @@ namespace League.Models.UploadViewModels
 {
     public class TeamPhotoStaticFile : AbstractStaticFile
     {
+        public const string TeamPhotoFolder = "teamphoto";
+        
         private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly ITenantContext _tenantContext;
         private readonly ILogger<TeamPhotoStaticFile> _logger;
@@ -41,7 +43,7 @@ namespace League.Models.UploadViewModels
             _webHostEnvironment = webHostEnvironment;
             _tenantContext = tenantContext;
             _logger = logger;
-            _folder = _tenantContext.SiteContext.Photos.TeamPhotoFolder;
+            _folder = TeamPhotoFolder;
         }
 
         public async Task<string> SaveFileAsync(IFormFile formFile, string extension, long teamId, bool withRemoveObsoleteFiles, CancellationToken cancellationToken)
