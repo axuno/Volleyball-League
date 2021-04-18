@@ -3,6 +3,8 @@ using System.Linq;
 using System.Reflection;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 
+#nullable enable
+
 namespace League.Helpers
 {
     /// <summary>
@@ -30,7 +32,7 @@ namespace League.Helpers
         /// var displayName = MetaDataHelper.GetDisplayName(typeof(ChangeUsernameViewModel), nameof(ChangeUsernameViewModel.Username));
         /// </example>
         /// <returns>Returns the DisplayName, or NULL if the name was not found.</returns>
-        public string GetRawDisplayName<T>(string fieldName)
+        public string? GetRawDisplayName<T>(string fieldName)
         {
             // First look into attributes of a type and its parents
             // Note: There is also a DisplayNameAttribute
@@ -44,7 +46,7 @@ namespace League.Helpers
         /// <typeparam name="T">The type of the class.</typeparam>
         /// <param name="propertyName">The field name to get the localized DisplayName.</param>
         /// <returns>Returns the localized DisplayName, or NULL if the name was not found</returns>
-        public string GetDisplayName<T>(string propertyName)
+        public string? GetDisplayName<T>(string propertyName)
         {
             var mdp = _metadataProvider.GetMetadataForProperties(typeof(T));
             return mdp.FirstOrDefault(d => d.Name == propertyName)?.DisplayName; // localized if resource file is present
