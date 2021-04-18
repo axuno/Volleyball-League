@@ -40,11 +40,6 @@ namespace TournamentManager.MultiTenancy
         [YAXLib.YAXComment("If true, the site will not be shown in the navigation menu.")]
         public bool HideInMenu { get; set; }
         /// <summary>
-        /// Location for photos.
-        /// </summary>
-        [YAXLib.YAXComment("Location for photos.")]
-        public Photos Photos { get; set; } = new Photos();
-        /// <summary>
         /// Email contact details.
         /// </summary>
         [YAXLib.YAXComment("Email contact details.")]
@@ -55,21 +50,6 @@ namespace TournamentManager.MultiTenancy
         /// </summary>
         [YAXLib.YAXComment("Notifications sent before and after matches.")]
         public MatchNotifications MatchNotifications { get; set; } = new MatchNotifications();
-    }
-    
-    public class Photos
-    {
-        /// <summary>
-        /// The folder for team photos.
-        /// </summary>
-        [YAXLib.YAXComment("The folder for team photos.")]
-        public string TeamPhotoFolder { get; set; } = string.Empty;
-
-        /// <summary>
-        /// The Folder for photos of people.
-        /// </summary>
-        [YAXLib.YAXComment("The folder for photos of people.")]
-        public string PeoplePhotoFolder { get; set; } = string.Empty;
     }
     
     /// <summary>

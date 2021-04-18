@@ -36,11 +36,6 @@ namespace TournamentManager.MultiTenancy
         bool HideInMenu { get; set; }
 
         /// <summary>
-        /// Location for photos.
-        /// </summary>
-        Photos Photos { get; set; }
-
-        /// <summary>
         /// Email contact details for an organization.
         /// </summary>
         Email Email { get; set; }

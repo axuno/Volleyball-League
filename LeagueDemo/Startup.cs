@@ -12,7 +12,7 @@ namespace LeagueDemo
 {
     public class Startup
     {
-        internal League.Startup League;
+        internal League.Startup LeagueStartup;
         
         /// <summary>
         /// Gets the application configuration properties of this application.
@@ -45,7 +45,7 @@ namespace LeagueDemo
             });
             Logger = LoggerFactory.CreateLogger<Startup>();
             
-            League = new League.Startup(Configuration, WebHostEnvironment);
+            LeagueStartup = new League.Startup(Configuration, WebHostEnvironment);
         }
         
 
@@ -53,26 +53,37 @@ namespace LeagueDemo
         public void ConfigureServices(IServiceCollection services)
         {
             // Initialize the League RCL
-            League.ConfigureServices(services);
+            LeagueStartup.ConfigureServices(services);
+            
+            services.AddHttpsRedirection(options =>
+            {
+                options.RedirectStatusCode = Microsoft.AspNetCore.Http.StatusCodes.Status301MovedPermanently;
+            });
+            
             services.AddScoped<IMainNavigationNodeBuilder, LeagueDemo.ViewComponents.DemoMainNavigationNodeBuilder>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostEnvironment env, ILoggerFactory loggerFactory)
         {
-            League.Configure(app, env, loggerFactory);
+            LeagueStartup.Configure(app, env, loggerFactory);
             
             if (env.IsDevelopment())
             {
+                app.UseMiddleware<StackifyMiddleware.RequestTracerMiddleware>();
+                
                 app.UseDeveloperExceptionPage();
+                app.UseStatusCodePages();
             }
             else
             {
-                app.UseExceptionHandler("/Home/Error");
+                app.UseStatusCodePagesWithReExecute($"/{nameof(League.Controllers.Error)}/{{0}}");
+                app.UseExceptionHandler($"/{nameof(League.Controllers.Error)}/500");
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
-            app.UseHttpsRedirection();
+            app.UseHttpsRedirection();           
+            
             app.UseStaticFiles();
 
             app.UseRouting();
