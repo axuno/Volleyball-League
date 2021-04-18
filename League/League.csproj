@@ -70,19 +70,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<Content Include="app_offline_.htm">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</Content>
-	</ItemGroup>
-
-	<ItemGroup>
-	  <None Include="Configuration\Tenant.Default.Production.config" />
-	  <None Include="Configuration\Tenant.Default.Development.config" />
-	  <None Include="Configuration\Tenant.OtherOrg.Development.config" />
-	  <None Include="Configuration\Tenant.TestOrg.Development.config" />
-	</ItemGroup>
-
-	<ItemGroup>
 		<ProjectReference Include="..\Axuno.BackgroundTask\Axuno.BackgroundTask.csproj" />
 		<ProjectReference Include="..\Axuno.Web\Axuno.Web.csproj" />
 		<ProjectReference Include="..\TournamentManager\DAL\DatabaseGeneric\TournamentManager.DAL.DbGeneric.csproj" />
@@ -219,9 +206,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<None Update="app_offline_.htm">
-			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
-		</None>
 		<None Update="Views\ViewNames.tt">
 			<Generator>TextTemplatingFileGenerator</Generator>
 			<LastGenOutput>ViewNames.cs</LastGenOutput>
@@ -230,6 +214,10 @@
 
 	<ItemGroup>
 		<Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Folder Include="logs\" />
 	</ItemGroup>
 
 	<PropertyGroup Condition="'$(Configuration)' == 'Debug'">

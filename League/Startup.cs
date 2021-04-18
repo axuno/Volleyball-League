@@ -26,7 +26,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using Microsoft.Net.Http.Headers;
 using NLog.Web;
 using SD.LLBLGen.Pro.ORMSupportClasses;
@@ -43,7 +42,6 @@ using Axuno.VirtualFileSystem;
 using League.BackgroundTasks;
 using League.ConfigurationPoco;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Rewrite;
 using TournamentManager.DI;
 using TournamentManager.MultiTenancy;
 using League.TextTemplatingModule;
@@ -56,6 +54,11 @@ namespace League
 {
     public class Startup
     {
+        /// <summary>
+        /// The name of the configuration folder, which is relative to <see cref="HostingEnvironment.ContentRootPath"/>.
+        /// </summary>
+        public const string ConfigurationFolder = "Configuration";
+        
         /// <summary>
         /// This method gets called by the runtime. Use this method to add services to the container.
         /// </summary>
@@ -183,15 +186,9 @@ namespace League
                     GetTenantConfigurationFiles = () =>
                     {
                         var configFolderFiles = Directory.GetFiles(
-                            Path.Combine(WebHostEnvironment.ContentRootPath, Program.ConfigurationFolder),
+                            Path.Combine(WebHostEnvironment.ContentRootPath, ConfigurationFolder),
                             $"Tenant.*.{WebHostEnvironment.EnvironmentName}.config", SearchOption.TopDirectoryOnly).ToList();
-                        
-                        if (WebHostEnvironment.IsDevelopment())
-                        {
-                            configFolderFiles.AddRange(Directory.GetFiles(
-                                Path.Combine(Program.GetSecretsFolder()),
-                                $"Tenant.*.{WebHostEnvironment.EnvironmentName}.config", SearchOption.TopDirectoryOnly));
-                        }
+
                         Logger.LogInformation("Tenant config files: {Config}", configFolderFiles);
                         return configFolderFiles.ToArray();
                     }
@@ -472,10 +469,10 @@ namespace League
                 options =>
                 {
                     options.Settings = Settings.Deserialize(
-                        Path.Combine(WebHostEnvironment.ContentRootPath, Program.ConfigurationFolder,
+                        Path.Combine(WebHostEnvironment.ContentRootPath, ConfigurationFolder,
                             $@"MailMergeLib.{WebHostEnvironment.EnvironmentName}.config"),
                         System.Text.Encoding.UTF8);
-                    var fms = FileMessageStore.Deserialize(Path.Combine(WebHostEnvironment.ContentRootPath, Program.ConfigurationFolder,
+                    var fms = FileMessageStore.Deserialize(Path.Combine(WebHostEnvironment.ContentRootPath, League.Startup.ConfigurationFolder,
                         "MailMergeLibMessageStore.config"), System.Text.Encoding.UTF8);
                     for (var i = 0; i < fms.SearchFolders.Length; i++)
                     {
@@ -599,11 +596,6 @@ namespace League
                 mvcBuilder.AddRazorRuntimeCompilation();
             }
 #endif
-            services.AddHttpsRedirection(options =>
-            {
-                options.RedirectStatusCode = StatusCodes.Status301MovedPermanently;
-            });
-
             #region *** Text Templating ***
 
             services.AddTextTemplatingModule(vfs =>
@@ -661,33 +653,27 @@ namespace League
 
             #endregion
 
-            #region *** Rewrite ALL domains (even those without SSL certificate) to https://volleyball-liga.de ***
+            #region *** Ensure file system setup ***
 
+            foreach (var folder in new[]{ RankingUpdateTask.RankingImageFolder, Models.UploadViewModels.TeamPhotoStaticFile.TeamPhotoFolder})
             {
-                using var iisUrlRewriteStreamReader = File.OpenText(Path.Combine(WebHostEnvironment.ContentRootPath, Program.ConfigurationFolder, @"IisRewrite.config"));
-                var options = new RewriteOptions().AddIISUrlRewrite(iisUrlRewriteStreamReader);
-                app.UseRewriter(options);
+                var folderName = Path.Combine(WebHostEnvironment.WebRootPath, folder);
+                if (!Directory.Exists(folderName))
+                {
+                    Logger.LogInformation("Folder '{0}' does not exist.", folderName);
+                    try
+                    {
+                        Directory.CreateDirectory(folderName);
+                        Logger.LogInformation("Folder '{0}' created.", folderName);
+                    }
+                    catch (Exception e)
+                    {
+                        Logger.LogCritical(e, "Folder '{0}': Does not exist and could not be created.", folderName);
+                    }
+                }
             }
             
             #endregion
-
-            if (env.IsDevelopment())
-            {
-                app.UseMiddleware<StackifyMiddleware.RequestTracerMiddleware>();
-                
-                app.UseDeveloperExceptionPage();
-                app.UseStatusCodePages();
-                
-                //app.UseStatusCodePagesWithReExecute($"/{nameof(Controllers.Error)}/{{0}}");
-                //app.UseExceptionHandler($"/{nameof(Controllers.Error)}/500");  
-            }
-            else
-            {
-                app.UseStatusCodePagesWithReExecute($"/{nameof(Controllers.Error)}/{{0}}");
-                app.UseExceptionHandler($"/{nameof(Controllers.Error)}/500");
-                // instruct the browsers to always access the site via HTTPS
-                app.UseHsts();
-            }
 
             #region *** JsNLog ***
             // add the JSNLog middleware before the UseStaticFiles middleware. 
@@ -701,8 +687,6 @@ namespace League
                 };
             app.UseJSNLog(new LoggingAdapter(loggerFactory), jsNLogConfiguration);
             #endregion
-
-            app.UseHttpsRedirection();
 
             #region *** Static files ***
             // For static files in the wwwroot folder

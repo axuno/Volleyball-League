@@ -10,27 +10,20 @@ namespace LeagueDemo
 {
    public class Program
     {
-        /// <summary>
-        /// The name of the configuration folder, which is relative to HostingEnvironment.ContentRootPath.
-        /// Constant is also used in components where IWebHostEnvironment is injected
-        /// </summary>
-        public const string ConfigurationFolder = "Configuration";
-
         public static void Main(string[] args)
         {
             // NLog: setup the logger first to catch all errors
             var currentDir = Directory.GetCurrentDirectory();
             var logger = NLogBuilder
-                .ConfigureNLog($@"{currentDir}\{ConfigurationFolder}\NLog.Internal.config")
+                .ConfigureNLog($@"{currentDir}\{League.Startup.ConfigurationFolder}\NLog.Internal.config")
                 .GetCurrentClassLogger();
 
             // Allows for <target name="file" xsi:type="File" fileName = "${var:logDirectory}logfile.log"... >
             NLog.LogManager.Configuration.Variables["logDirectory"] = currentDir + "\\";
-
+            
             try
             {
                 logger.Trace($"Configuration of {nameof(Microsoft.AspNetCore.WebHost)} starting.");
-                // http://zuga.net/articles/cs-how-to-determine-if-a-program-process-or-file-is-32-bit-or-64-bit/
                 logger.Info($"This app runs as {(Environment.Is64BitProcess ? "64-bit" : "32-bit")} process.\n\n");
                 
                 CreateHostBuilder(args).Build().Run();
@@ -51,7 +44,7 @@ namespace LeagueDemo
             Host.CreateDefaultBuilder(args)
                 .ConfigureAppConfiguration((hostingContext, config) =>
                 {
-                    var absoluteConfigurationPath = Path.Combine(hostingContext.HostingEnvironment.ContentRootPath, ConfigurationFolder);
+                    var absoluteConfigurationPath = Path.Combine(hostingContext.HostingEnvironment.ContentRootPath, League.Startup.ConfigurationFolder);
                     config.SetBasePath(absoluteConfigurationPath)
                         .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
                         .AddJsonFile($"appsettings.{hostingContext.HostingEnvironment.EnvironmentName}.json", optional: true, reloadOnChange: true)
@@ -59,13 +52,6 @@ namespace LeagueDemo
                         .AddJsonFile($"credentials.{hostingContext.HostingEnvironment.EnvironmentName}.json", optional: false, reloadOnChange: true)
                         .AddEnvironmentVariables()
                         .AddCommandLine(args);
-                    
-                    if (hostingContext.HostingEnvironment.IsDevelopment())
-                    {
-                        var secretsFolder = GetSecretsFolder();    
-                        config.AddJsonFile(Path.Combine(secretsFolder, @"credentials.json"), false);
-                        config.AddJsonFile(Path.Combine(secretsFolder, $"credentials.{hostingContext.HostingEnvironment.EnvironmentName}.json"), false);
-                    }
 
                     NLogBuilder.ConfigureNLog(Path.Combine(absoluteConfigurationPath, $"NLog.{hostingContext.HostingEnvironment.EnvironmentName}.config"));
                 })
@@ -82,18 +68,5 @@ namespace LeagueDemo
                     logging.AddConfiguration(hostingContext.Configuration.GetSection("Logging"));
                 })
                 .UseNLog();  // NLog: Setup NLog for dependency injection;
-        
-        
-        /// <summary>
-        /// Gets the name of the folder containing credentials and other data of the live website.
-        /// </summary>
-        /// <returns>The name of the folder containing credentials and other data of the live website</returns>
-        /// <exception cref="DirectoryNotFoundException"></exception>
-        public static string GetSecretsFolder()
-        {
-            var folder = Path.Combine(Directory.GetCurrentDirectory(), @"..\..\Secrets");
-            if (!Directory.Exists(folder)) throw new DirectoryNotFoundException("Secrets folder not found");
-            return folder;
-        }
     }
 }

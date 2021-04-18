@@ -5,6 +5,16 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="app_offline_.htm" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="app_offline_.htm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\League\League.csproj" />
   </ItemGroup>
 
