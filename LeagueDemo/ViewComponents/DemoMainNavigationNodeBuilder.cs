@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using League.Components;
 using Microsoft.AspNetCore.Authorization;
@@ -27,9 +28,27 @@ namespace LeagueDemo.ViewComponents
             
             // The views must exist in "~/Views/TenantContent/"
             // and named with $"./{_tenantContext.SiteContext.FolderName}/{category}_{topic}"
-            
-            // Create an individual "Info" node
-            var node = new MainNavigationComponentModel.NavigationNode
+
+            #region ** Home **
+            var home = TenantContext.IsDefault
+                ? new MainNavigationComponentModel.NavigationNode
+                {
+                    Text = string.Empty,
+                    Url =  UrlHelper.Action(nameof(LeagueDemo.Controllers.Home.Welcome), nameof(LeagueDemo.Controllers.Home),
+                        new {organization = TenantContext.SiteContext.UrlSegmentValue}),
+                    IconCssClass = "fas fa-1x fa-home", Key = "Home_League"
+                }
+                : new MainNavigationComponentModel.NavigationNode
+                {
+                    Text = string.Empty, 
+                    Url = "/" + TenantContext.SiteContext.UrlSegmentValue,
+                    IconCssClass = "fas fa-1x fa-home", Key = "Home_Tenant"
+                };
+
+            #endregion
+
+            #region ** Info **
+            var info = new MainNavigationComponentModel.NavigationNode
             {
                 Key = "Top_Info",
                 Text = Localizer["Info"],
@@ -37,7 +56,7 @@ namespace LeagueDemo.ViewComponents
                     nameof(League.Controllers.TenantContent),
                     new { organization = TenantContext.SiteContext.UrlSegmentValue, category = "info", content = string.Empty })
             };
-            node.ChildNodes.AddRange(new []
+            info.ChildNodes.AddRange(new []
             {
                 new MainNavigationComponentModel.NavigationNode
                 {
@@ -54,12 +73,16 @@ namespace LeagueDemo.ViewComponents
                         new { organization = TenantContext.SiteContext.UrlSegmentValue, category = "info", topic = "news"})
                 }
             });
-
+            
             if (!TenantContext.IsDefault)
             {
                 // Insert the individual node before the Top_Teams node
-                InsertTopNavigationNode(node, "Top_Teams");
+                InsertTopNavigationNode(info, "Top_Teams");
             }
+
+            InsertTopNavigationNode(home, NavigationNodes.First().Key);
+
+            #endregion
         }
     }
 }

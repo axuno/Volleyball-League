@@ -221,6 +221,7 @@
 
 	<ItemGroup>
 	  <Folder Include="logs\" />
+	  <Folder Include="wwwroot\images\" />
 	</ItemGroup>
 
 	<PropertyGroup Condition="'$(Configuration)' == 'Debug'">

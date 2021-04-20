@@ -60,6 +60,7 @@ namespace LeagueDemo
                 options.RedirectStatusCode = Microsoft.AspNetCore.Http.StatusCodes.Status301MovedPermanently;
             });
             
+            // Add custom navigation menu items to the League default navigation system
             services.AddScoped<IMainNavigationNodeBuilder, LeagueDemo.ViewComponents.DemoMainNavigationNodeBuilder>();
         }
 

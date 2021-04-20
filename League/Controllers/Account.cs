@@ -183,7 +183,7 @@ namespace League.Controllers
         {
             await _signInManager.SignOutAsync();
             _logger.LogInformation("User signed out.");
-            return RedirectToAction(nameof(Home.Index), nameof(Controllers.Home));
+            return RedirectToAction("");
         }
 
         [HttpGet("create")]
@@ -610,7 +610,7 @@ namespace League.Controllers
                 return Redirect(returnUrl);
             }
             
-            return RedirectToAction(nameof(Home.Index), nameof(Controllers.Home));
+            return RedirectToAction("");
         }
 
         private IActionResult SocialMediaSignInFailure(string logErrorText, string errorMessage)

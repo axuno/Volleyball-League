@@ -6,14 +6,14 @@
 @inject TenantStore TenantStore
 @{
     ViewData.Title(Localizer["Leagues"].Value);
-    ViewData.Description(Localizer["Leagues using volleyball-liga.de"].Value);
+    ViewData.Description(Localizer["Leagues using volleyball-league.demo"].Value);
     var tenants = TenantStore.GetTenants().Values
         .Where(tc => !string.IsNullOrEmpty(tc.Identifier) && !tc.SiteContext.HideInMenu && !tc.IsDefault)
         .ToList();
 }
 <div>
     <h2 class="h2 d-inline-block">@ViewData.Title()</h2>
-    <h4 class="h4 d-inline-block">@Localizer["using volleyball-liga.de"]</h4>
+    <h4 class="h4 d-inline-block">@Localizer["using volleyball-league.demo"]</h4>
     <hr />
 </div>
 <div class="mb-0 pb-1">

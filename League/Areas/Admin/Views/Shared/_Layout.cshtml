@@ -34,7 +34,7 @@
                 <h1 class="h4 header-organization">@(TenantContext.IsDefault ? "Volleyball League" : TenantContext.OrganizationContext.Name)</h1>
             </div>
             <div class="my-auto order-1 order-md-2 text-md-right header-logo">
-                <a class="d-block" href="@Url.Action(nameof(League.Controllers.Home.Welcome), nameof(League.Controllers.Home))" style="text-decoration: none">
+                <a class="d-block" href="/" style="text-decoration: none">
                     <span class="d-inline-block part1">volleyball-liga</span>
                     <span class="d-inline-block part2">.de</span>
                     <img class="d-none d-md-inline-block" src="@Url.Content("~/images/logo-volleyball-league.svg")" alt="Logo" height="50"/>

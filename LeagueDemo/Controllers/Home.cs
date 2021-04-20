@@ -5,10 +5,10 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using TournamentManager.MultiTenancy;
 
-namespace League.Controllers
+namespace LeagueDemo.Controllers
 {
     [Route("")]
-    public class Home : AbstractController
+    public class Home : League.Controllers.AbstractController
     {
         private readonly TenantStore _tenantStore;
         private readonly ILogger<Home> _logger;
