@@ -1,6 +1,156 @@
-﻿@{
-    ViewData["Title"] = "Privacy Policy";
+﻿@using League.Helpers
+@{
+    var Website = "\"volleyball-liga.de\"";
+    var Company = "axuno Non-profit Ltd., Leni-Hirsch-Weg 12, 86156 Augsburg, Germany";
+    var RequiredCookies = "<em>Required Cookies</em><br/>Required Cookies are required to enable core site functionality. These cookies allow us to provide you a secure log-in and to remember your log-in details, to maintain certain processes, and to make sure the website looks consistent.";
+    var EdgeDeleteCookies = "<li>Microsoft Edge: <a href='https://support.microsoft.com/en-us/help/4027947/microsoft-edge-delete-cookies' target='_blank' rel='nofollow noopener'>https://support.microsoft.com/en-us/help/4027947/microsoft-edge-delete-cookies</a></li>";
+    ViewData.Title("Privacy Policy");
 }
-<h1>@ViewData["Title"]</h1>
-
-<p>Use this page to detail your site's privacy policy.</p>
+<h1>Privacy policy</h1>
+<p>Responsible party pursuant to data protection laws, in particular the EU General Data Protection Regulation (GDPR), for @Website is</p>
+<p>@Html.Raw(Company)</p>
+<h2>Your rights as the data subject</h2>
+<p>You can exercise the following rights at any time using the contact details of our data protection officer:</p>
+<ul>
+    <li>Information on your data stored by us and the processing thereof (Art. 15 GDPR), </li>
+    <li>Rectification of inaccurate personal data (Art. 16 GDPR), </li>
+    <li>Deletion of your data stored by us (Art. 17 GDPR), </li>
+    <li>Restriction of the data processing, provided that we may not delete your data due to legal obligations (Art. 18 GDPR), </li>
+    <li>Objection to the processing of your data with us (Art. 21 GDPR) and </li>
+    <li>Data portability, provide that you have consented to the data processing or have entered into a contract with us (Art. 20 GDPR). </li>
+</ul>
+<p>If you have given us consent, you may withdraw it at any time, which will remain in effect in the future.</p>
+<p>You can contact a supervisory authority with a complaint at any time, e.g. the supervisory authority of the state of your residence or the authority that oversees us as the responsible party.</p>
+<p>You’ll find a list of supervisory authorities (for the non-public area) with their respective addresses at: <a href="https://www.bfdi.bund.de/DE/Infothek/Anschriften_Links/anschriften_links-node.html" target="_blank" rel="nofollow noopener">https://www.bfdi.bund.de/DE/Infothek/Anschriften_Links/anschriften_links-node.html</a>.</p>
+<p></p>
+<h2>Collecting general information during a visit to our website </h2>
+<h3>Type and purpose of the processing</h3>
+<p>When you access our website – i.e. if you do not register or submit information – information of a general nature will be collected automatically. This information (server log files) contains the type of web browser, the operating system used, the domain name of your Internet service provider, your IP address and the like.</p>
+<p>It is processed in particular for the following purposes:</p>
+<ul>
+    <li>Ensuring an unproblematic website connection</li>
+    <li>Ensuring seamless use of our website</li>
+    <li>Analysis of system security and stability as well as</li>
+    <li>For additional administrative purposes.</li>
+</ul>
+<p>We will not use your data to draw conclusions about your person. This type of information will be statistically analysed by us if necessary to optimise our website and its underlying technology.</p>
+<h3>Legal basis</h3>
+<p>The processing occurs according to Art. 6 Para. 1 (f) GDPR, based on our legitimate interest in improving the stability and functionality of our website.</p>
+<h3>Recipients</h3>
+<p>Recipients of the data may be technical service providers, who work on the operation and maintenance of our website as the processor.</p>
+<h3>Retention period</h3>
+<p>The data will be deleted as soon as they are no longer required for the reason they were collected. This is generally the case, after the respective session has ended, for data that are used to make the website available.</p>
+<h3>Mandatory or required provision</h3>
+<p>The provision of the aforementioned personal data is neither legally nor contractually mandatory. Without the IP address however, the service and functionality of our website are not guaranteed. Furthermore, individual services can be unavailable or limited. For this reason, an objection is excluded.</p>
+<p></p>
+<h2>Cookies</h2>
+<h3>Type and purpose of the processing</h3>
+<p>Like many other websites, we use so-called ‘cookies’. Cookies are small text files that are stored on your device (laptop, tablet, smartphone, etc.) when you visit our website.</p>
+<p>With cookies, we receive certain information such as IP address, type of browser and operating system used.</p>
+<p>Cookies cannot be used to start programs or to transmit viruses to a computer. Based on the information contained in cookies, we can facilitate your navigation of our site and properly display our webpages for you.</p>
+<p>The data collected by us will not be shared with third parties under any circumstances nor will a link to personal data be created without your consent.</p>
+<p>Of course, you can view our website without cookies. Internet browser are regularly configured to accept cookies. In general, you can disable the use of cookies via your browser settings at any time. Please use your Internet browser’s help function to learn how to change these settings, and keep in mind that individual features of our website may not work if you have disabled the use of cookies.</p>
+<h3>Retention period and cookies used</h3>
+<p>If you allow us to use cookies, via your browser settings or consent, the following cookies may be utilised on our web pages:</p>
+<p>
+    @Html.Raw(RequiredCookies)
+</p>
+<p>In the following sections, we provide you with information concerning how these cookies can (also) pertain to personal data.</p>
+<p>In your browser settings, you can delete individual cookies or the entire set of cookies. You will also find information and instructions on how to delete these cookies or prevent them from being saved in advance. The following links provide the information you’ll need for the respective browser providers:</p>
+<ul>
+    <li>Mozilla Firefox: <a href="https://support.mozilla.org/en-US/kb/delete-cookies-remove-info-websites-stored" target="_blank" rel="nofollow noopener">https://support.mozilla.org/en-US/kb/delete-cookies-remove-info-websites-stored</a></li>
+    @Html.Raw(EdgeDeleteCookies)
+    <li>Internet Explorer: <a href="https://support.microsoft.com/en-gb/help/17442/windows-internet-explorer-delete-manage-cookies" target="_blank" rel="nofollow noopener">https://support.microsoft.com/en-gb/help/17442/windows-internet-explorer-delete-manage-cookies</a></li>
+    <li>Google Chrome: <a href="https://support.google.com/accounts/answer/61416?hl=en" target="_blank" rel="nofollow noopener">https://support.google.com/accounts/answer/61416?hl=en</a></li>
+    <li>Opera: <a href="https://www.opera.com/o/ie-simple" target="_blank" rel="nofollow noopener">https://www.opera.com/o/ie-simple</a></li>
+    <li>Safari: <a href="https://support.apple.com/kb/PH17191?locale=de_DE&viewlocale=en_US" target="_blank" rel="nofollow noopener">https://support.apple.com/kb/PH17191?locale=de_DE&viewlocale=en_US</a></li>
+</ul>
+<p></p>
+<h2>Commentary function</h2>
+<h3>Type and purpose of the processing</h3>
+<p>When users leave comments on our website, the time of their creation and the username selected by the website visitor are saved. This is for our security, as we may be prosecuted for any illegal content on our website, even if it was created by users.</p>
+<h3>Legal basis</h3>
+<p>The processing of the data entered as a comment occurs on the basis of a legitimate interest (Art. 6 Para. 1 (a) GDPR).</p>
+<p>With the commentary feature, our aim is to provide you with an uncomplicated way to interact. The information you enter will be stored for the purpose of processing the request as well as possible follow-up inquiries.</p>
+<h3>Recipients</h3>
+<p>Recipients of the data may be processors.</p>
+<h3>Retention period</h3>
+<p>The data will be deleted as soon as they are no longer required for the reason they were collected. This is generally the case, when the communication with the user has ended and the company can see from the circumstances that the respective issue has been clarified.</p>
+<h3>Mandatory or required provision</h3>
+<p>The provision of your personal data is voluntary. Without the provision of your personal data, we cannot guarantee you access to our commentary function.</p>
+<p></p>
+<h2>Newsletter</h2>
+<h3>Type and purpose of the processing</h3>
+<p>Your data will be used exclusively to send you the newsletter you subscribed for via e-mail. We request your name so that we can address you personally in the newsletter and identify you as needed should you want to exercise your rights as a data subject.</p>
+<p>To receive the newsletter, providing your e-mail address is sufficient. When you subscribe to our newsletter, the data you provide will be used exclusively for this purpose. Subscribers can also be notified by e-mail about circumstances that are relevant to the service or registration (such as changes to the newsletter offer or technical matters).</p>
+<p>We need a valid e-mail address to complete your registration. In order to verify that a registration is actually made by the owner of an e-mail address, we utilise the ‘double opt-in’ procedure. To this end, we log the newsletter subscription request, when a confirmation e-mail is sent and the receipt of the requested reply. Additional data is not collected. The data will be used exclusively for sending the newsletter and will not be shared with third parties.</p>
+<h3>Legal basis</h3>
+<p>Based on your express consent (Article 6 (1) a DSGVO), we will send you our newsletter on a regular basis or comparable information via e-mail to your specified e-mail address.</p>
+<p>The consent to save and use your personal data for the newsletter may be withdrawn at any time and remain in effect in the future. Every newsletter contains a corresponding link, and you can also unsubscribe on this website at any time or inform us of your cancellation via the contact option indicated at the end of this privacy policy.</p>
+<h3>Recipients</h3>
+<p>Recipients of the data may be processors.</p>
+<h3>Retention period</h3>
+<p>Data are only processed in this context provided that the corresponding consent has been given. The data will be deleted thereafter.</p>
+<h3>Mandatory or required provision</h3>
+<p>The provision of your personal data is voluntary, based solely on your consent. Unfortunately, we cannot send you our newsletter without your consent.</p>
+<p></p>
+<h2>Contact form</h2>
+<h3>Type and purpose of the processing</h3>
+<p>The data you enter are used for individual communication with you. A valid e-mail address and your name are required for this communication, which serves to organize your inquiry and the respective subsequent reply. Providing additional information is optional.</p>
+<h3>Legal basis</h3>
+<p>The processing of the data entered in the contact form occurs on the basis of a legitimate interest (Art. 6 Para. 1 (f) GDPR).</p>
+<p>By providing the contact form, our aim is to facilitate an uncomplicated means for you to contact us. The information you enter will be used to process the inquiry and saved for possible follow-up questions.</p>
+<p>If you contact us to request an offer, the processing of the information provided in the contact form will occur in order to implement pre-contractual measures (Art. 6 Para. 1 (b) GDPR).</p>
+<h3>Recipients</h3>
+<p>Recipients of the data may be processors.</p>
+<h3>Retention period</h3>
+<p>The data will be deleted no later than 6 months after processing the inquiry.</p>
+<p>Provided that we enter into a contract together, we will use the statutory retention periods in the German Commercial Code (Handelsgesetzbuch) and delete your data according to the respective stipulated deadlines.</p>
+<h3>Mandatory or required provision</h3>
+<p>The provision of your personal data is voluntary. However, we can only process your inquiry if you provide us with your name, e-mail address and the reason for your inquiry.</p>
+<p></p>
+<h2>Using Google Maps</h2>
+<h3>Type and purpose of the processing</h3>
+<p>We use Google Maps on this website. Google Maps is operated by Google LLC, 1600 Amphitheater Parkway, Mountain View, CA 94043, USA (hereinafter ‘Google’). This allows us to show you interactive maps directly on the website, allowing you to conveniently use the map feature.</p>
+<p>You’ll find additional information about Google’s data processing <a href="http://www.google.com/privacypolicy.html" rel="noopener nofollow" target="_blank">on the Google privacy policy page</a>, where you can also change your personal privacy settings in the data protection center.</p>
+<p><a href="http://www.dataliberation.org/" rel="noopener nofollow" target="_blank">Click here</a> for detailed instructions on how to manage your own data related to Google products.</p>
+<h3>Legal basis</h3>
+<p>Your consent is the legal basis for the integration of Google Maps and the associated data transfer to Google (Art. 6 Para. 1 (a) GDPR).</p>
+<h3>Recipients</h3>
+<p>By visiting the website, Google receives information that you have accessed the corresponding subpage of our website. This occurs regardless of whether Google provides a user account that you are logged into or if there is no user account. When you’re logged into Google, your data will be directly assigned to your account.</p>
+<p>If you do not want this assignment in your Google profile, you must log out of Google before activating the button. Google stores your data as usage profiles and uses them for advertising, market research and/or tailor-made design of its website. Such an analysis occurs in particular (even for users who are not logged in) to provide needs-based advertising and to inform other users of the social network about your activities on our website. You have the right to object to the formation of these user profiles, but you must submit this objection to Google.</p>
+<h3>Retention period:</h3>
+<p>We do not collect any personal data via the integration of Google Maps.</p>
+<h3>Third country transfers</h3>
+<p>Google processes your data in the United States of America and is subject to the EU-U.S. Privacy Shield: <a href="https://www.privacyshield.gov/EU-US-Framework" rel="noopener nofollow" target="_blank">https://www.privacyshield.gov/EU-US-Framework</a>. </p>
+<h3>Revocation of consent</h3>
+<p>If you do not want Google to collect, process or use information about you via our website, you can disable JavaScript in your browser settings. In this case, you cannot or only partially use our website.</p>
+<h3>Mandatory or required provision</h3>
+<p>The provision of your personal data is voluntary, based solely on your consent. If you prevent access, this can lead to functional limitations on the website.</p>
+<p></p>
+<h2>Embedded YouTube videos</h2>
+<h3>Type and purpose of the processing</h3>
+<p>We embed YouTube videos on several of our websites. The operator of the respective plugins is YouTube, LLC, 901 Cherry Ave., San Bruno, CA 94066, USA (hereinafter ‘YouTube’). YouTube, LLC is a subsidiary of Google LLC, 1600 Amphitheater Pkwy, Mountain View, CA 94043, USA (hereinafter ‘Google’). When you visit a page with the YouTube plug-in, a connection to YouTube’s servers will be created, which tells YouTube which pages you visit. When you are logged into your YouTube account, YouTube can associate your browsing behaviour with you personally. You can prevent this by logging out of your YouTube account beforehand.</p>
+<p>If a YouTube video is started, the provider uses cookies that collect information about user behaviour.</p>
+<p>You will find additional information on the purpose and scope of the data collection and its processing by YouTube in the provider’s privacy policy, as well as additional information on your rights and setting options for protecting your privacy (<a href="https://policies.google.com/privacy" rel="noopener nofollow" target="_blank">https://policies.google.com/privacy</a>). Google processes your data in the United States of America and is subject to the EU-U.S. Privacy Shield: <a href="https://www.privacyshield.gov/EU-US-Framework" rel="noopener nofollow" target="_blank">https://www.privacyshield.gov/EU-US-Framework</a>. </p>
+<h3>Legal basis</h3>
+<p>Your consent is the legal basis for the integration of YouTube and the associated data transfer to Google (Art. 6 Para. 1 (a GDPR). </p>
+<h3>Recipients</h3>
+<p>Visiting YouTube automatically triggers a connection to Google. .</p>
+<h3>Retention period and revocation of consent</h3>
+<p>Everyone who has disabled the storage of cookies for the Google ad programme will not have to expect any cookies when watching YouTube videos. However, YouTube also stores non-personal usage information in other cookies. If you would like to prevent this, you must block the storage of cookies in the browser.</p>
+<p>You’ll find additional information on data protection at ‘YouTube’ in the provider’s privacy policy at: <a href="https://policies.google.com/privacy" rel="noopener nofollow" target="_blank">https://policies.google.com/privacy</a>.</p>
+<h3>Third country transfers</h3>
+<p>Google processes your data in the United States of America and is subject to the EU-U.S. Privacy Shield: <a href="https://www.privacyshield.gov/EU-US-Framework" target="_blank">https://www.privacyshield.gov/EU-US-Framework</a>.</p>
+<h3>Mandatory or required provision</h3>
+<p>The provision of your personal data is voluntary, based solely on your consent. If you prevent access, this can lead to functional limitations on the website.</p>
+<p></p>
+<h2>SSL encryption</h2>
+<p>To protect the security of your data during transmission, we use state-of-the-art encryption methods (such as SSL) via HTTPS.</p>
+<p></p>
+<h2>Revision of our privacy policy</h2>
+<p>We reserve the right to amend this privacy policy so that it always complies with current legal requirements or to implement changes to our services in the privacy policy, e.g. when introducing new services. Your next visit will be subject to the new privacy policy.</p>
+<h2>Questions for the data protection officer</h2>
+<p>If you have any questions pertaining to data protection, please send us an e-mail or contact the person responsible for data protection in our organization: </p>
+<p>@Html.Raw(Company)</p>
+<p class="small text-muted"><em>The privacy policy was created using the activeMind AG <a href="https://www.activemind.de/en/data-protection/generators/privacy-policy/" rel="noopener" target="_blank">privacy policy generator</a> (Version: #2019-04-10).</em></p>
