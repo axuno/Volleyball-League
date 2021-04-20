@@ -129,23 +129,6 @@ namespace League.Components
         /// <returns>A <see cref="List{T}"/> of <see cref="MainNavigationComponentModel.NavigationNode"/>s.</returns>
         protected virtual async Task CreateStandardNavigationNodes()
         {
-            #region ** Home **
-            var home = TenantContext.IsDefault
-                ? new MainNavigationComponentModel.NavigationNode
-                {
-                    Text = string.Empty,
-                    Url =  UrlHelper.Action(nameof(League.Controllers.Home.Welcome), nameof(League.Controllers.Home),
-                        new {organization = TenantContext.SiteContext.UrlSegmentValue}),
-                    IconCssClass = "fas fa-1x fa-home", Key = "Home_League"
-                }
-                : new MainNavigationComponentModel.NavigationNode
-                {
-                    Text = string.Empty, 
-                    Url = "/" + TenantContext.SiteContext.UrlSegmentValue,
-                    IconCssClass = "fas fa-1x fa-home", Key = "Home_Tenant"
-                };
-            #endregion
-            
             #region ** Leagues **
             var leagues = new MainNavigationComponentModel.NavigationNode
             {
@@ -366,7 +349,7 @@ namespace League.Components
             {
                 NavigationNodes.AddRange(new List<MainNavigationComponentModel.NavigationNode>(new[]
                 {
-                    home, leagues, 
+                    leagues, 
                     new MainNavigationComponentModel.NavigationNode {Key = "RightAlignSeparator"}, 
                 }));
             }
@@ -374,7 +357,7 @@ namespace League.Components
             {
                 NavigationNodes.AddRange(new List<MainNavigationComponentModel.NavigationNode>(new[]
                 {
-                    home, leagues, teamInfos, teamOverview, rankingTables,
+                    leagues, teamInfos, teamOverview, rankingTables,
                     new MainNavigationComponentModel.NavigationNode {Key = "RightAlignSeparator"}, 
                     account
                 }));

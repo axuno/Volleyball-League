@@ -25,9 +25,9 @@ namespace League.Controllers
         private readonly IStringLocalizer<Account> _localizer;
         private readonly Axuno.BackgroundTask.IBackgroundQueue _queue;
         private readonly SendEmailTask _sendEmailTask;
-        private readonly ILogger<Home> _logger;
+        private readonly ILogger<Contact> _logger;
 
-        public Contact(ITenantContext tenantContext, TenantStore tenantStore, Axuno.BackgroundTask.IBackgroundQueue queue, SendEmailTask sendEmailTask, ILogger<Home> logger, IStringLocalizer<Account> localizer)
+        public Contact(ITenantContext tenantContext, TenantStore tenantStore, Axuno.BackgroundTask.IBackgroundQueue queue, SendEmailTask sendEmailTask, ILogger<Contact> logger, IStringLocalizer<Account> localizer)
         {
             _tenantContext = tenantContext;
             _tenantStore = tenantStore;

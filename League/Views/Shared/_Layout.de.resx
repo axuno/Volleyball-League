@@ -129,4 +129,7 @@
   <data name="Privacy" xml:space="preserve">
     <value>Datenschutz</value>
   </data>
+  <data name="Volleyball League" xml:space="preserve">
+    <value>Volleyball-Liga</value>
+  </data>
 </root>
