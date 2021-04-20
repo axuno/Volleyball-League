@@ -20,12 +20,7 @@
         @foreach (var tenant in tenants)
         {
             <div class="mb-4 p-2 border border-dark rounded league-entry">
-                <environment include="Production">
-                    <h4 class="h4"><a href="@tenant.OrganizationContext.HomepageUrl">@Html.Raw(tenant.OrganizationContext.Name)</a></h4>
-                </environment>
-                <environment include="Development">
-                    <h4 class="h4"><a href="/@(tenant.SiteContext.UrlSegmentValue)" class="link">@Html.Raw(tenant.OrganizationContext.Name)</a></h4>
-                </environment>               
+                <h4 class="h4"><a href="/@(tenant.SiteContext.UrlSegmentValue)" class="link">@Html.Raw(tenant.OrganizationContext.Name)</a></h4>
                 <div>@Html.Raw(tenant.OrganizationContext.Description)</div>
             </div>
         }
