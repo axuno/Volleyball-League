@@ -543,7 +543,7 @@ namespace League.Controllers
         public async Task<IActionResult> ReportSheet(long id, CancellationToken cancellationToken)
         {
             var pathToChromium = Path.Combine(Directory.GetCurrentDirectory(), @"Chromium-Win\chrome.exe");
-            
+            MatchReportSheetRow model = null;
             try
             {
                 model = await _appDb.MatchRepository.GetMatchReportSheetAsync(_tenantContext.TournamentContext.MatchPlanTournamentId, id, cancellationToken);
