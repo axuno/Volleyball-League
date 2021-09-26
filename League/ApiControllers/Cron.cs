@@ -107,7 +107,7 @@ namespace League.ApiControllers
         /// <param name="key">The authentication key for the service.</param>
         /// <param name="referenceDate">The reference date which will be taken for queuing mails.</param>
         /// <returns></returns>
-        [HttpGet("{organization:MatchingTenant}/api/cron/automail/{key}/{datetime?}")]
+        [HttpGet("{organization:MatchingTenant}/api/cron/automail/{key}/{referenceDate?}")]
         public IActionResult AutoMail(string key, string? referenceDate)
         {
             if(!IsAuthorized(key)) return Unauthorized("Incorrect authorization key");
