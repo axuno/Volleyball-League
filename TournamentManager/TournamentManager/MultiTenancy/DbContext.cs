@@ -82,6 +82,9 @@ namespace TournamentManager.MultiTenancy
                     KeepConnectionOpen = true,
                     CompatibilityLevel = SqlServerCompatibilityLevel.SqlServer2012,
                     CommandTimeOut = CommandTimeOut,
+                    // As pointed out in https://www.llblgen.com/tinyforum/Thread/27471, Catalog and Schema
+                    // could also be overwritten with string.Empty. In this case, the default Schema
+                    // and the database from the connection string would be used.
                     CatalogNameOverwrites =
                         new CatalogNameOverwriteHashtable(new Dictionary<string, string> { { "*", Catalog } })
                         {
