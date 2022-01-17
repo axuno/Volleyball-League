@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Axuno.TextTemplating;
 using League.Emailing.TemplateModels;
-using League.Models.HomeViewModels;
+using League.Models.ContactViewModels;
 using League.Templates.Email;
 using League.Templates.Email.Localization;
 using League.Test.TestComponents;

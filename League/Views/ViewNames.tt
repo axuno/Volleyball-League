@@ -4,7 +4,11 @@
 <#@ import namespace="System.Collections.Generic" #>
 <#@ import namespace="System.IO" #>
 <# /* This assembly provides access to Visual Studio project properties. */ #>
-<#@ assembly name="EnvDTE" #>
+<# // Neither this #>
+<# // #@ assembly name="EnvDTE" #>
+<# // nore this #>
+<# // #@ assembly name="Microsoft.VisualStudio.Interop" #>
+<# // is needed in VS2022 #>
 <#
 const int tabSize = 4;
 void ProcessFiles(string path, bool skipFiles, int level)
