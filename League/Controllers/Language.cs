@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Linq;
 using System.Net;
-using System.Runtime;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Localization;
@@ -11,18 +10,33 @@ using Microsoft.Extensions.Logging;
 
 namespace League.Controllers
 {
+    /// <summary>
+    /// The controller for setting the preferred language cookie in the browser.
+    /// </summary>
     [Route("[controller]")]
     public class Language : Controller
     {
         private readonly RequestLocalizationOptions _requestLocalizationOptions;
         private readonly ILogger<Language> _logger;
 
+        /// <summary>
+        /// CTOR.
+        /// </summary>
+        /// <param name="requestLocalizationOptions"></param>
+        /// <param name="logger"></param>
         public Language(IOptions<RequestLocalizationOptions> requestLocalizationOptions, ILogger<Language> logger)
         {
             _requestLocalizationOptions = requestLocalizationOptions.Value;
             _logger = logger;
         }
 
+        /// <summary>
+        /// Set the preferred culture cookie and return to the specified ReturnURL.
+        /// </summary>
+        /// <param name="culture"></param>
+        /// <param name="uiCulture"></param>
+        /// <param name="returnUrl"></param>
+        /// <returns></returns>
         [HttpGet("")]
         public IActionResult Index(string culture, string uiCulture, string returnUrl)
         {
@@ -58,6 +72,11 @@ namespace League.Controllers
             if (languages.Length == 0 || languages.First().StartsWith(requestCulture.Name, StringComparison.InvariantCultureIgnoreCase))
             {
                 Response.Cookies.Delete(cookieProvider.CookieName);
+                Response.Cookies.Append(cookieProvider.CookieName, string.Empty, new CookieOptions
+                {
+                    Expires = DateTime.UtcNow.AddDays(-1), IsEssential = true, SameSite = SameSiteMode.Lax
+                });
+                
                 return RedirectToLocal(returnUrl);
             }
 
@@ -65,7 +84,10 @@ namespace League.Controllers
             var cookieValue = CookieRequestCultureProvider.MakeCookieValue(new RequestCulture(requestCulture, requestUiCulture));
             Response.Cookies.Append(cookieProvider.CookieName,
                 cookieValue,
-                new CookieOptions { Expires = DateTimeOffset.UtcNow.AddYears(1), IsEssential = true });
+                new CookieOptions
+                {
+                    Expires = DateTimeOffset.UtcNow.AddYears(1), IsEssential = true, SameSite = SameSiteMode.Lax
+                });
 
             return RedirectToLocal(returnUrl);
         }
