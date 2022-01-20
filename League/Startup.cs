@@ -511,6 +511,7 @@ namespace League
                 // determines whether user consent for non-essential cookies is needed for a given request.
                 options.CheckConsentNeeded = context => false;
                 options.MinimumSameSitePolicy = Microsoft.AspNetCore.Http.SameSiteMode.Lax;
+                options.Secure = CookieSecurePolicy.SameAsRequest; // SameSite=None requires Secure
             });
 
             // expand search path to organization key sub-paths per HttpRequest
