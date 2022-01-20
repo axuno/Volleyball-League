@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -44,6 +43,7 @@ namespace League.Controllers
         private readonly RankingUpdateTask _rankingUpdateTask;
         private readonly RazorViewToStringRenderer _razorViewToStringRenderer;
         private readonly IConfiguration _configuration;
+        private readonly string _pathToChromium;
 
         public Match(ITenantContext tenantContext, IStringLocalizer<Match> localizer,
             IAuthorizationService authorizationService,
@@ -62,6 +62,7 @@ namespace League.Controllers
             _razorViewToStringRenderer = razorViewToStringRenderer;
             _configuration = configuration;
             _logger = logger;
+            _pathToChromium = Path.Combine(Directory.GetCurrentDirectory(), _configuration["Chromium:ExecutablePath"]);
         }
 
         [HttpGet("")]
@@ -542,61 +543,27 @@ namespace League.Controllers
         [HttpGet("[action]/{id:long}")]
         public async Task<IActionResult> ReportSheet(long id, CancellationToken cancellationToken)
         {
-            var pathToChromium = Path.Combine(Directory.GetCurrentDirectory(), @"Chromium-Win\chrome.exe");
             MatchReportSheetRow model = null;
+            
             try
             {
                 model = await _appDb.MatchRepository.GetMatchReportSheetAsync(_tenantContext.TournamentContext.MatchPlanTournamentId, id, cancellationToken);
 
                 if (model == null) return NotFound();
 
-                if (System.IO.File.Exists(pathToChromium))
+                if (System.IO.File.Exists(_pathToChromium))
                 {
-                    #region ** Puppeteer PDF generation using Chromium **
-
-                    var options = new PuppeteerSharp.LaunchOptions
-                    {
-                        Headless = true, Args = new[] {"--no-sandbox", "--disable-gpu", "--disable-extensions"},
-                        ExecutablePath = pathToChromium, Timeout = 10000
-                    };
-                    // Use Puppeteer as a wrapper for the Chromium browser, which can generate PDF from HTML
-                    await using var browser = await PuppeteerSharp.Puppeteer.LaunchAsync(options);
-                    await using var page = await browser.NewPageAsync();
-
-                    // page.GoToAsync("url");
-                    var html = await _razorViewToStringRenderer.RenderViewToStringAsync(
-                        $"~/Views/{nameof(Match)}/{ViewNames.Match.ReportSheet}.cshtml", model);
-                    await page.SetContentAsync(html); // Bootstrap 4 is loaded from CDN
                     var contentDisposition = new Microsoft.Net.Http.Headers.ContentDispositionHeaderValue("attachment");
-                    contentDisposition.SetHttpFileName($"{_localizer["Report Sheet"].Value} {model.Id}.pdf");
+                    contentDisposition.SetHttpFileName($"{_localizer["Report Sheet"].Value}_{model.Id}.pdf");
                     Response.Headers[Microsoft.Net.Http.Headers.HeaderNames.ContentDisposition] =
                         contentDisposition.ToString();
 
-                    return new FileStreamResult(
-                        await page.PdfStreamAsync(new PuppeteerSharp.PdfOptions
-                            {Scale = 1.0M, Format = PaperFormat.A4}),
-                        "application/pdf");
+                    var html = await _razorViewToStringRenderer.RenderViewToStringAsync(
+                        $"~/Views/{nameof(Match)}/{ViewNames.Match.ReportSheet}.cshtml", model);
 
-                    #endregion
+                    //return await GetReportSheetPuppeteer(html);
+                    return await GetReportSheetChromium(html);
                 }
-				
-				/* Todo: This is a working fallback code, which acts with Chromium directly, and requires the Url to the HTML content
-var tempdir = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
-if (Directory.Exists(tempdir)) Directory.CreateDirectory(tempdir);
-var tempFile = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
-var si = new System.Diagnostics.ProcessStartInfo(pathToChromium,
-        $"--disable-background-networking --enable-features=NetworkService,NetworkServiceInProcess --disable-background-timer-throttling --disable-backgrounding-occluded-windows --disable-breakpad --disable-client-side-phishing-detection --disable-component-extensions-with-background-pages --disable-default-apps --disable-dev-shm-usage --disable-extensions --disable-features=TranslateUI --disable-hang-monitor --disable-ipc-flooding-protection --disable-popup-blocking --disable-prompt-on-repost --disable-renderer-backgrounding --disable-sync --force-color-profile=srgb --metrics-recording-only --no-first-run --enable-automation --password-store=basic --use-mock-keychain --headless --hide-scrollbars --mute-audio --no-sandbox --disable-gpu --disable-extensions --use-cmd-decoder=validating --no-margins --user-data-dir={tempdir} --print-to-pdf={tempFile} https://volleyball-liga.de/")
-    {CreateNoWindow = true, UseShellExecute = false};
-var proc = System.Diagnostics.Process.Start(si);
-proc.WaitForExit(5000);
-_logger.LogInformation("{0}", proc.ExitCode);
-var stream = System.IO.File.OpenRead(tempFile);
-return new FileStreamResult(stream, "application/pdf");
-                */
-
-                // without Chromium installed: return HTML
-                return View(ViewNames.Match.ReportSheet, model);
-
             }
             catch (Exception e)
             {
@@ -606,6 +573,86 @@ return new FileStreamResult(stream, "application/pdf");
             // without Chromium installed or throwing exception: return HTML
             Response.Clear();
             return View(ViewNames.Match.ReportSheet, model);
+        }
+
+        private async Task<FileResult> GetReportSheetChromium(string html)
+        {
+            // Create folder in TempPath
+            var tempFolder = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
+            if (!Directory.Exists(tempFolder)) Directory.CreateDirectory(tempFolder);
+            
+            // Temporary file with HTML content - extension must be ".html"!
+            var htmlFile = Path.Combine(tempFolder, Path.GetRandomFileName() + ".html");
+            await System.IO.File.WriteAllTextAsync(htmlFile, html, CancellationToken.None);
+            var htmlUri = new Uri(htmlFile).AbsoluteUri;
+
+            // Temporary file for the PDF stream form Chromium
+            var streamFile = Path.Combine(tempFolder, Path.GetRandomFileName());
+
+            // Run Chromium
+            var startInfo = new System.Diagnostics.ProcessStartInfo(_pathToChromium,
+                    $"--disable-background-networking --enable-features=NetworkService,NetworkServiceInProcess --disable-background-timer-throttling --disable-backgrounding-occluded-windows --disable-breakpad --disable-client-side-phishing-detection --disable-component-extensions-with-background-pages --disable-default-apps --disable-dev-shm-usage --disable-extensions --disable-features=TranslateUI --disable-hang-monitor --disable-ipc-flooding-protection --disable-popup-blocking --disable-prompt-on-repost --disable-renderer-backgrounding --disable-sync --force-color-profile=srgb --metrics-recording-only --no-first-run --enable-automation --password-store=basic --use-mock-keychain --headless --hide-scrollbars --mute-audio --no-sandbox --disable-gpu --disable-extensions --use-cmd-decoder=validating --no-margins --user-data-dir={tempFolder} --print-to-pdf={streamFile} {htmlUri}")
+                {CreateNoWindow = true, UseShellExecute = false};
+            var proc = System.Diagnostics.Process.Start(startInfo);
+
+            if (proc is null)
+            {
+                _logger.LogCritical("Process '{PathToChromium}' could not be started.", _pathToChromium);
+                throw new InvalidOperationException($"Process '{_pathToChromium}' could not be started.");
+            }
+
+            const int timeout = 8000;
+            var timePassed = 0;
+            while (!proc.HasExited)
+            {
+                timePassed += 100;
+                await Task.Delay(100, default);
+                if (timePassed < timeout) continue;
+
+                proc.Kill(true);
+                throw new OperationCanceledException($"Chromium timed out after {timeout}ms.");
+            }
+            
+            _logger.LogInformation("Chromium exit code: {ExitCode}", proc.ExitCode);
+            var stream = System.IO.File.OpenRead(streamFile);
+            return new FileStreamResult(stream, "application/pdf");
+        }
+
+        private async Task<FileStreamResult> GetReportSheetPuppeteer(string html)
+        {
+            var options = new PuppeteerSharp.LaunchOptions
+            {
+                Headless = true,
+                // Alternative: --use-cmd-decoder=passthrough 
+                Args = new[]
+                    { "--no-sandbox", "--disable-gpu", "--disable-extensions", "--use-cmd-decoder=validating" },
+                ExecutablePath = _pathToChromium, Timeout = 5000
+            };
+            // Use Puppeteer as a wrapper for the Chromium browser, which can generate PDF from HTML
+            await using var browser = await PuppeteerSharp.Puppeteer.LaunchAsync(options).ConfigureAwait(false);
+            await using var page = await browser.NewPageAsync().ConfigureAwait(false);
+
+            await page.SetContentAsync(html); // Bootstrap 4 is loaded from CDN
+
+            browser.Process?.Refresh();
+            _logger.LogInformation(
+                "Chromium Process physical memory: {0:#,0} bytes. Start arguments: {1}",
+                browser.Process?.WorkingSet64, browser.Process?.StartInfo.Arguments);
+
+            // Test, whether the chromium browser renders at all
+            /* return new FileStreamResult(
+                await page.ScreenshotStreamAsync(new PuppeteerSharp.ScreenshotOptions
+                    {FullPage = true, Quality = 100, Type = ScreenshotType.Jpeg}).ConfigureAwait(false),
+                "image/jpeg");
+            */
+
+            // Todo: This part works on the development machine, but throws on the external web server
+            var result = new FileStreamResult(
+                await page.PdfStreamAsync(new PuppeteerSharp.PdfOptions
+                    { Scale = 1.0M, Format = PaperFormat.A4 }).ConfigureAwait(false),
+                "application/pdf");
+            _logger.LogInformation("PDF stream created with length {0}", result.FileStream.Length);
+            return result;
         }
 
         private void SendFixtureNotification(long matchId)
