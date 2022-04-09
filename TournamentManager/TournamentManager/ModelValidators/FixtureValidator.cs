@@ -74,7 +74,7 @@ namespace TournamentManager.ModelValidators
                     Id = FactId.PlannedStartNotExcluded,
                     FieldNames = new[] { nameof(Model.PlannedStart) },
                     Enabled = Data.TenantContext.TournamentContext.FixtureRuleSet.CheckForExcludedMatchDateTime,
-                    Type = FactType.Error,
+                    Type = FactType.Warning,
                     CheckAsync = async (cancellationToken) => 
                     {
                         if (!Model.PlannedStart.HasValue) return _successResult;
