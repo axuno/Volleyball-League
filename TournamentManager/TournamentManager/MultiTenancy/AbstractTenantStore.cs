@@ -14,9 +14,9 @@ namespace TournamentManager.MultiTenancy
     /// <typeparam name="T">The implementation of <see cref="ITenantContext"/> and <see cref="ITenant"/></typeparam>
     public class AbstractTenantStore<T> : ITenantStore<T> where T: class, ITenantContext, ITenant
     {
-        protected readonly ConcurrentDictionary<string, T> Tenants = new ConcurrentDictionary<string, T>();
+        protected readonly ConcurrentDictionary<string, T> Tenants = new();
         protected ILogger Logger;
-        internal YAXLib.YAXSerializer TenantContextSerializer = new YAXLib.YAXSerializer(typeof(TenantContext));
+        internal YAXLib.YAXSerializer TenantContextSerializer = new(typeof(TenantContext));
 
         /// <summary>
         /// CTOR.
@@ -76,7 +76,7 @@ namespace TournamentManager.MultiTenancy
         public bool TryAddTenant(T tenant)
         {
             var success = Tenants.TryAdd(tenant.Identifier, tenant);
-            Logger.LogTrace($"Tenant with {nameof(tenant.Identifier)} '{tenant.Identifier}' {(success ? "added" : "failed to add")}.");
+            Logger.LogTrace("Tenant with {tenant} '{tenantIdentifier}' {successMsg}.", nameof(tenant.Identifier), tenant.Identifier,  success ? "added" : "failed to add");
             return success;
         }
         
@@ -88,7 +88,7 @@ namespace TournamentManager.MultiTenancy
         public bool TryRemoveTenant(string identifier)
         {
             var success = Tenants.TryRemove(identifier, out _);
-            Logger.LogTrace($"Tenant with {nameof(identifier)} '{identifier}' {(success ? "removed" : "failed to remove")}.");
+            Logger.LogTrace("Tenant with {name} '{identifier}' {successMsg}.", nameof(identifier), identifier, success ? "removed" : "failed to remove");
             return success;
         }
 
@@ -101,13 +101,13 @@ namespace TournamentManager.MultiTenancy
         public bool TryUpdateTenant(string identifier, T newTenant)
         {
             var success = false;
-            if (Tenants.TryGetValue(identifier, out T currentTenant))
+            if (Tenants.TryGetValue(identifier, out var currentTenant))
             {
                 // Make sure the dictionary key and the tenant identifier are always equal
                 newTenant.Identifier = identifier;
                 success = Tenants.TryUpdate(identifier, newTenant, currentTenant);
             }
-            Logger.LogTrace($"Tenant with {nameof(identifier)} '{identifier}' {(success ? "updated" : "failed to update")}.");
+            Logger.LogTrace("Tenant with {name} '{identifier}' {successMsg}.", nameof(identifier), identifier, success ? "updated" : "failed to update");
             return success;
         }
         
@@ -162,7 +162,7 @@ namespace TournamentManager.MultiTenancy
         /// <example>
         /// GetTenantConfigurationFiles = Directory.GetFiles(ConfigurationFolder, "Tenant.*.Production.config", SearchOption.TopDirectoryOnly);
         /// </example>
-        public Func<string[]> GetTenantConfigurationFiles { get; set; } = () => new string[] { };
+        public Func<string[]> GetTenantConfigurationFiles { get; set; } = Array.Empty<string>;
         
         /// <summary>
         /// Gets or sets the <see cref="IConfiguration"/> used for retrieving the connection strings for a tenant.

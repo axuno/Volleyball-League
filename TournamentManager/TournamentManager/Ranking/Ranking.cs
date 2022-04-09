@@ -14,7 +14,7 @@ namespace TournamentManager.Ranking
         /// <summary>
         /// The list of available rank comparers
         /// </summary>
-        private readonly Dictionary<RankComparerEnum, Type> _rankComparers = new Dictionary<RankComparerEnum, Type>
+        private readonly Dictionary<RankComparerEnum, Type> _rankComparers = new()
         {
             {RankComparerEnum.StandardRankComparer, typeof(StandardRankComparer)},
             {RankComparerEnum.AlternateRankComparer1, typeof(AlternateRankComparer1) },
@@ -36,7 +36,7 @@ namespace TournamentManager.Ranking
         {
             MatchesPlayed = matchesComplete.ToList().AsReadOnly();
             MatchesToPlay = matchesToPlay.ToList().AsReadOnly();
-            _rankComparer = (IRankComparer) Activator.CreateInstance(_rankComparers[rankComparerKey], true);
+            _rankComparer = (IRankComparer?) Activator.CreateInstance(_rankComparers[rankComparerKey], true) ?? throw new InvalidOperationException();
             _rankComparer.Ranking = this;
         }
 
@@ -116,7 +116,7 @@ namespace TournamentManager.Ranking
         /// <returns>Returns the <see cref="RankingList"/> for the given upper date limit.</returns>
         internal RankingList GetList(IEnumerable<long> teamIds, DateTime upperDateLimit)
         {
-            return GetSortedList(GetUnsortedList(teamIds, upperDateLimit, out var lastUpdatedOn));
+            return GetSortedList(GetUnsortedList(teamIds, upperDateLimit, out _));
         }
 
         private RankingList GetUnsortedList(IEnumerable<long> teamIds, DateTime upperDateLimit, out DateTime lastUpdatedOn)

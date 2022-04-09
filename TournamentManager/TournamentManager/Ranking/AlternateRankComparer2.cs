@@ -23,13 +23,12 @@ namespace TournamentManager.Ranking
             UpperDateLimit = upperDateLimit;
         }
 
-		public DateTime UpperDateLimit { get; set; }
+		public DateTime UpperDateLimit { get; set; } = DateTime.MinValue;
 
 		public Ranking? Ranking { get; set; }
 
-		public int Compare(Rank x, Rank y)
+		public int Compare(Rank? x, Rank? y)
 		{
-			if (UpperDateLimit == null) throw new NullReferenceException($"{nameof(UpperDateLimit)} cannot be null.");
             if (Ranking == null) throw new NullReferenceException($"{nameof(Ranking)} cannot be null.");
 
 			/*

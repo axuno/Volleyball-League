@@ -12,6 +12,7 @@ namespace League.ModelBinders
     /// <summary>
     /// When this attribute is set to a model property of type <see cref="string"/>, <see cref="TrimmingComplexModelBinder"/> will not trim the property value.
     /// </summary>
+    [AttributeUsage(AttributeTargets.Class)]
     public class NoTrimmingAttribute : Attribute
     { }
 
@@ -22,13 +23,19 @@ namespace League.ModelBinders
     {
         private readonly ILogger<TrimmingComplexModelBinder> _logger;
 
+        /// <summary>
+        /// CTOR.
+        /// </summary>
+        /// <param name="propertyBinders"></param>
+        /// <param name="loggerFactory"></param>
         public TrimmingComplexModelBinder(IDictionary<ModelMetadata, IModelBinder> propertyBinders,
             ILoggerFactory loggerFactory) : base(propertyBinders, loggerFactory)
         {
             _logger = loggerFactory.CreateLogger<TrimmingComplexModelBinder>();
-            //_logger.LogInformation("Instance created");
+            _logger.LogTrace("Instance created");
         }
 
+        /// <inheritdoc/>
         protected override void SetProperty(ModelBindingContext bindingContext, string modelName, ModelMetadata propertyMetadata, ModelBindingResult result)
         {
             var attr = (propertyMetadata as DefaultModelMetadata)?.Attributes.Attributes;
@@ -50,6 +57,12 @@ namespace League.ModelBinders
     /// </code>
     public class TrimmingComplexModelBinderProvider : IModelBinderProvider
     {
+        /// <summary>
+        /// Gets an instance of <see cref="TrimmingComplexModelBinder"/>.
+        /// </summary>
+        /// <param name="context"></param>
+        /// <returns>An instance of <see cref="TrimmingComplexModelBinder"/></returns>
+        /// <exception cref="ArgumentNullException"></exception>
         public IModelBinder GetBinder(ModelBinderProviderContext context)
         {
             if (context == null)

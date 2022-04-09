@@ -44,7 +44,7 @@ namespace TournamentManager.ModelValidators
                         new FactResult
                         {
                             Message = SingleSetValidatorResource.ResourceManager.GetString(
-                                nameof(FactId.BallPointsNotNegative)),
+                                nameof(FactId.BallPointsNotNegative)) ?? string.Empty,
                             Success = Model.HomeBallPoints >= 0 && Model.GuestBallPoints >= 0
                         })
                 });
@@ -62,7 +62,7 @@ namespace TournamentManager.ModelValidators
                         {
                             Message =
                                 SingleSetValidatorResource.ResourceManager.GetString(
-                                    nameof(FactId.TieIsAllowed)),
+                                    nameof(FactId.TieIsAllowed)) ?? string.Empty,
                             Success = true
                         };
 
@@ -162,7 +162,7 @@ namespace TournamentManager.ModelValidators
                         var factResult = new FactResult
                         {
                             Message = SingleSetValidatorResource.ResourceManager.GetString(
-                                          nameof(FactId.RegularWinReachedWithTwoPlusPointsAhead)),
+                                          nameof(FactId.RegularWinReachedWithTwoPlusPointsAhead)) ?? string.Empty,
                             Success = true
                         };
 
@@ -265,7 +265,7 @@ namespace TournamentManager.ModelValidators
                         var factResult = new FactResult
                         {
                             Message = SingleSetValidatorResource.ResourceManager.GetString(
-                                          nameof(FactId.TieBreakWinReachedWithTwoPlusPointsAhead)),
+                                          nameof(FactId.TieBreakWinReachedWithTwoPlusPointsAhead)) ?? string.Empty,
                             Success = true
                         };
 

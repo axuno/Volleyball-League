@@ -5,7 +5,7 @@ using System.IO;
 
 namespace TournamentManager.MultiTenancy
 {
-    [YAXLib.YAXSerializeAs(nameof(TenantContext))]
+    [YAXLib.Attributes.YAXSerializeAs(nameof(TenantContext))]
     public class TenantContext : ITenantContext
     {
         /// <summary>
@@ -66,25 +66,25 @@ namespace TournamentManager.MultiTenancy
         /// <summary>
         /// Gets or sets the unique tenant identifier.
         /// </summary>
-        [YAXLib.YAXComment("Identifies the tenant. Value is also used for tenant-specific file names.")]
+        [YAXLib.Attributes.YAXComment("Identifies the tenant. Value is also used for tenant-specific file names.")]
         public string Identifier { get; set; } = string.Empty;
 
         /// <summary>
         /// Gets or sets the tenant GUID.
         /// </summary>
-        [YAXLib.YAXComment("The tenant GUID.")]
+        [YAXLib.Attributes.YAXComment("The tenant GUID.")]
         public Guid Guid { get; set; } = Guid.NewGuid();
         
         /// <summary>
         /// If <see langword="true"/>, this is the default tenant.
         /// </summary>
-        [YAXLib.YAXComment("May only be true for a single tenant in a tenant store.")]
+        [YAXLib.Attributes.YAXComment("May only be true for a single tenant in a tenant store.")]
         public bool IsDefault { get; set; }
         
         /// <summary>
         /// Gets or sets the filename of the tenant configuration.
         /// </summary>
-        [YAXLib.YAXDontSerialize]
+        [YAXLib.Attributes.YAXDontSerialize]
         public string Filename { get; set; } = string.Empty;
         
         /// <summary>

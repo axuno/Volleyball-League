@@ -71,28 +71,24 @@ namespace Axuno.Tools
 
 
 		// define the triple des provider
-		private readonly TripleDESCryptoServiceProvider _desProvider = new TripleDESCryptoServiceProvider();
+		private readonly TripleDES _tripleDES = TripleDES.Create();
 
 		// define the string handler
-		private readonly UTF8Encoding _utf8Encoding = new UTF8Encoding();
+		private readonly UTF8Encoding _utf8Encoding = new();
 
 		// characters to use for random Key and IV
-		const string _charsToUse = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+		private const string _charsToUse = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 
 		public ExpiringTripleDES()
 		{
-			_desProvider.Padding = PaddingMode.PKCS7;
+			_tripleDES.Padding = PaddingMode.PKCS7;
 			GenerateKeyAndIV();
-			// exactly 8 bytes for Initialization Vector
-			// IV = "!2AäH_<8";
-			// exactly 24 bytes for Encryption Key
-			// Key = "!waht32_<wonderful#+*47e";
 		}
 
 		public ExpiringTripleDES(byte[] key, byte[] iv)
 		{
-			_desProvider.Key = key;
-			_desProvider.IV = iv;
+			_tripleDES.Key = key;
+			_tripleDES.IV = iv;
 		}
 
 		public ExpiringTripleDES(string key, string iv)
@@ -121,10 +117,10 @@ namespace Axuno.Tools
 		/// </summary>
 		public string Key
 		{
-			get { return _utf8Encoding.GetString(_desProvider.Key); }
+			get { return _utf8Encoding.GetString(_tripleDES.Key); }
 			set
 			{
-				_desProvider.Key = _utf8Encoding.GetBytes(value + _charsToUse).TakeWhile((b, index) => index < 24).ToArray();
+				_tripleDES.Key = _utf8Encoding.GetBytes(value + _charsToUse).TakeWhile((b, index) => index < 24).ToArray();
 			}
 		}
 
@@ -133,10 +129,10 @@ namespace Axuno.Tools
 		/// </summary>
 		public string IV
 		{
-			get { return _utf8Encoding.GetString(_desProvider.IV); }
+			get { return _utf8Encoding.GetString(_tripleDES.IV); }
 			set
 			{
-				_desProvider.IV = _utf8Encoding.GetBytes(value + _charsToUse).TakeWhile((b, index) => index < 8).ToArray();
+				_tripleDES.IV = _utf8Encoding.GetBytes(value + _charsToUse).TakeWhile((b, index) => index < 8).ToArray();
 			}
 		}
 
@@ -190,7 +186,7 @@ namespace Axuno.Tools
 			Array.Copy(expiresOnBytes, 0, numOfInputBytes, startsOnBytes.LongLength, expiresOnBytes.LongLength);
 			Array.Copy(textBytes, 0, numOfInputBytes, startsOnBytes.LongLength + expiresOnBytes.LongLength, textBytes.LongLength);
 
-			var output = Transform(numOfInputBytes, _desProvider.CreateEncryptor());
+			var output = Transform(numOfInputBytes, _tripleDES.CreateEncryptor());
 
 			// Make the string match RFC4648 Base64url and strip trailing '=' fillers (which are 0, 1 or 2)
 			return Convert.ToBase64String(output).Replace('/', '_').Replace('+', '-').TrimEnd('=');
@@ -209,11 +205,11 @@ namespace Axuno.Tools
 			try
 			{
 				// Replace +/ with -_ and add = that were stripped by Url-safe Encryption
-				byte[] input = Convert.FromBase64String(text.Replace('_', '/').Replace('-', '+').PadRight(text.Length + (4 - text.Length % 4) % 4, '='));
-				byte[] output = Transform(input, _desProvider.CreateDecryptor());
+				var input = Convert.FromBase64String(text.Replace('_', '/').Replace('-', '+').PadRight(text.Length + (4 - text.Length % 4) % 4, '='));
+				var output = Transform(input, _tripleDES.CreateDecryptor());
 
 				// how many bytes are needed to convert from typeof(long)
-				int longAsBytesLength = BitConverter.GetBytes((long) 0).Length;
+				var longAsBytesLength = BitConverter.GetBytes((long) 0).Length;
 
 				// first 8 bytes are the startOn ticks
 				result.StartsOn = new DateTime(BitConverter.ToInt64(output, 0));

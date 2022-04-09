@@ -42,7 +42,7 @@ namespace TournamentManager.ModelValidators
                     CheckAsync = (cancellationToken) => Task.FromResult(
                         new FactResult
                         {
-                            Message = MatchResultValidatorResource.ResourceManager.GetString(nameof(FactId.RealMatchDateIsSet)),
+                            Message = MatchResultValidatorResource.ResourceManager.GetString(nameof(FactId.RealMatchDateIsSet)) ?? string.Empty,
                             Success = Model.RealStart.HasValue && Model.RealEnd.HasValue
                         })
                 });
@@ -58,13 +58,13 @@ namespace TournamentManager.ModelValidators
                     {
                         var successResult = new FactResult
                         {
-                            Message = MatchResultValidatorResource.ResourceManager.GetString(nameof(FactId.RealMatchDateWithinRoundLegs)),
+                            Message = MatchResultValidatorResource.ResourceManager.GetString(nameof(FactId.RealMatchDateWithinRoundLegs)) ?? string.Empty,
                             Success = true
                         };
 
                         var round =
                             await Data.TenantContext.DbContext.AppDb.RoundRepository.GetRoundWithLegsAsync(Model.RoundId,
-                                cancellationToken);
+                                cancellationToken) ?? throw new InvalidOperationException($"Round Id '{Model.RoundId}' not found.");
 
                         if (!Model.RealStart.HasValue || !Model.RealEnd.HasValue || round.RoundLegs.Count == 0)
                         {
@@ -86,7 +86,7 @@ namespace TournamentManager.ModelValidators
                             (current, leg) =>
                                 current +
                                 $"{Data.TimeZoneConverter.ToZonedTime(leg.StartDateTime)?.DateTimeOffset.DateTime.ToShortDateString()} - {Data.TimeZoneConverter.ToZonedTime(leg.EndDateTime)?.DateTimeOffset.DateTime.ToShortDateString()}{joinWith}");
-                        displayPeriods = displayPeriods.Substring(0, displayPeriods.Length - joinWith.Length);
+                        displayPeriods = displayPeriods[..^joinWith.Length];
 
                         return new FactResult
                         {
@@ -116,7 +116,7 @@ namespace TournamentManager.ModelValidators
                         return new FactResult
                         {
                             Message = MatchResultValidatorResource.ResourceManager.GetString(
-                                nameof(FactId.SetsValidatorSuccessful)),
+                                nameof(FactId.SetsValidatorSuccessful)) ?? string.Empty,
                             Success = !SetsValidator.GetFailedFacts().Any()
                         };
                     }
@@ -132,7 +132,7 @@ namespace TournamentManager.ModelValidators
                     CheckAsync = (cancellationToken) => Task.FromResult(
                         new FactResult
                         {
-                            Message = MatchResultValidatorResource.ResourceManager.GetString(nameof(FactId.RealMatchDateEqualsFixture)),
+                            Message = MatchResultValidatorResource.ResourceManager.GetString(nameof(FactId.RealMatchDateEqualsFixture)) ?? string.Empty,
                             Success = Model.RealStart.HasValue && Model.RealEnd.HasValue
                                         && Model.PlannedStart.HasValue
                                         && Model.RealStart?.Date == Model.PlannedStart?.Date

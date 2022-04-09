@@ -26,6 +26,7 @@ namespace TournamentManager.Data
 	    public RoundRepository(MultiTenancy.IDbContext dbContext)
 	    {
 	        _dbContext = dbContext;
+            _logger.LogTrace("RoundRepository created.");
 	    }
 
         public virtual async Task<MatchRuleEntity> GetMatchRuleAsync(long roundId, CancellationToken cancellationToken)
@@ -54,7 +55,7 @@ namespace TournamentManager.Data
             return result;
         }
 
-		public virtual async Task<RoundEntity> GetRoundWithLegsAsync(long roundId, CancellationToken cancellationToken)
+		public virtual async Task<RoundEntity?> GetRoundWithLegsAsync(long roundId, CancellationToken cancellationToken)
         {
             using var da = _dbContext.GetNewAdapter();
             var result = (await da.FetchQueryAsync(
@@ -66,8 +67,10 @@ namespace TournamentManager.Data
 		public virtual RoundEntity GetRoundWithLegs(long roundId)
 		{
 			var round = new RoundEntity(roundId);
-			IPrefetchPath2 prefetchPathRoundLegs = new PrefetchPath2(EntityType.RoundEntity);
-			prefetchPathRoundLegs.Add(RoundEntity.PrefetchPathRoundLegs);
+            IPrefetchPath2 prefetchPathRoundLegs = new PrefetchPath2(EntityType.RoundEntity)
+            {
+                RoundEntity.PrefetchPathRoundLegs
+            };
 
             using var da = _dbContext.GetNewAdapter();
             da.FetchEntity(round, prefetchPathRoundLegs);

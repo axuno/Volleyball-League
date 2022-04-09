@@ -52,6 +52,9 @@ using NLog.Extensions.Logging;
 
 namespace League
 {
+    /// <summary>
+    /// The <see cref="League"/> start-up class.
+    /// </summary>
     public class Startup
     {
         /// <summary>
@@ -577,7 +580,6 @@ namespace League
                     options.ModelBindingMessageProvider.SetValueMustBeANumberAccessor(x => string.Format(Resources.ModelBindingMessageResource.ValueMustBeANumber, x));
                     options.ModelBindingMessageProvider.SetMissingKeyOrValueAccessor(() => Resources.ModelBindingMessageResource.MissingKeyOrValue);
                 })
-                .SetCompatibilityVersion(CompatibilityVersion.Latest)
                 .AddSessionStateTempDataProvider()
                 .AddDataAnnotationsLocalization()
                 .AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix)
@@ -587,7 +589,7 @@ namespace League
                     options.ModelBinderProviders.Insert(0, new TimeSpanModelBinderProvider());
                     options.ModelBinderProviders.Insert(0, new DateTimeModelBinderProvider());
                     // Replace ComplexTypeModelBinder with TrimmingModelBinder (trims all strings in models)
-                    options.ModelBinderProviders[options.ModelBinderProviders.TakeWhile(p => !(p is Microsoft.AspNetCore.Mvc.ModelBinding.Binders.ComplexTypeModelBinderProvider)).Count() - 1] = new ModelBinders.TrimmingComplexModelBinderProvider();
+                    options.ModelBinderProviders[options.ModelBinderProviders.TakeWhile(p => p is not Microsoft.AspNetCore.Mvc.ModelBinding.Binders.ComplexTypeModelBinderProvider).Count() - 1] = new ModelBinders.TrimmingComplexModelBinderProvider();
                 })
                 .AddControllersAsServices(); // will add controllers with ServiceLifetime.Transient
 #if DEBUG
@@ -639,9 +641,9 @@ namespace League
         /// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         /// </summary>
         /// <param name="app"></param>
-        /// <param name="env"></param>
+        /// <param name="_"></param>
         /// <param name="loggerFactory"></param>
-        public void Configure(IApplicationBuilder app, IHostEnvironment env, ILoggerFactory loggerFactory)
+        public void Configure(IApplicationBuilder app, IHostEnvironment _, ILoggerFactory loggerFactory)
         {
             #region *** Logging ***
 
@@ -661,15 +663,15 @@ namespace League
                 var folderName = Path.Combine(WebHostEnvironment.WebRootPath, folder);
                 if (!Directory.Exists(folderName))
                 {
-                    Logger.LogInformation("Folder '{0}' does not exist.", folderName);
+                    Logger.LogInformation("Folder '{folderName}' does not exist.", folderName);
                     try
                     {
                         Directory.CreateDirectory(folderName);
-                        Logger.LogInformation("Folder '{0}' created.", folderName);
+                        Logger.LogInformation("Folder '{folderName}' created.", folderName);
                     }
                     catch (Exception e)
                     {
-                        Logger.LogCritical(e, "Folder '{0}': Does not exist and could not be created.", folderName);
+                        Logger.LogCritical(e, "Folder '{folderName}': Does not exist and could not be created.", folderName);
                     }
                 }
             }

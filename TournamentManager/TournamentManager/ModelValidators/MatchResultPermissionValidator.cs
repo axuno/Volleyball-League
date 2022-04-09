@@ -34,7 +34,7 @@ namespace TournamentManager.ModelValidators
                         new FactResult
                         {
                             Message = MatchResultPermissionValidatorResource.ResourceManager.GetString(
-                                nameof(FactId.TournamentIsInActiveMode)),
+                                nameof(FactId.TournamentIsInActiveMode)) ?? string.Empty,
                             Success = !Data.Criteria.TournamentInPlanMode
                         })
                 });
@@ -50,7 +50,7 @@ namespace TournamentManager.ModelValidators
                         new FactResult
                         {
                             Message = MatchResultPermissionValidatorResource.ResourceManager.GetString(
-                                nameof(FactId.RoundIsStillRunning)),
+                                nameof(FactId.RoundIsStillRunning)) ?? string.Empty,
                             Success = !Data.Criteria.RoundIsCompleted
                         })
                 });
@@ -67,7 +67,7 @@ namespace TournamentManager.ModelValidators
                         var factResult = new FactResult
                         {
                             Message = MatchResultPermissionValidatorResource.ResourceManager.GetString(
-                                nameof(FactId.CurrentDateIsBeforeResultCorrectionDeadline)),
+                                nameof(FactId.CurrentDateIsBeforeResultCorrectionDeadline)) ?? string.Empty,
                             Success = true
                         };
 

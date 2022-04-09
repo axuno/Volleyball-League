@@ -16,7 +16,7 @@ namespace TournamentManager.Match
 		public PointResult(string result, string pointsSeparator = ":")
 		{
 			PointsSeparator = pointsSeparator;
-			string[] r = result.Split(new string[] { PointsSeparator }, StringSplitOptions.None);
+			var r = result.Split(new string[] { PointsSeparator }, StringSplitOptions.None);
 			try
 			{
 				Home = int.Parse(r[0], System.Globalization.CultureInfo.CurrentCulture);
@@ -51,19 +51,19 @@ namespace TournamentManager.Match
 		/// <summary>
 		/// Gets or sets the home points of the result.
 		/// </summary>
-		public virtual int Home { get; set; }
+		public int Home { get; set; }
 
 		/// <summary>
 		/// Gets or sets the guest points of the result.
 		/// </summary>
-		public virtual int Guest { get; set; }
+		public int Guest { get; set; }
 
 		/// <summary>
 		/// Implements <see cref="IComparable{IResult}"/>
 		/// </summary>
 		/// <param name="other"></param>
 		/// <returns></returns>
-		public int CompareTo(IOpponent<int> other)
+		public int CompareTo(IOpponent<int>? other)
         {
             return Compare(this, other);
         }
@@ -74,7 +74,7 @@ namespace TournamentManager.Match
 		/// <param name="x"></param>
 		/// <param name="y"></param>
 		/// <returns></returns>
-		public int Compare(IOpponent<int> x, IOpponent<int> y)
+		public int Compare(IOpponent<int>? x, IOpponent<int>? y)
         {
 			if (x == null)
 				throw new ArgumentNullException(nameof(x));

@@ -126,7 +126,9 @@ namespace League.ApiControllers
             if (forceDate || !HasAlreadyRun(cronDateTime))
             {
                 message = $"Queuing jobs for {cronDateTime.ToString("d", CultureInfo.InvariantCulture)}";
+#pragma warning disable CA2254 // Template should be a static expression
                 _logger.LogInformation(message);
+#pragma warning restore CA2254 // Template should be a static expression
                 QueueJobs(cronDateTime);
                 // success
                 return Ok(new QueuingResult {Success = true, ReferenceDate = cronDateTime, Message = message });
@@ -134,7 +136,9 @@ namespace League.ApiControllers
 
             // failure
             message = $"Job already executed for {(string.IsNullOrEmpty(referenceDate) ? "today" : cronDateTime.ToString("d", CultureInfo.InvariantCulture))}";
+#pragma warning disable CA2254 // Template should be a static expression            
             _logger.LogInformation(message);
+#pragma warning restore CA2254 // Template should be a static expression
             return Ok(new QueuingResult {Success = false, ReferenceDate = cronDateTime, Message = message });
         }
 
@@ -220,26 +224,26 @@ namespace League.ApiControllers
         private async Task<InvocationResult> InvokeUrl(string urlSegmentValue)
         {
             using var httpClient = new HttpClient();
-            string url = string.Empty;
+            var url = string.Empty;
             try
             {
                 url = Url.Action(nameof(AutoMail), nameof(Cron),
-                    new {organization = urlSegmentValue, key = GetAuthKey() }, Uri.UriSchemeHttps);
+                    new {organization = urlSegmentValue, key = GetAuthKey() }, Uri.UriSchemeHttps)!;
 
                 var result = await httpClient.GetAsync(url);
-                _logger.LogInformation("Get request for url '{0}' completed.", url);
+                _logger.LogInformation("Get request for url '{url}' completed.", url);
                 return new InvocationResult
                 {
                     Success = true, Url = url,
                     QueuingResult =
-                        JsonConvert.DeserializeObject<QueuingResult>(await result.Content.ReadAsStringAsync() ?? string.Empty),
+                        JsonConvert.DeserializeObject<QueuingResult>(await result.Content.ReadAsStringAsync()) ?? new QueuingResult(),
                     Exception = null
                 };
             }
             catch(Exception e)
             {
-                var message = $"Error after sending get request for url '{(string.IsNullOrWhiteSpace(url) ? urlSegmentValue : url)}'";
-                _logger.LogError(e, message);
+                const string message = "Error after sending get request for url '{url}'";
+                _logger.LogError(e, message, (string.IsNullOrWhiteSpace(url) ? urlSegmentValue : url));
                 var now = DateTime.UtcNow;
                 
                 return new InvocationResult
