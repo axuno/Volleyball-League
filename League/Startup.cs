@@ -586,10 +586,9 @@ namespace League
                 .AddMvcOptions(options =>
                 {
                     // Insert custom model binder providers before SimpleTypeModelBinderProvider
+                    options.ModelBinderProviders.Insert(0, new StringTrimmingModelBinderProvider());
                     options.ModelBinderProviders.Insert(0, new TimeSpanModelBinderProvider());
                     options.ModelBinderProviders.Insert(0, new DateTimeModelBinderProvider());
-                    // Replace ComplexTypeModelBinder with TrimmingModelBinder (trims all strings in models)
-                    options.ModelBinderProviders[options.ModelBinderProviders.TakeWhile(p => p is not Microsoft.AspNetCore.Mvc.ModelBinding.Binders.ComplexTypeModelBinderProvider).Count() - 1] = new ModelBinders.TrimmingComplexModelBinderProvider();
                 })
                 .AddControllersAsServices(); // will add controllers with ServiceLifetime.Transient
 #if DEBUG
