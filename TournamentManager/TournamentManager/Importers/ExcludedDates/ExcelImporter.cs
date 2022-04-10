@@ -46,12 +46,12 @@ namespace TournamentManager.Importers.ExcludedDates
         public IEnumerable<ExcludeMatchDateEntity> Import(string xlPathAndFileName, DateTimePeriod dateLimits)
         {
             var xlFile = new FileInfo(xlPathAndFileName);
-            _logger.LogTrace("Opening Excel file '{excelFile}'", xlPathAndFileName);
+            _logger.LogDebug("Opening Excel file '{excelFile}'", xlPathAndFileName);
             using var package = new ExcelPackage(xlFile);
             
             var worksheet = package.Workbook.Worksheets.First();
-            _logger.LogTrace("Using the first worksheet, '{worksheetName}'", worksheet.Name);
-            _logger.LogTrace("Date limits are {dateStart} - {dateEnd}", dateLimits.Start, dateLimits.End);
+            _logger.LogDebug("Using the first worksheet, '{worksheetName}'", worksheet.Name);
+            _logger.LogDebug("Date limits are {dateStart} - {dateEnd}", dateLimits.Start, dateLimits.End);
             var row = 0;
 
             while (true)
@@ -59,7 +59,7 @@ namespace TournamentManager.Importers.ExcludedDates
                 row++;
                 if (row == 1 && worksheet.Cells[row, 1].Value is not DateTime)
                 {
-                    _logger.LogTrace("First cell is not a date, assume existing headline row");
+                    _logger.LogDebug("First cell is not a date, assume existing headline row");
                     continue; // may contain a headline row
                 }
                     
@@ -67,7 +67,7 @@ namespace TournamentManager.Importers.ExcludedDates
                 if (!(worksheet.Cells[row, 1].Value is DateTime from && worksheet.Cells[row, 2].Value is DateTime to) ||
                     row > 1000)
                 {
-                    _logger.LogTrace("Import finished with worksheet row {rowNo}", row - 1);
+                    _logger.LogDebug("Import finished with worksheet row {rowNo}", row - 1);
                     yield break;
                 }
                     
@@ -77,13 +77,13 @@ namespace TournamentManager.Importers.ExcludedDates
 
                 if (!dateLimits.Overlaps(new DateTimePeriod(from, to)))
                 {
-                    _logger.LogTrace("UTC Dates {from} - {to} are out of limits", from, to);
+                    _logger.LogDebug("UTC Dates {from} - {to} are out of limits", from, to);
                     continue;
                 }
 
                 var reason = worksheet.Cells[row, 3].Value as string ?? string.Empty;
                 yield return CreateEntity((from, to, reason));
-                _logger.LogTrace("Imported UTC {from} - {to} ({reason})", from, to, reason);
+                _logger.LogDebug("Imported UTC {from} - {to} ({reason})", from, to, reason);
             }
         }
 

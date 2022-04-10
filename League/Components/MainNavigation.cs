@@ -32,7 +32,7 @@ namespace League.Components
         {
             var model = new MainNavigationComponentModel();
             model.TopNavigationNodes.AddRange(_mainNavigationNodeBuilder.GetNavigationNodes());
-            _logger.LogTrace($"{nameof(MainNavigation)} created");
+            _logger.LogDebug($"{nameof(MainNavigation)} created");
             
             return View(model);
         }

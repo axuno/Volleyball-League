@@ -38,11 +38,11 @@ namespace Axuno.BackgroundTask
                 try
                 {
                     await Task.Delay(Config.PollQueueDelay, cancellationToken);
-                    _logger.LogTrace($"TaskItem dequeuing.");
+                    _logger.LogDebug($"TaskItem dequeuing.");
                     var taskItemReference = TaskQueue.DequeueTask();
-                    _logger.LogTrace($"TaskItem start executing.");
+                    _logger.LogDebug($"TaskItem start executing.");
                     await TaskQueue.RunTaskAsync(taskItemReference, cancellationToken);
-                    _logger.LogTrace($"TaskItem completed.");
+                    _logger.LogDebug($"TaskItem completed.");
                 }
                 catch (Exception e) when (e is TaskCanceledException || e is OperationCanceledException)
                 {
@@ -64,9 +64,9 @@ namespace Axuno.BackgroundTask
         /// <returns></returns>
         public override async Task StopAsync(CancellationToken cancellationToken)
         {
-            _logger.LogTrace($"{nameof(BackgroundQueueService)} is stopping.");
+            _logger.LogDebug($"{nameof(BackgroundQueueService)} is stopping.");
             await base.StopAsync(cancellationToken);
-            _logger.LogTrace($"{nameof(BackgroundQueueService)} stopped.");
+            _logger.LogDebug($"{nameof(BackgroundQueueService)} stopped.");
         }
     }
 }

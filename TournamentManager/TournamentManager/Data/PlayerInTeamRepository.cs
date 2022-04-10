@@ -31,7 +31,7 @@ namespace TournamentManager.Data
                 where pit.TeamId == teamId
                 select pit.User).ToListAsync(cancellationToken);
 
-            _logger.LogTrace("{count} player(s) found for team id {teamId}", result.Count, teamId);
+            _logger.LogDebug("{count} player(s) found for team id {teamId}", result.Count, teamId);
 
             return result;
         }
@@ -45,7 +45,7 @@ namespace TournamentManager.Data
                 where pit.UserId == userId
                 select pit.TeamId).ToListAsync(cancellationToken);
 
-            _logger.LogTrace("{userId} team(s) found for user id {count}", userId, result.Count);
+            _logger.LogDebug("{userId} team(s) found for user id {count}", userId, result.Count);
 
             return result;
         }
@@ -58,7 +58,7 @@ namespace TournamentManager.Data
             var result = await (from pit in metaData.PlayerInTeam
                 select pit.User).ToListAsync(cancellationToken);
 
-            _logger.LogTrace("{count} player(s) found", result.Count);
+            _logger.LogDebug("{count} player(s) found", result.Count);
 
             return result;
         }

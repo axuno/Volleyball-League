@@ -73,7 +73,7 @@ namespace League.Controllers
             }
 
             SendEmail(model);
-            _logger.LogTrace("Mail sent: {@model}", model);
+            _logger.LogDebug("Mail sent: {@model}", model);
 
             return _tenantContext.IsDefault ? RedirectToRoute(RouteNames.GeneralContactConfirmation) : RedirectToRoute(RouteNames.TenantContactConfirmation, new { Organization = _tenantContext.SiteContext.UrlSegmentValue });
         }

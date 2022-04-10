@@ -53,7 +53,7 @@ namespace Axuno.BackgroundTask
                     if (_concurrentTaskCount < Config.MaxConcurrentCount && TaskQueue.Count > 0)
                     {
                         Interlocked.Increment(ref _concurrentTaskCount);
-                        _logger.LogTrace("Num of tasks: {concurrentTaskCount}", _concurrentTaskCount);
+                        _logger.LogDebug("Num of tasks: {concurrentTaskCount}", _concurrentTaskCount);
                         taskListReference.Enqueue(TaskQueue.DequeueTask());
                     }
                     else
@@ -143,9 +143,9 @@ namespace Axuno.BackgroundTask
         /// <returns></returns>
         public override async Task StopAsync(CancellationToken cancellationToken)
         {
-            _logger.LogTrace($"{nameof(ConcurrentBackgroundQueueService)} is stopping.");
+            _logger.LogDebug($"{nameof(ConcurrentBackgroundQueueService)} is stopping.");
             await base.StopAsync(cancellationToken);
-            _logger.LogTrace($"{nameof(ConcurrentBackgroundQueueService)} stopped.");
+            _logger.LogDebug($"{nameof(ConcurrentBackgroundQueueService)} stopped.");
         }
     }
 }

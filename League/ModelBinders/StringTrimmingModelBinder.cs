@@ -43,7 +43,7 @@ namespace League.ModelBinders
 
             var trimmedValue = valueProviderResult.FirstValue?.Trim();
             bindingContext.Result = ModelBindingResult.Success(trimmedValue);
-            _logger.LogTrace("Value after trimming any white-space from '{originalValue}': {newValue} ", valueProviderResult.FirstValue, trimmedValue);
+            _logger.LogDebug("Value after trimming any white-space from '{originalValue}': {newValue} ", valueProviderResult.FirstValue, trimmedValue);
             return Task.CompletedTask;
         }
     }

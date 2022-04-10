@@ -182,8 +182,8 @@ namespace TournamentManager.Plan
                 }
             }
 
-            _logger.LogTrace("Generated {Count} UTC dates for HomeTeams:", _generatedAvailableMatchDateEntities.Count);
-            _logger.LogTrace("{Generated}\n", _generatedAvailableMatchDateEntities.Select(gen => (gen.HomeTeamId, gen.MatchStartTime)));
+            _logger.LogDebug("Generated {Count} UTC dates for HomeTeams:", _generatedAvailableMatchDateEntities.Count);
+            _logger.LogDebug("{Generated}\n", _generatedAvailableMatchDateEntities.Select(gen => (gen.HomeTeamId, gen.MatchStartTime)));
 
             // save to the persistent storage
             // await _appDb.GenericRepository.SaveEntitiesAsync(_generatedAvailableMatchDateEntities, true, false, cancellationToken);

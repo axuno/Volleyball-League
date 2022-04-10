@@ -190,7 +190,7 @@ namespace TournamentManager.Plan
                     // matchDates contains calculated dates in the same order as combinations,
                     // so the index can be used for both.
                     var availableDates = GetMatchDates(roundLeg, teamCombinationGroup, roundMatches);
-                    _logger.LogTrace("Selected dates: {dates}", string.Join(", ", availableDates.OrderBy(bd => bd?.MatchStartTime).Select(bd => bd?.MatchStartTime.ToShortDateString())).TrimEnd(',', ' '));
+                    _logger.LogDebug("Selected dates: {dates}", string.Join(", ", availableDates.OrderBy(bd => bd?.MatchStartTime).Select(bd => bd?.MatchStartTime.ToShortDateString())).TrimEnd(',', ' '));
 
                     for (var index = 0; index < teamCombinationGroup.Count; index++)
                     {
@@ -277,11 +277,11 @@ namespace TournamentManager.Plan
                     gm.HomeTeamId == combination.HomeTeam || gm.GuestTeamId == combination.GuestTeam);
                 if (lastMatchOfCombination != null)
                 {
-                    _logger.LogTrace("Last match date found for home team '{homeTeam}' and guest team '{guestTeam}' is '{plannedStart}'", combination.HomeTeam, combination.GuestTeam, lastMatchOfCombination.PlannedStart?.ToShortDateString() ?? "none");
+                    _logger.LogDebug("Last match date found for home team '{homeTeam}' and guest team '{guestTeam}' is '{plannedStart}'", combination.HomeTeam, combination.GuestTeam, lastMatchOfCombination.PlannedStart?.ToShortDateString() ?? "none");
                 }
                 else
                 {
-                    _logger.LogTrace("No last match found for home team '{homeTeam}' and guest team '{guestTeam}'", combination.HomeTeam, combination.GuestTeam);
+                    _logger.LogDebug("No last match found for home team '{homeTeam}' and guest team '{guestTeam}'", combination.HomeTeam, combination.GuestTeam);
                 }
                 #endif
             }
@@ -365,7 +365,7 @@ namespace TournamentManager.Plan
             var start = 0;
             var index = 0;
 
-            _logger.LogTrace("*** Round: {roundName} - RoundLeg: {legDescription}\n", roundLeg.Round.Name, roundLeg.Description);
+            _logger.LogDebug("*** Round: {roundName} - RoundLeg: {legDescription}\n", roundLeg.Round.Name, roundLeg.Description);
             while (start < allMatchDaysOfRound.Count && index < bundledGroups.Count)
             {
                 //TODO: There could be a remainder of days because of integer division!
@@ -375,7 +375,7 @@ namespace TournamentManager.Plan
                 bundledGroups[index].DateTimePeriod =
                     new DateTimePeriod(allMatchDaysOfRound[start].Date, allMatchDaysOfRound[end].Date);
 
-                _logger.LogTrace("Bundle date period: From={from}, To={to}, {days} days",
+                _logger.LogDebug("Bundle date period: From={from}, To={to}, {days} days",
                     bundledGroups[index].DateTimePeriod.Start?.ToShortDateString(),
                     bundledGroups[index].DateTimePeriod.End?.ToShortDateString(),
                     (bundledGroups[index].DateTimePeriod.End - bundledGroups[index].DateTimePeriod.Start)

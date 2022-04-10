@@ -26,7 +26,7 @@ namespace TournamentManager.Data
 	    public RoundRepository(MultiTenancy.IDbContext dbContext)
 	    {
 	        _dbContext = dbContext;
-            _logger.LogTrace("RoundRepository created.");
+            _logger.LogDebug("RoundRepository created.");
 	    }
 
         public virtual async Task<MatchRuleEntity> GetMatchRuleAsync(long roundId, CancellationToken cancellationToken)

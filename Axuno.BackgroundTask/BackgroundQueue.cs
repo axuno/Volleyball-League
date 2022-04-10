@@ -46,7 +46,7 @@ namespace Axuno.BackgroundTask
 
             TaskItems.Enqueue(taskItem);
             _signal.Release(); // increase the semaphore count for each item
-            _logger.LogTrace("Number of queued TaskItems is {taskItemCount}", _signal.CurrentCount);
+            _logger.LogDebug("Number of queued TaskItems is {taskItemCount}", _signal.CurrentCount);
         }
 
         /// <summary>
@@ -58,7 +58,7 @@ namespace Axuno.BackgroundTask
             if (TaskItems.TryDequeue(out var nextTaskItem)) 
                 return nextTaskItem;
 
-            _logger.LogTrace("No TaskItem could be dequeued.");
+            _logger.LogDebug("No TaskItem could be dequeued.");
             return null;
         }
 
@@ -77,7 +77,7 @@ namespace Axuno.BackgroundTask
                 await _signal.WaitAsync(cancellationToken);
 
                 await CancelAfterAsync(backgroundTask.RunAsync, backgroundTask.Timeout, cancellationToken);
-                _logger.LogTrace("Task completed.");
+                _logger.LogDebug("Task completed.");
             }
             catch (Exception e) when (e is TaskCanceledException || e is OperationCanceledException)
             {

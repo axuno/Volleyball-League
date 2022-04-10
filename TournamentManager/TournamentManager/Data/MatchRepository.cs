@@ -220,7 +220,7 @@ namespace TournamentManager.Data
             var teamIds = new List<long>();
             matches.ForEach(m =>
             {
-                _logger.LogTrace(
+                _logger.LogDebug(
                     "{methodName}: {date} MatchId={matchId}, HomeTeamId={homeTeamId}, GuestTeamId={guestTeamId}",
                     nameof(AreTeamsBusyAsync),
                     onlyUseDatePart
