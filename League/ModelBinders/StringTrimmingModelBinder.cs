@@ -41,7 +41,9 @@ namespace League.ModelBinders
             
             bindingContext.ModelState.SetModelValue(bindingContext.ModelName, valueProviderResult);
 
-            bindingContext.Result = ModelBindingResult.Success(valueProviderResult.FirstValue?.Trim());
+            var trimmedValue = valueProviderResult.FirstValue?.Trim();
+            bindingContext.Result = ModelBindingResult.Success(trimmedValue);
+            _logger.LogTrace("Value after trimming any white-space from '{originalValue}': {newValue} ", valueProviderResult.FirstValue, trimmedValue);
             return Task.CompletedTask;
         }
     }

@@ -62,6 +62,7 @@ namespace League.ModelBinders
             }
 
             bindingContext.Result = ModelBindingResult.Success(dateTime);
+            _logger.LogTrace("Parsed string '{originalValue}': {dateTime} ", valueAsString, dateTime);
             return Task.CompletedTask;
         }
 

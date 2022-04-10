@@ -50,6 +50,7 @@ namespace League.ModelBinders
             }
 
             bindingContext.Result = ModelBindingResult.Success(time);
+            _logger.LogTrace("Parsed string '{originalValue}': {timeSpan} ", valueAsString, time);
             return Task.CompletedTask;
         }
 
