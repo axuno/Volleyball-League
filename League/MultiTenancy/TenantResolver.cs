@@ -37,8 +37,6 @@ namespace League.MultiTenancy
             if (_httpContext == null) return _tenantStore.GetDefaultTenant() ?? throw new Exception("HttpContext is null and no default ITenantContext found.");
 
             var request = _httpContext.Request;
-            // used if site is identified by host name (and port)
-            var host = request.Host.ToString();
             // first segment:  /
             // second segment: organization/
             // third segment:  account/

@@ -146,7 +146,7 @@ namespace League.Controllers
 
             if (user == null)
             {
-                _logger.LogInformation($"No account found for '{model.EmailOrUsername}'.");
+                _logger.LogInformation("No account found for '{user}'.", model.EmailOrUsername);
                 ModelState.AddModelError(string.Empty, _localizer["No account found for these credentials."].Value);
                 return View(model);
             }
@@ -155,7 +155,7 @@ namespace League.Controllers
 
             if (result.Succeeded)
             {
-                _logger.LogInformation($"User Id '{user.Id}' signed in.");
+                _logger.LogInformation("User Id '{userId}' signed in.", user.Id);
                 return RedirectToLocal(returnUrl ?? "/" + _tenantContext.SiteContext.UrlSegmentValue);
             }
 
@@ -164,22 +164,22 @@ namespace League.Controllers
                 if (!await _signInManager.UserManager.IsEmailConfirmedAsync(user) &&
                     _signInManager.UserManager.Options.SignIn.RequireConfirmedEmail)
                 {
-                    _logger.LogInformation($"Sign-in not allowed: Email for user id '{user.Id}' is not confirmed");
+                    _logger.LogInformation("Sign-in not allowed: Email for user id '{userId}' is not confirmed", user.Id);
                     return RedirectToAction(nameof(Message), nameof(Account), new { Organization = _tenantContext.SiteContext.UrlSegmentValue, messageTypeText = MessageType.SignInRejectedEmailNotConfirmed });
                 }
 
-                _logger.LogInformation($"Account for user id '{user.Id}': {result}");
+                _logger.LogInformation("Account for user id '{userId}': {result}", user.Id, result);
                 return RedirectToAction(nameof(Message), nameof(Account), new { Organization = _tenantContext.SiteContext.UrlSegmentValue, messageTypeText = MessageType.SignInRejected });
             }
 
             // PasswordSignIn failed
-            _logger.LogInformation($"Wrong password for '{model.EmailOrUsername}'.");
+            _logger.LogInformation("Wrong password for '{user}'.", model.EmailOrUsername);
             ModelState.AddModelError(string.Empty, _localizer["No account found for these credentials."].Value);
             return View(model);
         }
 
         [HttpGet("sign-out")]
-        public async Task<IActionResult> SignOut()
+        public new async Task<IActionResult> SignOut()
         {
             await _signInManager.SignOutAsync();
             _logger.LogInformation("User signed out.");
@@ -284,7 +284,7 @@ namespace League.Controllers
 
             if (result.Succeeded)
             {
-                _logger.LogInformation($"User (email: {user.Email}, username: {user.UserName}) created a new account with password.");
+                _logger.LogInformation("User (email: {userEmail}, username: {userName}) created a new account with password.", user.Email, user.UserName);
                 if (await _signInManager.CanSignInAsync(user))
                 {
                     await _signInManager.SignInAsync(user, isPersistent: false);
@@ -293,7 +293,7 @@ namespace League.Controllers
                 return RedirectToAction(nameof(Manage.Index), nameof(Manage), new { Organization = _tenantContext.SiteContext.UrlSegmentValue });
             }
 
-            _logger.LogError($"User (email: {user.Email}) could not be created.", result.Errors);
+            _logger.LogError("User (email: {userEmail}) could not be created. {errors}", user.Email, result.Errors);
             AddErrors(result);
             return View(model);
         }
@@ -316,14 +316,14 @@ namespace League.Controllers
         {
             if (remoteError != null)
             {
-                _logger.LogInformation($"{nameof(ExternalSignInCallback)} failed: {remoteError}.");
+                _logger.LogInformation("{method} failed: {remoteError}.", nameof(ExternalSignInCallback), remoteError);
                 return SocialMediaSignInFailure($"Remote error: {remoteError}",
                     _localizer["Failed to sign-in with the social network account"].Value + $" ({remoteError})");
             }
             var info = await _signInManager.GetExternalLoginInfoAsync();
             if (info == null)
             {
-                _logger.LogInformation($"{nameof(ExternalSignInCallback)} failed to get external sign-in information");
+                _logger.LogInformation("{method} failed to get external sign-in information", nameof(ExternalSignInCallback));
                 return SocialMediaSignInFailure("Failed to get external sign-in information",
                     _localizer["Failed to sign-in with the social network account"].Value);
             }
@@ -354,7 +354,7 @@ namespace League.Controllers
                     // Add external user login for this user.
                     if (await _signInManager.UserManager.AddLoginAsync(existingUser, info) != IdentityResult.Success)
                     {
-                        _logger.LogInformation($"{nameof(ExternalSignInCallback)} {existingUser.Email} is already associated with another account");
+                        _logger.LogInformation("{method} {email} is already associated with another account", nameof(ExternalSignInCallback), existingUser.Email);
                         return SocialMediaSignInFailure($"Social network account for {existingUser.Email} is already associated with another account",
                             _localizer.GetString("Your {0} account is already associated with another account at {1}", info.LoginProvider, _tenantContext.OrganizationContext.ShortName).Value);
                     }
@@ -370,12 +370,12 @@ namespace League.Controllers
                 // Update any authentication tokens if login succeeded
                 await _signInManager.UpdateExternalAuthenticationTokensAsync(info);
 
-                _logger.LogInformation($"User signed-in in with login provider '{info.LoginProvider}'.");
+                _logger.LogInformation("User signed-in in with login provider '{loginProvider}'.", info.LoginProvider);
                 return RedirectToLocal(returnUrl ?? "/" + _tenantContext.SiteContext.UrlSegmentValue);
             }
             if (result.IsLockedOut || result.IsNotAllowed)
             {
-                _logger.LogInformation($"Account for username '{info.Principal.Identity.Name}': {result}");
+                _logger.LogInformation("Account for username '{identityName}': {result}", info.Principal.Identity?.Name ?? "(null)", result);
                 return View(ViewNames.Account.SignInRejected, result);
             }
 
@@ -434,13 +434,13 @@ namespace League.Controllers
                 {
                     await _signInManager.SignInAsync(user, isPersistent: false);
                     _logger.LogInformation(
-                        $"User created an account for email '{user.Email}' using {info.LoginProvider} provider.");
+                        "User created an account for email '{userEmail}' using {loginProvider} provider.", user.Email, info.LoginProvider);
 
                     // Update any authentication tokens as well
                     if (await _signInManager.UpdateExternalAuthenticationTokensAsync(info) !=
                         IdentityResult.Success)
                         _logger.LogWarning(
-                            $"External authentication tokens could not be updated for email '{user.Email}' using {info.LoginProvider} provider.");
+                            "External authentication tokens could not be updated for email '{userEmail}' using {loginProvider} provider.", user.Email, info.LoginProvider);
 
                     // email is flagged as confirmed if local email and external email are equal
                     if (user.EmailConfirmed)
@@ -486,7 +486,7 @@ namespace League.Controllers
 
             if (user == null || (!await _signInManager.UserManager.IsEmailConfirmedAsync(user) && _signInManager.UserManager.Options.SignIn.RequireConfirmedEmail))
             {
-                _logger.LogInformation($"No account found for '{model.EmailOrUsername}'.");
+                _logger.LogInformation("No account found for '{user}'.", model.EmailOrUsername);
                 ModelState.AddModelError(string.Empty, _localizer["No account found for these credentials."]);
                 await Task.Delay(5000);
                 return View(model);
@@ -537,7 +537,7 @@ namespace League.Controllers
 
             if (user == null)
             {
-                _logger.LogInformation($"No account found for '{model.EmailOrUsername}'.");
+                _logger.LogInformation("No account found for '{user}'.", model.EmailOrUsername);
                 ModelState.AddModelError(string.Empty, _localizer["No account found for these credentials."]);
                 await Task.Delay(5000);
                 return View();
@@ -589,7 +589,7 @@ namespace League.Controllers
                 }
             }
 
-            _logger.LogWarning($"Undefined {nameof(MessageType)}: '{messageTypeText}'");
+            _logger.LogWarning("Undefined {messageType}: '{messageText}'", nameof(MessageType), messageTypeText);
             return RedirectToLocal("/" + _tenantContext.SiteContext.UrlSegmentValue);
         }
 
@@ -615,7 +615,9 @@ namespace League.Controllers
 
         private IActionResult SocialMediaSignInFailure(string logErrorText, string errorMessage)
         {
+#pragma warning disable CA2254 // Template should be a static expression
             _logger.LogWarning(logErrorText);
+#pragma warning restore CA2254 // Template should be a static expression
             // using POST-REDIRECT-GET (PRG) design pattern might be better: https://andrewlock.net/post-redirect-get-using-tempdata-in-asp-net-core/
             ModelState.AddModelError(string.Empty, errorMessage);
             ViewData["Form"] = "SocialMedia"; // select the form for the validation summary
@@ -624,7 +626,7 @@ namespace League.Controllers
 
         private async Task UpdateUserFromExternalLogin(ApplicationUser user, ExternalLoginInfo info)
         {
-            bool requiresUpdate = false;
+            var requiresUpdate = false;
 
             // Only update names when they are not yet set
             if (string.IsNullOrEmpty(user.FirstName) && string.IsNullOrEmpty(user.LastName))

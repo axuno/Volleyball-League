@@ -25,7 +25,7 @@ namespace TournamentManager.Ranking
 
         public Ranking? Ranking { get; set; }
 
-        public int Compare(Rank x, Rank y)
+        public int Compare(Rank? x, Rank? y)
 		{
 			/*
 			BVV-Spielordnung 

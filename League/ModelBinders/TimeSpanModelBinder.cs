@@ -3,7 +3,6 @@ using System.Globalization;
 using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Binders;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System.Threading.Tasks;
 
@@ -16,7 +15,7 @@ namespace League.ModelBinders
     public class TimeSpanModelBinder : IModelBinder
     {
         private readonly IModelBinder _fallbackBinder;
-        private ILogger<TimeSpanModelBinder> _logger;
+        private readonly ILogger<TimeSpanModelBinder> _logger;
 
         private const DateTimeStyles _dateTimeStyles = DateTimeStyles.AllowWhiteSpaces | DateTimeStyles.AssumeLocal | DateTimeStyles.NoCurrentDateDefault;
 
@@ -46,11 +45,12 @@ namespace League.ModelBinders
 
             if (!TryParseTime(valueAsString, out var time))
             {
-                if (_logger.IsEnabled(LogLevel.Debug)) _logger.LogDebug($"Could not bind model '{bindingContext.ModelName}' to value '{valueAsString}', falling back to {nameof(SimpleTypeModelBinder)}");
+                _logger.LogDebug("Could not bind model '{modelName}' to value '{valueAsString}', falling back to {fallbackBinder}", bindingContext.ModelName, valueAsString, nameof(SimpleTypeModelBinder));
                 return _fallbackBinder.BindModelAsync(bindingContext);
             }
 
             bindingContext.Result = ModelBindingResult.Success(time);
+            _logger.LogDebug("Parsed string '{originalValue}': {timeSpan} ", valueAsString, time);
             return Task.CompletedTask;
         }
 
@@ -73,33 +73,6 @@ namespace League.ModelBinders
 
             time = TimeSpan.Zero;
             return false;
-        }
-    }
-
-    /// <summary>
-    /// Uses <see cref="TimeSpanModelBinder"/> for <see cref="TimeSpan"/> values instead of <see cref="SimpleTypeModelBinder"/>.
-    /// </summary>
-    /// <code>
-    /// <remarks>Register in StartUp:</remarks>
-    /// services.AddMvc().AddMvcOptions(s => {
-    ///    s.ModelBinderProviders.Insert(0, new TimeSpanModelBinderProvider());
-    /// });
-    /// </code>
-    public class TimeSpanModelBinderProvider : IModelBinderProvider
-    {
-        /// <summary>
-        /// /// Creates a <see cref="TimeSpanModelBinder" /> based on <see cref="ModelBinderProviderContext" />.
-        /// </summary>
-        /// <param name="context"></param>
-        /// <returns>Returns a <see cref="TimeSpanModelBinder" /></returns>
-        public IModelBinder GetBinder(ModelBinderProviderContext context)
-        {
-            if (context == null)
-                throw new ArgumentNullException(nameof(context));
-
-            return context.Metadata.ModelType == typeof(TimeSpan) || context.Metadata.ModelType == typeof(TimeSpan?)
-                ? new TimeSpanModelBinder(context.Services.GetRequiredService<ILoggerFactory>())
-                : null;
         }
     }
 }

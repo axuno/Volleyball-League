@@ -11,16 +11,16 @@ namespace TournamentManager.ExtensionMethods
 	public static class CloneHelperExtensions
 	{
 		static CloneHelperExtensions()
-		{
+		{   
 		}
 
 		public static void CloneEntity<T>(T sourceObject, out T targetObject) where T : class, IEntityCore
 		{
 			var ms = new MemoryStream();
-			var bf = new BinaryFormatter(null, new StreamingContext(StreamingContextStates.Clone));
-			bf.Serialize(ms, sourceObject);
+            var bf = new DataContractSerializer(typeof(T));
+			bf.WriteObject(ms, sourceObject);
 			ms.Seek(0, SeekOrigin.Begin);
-			targetObject = (T) bf.Deserialize(ms);
+			targetObject = (T) bf.ReadObject(ms)!;
 			ms.Close();
 			ms.Dispose();
 		}
@@ -35,21 +35,5 @@ namespace TournamentManager.ExtensionMethods
 				entity.Fields[f].IsChanged = true;
 			}
 		}
-        /*
-		public static T CloneEntity<T>(this T entity, bool asNew = false) where T: class, IEntityCore
-		{
-			T newEntity;
-			CloneEntity(entity, out newEntity);
-
-			if (asNew)
-			{
-				var ogu = new ObjectGraphUtils();
-				var flatList = ogu.ProduceTopologyOrderedList(newEntity);
-				foreach (var t in flatList)
-					ResetEntityAsNew(t);
-			}
-
-			return newEntity;
-		}*/
 	}
 }

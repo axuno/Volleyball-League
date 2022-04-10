@@ -28,6 +28,7 @@ namespace TournamentManager.Data
 	    public TournamentRepository(MultiTenancy.IDbContext dbContext)
 	    {
 	        _dbContext = dbContext;
+            _logger.LogTrace("{repository} created.", nameof(TournamentRepository));
 	    }
 
         [Obsolete("Use GetTournamentAsync instead", false)]
@@ -44,7 +45,7 @@ namespace TournamentManager.Data
                 new QueryFactory().Tournament.Where(filter), cancellationToken)).Cast<TournamentEntity>().FirstOrDefault();
         }
 
-        public virtual async Task<TournamentEntity> GetTournamentWithRoundsAsync(long tournamentId, CancellationToken cancellationToken)
+        public virtual async Task<TournamentEntity?> GetTournamentWithRoundsAsync(long tournamentId, CancellationToken cancellationToken)
         {
             using var da = _dbContext.GetNewAdapter();
             var metaData = new LinqMetaData(da);
@@ -61,7 +62,7 @@ namespace TournamentManager.Data
             //var selectedRounds = new EntityCollection<RoundEntity>();
             var metaData = new LinqMetaData(da);
 
-            IQueryable<RoundEntity> q = (from r in metaData.Round
+            var q = (from r in metaData.Round
                 where r.TournamentId == tournamentId
                 select r);
 
@@ -70,7 +71,7 @@ namespace TournamentManager.Data
             return result;
         }
 
-        public virtual async Task<TournamentEntity> GetTournamentEntityForMatchPlannerAsync(long tournamentId, CancellationToken cancellationToken)
+        public virtual async Task<TournamentEntity?> GetTournamentEntityForMatchPlannerAsync(long tournamentId, CancellationToken cancellationToken)
         {
             var bucket = new RelationPredicateBucket(TournamentFields.Id == tournamentId);
             bucket.Relations.Add(TournamentEntity.Relations.RoundEntityUsingTournamentId);
@@ -78,8 +79,8 @@ namespace TournamentManager.Data
             bucket.Relations.Add(TeamInRoundEntity.Relations.TeamEntityUsingTeamId);
             bucket.Relations.Add(TeamEntity.Relations.VenueEntityUsingVenueId);
 
-            var prefetchPathTournament = new PrefetchPath2(EntityType.TournamentEntity);
-            prefetchPathTournament.Add(TournamentEntity.PrefetchPathRounds);
+            var prefetchPathTournament = new PrefetchPath2(EntityType.TournamentEntity)
+                { TournamentEntity.PrefetchPathRounds };
             prefetchPathTournament[0].SubPath.Add(RoundEntity.PrefetchPathRoundLegs);
             prefetchPathTournament[0].SubPath.Add(RoundEntity.PrefetchPathTeamCollectionViaTeamInRound).SubPath
                 .Add(TeamEntity.PrefetchPathVenue);

@@ -11,7 +11,7 @@ namespace TournamentManager.MultiTenancy
     /// </summary>
     public class DbContext : IDbContext
     {
-        private readonly object _locker = new object();
+        private readonly object _locker = new();
         private bool _cacheIsRegistered = false;
 
         public DbContext()
@@ -22,31 +22,31 @@ namespace TournamentManager.MultiTenancy
         /// <summary>
         /// Gets or sets the <see cref="ITenant"/> this context refers to.
         /// </summary>
-        [YAXLib.YAXDontSerialize]
+        [YAXLib.Attributes.YAXDontSerialize]
         public ITenant? Tenant { get; set; }
         
         /// <summary>
         /// The connection key used to retrieve the <see cref="ConnectionString"/>.
         /// </summary>
-        [YAXLib.YAXComment("The connection key used to retrieve the ConnectionString")]
+        [YAXLib.Attributes.YAXComment("The connection key used to retrieve the ConnectionString")]
         public virtual string ConnectionKey { get; set; } = string.Empty;
 
         /// <summary>
         /// The connection string for the database.
         /// </summary>
-        [YAXLib.YAXDontSerialize]
+        [YAXLib.Attributes.YAXDontSerialize]
         public virtual string ConnectionString { get; set; } = string.Empty;
 
         /// <summary>
         /// The catalog aka database name.
         /// </summary>
-        [YAXLib.YAXComment("The catalog aka database name")]
+        [YAXLib.Attributes.YAXComment("The catalog aka database name")]
         public virtual string Catalog { get; set; } = string.Empty;
 
         /// <summary>
         /// The schema inside the database.
         /// </summary>
-        [YAXLib.YAXComment("The schema inside the database")]
+        [YAXLib.Attributes.YAXComment("The schema inside the database")]
         public virtual string Schema { get; set; } = string.Empty;
         
         /// <summary>
@@ -56,7 +56,7 @@ namespace TournamentManager.MultiTenancy
         /// <remarks>
         /// Set this prior to calling a method which executes database logic.
         /// </remarks>
-        [YAXLib.YAXComment("The timeout value to use with database commands")]
+        [YAXLib.Attributes.YAXComment("The timeout value to use with database commands")]
         public virtual int CommandTimeOut { get; set; } = 30;
         
         /// <summary>
@@ -102,7 +102,7 @@ namespace TournamentManager.MultiTenancy
         /// <summary>
         /// Gives access to the repositories.
         /// </summary>
-        [YAXLib.YAXDontSerialize]
+        [YAXLib.Attributes.YAXDontSerialize]
         public virtual AppDb AppDb { get; }
     }
 }

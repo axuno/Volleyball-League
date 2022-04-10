@@ -89,7 +89,7 @@ namespace TournamentManager.ModelValidators
                         return new FactResult
                         {
                             Message = SetsValidatorResource.ResourceManager.GetString(
-                                nameof(FactId.AllSetsAreValid)),
+                                nameof(FactId.AllSetsAreValid)) ?? string.Empty,
                             Success = !SingleSetErrors.Any()
                         };
                     }

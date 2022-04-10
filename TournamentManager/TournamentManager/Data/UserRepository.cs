@@ -36,7 +36,7 @@ namespace TournamentManager.Data
         /// <param name="id"></param>
         /// <param name="cancellationToken"></param>
         /// <returns>Returns a User or the Manager subtype, or null if not found.</returns>
-        public virtual async Task<UserEntity> GetLoginUserAsync(long id, CancellationToken cancellationToken)
+        public virtual async Task<UserEntity?> GetLoginUserAsync(long id, CancellationToken cancellationToken)
         {
             using var da = _dbContext.GetNewAdapter();
             var metaData = new LinqMetaData(da);
@@ -54,7 +54,7 @@ namespace TournamentManager.Data
             return result.FirstOrDefault();
         }
 
-        public virtual async Task<UserEntity> GetLoginUserByEmailAsync(string email, CancellationToken cancellationToken)
+        public virtual async Task<UserEntity?> GetLoginUserByEmailAsync(string email, CancellationToken cancellationToken)
         {
             email = email.ToLowerInvariant().Trim();
             using var da = _dbContext.GetNewAdapter();
@@ -72,7 +72,7 @@ namespace TournamentManager.Data
             return result.FirstOrDefault();
         }
 
-        public virtual async Task<UserEntity> GetLoginUserByEmail2Async(string email, CancellationToken cancellationToken)
+        public virtual async Task<UserEntity?> GetLoginUserByEmail2Async(string email, CancellationToken cancellationToken)
         {
             email = email.ToLowerInvariant().Trim();
             using var da = _dbContext.GetNewAdapter();
@@ -90,7 +90,7 @@ namespace TournamentManager.Data
             return result.FirstOrDefault();
         }
 
-        public virtual async Task<UserEntity> GetLoginUserByUserNameAsync(string userName, CancellationToken cancellationToken)
+        public virtual async Task<UserEntity?> GetLoginUserByUserNameAsync(string userName, CancellationToken cancellationToken)
         {
             userName = userName.ToLowerInvariant().Trim();
             using var da = _dbContext.GetNewAdapter();
@@ -108,7 +108,7 @@ namespace TournamentManager.Data
             return result.FirstOrDefault();
         }
 
-        public virtual async Task<UserEntity> GetLoginUserByGuidAsync(string guid, CancellationToken cancellationToken)
+        public virtual async Task<UserEntity?> GetLoginUserByGuidAsync(string guid, CancellationToken cancellationToken)
         {
             using var da = _dbContext.GetNewAdapter();
             var metaData = new LinqMetaData(da);
@@ -191,11 +191,11 @@ namespace TournamentManager.Data
 
             if (count == 1)
             {
-                _logger.LogInformation($"Sign-in date for user id '{user.Id}' updated.");
+                _logger.LogInformation("Sign-in date for user id '{userId}' updated.", user.Id);
             }
             else
             {
-                _logger.LogError($"Sign-in date for user id '{user.Id}' could not be updated.");
+                _logger.LogError("Sign-in date for user id '{userId}' could not be updated.", user.Id);
             }
 
             return count == 1;

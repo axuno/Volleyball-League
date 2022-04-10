@@ -6,9 +6,6 @@ namespace TournamentManager.Match
 {
     public class PointResultNullable : IOpponent<int?>
     {
-        public PointResultNullable()
-        { }
-
         public PointResultNullable(int? home, int? guest)
         {
             Home = home;

@@ -29,6 +29,9 @@ using TournamentManager.MultiTenancy;
 
 namespace League.Controllers
 {
+    /// <summary>
+    /// The class for handling matches.
+    /// </summary>
     [Route("{organization:MatchingTenant}/[controller]")]
     public class Match : AbstractController
     {
@@ -45,6 +48,19 @@ namespace League.Controllers
         private readonly IConfiguration _configuration;
         private readonly string _pathToChromium;
 
+        /// <summary>
+        /// The controller for handling <see cref="MatchEntity"/>s.
+        /// </summary>
+        /// <param name="tenantContext"></param>
+        /// <param name="localizer"></param>
+        /// <param name="authorizationService"></param>
+        /// <param name="timeZoneConverter"></param>
+        /// <param name="queue"></param>
+        /// <param name="sendMailTask"></param>
+        /// <param name="rankingUpdateTask"></param>
+        /// <param name="razorViewToStringRenderer"></param>
+        /// <param name="configuration"></param>
+        /// <param name="logger"></param>
         public Match(ITenantContext tenantContext, IStringLocalizer<Match> localizer,
             IAuthorizationService authorizationService,
             Axuno.Tools.DateAndTime.TimeZoneConverter timeZoneConverter, Axuno.BackgroundTask.IBackgroundQueue queue,
@@ -65,12 +81,21 @@ namespace League.Controllers
             _pathToChromium = Path.Combine(Directory.GetCurrentDirectory(), _configuration["Chromium:ExecutablePath"]);
         }
 
+        /// <summary>
+        /// Redirects to the <see cref="Results"/> method.
+        /// </summary>
+        /// <returns></returns>
         [HttpGet("")]
         public IActionResult Index()
         {
-            return Redirect(Url.Action(nameof(Results), nameof(Match), new { Organization = _tenantContext.SiteContext.UrlSegmentValue }));
+            return Redirect(Url.Action(nameof(Results), nameof(Match), new { Organization = _tenantContext.SiteContext.UrlSegmentValue })!);
         }
 
+        /// <summary>
+        /// Get the fixtures for <see cref="MatchEntity"/>s.
+        /// </summary>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         [HttpGet("[action]")]
         public async Task<IActionResult> Fixtures(CancellationToken cancellationToken)
         {
@@ -92,12 +117,18 @@ namespace League.Controllers
 
             if (model.Tournament == null)
             {
-                _logger.LogCritical($"{nameof(_tenantContext.TournamentContext.MatchPlanTournamentId)} '{_tenantContext.TournamentContext.MatchPlanTournamentId}' does not exist. User ID: '{0}'", GetCurrentUserId());
+                _logger.LogCritical("{tournamentId} '{id}' does not exist. User ID: '{currentUser}'", nameof(_tenantContext.TournamentContext.MatchPlanTournamentId), _tenantContext.TournamentContext.MatchPlanTournamentId, GetCurrentUserId());
             }
 
             return View(ViewNames.Match.Fixtures, model);
         }
 
+        /// <summary>
+        /// Gets an iCalendar for a single <see cref="MatchEntity"/>.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         [HttpGet("[action]")]
         public async Task<IActionResult> Calendar(long id, CancellationToken cancellationToken)
         {
@@ -130,11 +161,18 @@ namespace League.Controllers
             }
             catch (Exception e)
             {
-                _logger.LogCritical(e, $"Error creating {nameof(Calendar)} for user ID '{0}'", GetCurrentUserId());
+                _logger.LogCritical(e, "Error creating {calendar} for user ID '{currentUser}'", nameof(Calendar), GetCurrentUserId());
                 return NoContent();
             }
         }
 
+        /// <summary>
+        /// Gets an iCalendar.
+        /// </summary>
+        /// <param name="team"></param>
+        /// <param name="round"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         [HttpGet("[action]")]
         public async Task<IActionResult> PublicCalendar(long? team, long? round, CancellationToken cancellationToken)
         {
@@ -167,11 +205,16 @@ namespace League.Controllers
             }
             catch (Exception e)
             {
-                _logger.LogCritical(e, $"Error creating {nameof(PublicCalendar)} for user ID '{0}'", GetCurrentUserId());
+                _logger.LogCritical(e, "Error creating {calendar} for user ID '{currentUser}'", nameof(PublicCalendar), GetCurrentUserId());
                 return NoContent();
             }
         }
 
+        /// <summary>
+        /// Gets the results for all completed matches.
+        /// </summary>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         [HttpGet("[action]")]
         public async Task<IActionResult> Results(CancellationToken cancellationToken)
         {
@@ -195,11 +238,17 @@ namespace League.Controllers
 
             if (model.Tournament == null)
             {
-                _logger.LogCritical($"{nameof(_tenantContext.TournamentContext.MatchPlanTournamentId)} '{_tenantContext.TournamentContext.MatchPlanTournamentId}' does not exist. User ID '{0}'", GetCurrentUserId());
+                _logger.LogCritical("{name} '{tournamentId}' does not exist. User ID '{currentUser}'", nameof(_tenantContext.TournamentContext.MatchPlanTournamentId), _tenantContext.TournamentContext.MatchPlanTournamentId, GetCurrentUserId());
             }
             return View(ViewNames.Match.Results, model);
         }
 
+        /// <summary>
+        /// Returns a form for entering a match result.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         [Authorize(Policy = Authorization.PolicyName.MatchPolicy)]
         [HttpGet("enter-result/{id:long}")]
         public async Task<IActionResult> EnterResult(long id, CancellationToken cancellationToken)
@@ -231,11 +280,17 @@ namespace League.Controllers
             }
             catch (Exception e)
             {
-                _logger.LogCritical(e, $"Building {nameof(EnterResultViewModel)} failed for MatchId '{id}'");
+                _logger.LogCritical(e, "Building {model} failed for MatchId '{matchId}'", nameof(EnterResultViewModel), id);
                 throw;
             }
         }
 
+        /// <summary>
+        /// Processes the post for a match result.
+        /// </summary>
+        /// <param name="model"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         [Authorize(Policy = Authorization.PolicyName.MatchPolicy)]
         [HttpPost("enter-result/{*segments}")]
         public async Task<IActionResult> EnterResult([FromForm] EnterResultViewModel model, CancellationToken cancellationToken)
@@ -280,7 +335,7 @@ namespace League.Controllers
             }
             catch (Exception e)
             {
-                _logger.LogCritical(e, $"Building {nameof(EnterResultViewModel)} failed for MatchId '{model.Id}'. User ID '{0}'", GetCurrentUserId());
+                _logger.LogCritical(e, "Building {model} failed for MatchId '{modelId}'. User ID '{currentUser}'", nameof(EnterResultViewModel), model.Id, GetCurrentUserId());
                 throw;
             }
 
@@ -291,7 +346,7 @@ namespace League.Controllers
                 
                 // save the match entity and sets
                 var success = await _appDb.MatchRepository.SaveMatchResultAsync(match, cancellationToken);
-                _logger.LogInformation($"Result for match ID {match.Id} was entered by user ID '{0}'", GetCurrentUserId());
+                _logger.LogInformation("Result for match ID {matchId} was entered by user ID '{currentUser}'", match.Id, GetCurrentUserId());
 
                 TempData.Put<EnterResultViewModel.MatchResultMessage>(nameof(EnterResultViewModel.MatchResultMessage),
                     new EnterResultViewModel.MatchResultMessage { MatchId = model.Id, ChangeSuccess = success });
@@ -307,7 +362,7 @@ namespace League.Controllers
             }
             catch (Exception e)
             {
-                _logger.LogCritical(e, $"Building {nameof(EnterResultViewModel)} failed for MatchId '{model.Id}' and  user ID '{0}'", GetCurrentUserId());
+                _logger.LogCritical(e, "Building {enterResultViewModel} failed for MatchId '{model.Id}' and  user ID '{currentUser}'", nameof(EnterResultViewModel), model.Id, GetCurrentUserId());
                 TempData.Put<EnterResultViewModel.MatchResultMessage>(nameof(EnterResultViewModel.MatchResultMessage),
                     new EnterResultViewModel.MatchResultMessage { MatchId = model.Id, ChangeSuccess = false });
             }
@@ -316,6 +371,12 @@ namespace League.Controllers
             return RedirectToAction(nameof(Results), nameof(Match), new { Organization = _tenantContext.SiteContext.UrlSegmentValue });
         }
 
+        /// <summary>
+        /// Gets a form for editing a fixture.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         [Authorize(Policy = Authorization.PolicyName.MatchPolicy)]
         [HttpGet("edit-fixture/{id:long}")]
         public async Task<IActionResult> EditFixture(long id, CancellationToken cancellationToken)
@@ -328,7 +389,9 @@ namespace League.Controllers
             if (model.PlannedMatch == null || model.Tournament == null)
             {
                 var msg = $"No data for fixture id '{model.Id}'. User ID '{GetCurrentUserId()}'.";
+#pragma warning disable CA2254 // Template should be a static expression
                 _logger.LogInformation(msg);
+#pragma warning restore CA2254 // Template should be a static expression
                 return NotFound(msg);
             }
 
@@ -345,6 +408,12 @@ namespace League.Controllers
             return View(ViewNames.Match.EditFixture, await AddDisplayDataToEditFixtureViewModel(model, cancellationToken));
         }
 
+        /// <summary>
+        /// Processes the posted form of edited fixture.
+        /// </summary>
+        /// <param name="model"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         [Authorize(Policy = Authorization.PolicyName.MatchPolicy)]
         [HttpPost("edit-fixture/{*segments}")]
         public async Task<IActionResult> EditFixture([FromForm] EditFixtureViewModel model, CancellationToken cancellationToken)
@@ -360,7 +429,9 @@ namespace League.Controllers
             if (model.PlannedMatch == null || model.Tournament == null)
             {
                 var msg = $"No data for fixture id '{model.Id}'. User ID '{GetCurrentUserId()}'";
+#pragma warning disable CA2254 // Template should be a static expression
                 _logger.LogInformation(msg);
+#pragma warning restore CA2254 // Template should be a static expression
                 return NotFound(msg);
             }
 
@@ -409,13 +480,13 @@ namespace League.Controllers
             try
             {
                 fixtureMessage.ChangeSuccess = await _appDb.GenericRepository.SaveEntityAsync(match, false, false, cancellationToken);
-                _logger.LogInformation($"Fixture for match id {match.Id} updated successfully for user ID '{0}'", GetCurrentUserId());
+                _logger.LogInformation("Fixture for match id {matchId} updated successfully for user ID '{currentUser}'", match.Id, GetCurrentUserId());
                 if (fixtureIsChanged) SendFixtureNotification(match.Id);
             }
             catch (Exception e)
             {
                 fixtureMessage.ChangeSuccess = false;
-                _logger.LogCritical(e, "Fixture update for match id {0} failed for user ID '{1}'", match.Id, GetCurrentUserId());
+                _logger.LogCritical(e, "Fixture update for match id {matchId} failed for user ID '{currentUser}'", match.Id, GetCurrentUserId());
             }
 
             // redirect to fixture overview, where success message is shown
@@ -428,7 +499,7 @@ namespace League.Controllers
         /// </summary>
         /// <param name="currentData"></param>
         /// <returns>Returns a <see cref="MatchEntity"/> ready to be processed further.</returns>
-        private MatchEntity FillMatchEntity(PlannedMatchRow currentData)
+        private static MatchEntity FillMatchEntity(PlannedMatchRow currentData)
         {
             // set current values
             var match = new MatchEntity
@@ -461,7 +532,7 @@ namespace League.Controllers
             }
             catch (Exception e)
             {
-                _logger.LogCritical(e, $"Error loading match in '{nameof(_appDb.MatchRepository.GetPlannedMatchesAsync)}' for user ID '{0}'", GetCurrentUserId());
+                _logger.LogCritical(e, "Error loading match in '{methodName}' for user ID '{currentUser}'", nameof(_appDb.MatchRepository.GetPlannedMatchesAsync), GetCurrentUserId());
                 return null;
             }
         }
@@ -491,7 +562,7 @@ namespace League.Controllers
             }
             catch (Exception e)
             {
-                _logger.LogCritical(e, $"Error adding display data to model '{nameof(EditFixtureViewModel)}' for user ID '{GetCurrentUserId()}'");
+                _logger.LogCritical(e, "Error adding display data to model '{model}' for user ID '{currentUser}'", nameof(EditFixtureViewModel), GetCurrentUserId());
                 return null;
             }
         }
@@ -503,7 +574,7 @@ namespace League.Controllers
 
             if (tournament != null) return tournament;
 
-            _logger.LogCritical($"{nameof(_tenantContext.TournamentContext.MatchPlanTournamentId)} '{_tenantContext.TournamentContext.MatchPlanTournamentId}' does not exist. User ID '{0}'.", GetCurrentUserId());
+            _logger.LogCritical("{name} '{id}' does not exist. User ID '{currentUser}'.", nameof(_tenantContext.TournamentContext.MatchPlanTournamentId), _tenantContext.TournamentContext.MatchPlanTournamentId, GetCurrentUserId());
             return null;
         }
 
@@ -515,21 +586,21 @@ namespace League.Controllers
                 cancellationToken);
             if (teamInRound.Count != 2)
             {
-                _logger.LogCritical("Number of found opponents for a match does not equal 2. User ID '{0}'.", GetCurrentUserId());
+                _logger.LogCritical("Number of found opponents for a match does not equal 2. User ID '{currentUser}'.", GetCurrentUserId());
             }
 
             var tournament = await _appDb.TournamentRepository.GetTournamentAsync(
                 new PredicateExpression(TournamentFields.Id == _tenantContext.TournamentContext.MatchResultTournamentId), cancellationToken);
             if (tournament == null)
             {
-                _logger.LogCritical($"{nameof(_tenantContext.TournamentContext.MatchResultTournamentId)} '{_tenantContext.TournamentContext.MatchPlanTournamentId}' does not exist");
+                _logger.LogCritical("{name} '{id}' does not exist", nameof(_tenantContext.TournamentContext.MatchResultTournamentId), _tenantContext.TournamentContext.MatchPlanTournamentId);
             }
 
             var roundWithRules =
                 await _appDb.RoundRepository.GetRoundWithRulesAsync(match.RoundId, cancellationToken);
             if (roundWithRules == null)
             {
-                _logger.LogCritical($"Round with {nameof(match.RoundId)}='{match.RoundId}' does not exist. User ID '{GetCurrentUserId()}'.");
+                _logger.LogCritical("Round with {roundId}='{id}' does not exist. User ID '{currentUser}'.", _tenantContext.TournamentContext.MatchPlanTournamentId, match.RoundId, GetCurrentUserId());
             }
 
             return tournament != null && roundWithRules != null && teamInRound.Count == 2
@@ -539,7 +610,12 @@ namespace League.Controllers
                 : throw new Exception($"{nameof(EnterResultViewModel)} could not be initiated");
         }
 
-
+        /// <summary>
+        /// Gets a match report sheet suitable for a printout.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         [HttpGet("[action]/{id:long}")]
         public async Task<IActionResult> ReportSheet(long id, CancellationToken cancellationToken)
         {
@@ -567,7 +643,7 @@ namespace League.Controllers
             }
             catch (Exception e)
             {
-                _logger.LogCritical(e, $"{nameof(ReportSheet)} failed for match ID '{id}'");
+                _logger.LogCritical(e, "{method} failed for match ID '{matchId}'", nameof(ReportSheet), id);
             }
             
             // without Chromium installed or throwing exception: return HTML
@@ -636,7 +712,7 @@ namespace League.Controllers
 
             browser.Process?.Refresh();
             _logger.LogInformation(
-                "Chromium Process physical memory: {0:#,0} bytes. Start arguments: {1}",
+                "Chromium Process physical memory: {physicalMemory:#,0} bytes. Start arguments: {commandLineArgs}",
                 browser.Process?.WorkingSet64, browser.Process?.StartInfo.Arguments);
 
             // Test, whether the chromium browser renders at all
@@ -651,7 +727,7 @@ namespace League.Controllers
                 await page.PdfStreamAsync(new PuppeteerSharp.PdfOptions
                     { Scale = 1.0M, Format = PaperFormat.A4 }).ConfigureAwait(false),
                 "application/pdf");
-            _logger.LogInformation("PDF stream created with length {0}", result.FileStream.Length);
+            _logger.LogInformation("PDF stream created with length {length}", result.FileStream.Length);
             return result;
         }
 

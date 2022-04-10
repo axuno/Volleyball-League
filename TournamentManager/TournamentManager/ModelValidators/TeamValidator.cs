@@ -38,7 +38,7 @@ namespace TournamentManager.ModelValidators
                         new FactResult
                         {
                             Message = TeamValidatorResource.ResourceManager.GetString(
-                                nameof(FactId.TeamNameIsSet)),
+                                nameof(FactId.TeamNameIsSet)) ?? string.Empty,
                             Success = !string.IsNullOrWhiteSpace(Model.Name)
                         })
                 });
@@ -73,7 +73,7 @@ namespace TournamentManager.ModelValidators
                         new FactResult
                         {
                             Message = TeamValidatorResource.ResourceManager.GetString(
-                                nameof(FactId.MatchDayOfWeekAndTimeIsSet)),
+                                nameof(FactId.MatchDayOfWeekAndTimeIsSet)) ?? string.Empty,
                             Success = Model.MatchDayOfWeek.HasValue && Model.MatchTime.HasValue
                         })
                 });

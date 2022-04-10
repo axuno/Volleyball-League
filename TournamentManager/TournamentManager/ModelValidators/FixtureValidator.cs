@@ -17,8 +17,8 @@ namespace TournamentManager.ModelValidators
 {
     public class FixtureValidator : AbstractValidator<MatchEntity, (ITenantContext TenantContext, Axuno.Tools.DateAndTime.TimeZoneConverter TimeZoneConverter, PlannedMatchRow PlannedMatch), FixtureValidator.FactId>
     {
-        private List<TeamEntity> _teamsInMatch = new List<TeamEntity>();
-        private readonly FactResult _successResult = new FactResult { Message = string.Empty, Success = true };
+        private List<TeamEntity> _teamsInMatch = new();
+        private readonly FactResult _successResult = new() { Message = string.Empty, Success = true };
 
         public enum FactId
         {
@@ -64,7 +64,7 @@ namespace TournamentManager.ModelValidators
                     Type = FactType.Critical,
                     CheckAsync = (cancellationToken) => Task.FromResult(
                         new FactResult {
-                            Message = FixtureValidatorResource.ResourceManager.GetString(nameof(FactId.PlannedStartIsSet)),
+                            Message = FixtureValidatorResource.ResourceManager.GetString(nameof(FactId.PlannedStartIsSet)) ?? string.Empty,
                             Success = Model.PlannedStart.HasValue })
                 });
 
@@ -129,7 +129,7 @@ namespace TournamentManager.ModelValidators
                     {
                         var round =
                             await Data.TenantContext.DbContext.AppDb.RoundRepository.GetRoundWithLegsAsync(Model.RoundId,
-                                cancellationToken);
+                                cancellationToken) ?? throw new InvalidOperationException($"Round Id '{Model.RoundId}' not found.");
 
                         if (!Model.PlannedStart.HasValue || round.RoundLegs.Count == 0) { return _successResult; }
 
@@ -163,7 +163,7 @@ namespace TournamentManager.ModelValidators
                                     current +
                                     $"{Data.TimeZoneConverter.ToZonedTime(leg.StartDateTime)?.DateTimeOffset.DateTime.ToShortDateString()} - {Data.TimeZoneConverter.ToZonedTime(leg.EndDateTime)?.DateTimeOffset.DateTime.ToShortDateString()}{joinWith}");
 
-                            displayPeriods = displayPeriods.Substring(0, displayPeriods.Length - joinWith.Length);
+                            displayPeriods = displayPeriods[..^joinWith.Length];
                         }
 
                         return new FactResult
@@ -207,7 +207,7 @@ namespace TournamentManager.ModelValidators
                         var busyTeams = Model.PlannedStart.HasValue
                             ? await Data.TenantContext.DbContext.AppDb.MatchRepository.AreTeamsBusyAsync(
                                 Model, Data.TenantContext.TournamentContext.FixtureRuleSet.UseOnlyDatePartForTeamFreeBusyTimes, Data.TenantContext.TournamentContext.MatchPlanTournamentId, cancellationToken)
-                            : new long[]{};
+                            : Array.Empty<long>();
 
                         return busyTeams.Length > 0
                             ? new FactResult
@@ -324,7 +324,7 @@ namespace TournamentManager.ModelValidators
                         return new FactResult
                         {
                             Message = FixtureValidatorResource.ResourceManager.GetString(
-                                nameof(FactId.PlannedVenueIsRegisteredVenueOfTeam)),
+                                nameof(FactId.PlannedVenueIsRegisteredVenueOfTeam)) ?? string.Empty,
                             Success = !Model.VenueId.HasValue || _teamsInMatch.Any(tim =>
                                           !tim.VenueId.HasValue || tim.VenueId == Model.VenueId)
                         };

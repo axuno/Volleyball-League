@@ -1,15 +1,15 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>netstandard2.1</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
     <AssemblyName>TournamentManager.DAL.DbGeneric</AssemblyName>
     <RootNamespace>TournamentManager.DAL</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="NuGetizer" Version="0.6.0">
+    <PackageReference Include="NuGetizer" Version="0.7.5">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="SD.LLBLGen.Pro.ORMSupportClasses" Version="5.7.7-hotfix-20220117" />
+    <PackageReference Include="SD.LLBLGen.Pro.ORMSupportClasses" Version="5.7.7" />
   </ItemGroup>
 </Project>

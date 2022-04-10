@@ -269,7 +269,7 @@ namespace League.Components
 
             MainNavigationComponentModel.NavigationNode account;
 
-            if (UserClaimsPrincipal.Identity.IsAuthenticated)
+            if (UserClaimsPrincipal.Identity is { IsAuthenticated: true })
             {
                 account = new MainNavigationComponentModel.NavigationNode
                 {

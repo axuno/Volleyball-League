@@ -24,7 +24,7 @@ namespace League.Test
     {
         private ServiceProvider _serviceProvider;
         private readonly ITenantContext _tenantContext;
-        private string _configPath;
+        private readonly string _configPath;
 
         public UnitTestHelpers()
         {
@@ -139,7 +139,7 @@ namespace League.Test
         }
         
 
-        public TestServer GetLeagueTestServer()
+        public static TestServer GetLeagueTestServer()
         {
             var server = new TestServer(new Microsoft.AspNetCore.Hosting.WebHostBuilder()
                 .UseStartup<Startup>());
@@ -152,10 +152,10 @@ namespace League.Test
             var logger = (ILogger) GetStandardServiceProvider().GetRequiredService(typeof(ILogger<UnitTestHelpers>));
             logger.LogError("error");
             var localizer = (IStringLocalizer)GetStandardServiceProvider().GetRequiredService(typeof(IStringLocalizer<League.Controllers.Account>));
-            var translated = localizer["This is your password recovery key"].Value;
+            _ = localizer["This is your password recovery key"].Value;
 
             var mlLoc = new MultiLanguageIdentityErrorDescriber((IStringLocalizer<MultiLanguageIdentityErrorDescriberResource>)GetStandardServiceProvider().GetRequiredService(typeof(IStringLocalizer<MultiLanguageIdentityErrorDescriberResource>)));
-            translated = mlLoc.ConcurrencyFailure().Description;
+            _ = mlLoc.ConcurrencyFailure().Description;
         }
     }
 }

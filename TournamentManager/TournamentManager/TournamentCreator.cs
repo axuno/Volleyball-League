@@ -29,7 +29,7 @@ namespace TournamentManager.Data
 	    private readonly AppDb _appDb;
 	    private static TournamentCreator? _instance;
 
-        TournamentCreator(IAppDb appDb)
+        public TournamentCreator(IAppDb appDb)
 	    {
 	        _appDb = (AppDb) appDb;
 	    }
@@ -87,8 +87,7 @@ namespace TournamentManager.Data
 		public bool CopyRound(long fromTournamentId, long toTournamentId, IEnumerable<long> excludeRoundId)
 		{
 			const string transactionName = "CloneRounds";
-			if (excludeRoundId == null) excludeRoundId = new List<long>();
-			DateTime now = DateTime.Now;
+            var now = DateTime.Now;
 
 			// get the rounds of SOURCE tournament
 			var roundIds = _appDb.TournamentRepository.GetTournamentRounds(fromTournamentId).Select(r => r.Id).ToList();
@@ -211,6 +210,7 @@ namespace TournamentManager.Data
             }
 
             var tournament = await new TournamentRepository(_appDb.DbContext).GetTournamentWithRoundsAsync(tournamentId, CancellationToken.None);
+            if (tournament == null) throw new InvalidOperationException($"Tournament with Id '{tournamentId}' not found.");
             
             var now = DateTime.Now;
 
@@ -223,7 +223,7 @@ namespace TournamentManager.Data
             tournament.ModifiedOn = now;
 
             using var da = _appDb.DbContext.GetNewAdapter();
-            if (!da.SaveEntity(tournament))
+            if (!await da.SaveEntityAsync(tournament))
             {
                 throw new ArgumentException($"Tournament Id {tournamentId} could not be saved to persistent storage.");
             }
