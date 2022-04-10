@@ -32,7 +32,7 @@ namespace League.Helpers
         /// var displayName = MetaDataHelper.GetDisplayName(typeof(ChangeUsernameViewModel), nameof(ChangeUsernameViewModel.Username));
         /// </example>
         /// <returns>Returns the DisplayName, or NULL if the name was not found.</returns>
-        public string? GetRawDisplayName<T>(string fieldName)
+        public static string? GetRawDisplayName<T>(string fieldName)
         {
             // First look into attributes of a type and its parents
             // Note: There is also a DisplayNameAttribute

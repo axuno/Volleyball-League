@@ -19,9 +19,11 @@ namespace League.Controllers
 {
     public class Contact : AbstractController
     {
+#pragma warning disable IDE0052 // Remove unread private members
         private readonly AppDb _appDb;
-        private readonly ITenantContext _tenantContext;
         private readonly TenantStore _tenantStore;
+#pragma warning restore IDE0052 // Remove unread private members
+        private readonly ITenantContext _tenantContext;
         private readonly IStringLocalizer<Account> _localizer;
         private readonly Axuno.BackgroundTask.IBackgroundQueue _queue;
         private readonly SendEmailTask _sendEmailTask;
@@ -44,7 +46,7 @@ namespace League.Controllers
         public IActionResult Index()
         {
             var model = new ContactViewModel();
-            if (User.Identity.IsAuthenticated)
+            if (User.Identity is { IsAuthenticated: true })
             {
                 model.Email = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value;
                 model.Gender = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Gender)?.Value;

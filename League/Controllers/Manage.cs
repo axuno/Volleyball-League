@@ -101,7 +101,7 @@ namespace League.Controllers
             var user = await GetCurrentUserAsync();
             if (user == null)
             {
-                _logger.LogError($"Username '{HttpContext.User.Identity.Name}' not found in repository");
+                _logger.LogError("Username '{userName}' not found in repository", HttpContext.User.Identity?.Name);
                 ModelState.AddModelError(string.Empty, _localizer["'{0}' not found", _metaData.GetDisplayName<ChangeUsernameViewModel>(nameof(ChangeUsernameViewModel.Username))]);
                 return PartialView(ViewNames.Manage._ChangeUsernameModalPartial, model);
             }
@@ -132,7 +132,7 @@ namespace League.Controllers
                 if (result.Succeeded)
                 {
                     await _signInManager.SignInAsync(user, isPersistent: false);
-                    _logger.LogInformation($"User '{user.Id}' changed the username successfully.");
+                    _logger.LogInformation("User Id '{userId}' changed the username successfully.", user.Id);
                     TempData.Put<ManageMessage>(nameof(ManageMessage), new ManageMessage { AlertType = SiteAlertTagHelper.AlertType.Success, MessageId = MessageId.ChangeUsernameSuccess });
                     return JsonAjaxRedirectForModal(Url.Action(nameof(Index), nameof(Manage), new { Organization = _tenantContext.SiteContext.UrlSegmentValue }));
                 }
@@ -154,7 +154,7 @@ namespace League.Controllers
             var user = await GetCurrentUserAsync();
             if (user == null)
             {
-                _logger.LogError($"User id '{GetCurrentUserId()}' not found in repository");
+                _logger.LogError("User id '{userId}' not found in repository", GetCurrentUserId());
                 ModelState.AddModelError(string.Empty, _localizer["'{0}' not found", _metaData.GetDisplayName<ChangeEmailViewModel>(nameof(ChangeEmailViewModel.Email))]);
                 return PartialView(ViewNames.Manage._ChangeEmailModalPartial, model);
             }
@@ -182,7 +182,7 @@ namespace League.Controllers
 
             if (user.NormalizedEmail == _userManager.KeyNormalizer.NormalizeEmail(model.Email))
             {
-                _logger.LogInformation($"Current and new email are equal ('{model.Email}').");
+                _logger.LogInformation("Current and new email are equal ('{email}').", model.Email);
                 ModelState.AddModelError(nameof(ChangeEmailViewModel.Email), _localizer["Current and new email must be different"]);
                 return PartialView(ViewNames.Manage._ChangeEmailModalPartial, model);
             }
@@ -223,7 +223,7 @@ namespace League.Controllers
             var user = await GetCurrentUserAsync();
             if (user == null)
             {
-                _logger.LogError($"User id '{GetCurrentUserId()}' not found in repository");
+                _logger.LogError("User id '{userId}' not found in repository", GetCurrentUserId());
                 ModelState.AddModelError(string.Empty, _localizer["'{0}' not found", _metaData.GetDisplayName<EditEmail2ViewModel>(nameof(EditEmail2ViewModel.Email2))]);
                 return PartialView(ViewNames.Manage._EditEmail2ModalPartial, model);
             }
@@ -257,7 +257,7 @@ namespace League.Controllers
 
             if (_userManager.KeyNormalizer.NormalizeEmail(userEntity.Email) == _userManager.KeyNormalizer.NormalizeEmail(model.Email2))
             {
-                _logger.LogInformation($"Primary and additional email are equal ('{userEntity.Email}').");
+                _logger.LogInformation("Primary and additional email are equal ('{userEmail}').", userEntity.Email);
                 ModelState.AddModelError(nameof(EditEmail2ViewModel.Email2), _localizer["'{0}' and '{1}' must be different", _metaData.GetDisplayName<EditEmail2ViewModel>(nameof(EditEmail2ViewModel.Email2)), _metaData.GetDisplayName<ChangeEmailViewModel>(nameof(ChangeEmailViewModel.Email))]);
                 return PartialView(ViewNames.Manage._EditEmail2ModalPartial, model);
             }
@@ -271,7 +271,7 @@ namespace League.Controllers
             }
             catch (Exception e)
             {
-                _logger.LogError($"Save user name '{userEntity.UserName}' failed", e);
+                _logger.LogError(e, "Save user name '{userName}' failed", userEntity.UserName);
                 return PartialView(ViewNames.Manage._EditEmail2ModalPartial, model);
             }
         }
@@ -304,7 +304,7 @@ namespace League.Controllers
                 if (result.Succeeded)
                 {
                     await _signInManager.SignInAsync(user, isPersistent: false);
-                    _logger.LogInformation($"User '{user.Id}' changed the password successfully.");
+                    _logger.LogInformation("User Id '{userId}' changed the password successfully.", user.Id);
                     TempData.Put<ManageMessage>(nameof(ManageMessage), new ManageMessage { AlertType = SiteAlertTagHelper.AlertType.Success, MessageId = MessageId.ChangePasswordSuccess });
                     return JsonAjaxRedirectForModal(Url.Action(nameof(Index), nameof(Manage), new { Organization = _tenantContext.SiteContext.UrlSegmentValue }));
                 }
@@ -356,7 +356,7 @@ namespace League.Controllers
             var user = await _tenantContext.DbContext.AppDb.UserRepository.GetLoginUserByUserNameAsync(HttpContext.User.Identity.Name, cancellationToken);
             if (user == null)
             {
-                _logger.LogError($"User id '{GetCurrentUserId()}' not found in repository");
+                _logger.LogError("User id '{userId}' not found in repository", GetCurrentUserId());
                 TempData.Put<ManageMessage>(nameof(ManageMessage), new ManageMessage { AlertType = SiteAlertTagHelper.AlertType.Danger, MessageId = MessageId.ChangePersonalDetailsFailure });
                 ModelState.AddModelError(string.Empty, _localizer["Personal details not found"]);
                 return PartialView(ViewNames.Manage._EditPersonalDetailsModalPartial, model);
@@ -382,7 +382,7 @@ namespace League.Controllers
             var user = await _tenantContext.DbContext.AppDb.UserRepository.GetLoginUserByUserNameAsync(HttpContext.User.Identity.Name, cancellationToken);
             if (user == null)
             {
-                _logger.LogError($"Username '{HttpContext.User.Identity.Name}' not found in repository");
+                _logger.LogError("Username '{userName}' not found in repository", HttpContext.User.Identity.Name);
                 TempData.Put<ManageMessage>(nameof(ManageMessage), new ManageMessage { AlertType = SiteAlertTagHelper.AlertType.Danger, MessageId = MessageId.ChangePersonalDetailsFailure });
                 return JsonAjaxRedirectForModal(Url.Action(nameof(Index), nameof(Manage), new { Organization = _tenantContext.SiteContext.UrlSegmentValue }));
             }
@@ -397,12 +397,12 @@ namespace League.Controllers
             }
             catch (Exception e)
             {
-                _logger.LogError($"Failure saving personal data for user id '{GetCurrentUserId()}'", e);
+                _logger.LogError(e, "Failure saving personal data for user id '{userId}'", GetCurrentUserId());
                 TempData.Put<ManageMessage>(nameof(ManageMessage), new ManageMessage { AlertType = SiteAlertTagHelper.AlertType.Danger, MessageId = MessageId.ChangePersonalDetailsFailure });
                 return JsonAjaxRedirectForModal(Url.Action(nameof(Index), nameof(Manage), new { Organization = _tenantContext.SiteContext.UrlSegmentValue }));
             }
 
-            _logger.LogInformation($"Personal data for user id '{GetCurrentUserId()}' updated");
+            _logger.LogInformation("Personal data for user id '{userId}' updated", GetCurrentUserId());
             TempData.Put<ManageMessage>(nameof(ManageMessage), new ManageMessage { AlertType = SiteAlertTagHelper.AlertType.Success, MessageId = MessageId.ChangePersonalDetailsSuccess });
             return JsonAjaxRedirectForModal(Url.Action(nameof(Index), nameof(Manage), new { Organization = _tenantContext.SiteContext.UrlSegmentValue }));
         }
@@ -414,7 +414,7 @@ namespace League.Controllers
             var user = await _tenantContext.DbContext.AppDb.UserRepository.GetLoginUserByUserNameAsync(HttpContext.User.Identity.Name, cancellationToken);
             if (user == null)
             {
-                _logger.LogError($"Username '{HttpContext.User.Identity.Name}' not found in repository");
+                _logger.LogError("Username '{userName}' not found in repository", HttpContext.User.Identity.Name);
                 TempData.Put<ManageMessage>(nameof(ManageMessage), new ManageMessage { AlertType = SiteAlertTagHelper.AlertType.Danger, MessageId = MessageId.ChangePhoneFailure });
                 ModelState.AddModelError(string.Empty, _localizer["Primary phone number not found"]);
                 return PartialView(ViewNames.Manage._EditPhoneModalPartial, model);
@@ -441,7 +441,7 @@ namespace League.Controllers
                 }
                 catch (Exception e)
                 {
-                    _logger.LogError($"Save user name '{userEntity.UserName}' failed", e);
+                    _logger.LogError(e, "Save user name '{userName}' failed", userEntity.UserName);
                     TempData.Put<ManageMessage>(nameof(ManageMessage), new ManageMessage { AlertType = SiteAlertTagHelper.AlertType.Danger, MessageId = MessageId.ChangePhoneFailure });
                     return JsonAjaxRedirectForModal(Url.Action(nameof(Index), nameof(Manage), new { Organization = _tenantContext.SiteContext.UrlSegmentValue }));
                 }
@@ -485,14 +485,14 @@ namespace League.Controllers
 
             if (_phoneNumberService.IsMatch(userEntity.PhoneNumber, model.PhoneNumber, _regionInfo.TwoLetterISORegionName))
             {
-                _logger.LogInformation($"Current and new primary phone number are equal ('{userEntity.PhoneNumber}').");
+                _logger.LogInformation("Current and new primary phone number are equal ('{phoneNumber}').", userEntity.PhoneNumber);
                 ModelState.AddModelError(nameof(EditPhoneViewModel.PhoneNumber), _localizer["Current and new primary phone number must be different"]);
                 return PartialView(ViewNames.Manage._EditPhoneModalPartial, model);
             }
 
             if (_phoneNumberService.IsMatch(userEntity.PhoneNumber2, model.PhoneNumber, _regionInfo.TwoLetterISORegionName))
             {
-                _logger.LogInformation($"Primary and additional phone number are equal ('{userEntity.PhoneNumber}').");
+                _logger.LogInformation("Primary and additional phone number are equal ('{phoneNumber}').", userEntity.PhoneNumber);
                 ModelState.AddModelError(nameof(EditPhone2ViewModel.PhoneNumber2), _localizer["'{0}' and '{1}' must be different", _metaData.GetDisplayName<EditPhoneViewModel>(nameof(EditPhoneViewModel.PhoneNumber)), _metaData.GetDisplayName<EditPhone2ViewModel>(nameof(EditPhone2ViewModel.PhoneNumber2))]);
                 return PartialView(ViewNames.Manage._EditPhoneModalPartial, model);
             }
@@ -507,7 +507,7 @@ namespace League.Controllers
             var user = await _tenantContext.DbContext.AppDb.UserRepository.GetLoginUserByUserNameAsync(HttpContext.User.Identity.Name, cancellationToken);
             if (user == null)
             {
-                _logger.LogError($"Username '{HttpContext.User.Identity.Name}' not found in repository");
+                _logger.LogError("Username '{userName}' not found in repository", HttpContext.User.Identity.Name);
                 TempData.Put<ManageMessage>(nameof(ManageMessage), new ManageMessage { AlertType = SiteAlertTagHelper.AlertType.Danger, MessageId = MessageId.ChangePhone2Failure });
                 ModelState.AddModelError(string.Empty, _localizer["'{0}' not found", _metaData.GetDisplayName<EditPhone2ViewModel>(nameof(EditPhone2ViewModel.PhoneNumber2))]);
                 return PartialView(ViewNames.Manage._EditPhone2ModalPartial, model);
@@ -533,7 +533,7 @@ namespace League.Controllers
                 }
                 catch (Exception e)
                 {
-                    _logger.LogError($"Save user name '{userEntity.UserName}' failed", e);
+                    _logger.LogError(e, "Save user name '{userName}' failed", userEntity.UserName);
                     TempData.Put<ManageMessage>(nameof(ManageMessage), new ManageMessage { AlertType = SiteAlertTagHelper.AlertType.Danger, MessageId = MessageId.ChangePhone2Failure });
                     return JsonAjaxRedirectForModal(Url.Action(nameof(Index), nameof(Manage), new { Organization = _tenantContext.SiteContext.UrlSegmentValue }));
                 }
@@ -577,7 +577,7 @@ namespace League.Controllers
 
             if (_phoneNumberService.IsMatch(userEntity.PhoneNumber, model.PhoneNumber2, _regionInfo.TwoLetterISORegionName))
             {
-                _logger.LogInformation($"Primary and additional phone number are equal ('{userEntity.PhoneNumber}').");
+                _logger.LogInformation("Primary and additional phone number are equal ('{phoneNumber}').", userEntity.PhoneNumber);
                 ModelState.AddModelError(nameof(EditPhone2ViewModel.PhoneNumber2), _localizer["'{0}' and '{1}' must be different", _metaData.GetDisplayName<EditPhone2ViewModel>(nameof(EditPhone2ViewModel.PhoneNumber2)), _metaData.GetDisplayName<EditPhoneViewModel>(nameof(EditPhoneViewModel.PhoneNumber))]);
                 return PartialView(ViewNames.Manage._EditPhone2ModalPartial, model);
             }
@@ -677,7 +677,7 @@ namespace League.Controllers
                 var result = await _userManager.DeleteAsync(user);
                 if (!result.Succeeded)
                 {
-                    _logger.LogError($"Account for username '{user.Id}' could not be deleted.");
+                    _logger.LogError("Account for user id '{userId}' could not be deleted.", user.Id);
                 }
             }
             await _signInManager.SignOutAsync();

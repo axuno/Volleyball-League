@@ -21,7 +21,7 @@ namespace League.Test.Identity
     [TestFixture]
     public class RoleStoreTests
     {
-        private readonly UnitTestHelpers _uth = new UnitTestHelpers();
+        private readonly UnitTestHelpers _uth = new();
         private readonly AppDb _appDb;
         private readonly RoleStore _roleStore;
         private readonly UserStore _userStore;
@@ -33,8 +33,7 @@ namespace League.Test.Identity
             _roleStore = _uth.GetRoleStore();
         }
 
-        private readonly ApplicationUser _testUser = new ApplicationUser
-        {
+        private readonly ApplicationUser _testUser = new() {
             Email = "role@store.test",
             EmailConfirmed = true,
             EmailConfirmedOn = new DateTime(2019, 04, 25, 12, 00, 00),

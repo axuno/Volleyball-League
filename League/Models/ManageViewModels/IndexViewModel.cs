@@ -10,14 +10,13 @@ namespace League.Models.ManageViewModels
 {
     public class IndexViewModel
     {
-        private readonly Axuno.Tools.DateAndTime.TimeZoneConverter _timeZoneConverter;
-
         public IndexViewModel(Axuno.Tools.DateAndTime.TimeZoneConverter timeZoneConverter)
         {
-            _timeZoneConverter = timeZoneConverter;
+            TimeZoneConverter = timeZoneConverter;
         }
 
-        public Axuno.Tools.DateAndTime.TimeZoneConverter TimeZoneConverter => _timeZoneConverter;
+        public Axuno.Tools.DateAndTime.TimeZoneConverter TimeZoneConverter { get; }
+
         public ApplicationUser ApplicationUser { get; set; }
         public bool HasPassword { get; set; }
         public IList<UserLoginInfo> Logins { get; set; }

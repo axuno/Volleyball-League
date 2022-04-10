@@ -85,7 +85,7 @@ namespace League.TextTemplatingModule
                     case RenderErrorAction.ThrowError:
                         throw new Exception($"Member '{member}' not found.");
                     default:
-                        throw new ArgumentOutOfRangeException(nameof(VariableNotFoundAction));
+                        throw new InvalidOperationException($"Unexpected value {MemberNotFoundAction} for {nameof(MemberNotFoundAction)}");
                 }
             };
             // will be called if the variable could not be found from any scope
@@ -109,7 +109,7 @@ namespace League.TextTemplatingModule
                             value = string.Empty;
                             return false;
                         default:
-                            throw new ArgumentOutOfRangeException(nameof(VariableNotFoundAction));
+                            throw new InvalidOperationException($"Unexpected value {VariableNotFoundAction} for {nameof(VariableNotFoundAction)}");
                     }
                 };
 

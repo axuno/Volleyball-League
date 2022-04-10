@@ -9,9 +9,9 @@
     var tenantUrlSegment = TenantContext.SiteContext.UrlSegmentValue;
     List<SelectListItem> GenderList()
     {
-        return new List<SelectListItem> {new SelectListItem {Value = string.Empty, Text = Localizer["Please choose"].Value},
-            new SelectListItem {Value = "f", Text = Localizer["Mrs."].Value},
-            new SelectListItem {Value = "m", Text = Localizer["Mr."].Value}};
+        return new List<SelectListItem> {new() {Value = string.Empty, Text = Localizer["Please choose"].Value},
+            new() {Value = "f", Text = Localizer["Mrs."].Value},
+            new() {Value = "m", Text = Localizer["Mr."].Value}};
     }
 }
 <div>

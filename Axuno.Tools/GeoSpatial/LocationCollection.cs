@@ -15,7 +15,7 @@ namespace Axuno.Tools.GeoSpatial
     /// </summary>
     public sealed class LocationCollection : ICollection<Location>, IXmlSerializable
     {
-        private readonly List<Location> locations = new List<Location>();
+        private readonly List<Location> locations = new();
 
         /// <summary>
         /// Gets the number of Locations contained in this instance.
@@ -32,7 +32,7 @@ namespace Axuno.Tools.GeoSpatial
         /// <exception cref="ArgumentNullException">item is null.</exception>
         public void Add(Location item)
         {
-            if (item == null) throw new ArgumentNullException("item");
+            if (item == null) throw new ArgumentNullException(nameof(item));
             locations.Add(item);
         }
 
@@ -138,8 +138,7 @@ namespace Axuno.Tools.GeoSpatial
             {
                 foreach (var value in SplitString(reader.ReadString(), '/'))
                 {
-                    Location location;
-                    if (Location.TryParse(value, LocationStyles.Iso, CultureInfo.InvariantCulture, out location))
+                    if (Location.TryParse(value, LocationStyles.Iso, CultureInfo.InvariantCulture, out var location))
                         locations.Add(location);
                 }
 

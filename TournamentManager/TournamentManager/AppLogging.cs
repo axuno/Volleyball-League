@@ -46,12 +46,15 @@ namespace TournamentManager
                         Configure(new NullLoggerFactory());
                     else
                         Configure(new LoggerFactory());
-                    
+
                 }
                 return _factory!;
             }
 
-            set => _factory = value;
+            set
+            {
+                _factory = value;
+            }
         }
 
         /// <summary>
@@ -60,7 +63,11 @@ namespace TournamentManager
         /// </summary>
         public static bool UseNullLogger
         {
-            get => _useNullLogger;
+            get
+            {
+                return _useNullLogger;
+            }
+
             set
             {
                 _useNullLogger = value;
@@ -73,13 +80,19 @@ namespace TournamentManager
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <returns>Returns an <see cref="ILogger"/> instance for type <see cref="T"/>.</returns>
-        public static ILogger CreateLogger<T>() => LoggerFactory.CreateLogger<T>();
+        public static ILogger CreateLogger<T>()
+        {
+            return LoggerFactory.CreateLogger<T>();
+        }
 
         /// <summary>
         /// Creates an <see cref="ILogger"/> with name <see cref="name"/>.
         /// </summary>
         /// <param name="name">The name for the <see cref="ILogger"/>.</param>
         /// <returns>Returns an <see cref="ILogger"/> with name <see cref="name"/>.</returns>
-        public static ILogger CreateLogger(string name) => LoggerFactory.CreateLogger(name);
+        public static ILogger CreateLogger(string name)
+        {
+            return LoggerFactory.CreateLogger(name);
+        }
     }
 }

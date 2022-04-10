@@ -40,7 +40,7 @@ namespace TournamentManager.MultiTenancy
         /// <summary>
         /// Bank details of the organization, e.g. for payments of participation fees.
         /// </summary>
-        public BankDetails Bank { get; set; } = new BankDetails();
+        public BankDetails Bank { get; set; } = new();
     }
     
     /// <summary>

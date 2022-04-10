@@ -95,15 +95,13 @@ namespace TournamentManager.Data
 			filter.Relations.Add(TeamInRoundEntity.Relations.RoundEntityUsingRoundId);
 			filter.PredicateExpression.Add(RoundFields.TournamentId == tournament.Id);
 
-            IPrefetchPath2 prefetchPathTeam = new PrefetchPath2(EntityType.TeamEntity)
-            {
-                TeamEntity.PrefetchPathTeamInRounds
-            };
-
             var tir = new EntityCollection<TeamInRoundEntity>();
             using var da = _dbContext.GetNewAdapter();
             da.FetchEntityCollection(tir, filter, prefetchPathTeamInRound);
             da.CloseConnection();
+
+            _logger.LogDebug("{teamCount} found for {tournamentId}", tir.Count, tournament.Id);
+
             return tir;
 		}
 

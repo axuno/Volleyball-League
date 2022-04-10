@@ -66,7 +66,7 @@ namespace Axuno.Tools.GeoSpatial
             /// <summary>
             /// Gets or sets the <see cref="GeoLocation"/>.
             /// </summary>
-            public GeoLocation GeoLocation { get; set; } = new GeoLocation();
+            public GeoLocation GeoLocation { get; set; } = new();
             /// <summary>
             /// Gets or sets the status text returned from the server API.
             /// </summary>

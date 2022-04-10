@@ -74,8 +74,7 @@ namespace League.Controllers
                 return Forbid();
             }
 
-            var model = GetEditModel(false, venueEntity, null,
-                venueTeams.Select(vt => vt.TeamName).Distinct().OrderBy(n => n).ToList(), returnUrl);
+            var model = GetEditModel(false, venueEntity, null, returnUrl);
 
             model.Venue.MapEntityToFormFields(model.VenueEntity);
 
@@ -102,8 +101,7 @@ namespace League.Controllers
                 return Forbid();
             }
 
-            model = GetEditModel(false, venueEntity, null,
-                venueTeams.Select(vt => vt.TeamName).Distinct().OrderBy(n => n).ToList(), model.ReturnUrl);
+            model = GetEditModel(false, venueEntity, null, model.ReturnUrl);
             
             model.Venue.MapEntityToFormFields(model.VenueEntity);
 
@@ -157,7 +155,7 @@ namespace League.Controllers
                 return Forbid();
             }
             
-            var model = GetEditModel(true, new VenueEntity(), teamEntity, new string[]{}, returnUrl);
+            var model = GetEditModel(true, new VenueEntity(), teamEntity, returnUrl);
 
             return View(Views.ViewNames.Venue.EditVenue, model);
         }
@@ -181,7 +179,7 @@ namespace League.Controllers
                 return Forbid();
             }
 
-            model = GetEditModel(true, new VenueEntity(), teamEntity, new string[] { }, model.ReturnUrl);
+            model = GetEditModel(true, new VenueEntity(), teamEntity, model.ReturnUrl);
 
             model.Venue.MapEntityToFormFields(model.VenueEntity);
 
@@ -272,7 +270,7 @@ namespace League.Controllers
             if (!geoResponse.Success)
             {
                 _logger.LogError(geoResponse.Exception,
-                    "{0} failed. Response status text: {1}",
+                    "{modelName} failed. Response status text: {statusText}",
                     $"{nameof(VenueEditModel)}.{nameof(VenueEditModel.TrySetGeoLocation)}()",
                     geoResponse.StatusText);
             }
@@ -294,11 +292,11 @@ namespace League.Controllers
                        new TeamEntity(teamId.Value), Authorization.TeamOperations.EditTeam)).Succeeded);
         }
 
-        private VenueEditModel GetEditModel(bool isNew, VenueEntity venueEntity, TeamEntity teamEntity, IList<string> teamsUsingTheVenue, string returnUrl)
+        private VenueEditModel GetEditModel(bool isNew, VenueEntity venueEntity, TeamEntity teamEntity, string returnUrl)
         {
             return new VenueEditModel
             {
-                TeamsUsingTheVenue = new string[]{},
+                TeamsUsingTheVenue = Array.Empty<string>(),
                 TeamId = teamEntity?.Id,
                 ForTeamName = teamEntity?.Name,
                 ReturnUrl = Url.IsLocalUrl(returnUrl) ? returnUrl : _defaultReturnUrl,

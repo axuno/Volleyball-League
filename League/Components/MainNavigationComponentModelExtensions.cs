@@ -80,7 +80,12 @@ namespace League.Components
         /// </summary>
         /// <param name="node"></param>
         /// <returns>A html element for an icon.</returns>
-        public static string GetIcon(this MainNavigationComponentModel.NavigationNode? node) => node == null || string.IsNullOrEmpty(node.IconCssClass) ? string.Empty : "<i class='" + node.IconCssClass + "'></i> ";
+        public static string GetIcon(this MainNavigationComponentModel.NavigationNode? node)
+        {
+            return node == null || string.IsNullOrEmpty(node.IconCssClass)
+                ? string.Empty
+                : "<i class='" + node.IconCssClass + "'></i> ";
+        }
 
         /// <summary>
         /// Checks, whether the given <see cref="MainNavigationComponentModel.NavigationNode"/> is the active node.

@@ -9,7 +9,7 @@ namespace League.Models.RankingViewModels
 {
     public class AllTimeTeamModel
     {
-        private List<RoundLegPeriodRow> _roundLegPeriods;
+        private readonly List<RoundLegPeriodRow> _roundLegPeriods;
 
         public AllTimeTeamModel(List<RankingListRow> rankingList, List<RoundLegPeriodRow> roundLegPeriods)
         {

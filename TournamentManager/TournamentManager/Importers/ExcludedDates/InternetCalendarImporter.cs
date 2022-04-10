@@ -16,7 +16,7 @@ namespace TournamentManager.Importers.ExcludedDates
         /// <param name="defaultTimeZoneId">The time zone to use, if it is not included in the start and end date/time of the event.</param>
         /// <param name="dateLimits">The lower and upper UTC date limit to import.</param>
         /// <returns>Return an <see cref="EntityCollection"/> of type  <see cref="ExcludeMatchDateEntity"/> with imported dates.</returns>
-        public EntityCollection<ExcludeMatchDateEntity> Import(string iCalendarString, string defaultTimeZoneId, DateTimePeriod dateLimits)
+        public static EntityCollection<ExcludeMatchDateEntity> Import(string iCalendarString, string defaultTimeZoneId, DateTimePeriod dateLimits)
         {
             var iCal = Ical.Net.Calendar.Load(iCalendarString);
             return Map(iCal, defaultTimeZoneId, dateLimits);
@@ -31,13 +31,13 @@ namespace TournamentManager.Importers.ExcludedDates
         /// <param name="defaultTimeZoneId">The time zone to use, if it is not included in the start and end date/time of the event.</param>
         /// <param name="dateLimits">The lower and upper UTC date limit to import.</param>
         /// <returns>Return an <see cref="EntityCollection"/> of type  <see cref="ExcludeMatchDateEntity"/> with imported dates.</returns>
-        public EntityCollection<ExcludeMatchDateEntity> Import(Stream iCalendarStream, System.Text.Encoding encoding, string defaultTimeZoneId, DateTimePeriod dateLimits)
+        public static EntityCollection<ExcludeMatchDateEntity> Import(Stream iCalendarStream, System.Text.Encoding encoding, string defaultTimeZoneId, DateTimePeriod dateLimits)
         {
             var iCal = Ical.Net.Calendar.Load(new StreamReader(iCalendarStream, encoding));
             return Map(iCal, defaultTimeZoneId, dateLimits);
         }
 
-        private EntityCollection<ExcludeMatchDateEntity> Map(Ical.Net.Calendar iCal, string defaultTimeZoneId, DateTimePeriod dateLimits)
+        private static EntityCollection<ExcludeMatchDateEntity> Map(Ical.Net.Calendar iCal, string defaultTimeZoneId, DateTimePeriod dateLimits)
         {
             var excluded = new EntityCollection<ExcludeMatchDateEntity>();
             

@@ -2,9 +2,9 @@
 {
     public class SocialLogins
     {
-        public Microsoft Microsoft { get; set; } = new Microsoft();
-        public Google Google { get; set; } = new Google();
-        public Facebook Facebook { get; set; } = new Facebook();
+        public Microsoft Microsoft { get; set; } = new();
+        public Google Google { get; set; } = new();
+        public Facebook Facebook { get; set; } = new();
     }
 
     public class Facebook

@@ -20,12 +20,12 @@ namespace League.Models.UploadViewModels
         /// <summary>
         /// Template for saving team photos. {0}: organization key, {1}: team id {2}: <see cref="DateTime.Ticks"/>  {3} file extension
         /// </summary>
-        private string _filenameTemplate = "photo_{0}_team_{1}_t{2}.{3}";
+        private readonly string _filenameTemplate = "photo_{0}_team_{1}_t{2}.{3}";
 
         /// <summary>
         /// Pattern for finding team photos. {0}: organization key, {1}: team id
         /// </summary>
-        private string _fileSearchPattern = "photo_{0}_team_{1}_t*.*";
+        private readonly string _fileSearchPattern = "photo_{0}_team_{1}_t*.*";
 
         /// <summary>
         /// The folder path below <see cref="IWebHostEnvironment.WebRootPath"/> where files will be searched and stored.
@@ -93,8 +93,8 @@ namespace League.Models.UploadViewModels
 
         public (string Uri, DateTime Date) GetUriInfo(long teamId)
         {
-            var fi = GetFileInfo(teamId);
-            return (fi.Filename != null ?  $"~/{_folder}/{fi.Filename}" : null, fi.Date);
+            var (filename, date) = GetFileInfo(teamId);
+            return (filename != null ?  $"~/{_folder}/{filename}" : null, Date: date);
         }
     }
 }

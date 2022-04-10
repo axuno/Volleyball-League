@@ -59,13 +59,13 @@ namespace League.Components
             /// <summary>
             /// The <see cref="List{NavigationNode}"/> of child <see cref="NavigationNode"/>s.
             /// </summary>
-            public List<NavigationNode> ChildNodes { get; } = new List<NavigationNode>();
+            public List<NavigationNode> ChildNodes { get; } = new();
         }
         
         /// <summary>
         /// Gets the top navigation <see cref="List{NavigationNode}"/> of type <see cref="NavigationNode"/>.
         /// </summary>
-        public List<NavigationNode> TopNavigationNodes { get; } = new List<NavigationNode>();
+        public List<NavigationNode> TopNavigationNodes { get; } = new();
         
         /// <summary>
         /// Gets the active <see cref="NavigationNode"/> for the current <see cref="Microsoft.AspNetCore.Http.HttpContext.Request"/>.

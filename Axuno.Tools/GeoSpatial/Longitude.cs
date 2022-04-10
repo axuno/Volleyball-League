@@ -41,7 +41,7 @@ namespace Axuno.Tools.GeoSpatial
         /// <exception cref="ArgumentOutOfRangeException">
         ///     degrees is greater than 180 or less than -180.
         /// </exception>
-        public new static Longitude FromDegrees(double degrees)
+        public static new Longitude FromDegrees(double degrees)
         {
             ValidateRange("degrees", degrees, -180, 180);
             return new Longitude(Angle.FromDegrees(degrees).Radians);
@@ -57,7 +57,7 @@ namespace Axuno.Tools.GeoSpatial
         ///     The specified angle (degrees + minutes) is greater than 180 or less
         ///     than -180.
         /// </exception>
-        public new static Longitude FromDegrees(double degrees, double minutes)
+        public static new Longitude FromDegrees(double degrees, double minutes)
         {
             var angle = Angle.FromDegrees(degrees, minutes);
             ValidateRange("angle", angle.TotalDegrees, -180, 180);
@@ -76,7 +76,7 @@ namespace Axuno.Tools.GeoSpatial
         ///     The specified angle (degrees + minutes + seconds) is greater than
         ///     180 or less than -180.
         /// </exception>
-        public new static Longitude FromDegrees(double degrees, double minutes, double seconds)
+        public static new Longitude FromDegrees(double degrees, double minutes, double seconds)
         {
             var angle = Angle.FromDegrees(degrees, minutes, seconds);
             ValidateRange("angle", angle.TotalDegrees, -180, 180);
@@ -90,7 +90,7 @@ namespace Axuno.Tools.GeoSpatial
         /// <exception cref="ArgumentOutOfRangeException">
         ///     radians is greater than PI or less than -PI.
         /// </exception>
-        public new static Longitude FromRadians(double radians)
+        public static new Longitude FromRadians(double radians)
         {
             ValidateRange(nameof(radians), radians, -Math.PI, Math.PI);
             return new Longitude(radians);

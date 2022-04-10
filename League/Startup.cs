@@ -684,7 +684,7 @@ namespace League
                 {
                     loggers = new List<Logger>
                     {
-                        new Logger { name = "JsLogger" }
+                        new() { name = "JsLogger" }
                     }
                 };
             app.UseJSNLog(new LoggingAdapter(loggerFactory), jsNLogConfiguration);

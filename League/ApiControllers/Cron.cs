@@ -293,7 +293,7 @@ namespace League.ApiControllers
             /// <summary>
             /// Gets or set the result of the <see cref="Cron.AutoMail"/> api call.
             /// </summary>
-            public QueuingResult QueuingResult { get; set; } = new QueuingResult();
+            public QueuingResult QueuingResult { get; set; } = new();
             
             /// <summary>
             /// Gets or sets any invocation exception

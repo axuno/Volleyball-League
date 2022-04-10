@@ -194,7 +194,7 @@ namespace League.BackgroundTasks
             DeleteObsoleteChartImageFiles(roundIds);
 #if DEBUG
             stopWatch.Stop();
-            _logger.LogInformation("{0} completed in {1}ms", nameof(RankingUpdateTask), stopWatch.ElapsedMilliseconds);
+            _logger.LogInformation("{taskName} completed in {elapsedTime}ms", nameof(RankingUpdateTask), stopWatch.ElapsedMilliseconds);
 #endif
         }
 

@@ -90,7 +90,7 @@ namespace League.Controllers
                 (await _tenantContext.DbContext.AppDb.ManagerOfTeamRepository.GetManagerIdsOfTeamAsync(model.TeamId,
                     cancellationToken)).Count <= 1)
             {
-                _logger.LogInformation("Rejected to remove last claim '{0}' for team id '{1}' and user id {2}",
+                _logger.LogInformation("Rejected to remove last claim '{claimType}' for team id '{teamId}' and user id {userId}",
                     model.ClaimType, model.TeamId, model.UserId);
                 return JsonAjaxRedirectForModal(SetCannotRemoveLastTeamManagerReturnResult(model.ReturnUrl, model.TeamId));
             }
@@ -106,7 +106,7 @@ namespace League.Controllers
                 }
                 catch (Exception e)
                 {
-                    _logger.LogError(e, "Failed to remove claim '{0}' for team id '{1}' and user id {2}", model.ClaimType, model.TeamId, model.UserId);
+                    _logger.LogError(e, "Failed to remove claim '{claimType}' for team id '{teamId}' and user id {userId}", model.ClaimType, model.TeamId, model.UserId);
                     return JsonAjaxRedirectForModal(SetAdjustedReturnResult(nameof(Remove), model.ReturnUrl, model.TeamId, false));
                 }
             }
@@ -168,7 +168,7 @@ namespace League.Controllers
                 }
                 catch (Exception e)
                 {
-                    _logger.LogError(e, "Failed to add claim '{0}' for team id '{1}' and user id '{2}'", model.ClaimType, model.TeamId, newTeamMember.Id);
+                    _logger.LogError(e, "Failed to add claim '{claimType}' for team id '{teamId}' and user id '{userId}'", model.ClaimType, model.TeamId, newTeamMember.Id);
                 }
             }
             else

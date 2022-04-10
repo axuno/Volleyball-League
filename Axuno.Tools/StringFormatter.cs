@@ -43,7 +43,7 @@ namespace Axuno.Tools
                 var firstChar = chars[i];
 
                 // Determine last character in the sorted sequence
-                var k = 0;
+                int k;
                 for (k = i + 1; k < length; k++)
                 {
                     var lastChar = chars[k - 1];

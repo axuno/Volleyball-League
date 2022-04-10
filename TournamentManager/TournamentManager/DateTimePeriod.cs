@@ -75,8 +75,12 @@ namespace TournamentManager
         /// When setting Start and End, it is ensured that always Start &lt;= End
         /// </summary>
 		public DateTime? Start
-		{
-			get => _start;
+        {
+            get
+            {
+                return _start;
+            }
+
             set
             {
                 if (!value.HasValue)
@@ -86,12 +90,12 @@ namespace TournamentManager
                 else
                 {
                     var d = value.Value;
-                    _start= new DateTime(d.Year, d.Month, d.Day, d.Hour, d.Minute, d.Second);
+                    _start = new DateTime(d.Year, d.Month, d.Day, d.Hour, d.Minute, d.Second);
                 }
 
                 SwapIfNeeded();
             }
-		}
+        }
 
         /// <summary>
         /// Gets or sets the End of the <see cref="DateTimePeriod"/>.
@@ -99,8 +103,12 @@ namespace TournamentManager
         /// When setting Start and End, it is ensured that always Start &lt;= End
         /// </summary>
         public DateTime? End
-		{
-			get => _end;
+        {
+            get
+            {
+                return _end;
+            }
+
             set
             {
                 if (!value.HasValue)

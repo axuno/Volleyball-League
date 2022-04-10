@@ -12,6 +12,7 @@ using TournamentManager.DAL.EntityClasses;
 using TournamentManager.DAL.HelperClasses;
 using TournamentManager.MultiTenancy;
 
+#pragma warning disable CA2254 // Template should be a static expression
 namespace League.Identity
 {
     /// <summary>
@@ -102,7 +103,7 @@ namespace League.Identity
             }
             catch (Exception e)
             {
-                _logger.LogError($"Account for user id {user.Id} could not be deleted", e);
+                _logger.LogError(e, "Account for user id {userId} could not be deleted", user.Id);
                 return IdentityResult.Failed(_identityErrorDescriber.DefaultError());
             }
         }
@@ -416,6 +417,7 @@ namespace League.Identity
             if (Constants.RoleName.GetTeamRelatedRoles().Contains(roleName))
             {
                 var msg = $"The role name '{roleName}' cannot be added explicitly.";
+
                 _logger.LogError(msg);
                 throw new Exception(msg);
             }
@@ -1092,6 +1094,8 @@ namespace League.Identity
         public void Dispose()
         {
             // Nothing to dispose.
+            GC.SuppressFinalize(this);
         }
     }
 }
+#pragma warning restore CA2254 // Template should be a static expression

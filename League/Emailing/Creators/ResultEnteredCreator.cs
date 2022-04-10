@@ -29,7 +29,7 @@ namespace League.Emailing.Creators
         /// <summary>
         /// Gets the <see cref="ResultEnteredParameters"/> used as input for creating <see cref="MailMergeMessage"/>s.
         /// </summary>
-        public ResultEnteredParameters Parameters { get; } = new ResultEnteredParameters();
+        public ResultEnteredParameters Parameters { get; } = new();
 
         /// <summary>
         /// Gets all email messages matching the criteria in <see cref="Parameters"/>.

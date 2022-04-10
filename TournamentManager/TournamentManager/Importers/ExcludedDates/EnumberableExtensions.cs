@@ -47,7 +47,7 @@ namespace TournamentManager.Importers.ExcludedDates
 
                 var days = 1;
                 Axuno.Tools.GermanHoliday first = e.Current, last = first, next;
-                while ((more = e.MoveNext() && !(e.Current is null)) && 
+                while ((more = e.MoveNext() && e.Current is not null) && 
                        (next = e.Current!).Date > last.Date && 
                        (ReferenceEquals(first, next) || (next.Date - first.Date).Days == days++ && next.Name == first.Name))
                     last = next;

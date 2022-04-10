@@ -72,7 +72,9 @@ namespace League.Areas.Admin.Controllers
 
             // impersonate the target user
             await _signInManager.Context.SignInAsync(IdentityConstants.ApplicationScheme, targetClaimsPrincipal);
-            _logger.LogInformation($"User '{currentUser.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value}' now impersonates user '{targetClaimsPrincipal?.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value}'.");
+            _logger.LogInformation("User '{user}' now impersonates user '{targetUser}'.",
+                currentUser.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value,
+                targetClaimsPrincipal?.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value);
 
             return RedirectToLocal("/" + _tenantContext.SiteContext.UrlSegmentValue);
         }

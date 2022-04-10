@@ -144,20 +144,20 @@ namespace TournamentManager.Tests.ModelValidators
             });
         }
 
-        [TestCase(GoogleGeo.LocationType.RoofTop, 1, false, false, false)]
-        [TestCase(GoogleGeo.LocationType.Approximate, 1, false, false, false)]
-        [TestCase(GoogleGeo.LocationType.GeometricCenter, 1, false, true, true)]
-        [TestCase(GoogleGeo.LocationType.RangeInterpolated, 0, true, true, true)]
-        public async Task No_Close_By_Other_Venue(GoogleGeo.LocationType locationType, long venueId, bool isNew, bool emptyList, bool success)
+        [TestCase(GoogleGeo.LocationType.RoofTop, false, false, false)]
+        [TestCase(GoogleGeo.LocationType.Approximate, false, false, false)]
+        [TestCase(GoogleGeo.LocationType.GeometricCenter, false, true, true)]
+        [TestCase(GoogleGeo.LocationType.RangeInterpolated, true, true, true)]
+        public async Task No_Close_By_Other_Venue(GoogleGeo.LocationType locationType, bool isNew, bool emptyList, bool success)
         {
             var venue = new VenueEntity {Id = 1, IsNew = isNew};
 
             var closeByVenues = new List<VenueDistanceResultRow>
             {
-                new VenueDistanceResultRow {Id = 1, Distance = .3},
-                new VenueDistanceResultRow {Id = 2, Distance = .4},
-                new VenueDistanceResultRow {Id = 3, Distance = .7},
-                new VenueDistanceResultRow {Id = 4, Distance = .9}
+                new() {Id = 1, Distance = .3},
+                new() {Id = 2, Distance = .4},
+                new() {Id = 3, Distance = .7},
+                new() {Id = 4, Distance = .9}
             };
             
             if (emptyList) closeByVenues.Clear();

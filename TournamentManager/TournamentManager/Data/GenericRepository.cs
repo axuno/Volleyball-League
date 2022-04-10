@@ -26,6 +26,7 @@ namespace TournamentManager.Data
                 da.StartTransaction(IsolationLevel.ReadCommitted, transactionName);
                 var success = da.SaveEntity(entityToSave, refetchAfterSave, recurse);
                 da.Commit();
+                _logger.LogDebug("Entity of type {type} saved.", typeof(T));
                 return success;
             }
             catch (Exception)

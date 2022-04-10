@@ -19,9 +19,9 @@ namespace TournamentManager.Tests.ExtensionMethods
         {
             var sets = new List<SetEntity>
             {
-                new SetEntity {HomeBallPoints = s1HomeBall, GuestBallPoints = s1GuestBall},
-                new SetEntity {HomeBallPoints = s2HomeBall, GuestBallPoints = s2GuestBall},
-                new SetEntity {HomeBallPoints = s3HomeBall, GuestBallPoints = s3GuestBall}
+                new() {HomeBallPoints = s1HomeBall, GuestBallPoints = s1GuestBall},
+                new() {HomeBallPoints = s2HomeBall, GuestBallPoints = s2GuestBall},
+                new() {HomeBallPoints = s3HomeBall, GuestBallPoints = s3GuestBall}
             };
             var setRule = new SetRuleEntity { PointsSetWon = 3, PointsSetLost = 1, PointsSetTie = 2 };
             var matchRule = new MatchRuleEntity { BestOf = false, NumOfSets = 3 };
@@ -40,9 +40,9 @@ namespace TournamentManager.Tests.ExtensionMethods
         {
             var sets = new List<SetEntity>
             {
-                new SetEntity {HomeBallPoints = s1HomeBall, GuestBallPoints = s1GuestBall},
-                new SetEntity {HomeBallPoints = s2HomeBall, GuestBallPoints = s2GuestBall},
-                new SetEntity {HomeBallPoints = s3HomeBall, GuestBallPoints = s3GuestBall}
+                new() {HomeBallPoints = s1HomeBall, GuestBallPoints = s1GuestBall},
+                new() {HomeBallPoints = s2HomeBall, GuestBallPoints = s2GuestBall},
+                new() {HomeBallPoints = s3HomeBall, GuestBallPoints = s3GuestBall}
             };
             var setRule = new SetRuleEntity { PointsSetWon = 3, PointsSetLost = 1, PointsSetTie = 0 };
             var matchRule = new MatchRuleEntity { BestOf = true, NumOfSets = 2 };
@@ -78,9 +78,9 @@ namespace TournamentManager.Tests.ExtensionMethods
         {
             var sets = new List<SetEntity>
             {
-                new SetEntity {HomeBallPoints = s1HomeBall, GuestBallPoints = s1GuestBall},
-                new SetEntity {HomeBallPoints = s2HomeBall, GuestBallPoints = s2GuestBall},
-                new SetEntity {HomeBallPoints = s3HomeBall, GuestBallPoints = s3GuestBall}
+                new() {HomeBallPoints = s1HomeBall, GuestBallPoints = s1GuestBall},
+                new() {HomeBallPoints = s2HomeBall, GuestBallPoints = s2GuestBall},
+                new() {HomeBallPoints = s3HomeBall, GuestBallPoints = s3GuestBall}
             };
             Assert.Multiple(() =>
             {
@@ -97,9 +97,9 @@ namespace TournamentManager.Tests.ExtensionMethods
         {
             var sets = new List<SetEntity>
             {
-                new SetEntity {HomeBallPoints = s1HomeBall, GuestBallPoints = s1GuestBall},
-                new SetEntity {HomeBallPoints = s2HomeBall, GuestBallPoints = s2GuestBall},
-                new SetEntity {HomeBallPoints = s3HomeBall, GuestBallPoints = s3GuestBall}
+                new() {HomeBallPoints = s1HomeBall, GuestBallPoints = s1GuestBall},
+                new() {HomeBallPoints = s2HomeBall, GuestBallPoints = s2GuestBall},
+                new() {HomeBallPoints = s3HomeBall, GuestBallPoints = s3GuestBall}
             };
 
             Assert.AreEqual(expected, sets.GetTotalBallPoints());

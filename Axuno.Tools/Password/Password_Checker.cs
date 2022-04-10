@@ -52,21 +52,18 @@ namespace Axuno.Tools.Password
 	/// </remarks>
 	public class Checker
 	{
-		private static readonly Checker _current = new Checker();
-		
-		private Checker()
+        private Checker()
 		{ }
 
-		internal static Checker Current
-		{ get { return _current; } }
+		internal static Checker Current { get; } = new();
 
 
-		/// <summary>
+        /// <summary>
 		/// Checks the password and determines the score.
 		/// </summary>
 		/// <param name="req">Requirements for the password.</param>
 		/// <param name="pwd">Password to check.</param>
-		public async Task<PasswordStrength> CheckAsync(Requirements req, string pwd)
+		public static async Task<PasswordStrength> CheckAsync(Requirements req, string pwd)
 		{
 			if (req == null) req = new Requirements();
 			return await Task.Run(() => DoCheck(req, pwd));
@@ -77,7 +74,7 @@ namespace Axuno.Tools.Password
 		/// </summary>
 		/// <param name="req">Requirements for the password.</param>
 		/// <param name="pwd">Password to check.</param>
-		public PasswordStrength Check(Requirements req, string pwd)
+		public static PasswordStrength Check(Requirements req, string pwd)
 		{
 			if (req == null) req = new Requirements();
 			return DoCheck(req, pwd);
@@ -355,9 +352,9 @@ namespace Axuno.Tools.Password
 	        if (input.Length <= 1)
 	            return input;
 
-	        char[] c = input.ToCharArray();
-	        StringBuilder sb = new StringBuilder(c.Length);
-	        for (int i = c.Length - 1; i > -1; i--)
+	        var c = input.ToCharArray();
+	        var sb = new StringBuilder(c.Length);
+	        for (var i = c.Length - 1; i > -1; i--)
 	            sb.Append(c[i]);
 
 	        return sb.ToString();
@@ -445,16 +442,11 @@ namespace Axuno.Tools.Password
 		public List<string> SequCharsFound { get; private set; }
 		public MissedRequirements MissedRequirements { get; private set; }
 
-		public bool RequirementsMet
-		{
-			get
-			{
-				return MissedRequirements.Count == 0 && MissedRequirements.ForbiddenWords.Count == 0 &&
-				       MissedRequirements.NoWhitespaceAllowed;
-			}
-		}
+		public bool RequirementsMet =>
+            MissedRequirements.Count == 0 && MissedRequirements.ForbiddenWords.Count == 0 &&
+            MissedRequirements.NoWhitespaceAllowed;
 
-		public DataTable GetDetailsAsDatatable()
+        public DataTable GetDetailsAsDatatable()
 		{
 			var dt = new DataTable("Details");
 			dt.Columns.Add("Description", typeof(string));

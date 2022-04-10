@@ -10,16 +10,13 @@ namespace League.Authorization
 {
     public static class TeamOperations
     {
-        public static readonly OperationAuthorizationRequirement ChangePhoto =
-            new OperationAuthorizationRequirement { Name = nameof(ChangePhoto) };
-        public static readonly OperationAuthorizationRequirement EditTeam =
-            new OperationAuthorizationRequirement { Name = nameof(EditTeam) };
-        public static readonly OperationAuthorizationRequirement AddTeamMember =
-            new OperationAuthorizationRequirement { Name = nameof(AddTeamMember) };
+        public static readonly OperationAuthorizationRequirement ChangePhoto = new() { Name = nameof(ChangePhoto) };
+        public static readonly OperationAuthorizationRequirement EditTeam = new() { Name = nameof(EditTeam) };
+        public static readonly OperationAuthorizationRequirement AddTeamMember = new() { Name = nameof(AddTeamMember) };
         public static readonly OperationAuthorizationRequirement RemoveTeamMember =
-            new OperationAuthorizationRequirement { Name = nameof(RemoveTeamMember) };
+            new() { Name = nameof(RemoveTeamMember) };
         public static readonly OperationAuthorizationRequirement SignUpForSeason =
-            new OperationAuthorizationRequirement { Name = nameof(SignUpForSeason) };
+            new() { Name = nameof(SignUpForSeason) };
     }
 
     public class TeamAuthorizationHandler : AuthorizationHandler<OperationAuthorizationRequirement, TeamEntity>

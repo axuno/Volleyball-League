@@ -170,7 +170,7 @@ namespace TournamentManager.ModelValidators
         /// <summary>
         /// Gets the <see cref="HashSet{T}"/> of <see cref="Facts"/> for the validator.
         /// </summary>
-        public HashSet<Fact<TFactId>> Facts { get; } = new HashSet<Fact<TFactId>>();
+        public HashSet<Fact<TFactId>> Facts { get; } = new();
 
         /// <summary>
         /// Get all facts of a certain <see cref="FactType"/>.
@@ -200,7 +200,7 @@ namespace TournamentManager.ModelValidators
                 fact.Success = factResult.Success;
                 fact.Message = factResult.Message;
                 fact.IsChecked = true;
-                Logger.LogTrace($"Fact '{id?.ToString()}': {fact.Success}");
+                Logger.LogTrace("Fact '{factId}': {factSuccess}", id, fact.Success);
             }
             catch (Exception e)
             {
@@ -208,7 +208,7 @@ namespace TournamentManager.ModelValidators
                 fact.IsChecked = true;
                 fact.Message = string.Empty;
                 fact.Exception = e;
-                Logger.LogCritical(e, $"Fact '{id?.ToString()}': {fact.Success}");
+                Logger.LogCritical(e, "Fact '{factId}': {factSuccess}", id, fact.Success);
             }
 
             return fact;

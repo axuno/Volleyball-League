@@ -40,20 +40,25 @@ namespace LeagueDemo
             }
         }
 
-        public static IHostBuilder CreateHostBuilder(string[] args) =>
-            Host.CreateDefaultBuilder(args)
+        public static IHostBuilder CreateHostBuilder(string[] args)
+        {
+            return Host.CreateDefaultBuilder(args)
                 .ConfigureAppConfiguration((hostingContext, config) =>
                 {
-                    var absoluteConfigurationPath = Path.Combine(hostingContext.HostingEnvironment.ContentRootPath, League.Startup.ConfigurationFolder);
+                    var absoluteConfigurationPath = Path.Combine(hostingContext.HostingEnvironment.ContentRootPath,
+                        League.Startup.ConfigurationFolder);
                     config.SetBasePath(absoluteConfigurationPath)
                         .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-                        .AddJsonFile($"appsettings.{hostingContext.HostingEnvironment.EnvironmentName}.json", optional: true, reloadOnChange: true)
+                        .AddJsonFile($"appsettings.{hostingContext.HostingEnvironment.EnvironmentName}.json",
+                            optional: true, reloadOnChange: true)
                         .AddJsonFile(@"credentials.json", optional: false, reloadOnChange: true)
-                        .AddJsonFile($"credentials.{hostingContext.HostingEnvironment.EnvironmentName}.json", optional: false, reloadOnChange: true)
+                        .AddJsonFile($"credentials.{hostingContext.HostingEnvironment.EnvironmentName}.json",
+                            optional: false, reloadOnChange: true)
                         .AddEnvironmentVariables()
                         .AddCommandLine(args);
 
-                    NLogBuilder.ConfigureNLog(Path.Combine(absoluteConfigurationPath, $"NLog.{hostingContext.HostingEnvironment.EnvironmentName}.config"));
+                    NLogBuilder.ConfigureNLog(Path.Combine(absoluteConfigurationPath,
+                        $"NLog.{hostingContext.HostingEnvironment.EnvironmentName}.config"));
                 })
                 .ConfigureWebHostDefaults(webHostBuilder =>
                 {
@@ -67,6 +72,8 @@ namespace LeagueDemo
                     // Note: This logging configuration overrides any call to SetMinimumLevel!
                     logging.AddConfiguration(hostingContext.Configuration.GetSection("Logging"));
                 })
-                .UseNLog();  // NLog: Setup NLog for dependency injection;
+                .UseNLog();
+            // NLog: Setup NLog for dependency injection;
+        }
     }
 }

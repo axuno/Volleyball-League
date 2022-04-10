@@ -32,6 +32,8 @@ namespace TournamentManager.Data
             var result = await (from ur in metaData.IdentityUserRole
                 where ur.UserId == userId
                 select ur.IdentityRole).ToListAsync(cancellationToken);
+            _logger.LogDebug("{roleCount} found for {userId}", result.Count, userId);
+
             da.CloseConnection();
             return result;
         }

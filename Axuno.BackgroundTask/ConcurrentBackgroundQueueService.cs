@@ -12,8 +12,8 @@ namespace Axuno.BackgroundTask
     public class ConcurrentBackgroundQueueService : BackgroundService
     {
         private readonly ILogger<ConcurrentBackgroundQueueService> _logger;
-        private readonly ManualResetEvent _resetEvent = new ManualResetEvent(true);
-        private readonly object _locker = new object();
+        private readonly ManualResetEvent _resetEvent = new(true);
+        private readonly object _locker = new();
         private int _concurrentTaskCount;
         
         public ConcurrentBackgroundQueueService(IBackgroundQueue taskQueue,
@@ -53,7 +53,7 @@ namespace Axuno.BackgroundTask
                     if (_concurrentTaskCount < Config.MaxConcurrentCount && TaskQueue.Count > 0)
                     {
                         Interlocked.Increment(ref _concurrentTaskCount);
-                        _logger.LogTrace($"Num of tasks: {_concurrentTaskCount}");
+                        _logger.LogTrace("Num of tasks: {concurrentTaskCount}", _concurrentTaskCount);
                         taskListReference.Enqueue(TaskQueue.DequeueTask());
                     }
                     else

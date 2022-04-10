@@ -62,7 +62,7 @@ namespace TournamentManager.MultiTenancy
         /// A set of rules for creating and editing fixtures.
         /// </summary>
         [YAXLib.Attributes.YAXComment("The rules which apply for creating and editing fixtures")]
-        public FixtureRuleSet FixtureRuleSet { get; set; } = new FixtureRuleSet();
+        public FixtureRuleSet FixtureRuleSet { get; set; } = new();
 
         /// <summary>
         ///	The max. number of days after RealStart where results may be changed. Negative value means 'unlimited'.
@@ -74,7 +74,7 @@ namespace TournamentManager.MultiTenancy
         /// Rules for team master data
         /// </summary>
         [YAXLib.Attributes.YAXComment("The rules which apply for creating and editing team data")]
-        public TeamRules TeamRuleSet { get; set; } = new TeamRules();
+        public TeamRules TeamRuleSet { get; set; } = new();
     }
 
     public class FixtureRuleSet
@@ -83,14 +83,14 @@ namespace TournamentManager.MultiTenancy
         /// The time when matches start and end normally (e.g. from 18:00 - 21:00 h)
         /// </summary>
         [YAXLib.Attributes.YAXComment("The time when matches start and end normally (e.g. from 18:00 - 21:00 h)")]
-        public RegularMatchStartTime RegularMatchStartTime { get; set; } = new RegularMatchStartTime();
+        public RegularMatchStartTime RegularMatchStartTime { get; set; } = new();
 
         /// <summary>
         /// The duration which is used to generate fixtures and to determine periods
         /// where a venue is occupied. Default is 2 hours.
         /// </summary>
         [YAXLib.Attributes.YAXComment("The duration which is used to generate fixtures and to determine periods where a venue is occupied")]
-        public TimeSpan PlannedDurationOfMatch { get; set; } = new TimeSpan(0, 2,0,0);
+        public TimeSpan PlannedDurationOfMatch { get; set; } = new(0, 2,0,0);
 
         /// <summary>
         /// If set to true, when editing a fixture the match time must be set (cannot be null)
@@ -135,12 +135,12 @@ namespace TournamentManager.MultiTenancy
         /// Earliest start time for a match.
         /// </summary>
         [YAXLib.Attributes.YAXComment("Earliest start time for a match")]
-        public TimeSpan MinDayTime { get; set; } = new TimeSpan(0,18,0,0);
+        public TimeSpan MinDayTime { get; set; } = new(0,18,0,0);
         /// <summary>
         /// Latest start time for a match.
         /// </summary>
         [YAXLib.Attributes.YAXComment("Latest start time for a match")]
-        public TimeSpan MaxDayTime { get; set; } = new TimeSpan(0, 21,0,0);
+        public TimeSpan MaxDayTime { get; set; } = new(0, 21,0,0);
     }
 
     /// <summary>
@@ -151,7 +151,7 @@ namespace TournamentManager.MultiTenancy
         /// <summary>
         /// Rules for teams' home match time
         /// </summary>
-        public HomeMatchTime HomeMatchTime { get; set; } = new HomeMatchTime();
+        public HomeMatchTime HomeMatchTime { get; set; } = new();
     }
 
     /// <summary>
@@ -178,7 +178,7 @@ namespace TournamentManager.MultiTenancy
         /// </summary>
         [YAXLib.Attributes.YAXComment("Allowed days of a week")]
         [XmlArrayItem(nameof(DaysOfWeekRange))]
-        public List<DayOfWeek> DaysOfWeekRange { get; set; } = new List<DayOfWeek>(new[]{DayOfWeek.Monday, DayOfWeek.Tuesday, DayOfWeek.Wednesday, DayOfWeek.Thursday, DayOfWeek.Friday, DayOfWeek.Saturday, DayOfWeek.Sunday});
+        public List<DayOfWeek> DaysOfWeekRange { get; set; } = new(new[]{DayOfWeek.Monday, DayOfWeek.Tuesday, DayOfWeek.Wednesday, DayOfWeek.Thursday, DayOfWeek.Friday, DayOfWeek.Saturday, DayOfWeek.Sunday});
         
         /// <summary>
         /// If <see langword="true"/> entries not in <see cref="DaysOfWeekRange"/> are errors (else: warning)

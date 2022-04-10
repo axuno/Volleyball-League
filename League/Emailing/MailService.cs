@@ -35,7 +35,7 @@ namespace MailMergeLib.AspNet
         }
         public Settings Settings { get; }
         public IMessageStore MessageStore { get; }
-        public MailMergeSender Sender => new MailMergeSender { Config = Settings.SenderConfig };
+        public MailMergeSender Sender => new() { Config = Settings.SenderConfig };
         public MailMergeMessage CreateStandardMessage()
         {
             var mmm = new MailMergeMessage

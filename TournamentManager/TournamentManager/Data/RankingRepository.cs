@@ -93,7 +93,7 @@ namespace TournamentManager.Data
             }
             catch (Exception e)
             {
-                _logger.LogCritical(e, $"Ranking for round id {roundId}");
+                _logger.LogCritical(e, "Ranking for round id {roundId}", roundId);
 
                 if (da.IsTransactionInProgress)
                     da.Rollback();
@@ -129,7 +129,7 @@ namespace TournamentManager.Data
             using var da = _dbContext.GetNewAdapter();
             return (await da.FetchQueryAsync<RankingEntity>(
                 new QueryFactory().Ranking.Where(filter)
-                ,cancellationToken)).Cast<RankingEntity>().Select(r => (RoundId: r.RoundId, CreatedOn: r.CreatedOn)).Distinct().ToList();
+                ,cancellationToken)).Cast<RankingEntity>().Select(r => (r.RoundId, r.CreatedOn)).Distinct().ToList();
         }
     }
 }

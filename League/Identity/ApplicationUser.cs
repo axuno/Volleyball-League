@@ -7,12 +7,17 @@ namespace League.Identity
     /// <summary>Represents a custom user in the AspNetCore Identity system</summary>
     public class ApplicationUser : IdentityUser<long>, IIdentity
     {
-        private string _userName;
-
         public override string UserName
         {
-            get => _userName;
-            set => _userName = value;
+            get
+            {
+                return Name;
+            }
+
+            set
+            {
+                Name = value;
+            }
         }
 
         public string Title { get; set; }
@@ -26,25 +31,36 @@ namespace League.Identity
         public DateTime? EmailConfirmedOn { get; set; }
         public override bool EmailConfirmed
         {
-            get => EmailConfirmedOn.HasValue;
-            set => EmailConfirmedOn = value ? DateTime.UtcNow : default(DateTime?);
+            get
+            {
+                return EmailConfirmedOn.HasValue;
+            }
+
+            set
+            {
+                EmailConfirmedOn = value ? DateTime.UtcNow : default(DateTime?);
+            }
         }
         public DateTime? PhoneNumberConfirmedOn { get; set; }
         public override bool PhoneNumberConfirmed
         {
-            get => PhoneNumberConfirmedOn.HasValue;
-            set => PhoneNumberConfirmedOn = value ? DateTime.UtcNow : default(DateTime?);
+            get
+            {
+                return PhoneNumberConfirmedOn.HasValue;
+            }
+
+            set
+            {
+                PhoneNumberConfirmedOn = value ? DateTime.UtcNow : default(DateTime?);
+            }
         }
         public DateTime ModifiedOn { get; internal set; }
 
         #region ** IIdentity **
         public string AuthenticationType { get; set; } = null;
         public bool IsAuthenticated { get; set; } = false;
-        public string Name
-        {
-            get => _userName;
-            set => _userName = value;
-        }
+        public string Name { get; set; }
+
         #endregion
     }
 }

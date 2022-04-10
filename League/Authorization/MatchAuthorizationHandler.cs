@@ -10,12 +10,9 @@ namespace League.Authorization
 {
     public static class MatchOperations
     {
-        public static readonly OperationAuthorizationRequirement ChangeFixture =
-            new OperationAuthorizationRequirement { Name = nameof(ChangeFixture) };
-        public static readonly OperationAuthorizationRequirement EnterResult =
-            new OperationAuthorizationRequirement { Name = nameof(EnterResult) };
-        public static readonly OperationAuthorizationRequirement OverrideResult =
-            new OperationAuthorizationRequirement { Name = nameof(OverrideResult) };
+        public static readonly OperationAuthorizationRequirement ChangeFixture = new() { Name = nameof(ChangeFixture) };
+        public static readonly OperationAuthorizationRequirement EnterResult = new() { Name = nameof(EnterResult) };
+        public static readonly OperationAuthorizationRequirement OverrideResult = new() { Name = nameof(OverrideResult) };
     }
 
     public class MatchAuthorizationHandler : AuthorizationHandler<OperationAuthorizationRequirement, MatchEntity>

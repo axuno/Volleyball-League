@@ -72,7 +72,7 @@ namespace League.Controllers
 
             if (model.Tournament == null)
             {
-                _logger.LogCritical($"{nameof(_tenantContext.TournamentContext.TeamTournamentId)} '{_tenantContext.TournamentContext.TeamTournamentId}' does not exist");
+                _logger.LogCritical("{teamTournamentId} '{id}' does not exist", nameof(_tenantContext.TournamentContext.TeamTournamentId), _tenantContext.TournamentContext.TeamTournamentId);
                 return NotFound();
             }
 
@@ -207,7 +207,7 @@ namespace League.Controllers
                     cancellationToken));
 
                 if (team.TeamInRounds.Count > 1)
-                    _logger.LogError("Teams ID {0} belongs to {1} rounds for tournament ID {2}", team.Id,
+                    _logger.LogError("Teams ID {teamId} belongs to {roundsCount} rounds for tournament ID {tournamentId}", team.Id,
                         team.TeamInRounds.Count, _tenantContext.TournamentContext.TeamTournamentId);
             }
 
@@ -241,7 +241,7 @@ namespace League.Controllers
             catch (Exception e)
             {
                 TempData.Put<MyTeamMessageModel.MyTeamMessage>(nameof(MyTeamMessageModel.MyTeamMessage), new MyTeamMessageModel.MyTeamMessage { AlertType = SiteAlertTagHelper.AlertType.Danger, MessageId = MyTeamMessageModel.MessageId.TeamDataFailure});
-                _logger.LogCritical(e, "Error saving team id '{0}'", model.Team.IsNew ? "new" : model.Team.Id.ToString());
+                _logger.LogCritical(e, "Error saving team id '{teamId}'", model.Team.IsNew ? "new" : model.Team.Id.ToString());
                 return JsonAjaxRedirectForModal(Url.Action(nameof(MyTeam), new { Organization = _tenantContext.SiteContext.UrlSegmentValue, id = team.Id }));
             }
 
@@ -336,7 +336,7 @@ namespace League.Controllers
             }
             catch (Exception e)
             {
-                _logger.LogCritical(e, "Failed to save selected venue for team id {0}, venue id {1}", model.TeamId, model.VenueId);
+                _logger.LogCritical(e, "Failed to save selected venue for team id {teamId}, venue id {venueId}", model.TeamId, model.VenueId);
             }
             
             return JsonAjaxRedirectForModal(Url.Action(nameof(MyTeam), nameof(Team), new { Organization = _tenantContext.SiteContext.UrlSegmentValue, model.TeamId }));
@@ -378,7 +378,7 @@ namespace League.Controllers
             };
         }
 
-        private TeamEditorComponentModel GetTeamEditorComponentModel(TeamEntity team)
+        private static TeamEditorComponentModel GetTeamEditorComponentModel(TeamEntity team)
         {
             var model = new TeamEditorComponentModel();
             model.MapEntityToFormFields(team);

@@ -18,8 +18,15 @@ namespace Axuno.BackgroundTask
         /// </summary>
         public int MaxConcurrentCount
         {
-            get => _maxConcurrentCount;
-            set => _maxConcurrentCount = value > 0 ? value : 5;
+            get
+            {
+                return _maxConcurrentCount;
+            }
+
+            set
+            {
+                _maxConcurrentCount = value > 0 ? value : 5;
+            }
         }
         /// <summary>
         /// The time to wait until the <see cref="IBackgroundQueue"/> is checked for new entries.
@@ -27,8 +34,15 @@ namespace Axuno.BackgroundTask
         /// </summary>
         public TimeSpan PollQueueDelay
         {
-            get => _pollQueueDelay;
-            set => _pollQueueDelay = value == default ? TimeSpan.FromMilliseconds(100) : value;
+            get
+            {
+                return _pollQueueDelay;
+            }
+
+            set
+            {
+                _pollQueueDelay = value == default ? TimeSpan.FromMilliseconds(100) : value;
+            }
         }
     }
 }

@@ -2,7 +2,7 @@
 
 	<PropertyGroup>
 	<TargetFramework>net6.0</TargetFramework>
-	<NeutralLanguage></NeutralLanguage>
+	<NeutralLanguage>en</NeutralLanguage>
     <Nullable>enable</Nullable>
     <Version>4.5.0</Version>
     <Authors>axuno gGmbH</Authors>

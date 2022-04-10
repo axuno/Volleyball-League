@@ -14,7 +14,7 @@ namespace TournamentManager.Tests.MultiTenancy
         private const string ConnectionStrings = "ConnectionStrings";
         private const string ConnKeyPrefix = "Conn";
         private const string ConnValuePrefix = "ConnValue";
-        private readonly List<string> _tenantNames = new List<string> {"Tenant1", "Tenant2", "Tenant3", "DefaultTenant"};
+        private readonly List<string> _tenantNames = new() {"Tenant1", "Tenant2", "Tenant3", "DefaultTenant"};
         private readonly TenantStore _store;
         
         public TenantStoreTests()
@@ -28,8 +28,9 @@ namespace TournamentManager.Tests.MultiTenancy
             var config = cb.Build();
             
             // Create the mocked store with only 1 method setup for moq
-            var tenantStoreMock = new Mock<TenantStore>(config, new NullLogger<TenantStore>());
-            tenantStoreMock.CallBase = true; // IMPORTANT if original methods shall be used
+            var tenantStoreMock = new Mock<TenantStore>(config, new NullLogger<TenantStore>()) {
+                CallBase = true // IMPORTANT if original methods shall be used
+            };
             // Just override one method:
             tenantStoreMock.Setup(s => s.ReadTenantConfigFile(It.IsAny<string>())).Returns((string tenantName) =>
             {

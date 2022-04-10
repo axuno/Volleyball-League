@@ -19,7 +19,7 @@ namespace League.Models.VenueViewModels
     public class VenueEditModel
     {
         [BindProperty]
-        public VenueEditorComponentModel Venue { get; set; } = new VenueEditorComponentModel();
+        public VenueEditorComponentModel Venue { get; set; } = new();
 
         [HiddenInput]
         public string ReturnUrl { get; set; }

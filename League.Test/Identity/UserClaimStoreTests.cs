@@ -22,7 +22,7 @@ namespace League.Test.Identity
     [TestFixture]
     public class UserClaimStoreTests
     {
-        private readonly UnitTestHelpers _uth = new UnitTestHelpers();
+        private readonly UnitTestHelpers _uth = new();
         private readonly AppDb _appDb; private ApplicationUser _user = null;
         private readonly UserStore _store;
         private TeamEntity _team = null;
@@ -54,9 +54,9 @@ namespace League.Test.Identity
         {
             // Should throw ArgumentNullException
             Assert.ThrowsAsync<ArgumentNullException>(() => _store.GetClaimsAsync(null, CancellationToken.None));
-            Assert.ThrowsAsync<ArgumentNullException>(() => _store.AddClaimsAsync(null, new Claim[] { new Claim("x", "y") }, CancellationToken.None));
+            Assert.ThrowsAsync<ArgumentNullException>(() => _store.AddClaimsAsync(null, new Claim[] { new("x", "y") }, CancellationToken.None));
             Assert.ThrowsAsync<ArgumentNullException>(() => _store.AddClaimsAsync(_user, null, CancellationToken.None));
-            Assert.ThrowsAsync<ArgumentNullException>(() => _store.RemoveClaimsAsync(null, new Claim[] { new Claim("x", "y") }, CancellationToken.None));
+            Assert.ThrowsAsync<ArgumentNullException>(() => _store.RemoveClaimsAsync(null, new Claim[] { new("x", "y") }, CancellationToken.None));
             Assert.ThrowsAsync<ArgumentNullException>(() => _store.RemoveClaimsAsync(_user, null, CancellationToken.None));
             Assert.ThrowsAsync<ArgumentNullException>(() => _store.ReplaceClaimAsync(null, new Claim("x", "y"), new Claim("a", "b"), CancellationToken.None));
             Assert.ThrowsAsync<ArgumentNullException>(() => _store.ReplaceClaimAsync(_user, null, new Claim("a", "b"), CancellationToken.None));
@@ -79,8 +79,8 @@ namespace League.Test.Identity
                 _appDb.DbContext.CommandTimeOut = 2;
                 // new claim
                 var claim = new Claim("type", "value", "valueType", "issuer");
-                Assert.ThrowsAsync<ORMQueryExecutionException>(async () => await _store.AddClaimsAsync(_user, new Claim[] { claim }, CancellationToken.None));
-                Assert.ThrowsAsync<ORMQueryExecutionException>(async () => await _store.RemoveClaimsAsync(_user, new Claim[] { claim }, CancellationToken.None));
+                Assert.ThrowsAsync<ORMQueryExecutionException>(async () => await _store.AddClaimsAsync(_user, new[] { claim }, CancellationToken.None));
+                Assert.ThrowsAsync<ORMQueryExecutionException>(async () => await _store.RemoveClaimsAsync(_user, new[] { claim }, CancellationToken.None));
                 Assert.ThrowsAsync<ORMQueryExecutionException>(async () => await _store.ReplaceClaimAsync(_user, claim, claim, CancellationToken.None));
                 da.Rollback("transaction1");
             }
@@ -95,16 +95,16 @@ namespace League.Test.Identity
  
             // new claim
             var claim = new Claim("type", "value", "valueType", "issuer");
-            await _store.AddClaimsAsync(_user, new Claim[] {claim}, CancellationToken.None);
+            await _store.AddClaimsAsync(_user, new[] {claim}, CancellationToken.None);
 
             // same claim again - should not be added
-            await _store.AddClaimsAsync(_user, new Claim[] { claim }, CancellationToken.None);
+            await _store.AddClaimsAsync(_user, new[] { claim }, CancellationToken.None);
             var claims = await _store.GetClaimsAsync(_user, CancellationToken.None);
             Assert.AreEqual(1, claims.Count);
             Assert.IsTrue(claims.FirstOrDefault(c => c.Type == claim.Type && c.Value == claim.Value && c.ValueType == claim.ValueType && c.Issuer == claim.Issuer) != null);
 
             // remove
-            await _store.RemoveClaimsAsync(_user, new Claim[] {claim}, CancellationToken.None);
+            await _store.RemoveClaimsAsync(_user, new[] {claim}, CancellationToken.None);
             claims = await _store.GetClaimsAsync(_user, CancellationToken.None);
             Assert.IsTrue(claims.FirstOrDefault(c => c.Type == claim.Type && c.Value == claim.Value) == null);
 
@@ -118,7 +118,7 @@ namespace League.Test.Identity
             // add
             var claim = new Claim("type", "value", "valueType", "issuer");
             var newClaim = new Claim("newType", "newValue", "newValueType", "newIssuer");
-            await _store.AddClaimsAsync(_user, new Claim[] { claim }, CancellationToken.None);
+            await _store.AddClaimsAsync(_user, new[] { claim }, CancellationToken.None);
             Assert.AreEqual(1, (await _store.GetClaimsAsync(_user, CancellationToken.None)).Count);
 
             // replace
@@ -126,7 +126,7 @@ namespace League.Test.Identity
             Assert.AreEqual(1, (await _store.GetClaimsAsync(_user, CancellationToken.None)).Count);
             
             // add the original claim again
-            await _store.AddClaimsAsync(_user, new Claim[] { claim }, CancellationToken.None);
+            await _store.AddClaimsAsync(_user, new[] { claim }, CancellationToken.None);
             Assert.AreEqual(2, (await _store.GetClaimsAsync(_user, CancellationToken.None)).Count);
             // this time, replacing will not happen, because the claim already exists
             await _store.ReplaceClaimAsync(_user, claim, newClaim, CancellationToken.None);
@@ -141,7 +141,7 @@ namespace League.Test.Identity
         public async Task Get_Users_For_Regular_Claim()
         {
             var claim = new Claim("otherType", "otherValue", "otherValueType", "otherIssuer");
-            await _store.AddClaimsAsync(_user, new Claim[] { claim }, CancellationToken.None);
+            await _store.AddClaimsAsync(_user, new[] { claim }, CancellationToken.None);
 
             var users = await _store.GetUsersForClaimAsync(claim, CancellationToken.None);
             Assert.AreEqual(_user.Email, users.FirstOrDefault()?.Email);
@@ -158,7 +158,7 @@ namespace League.Test.Identity
         {
             // new manager claim
             var claim = new Claim(Constants.ClaimType.ManagesTeam, _team.Id.ToString());
-            await _store.AddClaimsAsync(_user, new Claim[] { claim }, CancellationToken.None);
+            await _store.AddClaimsAsync(_user, new[] { claim }, CancellationToken.None);
             // non-existent team should throw
             Assert.ThrowsAsync<ArgumentException>(() => _store.AddClaimsAsync(_user,
                 new [] {new Claim(Constants.ClaimType.ManagesTeam, "0")}, CancellationToken.None));
@@ -167,13 +167,13 @@ namespace League.Test.Identity
                 new [] { new Claim(Constants.ClaimType.NotImplementedClaim, _team.Id.ToString()) }, CancellationToken.None));
 
             // same manager claim again - should not be added
-            await _store.AddClaimsAsync(_user, new Claim[] { claim }, CancellationToken.None);
+            await _store.AddClaimsAsync(_user, new[] { claim }, CancellationToken.None);
             var claims = await _store.GetClaimsAsync(_user, CancellationToken.None);
             Assert.AreEqual(1, claims.Count);
             Assert.IsTrue(claims.FirstOrDefault(c => c.Type == claim.Type && c.Value == claim.Value && c.ValueType == claim.ValueType && c.Issuer == claim.Issuer) != null);
 
             // remove manager
-            await _store.RemoveClaimsAsync(_user, new Claim[] { claim }, CancellationToken.None);
+            await _store.RemoveClaimsAsync(_user, new[] { claim }, CancellationToken.None);
             claims = await _store.GetClaimsAsync(_user, CancellationToken.None);
             Assert.IsTrue(claims.FirstOrDefault(c => c.Type == claim.Type && c.Value == claim.Value) == null);
             // non-existent team should throw
@@ -192,16 +192,16 @@ namespace League.Test.Identity
         {
             // new player claim
             var claim = new Claim(Constants.ClaimType.PlaysInTeam, _team.Id.ToString());
-            await _store.AddClaimsAsync(_user, new Claim[] { claim }, CancellationToken.None);
+            await _store.AddClaimsAsync(_user, new[] { claim }, CancellationToken.None);
 
             // same player claim again - should not be added
-            await _store.AddClaimsAsync(_user, new Claim[] { claim }, CancellationToken.None);
+            await _store.AddClaimsAsync(_user, new[] { claim }, CancellationToken.None);
             var claims = await _store.GetClaimsAsync(_user, CancellationToken.None);
             Assert.AreEqual(1, claims.Count);
             Assert.IsTrue(claims.FirstOrDefault(c => c.Type == claim.Type && c.Value == claim.Value && c.ValueType == claim.ValueType && c.Issuer == claim.Issuer) != null);
 
             // remove player
-            await _store.RemoveClaimsAsync(_user, new Claim[] { claim }, CancellationToken.None);
+            await _store.RemoveClaimsAsync(_user, new[] { claim }, CancellationToken.None);
             claims = await _store.GetClaimsAsync(_user, CancellationToken.None);
             Assert.IsTrue(claims.FirstOrDefault(c => c.Type == claim.Type && c.Value == claim.Value) == null);
         }
@@ -210,7 +210,7 @@ namespace League.Test.Identity
         public async Task Get_Users_For_Manager_Claim()
         {
             var claim = new Claim(Constants.ClaimType.ManagesTeam, _team.Id.ToString());
-            await _store.AddClaimsAsync(_user, new Claim[] { claim }, CancellationToken.None);
+            await _store.AddClaimsAsync(_user, new[] { claim }, CancellationToken.None);
 
             // get users for the claim type
             var users = await _store.GetUsersForClaimAsync(claim, CancellationToken.None);
@@ -225,7 +225,7 @@ namespace League.Test.Identity
         public async Task Get_Users_For_Player_Claim()
         {
             var claim = new Claim(Constants.ClaimType.PlaysInTeam, _team.Id.ToString());
-            await _store.AddClaimsAsync(_user, new Claim[] { claim }, CancellationToken.None);
+            await _store.AddClaimsAsync(_user, new[] { claim }, CancellationToken.None);
 
             // get users for the claim type
             var users = await _store.GetUsersForClaimAsync(claim, CancellationToken.None);

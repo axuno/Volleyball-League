@@ -33,7 +33,7 @@ namespace League.Controllers
         private readonly ILogger<Ranking> _logger;
         private readonly IMemoryCache _memoryCache;
 
-        public Ranking(ITenantContext tenantContext, IWebHostEnvironment webHostEnvironment, IStringLocalizer<Ranking> localizer, ILogger<Ranking> logger, IMemoryCache memoryCache)
+        public Ranking(ITenantContext tenantContext, IWebHostEnvironment webHostEnvironment, ILogger<Ranking> logger, IMemoryCache memoryCache)
         {
             _tenantContext = tenantContext;
             _appDb = tenantContext.DbContext.AppDb;
@@ -126,22 +126,26 @@ namespace League.Controllers
             }
         }
 
-        private async Task<List<RankingListRow>> GetRankingListCached(CancellationToken cancellationToken) => await _memoryCache.GetOrCreateAsync(
-            string.Join("_", _tenantContext.Identifier, typeof(Ranking).FullName, nameof(RankingListRow)),
-            cache =>
-            {
-                cache.AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(30);
-                var tokenSource = new CancellationTokenSource();
-                var token = new CancellationChangeToken(tokenSource.Token);
-                cache.AddExpirationToken(token);
-                return _appDb.RankingRepository.GetRankingListAsync(
-                    new PredicateExpression(RankingListFields.TournamentIsComplete == true),
-                    cancellationToken);
-            }
-        );
+        private async Task<List<RankingListRow>> GetRankingListCached(CancellationToken cancellationToken)
+        {
+            return await _memoryCache.GetOrCreateAsync(
+                string.Join("_", _tenantContext.Identifier, typeof(Ranking).FullName, nameof(RankingListRow)),
+                cache =>
+                {
+                    cache.AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(30);
+                    var tokenSource = new CancellationTokenSource();
+                    var token = new CancellationChangeToken(tokenSource.Token);
+                    cache.AddExpirationToken(token);
+                    return _appDb.RankingRepository.GetRankingListAsync(
+                        new PredicateExpression(RankingListFields.TournamentIsComplete == true),
+                        cancellationToken);
+                }
+            );
+        }
 
-        private async Task<List<RoundLegPeriodRow>> GetRoundLegPeriodsCached(List<RankingListRow> rankingList, CancellationToken cancellationToken) =>
-            await _memoryCache.GetOrCreateAsync(
+        private async Task<List<RoundLegPeriodRow>> GetRoundLegPeriodsCached(List<RankingListRow> rankingList, CancellationToken cancellationToken)
+        {
+            return await _memoryCache.GetOrCreateAsync(
                 string.Join("_", _tenantContext.Identifier, typeof(Ranking).FullName,
                     nameof(RoundLegPeriodRow)), cache =>
                 {
@@ -155,6 +159,7 @@ namespace League.Controllers
                         cancellationToken));
                 }
             );
+        }
 
         private Dictionary<long, FileInfo> GetChartFileInfos(IEnumerable<long> roundIds)
         {

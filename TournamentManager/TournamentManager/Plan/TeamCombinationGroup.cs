@@ -5,6 +5,6 @@ namespace TournamentManager.Plan
 {
 	public class TeamCombinationGroup<T> : Collection<TeamCombination<T>>
 	{
-		internal DateTimePeriod DateTimePeriod = new DateTimePeriod();
+		internal DateTimePeriod DateTimePeriod = new();
 	}
 }

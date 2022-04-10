@@ -37,6 +37,8 @@ namespace TournamentManager.Data
             var result = await (from mot in metaData.ManagerOfTeam
                 where mot.TeamId == teamId
                 select mot.User).ToListAsync(cancellationToken);
+
+            _logger.LogDebug("{count} team managers found", result.Count);
 				
             return result;
         }

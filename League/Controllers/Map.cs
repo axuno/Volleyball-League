@@ -51,7 +51,7 @@ namespace League.Controllers
             };
             if (model.Tournament == null)
             {
-                _logger.LogCritical($"{nameof(_tenantContext.TournamentContext.MapTournamentId)} '{_tenantContext.TournamentContext.MapTournamentId}' does not exist");
+                _logger.LogCritical("{variable} '{value}' does not exist", nameof(_tenantContext.TournamentContext.MapTournamentId), _tenantContext.TournamentContext.MapTournamentId);
             }
             return View(Views.ViewNames.Map.Index, model);
         }
@@ -73,7 +73,7 @@ namespace League.Controllers
             };
             if (model.Tournament == null)
             {
-                _logger.LogCritical($"{nameof(_tenantContext.TournamentContext.MapTournamentId)} '{_tenantContext.TournamentContext.MapTournamentId}' does not exist");
+                _logger.LogCritical("{variable} '{value}' does not exist", nameof(_tenantContext.TournamentContext.MapTournamentId), _tenantContext.TournamentContext.MapTournamentId);
             }
 
             return View(Views.ViewNames.Map.Index, model);

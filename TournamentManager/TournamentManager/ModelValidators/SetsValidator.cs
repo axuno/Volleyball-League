@@ -27,7 +27,7 @@ namespace TournamentManager.ModelValidators
             CreateFacts();
         }
 
-        public List<(long Id, int SequenceNo, SingleSetValidator.FactId FactId, string ErrorMessage)> SingleSetErrors { get; } = new List<(long Id, int SequenceNo, SingleSetValidator.FactId FactId, string ErrorMessage)>();
+        public List<(long Id, int SequenceNo, SingleSetValidator.FactId FactId, string ErrorMessage)> SingleSetErrors { get; } = new();
 
         private void CreateFacts()
         {

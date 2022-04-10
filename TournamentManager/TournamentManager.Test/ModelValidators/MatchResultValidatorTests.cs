@@ -19,10 +19,11 @@ namespace TournamentManager.Tests.ModelValidators
     [TestFixture]
     public class MatchResultValidatorTests
     {
-        private (ITenantContext TenantContext, Axuno.Tools.DateAndTime.TimeZoneConverter TimeZoneConverter, (MatchRuleEntity matchRule, SetRuleEntity setRule)) _data;
-        private readonly AppDb _appDb;
-        private readonly ILogger _logger = new NullLogger<MatchResultValidatorTests>();
-
+        private readonly (ITenantContext TenantContext, Axuno.Tools.DateAndTime.TimeZoneConverter TimeZoneConverter, (MatchRuleEntity matchRule, SetRuleEntity setRule)) _data;
+#pragma warning disable IDE0052 // Remove unread private members
+        private readonly AppDb _appDb; // mocked in CTOR
+#pragma warning restore IDE0052 // Remove unread private members
+        
         public MatchResultValidatorTests()
         {
             #region *** TimeZoneConverter ***
@@ -93,9 +94,9 @@ namespace TournamentManager.Tests.ModelValidators
             var match = new MatchEntity();
             var sets = new List<SetEntity>
             {
-                new SetEntity {Id=10, SequenceNo = 1, HomeBallPoints = 25, GuestBallPoints = 23, IsTieBreak = false},
-                new SetEntity {Id=11, SequenceNo = 2, HomeBallPoints = 23, GuestBallPoints = 25, IsTieBreak = false},
-                new SetEntity {Id=12, SequenceNo = 3, HomeBallPoints = 25, GuestBallPoints = 23, IsTieBreak = false} // fails
+                new() {Id=10, SequenceNo = 1, HomeBallPoints = 25, GuestBallPoints = 23, IsTieBreak = false},
+                new() {Id=11, SequenceNo = 2, HomeBallPoints = 23, GuestBallPoints = 25, IsTieBreak = false},
+                new() {Id=12, SequenceNo = 3, HomeBallPoints = 25, GuestBallPoints = 23, IsTieBreak = false} // fails
             };
             match.Sets.AddRange(sets);
 
@@ -127,9 +128,9 @@ namespace TournamentManager.Tests.ModelValidators
             var match = new MatchEntity();
             var sets = new List<SetEntity>
             {
-                new SetEntity {Id=10, SequenceNo = 1, HomeBallPoints = 25, GuestBallPoints = 23, IsTieBreak = false},
-                new SetEntity {Id=11, SequenceNo = 2, HomeBallPoints = 23, GuestBallPoints = 25, IsTieBreak = false},
-                new SetEntity {Id=12, SequenceNo = 3, HomeBallPoints = 25, GuestBallPoints = 23, IsTieBreak = true},
+                new() {Id=10, SequenceNo = 1, HomeBallPoints = 25, GuestBallPoints = 23, IsTieBreak = false},
+                new() {Id=11, SequenceNo = 2, HomeBallPoints = 23, GuestBallPoints = 25, IsTieBreak = false},
+                new() {Id=12, SequenceNo = 3, HomeBallPoints = 25, GuestBallPoints = 23, IsTieBreak = true},
             };
             match.Sets.AddRange(sets);
 
@@ -264,9 +265,9 @@ namespace TournamentManager.Tests.ModelValidators
             var sets = new List<SetEntity>
             {
                 // total ball points: 144, average time = 144 * 33 = 4,752 seconds = 79 minutes
-                new SetEntity {Id=10, SequenceNo = 1, HomeBallPoints = 25, GuestBallPoints = 23, IsTieBreak = false},
-                new SetEntity {Id=11, SequenceNo = 2, HomeBallPoints = 23, GuestBallPoints = 25, IsTieBreak = false},
-                new SetEntity {Id=12, SequenceNo = 3, HomeBallPoints = 25, GuestBallPoints = 23, IsTieBreak = false},
+                new() {Id=10, SequenceNo = 1, HomeBallPoints = 25, GuestBallPoints = 23, IsTieBreak = false},
+                new() {Id=11, SequenceNo = 2, HomeBallPoints = 23, GuestBallPoints = 25, IsTieBreak = false},
+                new() {Id=12, SequenceNo = 3, HomeBallPoints = 25, GuestBallPoints = 23, IsTieBreak = false},
             };
             match.Sets.AddRange(sets);
 

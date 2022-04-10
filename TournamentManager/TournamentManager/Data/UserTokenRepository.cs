@@ -20,7 +20,7 @@ namespace TournamentManager.Data
             _dbContext = dbContext;
         }
 
-        public virtual async Task<IdentityUserTokenEntity> GetTokenAsync(long userId, string loginProvider, string name, CancellationToken cancellationToken)
+        public virtual async Task<IdentityUserTokenEntity?> GetTokenAsync(long userId, string loginProvider, string name, CancellationToken cancellationToken)
         {
             using var da = _dbContext.GetNewAdapter();
             var metaData = new LinqMetaData(da);
@@ -28,6 +28,11 @@ namespace TournamentManager.Data
                 (from token in metaData.IdentityUserToken
                     where token.LoginProvider == loginProvider && token.Name == name
                     select token).FirstOrDefaultAsync(cancellationToken);
+
+            if (result != null)
+                _logger.LogDebug("User Id {userId}: Token {tokenName} found for {loginProvider}", userId, name,
+                    loginProvider);
+
             return result;
         }
     }

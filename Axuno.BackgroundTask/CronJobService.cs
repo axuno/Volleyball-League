@@ -80,6 +80,7 @@ namespace Axuno.BackgroundTask
         public virtual void Dispose()
         {
             _timer?.Dispose();
+            GC.SuppressFinalize(this);
         }
     }
 }

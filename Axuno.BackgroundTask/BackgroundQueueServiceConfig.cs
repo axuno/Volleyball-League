@@ -17,8 +17,15 @@ namespace Axuno.BackgroundTask
         /// </summary>
         public TimeSpan PollQueueDelay
         {
-            get => _pollQueueDelay;
-            set => _pollQueueDelay = value == default ? TimeSpan.FromMilliseconds(100) : value;
+            get
+            {
+                return _pollQueueDelay;
+            }
+
+            set
+            {
+                _pollQueueDelay = value == default ? TimeSpan.FromMilliseconds(100) : value;
+            }
         }
     }
 }

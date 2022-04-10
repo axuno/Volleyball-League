@@ -16,8 +16,6 @@ namespace TournamentManager.Tests.ModelValidators
     [TestFixture]
     public class SetsValidatorTests
     {
-        private readonly ILogger _logger = new NullLogger<SetsValidatorTests>();
-
         [Test]
         public void All_Ids_Have_A_Check_Function()
         {
@@ -98,9 +96,9 @@ namespace TournamentManager.Tests.ModelValidators
         {
             var sets = new List<SetEntity>
             {
-                new SetEntity {Id=10, SequenceNo = 1, HomeBallPoints = 25, GuestBallPoints = 23, IsTieBreak = false},
-                new SetEntity {Id=11, SequenceNo = 2, HomeBallPoints = 23, GuestBallPoints = 25, IsTieBreak = false},
-                new SetEntity {Id=12, SequenceNo = 3, HomeBallPoints = 16, GuestBallPoints = 15, IsTieBreak = true} // false
+                new() {Id=10, SequenceNo = 1, HomeBallPoints = 25, GuestBallPoints = 23, IsTieBreak = false},
+                new() {Id=11, SequenceNo = 2, HomeBallPoints = 23, GuestBallPoints = 25, IsTieBreak = false},
+                new() {Id=12, SequenceNo = 3, HomeBallPoints = 16, GuestBallPoints = 15, IsTieBreak = true} // false
             };
 
             var setRule = new SetRuleEntity
@@ -128,9 +126,9 @@ namespace TournamentManager.Tests.ModelValidators
         {
             var sets = new List<SetEntity>
             {
-                new SetEntity {Id=10, SequenceNo = 1, HomeBallPoints = 25, GuestBallPoints = 23, IsTieBreak = false},
-                new SetEntity {Id=11, SequenceNo = 2, HomeBallPoints = 23, GuestBallPoints = 25, IsTieBreak = false},
-                new SetEntity {Id=12, SequenceNo = 3, HomeBallPoints = 15, GuestBallPoints = 10, IsTieBreak = false},
+                new() {Id=10, SequenceNo = 1, HomeBallPoints = 25, GuestBallPoints = 23, IsTieBreak = false},
+                new() {Id=11, SequenceNo = 2, HomeBallPoints = 23, GuestBallPoints = 25, IsTieBreak = false},
+                new() {Id=12, SequenceNo = 3, HomeBallPoints = 15, GuestBallPoints = 10, IsTieBreak = false},
             };
 
             var matchRule = new MatchRuleEntity() { BestOf = true, NumOfSets = 2 };
@@ -154,11 +152,11 @@ namespace TournamentManager.Tests.ModelValidators
         {
             var sets = new List<SetEntity>
             {
-                new SetEntity {Id=10, SequenceNo = 1, HomeBallPoints = 25, GuestBallPoints = 23, IsTieBreak = false},
-                new SetEntity {Id=11, SequenceNo = 2, HomeBallPoints = 23, GuestBallPoints = 25, IsTieBreak = false},
-                new SetEntity {Id=12, SequenceNo = 3, HomeBallPoints = 15, GuestBallPoints = 10, IsTieBreak = true},
-                new SetEntity {Id=13, SequenceNo = 4, HomeBallPoints = 23, GuestBallPoints = 25, IsTieBreak = false},
-                new SetEntity {Id=15, SequenceNo = 5, HomeBallPoints = 15, GuestBallPoints = 10, IsTieBreak = true},
+                new() {Id=10, SequenceNo = 1, HomeBallPoints = 25, GuestBallPoints = 23, IsTieBreak = false},
+                new() {Id=11, SequenceNo = 2, HomeBallPoints = 23, GuestBallPoints = 25, IsTieBreak = false},
+                new() {Id=12, SequenceNo = 3, HomeBallPoints = 15, GuestBallPoints = 10, IsTieBreak = true},
+                new() {Id=13, SequenceNo = 4, HomeBallPoints = 23, GuestBallPoints = 25, IsTieBreak = false},
+                new() {Id=15, SequenceNo = 5, HomeBallPoints = 15, GuestBallPoints = 10, IsTieBreak = true},
             };
 
             var setRule = new SetRuleEntity {PointsSetWon = 1, PointsSetLost = 0, PointsSetTie = 0};

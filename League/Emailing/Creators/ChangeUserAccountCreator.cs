@@ -24,7 +24,7 @@ namespace League.Emailing.Creators
         /// <summary>
         /// Gets the <see cref="ChangeUserAccountParameters"/> used as input for creating <see cref="MailMergeMessage"/>s.
         /// </summary>
-        public ChangeUserAccountParameters Parameters { get; } = new ChangeUserAccountParameters();
+        public ChangeUserAccountParameters Parameters { get; } = new();
 
         /// <summary>
         /// Gets all email messages matching the criteria in <see cref="Parameters"/>.

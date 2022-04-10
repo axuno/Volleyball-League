@@ -26,7 +26,7 @@ namespace League.Emailing.Creators
         /// <summary>
         /// Gets the <see cref="ConfirmTeamApplicationParameters"/> used as input for creating <see cref="MailMergeMessage"/>s.
         /// </summary>
-        public ConfirmTeamApplicationParameters Parameters { get; } = new ConfirmTeamApplicationParameters();
+        public ConfirmTeamApplicationParameters Parameters { get; } = new();
 
         /// <summary>
         /// Gets all email messages matching the criteria in <see cref="Parameters"/>.

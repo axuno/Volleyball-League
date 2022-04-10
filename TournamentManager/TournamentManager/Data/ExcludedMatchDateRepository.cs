@@ -47,6 +47,8 @@ namespace TournamentManager.Data
             await da.FetchEntityCollectionAsync(qp, cancellationToken);
             da.CloseConnection();
 
+            _logger.LogDebug("{count} excluded match dates found", excluded.Count);
+
             return excluded;
         }
 

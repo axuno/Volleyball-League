@@ -57,8 +57,9 @@ namespace TournamentManager.Data
 
         public virtual async Task<bool> IsValidVenueIdAsync(long? venueId, CancellationToken cancellationToken)
         {
-            return (await GetVenuesAsync(new PredicateExpression(VenueFields.Id.Equal(venueId)), cancellationToken))
-                   .Count == 1;
+            var result = (await GetVenuesAsync(new PredicateExpression(VenueFields.Id.Equal(venueId)), cancellationToken)).Count == 1;
+            _logger.LogDebug("Valid venue: {trueFalse}", result);
+            return result;
         }
 
         public virtual async Task<List<VenueEntity>> GetVenuesAsync(IPredicateExpression filter, CancellationToken cancellationToken)

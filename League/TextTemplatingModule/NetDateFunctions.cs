@@ -5,12 +5,13 @@ using Scriban;
 using Scriban.Runtime;
 using Scriban.Syntax;
 #nullable enable
+#pragma warning disable IDE0060 // Remove unused parameter
 namespace League.TextTemplatingModule
 {
     public class NetDateTimeFunctions : ScriptObject, IScriptCustomFunction
     {
         private readonly Axuno.Tools.DateAndTime.TimeZoneConverter? _timeZoneConverter;
-
+        
         [ScriptMemberIgnore]
         public static readonly ScriptVariable DateVariable = new ScriptVariableGlobal("ndate");
 
@@ -31,9 +32,10 @@ namespace League.TextTemplatingModule
         /// <param name="pattern">The pattern to use. See https://docs.microsoft.com/en-us/dotnet/standard/base-types/custom-date-and-time-format-strings for details.</param>
         /// <param name="culture">The culture name to use date, time, currency formatting.</param>
         /// <returns>Returns the given <see cref="DateTime"/> converted into a formatted string.</returns>
+
         public static string Format(TemplateContext context, DateTime? date, string pattern, string? culture = null)
         {
-            var cultureInfo = !(culture is null) ? CultureInfo.GetCultureInfo(culture) : CultureInfo.CurrentUICulture;
+            var cultureInfo = culture is not null ? CultureInfo.GetCultureInfo(culture) : CultureInfo.CurrentUICulture;
             return date is null ? string.Empty : ToString(date.Value, pattern, cultureInfo);
         }
 
@@ -99,7 +101,10 @@ namespace League.TextTemplatingModule
         /// Scriban:  {{ ndate.now.year }}
         /// Result:   2020
         /// </remarks>
-        public static DateTime Now() => DateTime.Now;
+        public static DateTime Now()
+        {
+            return DateTime.Now;
+        }
 
         /// <summary>
         /// Adds the specified number of days to the input date.
@@ -206,7 +211,7 @@ namespace League.TextTemplatingModule
             {
                 return null;
             }
-            if (DateTime.TryParse(text, CultureInfo.CurrentUICulture, DateTimeStyles.None, out DateTime result))
+            if (DateTime.TryParse(text, CultureInfo.CurrentUICulture, DateTimeStyles.None, out var result))
             {
                 return result;
             }
@@ -311,3 +316,4 @@ namespace League.TextTemplatingModule
         }
     }
 }
+#pragma warning restore IDE0060 // Remove unused parameter

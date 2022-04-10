@@ -261,11 +261,10 @@ namespace TournamentManager.Tests.ModelValidators
         [TestCase(25, 27, false)]
         [TestCase(15, 0, true)]
         [TestCase(15, 17, true)]
-        public async Task Test_for_all_Facts_Should_Succeed(int homePoints, int guestPoints, bool isTieBreak)
+        public void Test_for_all_Facts_Should_Succeed(int homePoints, int guestPoints, bool isTieBreak)
         {
             var set = new SetEntity { HomeBallPoints = homePoints, GuestBallPoints = guestPoints, IsTieBreak = isTieBreak };
             var sv = new SingleSetValidator(set, (new TenantContext(), new SetRuleEntity(1) { NumOfPointsToWinRegular = 25, PointsDiffToWinRegular = 2, NumOfPointsToWinTiebreak = 15, PointsDiffToWinTiebreak = 2 }));
-            var result = await sv.CheckAsync(CancellationToken.None);
             Assert.AreEqual(0, sv.GetFailedFacts().Count);
         }
 

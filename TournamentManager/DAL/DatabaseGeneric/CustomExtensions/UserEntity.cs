@@ -29,7 +29,7 @@ namespace TournamentManager.DAL.EntityClasses
         }
 
         [XmlIgnore]
-        public ReadOnlyDictionary<string, string> DataErrorInfoPerField => new ReadOnlyDictionary<string, string>(base.DataErrorInfoErrorsPerField ?? new Dictionary<string, string>());
+        public ReadOnlyDictionary<string, string> DataErrorInfoPerField => new(base.DataErrorInfoErrorsPerField ?? new Dictionary<string, string>());
 
 		[XmlIgnore]
 		public bool IsTeamManager => ManagerOfTeams.Any();
@@ -38,10 +38,10 @@ namespace TournamentManager.DAL.EntityClasses
 		public bool IsPlayer => PlayerInTeams.Any();
 
         [XmlIgnore]
-		public bool DataCompleteAsManager { get { return (new[] {FirstName, LastName, PhoneNumber, Email}).All(s => !string.IsNullOrWhiteSpace(s)); } }
+		public bool DataCompleteAsManager => (new[] {FirstName, LastName, PhoneNumber, Email}).All(s => !string.IsNullOrWhiteSpace(s));
 
-		[XmlIgnore]
-		public bool DataCompleteAsPerson { get { return (new[] { FirstName, LastName, Email }).All(s => !string.IsNullOrWhiteSpace(s)); } }
+        [XmlIgnore]
+		public bool DataCompleteAsPerson => (new[] { FirstName, LastName, Email }).All(s => !string.IsNullOrWhiteSpace(s));
 
         protected override void OnSetValue(int fieldIndex, object valueToSet, out bool cancel)
 	    {
@@ -50,25 +50,13 @@ namespace TournamentManager.DAL.EntityClasses
                 case (int) UserFieldIndex.Email:
                 case (int)UserFieldIndex.Email2:
                     var emailToSet = (string) valueToSet ?? string.Empty;
-                    cancel = (!string.IsNullOrEmpty(emailToSet) && !emailToSet.Contains("@"));
+                    cancel = (!string.IsNullOrEmpty(emailToSet) && !emailToSet.Contains('@'));
                     break;
                 default:
                     cancel = false;
                     break;
             }
 	    }
-
-        private DateTime? _dateModifiedCreatedOn;
-
-        /// <summary>
-        /// Sets the date for <see cref="CreatedOn"/> and <see cref="ModifiedOn"/>.
-        /// If it is not set, <see cref="DateTime.UtcNow"/> will be used.
-        /// </summary>
-        /// <param name="dateModifiedCreatedOn"></param>
-        public void SetModifiedOnDate(DateTime dateModifiedCreatedOn)
-        {
-            _dateModifiedCreatedOn = dateModifiedCreatedOn;
-        }
 
         protected override void OnBeforeEntitySave()
 		{   

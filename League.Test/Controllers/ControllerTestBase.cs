@@ -33,6 +33,7 @@ namespace League.Test.Controllers
 
         public void Dispose()
         {
+            GC.SuppressFinalize(this);
             Client.Dispose();
             Server.Dispose();
         }

@@ -9,10 +9,12 @@
     var tenantUrlSegment = TenantContext.SiteContext.UrlSegmentValue;
     List<SelectListItem> GenderList()
     {
-        var genderList = new List<SelectListItem>();
-        genderList.Add(new SelectListItem { Value = string.Empty, Text = Localizer["Please choose"].Value });
-        genderList.Add(new SelectListItem { Value = "f", Text = Localizer["Mrs."].Value });
-        genderList.Add(new SelectListItem { Value = "m", Text = Localizer["Mr."].Value });
+        var genderList = new List<SelectListItem>
+        {
+            new SelectListItem { Value = string.Empty, Text = Localizer["Please choose"].Value },
+            new SelectListItem { Value = "f", Text = Localizer["Mrs."].Value },
+            new SelectListItem { Value = "m", Text = Localizer["Mr."].Value }
+        };
         return genderList;
     }
 }

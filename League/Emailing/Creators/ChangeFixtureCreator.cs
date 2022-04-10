@@ -29,7 +29,7 @@ namespace League.Emailing.Creators
         /// <summary>
         /// Gets the <see cref="ChangeFixtureParameters"/> used as input for creating <see cref="MailMergeMessage"/>s.
         /// </summary>
-        public ChangeFixtureParameters Parameters { get; } = new ChangeFixtureParameters();
+        public ChangeFixtureParameters Parameters { get; } = new();
 
         /// <summary>
         /// Gets all email messages matching the criteria in <see cref="Parameters"/>.

@@ -17,7 +17,7 @@ namespace League.Test.TestComponents
             SetCulture(culture, uiCulture);
         }
 
-        private void SetCulture(CultureInfo culture, CultureInfo uiCulture)
+        private static void SetCulture(CultureInfo culture, CultureInfo uiCulture)
         {
             CultureInfo.CurrentCulture = culture;
             CultureInfo.CurrentUICulture = uiCulture;
@@ -25,6 +25,7 @@ namespace League.Test.TestComponents
 
         public void Dispose()
         {
+            GC.SuppressFinalize(this);
             SetCulture(_originalCulture, _originalUiCulture);
         }
     }

@@ -90,7 +90,7 @@ namespace League.Controllers
 
             if (model.Tournament == null)
             {
-                _logger.LogCritical($"{nameof(_tenantContext.TournamentContext.ApplicationTournamentId)} '{_tenantContext.TournamentContext.ApplicationTournamentId}' does not exist");
+                _logger.LogCritical("{name} '{id}' does not exist", nameof(_tenantContext.TournamentContext.ApplicationTournamentId), _tenantContext.TournamentContext.ApplicationTournamentId);
                 return NotFound();
             }
 
@@ -249,7 +249,7 @@ namespace League.Controllers
                     cancellationToken));
 
                 if (teamEntity.TeamInRounds.Count > 1)
-                    _logger.LogError("Teams ID {0} belongs to {1} rounds for tournament ID {2}", teamEntity.Id,
+                    _logger.LogError("Teams ID {teamId} belongs to {rounds} rounds for tournament ID {tournamentId}", teamEntity.Id,
                         teamEntity.TeamInRounds.Count, _tenantContext.TournamentContext.ApplicationTournamentId);
             }
 
@@ -490,7 +490,7 @@ namespace League.Controllers
                 }
                 catch (Exception e)
                 {
-                    _logger.LogCritical(e, $"{nameof(TeamInRoundEntity)} with ID {sessionModel.TeamInRound.Id} for team ID {sessionModel.TeamInRound.TeamId} not found");
+                    _logger.LogCritical(e, "{entityName} with ID {teamInRoundId} for team ID {teamId} not found", nameof(TeamInRoundEntity), sessionModel.TeamInRound.Id, sessionModel.TeamInRound.TeamId);
                     throw;
                 }
                 
@@ -596,7 +596,7 @@ namespace League.Controllers
             };
         }
 
-        private TeamEditorComponentModel GetTeamEditorComponentModel(TeamEntity teamEntity)
+        private static TeamEditorComponentModel GetTeamEditorComponentModel(TeamEntity teamEntity)
         {
             var teamEditorComponentModel = new TeamEditorComponentModel {HtmlFieldPrefix = nameof(TeamEditModel.Team)};
             teamEditorComponentModel.MapEntityToFormFields(teamEntity);
@@ -664,7 +664,7 @@ namespace League.Controllers
             if (!geoResponse.Success)
             {
                 _logger.LogError(geoResponse.Exception,
-                    "{0} failed. Response status text: {1}",
+                    "{methodName} failed. Response status text: {statusText}",
                     $"{nameof(VenueEditModel)}.{nameof(VenueEditModel.TrySetGeoLocation)}()",
                     geoResponse.StatusText);
             }
@@ -714,7 +714,7 @@ namespace League.Controllers
             }
             catch (Exception e)
             {
-                _logger.LogError(e, "Could not restore '{0}' from session", nameof(ApplicationSessionModel));
+                _logger.LogError(e, "Could not restore '{model}' from session", nameof(ApplicationSessionModel));
                 return await GetNewSessionModel(cancellationToken);
             }
         }

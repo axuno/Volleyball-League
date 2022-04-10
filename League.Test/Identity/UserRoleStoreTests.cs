@@ -24,7 +24,7 @@ namespace League.Test.Identity
     [TestFixture]
     public class UserRoleStoreTests
     {
-        private readonly UnitTestHelpers _uth = new UnitTestHelpers();
+        private readonly UnitTestHelpers _uth = new();
         private readonly AppDb _appDb;
         private readonly UserStore _userStore;
         private ApplicationUser _user = null;

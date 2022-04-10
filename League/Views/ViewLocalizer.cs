@@ -79,14 +79,22 @@ namespace League.Views
         }
 
         /// <inheritdoc />
-        public LocalizedString GetString(string name) => _localizer.GetString(name);
+        public LocalizedString GetString(string name)
+        {
+            return _localizer.GetString(name);
+        }
 
         /// <inheritdoc />
-        public LocalizedString GetString(string name, params object[] values) => _localizer.GetString(name, values);
+        public LocalizedString GetString(string name, params object[] values)
+        {
+            return _localizer.GetString(name, values);
+        }
 
         /// <inheritdoc />
-        public IEnumerable<LocalizedString> GetAllStrings(bool includeParentCultures) =>
-            _localizer.GetAllStrings(includeParentCultures);
+        public IEnumerable<LocalizedString> GetAllStrings(bool includeParentCultures)
+        {
+            return _localizer.GetAllStrings(includeParentCultures);
+        }
 
         /// <summary>
         /// Apply the specified <see cref="ViewContext"/>.

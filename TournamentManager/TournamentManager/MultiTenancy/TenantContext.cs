@@ -90,21 +90,21 @@ namespace TournamentManager.MultiTenancy
         /// <summary>
         /// Provides site-specific data.
         /// </summary>
-        public SiteContext SiteContext { get; set; } = new SiteContext();
+        public SiteContext SiteContext { get; set; } = new();
 
         /// <summary>
         /// Provides organization-specific data.
         /// </summary>
-        public OrganizationContext OrganizationContext { get; set; } = new OrganizationContext();
+        public OrganizationContext OrganizationContext { get; set; } = new();
 
         /// <summary>
         /// Provides database-specific properties and methods.
         /// </summary>
-        public DbContext DbContext { get; set; } = new DbContext();
+        public DbContext DbContext { get; set; } = new();
 
         /// <summary>
         /// Provides configuration data for a tournament.
         /// </summary>
-        public TournamentContext TournamentContext { get; set; } = new TournamentContext();
+        public TournamentContext TournamentContext { get; set; } = new();
     }
 }

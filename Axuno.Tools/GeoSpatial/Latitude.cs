@@ -41,7 +41,7 @@ namespace Axuno.Tools.GeoSpatial
         /// <exception cref="ArgumentOutOfRangeException">
         /// degrees is greater than 90 or less than -90.
         /// </exception>
-        public new static Latitude FromDegrees(double degrees)
+        public static new Latitude FromDegrees(double degrees)
         {
             ValidateRange("degrees", degrees, -90, 90);
             return new Latitude(Angle.FromDegrees(degrees).Radians);
@@ -57,7 +57,7 @@ namespace Axuno.Tools.GeoSpatial
         /// The specified angle (degrees + minutes) is greater than 90 or less
         /// than -90.
         /// </exception>
-        public new static Latitude FromDegrees(double degrees, double minutes)
+        public static new Latitude FromDegrees(double degrees, double minutes)
         {
             var angle = Angle.FromDegrees(degrees, minutes);
             ValidateRange("angle", angle.TotalDegrees, -90, 90);
@@ -76,7 +76,7 @@ namespace Axuno.Tools.GeoSpatial
         /// The specified angle (degrees + minutes + seconds) is greater than
         /// 90 or less than -90.
         /// </exception>
-        public new static Latitude FromDegrees(double degrees, double minutes, double seconds)
+        public static new Latitude FromDegrees(double degrees, double minutes, double seconds)
         {
             var angle = Angle.FromDegrees(degrees, minutes, seconds);
             ValidateRange("angle", angle.TotalDegrees, -90, 90);
@@ -90,7 +90,7 @@ namespace Axuno.Tools.GeoSpatial
         /// <exception cref="ArgumentOutOfRangeException">
         /// radians is greater than PI/2 or less than -PI/2.
         /// </exception>
-        public new static Latitude FromRadians(double radians)
+        public static new Latitude FromRadians(double radians)
         {
             ValidateRange("radians", radians, -Math.PI / 2.0, Math.PI / 2.0);
             return new Latitude(radians);
@@ -128,7 +128,7 @@ namespace Axuno.Tools.GeoSpatial
                     Math.Abs(Seconds));
             }
 
-            string formatted = base.ToString(format, formatProvider);
+            var formatted = base.ToString(format, formatProvider);
             if (Radians < 0)
             {
                 // We're going to remove the negative sign, but find out what a

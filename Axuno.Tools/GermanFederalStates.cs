@@ -7,30 +7,17 @@ namespace Axuno.Tools
 {
     public sealed class GermanFederalState
     {
-        private readonly GermanFederalStates.Id _state;
-        private readonly string _abbreviation;
-        private readonly string _name;
+        public GermanFederalStates.Id StateId { get; }
 
-        public GermanFederalStates.Id StateId
-        {
-            get { return _state; }
-        }
+        public string Abbreviation { get; }
 
-        public string Abbreviation
-        {
-            get { return _abbreviation; }
-        }
-
-        public string Name
-        {
-            get { return _name; }
-        }
+        public string Name { get; }
 
         public GermanFederalState(GermanFederalStates.Id state, string abbreviation, string name)
         {
-            _state = state;
-            _abbreviation = abbreviation;
-            _name = name;
+            StateId = state;
+            Abbreviation = abbreviation;
+            Name = name;
         }
     }
 
@@ -96,13 +83,7 @@ namespace Axuno.Tools
         /// </summary>
         /// <param name="stateId">State id.</param>
         /// <returns>Returns the GermanFederalState for the id.</returns>
-        public GermanFederalState this[Id stateId]
-        {
-            get
-            {
-                return this.First(fs => fs.StateId == stateId);
-            }
-        }
+        public GermanFederalState this[Id stateId] => this.First(fs => fs.StateId == stateId);
 
         /// <summary>
         /// Get a GermanFederalState object.

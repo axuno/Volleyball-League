@@ -12,12 +12,9 @@ namespace League.Authorization
 {
     public static class VenueOperations
     {
-        public static readonly OperationAuthorizationRequirement CreateVenue =
-            new OperationAuthorizationRequirement { Name = nameof(CreateVenue) };
-        public static readonly OperationAuthorizationRequirement EditVenue =
-            new OperationAuthorizationRequirement { Name = nameof(EditVenue) };
-        public static readonly OperationAuthorizationRequirement RemoveVenue =
-            new OperationAuthorizationRequirement { Name = nameof(RemoveVenue) };
+        public static readonly OperationAuthorizationRequirement CreateVenue = new() { Name = nameof(CreateVenue) };
+        public static readonly OperationAuthorizationRequirement EditVenue = new() { Name = nameof(EditVenue) };
+        public static readonly OperationAuthorizationRequirement RemoveVenue = new() { Name = nameof(RemoveVenue) };
     }
 
     public class VenueAuthorizationHandler : AuthorizationHandler<OperationAuthorizationRequirement, IList<VenueTeamRow>>

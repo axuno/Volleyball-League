@@ -42,13 +42,13 @@ namespace League.Controllers
             {
                 viewModel.OrigPath = exceptionFeature?.Path;
                 viewModel.Exception = exceptionFeature?.Error;
-                _logger.LogCritical(viewModel.Exception, "Path: {0}", viewModel.OrigPath);
+                _logger.LogCritical(viewModel.Exception, "Path: {origPath}", viewModel.OrigPath);
             }
             else
             {
                 viewModel.OrigPath = HttpContext.Features
                     .Get<Microsoft.AspNetCore.Diagnostics.IStatusCodeReExecuteFeature>()?.OriginalPath;
-                _logger.LogInformation("Path: {0}, StatusCode: {1}", viewModel.OrigPath, id);
+                _logger.LogInformation("Path: {origPath}, StatusCode: {id}", viewModel.OrigPath, id);
             }
 
             viewModel.StatusCode = id;

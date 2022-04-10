@@ -26,6 +26,7 @@ namespace TournamentManager.Data
             using var da = _dbContext.GetNewAdapter();
             var metaData = new LinqMetaData(da);
             var result = await (from login in metaData.IdentityUserLogin where login.UserId == userId select login).ExecuteAsync<EntityCollection<IdentityUserLoginEntity>>(cancellationToken);
+            _logger.LogDebug("{userLoginCount} found for {userId}", result.Count, userId);
             return result.ToList();
         }
 

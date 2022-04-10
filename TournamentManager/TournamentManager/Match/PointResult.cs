@@ -16,7 +16,7 @@ namespace TournamentManager.Match
 		public PointResult(string result, string pointsSeparator = ":")
 		{
 			PointsSeparator = pointsSeparator;
-			var r = result.Split(new string[] { PointsSeparator }, StringSplitOptions.None);
+			var r = result.Split(new[] { PointsSeparator }, StringSplitOptions.None);
 			try
 			{
 				Home = int.Parse(r[0], System.Globalization.CultureInfo.CurrentCulture);

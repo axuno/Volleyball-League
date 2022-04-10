@@ -33,7 +33,7 @@ namespace TournamentManager.Importers.ExcludedDates
                 throw new ArgumentException("Lower and upper date limits must be set.", nameof(dateLimits));
             }
 
-            _logger.LogTrace("Starting import of German holidays for period {0} to {1}", dateLimits.Start, dateLimits.End);
+            _logger.LogTrace("Starting import of German holidays for period {dateStart} to {dateEnd}", dateLimits.Start, dateLimits.End);
 
             var currentYear = ((DateTime) dateLimits.Start).Year;
 
@@ -42,15 +42,15 @@ namespace TournamentManager.Importers.ExcludedDates
 
             while (currentYear <= ((DateTime) dateLimits.End).Year)
             {
-                _logger.LogTrace("Processing year '{0}'", currentYear);
+                _logger.LogTrace("Processing year '{currentYear}'", currentYear);
                 var currentYearHolidays = new Axuno.Tools.GermanHolidays(currentYear);
-                _logger.LogTrace("Generated {0} holidays.", currentYearHolidays.Count);
+                _logger.LogTrace("Generated {count} holidays.", currentYearHolidays.Count);
 
                 // The holidays file must be imported **for each year**
                 if (!string.IsNullOrEmpty(specialHolidaysXmlFile))
                 {
                     currentYearHolidays.Load(specialHolidaysXmlFile);
-                    _logger.LogTrace("Holidays from file '{0}' loaded. Now counts {1} for year {2}", specialHolidaysXmlFile, currentYearHolidays.Count, currentYear);
+                    _logger.LogTrace("Holidays from file '{filename}' loaded. Now counts {holidaysCount} for year {year}", specialHolidaysXmlFile, currentYearHolidays.Count, currentYear);
                 }
 
                 holidays.AddRange(currentYearHolidays.GetFiltered(holidayFilter));

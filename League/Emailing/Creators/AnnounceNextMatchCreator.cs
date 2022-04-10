@@ -28,7 +28,7 @@ namespace League.Emailing.Creators
         /// <summary>
         /// Gets the <see cref="AnnounceNextMatchParameters"/> used as input for creating <see cref="MailMergeMessage"/>s.
         /// </summary>
-        public AnnounceNextMatchParameters Parameters { get; } = new AnnounceNextMatchParameters();
+        public AnnounceNextMatchParameters Parameters { get; } = new();
         
         public async IAsyncEnumerable<MailMergeMessage> GetMailMergeMessages(ITenantContext tenantContext, ITemplateRenderer renderer, IMailMergeService mailMergeService, IStringLocalizer<EmailResource> localizer, [EnumeratorCancellation] CancellationToken cancellationToken)
         {

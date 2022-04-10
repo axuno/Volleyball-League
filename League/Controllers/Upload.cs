@@ -77,7 +77,7 @@ namespace League.Controllers
             else
             {
                 // shouldn't be the case
-                _logger.LogError("Photo file for team id '{0}' not found", id);
+                _logger.LogError("Photo file for team id '{teamId}' not found", id);
                 model.PhotoFileUrl = null;
             }
 
@@ -125,9 +125,10 @@ namespace League.Controllers
 
             if (!new[] {".jpg", ".jpeg", ".png"}.Contains(extension ?? string.Empty))
             {
+                const string message = "Uploaded file must be of type JPG, JPEG or PNG";
                 Response.StatusCode = 409;
-                var msg = _localizer["Uploaded file must be of type JPG, JPEG or PNG"].Value;
-                _logger.LogError(msg);
+                var msg = _localizer[message].Value;
+                _logger.LogError(message);
                 return Json(new {error = msg});
             }
 
@@ -142,7 +143,7 @@ namespace League.Controllers
             }
             catch (Exception e)
             {
-                _logger.LogCritical(e, "File for team id '{0}' could not be stored", teamId);
+                _logger.LogCritical(e, "File for team id '{teamId}' could not be stored", teamId);
                 Response.StatusCode = 409;
                 return Json(new {error = _localizer["Uploaded file could not be processed"].Value});
             }

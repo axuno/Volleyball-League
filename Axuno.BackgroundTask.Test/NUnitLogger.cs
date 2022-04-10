@@ -44,6 +44,7 @@ namespace Axuno.UnitTest.TestComponents
         /// </summary>
         public void Dispose()
         {
+            GC.SuppressFinalize(this);
         }
 
         /// <summary>
@@ -87,7 +88,10 @@ namespace Axuno.UnitTest.TestComponents
         /// </summary>
         /// <param name="logLevel"></param>
         /// <returns>Returns <see langword="true"/> if the log <see cref="LogLevel"/> parameter is greater or equal than the minimum <see cref="LogLevel"/>, else false.</returns>
-        public bool IsEnabled(LogLevel logLevel) => logLevel >= LogLevel;
+        public bool IsEnabled(LogLevel logLevel)
+        {
+            return logLevel >= LogLevel;
+        }
 
         /// <summary>
         /// Gets the instance of this logger as a logical operation scope.
@@ -95,6 +99,9 @@ namespace Axuno.UnitTest.TestComponents
         /// <typeparam name="TState"></typeparam>
         /// <param name="state"></param>
         /// <returns>Returns the instance of this logger.</returns>
-        public IDisposable BeginScope<TState>(TState state) => this;
+        public IDisposable BeginScope<TState>(TState state)
+        {
+            return this;
+        }
     }
 }

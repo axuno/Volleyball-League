@@ -116,32 +116,40 @@ namespace Axuno.Tools
 		/// Gets or set the System.Security.Cryptography.SymmetricAlgorithm.Key (UTF8 is used. Characters exceeding 24 bytes are truncated, less will be filled.)
 		/// </summary>
 		public string Key
-		{
-			get { return _utf8Encoding.GetString(_tripleDES.Key); }
-			set
-			{
-				_tripleDES.Key = _utf8Encoding.GetBytes(value + _charsToUse).TakeWhile((b, index) => index < 24).ToArray();
-			}
-		}
+        {
+            get
+            {
+                return _utf8Encoding.GetString(_tripleDES.Key);
+            }
 
-		/// <summary>
-		/// Gets or set the System.Security.Cryptography.SymmetricAlgorithm.IV initalization vector (UTF8 is used. Characters exceeding 8 bytes are truncated, less will be filled.)
-		/// </summary>
-		public string IV
-		{
-			get { return _utf8Encoding.GetString(_tripleDES.IV); }
-			set
-			{
-				_tripleDES.IV = _utf8Encoding.GetBytes(value + _charsToUse).TakeWhile((b, index) => index < 8).ToArray();
-			}
-		}
+            set
+            {
+                _tripleDES.Key = _utf8Encoding.GetBytes(value + _charsToUse).TakeWhile((b, index) => index < 24).ToArray();
+            }
+        }
 
-		/// <summary>
-		/// Function delegate for converting the fields and properties of the container object
-		/// into a text string which shall be encrypted
-		/// </summary>
-		/// <returns>Returns a string with container fields and properties</returns>
-		public Func<T, string> ToText { get; set; }
+        /// <summary>
+        /// Gets or set the System.Security.Cryptography.SymmetricAlgorithm.IV initalization vector (UTF8 is used. Characters exceeding 8 bytes are truncated, less will be filled.)
+        /// </summary>
+        public string IV
+        {
+            get
+            {
+                return _utf8Encoding.GetString(_tripleDES.IV);
+            }
+
+            set
+            {
+                _tripleDES.IV = _utf8Encoding.GetBytes(value + _charsToUse).TakeWhile((b, index) => index < 8).ToArray();
+            }
+        }
+
+        /// <summary>
+        /// Function delegate for converting the fields and properties of the container object
+        /// into a text string which shall be encrypted
+        /// </summary>
+        /// <returns>Returns a string with container fields and properties</returns>
+        public Func<T, string> ToText { get; set; }
 
 		/// <summary>
 		/// Function delegate for converting a decrypted string back into fields and properties

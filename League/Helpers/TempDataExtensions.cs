@@ -31,7 +31,7 @@ namespace League.Helpers
         /// <returns>Returns a new instance of type <see ref="T"/> from the <see cref="ITempDataDictionary"/></returns>
         public static T Get<T>(this ITempDataDictionary tempData, string key) where T : class
         {
-            tempData.TryGetValue(key, out object obj);
+            tempData.TryGetValue(key, out var obj);
             return obj == null ? null : JsonConvert.DeserializeObject<T>((string)obj);
         }
     }

@@ -84,17 +84,14 @@ namespace Axuno.Tools.GeoSpatial
             private const RegexOptions Options =
                 RegexOptions.Compiled | RegexOptions.IgnorePatternWhitespace | RegexOptions.IgnoreCase;
 
-            private static readonly Regex DegreeRegex =
-                new Regex(DegreePattern, Options);
+            private static readonly Regex DegreeRegex = new(DegreePattern, Options);
 
-            private static readonly Regex DegreeMinuteRegex =
-                new Regex(DegreeMinutePattern, Options);
+            private static readonly Regex DegreeMinuteRegex = new(DegreeMinutePattern, Options);
 
-            private static readonly Regex DegreeMinuteSecondRegex =
-                new Regex(DegreeMinuteSecondPattern, Options);
+            private static readonly Regex DegreeMinuteSecondRegex = new(DegreeMinuteSecondPattern, Options);
 
             private static readonly Regex IsoRegex =
-                new Regex(IsoPattern,
+                new(IsoPattern,
                     RegexOptions.Compiled | RegexOptions.CultureInvariant | RegexOptions.IgnorePatternWhitespace);
 
             private static Location CreateLocation(Angle latitude, Angle longitude, double? altitude)
@@ -267,7 +264,7 @@ namespace Axuno.Tools.GeoSpatial
                 var decimalPoint = value.IndexOf('.');
                 if (decimalPoint == -1) decimalPoint = value.Length;
 
-                Angle angle = null;
+                Angle angle;
 
                 // The only variable is the number of degree digits - there will
                 // always be the sign, two minute digits and two seconds digits

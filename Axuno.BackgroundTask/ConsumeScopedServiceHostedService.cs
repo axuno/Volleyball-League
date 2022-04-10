@@ -35,14 +35,12 @@ namespace Axuno.BackgroundTask
             _logger.LogInformation(
                 "Consume Scoped Service Hosted Service is working.");
 
-            using (var scope = Services.CreateScope())
-            {
-                var scopedProcessingService =
-                    scope.ServiceProvider
-                        .GetRequiredService<IScopedProcessingService>();
+            using var scope = Services.CreateScope();
+            var scopedProcessingService =
+                scope.ServiceProvider
+                    .GetRequiredService<IScopedProcessingService>();
 
-                await scopedProcessingService.DoWork(stoppingToken);
-            }
+            await scopedProcessingService.DoWork(stoppingToken);
         }
 
         public override async Task StopAsync(CancellationToken stoppingToken)

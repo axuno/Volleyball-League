@@ -9,6 +9,7 @@ using Microsoft.Extensions.Logging;
 using TournamentManager.DAL.EntityClasses;
 using TournamentManager.MultiTenancy;
 
+#pragma warning disable CA2254 // Template should be a static expression
 namespace League.Identity
 {
     /// <summary>
@@ -52,7 +53,7 @@ namespace League.Identity
             }
             catch (Exception)
             {
-                _logger.LogError($"Role name '{role.Name}' could not be created");
+                _logger.LogError("Role name '{roleName}' could not be created", role.Name);
                 return IdentityResult.Failed(_identityErrorDescriber.DefaultError());
             }
 
@@ -89,7 +90,7 @@ namespace League.Identity
             }
             catch (Exception e)
             {
-                _logger.LogError($"Role id '{role.Id}' could not be updated", e);
+                _logger.LogError(e, "Role id '{roleId}' could not be updated", role.Id);
                 return IdentityResult.Failed(_identityErrorDescriber.DefaultError());
             }
 
@@ -112,7 +113,7 @@ namespace League.Identity
             }
             catch (Exception)
             {
-                _logger.LogError($"Role id '{role.Id}' could not be removed");
+                _logger.LogError("Role id '{roleId}' could not be removed", role.Id);
             }
 
             return IdentityResult.Failed(_identityErrorDescriber.DefaultError());
@@ -216,7 +217,7 @@ namespace League.Identity
             }
             catch (Exception e)
             {
-                _logger.LogError($"Error adding role claim type '{claim.Type}' to role id '{role.Id}'", e);
+                _logger.LogError(e, "Error adding role claim type '{claimType}' to role id '{roleId}'", claim.Type, role.Id);
                 throw;
             }
         }
@@ -250,7 +251,8 @@ namespace League.Identity
 
         public void Dispose()
         {
-            // Nothing to dispose.
+            GC.SuppressFinalize(this);
         }
     }
 }
+#pragma warning restore CA2254 // Template should be a static expression

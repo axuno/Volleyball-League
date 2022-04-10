@@ -16,7 +16,7 @@ namespace League.Views
     /// </code>
     public class LeagueViewLocationExpander : IViewLocationExpander
     {
-        private readonly List<string> _tenantSearchPaths = new List<string>();
+        private readonly List<string> _tenantSearchPaths = new();
 
         public void PopulateValues(ViewLocationExpanderContext context)
         {

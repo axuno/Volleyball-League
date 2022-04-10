@@ -10,17 +10,6 @@ namespace League.Components
 {
     public class VenueEditor : ViewComponent
     {
-        private readonly ITenantContext _tenantContext;
-        private readonly TournamentManager.MultiTenancy.AppDb _appDb;
-        private readonly ILogger<VenueEditor> _logger;
-
-        public VenueEditor(ITenantContext tenantContext, ILogger<VenueEditor> logger)
-        {
-            _tenantContext = tenantContext;
-            _appDb = tenantContext.DbContext.AppDb;
-            _logger = logger;
-        }
-
         /// <summary>
         /// Creates the model for the component and renders it.
         /// </summary>

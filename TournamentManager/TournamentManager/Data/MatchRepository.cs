@@ -156,7 +156,7 @@ namespace TournamentManager.Data
             using var da = _dbContext.GetNewAdapter();
             {
                 var metaData = new LinqMetaData(da);
-                IQueryable<RoundLegEntity> q = from l in metaData.RoundLeg
+                var q = from l in metaData.RoundLeg
                     where l.RoundId == match.RoundId && l.SequenceNo == match.LegSequenceNo
                     select l;
 
@@ -221,7 +221,12 @@ namespace TournamentManager.Data
             matches.ForEach(m =>
             {
                 _logger.LogTrace(
-                    $"{nameof(AreTeamsBusyAsync)}: {(onlyUseDatePart ? match.PlannedStart?.ToString("'Date='yyyy-MM-dd") : match.PlannedStart?.ToString("'DateTime='yyyy-MM-dd HH:mm:ss"))} MatchId={m.Id}, HomeTeamId={m.HomeTeamId}, GuestTeamId={m.GuestTeamId}");
+                    "{methodName}: {date} MatchId={matchId}, HomeTeamId={homeTeamId}, GuestTeamId={guestTeamId}",
+                    nameof(AreTeamsBusyAsync),
+                    onlyUseDatePart
+                        ? match.PlannedStart?.ToString("'Date='yyyy-MM-dd")
+                        : match.PlannedStart?.ToString("'DateTime='yyyy-MM-dd HH:mm:ss"),
+                    m.Id, m.HomeTeamId, m.GuestTeamId);
                 teamIds.Add(m.HomeTeamId);
                 teamIds.Add(m.GuestTeamId);
             });

@@ -47,7 +47,7 @@ namespace League.Models.UploadViewModels
             }
             catch (Exception e)
             {
-                _logger.LogCritical(e, "File '{0}' could not be saved", fullFilePath);
+                _logger.LogCritical(e, "File '{path}' could not be saved", fullFilePath);
                 throw;
             }
         }
@@ -70,7 +70,7 @@ namespace League.Models.UploadViewModels
                 }
                 catch (Exception e)
                 {
-                    _logger.LogCritical(e, "File '{0}' could not be deleted", fileInfo.FullName);
+                    _logger.LogCritical(e, "File '{filename}' could not be deleted", fileInfo.FullName);
                     throw;
                 }
             }
@@ -92,7 +92,7 @@ namespace League.Models.UploadViewModels
                 }
                 catch (Exception e)
                 {
-                    _logger.LogCritical(e, "File '{0}' could not be deleted", fileInfo.FullName);
+                    _logger.LogCritical(e, "File '{fileName}' could not be deleted", fileInfo.FullName);
                     throw;
                 }
             }
@@ -115,7 +115,7 @@ namespace League.Models.UploadViewModels
             if (tickIndex + DateTimeTicksMarker.Length >= fileInfo.Name.Length)
                 return (fileInfo.Name, fileInfo.LastWriteTimeUtc);
 
-            return long.TryParse(fileInfo.Name.Substring(tickIndex + DateTimeTicksMarker.Length), NumberStyles.Any,
+            return long.TryParse(fileInfo.Name[(tickIndex + DateTimeTicksMarker.Length)..], NumberStyles.Any,
                 null, out var ticks)
                 ? (fileInfo.Name, new DateTime(ticks))
                 : (fileInfo.Name, fileInfo.LastWriteTimeUtc);

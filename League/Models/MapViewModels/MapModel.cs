@@ -9,7 +9,7 @@ namespace League.Models.MapViewModels
 {
 	public class MapModel
 	{
-		const string _format = "{{ Lat: {0}, Lng: {1}, title: \"{2}\", Descr: \"{3}\" }},\n";
+		private const string _format = "{{ Lat: {0}, Lng: {1}, title: \"{2}\", Descr: \"{3}\" }},\n";
 
         public MapModel()
         {
@@ -68,7 +68,7 @@ namespace League.Models.MapViewModels
 				teamDescription.Remove(teamDescription.Length - 6, 6);  // remove last <br />
 
 				var venueDescription =
-                    $"<b>{venue.VenueName}</b><br />{venue.Street}<br />{venue.PostalCode} {venue.City}<br /><br /><b>Team{(teamsOfVenue.Count() > 1 ? "s" : string.Empty)}:</b><br />";
+                    $"<b>{venue.VenueName}</b><br />{venue.Street}<br />{venue.PostalCode} {venue.City}<br /><br /><b>Team{(teamsOfVenue.Count > 1 ? "s" : string.Empty)}:</b><br />";
 
 				if (venue.Latitude.HasValue && venue.Longitude.HasValue)
 				{
@@ -91,7 +91,7 @@ namespace League.Models.MapViewModels
 		public string MinLatitude { get; set; }
         public bool IsSingleValue => Venues.Count == 1;
 		public TournamentEntity Tournament { get; set; }
-        public List<VenueTeamRow> Venues { get; set; } = new List<VenueTeamRow>();
+        public List<VenueTeamRow> Venues { get; set; } = new();
         public GoogleConfiguration GoogleConfiguration { get; set; }
 	}
 }

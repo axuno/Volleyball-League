@@ -12,7 +12,7 @@ namespace TournamentManager.Match
 {
 	public class Calendar
 	{
-		private readonly Ical.Net.Calendar _calendar = new Ical.Net.Calendar();
+		private readonly Ical.Net.Calendar _calendar = new();
 
 		public Calendar()
         {
@@ -28,10 +28,17 @@ namespace TournamentManager.Match
 		}
 
 		protected string ProductId
-		{
-			set => _calendar.ProductId = value;
-		    get => _calendar.ProductId;
-		}
+        {
+            set
+            {
+                _calendar.ProductId = value;
+            }
+
+            get
+            {
+                return _calendar.ProductId;
+            }
+        }
 
         /*
 		public Organizer Organizer
@@ -113,8 +120,8 @@ namespace TournamentManager.Match
 													 match.VenueLongitude.Value.ToString(System.Globalization.CultureInfo.InvariantCulture));
                 evt.Description += "\n" + DescriptionFooter;
                 evt.Sequence = (int)match.ChangeSerial;
-				evt.Start = new CalDateTime(match.PlannedStart ?? throw new ArgumentNullException(nameof(match.PlannedStart)));
-				evt.End = new CalDateTime(match.PlannedEnd ?? throw new ArgumentNullException(nameof(match.PlannedEnd)));
+				evt.Start = new CalDateTime(value: match.PlannedStart ?? throw new InvalidOperationException($"{nameof(match.PlannedStart)} must not be null"));
+				evt.End = new CalDateTime(value: match.PlannedEnd ?? throw new InvalidOperationException($"{nameof(match.PlannedEnd)} must not be null"));
 				// evt.Created = new CalDateTime(match.ModifiedOn);
 				evt.LastModified = new CalDateTime(match.ModifiedOn);
 				evt.DtStamp = new CalDateTime(DateTime.Now);
@@ -181,8 +188,8 @@ namespace TournamentManager.Match
                                            match.VenueLongitude.Value.ToString(System.Globalization.CultureInfo.InvariantCulture));
                 evt.Description += "\n" + DescriptionFooter;
                 evt.Sequence = (int)match.ChangeSerial;
-                evt.Start = new CalDateTime(match.PlannedStart ?? throw new ArgumentNullException(nameof(match.PlannedStart)));
-                evt.End = new CalDateTime(match.PlannedEnd ?? throw new ArgumentNullException(nameof(match.PlannedEnd)));
+                evt.Start = new CalDateTime(value: match.PlannedStart ?? throw new InvalidOperationException($"{nameof(match.PlannedStart)} must not be null"));
+                evt.End = new CalDateTime(value: match.PlannedEnd ?? throw new InvalidOperationException($"{nameof(match.PlannedEnd)} must not be null"));
                 // evt.Created = new CalDateTime(match.ModifiedOn);
                 evt.LastModified = new CalDateTime(match.ModifiedOn);
                 evt.DtStamp = new CalDateTime(DateTime.Now);

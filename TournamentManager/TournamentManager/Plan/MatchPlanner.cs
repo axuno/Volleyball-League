@@ -52,7 +52,7 @@ namespace TournamentManager.Plan
             AreEntitiesLoaded = true;
         }
 
-        public List<long> TeamsWithoutHomeMatches { get; } = new List<long>();
+        public List<long> TeamsWithoutHomeMatches { get; } = new();
 
         /// <summary>
         /// Generates dates which are excluded for the tournament with <see cref="OrganizationContext.MatchPlanTournamentId"/>

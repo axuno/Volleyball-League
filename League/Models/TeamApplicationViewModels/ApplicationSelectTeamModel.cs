@@ -15,7 +15,7 @@ namespace League.Models.TeamApplicationViewModels
         public long? SelectedTeamId { get; set; }
 
         [BindNever]
-        public List<LatestTeamTournamentRow> TeamsManagedByUser { get; set; } = new List<LatestTeamTournamentRow>();
+        public List<LatestTeamTournamentRow> TeamsManagedByUser { get; set; } = new();
 
         [BindNever]
         public string TournamentName { get; set; }

@@ -95,7 +95,11 @@ namespace League.TagHelpers
         [HtmlAttributeName(Show)]
         public ValidationSummary ValidationSummary
         {
-            get => _validationSummaryEnum;
+            get
+            {
+                return _validationSummaryEnum;
+            }
+
             set
             {
                 if ((uint) value > 2U)

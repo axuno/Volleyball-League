@@ -21,20 +21,17 @@ namespace League.Test.Identity
     [TestFixture]
     public class UserLoginStoreTests
     {
-        private readonly UnitTestHelpers _uth = new UnitTestHelpers();
+        private readonly UnitTestHelpers _uth = new();
         private readonly AppDb _appDb;
         private readonly UserStore _store;
-        private readonly RoleStore _roleStore;
         
         public UserLoginStoreTests()
         {
             _appDb = _uth.GetTenantContext().DbContext.AppDb;
             _store = _uth.GetUserStore();
-            _roleStore = _uth.GetRoleStore();
         }
 
-        private readonly ApplicationUser _testUser = new ApplicationUser
-        {
+        private readonly ApplicationUser _testUser = new() {
             Email = "user@store.test",
             EmailConfirmed = true,
             EmailConfirmedOn = new DateTime(2019, 04, 25, 12, 00, 00),
@@ -70,7 +67,7 @@ namespace League.Test.Identity
             };
         }
 
-        private UserLoginInfo GetUserLoginInfo()
+        private static UserLoginInfo GetUserLoginInfo()
         {
             return new UserLoginInfo("provider", "providerKey", "displayName");
         }

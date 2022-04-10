@@ -20,7 +20,7 @@ namespace TournamentManager.Plan
 	/// <typeparam name="T">The type of the team objects. Objects must have IComparable implemented.</typeparam>
 	internal class CombinationGroupOptimizer<T>
 	{
-		private TeamCombinationGroup<T> _group = new TeamCombinationGroup<T>();
+		private readonly TeamCombinationGroup<T> _group = new();
 
 		/// <summary>
 		/// Constructor.
@@ -31,14 +31,13 @@ namespace TournamentManager.Plan
 			_group = group;
 		}
 
-		/// <summary>
-		/// Groups the calculated team combinations for matches.  in a way, that most matches
-		/// can be played in parallel.
-		/// </summary>
-		/// <param name="legType">First leg or return leg.</param>
-		/// <param name="optiType">Optimization type for groups. Differences can be seen be with an uneven number of teams.</param>
-		/// <returns>Return a collection containing collections of team combinations.</returns>
-		internal Collection<TeamCombinationGroup<T>> GetBundledGroups(LegType legType, CombinationGroupOptimization optiType)
+        /// <summary>
+        /// Groups the calculated team combinations for matches.  in a way, that most matches
+        /// can be played in parallel.
+        /// </summary>
+        /// <param name="optiType">Optimization type for groups. Differences can be seen with an uneven number of teams.</param>
+        /// <returns>Return a collection containing collections of team combinations.</returns>
+        internal Collection<TeamCombinationGroup<T>> GetBundledGroups(CombinationGroupOptimization optiType)
 		{
 			var combinationsQueue = new Queue<TeamCombination<T>>(_group.Count);
 			TeamCombinationGroup<T> group;
@@ -56,9 +55,8 @@ namespace TournamentManager.Plan
 					// every group contains a collection with only 1 match
 					while (combinationsQueue.Count > 0)
 					{
-						group = new TeamCombinationGroup<T>();
-						group.Add(combinationsQueue.Dequeue());
-						bundledGroups.Add(group);
+						group = new TeamCombinationGroup<T> { combinationsQueue.Dequeue() };
+                        bundledGroups.Add(group);
 					}
 					break;
 
@@ -66,7 +64,7 @@ namespace TournamentManager.Plan
 					group = new TeamCombinationGroup<T>();
 					while (combinationsQueue.Count > 0)
 					{
-						TeamCombination<T> combination = combinationsQueue.Dequeue();
+						var combination = combinationsQueue.Dequeue();
 						if (AnyTeamExistsInGroup(combination, group))
 						{
 							bundledGroups.Add(group);
@@ -101,13 +99,13 @@ namespace TournamentManager.Plan
 			return bundledGroups;
 		}
 
-		/// <summary>
-		/// Checks, whether one of the existing matches contains any of the two or three teams of a certain match.
-		/// </summary>
-		/// <param name="match">The match for which the check will be performed.</param>
-		/// <param name="matchGroup">The group of matches to search.</param>
-		/// <returns>Returns true, one of the existing matches contains any of the two or three teams of a certain match, false otherwise.</returns>
-		private bool AnyTeamExistsInGroup(TeamCombination<T> combination, TeamCombinationGroup<T> group)
+        /// <summary>
+        /// Checks, whether one of the existing matches contains any of the two or three teams of a certain match.
+        /// </summary>
+        /// <param name="combination"></param>
+        /// <param name="group"></param>
+        /// <returns>Returns true, one of the existing matches contains any of the two or three teams of a certain match, false otherwise.</returns>
+        private static bool AnyTeamExistsInGroup(TeamCombination<T> combination, TeamCombinationGroup<T> group)
 		{
 			var teams = new Stack<T>(30);
 			foreach (var t in group)
@@ -118,7 +116,7 @@ namespace TournamentManager.Plan
 			}
 			while (teams.Count > 0)
 			{
-				T team = teams.Pop();
+				var team = teams.Pop();
 				if (Comparer<T>.Default.Compare(team, combination.HomeTeam) == 0 ||
 				    Comparer<T>.Default.Compare(team, combination.GuestTeam) == 0 ||
 				    Comparer<T>.Default.Compare(team, combination.Referee) == 0)

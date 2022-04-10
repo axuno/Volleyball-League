@@ -22,20 +22,18 @@ namespace Axuno.Tools
             /// <returns>Returns the hashed and hex string.</returns>
             public static string GetHash(string input, Encoding encoding = null)
             {
-                using (var md5 = MD5.Create())
+                using var md5 = MD5.Create();
+                if (encoding == null) encoding = Encoding.UTF8;
+                var inputBytes = encoding.GetBytes(input);
+                var hashBytes = md5.ComputeHash(inputBytes);
+
+                var sb = new StringBuilder();
+                foreach (var b in hashBytes)
                 {
-                    if (encoding == null) encoding = Encoding.UTF8;
-                    var inputBytes = encoding.GetBytes(input);
-                    var hashBytes = md5.ComputeHash(inputBytes);
-
-                    var sb = new StringBuilder();
-                    foreach (var b in hashBytes)
-                    {
-                        sb.Append(b.ToString("X2"));
-                    }
-
-                    return sb.ToString();
+                    sb.Append(b.ToString("X2"));
                 }
+
+                return sb.ToString();
             }
 
             /// <summary>

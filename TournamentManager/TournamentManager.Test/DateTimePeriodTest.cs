@@ -6,11 +6,11 @@ namespace TournamentManager.Tests
     [TestFixture]
     public class DateTimePeriodTest
     {
-        [TestCase("2020-06-01", "2060-06-02", true)]
-        [TestCase(null, null, true)]
-        [TestCase("2020-06-01", null, false)]
-        [TestCase(null, "2060-06-02", false)]
-        public void CreationAndAssigningNullable(DateTime? date1, DateTime? date2, bool expected)
+        [TestCase("2020-06-01", "2060-06-02")]
+        [TestCase(null, null)]
+        [TestCase("2020-06-01", null)]
+        [TestCase(null, "2060-06-02")]
+        public void CreationAndAssigningNullable(DateTime? date1, DateTime? date2)
         {
             var dtp = new DateTimePeriod(date1, date2);
             Assert.Multiple(() =>
@@ -20,8 +20,8 @@ namespace TournamentManager.Tests
             });
         }
 
-        [TestCase("2020-06-01", "2060-06-02", true)]
-        public void CreationAndAssigning(DateTime date1, DateTime date2, bool expected)
+        [TestCase("2020-06-01", "2060-06-02")]
+        public void CreationAndAssigning(DateTime date1, DateTime date2)
         {
             var dtp = new DateTimePeriod(date1, date2);
             Assert.Multiple(() =>

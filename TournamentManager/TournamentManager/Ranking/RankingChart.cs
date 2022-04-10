@@ -86,7 +86,7 @@ namespace TournamentManager.Ranking
         /// Gets the list of colors used for the lines in the chart from rank 1 (first in the list) to rank 10 (last) as ARGB integer.
         /// Only 20 colors are defined, all others will be rendered in gray.
         /// </summary>
-        public static readonly List<uint> LineColors = new List<uint>(new[]
+        public static readonly List<uint> LineColors = new(new[]
         {
             // 10 best
             OxyColors.Red.ToUint(), OxyColors.Green.ToUint(), OxyColors.Orange.ToUint(), 

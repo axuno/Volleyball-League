@@ -37,8 +37,12 @@ namespace TournamentManager.Data
             var q = qf.TeamInRound.From(QueryTarget.InnerJoin(qf.Round)
                 .On(TeamInRoundFields.RoundId == RoundFields.Id)).Where(filter);
 
-            return (IList<TeamInRoundEntity>) await da.FetchQueryAsync<TeamInRoundEntity>(
+            var result = (IList<TeamInRoundEntity>) await da.FetchQueryAsync<TeamInRoundEntity>(
                 q, cancellationToken);
+
+            _logger.LogDebug("{teamCount} team(s) found", result.Count);
+
+            return result;
         }
 	}
 }

@@ -58,6 +58,8 @@ namespace TournamentManager.Data
             var result = await (from r in metaData.IdentityRole
                 where roleName.ToLower() == r.Name.ToLower()
                 select r).FirstOrDefaultAsync(cancellationToken);
+
+            _logger.LogDebug("{roleName} exists: {trueFalse}", roleName, result != null);
             return result != null;
         }
 

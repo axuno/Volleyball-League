@@ -47,6 +47,8 @@ namespace TournamentManager.Data
             await da.FetchEntityCollectionAsync(qp, cancellationToken);
             da.CloseConnection();
 
+            _logger.LogDebug("{count} available match dates found", available.Count);
+
             return available;
         }
     }

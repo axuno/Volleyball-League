@@ -460,7 +460,7 @@ namespace Axuno.Tools.GeoSpatial
 
             return int.TryParse(format[index..], NumberStyles.None, CultureInfo.InvariantCulture,
                 out var precision)
-                ? Tuple.Create(format.Substring(0, index), precision)
+                ? Tuple.Create(format[..index], precision)
                 : Tuple.Create(format, -1);
         }
 

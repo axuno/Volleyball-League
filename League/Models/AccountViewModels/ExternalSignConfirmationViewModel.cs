@@ -35,6 +35,6 @@ namespace League.Models.AccountViewModels
         [Display(Name = "Primary phone number")]
         public string PhoneNumber { get; set; }
 
-        public char[] Genders => new[] {'u', 'f', 'm'};
+        public static char[] Genders => new[] {'u', 'f', 'm'};
     }
 }

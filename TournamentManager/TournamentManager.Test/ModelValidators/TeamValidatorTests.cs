@@ -21,8 +21,10 @@ namespace TournamentManager.Tests.ModelValidators
     [TestFixture]
     public class TeamValidatorTests
     {
-        private ITenantContext _tenantContext;
-        private readonly AppDb _appDb;
+        private readonly ITenantContext _tenantContext;
+#pragma warning disable IDE0052 // Remove unread private members
+        private readonly AppDb _appDb; // mocked in CTOR
+#pragma warning restore IDE0052 // Remove unread private members
 
         public TeamValidatorTests()
         {
@@ -91,14 +93,14 @@ namespace TournamentManager.Tests.ModelValidators
             });
         }
 
-        [TestCase(null, false, false, false)]
-        [TestCase("20:00:00", false, false, false)]
-        [TestCase(null, true, false, true)]
-        [TestCase(null, true, true, false)]
-        [TestCase("20:00:00", true, false, true)]
-        [TestCase("20:00:00", true, true, true)]
+        [TestCase(null, false, false)]
+        [TestCase("20:00:00", false, false)]
+        [TestCase(null, true, false)]
+        [TestCase(null, true, true)]
+        [TestCase("20:00:00", true, false)]
+        [TestCase("20:00:00", true, true)]
 
-        public async Task MatchTime_Must_Be_Set(TimeSpan? matchTime, bool isEditable, bool mustBeSet, bool expected)
+        public async Task MatchTime_Must_Be_Set(TimeSpan? matchTime, bool isEditable, bool mustBeSet)
         {
             var team = new TeamEntity { MatchTime = matchTime, MatchDayOfWeek = 1};
 

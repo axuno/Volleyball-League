@@ -11,11 +11,9 @@ namespace League.Models.TeamViewModels
 {
     public class TeamListModel
     {
-        private readonly Axuno.Tools.DateAndTime.TimeZoneConverter _timeZoneConverter;
-
         public TeamListModel(Axuno.Tools.DateAndTime.TimeZoneConverter timeZoneConverter)
         {
-            _timeZoneConverter = timeZoneConverter;
+            TimeZoneConverter = timeZoneConverter;
         }
 
         public TournamentEntity Tournament { get; set; }
@@ -24,6 +22,6 @@ namespace League.Models.TeamViewModels
 
         public long? ActiveRoundId { get; set; }
 
-        public Axuno.Tools.DateAndTime.TimeZoneConverter TimeZoneConverter => _timeZoneConverter;
+        public Axuno.Tools.DateAndTime.TimeZoneConverter TimeZoneConverter { get; }
     }
 }

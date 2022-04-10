@@ -43,13 +43,13 @@ namespace TournamentManager.MultiTenancy
         /// Email contact details.
         /// </summary>
         [YAXLib.Attributes.YAXComment("Email contact details.")]
-        public Email Email { get; set; } = new Email();
+        public Email Email { get; set; } = new();
 
         /// <summary>
         /// Notifications sent before and after matches.
         /// </summary>
         [YAXLib.Attributes.YAXComment("Notifications sent before and after matches.")]
-        public MatchNotifications MatchNotifications { get; set; } = new MatchNotifications();
+        public MatchNotifications MatchNotifications { get; set; } = new();
     }
     
     /// <summary>
@@ -61,27 +61,27 @@ namespace TournamentManager.MultiTenancy
         /// "From" mailbox address for the contact form
         /// </summary>
         [YAXLib.Attributes.YAXComment("")]
-        public MailAddress ContactFrom { get; set; } = new MailAddress();
+        public MailAddress ContactFrom { get; set; } = new();
         /// <summary>
         /// "To" mailbox address for the contact form
         /// </summary>
         [YAXLib.Attributes.YAXComment("\"From\" mailbox address for the contact form")]
-        public MailAddress ContactTo { get; set; } = new MailAddress();
+        public MailAddress ContactTo { get; set; } = new();
         /// <summary>
         /// General "To" mailbox address for emails generated programmatically
         /// </summary>
         [YAXLib.Attributes.YAXComment("General \"To\" mailbox address for emails generated programmatically")]
-        public MailAddress GeneralTo { get; set; } = new MailAddress();
+        public MailAddress GeneralTo { get; set; } = new();
         /// <summary>
         /// General "From" mailbox address for emails generated programmatically
         /// </summary>
         [YAXLib.Attributes.YAXComment("General \"From\" mailbox address for emails generated programmatically")]
-        public MailAddress GeneralFrom { get; set; } = new MailAddress();
+        public MailAddress GeneralFrom { get; set; } = new();
         /// <summary>
         /// General "BCC" mailbox address for emails generated programmatically
         /// </summary>
         [YAXLib.Attributes.YAXComment("General \"BCC\" mailbox address for emails generated programmatically")]
-        public MailAddress GeneralBcc { get; set; } = new MailAddress();
+        public MailAddress GeneralBcc { get; set; } = new();
     }
 
     /// <summary>

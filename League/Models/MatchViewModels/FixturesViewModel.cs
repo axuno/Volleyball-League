@@ -9,14 +9,12 @@ namespace League.Models.MatchViewModels
 {
     public class FixturesViewModel
     {
-        private readonly Axuno.Tools.DateAndTime.TimeZoneConverter _timeZoneConverter;
-
         public FixturesViewModel(Axuno.Tools.DateAndTime.TimeZoneConverter timeZoneConverter)
         {
-            _timeZoneConverter = timeZoneConverter;
+            TimeZoneConverter = timeZoneConverter;
         }
 
-        public Axuno.Tools.DateAndTime.TimeZoneConverter TimeZoneConverter => _timeZoneConverter;
+        public Axuno.Tools.DateAndTime.TimeZoneConverter TimeZoneConverter { get; }
 
         public TournamentEntity Tournament { get; set; }
 

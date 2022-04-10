@@ -70,7 +70,7 @@ namespace League.DataProtection
                 return true;
             }
 
-            obj = default(T);
+            obj = default;
             return false;
         }
 

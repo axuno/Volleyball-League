@@ -17,9 +17,7 @@ namespace Axuno.BackgroundTask
     {
         private readonly Action<Exception> _onException;
         private readonly ILogger<BackgroundQueue> _logger;
-        internal readonly ConcurrentQueue<IBackgroundTask> TaskItems =
-            new ConcurrentQueue<IBackgroundTask>();
-
+        internal readonly ConcurrentQueue<IBackgroundTask> TaskItems = new();
         private readonly SemaphoreSlim _signal;
 
         /// <summary>
@@ -48,7 +46,7 @@ namespace Axuno.BackgroundTask
 
             TaskItems.Enqueue(taskItem);
             _signal.Release(); // increase the semaphore count for each item
-            _logger.LogTrace($"Number of queued TaskItems is {_signal.CurrentCount}");
+            _logger.LogTrace("Number of queued TaskItems is {taskItemCount}", _signal.CurrentCount);
         }
 
         /// <summary>
@@ -118,29 +116,27 @@ namespace Axuno.BackgroundTask
         /// <param name="cancellationToken">The <see cref="CancellationToken"/></param>
         /// <returns>Returns the completed original task or throws a <see cref="TimeoutException"/></returns>
         /// <exception cref="TimeoutException"></exception>
-        private async Task CancelAfterAsync(Func<CancellationToken, Task> startTask, TimeSpan timeout, CancellationToken cancellationToken)
+        private static async Task CancelAfterAsync(Func<CancellationToken, Task> startTask, TimeSpan timeout, CancellationToken cancellationToken)
         {
-            using (var timeoutCancellation = new CancellationTokenSource())
-            using (var combinedCancellation = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, timeoutCancellation.Token))
+            using var timeoutCancellation = new CancellationTokenSource();
+            using var combinedCancellation = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, timeoutCancellation.Token);
+            var originalTask = startTask(combinedCancellation.Token);
+            var delayTask = Task.Delay(timeout, timeoutCancellation.Token);
+            var completedTask = await Task.WhenAny(originalTask, delayTask);
+            // Cancel timeout to stop either task:
+            // - Either the original task completed, so we need to cancel the delay task.
+            // - Or the timeout expired, so we need to cancel the original task.
+            // Canceling will not affect a task, that is already completed.
+            timeoutCancellation.Cancel();
+            if (completedTask == originalTask)
             {
-                var originalTask = startTask(combinedCancellation.Token);
-                var delayTask = Task.Delay(timeout, timeoutCancellation.Token);
-                var completedTask = await Task.WhenAny(originalTask, delayTask);
-                // Cancel timeout to stop either task:
-                // - Either the original task completed, so we need to cancel the delay task.
-                // - Or the timeout expired, so we need to cancel the original task.
-                // Canceling will not affect a task, that is already completed.
-                timeoutCancellation.Cancel();
-                if (completedTask == originalTask)
-                {
-                    // original task completed
-                    await originalTask;
-                }
-                else
-                {
-                    // timeout
-                    throw new TimeoutException();
-                }
+                // original task completed
+                await originalTask;
+            }
+            else
+            {
+                // timeout
+                throw new TimeoutException();
             }
         }
     }

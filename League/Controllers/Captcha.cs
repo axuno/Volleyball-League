@@ -37,6 +37,6 @@ namespace League.Controllers
             return Task.FromResult(Content(ci.Image));
         }
 
-	    private string CaptchaSessionKeyName => CaptchaSvgGenerator.CaptchaSessionKeyName;
+	    private static string CaptchaSessionKeyName => CaptchaSvgGenerator.CaptchaSessionKeyName;
 	}
 }

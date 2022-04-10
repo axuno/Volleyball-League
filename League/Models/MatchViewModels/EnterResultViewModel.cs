@@ -149,7 +149,7 @@ namespace League.Models.MatchViewModels
         [MaxLength(2000)]
         public string Remarks { get; set; }
 
-        public List<PointResultNullable> Sets { get; set; } = new List<PointResultNullable>();
+        public List<PointResultNullable> Sets { get; set; } = new();
 
         #endregion
 

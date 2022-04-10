@@ -17,6 +17,9 @@ namespace TournamentManager
 
         public string Separator { get; set; }
 
-		public override string ToString() => string.Join(Separator, Home, Guest);
-	}
+		public override string ToString()
+        {
+            return string.Join(Separator, Home, Guest);
+        }
+    }
 }

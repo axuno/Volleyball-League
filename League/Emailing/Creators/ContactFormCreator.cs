@@ -24,7 +24,7 @@ namespace League.Emailing.Creators
         /// <summary>
         /// Gets the <see cref="ContactFormParameters"/> used as input for creating <see cref="MailMergeMessage"/>s.
         /// </summary>
-        public ContactFormParameters Parameters { get; } = new ContactFormParameters();
+        public ContactFormParameters Parameters { get; } = new();
 
         /// <summary>
         /// Gets all email messages matching the criteria in <see cref="Parameters"/>.

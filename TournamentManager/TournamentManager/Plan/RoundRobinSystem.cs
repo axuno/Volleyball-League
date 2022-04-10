@@ -31,11 +31,8 @@ namespace TournamentManager.Plan
 	public class RoundRobinSystem<T>
 	{
 		private int _maxNumOfCombinations;
-		private int _teamCombinationsPerLeg;
-		private RefereeType _refereeType = RefereeType.HomeTeam;
-		private Collection<T> _teams = new Collection<T>();
-		private TeamCombinationGroup<T> _combinationGroup = new TeamCombinationGroup<T>();
-		private TeamCombinationGroup<T> _combinationGroupReturnLeg = new TeamCombinationGroup<T>();
+        private readonly TeamCombinationGroup<T> _combinationGroup = new();
+		private readonly TeamCombinationGroup<T> _combinationGroupReturnLeg = new();
 		
 		/// <summary>
 		/// Constructor.
@@ -43,7 +40,7 @@ namespace TournamentManager.Plan
 		/// <param name="teams">A collection of teams to build matches for.</param>
 		public RoundRobinSystem(Collection<T> teams)
 		{
-			_teams = teams;
+			Teams = teams;
 		}
 
 		/// <summary>
@@ -64,24 +61,24 @@ namespace TournamentManager.Plan
 			  |  |  |          |
 			  +- +- +-   E    -+
 			*/
-			if (_teams.Count < 2)
+			if (Teams.Count < 2)
 				throw new Exception("Round Robin system requires at least 2 teams.");
 
-			if (_teams.Count < 3 && _refereeType == RefereeType.OtherTeamOfGroup)
+			if (Teams.Count < 3 && RefereeType == RefereeType.OtherTeamOfGroup)
 				throw new Exception("Round Robin system with separate referee requires at least 3 teams.");
 
 			_combinationGroup.Clear();
-			_maxNumOfCombinations = _teams.Count * (_teams.Count - 1) / 2;
-			_teamCombinationsPerLeg = _teams.Count - 1;
+			_maxNumOfCombinations = Teams.Count * (Teams.Count - 1) / 2;
+			TeamCombinationsPerLeg = Teams.Count - 1;
 
-			for (int count = 0; count < _maxNumOfCombinations; count++)
+			for (var count = 0; count < _maxNumOfCombinations; count++)
 			{
-				T homeTeam = GetHomeTeam();
-				T guestTeam = GetGuestTeam(homeTeam);
-				T referee = homeTeam;
+				var homeTeam = GetHomeTeam();
+				var guestTeam = GetGuestTeam(homeTeam);
+				var referee = homeTeam;
 
-				int homeTeamNumOfHomeCombs = GetNumOfHomeCombinations(homeTeam);
-				int guestTeamNumOfHomeCombs = GetNumOfHomeCombinations(guestTeam);
+				var homeTeamNumOfHomeCombs = GetNumOfHomeCombinations(homeTeam);
+				var guestTeamNumOfHomeCombs = GetNumOfHomeCombinations(guestTeam);
 
 				// make sure that home matches are alternating
 				if (homeTeamNumOfHomeCombs <= guestTeamNumOfHomeCombs)
@@ -90,7 +87,7 @@ namespace TournamentManager.Plan
 					_combinationGroup.Add(new TeamCombination<T>(guestTeam, homeTeam, referee));
 
 				// re-assign referee according to settings
-				switch (_refereeType)
+				switch (RefereeType)
 				{
 					case RefereeType.HomeTeam:
 						_combinationGroup[count].Referee = _combinationGroup[count].HomeTeam; break;
@@ -111,12 +108,12 @@ namespace TournamentManager.Plan
 		private void CalcCombinationsReturnLeg()
 		{
 			_combinationGroupReturnLeg.Clear();
-			T referee = _combinationGroup[0].Referee; // just to make the compiler happy
+			var referee = _combinationGroup[0].Referee; // just to make the compiler happy
 
 			foreach (var match in _combinationGroup)
 			{
 				// re-assign referee according to settings:
-				switch (_refereeType)
+				switch (RefereeType)
 				{
 					case RefereeType.HomeTeam:
 						referee = match.GuestTeam; break;
@@ -137,12 +134,12 @@ namespace TournamentManager.Plan
 		/// <returns>Returns the home team.</returns>
 		private T GetHomeTeam()
 		{
-			int lastMaxMissingCount = int.MinValue;
-			T lastMaxMissingTeam = _teams[0];
+			var lastMaxMissingCount = int.MinValue;
+			var lastMaxMissingTeam = Teams[0];
 
-			foreach (var team in _teams)
+			foreach (var team in Teams)
 			{
-				int currentMissingCount = GetMissingCombinationsCount(team);
+				var currentMissingCount = GetMissingCombinationsCount(team);
 				if (currentMissingCount > lastMaxMissingCount)
 				{
 					lastMaxMissingCount = currentMissingCount;
@@ -161,12 +158,12 @@ namespace TournamentManager.Plan
 		/// <returns>Returns the guest team.</returns>
 		private T GetGuestTeam(T homeTeam)
 		{
-			int lastMaxMissingCount = int.MinValue;
-			T lastMaxMissingTeam = _teams[0];
+			var lastMaxMissingCount = int.MinValue;
+			var lastMaxMissingTeam = Teams[0];
 
-			foreach (var team in _teams)
+			foreach (var team in Teams)
 			{
-				int currentMissingCount = GetMissingCombinationsCount(team);
+				var currentMissingCount = GetMissingCombinationsCount(team);
 				if (currentMissingCount > lastMaxMissingCount && (Comparer<T>.Default.Compare(team, homeTeam) != 0) && !CombinationExists(homeTeam, team))
 				{
 					lastMaxMissingCount = currentMissingCount;
@@ -186,12 +183,12 @@ namespace TournamentManager.Plan
 		/// <returns></returns>
 		private T GetReferee(T homeTeam, T guestTeam)
 		{
-			int lastMaxRefereeCount = int.MaxValue;
-			T lastMaxRefereeTeam = _teams[0];
+			var lastMaxRefereeCount = int.MaxValue;
+			var lastMaxRefereeTeam = Teams[0];
 
-			foreach (var team in _teams)
+			foreach (var team in Teams)
 			{
-				int currentRefereeCount = GetNumOfRefereeCombinations(team);
+				var currentRefereeCount = GetNumOfRefereeCombinations(team);
 				if (currentRefereeCount < lastMaxRefereeCount && 
 				    (Comparer<T>.Default.Compare(team, homeTeam) != 0) && (Comparer<T>.Default.Compare(team, guestTeam) != 0) &&
 				    ! IsLastReferee(team))
@@ -216,7 +213,7 @@ namespace TournamentManager.Plan
 			if (_combinationGroup.Count == 0)
 				return false;
 			else
-				return (Comparer<T>.Default.Compare(team, _combinationGroup[_combinationGroup.Count - 1].Referee) == 0);
+				return (Comparer<T>.Default.Compare(team, _combinationGroup[^1].Referee) == 0);
 		}
 
 
@@ -227,7 +224,7 @@ namespace TournamentManager.Plan
 		/// <returns>Returns the number of missing matches for the team.</returns>
 		private int GetMissingCombinationsCount(T team)
 		{
-			int missing = _teamCombinationsPerLeg;
+			var missing = TeamCombinationsPerLeg;
 
 			foreach (var match in _combinationGroup)
 			{
@@ -262,7 +259,7 @@ namespace TournamentManager.Plan
 		/// <returns>The number of home matches for the team.</returns>
 		private int GetNumOfHomeCombinations(T team)
 		{
-			int count = 0;
+			var count = 0;
 
 			foreach (var match in _combinationGroup)
 			{
@@ -278,7 +275,7 @@ namespace TournamentManager.Plan
 		/// <returns>The number of referee matches for the team.</returns>
 		private int GetNumOfRefereeCombinations(T team)
 		{
-			int count = 0;
+			var count = 0;
 
 			foreach (var match in _combinationGroup)
 			{
@@ -297,10 +294,10 @@ namespace TournamentManager.Plan
 		/// <returns>Return a collection containing collections of optimized team combinations.</returns>
 		public Collection<TeamCombinationGroup<T>> GetBundledGroups(RefereeType refereeType, LegType legType, CombinationGroupOptimization optiType)
 		{
-			_refereeType = refereeType;
+			RefereeType = refereeType;
 			CalcCombinations();
 
-			return (new CombinationGroupOptimizer<T>((legType == LegType.First) ? _combinationGroup : _combinationGroupReturnLeg).GetBundledGroups(legType, optiType));
+			return (new CombinationGroupOptimizer<T>((legType == LegType.First) ? _combinationGroup : _combinationGroupReturnLeg).GetBundledGroups(optiType));
 		}
 
 		/// <summary>
@@ -311,7 +308,7 @@ namespace TournamentManager.Plan
 		/// <returns>Return a collection of team combinations.</returns>
 		public TeamCombinationGroup<T> GetCombinationGroup(RefereeType refereeType, LegType legType)
 		{
-			_refereeType = refereeType;
+			RefereeType = refereeType;
 			CalcCombinations();
 
 			return (legType == LegType.First) ? _combinationGroup : _combinationGroupReturnLeg;
@@ -321,33 +318,21 @@ namespace TournamentManager.Plan
 		/// <summary>
 		/// Gets the number of matches per team.
 		/// </summary>
-		public int TeamCombinationsPerLeg
-		{
-			get { return _teamCombinationsPerLeg; }
-		}
+		public int TeamCombinationsPerLeg { get; private set; }
 
-		/// <summary>
+        /// <summary>
 		/// Gets the number of teams.
 		/// </summary>
-		public int NumberOfTeams
-		{
-			get { return _teams.Count; }
-		}
+		public int NumberOfTeams => Teams.Count;
 
-		/// <summary>
+        /// <summary>
 		/// Gets the teams.
 		/// </summary>
-		public Collection<T> Teams
-		{
-			get { return _teams; }
-		}
+		public Collection<T> Teams { get; } = new();
 
-		/// <summary>
+        /// <summary>
 		/// Gets whether the home team is also assigned referee (true for 'yes').
 		/// </summary>
-		public RefereeType RefereeType
-		{
-			get { return _refereeType; }
-		}
-	}
+		public RefereeType RefereeType { get; private set; } = RefereeType.HomeTeam;
+    }
 }

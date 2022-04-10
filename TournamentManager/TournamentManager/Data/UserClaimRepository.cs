@@ -33,6 +33,8 @@ namespace TournamentManager.Data
                 where uc.UserId == userId
                 select uc).ToListAsync(cancellationToken);
             da.CloseConnection();
+            _logger.LogDebug("{claimsCount} found", result.Count);
+
             return result;
         }
 

@@ -56,13 +56,20 @@ namespace League.TagHelpers
         /// <summary>
         /// The <see cref="AlertType"/> to display.
         /// </summary>
-        public AlertType Type {
-            get => _type;
+        public AlertType Type
+        {
+            get
+            {
+                return _type;
+            }
+
             set
             {
-                if ((uint)value > Enum.GetNames(typeof(AlertType)).Length - 1)
-                    throw new ArgumentException($"Undefined {nameof(AlertType)} value",
-                        nameof(AlertType));
+                if ((uint) value > Enum.GetNames(typeof(AlertType)).Length - 1)
+                {
+                    throw new InvalidOperationException(@$"Undefined {nameof(AlertType)} value");
+                }
+
                 _type = value;
             }
         }
@@ -140,8 +147,6 @@ namespace League.TagHelpers
                     iconClassDefault = string.Join(' ', "fas fa-info-circle", IconSizeClass);
                     CssClass = string.Format(alertDivClass, "alert-secondary");
                     break;
-                default:
-                    throw new ArgumentOutOfRangeException();
             }
 
             if (string.IsNullOrWhiteSpace(IconClass)) IconClass = iconClassDefault;

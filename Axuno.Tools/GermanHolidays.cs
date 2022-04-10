@@ -534,7 +534,7 @@ namespace Axuno.Tools
             {
                 // get the standard German holiday id (if any)
                 Id? holidayId = null;
-                if (holiday.Attributes().Count(e => e.Name.ToString().ToLower() == "id") != 0)
+                if (holiday.Attributes().Any(e => e.Name.ToString().ToLower() == "id"))
                     holidayId = (Id) Enum.Parse(typeof(Id),
                         holiday.Attributes().First(
                             e => e.Name.ToString().ToLower() == "id").Value,
@@ -542,7 +542,7 @@ namespace Axuno.Tools
 
                 // what to do with this holiday? The default action is "Merge".
                 var action = ActionType.Merge;
-                if (holiday.Attributes().Count(e => e.Name.ToString().ToLower() == "action") != 0)
+                if (holiday.Attributes().Any(e => e.Name.ToString().ToLower() == "action"))
                     action = (ActionType) Enum.Parse(typeof(ActionType),
                         holiday.Attributes().First(
                             e => e.Name.ToString().ToLower() == "action").Value,
@@ -558,8 +558,8 @@ namespace Axuno.Tools
                 // get the dates (if any)
                 var dateFrom = DateTime.MinValue;
                 var dateTo = DateTime.MinValue;
-                if (holiday.Elements().Count(e => e.Name.ToString().ToLower() == "datefrom") != 0 &&
-                    holiday.Elements().Count(e => e.Name.ToString().ToLower() == "dateto") != 0)
+                if (holiday.Elements().Any(e => e.Name.ToString().ToLower() == "datefrom") &&
+                    holiday.Elements().Any(e => e.Name.ToString().ToLower() == "dateto"))
                 {
                     dateFrom =
                         DateTime.Parse(

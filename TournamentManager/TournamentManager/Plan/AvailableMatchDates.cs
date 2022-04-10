@@ -21,16 +21,13 @@ namespace TournamentManager.Plan
         private readonly ILogger<AvailableMatchDates> _logger;
 
         // available match dates from database
-        private readonly EntityCollection<AvailableMatchDateEntity> _availableMatchDateEntities =
-            new EntityCollection<AvailableMatchDateEntity>();
+        private readonly EntityCollection<AvailableMatchDateEntity> _availableMatchDateEntities = new();
 
         // programmatically generated available match dates
-        private readonly EntityCollection<AvailableMatchDateEntity> _generatedAvailableMatchDateEntities =
-            new EntityCollection<AvailableMatchDateEntity>();
+        private readonly EntityCollection<AvailableMatchDateEntity> _generatedAvailableMatchDateEntities = new();
 
         // excluded dates
-        private readonly EntityCollection<ExcludeMatchDateEntity> _excludedMatchDateEntities =
-            new EntityCollection<ExcludeMatchDateEntity>();
+        private readonly EntityCollection<ExcludeMatchDateEntity> _excludedMatchDateEntities = new();
 
         internal AvailableMatchDates(ITenantContext tenantContext,
             Axuno.Tools.DateAndTime.TimeZoneConverter timeZoneConverter, ILogger<AvailableMatchDates> logger)
@@ -139,10 +136,12 @@ namespace TournamentManager.Plan
                         continue;
 
                     // Create Tuple for non-nullable context
-                    var team = (Id: teamsWithSameVenue[teamIndex].Id,
+#pragma warning disable IDE0042 // Deconstruct variable declaration
+                    var team = (teamsWithSameVenue[teamIndex].Id,
                         MatchDayOfWeek: (DayOfWeek) teamsWithSameVenue[teamIndex].MatchDayOfWeek!.Value,
                         MatchTime: teamsWithSameVenue[teamIndex].MatchTime!.Value,
                         VenueId: teamsWithSameVenue[teamIndex].VenueId!.Value);
+#pragma warning restore IDE0042 // Deconstruct variable declaration
                     
                     // get the first possible match date equal or after the leg's starting date
                     var matchDate = IncrementDateUntilDayOfWeek(startDate, team.MatchDayOfWeek);
@@ -197,12 +196,12 @@ namespace TournamentManager.Plan
                 _tenantContext.TournamentContext.MatchPlanTournamentId, cancellationToken)).Any();
         }
 
-        private bool IsDateWithinRoundLegDateTime(RoundLegEntity leg, DateTime queryDate)
+        private static bool IsDateWithinRoundLegDateTime(RoundLegEntity leg, DateTime queryDate)
         {
             return queryDate.Date >= leg.StartDateTime.Date && queryDate.Date <= leg.EndDateTime.Date;
         }
         
-        private DateTime IncrementDateUntilDayOfWeek(DateTime date, DayOfWeek dayOfWeek)
+        private static DateTime IncrementDateUntilDayOfWeek(DateTime date, DayOfWeek dayOfWeek)
         {
             var count = 0;
             while (date.DayOfWeek != dayOfWeek && count++ <= 7)

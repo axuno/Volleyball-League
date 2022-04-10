@@ -20,7 +20,9 @@ namespace TournamentManager.Tests.ModelValidators
     public class FixtureValidatorTests
     {
         private (ITenantContext TenantConext, Axuno.Tools.DateAndTime.TimeZoneConverter TimeZoneConverter, PlannedMatchRow PlannedMatch) _data;
-        private readonly AppDb _appDb;
+#pragma warning disable IDE0052 // Remove unread private members
+        private readonly AppDb _appDb; // mocked in CTOR
+#pragma warning restore IDE0052 // Remove unread private members
 
         private const string ExcludedDateReason = "Unit-Test";
 
@@ -53,8 +55,8 @@ namespace TournamentManager.Tests.ModelValidators
                     rep.AreTeamsBusyAsync(It.IsAny<MatchEntity>(), It.IsAny<bool>(), It.IsAny<long>(), It.IsAny<CancellationToken>()))
                 .Returns((MatchEntity match, bool onlyDatePart, long tournamentId, CancellationToken cancellationToken) =>
                     Task.FromResult(match.Id % 2 == 0 || !match.PlannedStart.HasValue
-                                    ? new long[] {} 
-                                    : new long[] { match.HomeTeamId }));
+                                    ? Array.Empty<long>() 
+                                    : new[] { match.HomeTeamId }));
             appDbMock.Setup(a => a.MatchRepository).Returns(matchRepoMock.Object);
             
             var excludedMatchDateRepoMock = TestMocks.GetRepo<ExcludedMatchDateRepository>();
@@ -81,15 +83,13 @@ namespace TournamentManager.Tests.ModelValidators
                     var team2Id = (long)((FieldCompareValuePredicate)((PredicateExpression)filter[0].Contents)[2].Contents).Value;
                     var teams = new List<TeamEntity>
                     {
-                        new TeamEntity
-                        {
+                        new() {
                             Id = team1Id,
                             VenueId = 100 + team1Id,
                             MatchDayOfWeek = team1Id < 10000 ? (int)(team1Id % 6) : default(int?),
                             MatchTime = new TimeSpan(18, 0, 0)
                         },
-                        new TeamEntity
-                        {
+                        new() {
                             Id = team2Id,
                             VenueId = 200 + team2Id,
                             MatchDayOfWeek = team2Id < 10000 ? (int)(team2Id % 6) : default(int?),

@@ -14,7 +14,7 @@ namespace TournamentManager.DI
     public class PhoneNumberService
     {
         private readonly PhoneNumbers.PhoneNumberUtil _fnu;
-        private static readonly object Locker = new object();
+        private static readonly object Locker = new();
         private readonly ILogger _logger = AppLogging.CreateLogger<PhoneNumber>();
 
         public PhoneNumberService(PhoneNumbers.PhoneNumberUtil phoneNumberUtility)

@@ -136,19 +136,11 @@ namespace Axuno.Tools.DateAndTime
         {
             if (!dateTimeOfAnyKind.HasValue) return null;
 
-            DateTime utcDateTime;
-            switch (dateTimeOfAnyKind.Value.Kind)
-            {
-                case DateTimeKind.Utc:
-                    utcDateTime = dateTimeOfAnyKind.Value;
-                    break;
-                case DateTimeKind.Local:
-                    utcDateTime = dateTimeOfAnyKind.Value.ToUniversalTime();
-                    break;
-                default: //DateTimeKind.Unspecified
-                    utcDateTime = DateTime.SpecifyKind(dateTimeOfAnyKind.Value, DateTimeKind.Utc);
-                    break;
-            }
+            var utcDateTime = dateTimeOfAnyKind.Value.Kind switch {
+                DateTimeKind.Utc => dateTimeOfAnyKind.Value,
+                DateTimeKind.Local => dateTimeOfAnyKind.Value.ToUniversalTime(),
+                _ => DateTime.SpecifyKind(dateTimeOfAnyKind.Value, DateTimeKind.Utc)
+            };
 
             return ToZonedTime(new DateTimeOffset(utcDateTime), timeZoneId, cultureInfo, timeZoneProvider);
         }
@@ -289,7 +281,7 @@ namespace Axuno.Tools.DateAndTime
         /// <returns>Returns <c>true</c> if the <see cref="TimeZoneInfo"/> can be mapped to a IANA timezone, otherwise <c>false</c>.</returns>
         public static bool CanMapToIanaTimeZone(TimeZoneInfo timeZoneInfo)
         {
-            return TzConverter.TZConvert.TryWindowsToIana(timeZoneInfo.Id, out var ianaTimeZoneName);
+            return TzConverter.TZConvert.TryWindowsToIana(timeZoneInfo.Id, out _);
         }
 
         /// <summary>
