@@ -15,7 +15,7 @@ namespace League.ModelBinders
     public class TimeSpanModelBinder : IModelBinder
     {
         private readonly IModelBinder _fallbackBinder;
-        private ILogger<TimeSpanModelBinder> _logger;
+        private readonly ILogger<TimeSpanModelBinder> _logger;
 
         private const DateTimeStyles _dateTimeStyles = DateTimeStyles.AllowWhiteSpaces | DateTimeStyles.AssumeLocal | DateTimeStyles.NoCurrentDateDefault;
 
@@ -45,12 +45,12 @@ namespace League.ModelBinders
 
             if (!TryParseTime(valueAsString, out var time))
             {
-                if (_logger.IsEnabled(LogLevel.Debug)) _logger.LogDebug($"Could not bind model '{bindingContext.ModelName}' to value '{valueAsString}', falling back to {nameof(SimpleTypeModelBinder)}");
+                _logger.LogDebug("Could not bind model '{modelName}' to value '{valueAsString}', falling back to {fallbackBinder}", bindingContext.ModelName, valueAsString, nameof(SimpleTypeModelBinder));
                 return _fallbackBinder.BindModelAsync(bindingContext);
             }
 
             bindingContext.Result = ModelBindingResult.Success(time);
-            _logger.LogTrace("Parsed string '{originalValue}': {timeSpan} ", valueAsString, time);
+            _logger.LogDebug("Parsed string '{originalValue}': {timeSpan} ", valueAsString, time);
             return Task.CompletedTask;
         }
 

@@ -57,7 +57,7 @@ namespace League.ModelBinders
 
             if (!TryParseDateTime(valueAsString, out var dateTime))
             {
-                if (_logger.IsEnabled(LogLevel.Debug)) _logger.LogDebug("Could not bind model '{modelName}' to value '{valueAsString}', falling back to {modelBinder}", bindingContext.ModelName, valueAsString, nameof(SimpleTypeModelBinder));
+                _logger.LogDebug("Could not bind model '{modelName}' to value '{valueAsString}', falling back to {fallbackBinder}", bindingContext.ModelName, valueAsString, nameof(SimpleTypeModelBinder));
                 return _fallbackBinder.BindModelAsync(bindingContext);
             }
 
