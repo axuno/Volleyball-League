@@ -261,4 +261,4 @@ dotnet_style_qualification_for_method = false:suggestion
 dotnet_style_qualification_for_event = false:suggestion
 
 # Copyright file header
-file_header_template = \nCopyright SmartFormat Project maintainers and contributors.\nLicensed under the MIT license.\n
+file_header_template = \nCopyright Volleyball League Project maintainers and contributors.\nLicensed under the MIT license.\n

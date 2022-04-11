@@ -27,7 +27,7 @@ namespace LeagueDemo.Controllers
                 if (!string.IsNullOrEmpty(urlSegmentValue)) return Redirect($"/{urlSegmentValue}");
             }
 
-            return Redirect(Url.Action(nameof(Welcome), nameof(Home)));
+            return Redirect(Url.Action(nameof(Welcome), nameof(Home))!);
         }
 
         [Route("/[action]")]

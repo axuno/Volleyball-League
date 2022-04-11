@@ -35,7 +35,7 @@ namespace Axuno.BackgroundTask
 
     public class ScheduleConfig<T> : IScheduleConfig<T>
     {
-        public string CronExpression { get; set; }
-        public TimeZoneInfo TimeZoneInfo { get; set; }
+        public string CronExpression { get; set; } = string.Empty;
+        public TimeZoneInfo TimeZoneInfo { get; set; } = TimeZoneInfo.Utc;
     }
 }

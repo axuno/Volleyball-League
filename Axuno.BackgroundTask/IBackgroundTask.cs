@@ -4,6 +4,9 @@ using System.Threading.Tasks;
 
 namespace Axuno.BackgroundTask
 {
+    /// <summary>
+    /// Interface for background tasks.
+    /// </summary>
     public interface IBackgroundTask
     {
         /// <summary>

@@ -32,7 +32,7 @@ namespace Axuno.BackgroundTask
         /// <summary>
         /// Gets the <see cref="IBackgroundQueue"/> of this service.
         /// </summary>
-        public IBackgroundQueue TaskQueue { get; private set; }
+        public IBackgroundQueue? TaskQueue { get; private set; }
 
         protected override async Task ExecuteAsync(CancellationToken cancellationToken)
         {
@@ -50,7 +50,7 @@ namespace Axuno.BackgroundTask
                     cancellationToken.ThrowIfCancellationRequested();
                     await Task.Delay(Config.PollQueueDelay, cancellationToken);
 
-                    if (_concurrentTaskCount < Config.MaxConcurrentCount && TaskQueue.Count > 0)
+                    if (_concurrentTaskCount < Config.MaxConcurrentCount && TaskQueue?.Count > 0)
                     {
                         Interlocked.Increment(ref _concurrentTaskCount);
                         _logger.LogDebug("Num of tasks: {concurrentTaskCount}", _concurrentTaskCount);
@@ -71,8 +71,10 @@ namespace Axuno.BackgroundTask
                                     CancellationTokenSource.CreateLinkedTokenSource(cancellationToken,
                                         taskCancellation.Token))
                                 {
-                                    var t = TaskQueue.RunTaskAsync(taskListReference.Dequeue(),
+                                    var t = TaskQueue?.RunTaskAsync(taskListReference.Dequeue(),
                                         combinedCancellation.Token);
+                                    if (t is null)
+                                        throw new NullReferenceException($"{nameof(TaskQueue)} cannot be null here.");
                                     if (t.Exception != null) throw t.Exception;
                                     taskChunk.Add(t);
                                 }
@@ -94,7 +96,7 @@ namespace Axuno.BackgroundTask
                         // Task.WhenAll will not throw all exceptions when it encounters them.
                         // Instead, it adds them to an AggregateException, that must be
                         // checked at the end of waiting for the tasks to complete
-                        Task allTasks = null;
+                        Task? allTasks = null;
                         try
                         {
                             allTasks = Task.WhenAll(taskChunk);

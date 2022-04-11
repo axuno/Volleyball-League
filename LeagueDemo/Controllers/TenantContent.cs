@@ -26,7 +26,7 @@ namespace League.Controllers
         public TenantContent(ICompositeViewEngine viewEngine, IActionContextAccessor actionContextAccessor, ITenantContext tenantContext)
         {
             _viewEngine = viewEngine;
-            _actionContext = actionContextAccessor.ActionContext;
+            _actionContext = actionContextAccessor.ActionContext!;
             _tenantContext = tenantContext;
         }
 

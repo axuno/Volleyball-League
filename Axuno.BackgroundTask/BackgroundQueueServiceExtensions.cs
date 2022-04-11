@@ -15,7 +15,7 @@ namespace Axuno.BackgroundTask
         /// <param name="services"></param>
         /// <param name="config"></param>
         /// <returns>Returns the <see cref="IServiceCollection"/> after the <see cref="ConcurrentBackgroundQueueService"/> has been registered.</returns>
-        public static IServiceCollection AddConcurrentBackgroundQueueService(this IServiceCollection services, Action<ConcurrentBackgroundQueueServiceConfig> config = null)
+        public static IServiceCollection AddConcurrentBackgroundQueueService(this IServiceCollection services, Action<ConcurrentBackgroundQueueServiceConfig>? config = null)
         {
             // Null-checks are part the extension methods:
             services.Configure<ConcurrentBackgroundQueueServiceConfig>(config ?? new Action<ConcurrentBackgroundQueueServiceConfig>(option => {}));
@@ -30,7 +30,7 @@ namespace Axuno.BackgroundTask
         /// <param name="services"></param>
         /// <param name="config"></param>
         /// <returns>Returns the <see cref="IServiceCollection"/> after the <see cref="BackgroundQueueService"/> has been registered.</returns>
-        public static IServiceCollection AddBackgroundQueueService(this IServiceCollection services, Action<BackgroundQueueServiceConfig> config = null)
+        public static IServiceCollection AddBackgroundQueueService(this IServiceCollection services, Action<BackgroundQueueServiceConfig>? config = null)
         {
             // Null-checks are part of the extension methods:
             services.Configure<BackgroundQueueServiceConfig>(config ?? new Action<BackgroundQueueServiceConfig>(options => { }));

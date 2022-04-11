@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
@@ -59,7 +56,7 @@ namespace Axuno.BackgroundTask
                 return nextTaskItem;
 
             _logger.LogDebug("No TaskItem could be dequeued.");
-            return null;
+            return new BackgroundTaskEmpty();
         }
 
         /// <summary>

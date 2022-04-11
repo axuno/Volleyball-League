@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Axuno.BackgroundTask
 {
@@ -12,6 +10,6 @@ namespace Axuno.BackgroundTask
         /// <summary>
         /// Gets or sets the <see cref="Action"/> when an <see cref="Exception"/> is thrown. May be null.
         /// </summary>
-        public Action<Exception> OnException { get; set; }
+        public Action<Exception> OnException { get; set; } = _ => { };
     }
 }
