@@ -9,13 +9,22 @@ using Microsoft.Extensions.Options;
 
 namespace Axuno.BackgroundTask
 {
+    /// <summary>
+    /// Class for processing background tasks.
+    /// </summary>
     public class ConcurrentBackgroundQueueService : BackgroundService
     {
         private readonly ILogger<ConcurrentBackgroundQueueService> _logger;
         private readonly ManualResetEvent _resetEvent = new(true);
         private readonly object _locker = new();
         private int _concurrentTaskCount;
-        
+
+        /// <summary>
+        /// CTOR.
+        /// </summary>
+        /// <param name="taskQueue"></param>
+        /// <param name="logger"></param>
+        /// <param name="config"></param>
         public ConcurrentBackgroundQueueService(IBackgroundQueue taskQueue,
             ILogger<ConcurrentBackgroundQueueService> logger, IOptions<ConcurrentBackgroundQueueServiceConfig> config)
         {
@@ -34,6 +43,11 @@ namespace Axuno.BackgroundTask
         /// </summary>
         public IBackgroundQueue? TaskQueue { get; private set; }
 
+        /// <summary>
+        /// Execute queued tasks.
+        /// </summary>
+        /// <param name="cancellationToken"></param>
+        /// <returns>A <see cref="Task"/>.</returns>
         protected override async Task ExecuteAsync(CancellationToken cancellationToken)
         {
             lock (_locker)
@@ -102,7 +116,7 @@ namespace Axuno.BackgroundTask
                             allTasks = Task.WhenAll(taskChunk);
                             // re-throws an AggregateException if one exists
                             // after waiting for the tasks to complete
-                            allTasks.Wait(cancellationToken);
+                            await allTasks.WaitAsync(cancellationToken);
                         }
                         catch (Exception e)
                         {
