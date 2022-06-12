@@ -149,7 +149,7 @@ namespace League.Controllers
 
             if (model.TeamVenueRoundInfo == null)
             {
-                return NotFound(id);
+                return NotFound();
             }
 
             model.PhotoUriInfo = new TeamPhotoStaticFile(_webHostEnvironment, _tenantContext, new NullLogger<TeamPhotoStaticFile>()).GetUriInfo(id);
