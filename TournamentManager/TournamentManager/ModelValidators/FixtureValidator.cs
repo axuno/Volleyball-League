@@ -138,12 +138,13 @@ namespace TournamentManager.ModelValidators
                         var stayWithinLegDates = Data.TenantContext.TournamentContext.FixtureRuleSet.PlannedMatchTimeMustStayInCurrentLegBoundaries;
                         var currentLeg = round.RoundLegs.First(rl => rl.SequenceNo == Model.LegSequenceNo);
 
+                        // Note: EndDateTime includes the full day
                         if ((stayWithinLegDates &&
-                             new DateTimePeriod(currentLeg.StartDateTime, currentLeg.EndDateTime).Contains(
+                             new DateTimePeriod(currentLeg.StartDateTime, currentLeg.EndDateTime.AddDays(1).AddSeconds(-1)).Contains(
                                  Model.PlannedStart))
                             ||
                             (!stayWithinLegDates && round.RoundLegs.Any(rl =>
-                                 new DateTimePeriod(rl.StartDateTime, rl.EndDateTime).Contains(Model.PlannedStart))))
+                                new DateTimePeriod(rl.StartDateTime, rl.EndDateTime.AddDays(1).AddSeconds(-1)).Contains(Model.PlannedStart))))
                         {
                             return _successResult;
                         }
