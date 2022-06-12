@@ -230,6 +230,19 @@ namespace League.Controllers
                 return PartialView(Views.ViewNames.Team._EditTeamModalPartial, model);
             }
 
+            var tournament = await _appDb.TournamentRepository.GetTournamentAsync(
+                new PredicateExpression(TournamentFields.Id == _tenantContext.TournamentContext.TeamTournamentId)
+                , cancellationToken);
+
+            // The team name for an active tournament won't be changed
+            if (tournament is { IsPlanningMode: true })
+            {
+                foreach (var tir in model.TeamEntity.TeamInRounds)
+                {
+                    tir.TeamNameForRound = team.Name;
+                }
+            }
+
             try
             {
                 if (await _appDb.GenericRepository.SaveEntityAsync(model.TeamEntity, false, true, cancellationToken))
