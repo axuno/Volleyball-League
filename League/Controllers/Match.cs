@@ -176,7 +176,7 @@ namespace League.Controllers
             var model = new ResultsViewModel(_timeZoneConverter)
             {
                 Tournament =
-                    await _appDb.TournamentRepository.GetTournamentAsync(new PredicateExpression(TournamentFields.Id == _tenantContext.TournamentContext.MatchPlanTournamentId),
+                    await _appDb.TournamentRepository.GetTournamentAsync(new PredicateExpression(TournamentFields.Id == _tenantContext.TournamentContext.MatchResultTournamentId),
                         cancellationToken),
                 CompletedMatches = await _appDb.MatchRepository.GetCompletedMatchesAsync(
                      new PredicateExpression(CompletedMatchFields.TournamentId == _tenantContext.TournamentContext.MatchResultTournamentId), cancellationToken),
