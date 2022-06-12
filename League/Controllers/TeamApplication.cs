@@ -443,9 +443,9 @@ namespace League.Controllers
             }
 
             sessionModel.Venue.MapEntityToFormFields(venueEditModel.VenueEntity);
-            SaveModelToSession(sessionModel);
             sessionModel.VenueIsSet = true;
-
+            SaveModelToSession(sessionModel);
+            
             return RedirectToAction(nameof(Confirm), new { Organization = _tenantContext.SiteContext.UrlSegmentValue });
         }
 
@@ -494,14 +494,14 @@ namespace League.Controllers
                     throw;
                 }
                 
-                var isNewApplication = teamInRoundEntity.IsNew;
                 sessionModel.TeamInRound.MapFormFieldsToEntity(teamInRoundEntity);
                 teamInRoundEntity.Team = new TeamEntity();
                 sessionModel.Team.MapFormFieldsToEntity(teamInRoundEntity.Team);
+                // An EXISTING venue MUST be set by its ID, otherwise no venue will be stored for the Team
+                if(!sessionModel.Venue.IsNew) teamInRoundEntity.Team.VenueId = sessionModel.Venue.Id;
+                // Add a new venue, or take over changes to an existing venue
                 teamInRoundEntity.Team.Venue = new VenueEntity();
                 sessionModel.Venue.MapFormFieldsToEntity(teamInRoundEntity.Team.Venue);
-
-                
 
                 // Adds the current user as team manager, unless she already is team manager
                 await AddManagerToTeamEntity(teamInRoundEntity.Team, cancellationToken);
@@ -523,7 +523,7 @@ namespace League.Controllers
                         {
                             CultureInfo = CultureInfo.DefaultThreadCurrentUICulture,
                             TeamId = teamInRoundEntity.TeamId,
-                            IsNewApplication = isNewApplication,
+                            IsNewApplication = teamInRoundEntity.IsNew,
                             RoundId = teamInRoundEntity.RoundId,
                             RegisteredByUserId = GetCurrentUserId(),
                             UrlToEditApplication = Url.Action(nameof(EditTeam), nameof(TeamApplication), new { Organization = _tenantContext.SiteContext.UrlSegmentValue, teamId = teamInRoundEntity.TeamId}, Request.Scheme, Request.Host.ToString())
@@ -555,10 +555,6 @@ namespace League.Controllers
         private IList<long> GetUserClaimTeamIds(IList<string> claimTypes)
         {
             var teamIds = new HashSet<long>();
-            if (User.Claims == null)
-            {
-                return teamIds.ToList();
-            }
             
             foreach (var claim in User.Claims.Where(c => claimTypes.Contains(c.Type)))
             {
