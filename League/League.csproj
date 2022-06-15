@@ -5,6 +5,8 @@
 		<AssemblyName>League</AssemblyName>
 		<RootNamespace>League</RootNamespace>
 		<UserSecretsId>ceea2bf6-8147-49b9-be85-26fca01f9ed3</UserSecretsId>
+        <LangVersion>latest</LangVersion>
+        <Nullable>disable</Nullable>
 		<NeutralLanguage>en</NeutralLanguage>
 		<Version>4.5.3</Version>
         <AssemblyVersion>4.5.3.0</AssemblyVersion>
@@ -17,7 +19,7 @@
         <PackageProjectUrl>https://github.com/axuno/Volleyball-League</PackageProjectUrl>
 		<RepositoryUrl>https://github.com/axuno/Volleyball-League</RepositoryUrl>
         <RepositoryType>Git</RepositoryType>
-		<PackageTags>volleyball league competition asp.net-core</PackageTags>
+		<PackageTags>competition platform league asp-net sport volleyball net60</PackageTags>
 		<PackageReleaseNotes>Production release for platform https://volleyball-liga.de/</PackageReleaseNotes>
         <IsPackable>true</IsPackable>
         <GenerateDocumentationFile>true</GenerateDocumentationFile>

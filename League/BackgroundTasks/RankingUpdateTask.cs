@@ -85,9 +85,10 @@ namespace League.BackgroundTasks
         /// </summary>
         public ITenantContext TenantContext { get; set; }
 
-        private async Task UpdateRankingAsync(CancellationToken cancellationToken)
+private async Task UpdateRankingAsync(CancellationToken cancellationToken)
         {
             var roundIds = new HashSet<long>();
+            var rankingWasUpdated = false;
 
             if (TournamentId == null && RoundId == null)
             {
@@ -114,34 +115,19 @@ namespace League.BackgroundTasks
                     new PredicateExpression(TournamentId != null
                         ? MatchToPlayRawFields.TournamentId == TournamentId
                         : MatchToPlayRawFields.RoundId == RoundId), cancellationToken);
-                // Get round id and date of creation for the ranking entry
-                var rankingCreatedOnTable = await TenantContext.DbContext.AppDb.RankingRepository.GetRoundRanksCreatedOn(
+                // Note: RankingRepository.GetRankingAsync is much cheaper than RankingRepository.GetRankingListAsync
+                var currentRanking = await TenantContext.DbContext.AppDb.RankingRepository.GetRankingAsync(
                     new PredicateExpression(TournamentId != null
                         ? RankingFields.TournamentId == TournamentId
                         : RankingFields.RoundId == RoundId), cancellationToken);
 
                 #region * Identify rounds for which the ranking table must be updated *
                 
-                matchesPlayed.ForEach(m =>
-                {
-                    // Was the match updated after the ranking entry was created?
-                    if (EnforceUpdate || rankingCreatedOnTable.Exists(rt => rt.RoundId == m.RoundId && rt.CreatedOn < m.ModifiedOn))
-                    {
-                        roundIds.Add(m.RoundId);
-                    }
-                });
-                // matches to play is required for generation of ranking chart files (remaining match days)
-                matchesToPlay.ForEach(m => 
-                {
-                    // Was the match updated after the ranking entry was created?
-                    if (EnforceUpdate || rankingCreatedOnTable.Exists(rt => rt.RoundId == m.RoundId && rt.CreatedOn < m.ModifiedOn))
-                    {
-                        roundIds.Add(m.RoundId);
-                    }
-                });
+                // Matches played / to play may contain a single round or all tournament rounds!
+                matchesPlayed.ForEach(m => roundIds.Add(m.RoundId));
 
-                // No rounds which require an update
-                if (!roundIds.Any()) return;
+                // matches to play are required for generation of ranking chart files (remaining match days)
+                matchesToPlay.ForEach(m => roundIds.Add(m.RoundId));
                 
                 #endregion
 
@@ -153,26 +139,39 @@ namespace League.BackgroundTasks
                 {
                     /***** Ranking table update *****/
 
+                    // without played matches, neither ranking nor chart can be generated
+                    if (matchesPlayed.All(mp => mp.RoundId != roundId))
+                    {
+                        // Remove an existing ranking list for the round
+                        await TenantContext.DbContext.AppDb.RankingRepository.ReplaceAsync(new RankingList(), roundId, cancellationToken);
+                        continue;
+                    }
+                    
                     // rules can be different for every round
                     var matchRule =
                         await TenantContext.DbContext.AppDb.RoundRepository.GetMatchRuleAsync(roundId, cancellationToken);
                     // filter matches to only contain a single round
-                    var ranking = new Ranking(matchesPlayed.Where(mp => mp.RoundId == roundId),
+                    var newRanking = new Ranking(matchesPlayed.Where(mp => mp.RoundId == roundId),
                         matchesToPlay.Where(mtp => mtp.RoundId == roundId), (RankComparerEnum) matchRule.RankComparer);
+                    // Save the current last update
+                    var currentLastUpdated = currentRanking.Any() ? currentRanking.Where(l => l.RoundId == roundId).Max(l => l.ModifiedOn) : DateTime.MinValue;
+                    var newRankingList = newRanking.GetList(out var newLastUpdated);
+                    
+                    // Has there been a change to the ranking?
+                    if (newLastUpdated == currentLastUpdated && !EnforceUpdate) continue;
+                    rankingWasUpdated = true;
+
                     // Update the ranking table
-                    await TenantContext.DbContext.AppDb.RankingRepository.SaveAsync(ranking.GetList(out var lastUpdated),
+                    await TenantContext.DbContext.AppDb.RankingRepository.ReplaceAsync(newRankingList,
                         roundId, cancellationToken);
 
                     /***** Chart file generation *****/
 
-                    // without played matches, no chart can be generated
-                    if (ranking.MatchesPlayed.Count == 0) break;
-
-                    var chart = new RankingChart(ranking,
+                    var chart = new RankingChart(newRanking,
                             teamsInRound.Select(tir => (tir.TeamId, tir.TeamNameForRound)).ToList(),
                             new RankingChart.ChartSettings
                             {
-                                Title = null, XTitle = "MD", YTitle = "R", Width = 700, Height = 400,
+                                Title = string.Empty, XTitle = "MD", YTitle = "R", Width = 700, Height = 400,
                                 GraphBackgroundColorArgb = "#FFEFFFEF", PlotAreaBackgroundColorArgb = "#FFFFFFFF",
                                 FontName = "Arial, Helvetica, sans-serif", ShowLegend = false
                             })
@@ -191,10 +190,10 @@ namespace League.BackgroundTasks
                 _logger.LogCritical(e, "Could not update ranking table and/or chart files");
             }
 
-            DeleteObsoleteChartImageFiles(roundIds);
+            if (rankingWasUpdated) DeleteObsoleteChartImageFiles(roundIds);
 #if DEBUG
             stopWatch.Stop();
-            _logger.LogInformation("{taskName} completed in {elapsedTime}ms", nameof(RankingUpdateTask), stopWatch.ElapsedMilliseconds);
+            _logger.LogInformation("{0} completed in {1}ms", nameof(RankingUpdateTask), stopWatch.ElapsedMilliseconds);
 #endif
         }
 
