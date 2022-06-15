@@ -31,12 +31,12 @@ namespace TournamentManager.Data
 	        _dbContext = dbContext;
 	    }
 
-        public virtual async Task SaveAsync(RankingList rankingList, long roundId, CancellationToken cancellationToken)
+        public virtual async Task ReplaceAsync(RankingList rankingList, long roundId, CancellationToken cancellationToken)
         {
             var rankingColl = new EntityCollection<RankingEntity>(new RankingEntityFactory());
             var da = _dbContext.GetNewAdapter();
 
-            var transactionName = nameof(SaveAsync) + Guid.NewGuid().ToString("N");
+            var transactionName = nameof(ReplaceAsync) + Guid.NewGuid().ToString("N");
 
             try
             {
@@ -123,13 +123,13 @@ namespace TournamentManager.Data
                 new QueryFactory().RankingList.Where(filter).OrderBy(RankingListFields.TournamentId.Ascending(), RankingListFields.RoundName.Ascending(), RankingListFields.Rank.Ascending()), cancellationToken));
         }
 
-        public virtual async Task<List<(long RoundId, DateTime CreatedOn)>> GetRoundRanksCreatedOn(IPredicateExpression filter,
+        public virtual async Task<List<RankingEntity>> GetRankingAsync(IPredicateExpression filter,
             CancellationToken cancellationToken)
         {
             using var da = _dbContext.GetNewAdapter();
             return (await da.FetchQueryAsync<RankingEntity>(
                 new QueryFactory().Ranking.Where(filter)
-                ,cancellationToken)).Cast<RankingEntity>().Select(r => (RoundId: r.RoundId, CreatedOn: r.CreatedOn)).Distinct().ToList();
+                ,cancellationToken)).Cast<RankingEntity>().Distinct().ToList();
         }
     }
 }
