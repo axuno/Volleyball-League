@@ -506,6 +506,9 @@ namespace League.Controllers
                 // Adds the current user as team manager, unless she already is team manager
                 await AddManagerToTeamEntity(teamInRoundEntity.Team, cancellationToken);
             
+                // We have to save the state before saving
+                var isNewApplication = teamInRoundEntity.IsNew;
+
                 if (await _appDb.GenericRepository.SaveEntityAsync(teamInRoundEntity, true, true, cancellationToken))
                 {
                     HttpContext.Session.Remove(TeamApplicationSessionName);
@@ -523,7 +526,7 @@ namespace League.Controllers
                         {
                             CultureInfo = CultureInfo.DefaultThreadCurrentUICulture,
                             TeamId = teamInRoundEntity.TeamId,
-                            IsNewApplication = teamInRoundEntity.IsNew,
+                            IsNewApplication = isNewApplication,
                             RoundId = teamInRoundEntity.RoundId,
                             RegisteredByUserId = GetCurrentUserId(),
                             UrlToEditApplication = Url.Action(nameof(EditTeam), nameof(TeamApplication), new { Organization = _tenantContext.SiteContext.UrlSegmentValue, teamId = teamInRoundEntity.TeamId}, Request.Scheme, Request.Host.ToString())
