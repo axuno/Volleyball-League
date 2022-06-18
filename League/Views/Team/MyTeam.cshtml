@@ -42,7 +42,7 @@
             var teamPhotoInfo = Model.TeamPhotoStaticFile.GetUriInfo(teamVenueInfo.TeamId);
             var zonedLastModified = Model.TimeZoneConverter.ToZonedTime(teamPhotoInfo.Date);
 
-            <div class="tab-pane@{if (teamVenueInfo.TeamId == Model.ActiveTeamId){<text> show active</text>}}" id="tab-@(teamVenueInfo.TeamId)" role="tabpanel" aria-labelledby="@teamVenueInfo.TeamName-tab">
+            <div class="tab-pane@{if (Model.TeamUserRoundInfos.Any(tvr => tvr.TeamId == Model.ActiveTeamId)){<text> show active</text>}}" id="tab-@(teamVenueInfo.TeamId)" role="tabpanel" aria-labelledby="@teamVenueInfo.TeamName-tab">
                 <div class="card pb-2 mb-3">
                     <div class="card-header px-3 py-1">
                         <div class="d-flex justify-content-between align-items-baseline">
@@ -50,7 +50,7 @@
                             <div>
                                 <button type="button" site-toggle-modal-ajax
                                         site-data-url="@Url.Action(nameof(Team.Edit), nameof(Team), new { Organization = tenantUrlSegment, teamId = teamVenueInfo.TeamId})"
-                                        site-authorize-resource site-resource="@new TeamEntity(teamVenueInfo.TeamId)"
+                                        site-authorize-resource site-resource="@(new TeamEntity(teamVenueInfo.TeamId))"
                                         site-requirement="@League.Authorization.TeamOperations.EditTeam" class="btn btn-sm btn-primary">
                                     @Localizer["Edit"]
                                 </button>

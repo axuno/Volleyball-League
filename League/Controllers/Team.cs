@@ -121,7 +121,7 @@ namespace League.Controllers
                 TeamVenueRoundInfos = await _appDb.TeamRepository.GetTeamVenueRoundInfoAsync(
                     new PredicateExpression(TeamVenueRoundFields.TournamentId == _tenantContext.TournamentContext.TeamTournamentId)
                         .AddWithAnd(TeamVenueRoundFields.TeamId.In(userTeamIds)), cancellationToken),
-                ActiveTeamId = id ?? userTeamIds.First(),
+                ActiveTeamId = id ?? teamUserRoundInfos.Max(tur => tur.TeamId),
                 TeamPhotoStaticFile =
                     new TeamPhotoStaticFile(_webHostEnvironment, _tenantContext, new NullLogger<TeamPhotoStaticFile>())
             };
