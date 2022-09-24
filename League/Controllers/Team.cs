@@ -125,6 +125,7 @@ namespace League.Controllers
                 TeamPhotoStaticFile =
                     new TeamPhotoStaticFile(_webHostEnvironment, _tenantContext, new NullLogger<TeamPhotoStaticFile>())
             };
+            model.ActiveTeamId = model.TeamVenueRoundInfos.Max(tvr => tvr.TeamId);
 
             return View(Views.ViewNames.Team.MyTeam, model);
         }
