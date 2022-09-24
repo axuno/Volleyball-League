@@ -155,11 +155,11 @@ namespace League.ApiControllers
             const string cronCacheName = "CronCache";
             var cronCache = cronCacheName + _tenantContext.Identifier + referenceDate.ToString("O");
 
-            if (_cache.TryGetValue(cronCacheName, out _))
+            if (_cache.TryGetValue(cronCache, out _))
                 return true;
 
-            _cache.Remove(cronCacheName);
-            _cache.Set(cronCacheName, cronCache,
+            _cache.Remove(cronCache);
+            _cache.Set(cronCache, cronCache,
                 new MemoryCacheEntryOptions {AbsoluteExpiration = DateTimeOffset.UtcNow.AddHours(23), Priority = CacheItemPriority.Normal});
 
             return false;
