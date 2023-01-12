@@ -272,7 +272,7 @@ namespace League.ApiControllers
         {
             var key = _configuration.GetSection("ScheduledTaskKey").Value;
             if (string.IsNullOrWhiteSpace(key)) _logger.LogCritical("ScheduledTaskKey is null or whitespace");
-            return key;
+            return key ?? string.Empty;
         }
         
         /// <summary>

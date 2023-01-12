@@ -6,10 +6,10 @@
     <RootNamespace>TournamentManager.DAL</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="NuGetizer" Version="0.7.5">
+    <PackageReference Include="NuGetizer" Version="0.9.1">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="SD.LLBLGen.Pro.ORMSupportClasses" Version="5.7.7" />
+    <PackageReference Include="SD.LLBLGen.Pro.ORMSupportClasses" Version="5.9.3" />
   </ItemGroup>
 </Project>

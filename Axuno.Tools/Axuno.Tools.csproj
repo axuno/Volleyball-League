@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
@@ -6,13 +6,13 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="NodaTime" Version="3.0.10" />
-    <PackageReference Include="NuGetizer" Version="0.7.5">
+    <PackageReference Include="NodaTime" Version="3.1.6" />
+    <PackageReference Include="NuGetizer" Version="0.9.1">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="TimeZoneConverter" Version="5.0.0" />
-    <PackageReference Include="TimeZoneNames" Version="5.0.1" />
+    <PackageReference Include="TimeZoneConverter" Version="6.0.1" />
+    <PackageReference Include="TimeZoneNames" Version="6.0.0" />
   </ItemGroup>
 
   <ItemGroup>
