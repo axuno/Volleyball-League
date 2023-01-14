@@ -50,7 +50,7 @@
 	<ItemGroup>
 		<PackageReference Include="Axuno.TextTemplating" Version="2.0.1" />
 		<PackageReference Include="JSNLog" Version="3.0.1" />
-		<PackageReference Include="MailMergeLib" Version="5.8.2" />
+		<PackageReference Include="MailMergeLib" Version="5.9.1" />
 		<PackageReference Include="Microsoft.AspNetCore.Authentication.Facebook" Version="6.0.3" />
 		<PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="6.0.3" />
 		<PackageReference Include="Microsoft.AspNetCore.Authentication.MicrosoftAccount" Version="6.0.3" />
