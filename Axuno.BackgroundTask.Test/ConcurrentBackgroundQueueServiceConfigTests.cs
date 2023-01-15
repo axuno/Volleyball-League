@@ -4,20 +4,19 @@ using System.Text;
 using Axuno.BackgroundTask;
 using NUnit.Framework;
 
-namespace Axuno.BackgroundTask.Tests
+namespace Axuno.BackgroundTask.Tests;
+
+[TestFixture]
+public class ConcurrentBackgroundQueueServiceConfigTests
 {
-    [TestFixture]
-    public class ConcurrentBackgroundQueueServiceConfigTests
+    [Test]
+    public void Set_Config_Default()
     {
-        [Test]
-        public void Set_Config_Default()
+        var config = new ConcurrentBackgroundQueueServiceConfig{ PollQueueDelay = default, MaxConcurrentCount = -1};
+        Assert.Multiple(() =>
         {
-            var config = new ConcurrentBackgroundQueueServiceConfig{ PollQueueDelay = default, MaxConcurrentCount = -1};
-            Assert.Multiple(() =>
-            {
-                Assert.AreEqual(TimeSpan.FromMilliseconds(100), config.PollQueueDelay);
-                Assert.AreEqual(5, config.MaxConcurrentCount);
-            });
-        }
+            Assert.AreEqual(TimeSpan.FromMilliseconds(100), config.PollQueueDelay);
+            Assert.AreEqual(5, config.MaxConcurrentCount);
+        });
     }
 }

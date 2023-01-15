@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace TournamentManager.Ranking
+namespace TournamentManager.Ranking;
+
+internal interface IRankComparer : IComparer<Rank>
 {
-    internal interface IRankComparer : IComparer<Rank>
-    {
-        Ranking? Ranking { get; set; }
-        DateTime UpperDateLimit { get; set; }
-    }
+    Ranking? Ranking { get; set; }
+    DateTime UpperDateLimit { get; set; }
 }

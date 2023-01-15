@@ -8,32 +8,31 @@ using Microsoft.AspNetCore.Mvc.ModelBinding.Binders;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
-namespace League.ModelBinders
+namespace League.ModelBinders;
+
+/// <summary>
+/// Uses <see cref="TimeSpanModelBinder"/> for <see cref="TimeSpan"/> values instead of <see cref="SimpleTypeModelBinder"/>.
+/// </summary>
+/// <code>
+/// <remarks>Register in StartUp:</remarks>
+/// services.AddMvc().AddMvcOptions(s => {
+///    s.ModelBinderProviders.Insert(0, new TimeSpanModelBinderProvider());
+/// });
+/// </code>
+public class TimeSpanModelBinderProvider : IModelBinderProvider
 {
     /// <summary>
-    /// Uses <see cref="TimeSpanModelBinder"/> for <see cref="TimeSpan"/> values instead of <see cref="SimpleTypeModelBinder"/>.
+    /// /// Creates a <see cref="TimeSpanModelBinder" /> based on <see cref="ModelBinderProviderContext" />.
     /// </summary>
-    /// <code>
-    /// <remarks>Register in StartUp:</remarks>
-    /// services.AddMvc().AddMvcOptions(s => {
-    ///    s.ModelBinderProviders.Insert(0, new TimeSpanModelBinderProvider());
-    /// });
-    /// </code>
-    public class TimeSpanModelBinderProvider : IModelBinderProvider
+    /// <param name="context"></param>
+    /// <returns>Returns a <see cref="TimeSpanModelBinder" /></returns>
+    public IModelBinder GetBinder(ModelBinderProviderContext context)
     {
-        /// <summary>
-        /// /// Creates a <see cref="TimeSpanModelBinder" /> based on <see cref="ModelBinderProviderContext" />.
-        /// </summary>
-        /// <param name="context"></param>
-        /// <returns>Returns a <see cref="TimeSpanModelBinder" /></returns>
-        public IModelBinder GetBinder(ModelBinderProviderContext context)
-        {
-            if (context == null)
-                throw new ArgumentNullException(nameof(context));
+        if (context == null)
+            throw new ArgumentNullException(nameof(context));
 
-            return context.Metadata.ModelType == typeof(TimeSpan) || context.Metadata.ModelType == typeof(TimeSpan?)
-                ? new TimeSpanModelBinder(context.Services.GetRequiredService<ILoggerFactory>())
-                : null;
-        }
+        return context.Metadata.ModelType == typeof(TimeSpan) || context.Metadata.ModelType == typeof(TimeSpan?)
+            ? new TimeSpanModelBinder(context.Services.GetRequiredService<ILoggerFactory>())
+            : null;
     }
 }

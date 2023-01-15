@@ -15,41 +15,40 @@ using TournamentManager.DAL.HelperClasses;
 using TournamentManager.DAL.Linq;
 using TournamentManager.DAL.TypedViewClasses;
 
-namespace TournamentManager.Data
+namespace TournamentManager.Data;
+
+/// <summary>
+/// Class for ExcludedMatchDate related data selections
+/// </summary>
+public class AvailableMatchDateRepository
 {
-	/// <summary>
-	/// Class for ExcludedMatchDate related data selections
-	/// </summary>
-	public class AvailableMatchDateRepository
-	{
-        private static readonly ILogger _logger = AppLogging.CreateLogger<AvailableMatchDateRepository>();
-        private readonly MultiTenancy.IDbContext _dbContext;
-	    public AvailableMatchDateRepository(MultiTenancy.IDbContext dbContext)
-	    {
-	        _dbContext = dbContext;
-	    }
+    private static readonly ILogger _logger = AppLogging.CreateLogger<AvailableMatchDateRepository>();
+    private readonly MultiTenancy.IDbContext _dbContext;
+    public AvailableMatchDateRepository(MultiTenancy.IDbContext dbContext)
+    {
+        _dbContext = dbContext;
+    }
 
-        /// <summary>
-        /// Gets the <see cref="EntityCollection{TEntity}"/> of type <see cref="AvailableMatchDateEntity"/> for a tournament.
-        /// </summary>
-        /// <param name="tournamentId"></param>
-        /// <param name="cancellationToken"></param>
-        /// <returns>Returns the <see cref="EntityCollection{TEntity}"/> of type <see cref="AvailableMatchDateEntity"/> for a tournament.</returns>
-        public async Task<EntityCollection<AvailableMatchDateEntity>> GetAvailableMatchDatesAsync (long tournamentId, CancellationToken cancellationToken)
+    /// <summary>
+    /// Gets the <see cref="EntityCollection{TEntity}"/> of type <see cref="AvailableMatchDateEntity"/> for a tournament.
+    /// </summary>
+    /// <param name="tournamentId"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns>Returns the <see cref="EntityCollection{TEntity}"/> of type <see cref="AvailableMatchDateEntity"/> for a tournament.</returns>
+    public async Task<EntityCollection<AvailableMatchDateEntity>> GetAvailableMatchDatesAsync (long tournamentId, CancellationToken cancellationToken)
+    {
+        var available = new EntityCollection<AvailableMatchDateEntity>();
+        using var da = _dbContext.GetNewAdapter();
+        var qp = new QueryParameters
         {
-            var available = new EntityCollection<AvailableMatchDateEntity>();
-            using var da = _dbContext.GetNewAdapter();
-            var qp = new QueryParameters
-            {
-                CollectionToFetch = available,
-                FilterToUse = AvailableMatchDateFields.TournamentId == tournamentId
-            };
-            await da.FetchEntityCollectionAsync(qp, cancellationToken);
-            da.CloseConnection();
+            CollectionToFetch = available,
+            FilterToUse = AvailableMatchDateFields.TournamentId == tournamentId
+        };
+        await da.FetchEntityCollectionAsync(qp, cancellationToken);
+        da.CloseConnection();
 
-            _logger.LogDebug("{count} available match dates found", available.Count);
+        _logger.LogDebug("{count} available match dates found", available.Count);
 
-            return available;
-        }
+        return available;
     }
 }

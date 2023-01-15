@@ -7,16 +7,15 @@ using TournamentManager.DAL.TypedViewClasses;
 using TournamentManager.Data;
 using TournamentManager.Ranking;
 
-namespace League.Models.RankingViewModels
+namespace League.Models.RankingViewModels;
+
+public class RankingListModel
 {
-    public class RankingListModel
-    {
-        public TournamentEntity Tournament { get; set; }
+    public TournamentEntity Tournament { get; set; }
 
-        public List<RankingListRow> RankingList { get; set; }
+    public List<RankingListRow> RankingList { get; set; }
 
-        public Dictionary<long, System.IO.FileInfo> ChartFileInfos { get; set; }
+    public Dictionary<long, System.IO.FileInfo> ChartFileInfos { get; set; }
 
-        public long? ActiveRoundId { get; set; }
-    }
+    public long? ActiveRoundId { get; set; }
 }

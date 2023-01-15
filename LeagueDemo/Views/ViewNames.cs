@@ -6,41 +6,40 @@
  */
  #pragma warning disable CS1591
 
-namespace LeagueDemo.Views
+namespace LeagueDemo.Views;
+
+public class ViewNames
 {
-    public class ViewNames
+    public static class Home
     {
-        public static class Home
+        public const string AboutLeague = "AboutLeague";
+        public const string AboutLeaguede = "AboutLeague.de";
+        public const string LegalDisclosure = "LegalDisclosure";
+        public const string LegalDisclosurede = "LegalDisclosure.de";
+        public const string Overview = "Overview";
+        public const string PictureCredits = "PictureCredits";
+        public const string Privacy = "Privacy";
+        public const string Privacyde = "Privacy.de";
+        public const string Welcome = "Welcome";
+    }
+    public static class Shared
+    {
+        public const string Error = "Error";
+        public const string _Layout = "_Layout";
+    }
+    public static class TenantContent
+    {
+        public static class OtherOrg
         {
-            public const string AboutLeague = "AboutLeague";
-            public const string AboutLeaguede = "AboutLeague.de";
-            public const string LegalDisclosure = "LegalDisclosure";
-            public const string LegalDisclosurede = "LegalDisclosure.de";
-            public const string Overview = "Overview";
-            public const string PictureCredits = "PictureCredits";
-            public const string Privacy = "Privacy";
-            public const string Privacyde = "Privacy.de";
-            public const string Welcome = "Welcome";
+            public const string Home_Index = "Home_Index";
+            public const string Info_News = "Info_News";
+            public const string Info_RuleOfGame = "Info_RuleOfGame";
         }
-        public static class Shared
+        public static class TestOrg
         {
-            public const string Error = "Error";
-            public const string _Layout = "_Layout";
-        }
-        public static class TenantContent
-        {
-            public static class OtherOrg
-            {
-                public const string Home_Index = "Home_Index";
-                public const string Info_News = "Info_News";
-                public const string Info_RuleOfGame = "Info_RuleOfGame";
-            }
-            public static class TestOrg
-            {
-                public const string Home_Index = "Home_Index";
-                public const string Info_News = "Info_News";
-                public const string Info_RuleOfGame = "Info_RuleOfGame";
-            }
+            public const string Home_Index = "Home_Index";
+            public const string Info_News = "Info_News";
+            public const string Info_RuleOfGame = "Info_RuleOfGame";
         }
     }
 }
