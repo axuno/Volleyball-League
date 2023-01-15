@@ -146,7 +146,7 @@ namespace League
 
             // required for cookies and session cookies (will throw CryptographicException without)
             services.AddDataProtection()
-                .SetApplicationName("League")
+                .SetApplicationName(nameof(League))
                 .SetDefaultKeyLifetime(TimeSpan.FromDays(360))
                 .PersistKeysToFileSystem(
                     new DirectoryInfo(Path.Combine(WebHostEnvironment.ContentRootPath, "DataProtectionKeys")))
@@ -158,7 +158,7 @@ namespace League
 
             // register the multi purpose DataProtector
             services.AddSingleton(typeof(League.DataProtection.DataProtector));
-
+            
             #endregion
 
             // Configure form upload limits
