@@ -255,3 +255,7 @@ paket-files/
 
 # Chromium browser to generate PDF
 Chromium-Win/
+
+# Data Protection Keys for ASP.NET Core Data Protection
+**/DataProtectionKeys/*.xml
+

@@ -1,6 +1,6 @@
-<img src="https://raw.githubusercontent.com/axuno/Volleyball-League/master/logo-volleyball-league.png" width="100" alt="Logo">
+<img src="logo-volleyball-league.png" width="100" alt="Logo">
 
-# Volleyball League
+# Volleyball League Platform Library
 
 ![GitHub release (latest by date including pre-releases)](https://img.shields.io/github/v/release/axuno/volleyball-league?include_prereleases)  [![build](https://github.com/axuno/Volleyball-League/workflows/build/badge.svg)](https://github.com/axuno/Volleyball-League/actions?query=workflow%3Abuild)  ![GitHub](https://img.shields.io/github/license/axuno/volleyball-league)
 
