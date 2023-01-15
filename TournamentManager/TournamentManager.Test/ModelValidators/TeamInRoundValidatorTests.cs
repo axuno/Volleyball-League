@@ -46,7 +46,7 @@ public class TeamInRoundValidatorTests
             .Callback(() => { }).Returns((PredicateExpression filter, CancellationToken cancellationToken) =>
             {
                 var tournamentId = (long)((FieldCompareValuePredicate)filter[0].Contents).Value;
-                return Task.FromResult(new TournamentEntity{Id = tournamentId, Name = $"Tournament{tournamentId}", Description = $"DescriptionTournament{tournamentId}" });
+                return Task.FromResult(new TournamentEntity{Id = tournamentId, Name = $"Tournament{tournamentId}", Description = $"DescriptionTournament{tournamentId}" })!;
             });
         appDbMock.Setup(a => a.TournamentRepository).Returns(tournamentRepoMock.Object);
 
@@ -80,7 +80,7 @@ public class TeamInRoundValidatorTests
         {
             Assert.IsTrue(factResult.Enabled);
             Assert.AreEqual(expected, factResult.Success);
-            if (!factResult.Success) Assert.IsTrue( factResult.Message.Contains(tournament.Description));
+            if (!factResult.Success) Assert.IsTrue( factResult.Message.Contains(tournament!.Description));
             Assert.IsNull(factResult.Exception);
         });
     }

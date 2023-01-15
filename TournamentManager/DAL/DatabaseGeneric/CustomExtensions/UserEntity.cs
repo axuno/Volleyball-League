@@ -72,7 +72,7 @@ public partial class UserEntity
             
         if (!string.IsNullOrEmpty(FirstName))
         {
-            FirstName = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(FirstName?.ToLower(CultureInfo.CurrentCulture));
+            FirstName = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(FirstName.ToLower(CultureInfo.CurrentCulture));
         }
 
         if (!string.IsNullOrEmpty(MiddleName))

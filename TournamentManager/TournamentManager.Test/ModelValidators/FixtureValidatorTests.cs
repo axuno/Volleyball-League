@@ -114,7 +114,7 @@ public class FixtureValidatorTests
                         });
                     }
 
-                    return Task.FromResult(roundEntity);
+                    return Task.FromResult(roundEntity)!;
                 }
             );
         appDbMock.Setup(a => a.RoundRepository).Returns(roundRepoMock.Object);

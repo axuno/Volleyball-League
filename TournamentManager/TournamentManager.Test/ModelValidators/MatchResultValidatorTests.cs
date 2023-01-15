@@ -56,7 +56,7 @@ public class MatchResultValidatorTests
                         });
                     }
 
-                    return Task.FromResult(roundEntity);
+                    return Task.FromResult(roundEntity)!;
                 }
             );
         appDbMock.Setup(a => a.RoundRepository).Returns(roundRepoMock.Object);

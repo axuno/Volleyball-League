@@ -14,7 +14,7 @@ public class NUnitLogger<T> : NUnitLogger, ILogger<T>
     /// <summary>
     /// CTOR.
     /// </summary>
-    public NUnitLogger() : base(typeof(T).FullName)
+    public NUnitLogger() : base(typeof(T).FullName ?? "(null)")
     { }
 
     /// <summary>

@@ -170,7 +170,6 @@ public class CaptchaSvgGenerator : IDisposable
 
     private void SetDefaults()
     {
-        FontFamilyName = "Arial, Helvetica, sans-serif";
         FontSizePt = 20.0F;
         Width = 151;
         Height = 51;

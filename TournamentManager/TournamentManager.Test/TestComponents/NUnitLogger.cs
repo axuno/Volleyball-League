@@ -61,7 +61,7 @@ public class NUnitLogger : ILogger, IDisposable
     /// <param name="state"></param>
     /// <param name="exception"></param>
     /// <param name="formatter"></param>
-    public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception exception,
+    public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception? exception,
         Func<TState, Exception, string> formatter)
     {
         if (!IsEnabled(logLevel)) return;
@@ -73,10 +73,10 @@ public class NUnitLogger : ILogger, IDisposable
         sb.Append("] ");
         sb.Append(_category);
         sb.Append(": ");
-        sb.Append(formatter(state, exception));
 
         if (exception != null)
         {
+            sb.Append(formatter(state, exception));
             sb.AppendLine(exception.ToString());
         }
 

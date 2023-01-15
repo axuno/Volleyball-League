@@ -37,7 +37,7 @@ public class TenantContext : ITenantContext
     public static TenantContext Deserialize(string content)
     {
         var s = new YAXLib.YAXSerializer(typeof(TenantContext));
-        var tc = (TenantContext) s.Deserialize(content);
+        var tc = (TenantContext) s.Deserialize(content)!;
         tc.SiteContext.Tenant = tc.OrganizationContext.Tenant = tc.DbContext.Tenant = tc.TournamentContext.Tenant = tc;
         return tc;
     }

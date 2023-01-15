@@ -67,8 +67,8 @@ public class TenantStoreTests
                 Assert.AreEqual(ConnKeyPrefix + name, tenant?.DbContext.ConnectionKey);
                 Assert.AreEqual(ConnValuePrefix + name, tenant?.DbContext.ConnectionString);
                 Assert.IsTrue(tenant != null && tenant.OrganizationContext.Name.StartsWith("Long") && tenant.OrganizationContext.ShortName.StartsWith("Short"));
-                Assert.IsTrue(tenant.OrganizationContext.Tenant != null && tenant.SiteContext.Tenant != null && tenant.TournamentContext.Tenant != null);
-                if(tenant.IsDefault) Assert.AreEqual(tenant.Identifier, tenant.SiteContext.UrlSegmentValue);
+                Assert.IsTrue(tenant?.OrganizationContext.Tenant != null && tenant.SiteContext.Tenant != null && tenant.TournamentContext.Tenant != null);
+                if(tenant is { IsDefault: true }) Assert.AreEqual(tenant.Identifier, tenant.SiteContext.UrlSegmentValue);
             }
         });
     }
@@ -129,8 +129,8 @@ public class TenantStoreTests
 
         Assert.Multiple(() =>
         {
-            Assert.IsTrue(_store.TryUpdateTenant("Tenant1", updateTenant));
-            Assert.AreEqual(newGuid, _store.GetTenantByIdentifier("Tenant1").Guid);
+            Assert.IsTrue(_store.TryUpdateTenant("Tenant1", updateTenant!));
+            Assert.AreEqual(newGuid, _store.GetTenantByIdentifier("Tenant1")?.Guid);
         });
     }
         
@@ -148,8 +148,8 @@ public class TenantStoreTests
 
         Assert.Multiple(() =>
         {
-            Assert.IsTrue(_store.TryUpdateTenant("Tenant1", updateTenant));
-            Assert.AreEqual(newGuid, _store.GetTenantByIdentifier("Tenant1").Guid);
+            Assert.IsTrue(_store.TryUpdateTenant("Tenant1", updateTenant!));
+            Assert.AreEqual(newGuid, _store.GetTenantByIdentifier("Tenant1")?.Guid);
         });
     }
 }

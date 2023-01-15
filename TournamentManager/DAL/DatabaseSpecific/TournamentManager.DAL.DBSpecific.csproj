@@ -2,7 +2,8 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
-    <AssemblyName>TournamentManager.DAL.DBSpecific</AssemblyName>
+      <nullable>enable</nullable>
+      <AssemblyName>TournamentManager.DAL.DBSpecific</AssemblyName>
     <RootNamespace>TournamentManager.DAL.DatabaseSpecific</RootNamespace>
   </PropertyGroup>
   <ItemGroup>

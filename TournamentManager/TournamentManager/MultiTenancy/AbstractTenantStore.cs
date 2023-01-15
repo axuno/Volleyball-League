@@ -121,7 +121,7 @@ public class AbstractTenantStore<T> : ITenantStore<T> where T: class, ITenantCon
         Tenants.Clear();
         foreach (var configFile in GetTenantConfigurationFiles.Invoke())
         {
-            var tc = (ITenantContext) TenantContextSerializer.Deserialize(ReadTenantConfigFile(configFile));
+            var tc = (ITenantContext) TenantContextSerializer.Deserialize(ReadTenantConfigFile(configFile))!;
             tc.Filename = configFile;
             tc.DbContext.ConnectionString =
                 Configuration.GetConnectionString(tc.DbContext.ConnectionKey) ?? string.Empty;

@@ -21,7 +21,7 @@ public partial class CompletedMatchRow
         public int Guest { get; set; }
     }
 
-    private List<CompletedMatchSet> _set = null;
+    private List<CompletedMatchSet>? _set = null;
 
     private void FillSet()
     {
@@ -46,7 +46,7 @@ public partial class CompletedMatchRow
         get
         {
             if (_set == null) FillSet();
-            return _set;
+            return _set!;
         }
     }
 }
