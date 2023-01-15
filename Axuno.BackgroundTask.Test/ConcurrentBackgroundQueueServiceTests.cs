@@ -16,7 +16,7 @@ namespace Axuno.BackgroundTask.Tests;
 [TestFixture]
 public class ConcurrentBackgroundQueueServiceTests
 {
-    private ServiceProvider _serviceProvider;
+    private ServiceProvider? _serviceProvider;
 
     [SetUp]
     public void Setup()
@@ -43,7 +43,7 @@ public class ConcurrentBackgroundQueueServiceTests
         return services.BuildServiceProvider();
     }
 
-    private Exception ExceptionFromBackgroundQueue { get; set; }
+    private Exception? ExceptionFromBackgroundQueue { get; set; }
 
     [TestCase(false)]
     [TestCase(true)]
@@ -52,8 +52,8 @@ public class ConcurrentBackgroundQueueServiceTests
         var itemCounter = 0;
         var cts = new CancellationTokenSource();
 
-        var queue = _serviceProvider.GetRequiredService<IBackgroundQueue>();
-        var bgTaskSvc = _serviceProvider.GetRequiredService<IHostedService>();
+        var queue = _serviceProvider!.GetRequiredService<IBackgroundQueue>();
+        var bgTaskSvc = _serviceProvider!.GetRequiredService<IHostedService>();
         // will create enough tasks to exceed the maximum number of parallel tasks
         for (var i = 1; i < 10; i++)
         {
@@ -77,8 +77,8 @@ public class ConcurrentBackgroundQueueServiceTests
         var itemCounter = 0;
         var cts = new CancellationTokenSource();
 
-        var queue = _serviceProvider.GetRequiredService<IBackgroundQueue>();
-        var bgTaskSvc = _serviceProvider.GetRequiredService<IHostedService>();
+        var queue = _serviceProvider!.GetRequiredService<IBackgroundQueue>();
+        var bgTaskSvc = _serviceProvider!.GetRequiredService<IHostedService>();
         queue.QueueTask(new BgTsk(cancellationToken => { Interlocked.Increment(ref itemCounter); Console.WriteLine("Task 1 completed."); return Task.CompletedTask; }));
         queue.QueueTask(new BgTsk(cancellationToken => { Interlocked.Increment(ref itemCounter); Console.WriteLine("Task 2 completed."); return Task.CompletedTask; }));
         queue.QueueTask(new BgTsk(cancellationToken => { Interlocked.Increment(ref itemCounter); throw new AmbiguousImplementationException("TaskItem 3 exception"); }));
@@ -93,7 +93,7 @@ public class ConcurrentBackgroundQueueServiceTests
         Assert.Multiple(() =>
         {
             Assert.AreEqual(expected, itemCounter);
-            Assert.AreEqual(ExceptionFromBackgroundQueue.GetType(), typeof(AmbiguousImplementationException));
+            Assert.AreEqual(ExceptionFromBackgroundQueue?.GetType(), typeof(AmbiguousImplementationException));
         });
     }
         
@@ -103,8 +103,8 @@ public class ConcurrentBackgroundQueueServiceTests
         var itemCounter = 0;
         var cts = new CancellationTokenSource();
 
-        var queue = _serviceProvider.GetRequiredService<IBackgroundQueue>();
-        var bgTaskSvc = _serviceProvider.GetRequiredService<IHostedService>();
+        var queue = _serviceProvider!.GetRequiredService<IBackgroundQueue>();
+        var bgTaskSvc = _serviceProvider!.GetRequiredService<IHostedService>();
         var task = bgTaskSvc.StartAsync(cts.Token);
         queue.QueueTask(new BgTsk(cancellationToken => { Interlocked.Increment(ref itemCounter); throw new OperationCanceledException(); }));
         while (itemCounter < 1)
@@ -122,8 +122,8 @@ public class ConcurrentBackgroundQueueServiceTests
         var itemCounter = 0;
         var cts = new CancellationTokenSource();
 
-        var queue = _serviceProvider.GetRequiredService<IBackgroundQueue>();
-        var bgTaskSvc = _serviceProvider.GetRequiredService<IHostedService>();
+        var queue = _serviceProvider!.GetRequiredService<IBackgroundQueue>();
+        var bgTaskSvc = _serviceProvider!.GetRequiredService<IHostedService>();
         var task = bgTaskSvc.StartAsync(cts.Token);
             
         queue.QueueTask(new BgTsk(async cancellationToken => { Interlocked.Increment(ref itemCounter); await Task.Delay(1000, cancellationToken); }){Timeout = TimeSpan.FromMilliseconds(1) });
@@ -139,7 +139,7 @@ public class ConcurrentBackgroundQueueServiceTests
     {
         var cts = new CancellationTokenSource();
 
-        var bgTaskSvc = (ConcurrentBackgroundQueueService) _serviceProvider.GetRequiredService<IHostedService>();
+        var bgTaskSvc = (ConcurrentBackgroundQueueService) _serviceProvider!.GetRequiredService<IHostedService>();
         await bgTaskSvc.StartAsync(cts.Token);
 
         // Set the backing field for the Config property by reflection
@@ -151,7 +151,7 @@ public class ConcurrentBackgroundQueueServiceTests
     [Test]
     public async Task Stop_Service()
     {
-        var bgTaskSvc = _serviceProvider.GetRequiredService<IHostedService>();
+        var bgTaskSvc = _serviceProvider!.GetRequiredService<IHostedService>();
 
         await bgTaskSvc.StartAsync(CancellationToken.None);
         await Task.Delay(100, CancellationToken.None);

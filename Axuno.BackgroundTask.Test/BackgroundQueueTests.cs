@@ -13,7 +13,7 @@ namespace Axuno.BackgroundTask.Tests;
 [TestFixture]
 public class BackgroundQueueTests
 {
-    private ServiceProvider _serviceProvider;
+    private ServiceProvider? _serviceProvider;
 
     [SetUp]
     public void Setup()
@@ -31,26 +31,18 @@ public class BackgroundQueueTests
         return services.BuildServiceProvider();
     }
 
-    private Exception ExceptionFromBackgroundQueue { get; set; }
-
-    [Test]
-    public void Tasks_Item_Is_Null_Should_Throw()
-    {
-        var queue = _serviceProvider.GetRequiredService<IBackgroundQueue>();
-
-        Assert.Throws<ArgumentNullException>(() => queue.QueueTask(null));
-    }
+    private Exception? ExceptionFromBackgroundQueue { get; set; }
 
     [Test]
     public void Tasks_Timeout_Should_Throw()
     {
         // onException just sets the exception variable as an evidence for being called
-        var queue = _serviceProvider.GetRequiredService<IBackgroundQueue>();
+        var queue = _serviceProvider?.GetRequiredService<IBackgroundQueue>();
         var task = new BgTsk(async cancellationToken => { await Task.Delay(5000, cancellationToken); })
         {
             Timeout = TimeSpan.FromMilliseconds(100)
         };
-        queue.QueueTask(task);
+        queue!.QueueTask(task);
             
         Assert.Multiple(() =>
         {

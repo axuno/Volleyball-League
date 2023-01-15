@@ -1,6 +1,5 @@
 using System;
 using System.Text;
-using System.Threading;
 using Microsoft.Extensions.Logging;
 
 namespace Axuno.UnitTest.TestComponents;
@@ -61,7 +60,7 @@ public class NUnitLogger : ILogger, IDisposable
     /// <param name="state"></param>
     /// <param name="exception"></param>
     /// <param name="formatter"></param>
-    public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception exception,
+    public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception? exception,
         Func<TState, Exception, string> formatter)
     {
         if (!IsEnabled(logLevel)) return;
@@ -73,10 +72,9 @@ public class NUnitLogger : ILogger, IDisposable
         sb.Append("] ");
         sb.Append(_category);
         sb.Append(": ");
-        sb.Append(formatter(state, exception));
-
         if (exception != null)
         {
+            sb.Append(formatter(state, exception));
             sb.AppendLine(exception.ToString());
         }
 
@@ -99,7 +97,7 @@ public class NUnitLogger : ILogger, IDisposable
     /// <typeparam name="TState"></typeparam>
     /// <param name="state"></param>
     /// <returns>Returns the instance of this logger.</returns>
-    public IDisposable BeginScope<TState>(TState state)
+    public IDisposable? BeginScope<TState>(TState state) where TState : notnull
     {
         return this;
     }

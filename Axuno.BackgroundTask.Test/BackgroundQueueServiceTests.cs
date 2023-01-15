@@ -16,7 +16,7 @@ namespace Axuno.BackgroundTask.Tests;
 [TestFixture]
 public class BackgroundQueueServiceTests
 {
-    private ServiceProvider _serviceProvider;
+    private ServiceProvider? _serviceProvider;
 
     [SetUp]
     public void Setup()
@@ -43,7 +43,7 @@ public class BackgroundQueueServiceTests
         return services.BuildServiceProvider();
     }
 
-    private Exception ExceptionFromBackgroundQueue { get; set; }
+    private Exception? ExceptionFromBackgroundQueue { get; set; }
 
     [Test]
     public async Task Tasks_Completing_Normally()
@@ -51,8 +51,8 @@ public class BackgroundQueueServiceTests
         var itemCounter = 0;
         var cts = new CancellationTokenSource();
 
-        var queue = _serviceProvider.GetRequiredService<IBackgroundQueue>();
-        var bgTaskSvc = _serviceProvider.GetRequiredService<IHostedService>();
+        var queue = _serviceProvider!.GetRequiredService<IBackgroundQueue>();
+        var bgTaskSvc = _serviceProvider!.GetRequiredService<IHostedService>();
         for (var i = 0; i < 8; i++)
         {
             var cnt = i + 1;
@@ -78,8 +78,8 @@ public class BackgroundQueueServiceTests
         var itemCounter = 0;
         var cts = new CancellationTokenSource();
 
-        var queue = _serviceProvider.GetRequiredService<IBackgroundQueue>();
-        var bgTaskSvc = _serviceProvider.GetRequiredService<IHostedService>();
+        var queue = _serviceProvider!.GetRequiredService<IBackgroundQueue>();
+        var bgTaskSvc = _serviceProvider!.GetRequiredService<IHostedService>();
         queue.QueueTask(new BgTsk(cancellationToken => { Interlocked.Increment(ref itemCounter); Console.WriteLine($"Task 1 completed."); return Task.CompletedTask; }));
         queue.QueueTask(new BgTsk(cancellationToken => { Interlocked.Increment(ref itemCounter); Console.WriteLine($"Task 2 completed."); return Task.CompletedTask; }));
         queue.QueueTask(new BgTsk(cancellationToken => { Interlocked.Increment(ref itemCounter); throw new AmbiguousImplementationException("TaskItem 3 exception"); }));
@@ -94,14 +94,14 @@ public class BackgroundQueueServiceTests
         Assert.Multiple(() =>
         {
             Assert.AreEqual(expected, itemCounter);
-            Assert.AreEqual(ExceptionFromBackgroundQueue.GetType(), typeof(AmbiguousImplementationException));
+            Assert.AreEqual(ExceptionFromBackgroundQueue?.GetType(), typeof(AmbiguousImplementationException));
         });
     }
 
     [Test]
     public async Task Stop_Service()
     {
-        var bgTaskSvc = _serviceProvider.GetRequiredService<IHostedService>();
+        var bgTaskSvc = _serviceProvider!.GetRequiredService<IHostedService>();
 
         await bgTaskSvc.StartAsync(CancellationToken.None);
             
