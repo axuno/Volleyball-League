@@ -116,7 +116,7 @@ public sealed class Longitude : Angle
     ///     (without any precision specifier), which returns the angle in
     ///     ISO 6709 compatible format.
     /// </remarks>
-    public override string ToString(string format, IFormatProvider formatProvider)
+    public override string ToString(string? format, IFormatProvider? formatProvider)
     {
         if (format == "ISO")
             return string.Format(
@@ -130,7 +130,7 @@ public sealed class Longitude : Angle
         if (Radians < 0)
         {
             // We're going to remove the negative sign, but find out what a
-            // negitive sign is in the current format provider
+            // negative sign is in the current format provider
             var numberFormat = GetNumberFormatInfo(formatProvider);
             var negativeSign = numberFormat.NegativeSign;
             formatted = formatted[negativeSign.Length..];

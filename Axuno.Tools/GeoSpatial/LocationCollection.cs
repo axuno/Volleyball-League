@@ -116,7 +116,7 @@ public sealed class LocationCollection : ICollection<Location>, IXmlSerializable
     ///     The IXmlSerializable interface documentation specifies that this
     ///     method should always return null.
     /// </remarks>
-    XmlSchema IXmlSerializable.GetSchema()
+    XmlSchema? IXmlSerializable.GetSchema()
     {
         return null;
     }
@@ -139,7 +139,7 @@ public sealed class LocationCollection : ICollection<Location>, IXmlSerializable
             foreach (var value in SplitString(reader.ReadString(), '/'))
             {
                 if (Location.TryParse(value, LocationStyles.Iso, CultureInfo.InvariantCulture, out var location))
-                    locations.Add(location);
+                    locations.Add(location!);
             }
 
             reader.ReadEndElement();

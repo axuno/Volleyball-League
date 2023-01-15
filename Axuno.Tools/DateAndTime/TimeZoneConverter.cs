@@ -1,10 +1,10 @@
-﻿using System;
+﻿#nullable enable
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using NodaTime;
 using NodaTime.TimeZones;
 using TzConverter = TimeZoneConverter;
-#nullable enable
 namespace Axuno.Tools.DateAndTime;
 
 /// <summary>
@@ -203,14 +203,14 @@ public class TimeZoneConverter
 
         var tzNames =
             TimeZoneNames.TZNames.GetNamesForTimeZone(timeZone.Id, cultureInfo.TwoLetterISOLanguageName);
-        zonedDateTime.GenericName = tzNames.Generic;
-        zonedDateTime.Name = zonedDateTime.IsDaylightSavingTime ? tzNames.Daylight : tzNames.Standard;
+        zonedDateTime.GenericName = tzNames.Generic ?? string.Empty;
+        zonedDateTime.Name = (zonedDateTime.IsDaylightSavingTime ? tzNames.Daylight : tzNames.Standard) ?? string.Empty;
 
         var tzAbbr =
             TimeZoneNames.TZNames.GetAbbreviationsForTimeZone(timeZone.Id,
                 cultureInfo.TwoLetterISOLanguageName);
-        zonedDateTime.GenericAbbreviation = tzAbbr.Generic;
-        zonedDateTime.Abbreviation = zonedDateTime.IsDaylightSavingTime ? tzAbbr.Daylight : tzAbbr.Standard;
+        zonedDateTime.GenericAbbreviation = tzAbbr.Generic ?? string.Empty;
+        zonedDateTime.Abbreviation = (zonedDateTime.IsDaylightSavingTime ? tzAbbr.Daylight : tzAbbr.Standard) ?? string.Empty;
 
         return zonedDateTime;
     }

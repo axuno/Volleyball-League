@@ -120,10 +120,6 @@ public class Angle : IComparable<Angle>, IEquatable<Angle>, IFormattable
     /// <exception cref="ArgumentNullException">angle is null.</exception>
     public static Angle Negate(Angle angle)
     {
-        if (angle == null)
-        {
-            throw new ArgumentNullException(nameof(angle));
-        }
         return new Angle(angle.Radians * -1);
     }
 
@@ -154,7 +150,7 @@ public class Angle : IComparable<Angle>, IEquatable<Angle>, IFormattable
     /// </returns>
     public static bool operator <(Angle angleA, Angle angleB)
     {
-        if (angleA == null || angleA.IsDifferentDerivedClass(angleB))
+        if (angleA.IsDifferentDerivedClass(angleB))
         {
             return false;
         }
@@ -174,7 +170,7 @@ public class Angle : IComparable<Angle>, IEquatable<Angle>, IFormattable
     /// </returns>
     public static bool operator <=(Angle angleA, Angle angleB)
     {
-        if (angleA == null || angleA.IsDifferentDerivedClass(angleB))
+        if (angleA.IsDifferentDerivedClass(angleB))
         {
             return false;
         }
@@ -190,7 +186,7 @@ public class Angle : IComparable<Angle>, IEquatable<Angle>, IFormattable
     /// true if the value of angleA is the same as the value of angleB;
     /// otherwise, false.
     /// </returns>
-    public static bool operator ==(Angle angleA, Angle angleB)
+    public static bool operator ==(Angle? angleA, Angle? angleB)
     {
         return angleA?.Equals(angleB) ?? angleB is null;
     }
@@ -208,7 +204,7 @@ public class Angle : IComparable<Angle>, IEquatable<Angle>, IFormattable
     /// </returns>
     public static bool operator >(Angle angleA, Angle angleB)
     {
-        if (angleA == null || angleA.IsDifferentDerivedClass(angleB))
+        if (angleA.IsDifferentDerivedClass(angleB))
         {
             return false;
         }
@@ -228,7 +224,7 @@ public class Angle : IComparable<Angle>, IEquatable<Angle>, IFormattable
     /// </returns>
     public static bool operator >=(Angle angleA, Angle angleB)
     {
-        if (angleA == null || angleA.IsDifferentDerivedClass(angleB))
+        if (angleA.IsDifferentDerivedClass(angleB))
         {
             return false;
         }
@@ -254,9 +250,9 @@ public class Angle : IComparable<Angle>, IEquatable<Angle>, IFormattable
     /// number and the angle of other is not a number (double.NaN) or other
     /// is null.</para>
     /// </returns>
-    public int CompareTo(Angle other)
+    public int CompareTo(Angle? other)
     {
-        return IsDifferentDerivedClass(other) ? 1 : Radians.CompareTo(other.Radians);
+        return IsDifferentDerivedClass(other) ? 1 : Radians.CompareTo(other?.Radians);
     }
 
     /// <summary>
@@ -268,7 +264,7 @@ public class Angle : IComparable<Angle>, IEquatable<Angle>, IFormattable
     /// true if obj is an Angle and its value is the same as this instance;
     /// otherwise, false.
     /// </returns>
-    public override bool Equals(object obj)
+    public override bool Equals(object? obj)
     {
         return Equals(obj as Angle);
     }
@@ -282,7 +278,7 @@ public class Angle : IComparable<Angle>, IEquatable<Angle>, IFormattable
     /// true if the value of the value parameter is the same as this instance;
     /// otherwise, false.
     /// </returns>
-    public bool Equals(Angle other)
+    public bool Equals(Angle? other)
     {
         if (IsDifferentDerivedClass(other))
         {
@@ -342,16 +338,13 @@ public class Angle : IComparable<Angle>, IEquatable<Angle>, IFormattable
     /// </description></item>
     /// </list>
     /// </remarks>
-    public virtual string ToString(string format, IFormatProvider formatProvider)
+    public virtual string ToString(string? format, IFormatProvider? formatProvider)
     {
         if (string.IsNullOrEmpty(format))
         {
             format = "DMS";
         }
-        if (formatProvider == null)
-        {
-            formatProvider = CultureInfo.CurrentCulture;
-        }
+        formatProvider ??= CultureInfo.CurrentCulture;
 
         var parsed = ParseFormatString(format);
         switch (parsed.Item1)
@@ -388,9 +381,9 @@ public class Angle : IComparable<Angle>, IEquatable<Angle>, IFormattable
     /// </summary>
     /// <param name="provider">The format provider. Can be null.</param>
     /// <returns>A NumberFormatInfo to use to format numbers.</returns>
-    internal static NumberFormatInfo GetNumberFormatInfo(IFormatProvider provider)
+    internal static NumberFormatInfo GetNumberFormatInfo(IFormatProvider? provider)
     {
-        NumberFormatInfo numberFormat = null;
+        NumberFormatInfo? numberFormat = null;
         if (provider != null)
         {
             numberFormat = provider.GetFormat(typeof(NumberFormatInfo)) as NumberFormatInfo;
@@ -499,7 +492,7 @@ public class Angle : IComparable<Angle>, IEquatable<Angle>, IFormattable
 
     // This prevents a Longitude being compared to a Latitude but allows
     // a Longitude/Latitude to be compared to an angle
-    private bool IsDifferentDerivedClass(Angle angle)
+    private bool IsDifferentDerivedClass(Angle? angle)
     {
         if (angle is null)
         {

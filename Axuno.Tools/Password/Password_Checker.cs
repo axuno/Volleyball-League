@@ -63,9 +63,9 @@ public class Checker
     /// </summary>
     /// <param name="req">Requirements for the password.</param>
     /// <param name="pwd">Password to check.</param>
-    public static async Task<PasswordStrength> CheckAsync(Requirements req, string pwd)
+    public static async Task<PasswordStrength> CheckAsync(Requirements? req, string pwd)
     {
-        if (req == null) req = new Requirements();
+        req ??= new Requirements();
         return await Task.Run(() => DoCheck(req, pwd));
     }
 
@@ -74,9 +74,9 @@ public class Checker
     /// </summary>
     /// <param name="req">Requirements for the password.</param>
     /// <param name="pwd">Password to check.</param>
-    public static PasswordStrength Check(Requirements req, string pwd)
+    public static PasswordStrength Check(Requirements? req, string pwd)
     {
-        if (req == null) req = new Requirements();
+        req ??= new Requirements();
         return DoCheck(req, pwd);
     }
 
@@ -470,8 +470,8 @@ public class PasswordStrength
 /// </summary>
 public class StrengthDetail
 {
-    public string Description { get; set; }
-    public string Rate { get; set; }
+    public string Description { get; set; } = string.Empty;
+    public string Rate { get; set; } = string.Empty;
     public int Count { get; set; }
     public int Bonus { get; set; }
     public int Malus { get; set; }

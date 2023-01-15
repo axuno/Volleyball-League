@@ -14,14 +14,10 @@ public sealed class Latitude : Angle
     /// <exception cref="ArgumentOutOfRangeException">
     /// angle is greater than 90 degrees or less than -90 degrees.
     /// </exception>
-    public Latitude(Angle angle)
+    public Latitude(Angle? angle)
         : base((angle ?? new Angle(0)).Radians) // Prevent null reference access
     {
-        if (angle == null)
-        {
-            throw new ArgumentNullException(nameof(angle));
-        }
-        ValidateRange("angle", angle.Radians, -Math.PI / 2.0, Math.PI / 2.0);
+        ValidateRange("angle", Radians, -Math.PI / 2.0, Math.PI / 2.0);
     }
 
     private Latitude(double radians)
@@ -116,7 +112,7 @@ public sealed class Latitude : Angle
     /// (without any precision specifier), which returns the angle in
     /// ISO 6709 compatible format.
     /// </remarks>
-    public override string ToString(string format, IFormatProvider formatProvider)
+    public override string ToString(string? format, IFormatProvider? formatProvider)
     {
         if (format == "ISO")
         {

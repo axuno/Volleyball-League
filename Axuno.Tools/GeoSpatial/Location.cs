@@ -50,13 +50,6 @@ public sealed partial class Location : IEquatable<Location>, IFormattable, IXmlS
     }
 
     /// <summary>
-    ///     XmlSerializer requires a parameter-less constructor
-    /// </summary>
-    private Location()
-    {
-    }
-
-    /// <summary>
     ///     Gets the altitude of the coordinate, or null if the coordinate
     ///     does not contain altitude information.
     /// </summary>
@@ -77,7 +70,7 @@ public sealed partial class Location : IEquatable<Location>, IFormattable, IXmlS
     ///     true if the value of the value parameter is the same as this instance;
     ///     otherwise, false.
     /// </returns>
-    public bool Equals(Location other)
+    public bool Equals(Location? other)
     {
         if (other is null) return false;
 
@@ -100,10 +93,10 @@ public sealed partial class Location : IEquatable<Location>, IFormattable, IXmlS
     ///     The value of the current instance in the specified format.
     /// </returns>
     /// <exception cref="ArgumentException">format is unknown.</exception>
-    public string ToString(string format, IFormatProvider formatProvider)
+    public string ToString(string? format, IFormatProvider? formatProvider)
     {
         if (string.IsNullOrEmpty(format)) format = "DMS";
-        if (formatProvider == null) formatProvider = CultureInfo.CurrentCulture;
+        formatProvider ??= CultureInfo.CurrentCulture;
 
         var builder = new StringBuilder();
         if (format == "ISO")
@@ -138,7 +131,7 @@ public sealed partial class Location : IEquatable<Location>, IFormattable, IXmlS
     ///     The IXmlSerializable interface documentation specifies that this
     ///     method should always return null.
     /// </remarks>
-    XmlSchema IXmlSerializable.GetSchema()
+    XmlSchema? IXmlSerializable.GetSchema()
     {
         return null;
     }
@@ -160,7 +153,7 @@ public sealed partial class Location : IEquatable<Location>, IFormattable, IXmlS
         {
             if (TryParse(reader.ReadString(), LocationStyles.Iso, CultureInfo.InvariantCulture, out var parsed))
             {
-                Altitude = parsed.Altitude;
+                Altitude = parsed!.Altitude;
                 Latitude = parsed.Latitude;
                 Longitude = parsed.Longitude;
             }
@@ -245,7 +238,7 @@ public sealed partial class Location : IEquatable<Location>, IFormattable, IXmlS
     ///     true if obj is a Location and its value is the same as this instance;
     ///     otherwise, false.
     /// </returns>
-    public override bool Equals(object obj)
+    public override bool Equals(object? obj)
     {
         return Equals(obj as Location);
     }
@@ -275,7 +268,7 @@ public sealed partial class Location : IEquatable<Location>, IFormattable, IXmlS
     /// <returns>A Location containing the calculated point.</returns>
     /// <exception cref="ArgumentNullException">radial is null.</exception>
     /// <remarks>The ante meridian is not considered.</remarks>
-    public Location GetPoint(double distance, Angle radial)
+    public Location GetPoint(double distance, Angle? radial)
     {
         if (radial == null) throw new ArgumentNullException(nameof(radial));
 
@@ -312,7 +305,7 @@ public sealed partial class Location : IEquatable<Location>, IFormattable, IXmlS
     ///     true if the value of locationA is the same as the value of locationB;
     ///     otherwise, false.
     /// </returns>
-    public static bool operator ==(Location locationA, Location locationB)
+    public static bool operator ==(Location? locationA, Location? locationB)
     {
         return locationA?.Equals(locationB) ?? locationB is null;
     }
@@ -326,7 +319,7 @@ public sealed partial class Location : IEquatable<Location>, IFormattable, IXmlS
     ///     true if the value of locationA is different from the value of
     ///     locationB; otherwise, false.
     /// </returns>
-    public static bool operator !=(Location locationA, Location locationB)
+    public static bool operator !=(Location? locationA, Location? locationB)
     {
         return !(locationA == locationB);
     }
@@ -346,7 +339,7 @@ public sealed partial class Location : IEquatable<Location>, IFormattable, IXmlS
     /// <exception cref="FormatException">
     ///     value does not represent a valid co-ordinate.
     /// </exception>
-    public static Location Parse(string value, IFormatProvider provider)
+    public static Location Parse(string value, IFormatProvider? provider)
     {
         return Parse(value, LocationStyles.None, provider);
     }
@@ -370,11 +363,11 @@ public sealed partial class Location : IEquatable<Location>, IFormattable, IXmlS
     ///     value does not represent a valid co-ordinate.
     /// </exception>
     public static Location Parse(string value, LocationStyles style = LocationStyles.None,
-        IFormatProvider provider = null)
+        IFormatProvider? provider = null)
     {
         if (value == null) throw new ArgumentNullException(nameof(value));
 
-        if (TryParse(value, style, provider, out var output)) return output;
+        if (TryParse(value, style, provider, out var output)) return output!;
         throw new FormatException();
     }
 
@@ -404,7 +397,7 @@ public sealed partial class Location : IEquatable<Location>, IFormattable, IXmlS
     /// <returns>
     ///     true if the value was converted successfully; otherwise, false.
     /// </returns>
-    public static bool TryParse(string value, out Location location)
+    public static bool TryParse(string value, out Location? location)
     {
         return TryParse(value, LocationStyles.None, null, out location);
     }
@@ -424,7 +417,7 @@ public sealed partial class Location : IEquatable<Location>, IFormattable, IXmlS
     /// <returns>
     ///     true if the value was converted successfully; otherwise, false.
     /// </returns>
-    public static bool TryParse(string value, IFormatProvider provider, out Location location)
+    public static bool TryParse(string value, IFormatProvider provider, out Location? location)
     {
         return TryParse(value, LocationStyles.None, provider, out location);
     }
@@ -447,7 +440,7 @@ public sealed partial class Location : IEquatable<Location>, IFormattable, IXmlS
     /// <returns>
     ///     true if the value was converted successfully; otherwise, false.
     /// </returns>
-    public static bool TryParse(string value, LocationStyles style, IFormatProvider provider, out Location location)
+    public static bool TryParse(string value, LocationStyles style, IFormatProvider? provider, out Location? location)
     {
         location = null;
         if (style == LocationStyles.None)

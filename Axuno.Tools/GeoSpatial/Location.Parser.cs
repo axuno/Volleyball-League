@@ -94,7 +94,7 @@ public partial class Location
             new(IsoPattern,
                 RegexOptions.Compiled | RegexOptions.CultureInvariant | RegexOptions.IgnorePatternWhitespace);
 
-        private static Location CreateLocation(Angle latitude, Angle longitude, double? altitude)
+        private static Location? CreateLocation(Angle? latitude, Angle? longitude, double? altitude)
         {
             // Validate the angles to make sure they were correctly parsed
             // and that they are within range (prevents throwing exceptions
@@ -117,33 +117,36 @@ public partial class Location
             return value;
         }
 
-        private static Location Parse(string input, IFormatProvider provider, Regex regex)
+        private static Location? Parse(string input, IFormatProvider? provider, Regex regex)
         {
             var match = regex.Match(input.Replace(", ", " "));
-            if (match.Success)
-            {
-                var latitude = ParseAngle(
-                    provider,
-                    TryGetValue(match, "latSuf"),
-                    TryGetValue(match, "latDeg"),
-                    TryGetValue(match, "latMin"),
-                    TryGetValue(match, "latSec"));
+            if (!match.Success) return null;
 
-                var longitude = ParseAngle(
-                    provider,
-                    TryGetValue(match, "lonSuf"),
-                    TryGetValue(match, "lonDeg"),
-                    TryGetValue(match, "lonMin"),
-                    TryGetValue(match, "lonSec"));
+            if (!(TryGetValue(match, "latSuf", out var latSuf) &&
+                  TryGetValue(match, "latDeg", out var latDeg)))
+                return null;
 
-                return CreateLocation(latitude, longitude, null);
-            }
+            TryGetValue(match, "latMin", out var latMin);
+            TryGetValue(match, "latSec", out var latSec);
 
-            return null;
+            var latitude = ParseAngle(
+                provider, latSuf!, latDeg!, latMin, latSec);
+
+            if (!(TryGetValue(match, "lonSuf", out var lonSuf) &&
+                  TryGetValue(match, "lonDeg", out var lonDeg)))
+                return null;
+
+            TryGetValue(match, "lonMin", out var lonMin);
+            TryGetValue(match, "lonSec", out var lonSec);
+
+            var longitude = ParseAngle(
+                provider, lonSuf!, lonDeg!, lonMin, lonSec);
+
+            return CreateLocation(latitude, longitude, null);
         }
 
-        private static Angle ParseAngle(IFormatProvider provider, string suffix, string degrees,
-            string minutes = null, string seconds = null)
+        private static Angle? ParseAngle(IFormatProvider? provider, string suffix, string degrees,
+            string? minutes = null, string? seconds = null)
         {
             double minuteValue = 0;
             double secondValue = 0;
@@ -190,7 +193,7 @@ public partial class Location
         /// <returns>
         ///     A Location representing the string on success; otherwise, null.
         /// </returns>
-        internal static Location ParseDegrees(string value, IFormatProvider provider)
+        internal static Location? ParseDegrees(string value, IFormatProvider? provider)
         {
             if (string.IsNullOrWhiteSpace(value)) return null;
             return Parse(value, provider, DegreeRegex);
@@ -207,7 +210,7 @@ public partial class Location
         /// <returns>
         ///     A Location representing the string on success; otherwise, null.
         /// </returns>
-        internal static Location ParseDegreesMinutes(string value, IFormatProvider provider)
+        internal static Location? ParseDegreesMinutes(string value, IFormatProvider? provider)
         {
             if (string.IsNullOrWhiteSpace(value)) return null;
             return Parse(value, provider, DegreeMinuteRegex);
@@ -224,7 +227,7 @@ public partial class Location
         /// <returns>
         ///     A Location representing the string on success; otherwise, null.
         /// </returns>
-        internal static Location ParseDegreesMinutesSeconds(string value, IFormatProvider provider)
+        internal static Location? ParseDegreesMinutesSeconds(string value, IFormatProvider? provider)
         {
             if (string.IsNullOrWhiteSpace(value)) return null;
             return Parse(value, provider, DegreeMinuteSecondRegex);
@@ -238,7 +241,7 @@ public partial class Location
         /// <returns>
         ///     A Location representing the string on success; otherwise, null.
         /// </returns>
-        internal static Location ParseIso(string value)
+        internal static Location? ParseIso(string value)
         {
             if (!string.IsNullOrWhiteSpace(value))
             {
@@ -259,7 +262,7 @@ public partial class Location
             return null;
         }
 
-        private static Angle ParseIsoAngle(string value, int degreeDigits)
+        private static Angle? ParseIsoAngle(string value, int degreeDigits)
         {
             var decimalPoint = value.IndexOf('.');
             if (decimalPoint == -1) decimalPoint = value.Length;
@@ -294,13 +297,19 @@ public partial class Location
             return angle;
         }
 
-        private static string TryGetValue(Match match, string groupName)
+        private static bool TryGetValue(Match match, string groupName, out string? result)
         {
             var group = match.Groups[groupName];
 
-            // Need to check that only a single capture occured, as the suffixes are used more than once
-            if (group.Success && group.Captures.Count == 1) return group.Value;
-            return null;
+            // Need to check that only a single capture occurred, as the suffixes are used more than once
+            if (group.Success && group.Captures.Count == 1)
+            {
+                result = group.Value;
+                return true;
+            }
+
+            result = null;
+            return false;
         }
     }
 }

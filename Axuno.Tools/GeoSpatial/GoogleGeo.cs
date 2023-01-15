@@ -47,11 +47,11 @@ public class GoogleGeo
         /// <summary>
         /// Gets or sets the latitude of a location.
         /// </summary>
-        public Latitude Latitude { get; set; }
+        public Latitude? Latitude { get; set; }
         /// <summary>
         /// Gets or sets the longitude of a location.
         /// </summary>
-        public Longitude Longitude { get; set; }
+        public Longitude? Longitude { get; set; }
         /// <summary>
         /// Gets or sets the <see cref="LocationType"/> of a location, indicating the precision.
         /// </summary>
@@ -70,7 +70,7 @@ public class GoogleGeo
         /// <summary>
         /// Gets or sets the status text returned from the server API.
         /// </summary>
-        public string StatusText { get; set; }
+        public string? StatusText { get; set; }
         /// <summary>
         /// Is <see langword="true"/>, if the request was successful, else <see langword="false"/>
         /// </summary>
@@ -83,11 +83,11 @@ public class GoogleGeo
         /// <summary>
         /// Gets the exception that occurred while processing the request, or is null if successful.
         /// </summary>
-        public Exception Exception { get; set; }
+        public Exception? Exception { get; set; }
         /// <summary>
-        /// The <see cref="XmlDocument"/> return from the server, if the request was successful.
+        /// The <see cref="XmlDocument"/> returned from the server, if the request was successful.
         /// </summary>
-        internal XmlDocument XmlDocument { get; set; }
+        internal XmlDocument? XmlDocument { get; set; }
     }
 
     /// <summary>
@@ -171,14 +171,14 @@ public class GoogleGeo
 
     private static GeoResponse GetLocation(GeoResponse geoResponse)
     {
-        if (!(geoResponse.Success && geoResponse.StatusText.Equals("OK", StringComparison.InvariantCulture)))
+        if (geoResponse.StatusText != null && !(geoResponse.Success && geoResponse.StatusText.Equals("OK", StringComparison.InvariantCulture)))
         {
             return geoResponse;
         }
 
-        var latNode = geoResponse.XmlDocument.SelectSingleNode("/GeocodeResponse/result/geometry/location/lat");
-        var lngNode = geoResponse.XmlDocument.SelectSingleNode("/GeocodeResponse/result/geometry/location/lng");
-        var locTypeNode = geoResponse.XmlDocument.SelectSingleNode("/GeocodeResponse/result/geometry/location_type");
+        var latNode = geoResponse.XmlDocument?.SelectSingleNode("/GeocodeResponse/result/geometry/location/lat");
+        var lngNode = geoResponse.XmlDocument?.SelectSingleNode("/GeocodeResponse/result/geometry/location/lng");
+        var locTypeNode = geoResponse.XmlDocument?.SelectSingleNode("/GeocodeResponse/result/geometry/location_type");
 
         if (latNode == null || lngNode == null || locTypeNode == null)
         {

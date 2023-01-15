@@ -38,21 +38,21 @@ public class ExpiringTripleDES<T> where T : class
         /// </summary>
         public DateTime StartsOn { get; internal set; }
         /// <summary>
-        /// Gets the expring date and time of the ExpiringTripleDES, which is set after successful decryption.
+        /// Gets the expiring date and time of the ExpiringTripleDES, which is set after successful decryption.
         /// </summary>
         public DateTime ExpiresOn { get; internal set; }
         /// <summary>
         /// Gets the decrypted text, which is set after successful decryption.
         /// </summary>
-        public string RawText { get; internal set; }
+        public string? RawText { get; internal set; }
         /// <summary>
         /// Gets whether the decryption result is valid.
         /// </summary>
         public bool IsValid { get; internal set; }
         /// <summary>
-        /// Gets the Exception that occured during decryption, or null.
+        /// Gets the Exception that occurred during decryption, or null.
         /// </summary>
-        public Exception Exception { get; internal set; }
+        public Exception? Exception { get; internal set; }
         /// <summary>
         /// Gets whether the decryption date is between start and expiring date
         /// </summary>
@@ -65,7 +65,7 @@ public class ExpiringTripleDES<T> where T : class
         /// <summary>
         /// Sets the properties of a class which implements ICryptoConvert based on raw decrypted text,
         /// </summary>
-        public T Container
+        public T? Container
         { get; internal set; }
     }
 
@@ -77,7 +77,7 @@ public class ExpiringTripleDES<T> where T : class
     private readonly UTF8Encoding _utf8Encoding = new();
 
     // characters to use for random Key and IV
-    private const string _charsToUse = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    private const string CharsToUse = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 
     public ExpiringTripleDES()
     {
@@ -108,8 +108,8 @@ public class ExpiringTripleDES<T> where T : class
     private void GenerateKeyAndIV()
     {
         var random = new Random();
-        IV = new string(Enumerable.Repeat(_charsToUse, 8).Select(s => s[random.Next(s.Length)]).ToArray());
-        Key = new string(Enumerable.Repeat(_charsToUse, 24).Select(s => s[random.Next(s.Length)]).ToArray());
+        IV = new string(Enumerable.Repeat(CharsToUse, 8).Select(s => s[random.Next(s.Length)]).ToArray());
+        Key = new string(Enumerable.Repeat(CharsToUse, 24).Select(s => s[random.Next(s.Length)]).ToArray());
     }
 
     /// <summary>
@@ -124,7 +124,7 @@ public class ExpiringTripleDES<T> where T : class
 
         set
         {
-            _tripleDES.Key = _utf8Encoding.GetBytes(value + _charsToUse).TakeWhile((b, index) => index < 24).ToArray();
+            _tripleDES.Key = _utf8Encoding.GetBytes(value + CharsToUse).TakeWhile((b, index) => index < 24).ToArray();
         }
     }
 
@@ -140,7 +140,7 @@ public class ExpiringTripleDES<T> where T : class
 
         set
         {
-            _tripleDES.IV = _utf8Encoding.GetBytes(value + _charsToUse).TakeWhile((b, index) => index < 8).ToArray();
+            _tripleDES.IV = _utf8Encoding.GetBytes(value + CharsToUse).TakeWhile((b, index) => index < 8).ToArray();
         }
     }
 
@@ -149,14 +149,14 @@ public class ExpiringTripleDES<T> where T : class
     /// into a text string which shall be encrypted
     /// </summary>
     /// <returns>Returns a string with container fields and properties</returns>
-    public Func<T, string> ToText { get; set; }
+    public Func<T, string>? ToText { get; set; }
 
     /// <summary>
     /// Function delegate for converting a decrypted string back into fields and properties
     /// of the container object. It is the reverse procedure of ToText.
     /// </summary>
     /// <returns>Return the container object with fields and properties assigned from the text</returns>
-    public Func<string, T, T> ToContainer { get; set; }
+    public Func<string, T, T>? ToContainer { get; set; }
 
     /// <summary>
     /// Encrypts a class with values with TripleDES and Base64
@@ -170,7 +170,7 @@ public class ExpiringTripleDES<T> where T : class
         if (!startsOn.HasValue) startsOn = DateTime.MinValue;
         if (!expiresOn.HasValue) expiresOn = DateTime.MaxValue;
 
-        return Encrypt(ToText(container), startsOn, expiresOn);
+        return Encrypt(ToText?.Invoke(container) ?? string.Empty, startsOn, expiresOn);
     }
 
     /// <summary>
@@ -226,7 +226,7 @@ public class ExpiringTripleDES<T> where T : class
 				
             // The string starts after byte 16
             result.RawText = _utf8Encoding.GetString(output, longAsBytesLength * 2, output.Length - longAsBytesLength * 2);
-            result.Container = ToContainer(result.RawText, container);
+            result.Container = ToContainer?.Invoke(result.RawText, container);
 
             result.Exception = null;
             result.IsValid = true;

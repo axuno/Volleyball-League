@@ -17,13 +17,6 @@ public class GermanHoliday
     public delegate DateTime CalcDateCallback();
 
     /// <summary>
-    /// CTOR.
-    /// </summary>
-    private GermanHoliday()
-    {
-    }
-
-    /// <summary>
     /// Constructor for internal use.
     /// </summary>
     /// <param name="id">Nullable HolidayId</param>
@@ -31,7 +24,7 @@ public class GermanHoliday
     /// <param name="name">Holiday name</param>
     /// <param name="calcDateCallback">Delegate for date calculation</param>
     internal GermanHoliday(GermanHolidays.Id? id, GermanHolidays.Type type, string name,
-        CalcDateCallback calcDateCallback) : this()
+        CalcDateCallback calcDateCallback)
     {
         Id = id;
         Type = type;
@@ -105,25 +98,25 @@ public class GermanHoliday
         return PublicHolidayStateIds.Exists(s => s == stateId);
     }
 
-    public static bool operator ==(GermanHoliday h1, GermanHoliday h2)
+    public static bool operator ==(GermanHoliday? h1, GermanHoliday? h2)
     {
         if (h1 == null || h2 == null) return false;
         return h1.Equals(h2);
     }
 
-    public static bool operator !=(GermanHoliday h1, GermanHoliday h2)
+    public static bool operator !=(GermanHoliday? h1, GermanHoliday? h2)
     {
         if (h1 == null || h2 == null) return true;
         return !h1.Equals(h2);
     }
 
-    public static bool operator <(GermanHoliday h1, GermanHoliday h2)
+    public static bool operator <(GermanHoliday? h1, GermanHoliday? h2)
     {
         if (h1 == null || h2 == null) return false;
         return h1.Date < h2.Date && string.Compare(h1.Name, h2.Name, StringComparison.Ordinal) < 0;
     }
 
-    public static bool operator >(GermanHoliday h1, GermanHoliday h2)
+    public static bool operator >(GermanHoliday? h1, GermanHoliday? h2)
     {
         if (h1 == null || h2 == null) return false;
         return h1.Date > h2.Date && string.Compare(h1.Name, h2.Name, StringComparison.Ordinal) > 0;
@@ -135,7 +128,7 @@ public class GermanHoliday
                Equals(PublicHolidayStateIds, other.PublicHolidayStateIds) && Equals(DoCalcDate, other.DoCalcDate);
     }
 
-    public override bool Equals(object obj)
+    public override bool Equals(object? obj)
     {
         if (obj is null) return false;
         if (ReferenceEquals(this, obj)) return true;
@@ -226,7 +219,7 @@ public class GermanHolidays : List<GermanHoliday>
         foreach (Id holidayId in Enum.GetValues(typeof(Id)))
             try
             {
-                _ = Contains(this[holidayId]);
+                _ = Contains(this[holidayId]!);
             }
             catch
             {
@@ -247,11 +240,11 @@ public class GermanHolidays : List<GermanHoliday>
     /// </summary>
     /// <param name="holidayId">HolidayId</param>
     /// <returns>GermanHoliday</returns>
-    public GermanHoliday this[Id holidayId]
+    public GermanHoliday? this[Id holidayId]
     {
         get
         {
-            bool HolidayFilter(GermanHoliday h) => h.Id.Value == holidayId;
+            bool HolidayFilter(GermanHoliday h) => h.Id.HasValue && h.Id.Value == holidayId;
             return Find(HolidayFilter);
         }
     }
@@ -551,7 +544,7 @@ public class GermanHolidays : List<GermanHoliday>
             // remove an existing (standard German) holiday
             if (action == ActionType.Remove && holidayId.HasValue)
             {
-                Remove(this[holidayId.Value]);
+                Remove(this[holidayId.Value]!);
                 continue;
             }
 
@@ -590,7 +583,7 @@ public class GermanHolidays : List<GermanHoliday>
             var name = holiday.Elements().First(e => e.Name.ToString().ToLower() == "name").Value;
 
             // get the federal state ids (if any)
-            XElement stateIds = null;
+            XElement? stateIds = null;
             var germanFederalStateIds = new List<GermanFederalStates.Id>();
             if (holiday.Elements().Any(e => e.Name.ToString().ToLower() == "publicholidaystateids"))
             {
@@ -626,12 +619,12 @@ public class GermanHolidays : List<GermanHoliday>
                         {
                             // replace the existing standard date only if a new date was given
                             if (tmpDateFrom != DateTime.MinValue)
-                                this[holidayId.Value].DoCalcDate = () => tmpDateFrom;
-                            this[holidayId.Value].Type = holidayType;
-                            this[holidayId.Value].Name = name;
+                                this[holidayId.Value]!.DoCalcDate = () => tmpDateFrom;
+                            this[holidayId.Value]!.Type = holidayType;
+                            this[holidayId.Value]!.Name = name;
                             // replace state ids, if any were supplied
                             if (stateIds != null)
-                                this[holidayId.Value].PublicHolidayStateIds = germanFederalStateIds;
+                                this[holidayId.Value]!.PublicHolidayStateIds = germanFederalStateIds;
                         }
 
                         break;
