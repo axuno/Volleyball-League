@@ -20,7 +20,7 @@ public static class UrlEncoding
     /// Converts a string that has been encoded with <see cref="Base64UrlEncode"/> for transmission in an URL into a decoded string.
     /// </summary>
     /// <returns>Returns the decoded string if it could be decoded, otherwise null.</returns>
-    public static string Base64UrlDecode(this string encodedString)
+    public static string? Base64UrlDecode(this string encodedString)
     {
         try
         {

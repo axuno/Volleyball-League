@@ -43,11 +43,11 @@ public class CaptchaSvgGenerator : IDisposable
         SetDimensions(width, height);
     }
 
-    public CaptchaSvgGenerator(string text)
+    public CaptchaSvgGenerator(string? text)
     {
         Text = !(string.IsNullOrWhiteSpace(text) || text.Length < 2) ? text : GenerateRandomString(2);
         SetDefaults();
-        Text = text;
+        Text = text!;
     }
 
     /// <summary>
@@ -121,7 +121,7 @@ public class CaptchaSvgGenerator : IDisposable
     /// <summary>
     /// Gets or sets the font family of the capture image text.
     /// </summary>
-    public string FontFamilyName { get; set; }
+    public string FontFamilyName { get; set; } = "Arial, Helvetica, sans-serif";
 
     /// <summary>
     /// Gets or sets the font size of the capture image text in Pt (points)
