@@ -179,6 +179,11 @@
         var contextMenuColWidth = 5;
         var dateColWidth = 10;
         var opponentColWidth = 100 - resultColWidth * 3 - resultColWidth * maxNumOfSets - dateColWidth - contextMenuColWidth;
+        // CSS classes as string removes "CSS03 Unexpected character sequence in property value."
+        var resultCssClass = $".result {{ text-align: center; width: {resultColWidth}%;}}";
+        var contextMenuCssClass = $".context-menu {{ text-align: center; width: {contextMenuColWidth}%;}}";
+        var dateCssClass = $".date {{ width: {dateColWidth}%;}}";
+        var opponentsCssClass = $".opponents {{width: {opponentColWidth}%);}}";
     }
     <style type="text/css">
         #round-tabs .nav-link:not(.active) {border:solid 1px lightgray;}
@@ -188,10 +193,10 @@
         .team-filter { cursor: pointer;}
         .filter-link { /* javascript only */ }
         .leg-change { padding: 0; margin:0}
-        .result { text-align: center; width:@(resultColWidth)%;}
-        .context-menu { text-align: center; width:@(contextMenuColWidth)%;}
-        .date { width: @(dateColWidth)%;}
-        .opponents {width:@(opponentColWidth)%)}
+        @(resultCssClass)
+        @(contextMenuCssClass)
+        @(dateCssClass)
+        @(opponentsCssClass)
         .opponents > div {max-width: calc(45 * 1vw); padding-right: .5rem }
         @* /* striping */
         .odd { background-color: lightgray;}
