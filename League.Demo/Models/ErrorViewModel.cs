@@ -1,6 +1,6 @@
 using System;
 
-namespace LeagueDemo.Models;
+namespace League.Web.Models;
 
 public class ErrorViewModel
 {

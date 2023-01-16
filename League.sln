@@ -23,7 +23,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Axuno.BackgroundTask.Tests"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TournamentManager.Tests", "TournamentManager\TournamentManager.Test\TournamentManager.Tests.csproj", "{30D5235D-766F-463C-BCE4-F49321EC22AB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LeagueDemo", "LeagueDemo\LeagueDemo.csproj", "{D44B54A5-FBDC-4446-BB94-901DA3FB4DA2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "League.Demo", "League.Demo\League.Demo.csproj", "{D44B54A5-FBDC-4446-BB94-901DA3FB4DA2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

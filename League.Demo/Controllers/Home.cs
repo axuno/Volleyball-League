@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using TournamentManager.MultiTenancy;
 
-namespace LeagueDemo.Controllers;
+namespace League.Web.Controllers;
 
 [Route("")]
 public class Home : League.Controllers.AbstractController

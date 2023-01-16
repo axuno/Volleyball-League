@@ -7,8 +7,9 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using NLog.Extensions.Logging;
 using League.Components;
+using League.Web.ViewComponents;
 
-namespace LeagueDemo;
+namespace League.Web;
 
 public class Startup
 {
@@ -63,7 +64,7 @@ public class Startup
         });
             
         // Add custom navigation menu items to the League default navigation system
-        services.AddScoped<IMainNavigationNodeBuilder, LeagueDemo.ViewComponents.DemoMainNavigationNodeBuilder>();
+        services.AddScoped<IMainNavigationNodeBuilder, DemoMainNavigationNodeBuilder>();
     }
 
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -2,13 +2,14 @@
 using System.Linq;
 using System.Threading.Tasks;
 using League.Components;
+using League.Web.Controllers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
 using TournamentManager.MultiTenancy;
 
-namespace LeagueDemo.ViewComponents;
+namespace League.Web.ViewComponents;
 
 /// <summary>
 /// Builds the standard league main navigation nodes
@@ -34,7 +35,7 @@ public class DemoMainNavigationNodeBuilder : MainNavigationNodeBuilder
             ? new MainNavigationComponentModel.NavigationNode
             {
                 Text = string.Empty,
-                Url =  UrlHelper.Action(nameof(LeagueDemo.Controllers.Home.Welcome), nameof(LeagueDemo.Controllers.Home),
+                Url =  UrlHelper.Action(nameof(Home.Welcome), nameof(Home),
                     new {organization = TenantContext.SiteContext.UrlSegmentValue}),
                 IconCssClass = "fas fa-1x fa-home", Key = "Home_League"
             }

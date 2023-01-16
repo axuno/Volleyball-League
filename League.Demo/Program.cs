@@ -6,7 +6,7 @@ using System;
 using System.IO;
 using NLog.Web;
 
-namespace LeagueDemo;
+namespace League.Web;
 
 public class Program
 {
@@ -62,7 +62,7 @@ public class Program
             })
             .ConfigureWebHostDefaults(webHostBuilder =>
             {
-                webHostBuilder.UseStartup<LeagueDemo.Startup>();
+                webHostBuilder.UseStartup<Startup>();
                 // Use static web assets from League (and other referenced projects or packages)
                 webHostBuilder.UseStaticWebAssets();
             })
