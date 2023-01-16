@@ -183,7 +183,8 @@ public class Account : AbstractController
     {
         await _signInManager.SignOutAsync();
         _logger.LogInformation("User signed out.");
-        return RedirectToAction("");
+
+        return RedirectToLocal("/"); // Redirects to the tenant's default page
     }
 
     [HttpGet("create")]
@@ -210,9 +211,9 @@ public class Account : AbstractController
             ModelState.AddModelError(nameof(CreateAccountViewModel.Email), _localizer["This email is not available for a new account"].Value);
         }
 
-        if (!ModelState.IsValid)
+        if (!ModelState.IsValid && ModelState[nameof(CreateAccountViewModel.Captcha)] != null)
         {
-            ModelState[nameof(CreateAccountViewModel.Captcha)].RawValue = string.Empty;
+            ModelState[nameof(CreateAccountViewModel.Captcha)]!.RawValue = string.Empty;
             return View(model);
         }
 

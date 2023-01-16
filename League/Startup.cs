@@ -125,9 +125,9 @@ public class Startup
     public ILogger<Startup> Logger { get; }
 
     /// <summary>
-    /// This method gets called by the runtime. Use this method to add services to the container.
+    /// This method MUST get called by the app using the League library.
+    /// It is used to add required League services to the service container.
     /// </summary>
-    /// <param name="services"></param>
     public void ConfigureServices(IServiceCollection services)
     {
         // Add services required for using options.
