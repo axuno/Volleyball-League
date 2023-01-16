@@ -646,10 +646,6 @@ public class Startup
     {
         #region *** Logging ***
 
-        // Add NLog as logging provider. NLog config is set in Program.Main()
-        // see: https://github.com/NLog/NLog/issues/2859
-        app.ApplicationServices.SetupNLogServiceLocator();
-
         // Allow TournamentManager to make use of Microsoft.Extensions.Logging
         TournamentManager.AppLogging.Configure(loggerFactory);
 
