@@ -63,7 +63,7 @@
 		<PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="6.0.2" />
 		<PackageReference Include="NLog" Version="5.1.1" />
 		<PackageReference Include="NLog.Web.AspNetCore" Version="5.2.1" />
-		<PackageReference Include="PuppeteerSharp" Version="6.2.0" />
+		<PackageReference Include="PuppeteerSharp" Version="9.0.0" />
 		<PackageReference Include="StackifyMiddleware" Version="3.0.5.2" />
 	</ItemGroup>
 

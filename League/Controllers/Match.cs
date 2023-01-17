@@ -17,6 +17,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
+using PuppeteerSharp;
 using PuppeteerSharp.Media;
 using SD.LLBLGen.Pro.ORMSupportClasses;
 using SD.LLBLGen.Pro.QuerySpec;
@@ -666,8 +667,9 @@ public class Match : AbstractController
         var streamFile = Path.Combine(tempFolder, Path.GetRandomFileName());
 
         // Run Chromium
+        // Command line switches overview: https://kapeli.com/cheat_sheets/Chromium_Command_Line_Switches.docset/Contents/Resources/Documents/index
         var startInfo = new System.Diagnostics.ProcessStartInfo(_pathToChromium,
-                $"--disable-background-networking --enable-features=NetworkService,NetworkServiceInProcess --disable-background-timer-throttling --disable-backgrounding-occluded-windows --disable-breakpad --disable-client-side-phishing-detection --disable-component-extensions-with-background-pages --disable-default-apps --disable-dev-shm-usage --disable-extensions --disable-features=TranslateUI --disable-hang-monitor --disable-ipc-flooding-protection --disable-popup-blocking --disable-prompt-on-repost --disable-renderer-backgrounding --disable-sync --force-color-profile=srgb --metrics-recording-only --no-first-run --enable-automation --password-store=basic --use-mock-keychain --headless --hide-scrollbars --mute-audio --no-sandbox --disable-gpu --disable-extensions --use-cmd-decoder=validating --no-margins --user-data-dir={tempFolder} --print-to-pdf={streamFile} {htmlUri}")
+                $"--allow-pre-commit-input --disable-background-networking --disable-background-timer-throttling --disable-backgrounding-occluded-windows --disable-breakpad --disable-client-side-phishing-detection --disable-component-extensions-with-background-pages --disable-component-update --disable-default-apps --disable-dev-shm-usage --disable-extensions --disable-features=Translate,BackForwardCache,AcceptCHFrame,MediaRouter,OptimizationHints --disable-hang-monitor --disable-ipc-flooding-protection --disable-popup-blocking --disable-prompt-on-repost --disable-renderer-backgrounding --disable-sync --enable-automation --enable-blink-features=IdleDetection --enable-features=NetworkServiceInProcess2 --export-tagged-pdf --force-color-profile=srgb --metrics-recording-only --no-first-run --password-store=basic --use-mock-keychain --headless --hide-scrollbars --mute-audio --no-sandbox --disable-gpu --use-cmd-decoder=passthrough --no-margins --user-data-dir={tempFolder} --print-to-pdf={streamFile} {htmlUri}")
             {CreateNoWindow = true, UseShellExecute = false};
         var proc = System.Diagnostics.Process.Start(startInfo);
 
@@ -688,32 +690,38 @@ public class Match : AbstractController
             proc.Kill(true);
             throw new OperationCanceledException($"Chromium timed out after {timeout}ms.");
         }
-            
-        _logger.LogInformation("Chromium exit code: {ExitCode}", proc.ExitCode);
+
+        var streamFileInfo = new FileInfo(streamFile);
+        _logger.LogInformation("Chromium exit code: {ExitCode}. File info: {Path} - {Size} bytes", proc.ExitCode, streamFileInfo.FullName, streamFileInfo.Length);
         var stream = System.IO.File.OpenRead(streamFile);
         return new FileStreamResult(stream, "application/pdf");
     }
 
     private async Task<FileStreamResult> GetReportSheetPuppeteer(string html)
     {
-        var options = new PuppeteerSharp.LaunchOptions
+        var options = new LaunchOptions
         {
             Headless = true,
-            // Alternative: --use-cmd-decoder=passthrough 
+            Product = Product.Chrome,
+            // Alternative: --use-cmd-decoder=validating 
             Args = new[]
-                { "--no-sandbox", "--disable-gpu", "--disable-extensions", "--use-cmd-decoder=validating" },
-            ExecutablePath = _pathToChromium, Timeout = 5000
+                { "--no-sandbox", "--disable-gpu", "--disable-extensions", "--use-cmd-decoder=passthrough" },
+            ExecutablePath = _pathToChromium,
+            Timeout = 5000
         };
-        // Use Puppeteer as a wrapper for the Chromium browser, which can generate PDF from HTML
-        await using var browser = await PuppeteerSharp.Puppeteer.LaunchAsync(options).ConfigureAwait(false);
+        // Use Puppeteer as a wrapper for the browser, which can generate PDF from HTML
+        // Start command line arguments set by Puppeteer:
+        // --allow-pre-commit-input --disable-background-networking --disable-background-timer-throttling --disable-backgrounding-occluded-windows --disable-breakpad --disable-client-side-phishing-detection --disable-component-extensions-with-background-pages --disable-component-update --disable-default-apps --disable-dev-shm-usage --disable-extensions --disable-features=Translate,BackForwardCache,AcceptCHFrame,MediaRouter,OptimizationHints --disable-hang-monitor --disable-ipc-flooding-protection --disable-popup-blocking --disable-prompt-on-repost --disable-renderer-backgrounding --disable-sync --enable-automation --enable-blink-features=IdleDetection --enable-features=NetworkServiceInProcess2 --export-tagged-pdf --force-color-profile=srgb --metrics-recording-only --no-first-run --password-store=basic --use-mock-keychain --headless
+        await using var browser = await Puppeteer.LaunchAsync(options).ConfigureAwait(false);
         await using var page = await browser.NewPageAsync().ConfigureAwait(false);
 
-        await page.SetContentAsync(html); // Bootstrap 4 is loaded from CDN
+        await page.SetContentAsync(html); // Bootstrap 5 is loaded from CDN
+        await page.EvaluateExpressionHandleAsync("document.fonts.ready"); // Wait for fonts to be loaded. Omitting this might result in no text rendered in pdf.
 
-        browser.Process?.Refresh();
-        _logger.LogInformation(
-            "Chromium Process physical memory: {physicalMemory:#,0} bytes. Start arguments: {commandLineArgs}",
-            browser.Process?.WorkingSet64, browser.Process?.StartInfo.Arguments);
+        _logger.LogInformation("Chromium Start arguments: {commandLineArgs}", browser.Process?.StartInfo.Arguments);
+
+        // browser.Process?.Refresh();
+        //_logger.LogInformation("Chromium Process physical memory: {physicalMemory:#,0} bytes.", browser.Process?.WorkingSet64);
 
         // Test, whether the chromium browser renders at all
         /* return new FileStreamResult(
