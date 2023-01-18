@@ -79,6 +79,14 @@
 		<ProjectReference Include="..\TournamentManager\TournamentManager\TournamentManager.csproj" />
 	</ItemGroup>
 
+    <ItemGroup>
+        <Content Update="Configuration\*.*">
+            <!-- Avoid conflicts with the Configuration of the Web app -->
+            <!-- Options are: Always | Never | PreserveNewest -->
+            <CopyToPublishDirectory>Never</CopyToPublishDirectory>
+        </Content>
+    </ItemGroup>
+
 	<ItemGroup>
 		<Compile Update="Models\ErrorViewModels\StatusCodes.Designer.cs">
 			<DesignTime>True</DesignTime>
