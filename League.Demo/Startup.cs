@@ -70,28 +70,33 @@ public class Startup
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
     public void Configure(IApplicationBuilder app, IHostEnvironment env, ILoggerFactory loggerFactory)
     {
-        LeagueStartup.Configure(app, env, loggerFactory);
-            
-        if (env.IsDevelopment())
+        #region * Setup error handling *
+
+        // Error handling must be one of the very first things to configure
+        if (!env.IsProduction())
         {
-            app.UseMiddleware<StackifyMiddleware.RequestTracerMiddleware>();
-                
-            app.UseDeveloperExceptionPage();
-            app.UseStatusCodePages();
-        }
-        else
-        {
+            // The StatusCodePagesMiddleware should be one of the earliest 
+            // middleware in the pipeline, as it can only modify the response 
+            // of middleware that comes after it in the pipeline
             app.UseStatusCodePagesWithReExecute($"/{nameof(League.Controllers.Error)}/{{0}}");
             app.UseExceptionHandler($"/{nameof(League.Controllers.Error)}/500");
             // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
             app.UseHsts();
         }
+        else
+        {
+            app.UseMiddleware<StackifyMiddleware.RequestTracerMiddleware>();
+            app.UseDeveloperExceptionPage();
+            app.UseStatusCodePages();
+        }
+
+        #endregion
+
+        LeagueStartup.Configure(app, env, loggerFactory);
+
         app.UseHttpsRedirection();           
-            
         app.UseStaticFiles();
-
         app.UseRouting();
-
         app.UseAuthorization();
 
         // DO NOT add the default endpoints! => Url.Action(...) could produce Urls violating attribute routes
