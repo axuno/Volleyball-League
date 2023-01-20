@@ -1,8 +1,4 @@
-﻿// 
-// Copyright SmartFormat Project maintainers and contributors.
-// Licensed under the MIT license.
-
-using System;
+﻿using System;
 
 namespace League.ModelBinders;
 

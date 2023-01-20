@@ -1,8 +1,4 @@
-﻿// 
-// Copyright SmartFormat Project maintainers and contributors.
-// Licensed under the MIT license.
-
-using System;
+﻿using System;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Binders;
 using Microsoft.Extensions.DependencyInjection;
