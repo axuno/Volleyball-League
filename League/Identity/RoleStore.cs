@@ -118,30 +118,36 @@ public class RoleStore : IRoleStore<ApplicationRole>, IRoleClaimStore<Applicatio
 
         return IdentityResult.Failed(_identityErrorDescriber.DefaultError());
     }
-
+#nullable disable annotations
+    /// <summary>
+    /// Returns the <see cref="ApplicationRole"/> for the <paramref name="roleId"/> if found, else <see langword="null"/>.
+    /// </summary>
     public async Task<ApplicationRole> FindByIdAsync(string roleId, CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
-        if (!long.TryParse(roleId ?? string.Empty, out var id))
-            return new ApplicationRole();
+        if (!long.TryParse(roleId, out var id))
+            return null;
 
         var roleEntity = await _appDb.RoleRepository.GetRoleByIdAsync(id, cancellationToken);
-        if (roleEntity == null) return new ApplicationRole();
+        if (roleEntity == null) return null;
 
         return new ApplicationRole {Id = roleEntity.Id, Name = roleEntity.Name};
     }
 
+    /// <summary>
+    /// Returns the <see cref="ApplicationRole"/> for the <paramref name="normalizedRoleName"/> if found, else <see langword="null"/>.
+    /// </summary>
     public async Task<ApplicationRole> FindByNameAsync(string normalizedRoleName, CancellationToken cancellationToken)
     {
         if (normalizedRoleName == null)
             throw new ArgumentNullException(nameof(normalizedRoleName));
 
         var roleEntity = await _appDb.RoleRepository.GetRoleByNameAsync(normalizedRoleName, cancellationToken);
-        if (roleEntity == null) return new ApplicationRole();
+        if (roleEntity == null) return null;
 
         return new ApplicationRole { Id = roleEntity.Id, Name = roleEntity.Name };
     }
-
+#nullable enable annotations
     public Task<string> GetNormalizedRoleNameAsync(ApplicationRole role, CancellationToken cancellationToken)
     {
         if (role == null)

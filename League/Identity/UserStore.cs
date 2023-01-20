@@ -11,6 +11,7 @@ using SD.LLBLGen.Pro.ORMSupportClasses;
 using TournamentManager.DAL.EntityClasses;
 using TournamentManager.DAL.HelperClasses;
 using TournamentManager.MultiTenancy;
+using System.Timers;
 
 #pragma warning disable CA2254 // Template should be a static expression
 namespace League.Identity;
@@ -131,7 +132,10 @@ public class UserStore : IUserStore<ApplicationUser>, IUserEmailStore<Applicatio
         user.ModifiedOn = userEntity.ModifiedOn;
         return Task.CompletedTask;
     }
-
+#nullable disable annotations
+    /// <summary>
+    /// Returns the <see cref="ApplicationUser"/> for the <paramref name="userId"/> if found, else <see langword="null"/>.
+    /// </summary>
     public async Task<ApplicationUser> FindByIdAsync(string userId, CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
@@ -139,10 +143,10 @@ public class UserStore : IUserStore<ApplicationUser>, IUserEmailStore<Applicatio
             throw new ArgumentNullException(nameof(userId), @"Used ID is null or empty");
 
         if (!long.TryParse(userId, out var id))
-            return new ApplicationUser();
+            return null;
 
         var userEntity = await _appDb.UserRepository.GetLoginUserAsync(id, cancellationToken);
-        if (userEntity == null) return new ApplicationUser();
+        if (userEntity == null) return null;
 
         var user = new ApplicationUser();
         await MapUserEntityToUser(user, userEntity);
@@ -156,13 +160,13 @@ public class UserStore : IUserStore<ApplicationUser>, IUserEmailStore<Applicatio
             throw new ArgumentNullException(nameof(normalizedUserName), "Null or empty");
 
         var userEntity = await _appDb.UserRepository.GetLoginUserByUserNameAsync(normalizedUserName, cancellationToken);
-        if (userEntity == null) return new ApplicationUser();
+        if (userEntity == null) return null;
 
         var user = new ApplicationUser();
         await MapUserEntityToUser(user, userEntity);
         return user;
     }
-
+#nullable enable annotations
     public Task<string> GetNormalizedUserNameAsync(ApplicationUser user, CancellationToken cancellationToken)
     {
         if (user == null)
@@ -295,7 +299,10 @@ public class UserStore : IUserStore<ApplicationUser>, IUserEmailStore<Applicatio
         SetSecurityStampAsync(user, null, cancellationToken);
         return Task.CompletedTask;
     }
-
+#nullable disable annotations
+    /// <summary>
+    /// Returns the <see cref="ApplicationUser"/> for the <paramref name="normalizedEmail"/> if found, else <see langword="null"/>.
+    /// </summary>
     public async Task<ApplicationUser> FindByEmailAsync(string normalizedEmail, CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
@@ -304,13 +311,13 @@ public class UserStore : IUserStore<ApplicationUser>, IUserEmailStore<Applicatio
             throw new ArgumentNullException(nameof(normalizedEmail), "Null or empty");
 
         var userEntity = await _appDb.UserRepository.GetLoginUserByEmailAsync(normalizedEmail, cancellationToken);
-        if (userEntity == null) return new ApplicationUser();
+        if (userEntity == null) return null;
 
         var user = new ApplicationUser();
         await MapUserEntityToUser(user, userEntity);
         return user;
     }
-
+#nullable enable annotations
     public Task<string> GetNormalizedEmailAsync(ApplicationUser user, CancellationToken cancellationToken)
     {
         if (user == null)
@@ -895,7 +902,10 @@ public class UserStore : IUserStore<ApplicationUser>, IUserEmailStore<Applicatio
         logins.ForEach(li => loginInfoList.Add(new UserLoginInfo(li.LoginProvider, li.ProviderKey, li.ProviderDisplayName)));
         return loginInfoList;
     }
-
+#nullable disable annotations
+    /// <summary>
+    /// Returns the <see cref="ApplicationUser"/> for the <paramref name="loginProvider"/> and <paramref name="providerKey"/> if found, else <see langword="null"/>.
+    /// </summary>
     public async Task<ApplicationUser> FindByLoginAsync(string loginProvider, string providerKey, CancellationToken cancellationToken)
     {
         if (string.IsNullOrEmpty(loginProvider))
@@ -905,12 +915,13 @@ public class UserStore : IUserStore<ApplicationUser>, IUserEmailStore<Applicatio
             throw new ArgumentNullException(nameof(providerKey), "Null or empty");
 
         var userEntity = await _appDb.UserLoginRepository.GetUserByLoginAsync(loginProvider, providerKey, cancellationToken);
-        if (userEntity == null) return new ApplicationUser();
+        if (userEntity == null) return null;
             
         var user = new ApplicationUser();
         await MapUserEntityToUser(user, userEntity);
         return user;
     }
+#nullable enable annotations
     #endregion
 
     #region ** IUserAuthenticationTokenStore **

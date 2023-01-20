@@ -30,7 +30,7 @@ public class UserLoginRepository
         return result.ToList();
     }
 
-    public virtual async Task<UserEntity> GetUserByLoginAsync(string loginProvider, string providerKey, CancellationToken cancellationToken)
+    public virtual async Task<UserEntity?> GetUserByLoginAsync(string loginProvider, string providerKey, CancellationToken cancellationToken)
     {
         using var da = _dbContext.GetNewAdapter();
         var metaData = new LinqMetaData(da);
