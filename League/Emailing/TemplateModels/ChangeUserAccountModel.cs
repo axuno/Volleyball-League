@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using League.Templates.Email;
 
 namespace League.Emailing.TemplateModels;
@@ -13,7 +10,7 @@ namespace League.Emailing.TemplateModels;
 /// </summary>
 public class ChangeUserAccountModel
 {
-    public string Email { get; set; }
-    public string CallbackUrl { get; set; }
+    public string Email { get; set; } = string.Empty;
+    public string CallbackUrl { get; set; } = string.Empty;
     public DateTime? Deadline { get; set; }
 }

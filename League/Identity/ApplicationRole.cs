@@ -1,6 +1,4 @@
-﻿using System;
-using Microsoft.AspNetCore.Identity;
-
+﻿
 namespace League.Identity;
 
 /// <summary>
@@ -10,5 +8,5 @@ namespace League.Identity;
 public class ApplicationRole
 {
     public long Id { get; set; } = -1;
-    public string Name { get; set; }
+    public string Name { get; set; } = string.Empty;
 }

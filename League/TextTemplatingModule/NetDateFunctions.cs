@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using Scriban;
 using Scriban.Runtime;
 using Scriban.Syntax;
-#nullable enable
+
 #pragma warning disable IDE0060 // Remove unused parameter
 namespace League.TextTemplatingModule;
 

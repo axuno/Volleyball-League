@@ -1,5 +1,4 @@
 ﻿using TournamentManager.DAL.EntityClasses;
-using TournamentManager.DAL.HelperClasses;
 
 namespace League.Models.TeamViewModels;
 
@@ -9,7 +8,7 @@ public class TeamInRoundModel
     public long Id { get; set; }
     public long TeamId { get; set; }
     public long RoundId { get; set; }
-    public string TeamNameForRound { get; set; }
+    public string? TeamNameForRound { get; set; }
 
     public void MapEntityToFormFields(TeamInRoundEntity teamInRoundEntity)
     {

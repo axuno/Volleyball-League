@@ -15,9 +15,7 @@ using SD.LLBLGen.Pro.ORMSupportClasses;
 using SD.LLBLGen.Pro.QuerySpec;
 using TournamentManager.DAL.EntityClasses;
 using TournamentManager.DAL.HelperClasses;
-using TournamentManager.DAL.TypedViewClasses;
 using TournamentManager.MultiTenancy;
-#nullable enable
 
 namespace League.Emailing.Creators;
 

@@ -18,7 +18,7 @@ public class DataProtector
     /// <param name="provider">The <see cref="IDataProtectionProvider"/> to use.</param>
     public DataProtector(IDataProtectionProvider provider)
     {
-        _protector = provider.CreateProtector(GetType().FullName);
+        _protector = provider.CreateProtector(GetType().FullName!);
     }
 
     /// <summary>
@@ -62,15 +62,15 @@ public class DataProtector
     /// <param name="encryptedText">The string to decrypt.</param>
     /// <param name="obj">The decrypted object, if the decryption succeeded.</param>
     /// <returns>Returns <c>true</c> if the decryption succeeded, else <c>false</c>.</returns>
-    public bool TryDecrypt<T>(string encryptedText, out T obj)
+    public bool TryDecrypt<T>(string encryptedText, out T? obj)
     {
         if (TryDecrypt(encryptedText, out var json))
         {
-            obj = JsonConvert.DeserializeObject<T>(json);
+            obj = JsonConvert.DeserializeObject<T>(json!);
             return true;
         }
 
-        obj = default;
+        obj = default!;
         return false;
     }
 
@@ -80,7 +80,7 @@ public class DataProtector
     /// <param name="encryptedText">The string to decrypt.</param>
     /// <param name="decryptedText">The decrypted string, if the decryption succeeded.</param>
     /// <returns>Returns <c>true</c> if the decryption succeeded, else <c>false</c>.</returns>
-    public bool TryDecrypt(string encryptedText, out string decryptedText)
+    public bool TryDecrypt(string encryptedText, out string? decryptedText)
     {
         try
         {
@@ -110,7 +110,7 @@ public class DataProtector
         }
         catch (CryptographicException)
         {
-            decryptedText = null;
+            decryptedText = string.Empty;
             expiration = DateTimeOffset.MinValue;
             return false;
         }

@@ -119,7 +119,7 @@ public class Account : AbstractController
 
     [HttpGet("sign-in")]
     [AllowAnonymous]
-    public IActionResult SignIn(string returnUrl = null)
+    public IActionResult SignIn(string? returnUrl = null)
     {
         ViewData["ReturnUrl"] = returnUrl;
         return View();
@@ -128,21 +128,18 @@ public class Account : AbstractController
     [HttpPost("sign-in")]
     [AllowAnonymous]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> SignIn(SignInViewModel model, string returnUrl = null)
+    public async Task<IActionResult> SignIn(SignInViewModel model, string? returnUrl = null)
     {
         ViewData["ReturnUrl"] = returnUrl;
         if (!ModelState.IsValid) return View(model);
             
-        ApplicationUser user = null;
+        ApplicationUser? user = null;
         if (model.EmailOrUsername.Contains('@'))
         {
             user = await _signInManager.UserManager.FindByEmailAsync(model.EmailOrUsername);
         }
 
-        if (user == null)
-        {
-            user = await _signInManager.UserManager.FindByNameAsync(model.EmailOrUsername);
-        }
+        user ??= await _signInManager.UserManager.FindByNameAsync(model.EmailOrUsername);
 
         if (user == null)
         {
@@ -189,7 +186,7 @@ public class Account : AbstractController
 
     [HttpGet("create")]
     [AllowAnonymous]
-    public IActionResult CreateAccount(string returnUrl = null)
+    public IActionResult CreateAccount(string? returnUrl = null)
     {
         ViewData["ReturnUrl"] = returnUrl;
         return View();
@@ -197,7 +194,7 @@ public class Account : AbstractController
 
     [HttpPost("create")]
     [AllowAnonymous]
-    public async Task<IActionResult> CreateAccount(CreateAccountViewModel model, string returnUrl = null)
+    public async Task<IActionResult> CreateAccount(CreateAccountViewModel model, string? returnUrl = null)
     {
         ViewData["ReturnUrl"] = returnUrl;
 
@@ -223,7 +220,7 @@ public class Account : AbstractController
 
     [HttpGet("register")]
     [AllowAnonymous]
-    public IActionResult Register(string code = null, string returnUrl = null)
+    public IActionResult Register(string? code = null, string? returnUrl = null)
     {
         if (!_dataProtector.TryDecrypt(code?.Base64UrlDecode() ?? string.Empty, out var email, out var expiration))
         {
@@ -240,7 +237,7 @@ public class Account : AbstractController
     [HttpPost("register")]
     [AllowAnonymous]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Register(RegisterViewModel model, CancellationToken cancellationToken, string returnUrl = null)
+    public async Task<IActionResult> Register(RegisterViewModel model, CancellationToken cancellationToken, string? returnUrl = null)
     {
         ViewData["ReturnUrl"] = returnUrl;
 
@@ -302,7 +299,7 @@ public class Account : AbstractController
     [HttpPost(nameof(ExternalSignIn))]
     [AllowAnonymous]
     [ValidateAntiForgeryToken]
-    public IActionResult ExternalSignIn(string provider, string returnUrl = null)
+    public IActionResult ExternalSignIn(string provider, string? returnUrl = null)
     {
         // Request a redirect to the external login provider.
         var redirectUrl = Url.Action(nameof(ExternalSignInCallback), nameof(Account), new { Organization = _tenantContext.SiteContext.UrlSegmentValue, ReturnUrl = returnUrl });
@@ -313,7 +310,7 @@ public class Account : AbstractController
 
     [HttpGet(nameof(ExternalSignInCallback))]
     [AllowAnonymous]
-    public async Task<IActionResult> ExternalSignInCallback(string returnUrl = null, string remoteError = null)
+    public async Task<IActionResult> ExternalSignInCallback(string? returnUrl = null, string? remoteError = null)
     {
         if (remoteError != null)
         {
@@ -334,9 +331,9 @@ public class Account : AbstractController
         // There is no external login stored for this user?
         if (await _signInManager.UserManager.FindByLoginAsync(info.LoginProvider, info.ProviderKey) == null)
         {
-            ApplicationUser existingUser = null;
+            ApplicationUser? existingUser = null;
             // if the the current user is signed-in
-            if (User.Identity.IsAuthenticated)
+            if (User.Identity!.IsAuthenticated)
             {
                 existingUser = await _signInManager.UserManager.FindByNameAsync(User.Identity.Name);
             }
@@ -398,7 +395,7 @@ public class Account : AbstractController
     [HttpPost(nameof(ExternalSignInConfirmation))]
     [AllowAnonymous]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> ExternalSignInConfirmation(ExternalSignConfirmationViewModel model, string returnUrl = null)
+    public async Task<IActionResult> ExternalSignInConfirmation(ExternalSignConfirmationViewModel model, string? returnUrl = null)
     {
         if (!ModelState.IsValid)
         {
@@ -474,16 +471,13 @@ public class Account : AbstractController
     {
         if (!ModelState.IsValid) return View(model);
 
-        ApplicationUser user = null;
+        ApplicationUser? user = null;
         if (model.EmailOrUsername.Contains('@'))
         {
             user = await _signInManager.UserManager.FindByEmailAsync(model.EmailOrUsername);
         }
 
-        if (user == null)
-        {
-            user = await _signInManager.UserManager.FindByNameAsync(model.EmailOrUsername);
-        }
+        user ??= await _signInManager.UserManager.FindByNameAsync(model.EmailOrUsername);
 
         if (user == null || (!await _signInManager.UserManager.IsEmailConfirmedAsync(user) && _signInManager.UserManager.Options.SignIn.RequireConfirmedEmail))
         {
@@ -500,7 +494,7 @@ public class Account : AbstractController
 
     [HttpGet(nameof(ResetPassword))]
     [AllowAnonymous]
-    public IActionResult ResetPassword(string code = null)
+    public IActionResult ResetPassword(string? code = null)
     {
         var model = new ResetPasswordViewModel {Code = code};
         if (code == null)
@@ -525,16 +519,13 @@ public class Account : AbstractController
             return View(model);
         }
 
-        ApplicationUser user = null;
+        ApplicationUser? user = null;
         if (model.EmailOrUsername.Contains('@'))
         {
             user = await _signInManager.UserManager.FindByEmailAsync(model.EmailOrUsername);
         }
 
-        if (user == null)
-        {
-            user = await _signInManager.UserManager.FindByNameAsync(model.EmailOrUsername);
-        }
+        user ??= await _signInManager.UserManager.FindByNameAsync(model.EmailOrUsername);
 
         if (user == null)
         {

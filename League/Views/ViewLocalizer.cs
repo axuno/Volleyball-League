@@ -31,7 +31,7 @@ public class ViewLocalizer : IViewLocalizer, IViewContextAware
 {
     private readonly IHtmlLocalizerFactory _localizerFactory;
     private string _applicationName;
-    private IHtmlLocalizer _localizer;
+    private IHtmlLocalizer? _localizer;
 
     /// <summary>
     /// Creates a new <see cref="ViewLocalizer"/>.
@@ -60,7 +60,7 @@ public class ViewLocalizer : IViewLocalizer, IViewContextAware
                 throw new ArgumentNullException(nameof(key));
             }
 
-            return _localizer[key];
+            return _localizer![key];
         }
     }
 
@@ -74,26 +74,26 @@ public class ViewLocalizer : IViewLocalizer, IViewContextAware
                 throw new ArgumentNullException(nameof(key));
             }
 
-            return _localizer[key, arguments];
+            return _localizer![key, arguments];
         }
     }
 
     /// <inheritdoc />
     public LocalizedString GetString(string name)
     {
-        return _localizer.GetString(name);
+        return _localizer!.GetString(name);
     }
 
     /// <inheritdoc />
     public LocalizedString GetString(string name, params object[] values)
     {
-        return _localizer.GetString(name, values);
+        return _localizer!.GetString(name, values);
     }
 
     /// <inheritdoc />
     public IEnumerable<LocalizedString> GetAllStrings(bool includeParentCultures)
     {
-        return _localizer.GetAllStrings(includeParentCultures);
+        return _localizer!.GetAllStrings(includeParentCultures);
     }
 
     /// <summary>
@@ -151,12 +151,5 @@ public class ViewLocalizer : IViewLocalizer, IViewContextAware
         builder.Insert(0, _applicationName);
 
         return builder.ToString();
-    }
-
-    /// <inheritdoc />
-    [Obsolete("ViewLocalizer.WithCulture is no longer supported", true)]
-    public IHtmlLocalizer WithCulture(CultureInfo culture)
-    {
-        throw new NotImplementedException();
     }
 }

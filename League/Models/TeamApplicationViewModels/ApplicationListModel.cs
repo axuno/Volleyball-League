@@ -12,9 +12,9 @@ public class ApplicationListModel
         TimeZoneConverter = timeZoneConverter;
     }
 
-    public TournamentEntity Tournament { get; set; }
+    public TournamentEntity? Tournament { get; set; }
 
-    public List<LatestTeamTournamentRow> TournamentRoundTeams { get; set; }
+    public List<LatestTeamTournamentRow> TournamentRoundTeams { get; set; } = new();
 
     public Dictionary<long, DateTime> TeamRegisteredOn { get; set; } = new();
 

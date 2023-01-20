@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading;
@@ -21,7 +20,6 @@ using SD.LLBLGen.Pro.ORMSupportClasses;
 using SD.LLBLGen.Pro.QuerySpec;
 using TournamentManager.DAL.EntityClasses;
 using TournamentManager.DAL.HelperClasses;
-using TournamentManager.DAL.TypedViewClasses;
 using TournamentManager.ModelValidators;
 using TournamentManager.MultiTenancy;
 
@@ -54,7 +52,7 @@ public class Team : AbstractController
     [HttpGet("")]
     public IActionResult Index()
     {
-        return Redirect(Url.Action(nameof(List), nameof(Team), new { Organization = _tenantContext.SiteContext.UrlSegmentValue }));
+        return Redirect(Url.Action(nameof(List), nameof(Team), new { Organization = _tenantContext.SiteContext.UrlSegmentValue }) ?? string.Empty);
     }
 
     [HttpGet("[action]")]
@@ -153,7 +151,7 @@ public class Team : AbstractController
             return NotFound();
         }
 
-        model.PhotoUriInfo = new TeamPhotoStaticFile(_webHostEnvironment, _tenantContext, new NullLogger<TeamPhotoStaticFile>()).GetUriInfo(id);
+        model.PhotoUriInfo = new TeamPhotoStaticFile(_webHostEnvironment, _tenantContext, new NullLogger<TeamPhotoStaticFile>()).GetUriInfo(id)!;
 
         return View(Views.ViewNames.Team.Single, model);
     }
@@ -187,7 +185,7 @@ public class Team : AbstractController
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Edit([FromForm] TeamEditModel model, CancellationToken cancellationToken)
     {
-        TeamEntity team = null;
+        TeamEntity? team = null;
         if (model.Team != null && !model.Team.IsNew)
         {
             team = await _appDb.TeamRepository.GetTeamEntityAsync(new PredicateExpression(TeamFields.Id == model.Team.Id), cancellationToken);
@@ -299,9 +297,9 @@ public class Team : AbstractController
             new TeamVenueSelectModel
             {
                 TournamentId = _tenantContext.TournamentContext.TeamTournamentId, TeamId = teamEntity.Id, VenueId = teamEntity.VenueId,
-                ReturnUrl = Url.IsLocalUrl(returnUrl)
+                ReturnUrl = (Url.IsLocalUrl(returnUrl)
                     ? returnUrl
-                    : Url.Action(nameof(MyTeam), nameof(Team), new {Organization = _tenantContext.SiteContext.UrlSegmentValue})
+                    : Url.Action(nameof(MyTeam), nameof(Team), new {Organization = _tenantContext.SiteContext.UrlSegmentValue})) ?? string.Empty
             }
         );
     }

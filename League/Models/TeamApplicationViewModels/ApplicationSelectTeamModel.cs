@@ -18,5 +18,5 @@ public class ApplicationSelectTeamModel
     public List<LatestTeamTournamentRow> TeamsManagedByUser { get; set; } = new();
 
     [BindNever]
-    public string TournamentName { get; set; }
+    public string TournamentName { get; set; } = string.Empty;
 }

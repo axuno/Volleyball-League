@@ -9,7 +9,7 @@ using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Options;
-#nullable enable
+
 namespace League.TextTemplatingModule;
 
 public static class TextTemplatingServiceCollectionExtensions

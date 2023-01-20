@@ -4,9 +4,10 @@
 @inject IHttpContextAccessor HttpContextAccessor
 @inject IViewLocalizer Localizer
 @inject ITenantContext TenantContext
+
 @{
     ViewData["Title"] = Localizer["User Impersonation"].Value;
-    var search = @HttpContextAccessor.HttpContext.Request.Query["search"].ToString().Trim();
+    var search = @HttpContextAccessor.HttpContext?.Request.Query["search"].ToString().Trim();
     int.TryParse(ViewData["Limit"]?.ToString(), out var limit);
     var organizationRoute = TenantContext.SiteContext.UrlSegmentValue;
 }

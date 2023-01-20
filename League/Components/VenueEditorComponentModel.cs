@@ -1,6 +1,4 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
-using League.Models.TeamApplicationViewModels;
+﻿using System.ComponentModel.DataAnnotations;
 using League.Models.VenueViewModels;
 using League.Resources;
 using Microsoft.AspNetCore.Mvc;
@@ -19,30 +17,30 @@ public class VenueEditorComponentModel
     [Required(AllowEmptyStrings = false, ErrorMessageResourceName = nameof(DataAnnotationResource.PropertyValueRequired), ErrorMessageResourceType = typeof(DataAnnotationResource))]
     [DataType(DataType.Text)]
     [Display(Name = "Venue name")]
-    public string Name { get; set; }
+    public string Name { get; set; } = string.Empty;
         
     [Display(Name = "Playing field")]
     [DataType(DataType.Text)]
-    public string Extension { get; set; }
+    public string Extension { get; set; } = string.Empty;
 
     [Required(AllowEmptyStrings = false, ErrorMessageResourceName = nameof(DataAnnotationResource.PropertyValueRequired), ErrorMessageResourceType = typeof(DataAnnotationResource))]
     [DataType(DataType.Text)]
     [Display(Name = "Street")]
-    public string Street { get; set; }
+    public string Street { get; set; } = string.Empty;
         
     [Required(AllowEmptyStrings = false, ErrorMessageResourceName = nameof(DataAnnotationResource.PropertyValueRequired), ErrorMessageResourceType = typeof(DataAnnotationResource))]
     [DataType(DataType.Text)]
     [Display(Name = "Postal code")]
     [StringLength(10, MinimumLength = 4, ErrorMessageResourceName = nameof(DataAnnotationResource.StringLengthBetween), ErrorMessageResourceType = typeof(DataAnnotationResource))]
-    public string PostalCode { get; set; }
+    public string PostalCode { get; set; } = string.Empty;
 
     [Required(AllowEmptyStrings = false, ErrorMessageResourceName = nameof(DataAnnotationResource.PropertyValueRequired), ErrorMessageResourceType = typeof(DataAnnotationResource))]
     [DataType(DataType.Text)]
     [Display(Name = "City")]
-    public string City { get; set; }
+    public string City { get; set; } = string.Empty;
 
     [Display(Name = "Directions, hints")]
-    public string Direction { get; set; }
+    public string Direction { get; set; } = string.Empty;
 
     /// <summary>
     /// <see langword="true"/>, if <see cref="Longitude"/> and <see cref="Latitude"/> fields will be shown, else <see langword="false"/>.

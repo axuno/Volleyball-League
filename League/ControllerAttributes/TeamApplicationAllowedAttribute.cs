@@ -11,10 +11,10 @@ public class TeamApplicationAllowedAttribute : ActionFilterAttribute
     {
         if (filterContext.HttpContext.RequestServices.GetService(typeof(ITenantContext)) is
                 ITenantContext tenantContext &&
-            (!tenantContext.TournamentContext.ApplicationAllowed && (filterContext.RouteData.Values["controller"].ToString()
+            (!tenantContext.TournamentContext.ApplicationAllowed && ((filterContext.RouteData.Values["controller"]?.ToString() ?? string.Empty)
                                                                          .Equals(nameof(League.Controllers.TeamApplication),
                                                                              StringComparison.OrdinalIgnoreCase) &&
-                                                                     !filterContext.RouteData.Values["action"].ToString()
+                                                                     !(filterContext.RouteData.Values["action"]?.ToString() ?? string.Empty)
                                                                          .Equals(nameof(League.Controllers.TeamApplication.List),
                                                                              StringComparison.OrdinalIgnoreCase)
                 )))

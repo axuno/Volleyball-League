@@ -17,12 +17,12 @@ public class SiteModalToggleTagHelper : TagHelper
     /// The id of the modal that will be toggled by this element.
     /// </summary>
     [HtmlAttributeName(ModalTargetAttributeName)]
-    public string ToggleModal { get; set; }
+    public string? ToggleModal { get; set; }
 
     /// <inheritdoc />
     public override void Process(TagHelperContext context, TagHelperOutput output)
     {
         output.Attributes.SetAttribute("data-toggle", "modal");
-        output.Attributes.SetAttribute("data-target", ToggleModal.StartsWith("#") ? ToggleModal : $"#{ToggleModal}");
+        output.Attributes.SetAttribute("data-target", ToggleModal != null && ToggleModal.StartsWith("#") ? ToggleModal : $"#{ToggleModal}");
     }
 }

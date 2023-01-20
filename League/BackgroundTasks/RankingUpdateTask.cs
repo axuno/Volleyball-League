@@ -83,7 +83,7 @@ public class RankingUpdateTask : IBackgroundTask
     /// <summary>
     /// Gets or sets the <see cref="TournamentManager.MultiTenancy.TenantContext"/> to use for the update.
     /// </summary>
-    public ITenantContext TenantContext { get; set; }
+    public ITenantContext? TenantContext { get; set; }
 
     private async Task UpdateRankingAsync(CancellationToken cancellationToken)
     {
@@ -193,7 +193,7 @@ public class RankingUpdateTask : IBackgroundTask
         if (rankingWasUpdated) DeleteObsoleteChartImageFiles(roundIds);
 #if DEBUG
         stopWatch.Stop();
-        _logger.LogInformation("{0} completed in {1}ms", nameof(RankingUpdateTask), stopWatch.ElapsedMilliseconds);
+        _logger.LogInformation("{RankingTask} completed in {ElapsedTime}ms", nameof(RankingUpdateTask), stopWatch.ElapsedMilliseconds);
 #endif
     }
 
@@ -205,7 +205,7 @@ public class RankingUpdateTask : IBackgroundTask
             foreach (var roundId in roundIds)
             {
                 var fileInfos = chartDirectory.GetFiles(string.Format(RankingChartFilenameTemplate,
-                    TenantContext.Identifier, roundId, "*")).OrderByDescending(fi => fi.LastWriteTimeUtc);
+                    TenantContext!.Identifier, roundId, "*")).OrderByDescending(fi => fi.LastWriteTimeUtc);
 
                 // Remove all files except for the most recent
                 foreach (var fileInfo in fileInfos.Skip(1))

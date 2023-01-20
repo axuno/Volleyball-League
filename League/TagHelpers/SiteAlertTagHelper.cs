@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Razor.TagHelpers;
@@ -82,19 +80,19 @@ public class SiteAlertTagHelper : TagHelper
     /// To force no icon use "none"
     /// </summary>
     [HtmlAttributeName("icon")]
-    public string IconClass { get; set; }
+    public string? IconClass { get; set; }
 
     /// <summary>
     /// Defines the size of the FontAwesome Icon. Default is fa-2x.
     /// </summary>
     [HtmlAttributeName("icon-size-class")]
-    public string IconSizeClass { get; set; } = "fa-2x";
+    public string? IconSizeClass { get; set; } = "fa-2x";
 
     /// <summary>
     /// CSS class to append to the default CSS classes of <see cref="SiteAlertTagHelper"/>.
     /// </summary>
     [HtmlAttributeName("class")]
-    public string CssClass { get; set; }
+    public string? CssClass { get; set; }
 
     /// <summary>
     /// If true displays a close icon to close the alert.
@@ -163,7 +161,7 @@ public class SiteAlertTagHelper : TagHelper
 
         sb.Append(content.GetContent());
 
-        if (Dismissible && !CssClass.Contains("alert-dismissible"))
+        if (Dismissible && CssClass != null && !CssClass.Contains("alert-dismissible"))
             CssClass += " alert-dismissible";
 
         // use "div" instead of "site-alert"

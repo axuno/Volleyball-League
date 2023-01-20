@@ -37,7 +37,7 @@ public class DescriptionTagHelper : TagHelper
 
     [HtmlAttributeNotBound] 
     [ViewContext] 
-    public ViewContext ViewContext { get; set; }
+    public ViewContext? ViewContext { get; set; }
 
     protected IHtmlGenerator Generator { get; }
 
@@ -45,7 +45,7 @@ public class DescriptionTagHelper : TagHelper
     /// An expression to be evaluated against the current model.
     /// </summary>
     [HtmlAttributeName(DescriptionForAttributeName)]
-    public ModelExpression For { get; set; }
+    public ModelExpression? For { get; set; }
 
     /// <inheritdoc />
     /// <remarks>There is no output if <see cref="For"/> is <c>null</c>.</remarks>
@@ -54,7 +54,7 @@ public class DescriptionTagHelper : TagHelper
         _ = context ?? throw new ArgumentNullException(nameof(context)); 
         _ = output ?? throw new ArgumentNullException(nameof(output));
 
-        var metadata = For.Metadata ??
+        var metadata = For?.Metadata ??
                        throw new InvalidOperationException($"No metadata provided ({DescriptionForAttributeName})");
 
         if (string.IsNullOrWhiteSpace(metadata.Description)) return Task.CompletedTask;

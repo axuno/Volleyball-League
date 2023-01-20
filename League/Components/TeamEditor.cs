@@ -1,6 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using TournamentManager.MultiTenancy;
 
 namespace League.Components;
 

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading;
@@ -15,19 +14,19 @@ namespace League.Models.TeamViewModels;
 public class TeamEditModel
 {
     [BindProperty]
-    public RoundSelectorComponentModel Round { get; set; }
+    public RoundSelectorComponentModel? Round { get; set; }
         
     [BindProperty]
-    public TeamEditorComponentModel Team { get; set; }
+    public TeamEditorComponentModel? Team { get; set; }
 
     [HiddenInput]
-    public string Hash { get; set; }
+    public string? Hash { get; set; }
 
     [Display(Name = "Ignore notices")]
     public bool OverrideWarnings { get; set; }
 
     [BindNever]
-    public TeamEntity TeamEntity { get; set; }
+    public TeamEntity? TeamEntity { get; set; }
 
     [BindNever]
     public bool IsWarning { get; set; }
@@ -36,9 +35,9 @@ public class TeamEditModel
     {
         // Only if the round selector was shown to the user.
         // Otherwise, the name of the current round was just displayed.
-        if (Round.ShowSelector && Round.SelectedRoundId.HasValue)
+        if (Round!.ShowSelector && Round.SelectedRoundId.HasValue)
         {
-            if (TeamEntity.TeamInRounds.Any())
+            if (TeamEntity!.TeamInRounds.Any())
             {
                 // Only the RoundId is updated, but not the TeamNameForRound!
                 TeamEntity.TeamInRounds.First().RoundId = Round.SelectedRoundId.Value;
@@ -48,16 +47,16 @@ public class TeamEditModel
                 // trying to add an existing TeamInRound combination of TeamId and RoundId will throw
                 var tir = TeamEntity.TeamInRounds.AddNew();
                 tir.RoundId = Round.SelectedRoundId.Value;
-                tir.TeamNameForRound = Team.Name;
+                tir.TeamNameForRound = Team!.Name;
             }
         }
 
-        Team.MapFormFieldsToEntity(TeamEntity);
+        Team!.MapFormFieldsToEntity(TeamEntity!);
     }
 
     public async Task<bool> ValidateAsync(TeamValidator teamValidator, long tournamentId, ModelStateDictionary modelState, CancellationToken cancellationToken)
     {
-        if (Round.ShowSelector && Round.SelectedRoundId.HasValue)
+        if (Round!.ShowSelector && Round.SelectedRoundId.HasValue)
         {
             var tirValidator = new TeamInRoundValidator(
                 new TeamInRoundEntity {RoundId = Round.SelectedRoundId.Value, TeamId = teamValidator.Model.Id},
@@ -88,7 +87,7 @@ public class TeamEditModel
             {
                 foreach (var fieldName in fact.FieldNames)
                 {
-                    modelState.AddModelError(string.Join('.', Team.HtmlFieldPrefix, fieldName), fact.Message);
+                    modelState.AddModelError(string.Join('.', Team!.HtmlFieldPrefix, fieldName), fact.Message);
                 }
             }
             else
@@ -123,8 +122,8 @@ public class TeamEditModel
     private string ComputeInputHash()
     {
         return Axuno.Tools.Hash.Md5.GetHash(string.Join(string.Empty,
-            Round.SelectedRoundId?.ToString() ?? string.Empty,
-            Team.Id.ToString(),
+            Round!.SelectedRoundId?.ToString() ?? string.Empty,
+            Team!.Id.ToString(),
             Team.Name ?? string.Empty,
             Team.ClubName ?? string.Empty,
             Team.MatchTime?.ToString() ?? string.Empty,

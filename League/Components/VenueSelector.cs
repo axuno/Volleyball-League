@@ -29,7 +29,7 @@ public class VenueSelector : ViewComponent
         return View(await GetVenueSelectorModel(model));
     }
 
-    private async Task<VenueSelectorComponentModel> GetVenueSelectorModel((long TournamentId, IList<long> TeamIds, VenueSelectorComponentModel.Criteria Filter, VenueSelectorComponentModel.Criteria Group, long? VenueNotSpecifiedKey) tuple)
+    private async Task<VenueSelectorComponentModel?> GetVenueSelectorModel((long TournamentId, IList<long> TeamIds, VenueSelectorComponentModel.Criteria Filter, VenueSelectorComponentModel.Criteria Group, long? VenueNotSpecifiedKey) tuple)
     {
         // The TournamentId will only affect grouping of venues. All venues will be shown for selection.
         var model = new VenueSelectorComponentModel {Filter = tuple.Filter, Group = tuple.Group, VenueNotSpecifiedKey = tuple.VenueNotSpecifiedKey};
@@ -38,7 +38,7 @@ public class VenueSelector : ViewComponent
             // Get all venues and teams for a tournament and select in-memory is 40% faster compared to database selections
             var venuesWithTeams = await _appDb.VenueRepository.GetVenueTeamRowsAsync(new PredicateExpression(VenueTeamFields.TournamentId == tuple.TournamentId),
                 CancellationToken.None);
-            model.AllVenues = (await _appDb.VenueRepository.GetVenuesAsync(null, CancellationToken.None))
+            model.AllVenues = (await _appDb.VenueRepository.GetVenuesAsync(new PredicateExpression(), CancellationToken.None))
                 .OrderBy(v => v.City).ThenBy(v => v.Name).ThenBy(v => v.Extension).ToList();
 
             // get venue entities of match teams

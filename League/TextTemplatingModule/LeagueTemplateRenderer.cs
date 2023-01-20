@@ -6,7 +6,7 @@ using Microsoft.Extensions.Options;
 using Scriban;
 using Scriban.Parsing;
 using Scriban.Syntax;
-#nullable enable
+
 namespace League.TextTemplatingModule;
 
 /// <summary>

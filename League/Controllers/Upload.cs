@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -120,10 +119,10 @@ public class Upload : AbstractController
             _loggerFactory.CreateLogger<TeamPhotoStaticFile>());
 
         var extension =
-            Path.GetExtension(ContentDispositionHeaderValue.Parse(file.ContentDisposition)?.FileName.Value
-                ?.ToLowerInvariant());
+            Path.GetExtension(ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.Value
+                ?.ToLowerInvariant() ?? string.Empty);
 
-        if (!new[] {".jpg", ".jpeg", ".png"}.Contains(extension ?? string.Empty))
+        if (!new[] {".jpg", ".jpeg", ".png"}.Contains(extension))
         {
             const string message = "Uploaded file must be of type JPG, JPEG or PNG";
             Response.StatusCode = 409;

@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
@@ -47,7 +45,7 @@ public class Constants
         /// Get the values of all constants in this class.
         /// </summary>
         /// <returns>Returns the values of all constants in this class.</returns>
-        public static IEnumerable<T> GetAllValues<T>()
+        public static IEnumerable<T?> GetAllValues<T>()
         {
             return Constants.GetAllValues<T>(typeof(RoleName));
         }
@@ -56,7 +54,7 @@ public class Constants
         /// Get the names of all constants in this class.
         /// </summary>
         /// <returns>Returns the names of all constants in this class.</returns>
-        public static IEnumerable<string> GetAllNames()
+        public static IEnumerable<string?> GetAllNames()
         {
             return Constants.GetAllNames(typeof(RoleName));
         }
@@ -104,7 +102,7 @@ public class Constants
         /// Get the values of type T of all constants in this class.
         /// </summary>
         /// <returns>Returns the values of type T of all constants in this class.</returns>
-        public static IEnumerable<T> GetAllValues<T>()
+        public static IEnumerable<T?> GetAllValues<T>()
         {
             return Constants.GetAllValues<T>(typeof(ClaimType));
         }
@@ -113,7 +111,7 @@ public class Constants
         /// Get the names of all constants in this class.
         /// </summary>
         /// <returns>Returns the names of all constants in this class.</returns>
-        public static IEnumerable<string> GetAllNames()
+        public static IEnumerable<string?> GetAllNames()
         {
             return Constants.GetAllNames(typeof(ClaimType));
         }
@@ -123,12 +121,12 @@ public class Constants
     /// Get the values of type T of all constants in this class.
     /// </summary>
     /// <returns>Returns the values of type T of all constants in this class.</returns>
-    private static IEnumerable<T> GetAllValues<T>(IReflect type)
+    private static IEnumerable<T?> GetAllValues<T>(IReflect type)
     {
         return type
             .GetFields(BindingFlags.Public | BindingFlags.Static)
             .Where(fi => fi.IsLiteral && !fi.IsInitOnly && fi.FieldType == typeof(T))
-            .Select(x => (T)x.GetRawConstantValue())
+            .Select(x => (T?)x.GetRawConstantValue())
             .ToList();
     }
 
@@ -136,7 +134,7 @@ public class Constants
     /// Get the names of all constants in this class.
     /// </summary>
     /// <returns>Returns the names of all constants in this class.</returns>
-    private static IEnumerable<string> GetAllNames(IReflect type)
+    private static IEnumerable<string?> GetAllNames(IReflect type)
     {
         const BindingFlags flags = BindingFlags.Static | BindingFlags.Public;
 

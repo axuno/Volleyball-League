@@ -18,8 +18,13 @@ public class TenantRouteConstraint : IRouteConstraint
     }
 
     public const string Name = "MatchingTenant";
-    public bool Match(HttpContext httpContext, IRouter route, string parameterName, RouteValueDictionary values, RouteDirection routeDirection)
+    public bool Match(HttpContext? httpContext, IRouter? route, string parameterName, RouteValueDictionary values, RouteDirection routeDirection)
     {
+        if (httpContext == null)
+        {
+            throw new ArgumentNullException(nameof(httpContext));
+        }
+
         var tenantResolver = httpContext.RequestServices.GetRequiredService<TenantResolver>();
         var tenantStore = httpContext.RequestServices.GetRequiredService<TenantStore>();
 
@@ -27,7 +32,7 @@ public class TenantRouteConstraint : IRouteConstraint
         {
             case RouteDirection.IncomingRequest:
                 var tenant = tenantResolver.Resolve();
-                return tenant != null && tenantResolver.Resolve().SiteContext.UrlSegmentValue
+                return tenantResolver.Resolve().SiteContext.UrlSegmentValue
                     .Equals(values[parameterName]?.ToString(), StringComparison.InvariantCultureIgnoreCase);
             case RouteDirection.UrlGeneration:
             default:

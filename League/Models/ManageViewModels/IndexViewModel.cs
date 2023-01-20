@@ -1,10 +1,6 @@
-using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
-using Axuno.Tools.DateAndTime;
 using League.Identity;
 using Microsoft.AspNetCore.Identity;
-using Newtonsoft.Json;
 
 namespace League.Models.ManageViewModels;
 
@@ -17,10 +13,10 @@ public class IndexViewModel
 
     public Axuno.Tools.DateAndTime.TimeZoneConverter TimeZoneConverter { get; }
 
-    public ApplicationUser ApplicationUser { get; set; }
+    public ApplicationUser? ApplicationUser { get; set; }
     public bool HasPassword { get; set; }
-    public IList<UserLoginInfo> Logins { get; set; }
-    public ManageMessage ManageMessage { get; set; }
+    public IList<UserLoginInfo> Logins { get; set; } = new List<UserLoginInfo>();
+    public ManageMessage? ManageMessage { get; set; }
 }
 
 public class ManageMessage

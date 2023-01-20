@@ -46,19 +46,19 @@ public class SiteAuthorizeTagHelper : TagHelper, IAuthorizeData
     /// Gets or sets a comma delimited list of roles that are allowed to access the HTML block.
     /// </summary>
     [HtmlAttributeName("site-roles")]
-    public string Roles { get; set; }
+    public string? Roles { get; set; }
 
     /// <summary>
     /// Gets or sets the policy name that determines access to the HTML block.
     /// </summary>
     [HtmlAttributeName("site-policy")]
-    public string Policy { get; set; }
+    public string? Policy { get; set; }
         
     /// <summary>
     /// Gets or sets a comma delimited list of schemes from which user information is constructed.
     /// </summary>
     [HtmlAttributeName("site-authentication-schemes")]
-    public string AuthenticationSchemes { get; set; }
+    public string? AuthenticationSchemes { get; set; }
 
     #endregion
 
@@ -73,7 +73,7 @@ public class SiteAuthorizeTagHelper : TagHelper, IAuthorizeData
     public override async Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
     {
         var policy = await AuthorizationPolicy.CombineAsync(_policyProvider, new[] { this });
-        var authenticateResult = await _policyEvaluator.AuthenticateAsync(policy, _httpContextAccessor.HttpContext);
+        var authenticateResult = await _policyEvaluator.AuthenticateAsync(policy!, _httpContextAccessor.HttpContext!);
         output.Attributes.RemoveAll(TagHelperAttributeName);  // remove tag helper's attribute
 
         if (AnonymousOnly)
@@ -87,7 +87,7 @@ public class SiteAuthorizeTagHelper : TagHelper, IAuthorizeData
             return;
         }
 
-        var authorizeResult = await _policyEvaluator.AuthorizeAsync(policy, authenticateResult, _httpContextAccessor.HttpContext, null);
+        var authorizeResult = await _policyEvaluator.AuthorizeAsync(policy!, authenticateResult, _httpContextAccessor.HttpContext!, null);
 
         if (!authorizeResult.Succeeded)
         {

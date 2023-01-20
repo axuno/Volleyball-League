@@ -9,7 +9,6 @@ using League.Models.RankingViewModels;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
-using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Primitives;
 using SD.LLBLGen.Pro.ORMSupportClasses;
@@ -17,7 +16,6 @@ using SD.LLBLGen.Pro.QuerySpec;
 using TournamentManager.DAL.HelperClasses;
 using TournamentManager.DAL.TypedViewClasses;
 using TournamentManager.MultiTenancy;
-using TournamentManager.Ranking;
 
 namespace League.Controllers;
 
@@ -44,7 +42,7 @@ public class Ranking : AbstractController
 
     public IActionResult Index()
     {
-        return Redirect(Url.Action(nameof(Table), nameof(Ranking), new { Organization = _tenantContext.SiteContext.UrlSegmentValue }));
+        return Redirect(Url.Action(nameof(Table), nameof(Ranking), new { Organization = _tenantContext.SiteContext.UrlSegmentValue }) ?? string.Empty);
     }
 
     /// <summary>

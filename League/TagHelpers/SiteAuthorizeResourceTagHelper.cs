@@ -35,19 +35,19 @@ public class SiteAuthorizeResourceTagHelper : TagHelper
     /// Gets or sets the policy name that determines access to the HTML block.
     /// </summary>
     [HtmlAttributeName("site-policy")]
-    public string Policy { get; set; }
+    public string? Policy { get; set; }
 
     /// <summary>
     /// Gets or sets a comma delimited list of requirements that are allowed to access the HTML block.
     /// </summary>
     [HtmlAttributeName("site-requirement")]
-    public IAuthorizationRequirement Requirement { get; set; }
+    public IAuthorizationRequirement? Requirement { get; set; }
 
     /// <summary>
     /// Gets or sets the resource to be authorized against a particular policy.
     /// </summary>
     [HtmlAttributeName("site-resource")]
-    public object Resource { get; set; }
+    public object? Resource { get; set; }
 
     public override async Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
     {
@@ -69,12 +69,12 @@ public class SiteAuthorizeResourceTagHelper : TagHelper
 
         if (!string.IsNullOrWhiteSpace(Policy))
         {
-            authorizeResult = await _authorizationService.AuthorizeAsync(_httpContextAccessor.HttpContext.User, Resource, Policy);
+            authorizeResult = await _authorizationService.AuthorizeAsync(_httpContextAccessor.HttpContext!.User, Resource, Policy);
         }
         else if (Requirement != null)
         {
             authorizeResult =
-                await _authorizationService.AuthorizeAsync(_httpContextAccessor.HttpContext.User, Resource,
+                await _authorizationService.AuthorizeAsync(_httpContextAccessor.HttpContext!.User, Resource,
                     Requirement);
         }
         else

@@ -30,7 +30,7 @@ public class UserStore : IUserStore<ApplicationUser>, IUserEmailStore<Applicatio
         _appDb = tenantContext.DbContext.AppDb;
         _logger = logger;
         _keyNormalizer = keyNormalizer;
-        _identityErrorDescriber = identityErrorDescriber as MultiLanguageIdentityErrorDescriber;
+        _identityErrorDescriber = (MultiLanguageIdentityErrorDescriber) identityErrorDescriber;
     }
 
     #region ** IUserStore **
@@ -118,15 +118,15 @@ public class UserStore : IUserStore<ApplicationUser>, IUserEmailStore<Applicatio
         user.FirstName = userEntity.FirstName;
         user.LastName = userEntity.LastName;
         user.Nickname = userEntity.Nickname;
-        user.CompleteName = string.IsNullOrEmpty(userEntity.CompleteName) ? null : userEntity.CompleteName; ;
+        user.CompleteName = userEntity.CompleteName;
         user.Email = userEntity.Email;
         SetNormalizedEmailAsync(user, userEntity.Email, CancellationToken.None);
         user.EmailConfirmedOn = userEntity.EmailConfirmedOn;
-        user.Email2 = string.IsNullOrEmpty(userEntity.Email2) ? null : userEntity.Email2;
+        user.Email2 = userEntity.Email2 ?? string.Empty;
         user.PasswordHash = userEntity.PasswordHash;
-        user.PhoneNumber = string.IsNullOrEmpty(userEntity.PhoneNumber) ? string.Empty : userEntity.PhoneNumber;
+        user.PhoneNumber = userEntity.PhoneNumber ?? string.Empty;
         user.PhoneNumberConfirmedOn = userEntity.PhoneNumberConfirmedOn;
-        user.PhoneNumber2 = string.IsNullOrEmpty(userEntity.PhoneNumber2) ? string.Empty : userEntity.PhoneNumber2;
+        user.PhoneNumber2 = userEntity.PhoneNumber2 ?? string.Empty;
         user.SecurityStamp = userEntity.Guid;
         user.ModifiedOn = userEntity.ModifiedOn;
         return Task.CompletedTask;
@@ -136,13 +136,13 @@ public class UserStore : IUserStore<ApplicationUser>, IUserEmailStore<Applicatio
     {
         cancellationToken.ThrowIfCancellationRequested();
         if (string.IsNullOrEmpty(userId))
-            throw new ArgumentNullException(nameof(userId), "Null or empty");
+            throw new ArgumentNullException(nameof(userId), @"Used ID is null or empty");
 
         if (!long.TryParse(userId, out var id))
-            return null;
+            return new ApplicationUser();
 
         var userEntity = await _appDb.UserRepository.GetLoginUserAsync(id, cancellationToken);
-        if (userEntity == null) return null;
+        if (userEntity == null) return new ApplicationUser();
 
         var user = new ApplicationUser();
         await MapUserEntityToUser(user, userEntity);
@@ -156,7 +156,7 @@ public class UserStore : IUserStore<ApplicationUser>, IUserEmailStore<Applicatio
             throw new ArgumentNullException(nameof(normalizedUserName), "Null or empty");
 
         var userEntity = await _appDb.UserRepository.GetLoginUserByUserNameAsync(normalizedUserName, cancellationToken);
-        if (userEntity == null) return null;
+        if (userEntity == null) return new ApplicationUser();
 
         var user = new ApplicationUser();
         await MapUserEntityToUser(user, userEntity);
@@ -304,7 +304,7 @@ public class UserStore : IUserStore<ApplicationUser>, IUserEmailStore<Applicatio
             throw new ArgumentNullException(nameof(normalizedEmail), "Null or empty");
 
         var userEntity = await _appDb.UserRepository.GetLoginUserByEmailAsync(normalizedEmail, cancellationToken);
-        if (userEntity == null) return null;
+        if (userEntity == null) return new ApplicationUser();
 
         var user = new ApplicationUser();
         await MapUserEntityToUser(user, userEntity);
@@ -388,7 +388,7 @@ public class UserStore : IUserStore<ApplicationUser>, IUserEmailStore<Applicatio
         return Task.CompletedTask;
     }
 
-    public Task<string> GetPasswordHashAsync(ApplicationUser user, CancellationToken cancellationToken)
+    public Task<string?> GetPasswordHashAsync(ApplicationUser user, CancellationToken cancellationToken)
     {
         if (user == null)
             throw new ArgumentNullException(nameof(user));
@@ -523,7 +523,7 @@ public class UserStore : IUserStore<ApplicationUser>, IUserEmailStore<Applicatio
             throw new ArgumentNullException(nameof(roleName), "Null or empty");
 
         var applicationUsers = new List<ApplicationUser>();
-        List<UserEntity> userEntities = null;
+        List<UserEntity>? userEntities = null;
 
         if (roleName == Constants.RoleName.TeamManager)
             userEntities = await _appDb.ManagerOfTeamRepository.GetTeamManagersAsync(cancellationToken);
@@ -820,7 +820,7 @@ public class UserStore : IUserStore<ApplicationUser>, IUserEmailStore<Applicatio
     #endregion
         
     #region ** IUserSecurityStampStore **
-    public Task SetSecurityStampAsync(ApplicationUser user, string stamp, CancellationToken cancellationToken)
+    public Task SetSecurityStampAsync(ApplicationUser user, string? stamp, CancellationToken cancellationToken)
     {
         if (user == null)
             throw new ArgumentNullException(nameof(user));
@@ -905,7 +905,7 @@ public class UserStore : IUserStore<ApplicationUser>, IUserEmailStore<Applicatio
             throw new ArgumentNullException(nameof(providerKey), "Null or empty");
 
         var userEntity = await _appDb.UserLoginRepository.GetUserByLoginAsync(loginProvider, providerKey, cancellationToken);
-        if (userEntity == null) return null;
+        if (userEntity == null) return new ApplicationUser();
             
         var user = new ApplicationUser();
         await MapUserEntityToUser(user, userEntity);
@@ -914,7 +914,7 @@ public class UserStore : IUserStore<ApplicationUser>, IUserEmailStore<Applicatio
     #endregion
 
     #region ** IUserAuthenticationTokenStore **
-    public async Task<string> GetTokenAsync(ApplicationUser user, string loginProvider, string name, CancellationToken cancellationToken)
+    public async Task<string?> GetTokenAsync(ApplicationUser user, string loginProvider, string name, CancellationToken cancellationToken)
     {
         if (user == null)
             throw new ArgumentNullException(nameof(user));
@@ -1024,6 +1024,7 @@ public class UserStore : IUserStore<ApplicationUser>, IUserEmailStore<Applicatio
             return;
 
         var userEntity = await _appDb.UserRepository.GetLoginUserAsync(user.Id, cancellationToken);
+        if (userEntity == null) throw new InvalidOperationException($"No user entity found for user ID '{user.Id}'");
 
         if (lockoutEnd.HasValue)
             userEntity.LockoutEndDateUtc = lockoutEnd.Value.UtcDateTime;
@@ -1044,6 +1045,7 @@ public class UserStore : IUserStore<ApplicationUser>, IUserEmailStore<Applicatio
             return 0;
 
         var userEntity = await _appDb.UserRepository.GetLoginUserAsync(user.Id, cancellationToken);
+        if (userEntity == null) throw new InvalidOperationException($"No user entity found for user ID '{user.Id}'");
 
         var count = ++userEntity.AccessFailedCount;
         await _appDb.GenericRepository.SaveEntityAsync(userEntity, false, false, cancellationToken);

@@ -19,7 +19,7 @@ public class SiteModalToggleAjaxTagHelper : TagHelper
     /// The URL of the partial view to load into a Bootstrap Modal.
     /// </summary>
     [HtmlAttributeName("site-data-url")]
-    public string DataUrl { get; set; }
+    public string? DataUrl { get; set; }
 
     /// <inheritdoc />
     public override void Process(TagHelperContext context, TagHelperOutput output)

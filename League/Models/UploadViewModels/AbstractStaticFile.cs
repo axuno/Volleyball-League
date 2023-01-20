@@ -104,10 +104,9 @@ public abstract class AbstractStaticFile
     /// <param name="dirInfo"></param>
     /// <param name="searchPattern"></param>
     /// <returns></returns>
-    protected (string Filename, DateTime Date) GetFileInfo(DirectoryInfo dirInfo, string searchPattern)
+    protected (string? Filename, DateTime Date) GetFileInfo(DirectoryInfo dirInfo, string searchPattern)
     {
-        var fileInfo = dirInfo.GetFiles(searchPattern).OrderByDescending(fi => fi.LastWriteTimeUtc)
-            .FirstOrDefault();
+        var fileInfo = dirInfo.GetFiles(searchPattern).MaxBy(fi => fi.LastWriteTimeUtc);
 
         if (fileInfo == null) return (null, DateTime.UtcNow);
 

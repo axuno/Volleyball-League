@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using League.Models.UploadViewModels;
 using TournamentManager.DAL.EntityClasses;
 using TournamentManager.DAL.TypedViewClasses;
 
@@ -14,11 +12,11 @@ public class TeamSingleModel
         TimeZoneConverter = timeZoneConverter;
     }
 
-    public TournamentEntity Tournament { get; set; }
+    public TournamentEntity? Tournament { get; set; }
 
-    public TeamVenueRoundRow TeamVenueRoundInfo { get; set; }
+    public TeamVenueRoundRow? TeamVenueRoundInfo { get; set; }
 
-    public List<TeamUserRoundRow> TeamUserRoundInfos { get; set; }
+    public List<TeamUserRoundRow> TeamUserRoundInfos { get; set; } = new();
 
     public bool ShowContactInfos { get; set; }
 

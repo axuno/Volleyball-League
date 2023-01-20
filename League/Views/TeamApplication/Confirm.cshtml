@@ -1,7 +1,6 @@
 ﻿@using System.Globalization
 @using Axuno.Tools.DateAndTime
 @using League.Controllers
-@using League.Views
 @using Microsoft.AspNetCore.Mvc.Localization
 @using TournamentManager.MultiTenancy
 @inject IViewLocalizer Localizer
@@ -9,6 +8,7 @@
 @inject ITenantContext TenantContext
 @model League.Models.TeamApplicationViewModels.ApplicationConfirmModel
 @{
+
     ViewData["Title"] = Localizer["Team Registration"].Value + " - " + Model.SessionModel.TournamentName;
     var tenantUrlSegment = TenantContext.SiteContext.UrlSegmentValue;
 }

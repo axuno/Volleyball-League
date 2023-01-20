@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing.Text;
 using System.Globalization;
 using System.Linq;
 using System.Threading;
@@ -13,7 +12,6 @@ using League.Models.TeamViewModels;
 using League.Models.VenueViewModels;
 using League.TagHelpers;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Localization;
@@ -76,7 +74,7 @@ public class Venue : AbstractController
 
         var model = GetEditModel(false, venueEntity, null, returnUrl);
 
-        model.Venue.MapEntityToFormFields(model.VenueEntity);
+        model.Venue.MapEntityToFormFields(model.VenueEntity!);
 
         return View(Views.ViewNames.Venue.EditVenue, model);
     }
@@ -103,7 +101,7 @@ public class Venue : AbstractController
 
         model = GetEditModel(false, venueEntity, null, model.ReturnUrl);
             
-        model.Venue.MapEntityToFormFields(model.VenueEntity);
+        model.Venue.MapEntityToFormFields(model.VenueEntity!);
 
         // sync input with new model instance
         if (!await TryUpdateModelAsync(model))
@@ -112,7 +110,7 @@ public class Venue : AbstractController
         }
 
         ModelState.Clear();
-        model.Venue.MapFormFieldsToEntity(model.VenueEntity);
+        model.Venue.MapFormFieldsToEntity(model.VenueEntity!);
 
         var geoResponse = new GoogleGeo.GeoResponse {Success = false};
         if (model.ShouldAutoUpdateLocation())
@@ -121,14 +119,14 @@ public class Venue : AbstractController
         }
 
         if (!await model.ValidateAsync(
-                new VenueValidator(model.VenueEntity, (geoResponse, model.VenuesForDistance)),
+                new VenueValidator(model.VenueEntity!, (geoResponse, model.VenuesForDistance)),
                 ModelState,
                 cancellationToken))
         {
             return View(Views.ViewNames.Venue.EditVenue, model);
         }
 
-        if (await _appDb.GenericRepository.SaveEntityAsync<VenueEntity>(model.VenueEntity, false, false,
+        if (await _appDb.GenericRepository.SaveEntityAsync<VenueEntity>(model.VenueEntity!, false, false,
                 cancellationToken))
         {
             return Redirect(SetAdjustedReturnResult(nameof(Edit), model.ReturnUrl, true));
@@ -140,7 +138,7 @@ public class Venue : AbstractController
     [HttpGet("[action]/{tid:long?}")]
     public async Task<IActionResult> Create(long? tid, string returnUrl, CancellationToken cancellationToken)
     {
-        TeamEntity teamEntity = null;
+        TeamEntity? teamEntity = null;
         if (tid.HasValue)
         {
             teamEntity =
@@ -164,7 +162,7 @@ public class Venue : AbstractController
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Create([FromForm] VenueEditModel model, CancellationToken cancellationToken)
     {
-        TeamEntity teamEntity = null;
+        TeamEntity? teamEntity = null;
         if (model.TeamId.HasValue)
         {
             teamEntity =
@@ -181,7 +179,7 @@ public class Venue : AbstractController
 
         model = GetEditModel(true, new VenueEntity(), teamEntity, model.ReturnUrl);
 
-        model.Venue.MapEntityToFormFields(model.VenueEntity);
+        model.Venue.MapEntityToFormFields(model.VenueEntity!);
 
         // sync input with new model instance
         if (!await TryUpdateModelAsync(model))
@@ -189,7 +187,7 @@ public class Venue : AbstractController
             return View(Views.ViewNames.Venue.EditVenue, model);
         }
         ModelState.Clear();
-        model.Venue.MapFormFieldsToEntity(model.VenueEntity);
+        model.Venue.MapFormFieldsToEntity(model.VenueEntity!);
 
         var geoResponse = new GoogleGeo.GeoResponse {Success = false};
         if (model.ShouldAutoUpdateLocation())
@@ -199,7 +197,7 @@ public class Venue : AbstractController
 
         if (!await model.ValidateAsync(
                 // with parameter geoResponse == NULL, there is no geo validation
-                new VenueValidator(model.VenueEntity, (geoResponse, model.VenuesForDistance)),
+                new VenueValidator(model.VenueEntity!, (geoResponse, model.VenuesForDistance)),
                 ModelState,
                 cancellationToken))
         {
@@ -221,7 +219,7 @@ public class Venue : AbstractController
             else
             {
                 // Save the venue (only)
-                return await _appDb.GenericRepository.SaveEntityAsync<VenueEntity>(model.VenueEntity, false, false,
+                return await _appDb.GenericRepository.SaveEntityAsync<VenueEntity>(model.VenueEntity!, false, false,
                     cancellationToken)
                     ? Redirect(SetAdjustedReturnResult(nameof(Create), model.ReturnUrl, true))
                     : Redirect(SetAdjustedReturnResult(nameof(Create), model.ReturnUrl, false));
@@ -236,7 +234,7 @@ public class Venue : AbstractController
         
     private string SetAdjustedReturnResult(string method, string returnUrl, bool isSuccess)
     {
-        if (method.Equals(nameof(Edit)) && returnUrl.Contains(Url.Action(nameof(Team.MyTeam), nameof(Team), new { Organization = _tenantContext.SiteContext.UrlSegmentValue })))
+        if (method.Equals(nameof(Edit)) && returnUrl.Contains(Url.Action(nameof(Team.MyTeam), nameof(Team), new { Organization = _tenantContext.SiteContext.UrlSegmentValue }) ?? string.Empty))
         {
             TempData.Put<MyTeamMessageModel.MyTeamMessage>(nameof(MyTeamMessageModel.MyTeamMessage),
                 new MyTeamMessageModel.MyTeamMessage
@@ -248,7 +246,7 @@ public class Venue : AbstractController
             return returnUrl;
         }
 
-        if (method.Equals(nameof(Create)) && returnUrl.Contains(Url.Action(nameof(Team.MyTeam), nameof(Team), new { Organization = _tenantContext.SiteContext.UrlSegmentValue })))
+        if (method.Equals(nameof(Create)) && returnUrl.Contains(Url.Action(nameof(Team.MyTeam), nameof(Team), new { Organization = _tenantContext.SiteContext.UrlSegmentValue }) ?? string.Empty))
         {
             TempData.Put<MyTeamMessageModel.MyTeamMessage>(nameof(MyTeamMessageModel.MyTeamMessage),
                 new MyTeamMessageModel.MyTeamMessage
@@ -277,8 +275,8 @@ public class Venue : AbstractController
         else
         {
             model.VenuesForDistance = await _appDb.VenueRepository.GetVenuesForDistanceAsync(geoResponse.GeoLocation.LocationType == GoogleGeo.LocationType.RoofTop ? .5 : 2.0,
-                geoResponse.GeoLocation.Longitude.TotalDegrees,
-                geoResponse.GeoLocation.Latitude.TotalDegrees, cancellationToken);
+                geoResponse.GeoLocation.Longitude?.TotalDegrees ?? 0,
+                geoResponse.GeoLocation.Latitude?.TotalDegrees ?? 0, cancellationToken);
         }
 
         return geoResponse;
@@ -292,7 +290,7 @@ public class Venue : AbstractController
                    new TeamEntity(teamId.Value), Authorization.TeamOperations.EditTeam)).Succeeded);
     }
 
-    private VenueEditModel GetEditModel(bool isNew, VenueEntity venueEntity, TeamEntity teamEntity, string returnUrl)
+    private VenueEditModel GetEditModel(bool isNew, VenueEntity venueEntity, TeamEntity? teamEntity, string returnUrl)
     {
         return new VenueEditModel
         {

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Runtime.InteropServices.ComTypes;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
@@ -34,7 +33,7 @@ public class LeagueUserValidator<TUser> : IUserValidator<TUser> where TUser : Ap
     public LeagueUserValidator(IOptions<LeagueUserValidatorOptions> serviceConfig, IdentityErrorDescriber describer)
     {
         // errors is expected to be of type MultiLanguageIdentityErrorDescriber
-        Describer = describer as MultiLanguageIdentityErrorDescriber;
+        Describer = (MultiLanguageIdentityErrorDescriber) describer;
         RequiredUsernameLength = serviceConfig.Value.RequiredUsernameLength;
     }
 

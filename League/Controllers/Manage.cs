@@ -10,7 +10,6 @@ using League.Identity;
 using League.Helpers;
 using League.Models.ManageViewModels;
 using League.TagHelpers;
-using League.Templates.Email;
 using League.Views;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -102,7 +101,7 @@ public class Manage : AbstractController
         if (user == null)
         {
             _logger.LogError("Username '{userName}' not found in repository", HttpContext.User.Identity?.Name);
-            ModelState.AddModelError(string.Empty, _localizer["'{0}' not found", _metaData.GetDisplayName<ChangeUsernameViewModel>(nameof(ChangeUsernameViewModel.Username))]);
+            ModelState.AddModelError(string.Empty, _localizer["'{0}' not found", _metaData.GetDisplayName<ChangeUsernameViewModel>(nameof(ChangeUsernameViewModel.Username)) ?? string.Empty]);
             return PartialView(ViewNames.Manage._ChangeUsernameModalPartial, model);
         }
 
@@ -155,7 +154,7 @@ public class Manage : AbstractController
         if (user == null)
         {
             _logger.LogError("User id '{userId}' not found in repository", GetCurrentUserId());
-            ModelState.AddModelError(string.Empty, _localizer["'{0}' not found", _metaData.GetDisplayName<ChangeEmailViewModel>(nameof(ChangeEmailViewModel.Email))]);
+            ModelState.AddModelError(string.Empty, _localizer["'{0}' not found", _metaData.GetDisplayName<ChangeEmailViewModel>(nameof(ChangeEmailViewModel.Email)) ?? string.Empty]);
             return PartialView(ViewNames.Manage._ChangeEmailModalPartial, model);
         }
 
@@ -224,7 +223,7 @@ public class Manage : AbstractController
         if (user == null)
         {
             _logger.LogError("User id '{userId}' not found in repository", GetCurrentUserId());
-            ModelState.AddModelError(string.Empty, _localizer["'{0}' not found", _metaData.GetDisplayName<EditEmail2ViewModel>(nameof(EditEmail2ViewModel.Email2))]);
+            ModelState.AddModelError(string.Empty, _localizer["'{0}' not found", _metaData.GetDisplayName<EditEmail2ViewModel>(nameof(EditEmail2ViewModel.Email2)) ?? string.Empty]);
             return PartialView(ViewNames.Manage._EditEmail2ModalPartial, model);
         }
 
@@ -241,7 +240,7 @@ public class Manage : AbstractController
             return PartialView(ViewNames.Manage._EditEmail2ModalPartial, model);
         }
 
-        var userEntity = await _tenantContext.DbContext.AppDb.UserRepository.GetLoginUserByUserNameAsync(User.Identity.Name, cancellationToken);
+        var userEntity = await _tenantContext.DbContext.AppDb.UserRepository.GetLoginUserByUserNameAsync(User.Identity?.Name ?? string.Empty, cancellationToken);
         if (userEntity == null)
         {
             TempData.Put<ManageMessage>(nameof(ManageMessage), new ManageMessage { AlertType = SiteAlertTagHelper.AlertType.Danger, MessageId = MessageId.ChangeEmail2Failure });
@@ -258,7 +257,7 @@ public class Manage : AbstractController
         if (_userManager.KeyNormalizer.NormalizeEmail(userEntity.Email) == _userManager.KeyNormalizer.NormalizeEmail(model.Email2))
         {
             _logger.LogInformation("Primary and additional email are equal ('{userEmail}').", userEntity.Email);
-            ModelState.AddModelError(nameof(EditEmail2ViewModel.Email2), _localizer["'{0}' and '{1}' must be different", _metaData.GetDisplayName<EditEmail2ViewModel>(nameof(EditEmail2ViewModel.Email2)), _metaData.GetDisplayName<ChangeEmailViewModel>(nameof(ChangeEmailViewModel.Email))]);
+            ModelState.AddModelError(nameof(EditEmail2ViewModel.Email2), _localizer["'{0}' and '{1}' must be different", _metaData.GetDisplayName<EditEmail2ViewModel>(nameof(EditEmail2ViewModel.Email2)) ?? string.Empty, _metaData.GetDisplayName<ChangeEmailViewModel>(nameof(ChangeEmailViewModel.Email)) ?? string.Empty]);
             return PartialView(ViewNames.Manage._EditEmail2ModalPartial, model);
         }
 
@@ -353,7 +352,7 @@ public class Manage : AbstractController
     public async Task<IActionResult> EditPersonalDetails(CancellationToken cancellationToken)
     {
         var model = new PersonalDetailsViewModel();
-        var user = await _tenantContext.DbContext.AppDb.UserRepository.GetLoginUserByUserNameAsync(HttpContext.User.Identity.Name, cancellationToken);
+        var user = await _tenantContext.DbContext.AppDb.UserRepository.GetLoginUserByUserNameAsync(HttpContext.User.Identity?.Name ?? string.Empty, cancellationToken);
         if (user == null)
         {
             _logger.LogError("User id '{userId}' not found in repository", GetCurrentUserId());
@@ -379,10 +378,10 @@ public class Manage : AbstractController
             return PartialView(ViewNames.Manage._EditPersonalDetailsModalPartial, model);
         }
 
-        var user = await _tenantContext.DbContext.AppDb.UserRepository.GetLoginUserByUserNameAsync(HttpContext.User.Identity.Name, cancellationToken);
+        var user = await _tenantContext.DbContext.AppDb.UserRepository.GetLoginUserByUserNameAsync(HttpContext.User.Identity?.Name ?? string.Empty, cancellationToken);
         if (user == null)
         {
-            _logger.LogError("Username '{userName}' not found in repository", HttpContext.User.Identity.Name);
+            _logger.LogError("Username '{userName}' not found in repository", HttpContext.User.Identity?.Name ?? string.Empty);
             TempData.Put<ManageMessage>(nameof(ManageMessage), new ManageMessage { AlertType = SiteAlertTagHelper.AlertType.Danger, MessageId = MessageId.ChangePersonalDetailsFailure });
             return JsonAjaxRedirectForModal(Url.Action(nameof(Index), nameof(Manage), new { Organization = _tenantContext.SiteContext.UrlSegmentValue }));
         }
@@ -411,10 +410,10 @@ public class Manage : AbstractController
     public async Task<IActionResult> EditPhoneNumber(CancellationToken cancellationToken)
     {
         var model = new EditPhoneViewModel();
-        var user = await _tenantContext.DbContext.AppDb.UserRepository.GetLoginUserByUserNameAsync(HttpContext.User.Identity.Name, cancellationToken);
+        var user = await _tenantContext.DbContext.AppDb.UserRepository.GetLoginUserByUserNameAsync(HttpContext.User.Identity?.Name ?? string.Empty, cancellationToken);
         if (user == null)
         {
-            _logger.LogError("Username '{userName}' not found in repository", HttpContext.User.Identity.Name);
+            _logger.LogError("Username '{userName}' not found in repository", HttpContext.User.Identity?.Name ?? string.Empty);
             TempData.Put<ManageMessage>(nameof(ManageMessage), new ManageMessage { AlertType = SiteAlertTagHelper.AlertType.Danger, MessageId = MessageId.ChangePhoneFailure });
             ModelState.AddModelError(string.Empty, _localizer["Primary phone number not found"]);
             return PartialView(ViewNames.Manage._EditPhoneModalPartial, model);
@@ -428,7 +427,7 @@ public class Manage : AbstractController
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> EditPhoneNumber(EditPhoneViewModel model, CancellationToken cancellationToken)
     {
-        UserEntity userEntity = null;
+        UserEntity? userEntity;
 
         async Task<IActionResult> Save()
         {
@@ -456,7 +455,7 @@ public class Manage : AbstractController
         }
         ModelState.Clear();
 
-        userEntity = await _tenantContext.DbContext.AppDb.UserRepository.GetLoginUserByUserNameAsync(User.Identity.Name, cancellationToken);
+        userEntity = await _tenantContext.DbContext.AppDb.UserRepository.GetLoginUserByUserNameAsync(User.Identity?.Name ?? string.Empty, cancellationToken);
 
         if (userEntity == null)
         {
@@ -493,7 +492,7 @@ public class Manage : AbstractController
         if (_phoneNumberService.IsMatch(userEntity.PhoneNumber2, model.PhoneNumber, _regionInfo.TwoLetterISORegionName))
         {
             _logger.LogInformation("Primary and additional phone number are equal ('{phoneNumber}').", userEntity.PhoneNumber);
-            ModelState.AddModelError(nameof(EditPhone2ViewModel.PhoneNumber2), _localizer["'{0}' and '{1}' must be different", _metaData.GetDisplayName<EditPhoneViewModel>(nameof(EditPhoneViewModel.PhoneNumber)), _metaData.GetDisplayName<EditPhone2ViewModel>(nameof(EditPhone2ViewModel.PhoneNumber2))]);
+            ModelState.AddModelError(nameof(EditPhone2ViewModel.PhoneNumber2), _localizer["'{0}' and '{1}' must be different", _metaData.GetDisplayName<EditPhoneViewModel>(nameof(EditPhoneViewModel.PhoneNumber)) ?? string.Empty, _metaData.GetDisplayName<EditPhone2ViewModel>(nameof(EditPhone2ViewModel.PhoneNumber2)) ?? string.Empty]);
             return PartialView(ViewNames.Manage._EditPhoneModalPartial, model);
         }
 
@@ -504,12 +503,12 @@ public class Manage : AbstractController
     public async Task<IActionResult> EditPhoneNumber2(CancellationToken cancellationToken)
     {
         var model = new EditPhone2ViewModel();
-        var user = await _tenantContext.DbContext.AppDb.UserRepository.GetLoginUserByUserNameAsync(HttpContext.User.Identity.Name, cancellationToken);
+        var user = await _tenantContext.DbContext.AppDb.UserRepository.GetLoginUserByUserNameAsync(HttpContext.User.Identity?.Name ?? string.Empty, cancellationToken);
         if (user == null)
         {
-            _logger.LogError("Username '{userName}' not found in repository", HttpContext.User.Identity.Name);
+            _logger.LogError("Username '{userName}' not found in repository", HttpContext.User.Identity?.Name ?? string.Empty);
             TempData.Put<ManageMessage>(nameof(ManageMessage), new ManageMessage { AlertType = SiteAlertTagHelper.AlertType.Danger, MessageId = MessageId.ChangePhone2Failure });
-            ModelState.AddModelError(string.Empty, _localizer["'{0}' not found", _metaData.GetDisplayName<EditPhone2ViewModel>(nameof(EditPhone2ViewModel.PhoneNumber2))]);
+            ModelState.AddModelError(string.Empty, _localizer["'{0}' not found", _metaData.GetDisplayName<EditPhone2ViewModel>(nameof(EditPhone2ViewModel.PhoneNumber2)) ?? string.Empty]);
             return PartialView(ViewNames.Manage._EditPhone2ModalPartial, model);
         }
 
@@ -521,7 +520,7 @@ public class Manage : AbstractController
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> EditPhoneNumber2(EditPhone2ViewModel model, CancellationToken cancellationToken)
     {
-        UserEntity userEntity = null;
+        UserEntity? userEntity;
 
         async Task<IActionResult> Save()
         {
@@ -548,7 +547,7 @@ public class Manage : AbstractController
         }
         ModelState.Clear();
 
-        userEntity = await _tenantContext.DbContext.AppDb.UserRepository.GetLoginUserByUserNameAsync(User.Identity.Name, cancellationToken);
+        userEntity = await _tenantContext.DbContext.AppDb.UserRepository.GetLoginUserByUserNameAsync(User.Identity?.Name ?? string.Empty, cancellationToken);
 
         if (userEntity == null)
         {
@@ -578,7 +577,7 @@ public class Manage : AbstractController
         if (_phoneNumberService.IsMatch(userEntity.PhoneNumber, model.PhoneNumber2, _regionInfo.TwoLetterISORegionName))
         {
             _logger.LogInformation("Primary and additional phone number are equal ('{phoneNumber}').", userEntity.PhoneNumber);
-            ModelState.AddModelError(nameof(EditPhone2ViewModel.PhoneNumber2), _localizer["'{0}' and '{1}' must be different", _metaData.GetDisplayName<EditPhone2ViewModel>(nameof(EditPhone2ViewModel.PhoneNumber2)), _metaData.GetDisplayName<EditPhoneViewModel>(nameof(EditPhoneViewModel.PhoneNumber))]);
+            ModelState.AddModelError(nameof(EditPhone2ViewModel.PhoneNumber2), _localizer["'{0}' and '{1}' must be different", _metaData.GetDisplayName<EditPhone2ViewModel>(nameof(EditPhone2ViewModel.PhoneNumber2)) ?? string.Empty, _metaData.GetDisplayName<EditPhoneViewModel>(nameof(EditPhoneViewModel.PhoneNumber)) ?? string.Empty]);
             return PartialView(ViewNames.Manage._EditPhone2ModalPartial, model);
         }
 
@@ -694,7 +693,7 @@ public class Manage : AbstractController
         }
     }
  
-    private async Task<ApplicationUser> GetCurrentUserAsync()
+    private async Task<ApplicationUser?> GetCurrentUserAsync()
     {
         return await _userManager.GetUserAsync(HttpContext.User);
     }

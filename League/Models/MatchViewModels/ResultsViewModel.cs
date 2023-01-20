@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using TournamentManager.DAL.EntityClasses;
 using TournamentManager.DAL.TypedViewClasses;
 
@@ -15,14 +13,14 @@ public class ResultsViewModel
 
     public Axuno.Tools.DateAndTime.TimeZoneConverter TimeZoneConverter { get; }
 
-    public TournamentEntity Tournament { get; set; }
+    public TournamentEntity? Tournament { get; set; }
 
-    public List<CompletedMatchRow> CompletedMatches { get; set; }
+    public List<CompletedMatchRow> CompletedMatches { get; set; } = new();
 
     public long? ActiveRoundId { get; set; }
 
     /// <summary>
     /// Model used when result was entered
     /// </summary>
-    public EnterResultViewModel.MatchResultMessage MatchResultMessage { get; set; }
+    public EnterResultViewModel.MatchResultMessage? MatchResultMessage { get; set; }
 }

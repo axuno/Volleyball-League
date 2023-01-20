@@ -80,7 +80,7 @@ public class SiteValidationSummaryTagHelper : TagHelper
     /// </summary>
     public bool UniqueErrorText { get; set; } = false;
 
-    [HtmlAttributeNotBound] [ViewContext] public ViewContext ViewContext { get; set; }
+    [HtmlAttributeNotBound] [ViewContext] public ViewContext? ViewContext { get; set; }
 
     [HtmlAttributeNotBound] protected IHtmlGenerator Generator { get; }
 
@@ -122,7 +122,7 @@ public class SiteValidationSummaryTagHelper : TagHelper
             
         // bug in asp.net core 2.1: headertag argument is never used
         var validationSummaryHtml = Generator.GenerateValidationSummary(ViewContext,
-            ValidationSummary == ValidationSummary.ModelOnly, (string) null, (string) null, (object) null);
+            ValidationSummary == ValidationSummary.ModelOnly, string.Empty, string.Empty, string.Empty);
 
         if (validationSummaryHtml == null || !validationSummaryHtml.HasInnerHtml)
         {
@@ -169,10 +169,10 @@ public class SiteValidationSummaryTagHelper : TagHelper
     private HtmlContentBuilder GetUniqueValidationErrorsHtml()
     {
         // Create list of unique errors
-        var modelErrorMessages = new HashSet<string>(ViewContext.ModelState
+        var modelErrorMessages = new HashSet<string>(ViewContext!.ModelState
             .Where(entry =>
                 ValidationSummary != ValidationSummary.ModelOnly || string.IsNullOrEmpty(entry.Key))
-            .SelectMany(x => x.Value.Errors)
+            .SelectMany(x => x.Value!.Errors)
             .Select(e => e.ErrorMessage));
             
         var cb = new HtmlContentBuilder();

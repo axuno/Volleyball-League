@@ -221,7 +221,7 @@ public class Startup
         services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
         // Make UrlHelper injectable to any component in the HttpContext
         services.AddScoped<IUrlHelper>(sp => {
-            var actionContext = sp.GetRequiredService<IActionContextAccessor>().ActionContext;
+            var actionContext = sp.GetRequiredService<IActionContextAccessor>().ActionContext!;
             var factory = sp.GetRequiredService<IUrlHelperFactory>();
             return factory.GetUrlHelper(actionContext);
         });
@@ -241,6 +241,10 @@ public class Startup
         #region ** Identity and Authentication **
            
         var socialLogins = Configuration.GetSection(nameof(SocialLogins)).Get<SocialLogins>();
+        if (socialLogins == null)
+        {
+            throw new InvalidOperationException("No social login configuration found.");
+        }
         services.AddAuthentication(options =>
             {
                 options.DefaultScheme = IdentityConstants.ApplicationScheme;
@@ -261,7 +265,7 @@ public class Startup
                 {
                     // Note: If this delegate is missing, errors with the external login lead to a System.Exception: access_denied;Description=Permissions error
                     var qsParameter =
-                        new Dictionary<string, string>
+                        new Dictionary<string, string?>
                         {
                             {"remoteError", context.Request.Query["error"].ToString()},
                         }.Where(item => !string.IsNullOrEmpty(item.Value)).ToDictionary(i => i.Key, i => i.Value);
@@ -284,7 +288,7 @@ public class Startup
                 {
                     // Note: If this delegate is missing, errors with the external login lead to a System.Exception: access_denied;Description=Permissions error
                     var qsParameter =
-                        new Dictionary<string, string>
+                        new Dictionary<string, string?>
                         {
                             {"remoteError", context.Request.Query["error"].ToString()},
                         }.Where(item => !string.IsNullOrEmpty(item.Value)).ToDictionary(i => i.Key, i => i.Value);
@@ -306,7 +310,7 @@ public class Startup
                 {
                     // Note: If this delegate is missing, errors with the external login lead to a System.Exception: access_denied;Description=Permissions error
                     var qsParameter =
-                        new Dictionary<string, string>
+                        new Dictionary<string, string?>
                         {
                             {"remoteError", context.Request.Query["error"].ToString()},
                         }.Where(item => !string.IsNullOrEmpty(item.Value)).ToDictionary(i => i.Key, i => i.Value);
@@ -419,7 +423,10 @@ public class Startup
             options.Events.OnSignedIn += async context =>
             {
                 var tenantContext = context.HttpContext.RequestServices.GetRequiredService<ITenantContext>();
-                var success = await tenantContext.DbContext.AppDb.UserRepository.SetLastLoginDateAsync(context.Principal.Identity.Name, null, CancellationToken.None);
+                if (context.Principal?.Identity?.Name != null)
+                {
+                    var success = await tenantContext.DbContext.AppDb.UserRepository.SetLastLoginDateAsync(context.Principal.Identity.Name, null, CancellationToken.None);
+                }
             };
         });
             
@@ -567,7 +574,7 @@ public class Startup
 
         services.AddRazorPages().AddRazorPagesOptions(options => {  });
 
-        // Custom ViewLocalizer, necessary for views located in a library:
+        // Custom ViewLocalizer, necessary for views located in a library (still required in NET60):
         services.AddTransient<IViewLocalizer, League.Views.ViewLocalizer>();
             
         var mvcBuilder = services.AddMvc(options =>
@@ -627,7 +634,7 @@ public class Startup
         // RazorViewToStringRenderer must be used with the current HttpContext
         // Note: RazorViewToStringRenderer is currently only used for MatchReport
         services.AddTransient<RazorViewToStringRenderer>();
-        services.Configure<BackgroundQueueConfig>(config => config.OnException = null);
+        services.Configure<BackgroundQueueConfig>(config => config.OnException = _ => { });
         services.AddSingleton<IBackgroundQueue, BackgroundQueue>();
         services.AddConcurrentBackgroundQueueService();
         services.AddTransient<SendEmailTask>();

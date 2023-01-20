@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using TournamentManager.DAL.EntityClasses;
 using TournamentManager.DAL.TypedViewClasses;
 
@@ -16,14 +13,14 @@ public class FixturesViewModel
 
     public Axuno.Tools.DateAndTime.TimeZoneConverter TimeZoneConverter { get; }
 
-    public TournamentEntity Tournament { get; set; }
+    public TournamentEntity? Tournament { get; set; }
 
-    public List<PlannedMatchRow> PlannedMatches { get; set; }
+    public List<PlannedMatchRow> PlannedMatches { get; set; } = new();
 
     public long? ActiveRoundId { get; set; }
 
     /// <summary>
     /// Model used when fixtures were updated
     /// </summary>
-    public EditFixtureViewModel.FixtureMessage FixtureMessage { get; set; }
+    public EditFixtureViewModel.FixtureMessage? FixtureMessage { get; set; }
 }

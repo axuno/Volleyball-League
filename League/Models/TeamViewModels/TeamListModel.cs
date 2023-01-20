@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Axuno.Tools.DateAndTime;
+﻿using System.Collections.Generic;
 using TournamentManager.DAL.EntityClasses;
 using TournamentManager.DAL.TypedViewClasses;
-
 
 namespace League.Models.TeamViewModels;
 
@@ -16,9 +11,9 @@ public class TeamListModel
         TimeZoneConverter = timeZoneConverter;
     }
 
-    public TournamentEntity Tournament { get; set; }
+    public TournamentEntity? Tournament { get; set; }
 
-    public List<RoundTeamRow> RoundsWithTeams { get; set; }
+    public List<RoundTeamRow> RoundsWithTeams { get; set; } = new();
 
     public long? ActiveRoundId { get; set; }
 

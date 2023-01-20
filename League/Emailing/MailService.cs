@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Linq;
-using MailMergeLib;
 using MailMergeLib.MessageStore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -19,8 +17,8 @@ public interface IMailMergeService
 
 public class MailMergeServiceConfig
 {
-    public Settings Settings { get; set; }
-    public IMessageStore MessageStore { get; set; }
+    public Settings? Settings { get; set; }
+    public IMessageStore? MessageStore { get; set; }
 }
 
 public class MailMergeService : IMailMergeService
@@ -29,8 +27,8 @@ public class MailMergeService : IMailMergeService
 
     public MailMergeService(IOptions<MailMergeServiceConfig> serviceConfig, ITenantContext tenantContext )
     {
-        Settings = serviceConfig.Value.Settings;
-        MessageStore = serviceConfig.Value.MessageStore;
+        Settings = serviceConfig.Value.Settings!;
+        MessageStore = serviceConfig.Value.MessageStore!;
         _tenantContext = tenantContext;
     }
     public Settings Settings { get; }

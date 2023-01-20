@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Globalization;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -22,10 +21,10 @@ public class VenueEditModel
     public VenueEditorComponentModel Venue { get; set; } = new();
 
     [HiddenInput]
-    public string ReturnUrl { get; set; }
+    public string ReturnUrl { get; set; } = string.Empty;
 
     [HiddenInput]
-    public string Hash { get; set; }
+    public string? Hash { get; set; }
 
     /// <summary>
     /// This property will be set, if a new venue shall be assigned to an existing team
@@ -37,16 +36,16 @@ public class VenueEditModel
     /// This property will be set, if a new venue shall be assigned to an existing team
     /// </summary>
     [BindNever]
-    public string ForTeamName { get; set; }
+    public string? ForTeamName { get; set; }
 
     [Display(Name = "Ignore notices")]
     public bool OverrideWarnings { get; set; }
 
     [BindNever]
-    public IList<string> TeamsUsingTheVenue { get; set; }
+    public IList<string> TeamsUsingTheVenue { get; set; } = new List<string>();
 
     [BindNever]
-    public VenueEntity VenueEntity { get; set; }
+    public VenueEntity? VenueEntity { get; set; }
 
     [BindNever]
     public IList<VenueDistanceResultRow> VenuesForDistance { get; set; } = new List<VenueDistanceResultRow>();
@@ -56,12 +55,12 @@ public class VenueEditModel
 
     public bool ShouldAutoUpdateLocation()
     {
-        var latLngIsChanged = Venue.ShowLatLng && (VenueEntity.Fields[VenueFields.Longitude.FieldIndex].IsChanged ||
+        var latLngIsChanged = Venue.ShowLatLng && (VenueEntity!.Fields[VenueFields.Longitude.FieldIndex].IsChanged ||
                                                    VenueEntity.Fields[VenueFields.Latitude.FieldIndex].IsChanged);
 
         var latLngIsNull = !Venue.Latitude.HasValue || !Venue.Longitude.HasValue;
 
-        var addressIsChanged = VenueEntity.Fields.Any(f =>
+        var addressIsChanged = VenueEntity!.Fields.Any(f =>
             new[] {VenueFields.PostalCode.Name, VenueFields.City.Name, VenueFields.Street.Name}
                 .Contains(f.Name) && f.IsChanged);
 
@@ -72,16 +71,15 @@ public class VenueEditModel
     public async Task<GoogleGeo.GeoResponse> TrySetGeoLocation(string googleServiceApiKey, string countryCode, TimeSpan timeout)
     {
         var geoResponse = await GoogleGeo.GetLocation(countryCode,
-            string.Join(",", VenueEntity.PostalCode, VenueEntity.City, VenueEntity.Street),
+            string.Join(",", VenueEntity!.PostalCode, VenueEntity.City, VenueEntity.Street),
             googleServiceApiKey, timeout);
 
         // Update model, so we can include values in an input or hidden field
         VenueEntity.Longitude = Venue.Longitude =
-            geoResponse.Success ? geoResponse.GeoLocation.Longitude.TotalDegrees : default(double?);
+            geoResponse.Success ? geoResponse.GeoLocation.Longitude?.TotalDegrees : default;
         VenueEntity.Latitude = Venue.Latitude =
-            geoResponse.Success ? geoResponse.GeoLocation.Latitude.TotalDegrees : default(double?);
-        VenueEntity.PrecisePosition = geoResponse.Success &&
-                                      geoResponse.GeoLocation.LocationType == GoogleGeo.LocationType.RoofTop;
+            geoResponse.Success ? geoResponse.GeoLocation.Latitude?.TotalDegrees : default;
+        VenueEntity.PrecisePosition = geoResponse is { Success: true, GeoLocation.LocationType: GoogleGeo.LocationType.RoofTop };
 
         return geoResponse;
     }

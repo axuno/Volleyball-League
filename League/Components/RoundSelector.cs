@@ -33,7 +33,7 @@ public class RoundSelector : ViewComponent
         return View(await FillModelWithRound(model));
     }
 
-    private async Task<RoundSelectorComponentModel> FillModelWithRound(RoundSelectorComponentModel model)
+    private async Task<RoundSelectorComponentModel?> FillModelWithRound(RoundSelectorComponentModel model)
     {
         try
         {

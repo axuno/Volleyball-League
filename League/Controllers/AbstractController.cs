@@ -18,7 +18,7 @@ public abstract class AbstractController : Controller
     /// return JsonForModalAjaxRedirect(Url.Action("Index", "Home", Request.Scheme));
     /// </example>
     [NonAction]
-    protected JsonResult JsonAjaxRedirectForModal(string redirectUrl)
+    protected JsonResult JsonAjaxRedirectForModal(string? redirectUrl)
     {
         var data = new { redirectUrl };
         return Json(data);

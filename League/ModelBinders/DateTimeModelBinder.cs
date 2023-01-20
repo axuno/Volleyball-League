@@ -66,7 +66,7 @@ public class DateTimeModelBinder : IModelBinder
         return Task.CompletedTask;
     }
 
-    private bool TryParseDateTime(string text, out DateTime dateTime)
+    private bool TryParseDateTime(string? text, out DateTime dateTime)
     {
         if (text != null)
         {

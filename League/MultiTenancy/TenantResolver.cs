@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using League.Views;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Extensions;
@@ -15,7 +13,7 @@ namespace League.MultiTenancy;
 public class TenantResolver
 {
     private readonly TenantStore _tenantStore;
-    private readonly HttpContext _httpContext;
+    private readonly HttpContext? _httpContext;
         
     /// <summary>
     /// CTOR.
@@ -34,7 +32,7 @@ public class TenantResolver
     /// <returns>Returns the resolved <see cref="ITenantContext"/> if a tenant was resolved, otherwise <see langword="null"/>.</returns>
     public ITenantContext Resolve()
     {
-        if (_httpContext == null) return _tenantStore.GetDefaultTenant() ?? throw new Exception("HttpContext is null and no default ITenantContext found.");
+        if (_httpContext == null) return _tenantStore.GetDefaultTenant() ?? throw new InvalidOperationException("HttpContext is null and no default ITenantContext found.");
 
         var request = _httpContext.Request;
         // first segment:  /
@@ -50,7 +48,7 @@ public class TenantResolver
             return tenant;
         }
             
-        return _tenantStore.GetDefaultTenant();
+        return _tenantStore.GetDefaultTenant() ?? throw new InvalidOperationException("No default ITenantContext found.");
     }
         
     private void SetMostRecentTenantCookie(ITenantContext tenant)

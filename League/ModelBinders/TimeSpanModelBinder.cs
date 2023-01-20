@@ -54,7 +54,7 @@ public class TimeSpanModelBinder : IModelBinder
         return Task.CompletedTask;
     }
 
-    private bool TryParseTime(string text, out TimeSpan time)
+    private bool TryParseTime(string? text, out TimeSpan time)
     {
         if (text != null)
         {

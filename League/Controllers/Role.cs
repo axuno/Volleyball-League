@@ -1,13 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
 using League.Helpers;
 using League.Models.RoleViewModels;
-using League.Models.TeamApplicationViewModels;
 using League.Models.TeamViewModels;
 using League.TagHelpers;
 using Microsoft.AspNetCore.Authorization;
@@ -186,7 +182,7 @@ public class Role : AbstractController
 
     private string SetAdjustedReturnResult(string method, string returnUrl, long teamId, bool isSuccess)
     {
-        if (method.Equals(nameof(Add)) && returnUrl.Contains(Url.Action(nameof(Team.MyTeam), nameof(Team), new { Organization = _tenantContext.SiteContext.UrlSegmentValue })))
+        if (method.Equals(nameof(Add)) && returnUrl.Contains(Url.Action(nameof(Team.MyTeam), nameof(Team), new { Organization = _tenantContext.SiteContext.UrlSegmentValue }) ?? string.Empty))
         {
             TempData.Put<MyTeamMessageModel.MyTeamMessage>(nameof(MyTeamMessageModel.MyTeamMessage),
                 new MyTeamMessageModel.MyTeamMessage
@@ -195,10 +191,10 @@ public class Role : AbstractController
                     MessageId = isSuccess ? MyTeamMessageModel.MessageId.MemberAddSuccess : MyTeamMessageModel.MessageId.MemberAddFailure
                 });
 
-            return Url.Action(nameof(Team.MyTeam), nameof(Team), new { Organization = _tenantContext.SiteContext.UrlSegmentValue, id = teamId });
+            return Url.Action(nameof(Team.MyTeam), nameof(Team), new { Organization = _tenantContext.SiteContext.UrlSegmentValue, id = teamId }) ?? string.Empty;
         }
 
-        if (method.Equals(nameof(Remove)) && returnUrl.Contains(Url.Action(nameof(Team.MyTeam), nameof(Team), new { Organization = _tenantContext.SiteContext.UrlSegmentValue })))
+        if (method.Equals(nameof(Remove)) && returnUrl.Contains(Url.Action(nameof(Team.MyTeam), nameof(Team), new { Organization = _tenantContext.SiteContext.UrlSegmentValue }) ?? string.Empty))
         {
             TempData.Put<MyTeamMessageModel.MyTeamMessage>(nameof(MyTeamMessageModel.MyTeamMessage),
                 new MyTeamMessageModel.MyTeamMessage
@@ -207,7 +203,7 @@ public class Role : AbstractController
                     MessageId = isSuccess ? MyTeamMessageModel.MessageId.MemberRemoveSuccess : MyTeamMessageModel.MessageId.MemberRemoveFailure
                 });
 
-            return Url.Action(nameof(Team.MyTeam), nameof(Team), new { Organization = _tenantContext.SiteContext.UrlSegmentValue, id = teamId});
+            return Url.Action(nameof(Team.MyTeam), nameof(Team), new { Organization = _tenantContext.SiteContext.UrlSegmentValue, id = teamId}) ?? string.Empty;
         }
 
         return returnUrl;
@@ -215,7 +211,7 @@ public class Role : AbstractController
 
     private string SetCannotRemoveLastTeamManagerReturnResult(string returnUrl, long teamId)
     {
-        if (returnUrl.Contains(Url.Action(nameof(Team.MyTeam), nameof(Team), new { Organization = _tenantContext.SiteContext.UrlSegmentValue })))
+        if (returnUrl.Contains(Url.Action(nameof(Team.MyTeam), nameof(Team), new { Organization = _tenantContext.SiteContext.UrlSegmentValue }) ?? string.Empty))
         {
             TempData.Put<MyTeamMessageModel.MyTeamMessage>(nameof(MyTeamMessageModel.MyTeamMessage),
                 new MyTeamMessageModel.MyTeamMessage
@@ -224,7 +220,7 @@ public class Role : AbstractController
                     MessageId = MyTeamMessageModel.MessageId.MemberCannotRemoveLastTeamManager
                 });
 
-            return Url.Action(nameof(Team.MyTeam), nameof(Team), new { Organization = _tenantContext.SiteContext.UrlSegmentValue, id = teamId });
+            return Url.Action(nameof(Team.MyTeam), nameof(Team), new { Organization = _tenantContext.SiteContext.UrlSegmentValue, id = teamId }) ?? string.Empty;
         }
 
         return returnUrl;

@@ -79,7 +79,7 @@ public class Match : AbstractController
         _razorViewToStringRenderer = razorViewToStringRenderer;
         _configuration = configuration;
         _logger = logger;
-        _pathToChromium = Path.Combine(Directory.GetCurrentDirectory(), _configuration["Chromium:ExecutablePath"]);
+        _pathToChromium = Path.Combine(Directory.GetCurrentDirectory(), _configuration["Chromium:ExecutablePath"] ?? string.Empty);
     }
 
     /// <summary>
@@ -269,7 +269,7 @@ public class Match : AbstractController
                 
             var model = await GetEnterResultViewModel(match, cancellationToken);
 
-            var permissionValidator = new MatchResultPermissionValidator(match, (_tenantContext, (model.Tournament.IsPlanningMode, model.Round.IsComplete, DateTime.UtcNow)));
+            var permissionValidator = new MatchResultPermissionValidator(match, (_tenantContext, (model.Tournament!.IsPlanningMode, model.Round!.IsComplete, DateTime.UtcNow)));
             await permissionValidator.CheckAsync(cancellationToken);
             if (permissionValidator.GetFailedFacts().Any())
             {
@@ -294,15 +294,15 @@ public class Match : AbstractController
     /// <returns></returns>
     [Authorize(Policy = Authorization.PolicyName.MatchPolicy)]
     [HttpPost("enter-result/{*segments}")]
-    public async Task<IActionResult> EnterResult([FromForm] EnterResultViewModel model, CancellationToken cancellationToken)
+    public async Task<IActionResult> EnterResult([FromForm] EnterResultViewModel? model, CancellationToken cancellationToken)
     {
-        MatchEntity match;
+        MatchEntity? match;
         try
         {
-            match = await _appDb.MatchRepository.GetMatchWithSetsAsync(model.Id, cancellationToken);
+            match = await _appDb.MatchRepository.GetMatchWithSetsAsync(model?.Id, cancellationToken);
             if (match == null)
             {
-                return NotFound($"Match id '{model.Id}' not found.");
+                return NotFound($"Match id '{model?.Id}' not found.");
             }
 
             if (!(await _authorizationService.AuthorizeAsync(User, match, Authorization.MatchOperations.EnterResult)).Succeeded)
@@ -317,7 +317,7 @@ public class Match : AbstractController
                 return View(ViewNames.Match.EnterResult, model);
             }
 
-            var permissionValidator = new MatchResultPermissionValidator(match, (_tenantContext, (model.Tournament.IsPlanningMode, model.Round.IsComplete, DateTime.UtcNow)));
+            var permissionValidator = new MatchResultPermissionValidator(match, (_tenantContext, (model.Tournament!.IsPlanningMode, model.Round!.IsComplete, DateTime.UtcNow)));
             await permissionValidator.CheckAsync(cancellationToken);
             if (permissionValidator.GetFailedFacts().Any())
             {
@@ -328,7 +328,7 @@ public class Match : AbstractController
             model.MapFormFieldsToEntity();
             ModelState.Clear();
 
-            if (!await model.ValidateAsync(new MatchResultValidator(model.Match,
+            if (!await model.ValidateAsync(new MatchResultValidator(model.Match!,
                     (_tenantContext, _timeZoneConverter, (model.Round.MatchRule, model.Round.SetRule))), ModelState))
             {
                 return View(ViewNames.Match.EnterResult, model);
@@ -336,7 +336,7 @@ public class Match : AbstractController
         }
         catch (Exception e)
         {
-            _logger.LogCritical(e, "Building {model} failed for MatchId '{modelId}'. User ID '{currentUser}'", nameof(EnterResultViewModel), model.Id, GetCurrentUserId());
+            _logger.LogCritical(e, "Building {model} failed for MatchId '{modelId}'. User ID '{currentUser}'", nameof(EnterResultViewModel), model?.Id, GetCurrentUserId());
             throw;
         }
 
@@ -524,7 +524,7 @@ public class Match : AbstractController
         return match;
     }
 
-    private async Task<PlannedMatchRow> GetPlannedMatchFromDatabase(long matchId, CancellationToken cancellationToken)
+    private async Task<PlannedMatchRow?> GetPlannedMatchFromDatabase(long matchId, CancellationToken cancellationToken)
     {
         try
         {
@@ -538,18 +538,18 @@ public class Match : AbstractController
         }
     }
 
-    private async Task<EditFixtureViewModel> AddDisplayDataToEditFixtureViewModel(EditFixtureViewModel model, CancellationToken cancellationToken)
+    private async Task<EditFixtureViewModel?> AddDisplayDataToEditFixtureViewModel(EditFixtureViewModel model, CancellationToken cancellationToken)
     {
         try
         {
             // Get all venues and teams for a tournament and select in-memory is 40% faster compared to database selections
             var venuesWithTeams = await _appDb.VenueRepository.GetVenueTeamRowsAsync(new PredicateExpression(VenueTeamFields.TournamentId == _tenantContext.TournamentContext.MatchPlanTournamentId),
                 cancellationToken);
-            var allVenues = await _appDb.VenueRepository.GetVenuesAsync(null, cancellationToken);
+            var allVenues = await _appDb.VenueRepository.GetVenuesAsync(new PredicateExpression(), cancellationToken);
 
             // get venue entities of match teams
             var venueIdsOfMatchTeams = venuesWithTeams
-                .Where(vwt => vwt.TeamId ==  model.PlannedMatch.HomeTeamId || vwt.TeamId == model.PlannedMatch.GuestTeamId).Select(vwt => vwt.VenueId).Distinct();
+                .Where(vwt => vwt.TeamId ==  model.PlannedMatch?.HomeTeamId || vwt.TeamId == model.PlannedMatch?.GuestTeamId).Select(vwt => vwt.VenueId).Distinct();
             model.VenuesOfMatchTeams = allVenues.Where(v => venueIdsOfMatchTeams.Contains(v.Id)).ToList();
 
             // get venue entities of current tournament
@@ -568,7 +568,7 @@ public class Match : AbstractController
         }
     }
 
-    private async Task<TournamentEntity> GetPlanTournament(CancellationToken cancellationToken)
+    private async Task<TournamentEntity?> GetPlanTournament(CancellationToken cancellationToken)
     {
         var tournament =
             await _appDb.TournamentRepository.GetTournamentAsync(new PredicateExpression(TournamentFields.Id == _tenantContext.TournamentContext.MatchPlanTournamentId), cancellationToken);
@@ -620,7 +620,7 @@ public class Match : AbstractController
     [HttpGet("[action]/{id:long}")]
     public async Task<IActionResult> ReportSheet(long id, CancellationToken cancellationToken)
     {
-        MatchReportSheetRow model = null;
+        MatchReportSheetRow? model = null;
             
         try
         {
@@ -785,9 +785,9 @@ public class Match : AbstractController
     /// <returns>Returns the <see cref="Results"/> action uri when coming from results table, else the <see cref="Fixtures"/> uri.</returns>
     private string GetReturnUrl()
     {
-        var returnUrl = HttpContext.Request.GetTypedHeaders().Referer.ToString();
-        return returnUrl == Url.Action(nameof(Results), nameof(Match), new { Organization = _tenantContext.SiteContext.UrlSegmentValue }, Url.ActionContext.HttpContext.Request.Scheme)
+        var returnUrl = HttpContext.Request.GetTypedHeaders().Referer?.ToString();
+        return (returnUrl == Url.Action(nameof(Results), nameof(Match), new { Organization = _tenantContext.SiteContext.UrlSegmentValue }, Url.ActionContext.HttpContext.Request.Scheme)
             ? Url.Action(nameof(Results), nameof(Match), new { Organization = _tenantContext.SiteContext.UrlSegmentValue }) // editing a result is exceptional
-            : Url.Action(nameof(Fixtures), nameof(Match), new { Organization = _tenantContext.SiteContext.UrlSegmentValue }); // coming from fixtures is normal
+            : Url.Action(nameof(Fixtures), nameof(Match), new { Organization = _tenantContext.SiteContext.UrlSegmentValue })) ?? string.Empty; // coming from fixtures is normal
     }
 }

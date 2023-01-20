@@ -3,8 +3,6 @@ using System.Linq;
 using System.Reflection;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 
-#nullable enable
-
 namespace League.Helpers;
 
 /// <summary>

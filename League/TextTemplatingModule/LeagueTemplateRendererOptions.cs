@@ -1,4 +1,4 @@
-﻿#nullable enable
+﻿
 namespace League.TextTemplatingModule;
 
 public class LeagueTemplateRendererOptions

@@ -26,7 +26,7 @@ public class TimeSpanModelBinderProvider : IModelBinderProvider
     /// </summary>
     /// <param name="context"></param>
     /// <returns>Returns a <see cref="TimeSpanModelBinder" /></returns>
-    public IModelBinder GetBinder(ModelBinderProviderContext context)
+    public IModelBinder? GetBinder(ModelBinderProviderContext context)
     {
         if (context == null)
             throw new ArgumentNullException(nameof(context));

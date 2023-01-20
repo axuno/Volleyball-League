@@ -24,7 +24,7 @@ public class CaptchaSvgGenerator : IDisposable
     /// <param name="gridColor"></param>
     /// <param name="bgColor"></param>
     /// <param name="textColor"></param>
-    public CaptchaSvgGenerator(string text, int width, int height, Color gridColor,
+    public CaptchaSvgGenerator(string? text, int width, int height, Color gridColor,
         Color bgColor, Color textColor) : this(text, width, height)
     {
         GridColor = gridColor;
@@ -38,7 +38,7 @@ public class CaptchaSvgGenerator : IDisposable
     /// <param name="text"></param>
     /// <param name="width"></param>
     /// <param name="height"></param>
-    public CaptchaSvgGenerator(string text, int width, int height) : this(text)
+    public CaptchaSvgGenerator(string? text, int width, int height) : this(text)
     {
         SetDimensions(width, height);
     }

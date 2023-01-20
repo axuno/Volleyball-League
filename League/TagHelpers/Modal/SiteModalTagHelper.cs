@@ -7,8 +7,8 @@ namespace League.TagHelpers.Modal;
 
 public class ModalContext
 {
-    public IHtmlContent Body { get; set; }
-    public IHtmlContent Footer { get; set; }
+    public IHtmlContent? Body { get; set; }
+    public IHtmlContent? Footer { get; set; }
 }
 
 /// <summary>
@@ -23,25 +23,25 @@ public class ModalTagHelper : TagHelper
     /// <summary>
     /// The title of the modal
     /// </summary>
-    public string Title { get; set; }
+    public string? Title { get; set; }
 
     /// <summary>
     /// The Id of the modal
     /// </summary>
-    public string Id { get; set; }
+    public string? Id { get; set; }
 
     /// <summary>
     /// With these CSS classes, the width of the modal can be set,
     /// e.g. "modal-lg" or "mw-100 w-75" 
     /// </summary>
-    public string DialogClass { get; set; }
+    public string? DialogClass { get; set; }
 
     public override async Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
     {
         var modalContext = new ModalContext();
         context.Items.Add(typeof(ModalTagHelper), modalContext);
 
-        await output.GetChildContentAsync();
+        await output.GetChildContentAsync().ConfigureAwait(false);
         var closeButton = "<button type='button' class='btn btn-secondary float-right' data-dismiss='modal' aria-label='Close'><span aria-hidden='true'><i class='fa fa-times'></i></span ></button>";
 
         var modalDialogClass = string.Join(' ', "modal-dialog", string.IsNullOrWhiteSpace(DialogClass) ? string.Empty : DialogClass);

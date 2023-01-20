@@ -1,6 +1,5 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
 using League.Resources;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
@@ -16,9 +15,9 @@ public class TeamEditorComponentModel
     public bool IsNew { get; set; }
     [Display(Name = "Team name")]
     [Required(AllowEmptyStrings = false, ErrorMessageResourceName = nameof(DataAnnotationResource.PropertyValueRequired), ErrorMessageResourceType = typeof(DataAnnotationResource))]
-    public string Name { get; set; }
+    public string Name { get; set; } = string.Empty;
     [Display(Name = "Club name")]
-    public string ClubName { get; set; }
+    public string ClubName { get; set; } = string.Empty;
     [Display(Name = "Weekday of home matches")]
     public int? MatchDayOfWeek { get; set; }
     [Display(Name = "Start time of home matches")]

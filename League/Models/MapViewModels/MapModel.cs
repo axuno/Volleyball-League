@@ -84,13 +84,13 @@ public class MapModel
         Locations = locationJsObject.ToString().TrimEnd(new[] { ',', '\n' });
     }
 
-    public string Locations { get; set; }
-    public string MaxLongitude { get; set; }
-    public string MinLongitude { get; set; }
-    public string MaxLatitude { get; set; }
-    public string MinLatitude { get; set; }
+    public string? Locations { get; set; }
+    public string? MaxLongitude { get; set; }
+    public string? MinLongitude { get; set; }
+    public string? MaxLatitude { get; set; }
+    public string? MinLatitude { get; set; }
     public bool IsSingleValue => Venues.Count == 1;
-    public TournamentEntity Tournament { get; set; }
+    public TournamentEntity? Tournament { get; set; }
     public List<VenueTeamRow> Venues { get; set; } = new();
-    public GoogleConfiguration GoogleConfiguration { get; set; }
+    public GoogleConfiguration? GoogleConfiguration { get; set; }
 }

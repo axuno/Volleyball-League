@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
+﻿using System.Globalization;
 using System.Linq;
 using System.Security.Claims;
 using Axuno.Web;
@@ -48,10 +46,10 @@ public class Contact : AbstractController
         var model = new ContactViewModel();
         if (User.Identity is { IsAuthenticated: true })
         {
-            model.Email = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value;
-            model.Gender = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Gender)?.Value;
-            model.FirstName = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.GivenName)?.Value;
-            model.LastName = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Surname)?.Value;
+            model.Email = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value ?? string.Empty;
+            model.Gender = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Gender)?.Value ?? string.Empty;
+            model.FirstName = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.GivenName)?.Value ?? string.Empty;
+            model.LastName = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Surname)?.Value ?? string.Empty;
         }
             
         // Note: The form will use route name to generate the action url

@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using League.Resources;
 using Microsoft.AspNetCore.Mvc;
 
@@ -10,12 +8,12 @@ public class RoleAddModel
 {
     [Display(Name = "Email of team member to be added")]
     [Required(AllowEmptyStrings = false, ErrorMessageResourceName = nameof(DataAnnotationResource.PropertyValueRequired), ErrorMessageResourceType = typeof(DataAnnotationResource))]
-    public string UserEmail { get; set; }
+    public string? UserEmail { get; set; }
     [Display(Name = "Role of new team member")]
     [Required(AllowEmptyStrings = false, ErrorMessageResourceName = nameof(DataAnnotationResource.PropertyValueRequired), ErrorMessageResourceType = typeof(DataAnnotationResource))]
-    public string ClaimType { get; set; }
+    public string? ClaimType { get; set; }
     [HiddenInput]
     public long TeamId { get; set; }
     [HiddenInput]
-    public string ReturnUrl { get; set; }
+    public string? ReturnUrl { get; set; }
 }

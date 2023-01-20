@@ -27,7 +27,7 @@ public class RoleStore : IRoleStore<ApplicationRole>, IRoleClaimStore<Applicatio
         _appDb = tenantContext.DbContext.AppDb;
         _logger = logger;
         _keyNormalizer = keyNormalizer;
-        _identityErrorDescriber = identityErrorDescriber as MultiLanguageIdentityErrorDescriber;
+        _identityErrorDescriber = (MultiLanguageIdentityErrorDescriber) identityErrorDescriber;
     }
 
     public async Task<IdentityResult> CreateAsync(ApplicationRole role, CancellationToken cancellationToken)
@@ -123,10 +123,10 @@ public class RoleStore : IRoleStore<ApplicationRole>, IRoleClaimStore<Applicatio
     {
         cancellationToken.ThrowIfCancellationRequested();
         if (!long.TryParse(roleId ?? string.Empty, out var id))
-            return null;
+            return new ApplicationRole();
 
         var roleEntity = await _appDb.RoleRepository.GetRoleByIdAsync(id, cancellationToken);
-        if (roleEntity == null) return null;
+        if (roleEntity == null) return new ApplicationRole();
 
         return new ApplicationRole {Id = roleEntity.Id, Name = roleEntity.Name};
     }
@@ -137,7 +137,7 @@ public class RoleStore : IRoleStore<ApplicationRole>, IRoleClaimStore<Applicatio
             throw new ArgumentNullException(nameof(normalizedRoleName));
 
         var roleEntity = await _appDb.RoleRepository.GetRoleByNameAsync(normalizedRoleName, cancellationToken);
-        if (roleEntity == null) return null;
+        if (roleEntity == null) return new ApplicationRole();
 
         return new ApplicationRole { Id = roleEntity.Id, Name = roleEntity.Name };
     }

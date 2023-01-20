@@ -167,8 +167,10 @@ public class MatchRepository
     }
 
 
-    public virtual async Task<MatchEntity> GetMatchWithSetsAsync(long matchId, CancellationToken cancellationToken)
+    public virtual async Task<MatchEntity?> GetMatchWithSetsAsync(long? matchId, CancellationToken cancellationToken)
     {
+        if (matchId == null) return null;
+
         using var da = _dbContext.GetNewAdapter();
         var metaData = new LinqMetaData(da);
         var match = await (from m in metaData.Match

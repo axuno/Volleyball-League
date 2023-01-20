@@ -22,7 +22,7 @@ public static class ViewDataDictionaryExtensions
     /// </summary>
     /// <param name="viewData"></param>
     /// <returns>Returns the value used for the page title tag</returns>
-    public static string Title(this ViewDataDictionary viewData)
+    public static string? Title(this ViewDataDictionary viewData)
     {
         return viewData[nameof(Title)]?.ToString();
     }
@@ -42,7 +42,7 @@ public static class ViewDataDictionaryExtensions
     /// </summary>
     /// <param name="viewData"></param>
     /// <returns>Returns the value used for the page meta description tag</returns>
-    public static string Description(this ViewDataDictionary viewData)
+    public static string? Description(this ViewDataDictionary viewData)
     {
         return viewData[nameof(Description)]?.ToString();
     }

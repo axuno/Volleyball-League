@@ -13,7 +13,7 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using TournamentManager.MultiTenancy;
 
-#nullable enable
+
 namespace League.ApiControllers;
 
 /// <summary>
@@ -184,7 +184,7 @@ public class Cron : AbstractController
                         referenceDateUtc.AddDays(_tenantContext.SiteContext.MatchNotifications.DaysBeforeNextmatch * -1),
                     IcsCalendarBaseUrl = Url.Action(nameof(Calendar), nameof(Match),
                         new {Organization = _tenantContext.SiteContext.UrlSegmentValue},
-                        Url.ActionContext.HttpContext.Request.Scheme)
+                        Url.ActionContext.HttpContext.Request.Scheme) ?? string.Empty
                 }
             });
             _queue.QueueTask(smt);

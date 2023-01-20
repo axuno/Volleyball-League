@@ -25,7 +25,7 @@ public class LeagueViewLocationExpander : IViewLocationExpander
             
         try
         {
-            var tenantContext = (TournamentManager.MultiTenancy.ITenantContext)context.ActionContext.HttpContext.RequestServices.GetService(typeof(TournamentManager.MultiTenancy.ITenantContext));
+            var tenantContext = (TournamentManager.MultiTenancy.ITenantContext)context.ActionContext.HttpContext.RequestServices.GetService(typeof(TournamentManager.MultiTenancy.ITenantContext))!;
             _tenantSearchPaths.Clear();
             if (!tenantContext.IsDefault)
             {

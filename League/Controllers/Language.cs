@@ -62,7 +62,7 @@ public class Language : Controller
             .OfType<CookieRequestCultureProvider>()
             .FirstOrDefault();
 
-        if (requestCulture == null || cookieProvider == null)
+        if (requestCulture == null || requestUiCulture == null || cookieProvider == null)
         {
             _logger.LogError("Request culture or cookie provider are null");
             return RedirectToLocal(returnUrl);

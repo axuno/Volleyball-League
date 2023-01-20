@@ -61,8 +61,10 @@ public class Impersonation : AbstractController
         var currentUser = User;
         var targetUser = await _signInManager.UserManager.FindByIdAsync(id.ToString());
 
+        if (targetUser == null) return RedirectToLocal("/" + _tenantContext.SiteContext.UrlSegmentValue);
+
         var targetClaimsPrincipal = await _signInManager.CreateUserPrincipalAsync(targetUser);
-        if (targetClaimsPrincipal != null && targetClaimsPrincipal.Identity is ClaimsIdentity targetClaimsIdentity)
+        if (targetClaimsPrincipal is { Identity: ClaimsIdentity targetClaimsIdentity })
         {
             targetClaimsIdentity.AddClaim(new Claim(Constants.ClaimType.ImpersonatedByUser, User.Claims.First(x => x.Type == ClaimTypes.NameIdentifier).Value));
         }

@@ -12,7 +12,7 @@ public class RoundSelectorComponentModel
     /// The list of rounds with their round type.
     /// </summary>
     [BindNever]
-    public IList<RoundEntity> RoundWithTypeList { get; set; }
+    public IList<RoundEntity> RoundWithTypeList { get; set; } = new List<RoundEntity>();
 
     /// <summary>
     /// This is the key for a "not specified" round. If this value is null, "not specified" cannot be selected

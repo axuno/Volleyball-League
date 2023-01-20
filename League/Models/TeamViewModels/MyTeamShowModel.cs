@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using League.Models.UploadViewModels;
 using TournamentManager.DAL.EntityClasses;
 using TournamentManager.DAL.TypedViewClasses;
@@ -13,15 +12,15 @@ public class MyTeamShowModel
         TimeZoneConverter = timeZoneConverter;
     }
 
-    public TournamentEntity Tournament { get; set; }
+    public TournamentEntity? Tournament { get; set; }
 
-    public List<TeamVenueRoundRow> TeamVenueRoundInfos { get; set; }
+    public List<TeamVenueRoundRow> TeamVenueRoundInfos { get; set; } = new();
 
-    public List<TeamUserRoundRow> TeamUserRoundInfos { get; set; }
+    public List<TeamUserRoundRow> TeamUserRoundInfos { get; set; } = new();
 
     public long ActiveTeamId { get; set; }
 
-    public TeamPhotoStaticFile TeamPhotoStaticFile { get; set; }
+    public TeamPhotoStaticFile? TeamPhotoStaticFile { get; set; }
 
     public Axuno.Tools.DateAndTime.TimeZoneConverter TimeZoneConverter { get; }
 }

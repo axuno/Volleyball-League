@@ -12,7 +12,7 @@
 @inject PhoneNumberService PhoneNumberService
 @model League.Models.TeamViewModels.MyTeamShowModel
 @{
-    ViewData["Title"] = Localizer["My Team"].Value + " - " + Model.Tournament.Name;
+    ViewData["Title"] = Localizer["My Team"].Value + " - " + Model.Tournament!.Name;
     var tenantUrlSegment = TenantContext.SiteContext.UrlSegmentValue;
     string DisplayPhoneNo(string phoneNo)
     {
@@ -39,8 +39,8 @@
     <div class="tab-content" id="nav-teamContent">
         @foreach (var teamVenueInfo in Model.TeamVenueRoundInfos)
         {
-            var teamPhotoInfo = Model.TeamPhotoStaticFile.GetUriInfo(teamVenueInfo.TeamId);
-            var zonedLastModified = Model.TimeZoneConverter.ToZonedTime(teamPhotoInfo.Date);
+            var teamPhotoInfo = Model.TeamPhotoStaticFile!.GetUriInfo(teamVenueInfo.TeamId);
+            var zonedLastModified = Model.TimeZoneConverter.ToZonedTime(teamPhotoInfo.Date)!;
 
             <div class="tab-pane@{if (Model.TeamUserRoundInfos.Any(tvr => tvr.TeamId == Model.ActiveTeamId)){<text> show active</text>}}" id="tab-@(teamVenueInfo.TeamId)" role="tabpanel" aria-labelledby="@teamVenueInfo.TeamName-tab">
                 <div class="card pb-2 mb-3">
@@ -71,10 +71,10 @@
                         {
                             // MatchTime is defined as a zoned time, NOT UTC. It is always the same, never mind DST
                             <div class="text-success col-12">@Localizer["Home match day"]</div>
-                            <div class="col-12 mb-2"><i class="far fa-calendar-alt"></i><span class="d-inline-block mr-2"></span>@DateTimeFormatInfo.CurrentInfo?.GetDayName((DayOfWeek)teamVenueInfo.MatchDayOfWeek), @(DateTime.UtcNow.Date.Add(teamVenueInfo.MatchTime.Value).ToShortTimeString()) @(Model.TimeZoneConverter.ToZonedTime(DateTime.UtcNow).Abbreviation)</div>
+                            <div class="col-12 mb-2"><i class="far fa-calendar-alt"></i><span class="d-inline-block mr-2"></span>@DateTimeFormatInfo.CurrentInfo?.GetDayName((DayOfWeek)teamVenueInfo.MatchDayOfWeek), @(DateTime.UtcNow.Date.Add(teamVenueInfo.MatchTime.Value).ToShortTimeString()) @(Model.TimeZoneConverter.ToZonedTime(DateTime.UtcNow)?.Abbreviation)</div>
                         }
                         <div class="text-muted small col-12">
-                            @{ var zonedTime = Model.TimeZoneConverter.ToZonedTime(teamVenueInfo.TeamModifiedOn);}
+                            @{ var zonedTime = Model.TimeZoneConverter.ToZonedTime(teamVenueInfo.TeamModifiedOn)!;}
                             @Localizer["Last update"]: @zonedTime.DateTimeOffset.DateTime.ToShortDateString() @zonedTime.DateTimeOffset.DateTime.ToLongTimeString() @zonedTime.Abbreviation
                         </div>
                         <div class="text-success col-12">@Localizer["Team photo"]</div>
@@ -90,7 +90,7 @@
                                    asp-action="@nameof(Upload.TeamPhoto)"
                                    asp-route-organization="@tenantUrlSegment"
                                    asp-route-id="@teamVenueInfo.TeamId"
-                                   site-authorize-resource site-resource="@new TeamEntity(teamVenueInfo.TeamId)"
+                                   site-authorize-resource site-resource="@(new TeamEntity(teamVenueInfo.TeamId))"
                                    site-requirement="@League.Authorization.TeamOperations.ChangePhoto">@Localizer["Change"]</a>
                             </div>
                         }
@@ -104,7 +104,7 @@
                                    asp-action="@nameof(Upload.TeamPhoto)"
                                    asp-route-organization="@tenantUrlSegment"
                                    asp-route-id="@teamVenueInfo.TeamId"
-                                   site-authorize-resource site-resource="@new TeamEntity(teamVenueInfo.TeamId)"
+                                   site-authorize-resource site-resource="@(new TeamEntity(teamVenueInfo.TeamId))"
                                    site-requirement="@League.Authorization.TeamOperations.ChangePhoto">@Localizer["Upload"]</a>
                             </div>
                         }
@@ -117,7 +117,7 @@
                             <div>
                                 <button type="button"
                                         site-toggle-modal-ajax site-data-url="@Url.Action(nameof(Team.ChangeVenue), new { Organization = tenantUrlSegment, tid = teamVenueInfo.TeamId })"
-                                        site-authorize-resource site-resource="@new TeamEntity(teamVenueInfo.TeamId)"
+                                        site-authorize-resource site-resource="@(new TeamEntity(teamVenueInfo.TeamId))"
                                         site-requirement="@League.Authorization.TeamOperations.EditTeam"
                                         class="btn btn-sm btn-primary">
                                     @Localizer["Edit"]
@@ -139,7 +139,7 @@
                                            asp-route-id="@teamVenueInfo.VenueId.Value">@Localizer["Direction"]</a>
                                     </div>
                                     <div class="text-muted small">
-                                        @{ zonedTime = Model.TimeZoneConverter.ToZonedTime(teamVenueInfo.VenueModifiedOn);}
+                                        @{ zonedTime = Model.TimeZoneConverter.ToZonedTime(teamVenueInfo.VenueModifiedOn)!;}
                                         @Localizer["Last update"]: @zonedTime.DateTimeOffset.DateTime.ToShortDateString() @zonedTime.DateTimeOffset.DateTime.ToLongTimeString() @zonedTime.Abbreviation
                                     </div>
                                 }
@@ -162,7 +162,7 @@
                                             site-toggle-modal-ajax
                                             site-data-url="@Url.Action(nameof(Role.Add),
                                                            nameof(Role), new {Organization = tenantUrlSegment, tid = teamVenueInfo.TeamId, ReturnUrl = Url.Action(nameof(Team.MyTeam), nameof(Team), new {Organization = tenantUrlSegment, id = teamVenueInfo.TeamId})})} )"
-                                            site-authorize-resource site-resource="@new TeamEntity(teamVenueInfo.TeamId)"
+                                            site-authorize-resource site-resource="@(new TeamEntity(teamVenueInfo.TeamId))"
                                             site-requirement="@League.Authorization.TeamOperations.AddTeamMember"
                                             class="btn btn-sm btn-primary">
                                         @Localizer["Add"]
@@ -209,7 +209,7 @@
                                                 <div>
                                                     <button type="button"
                                                             site-toggle-modal-ajax site-data-url="@Url.Action(nameof(Role.Remove), nameof(Role), new { Organization = tenantUrlSegment, rolename = userInfo.IsManager ? League.Identity.Constants.ClaimType.ManagesTeam : League.Identity.Constants.ClaimType.PlaysInTeam, uid = userInfo.UserId, un = userInfo.CompleteName, tid = teamVenueInfo.TeamId, ReturnUrl = Url.Action(nameof(Team.MyTeam), new {Organization = tenantUrlSegment, id = teamVenueInfo.TeamId})})"
-                                                            site-authorize-resource site-resource="@new TeamEntity(teamVenueInfo.TeamId)"
+                                                            site-authorize-resource site-resource="@(new TeamEntity(teamVenueInfo.TeamId))"
                                                             site-requirement="@League.Authorization.TeamOperations.RemoveTeamMember"
                                                             class="btn btn-sm btn-primary">
                                                         @Localizer["Remove"]

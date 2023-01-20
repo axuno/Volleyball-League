@@ -1,5 +1,4 @@
-﻿using System;
-
+﻿#nullable enable
 namespace TournamentManager.MultiTenancy;
 
 public interface ITenantContext : ITenant

@@ -8,11 +8,9 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.Localization;
-using SD.LLBLGen.Pro.LinqSupportClasses;
 using TournamentManager;
 using TournamentManager.DAL;
 using TournamentManager.DAL.EntityClasses;
-using TournamentManager.DAL.HelperClasses;
 using TournamentManager.ExtensionMethods;
 using TournamentManager.Match;
 using TournamentManager.ModelValidators;
@@ -25,11 +23,13 @@ public class EnterResultViewModel
     private readonly int _maxNumberOfSets;
 
     public EnterResultViewModel()
-    { }
+    {
+        _localizer = CreateModelStringLocalizer();
+    }
 
     public EnterResultViewModel(TournamentEntity tournament, RoundEntity round, 
         MatchEntity match, MatchRuleEntity matchRule, IList<TeamInRoundEntity> teamInRound, 
-        Axuno.Tools.DateAndTime.TimeZoneConverter timeZoneConverter)
+        Axuno.Tools.DateAndTime.TimeZoneConverter timeZoneConverter) : this()
     {
         Tournament = tournament ?? throw new ArgumentNullException(nameof(tournament));
         Round = round ?? throw new ArgumentNullException(nameof(round));
@@ -38,14 +38,12 @@ public class EnterResultViewModel
             teamInRound.FirstOrDefault(o => o.TeamId == match.HomeTeamId)?.TeamNameForRound ?? throw new ArgumentNullException(nameof(teamInRound)),
             teamInRound.FirstOrDefault(o => o.TeamId == match.GuestTeamId)?.TeamNameForRound ?? throw new ArgumentNullException(nameof(teamInRound))); ;
         TimeZoneConverter = timeZoneConverter ?? throw new ArgumentNullException(nameof(timeZoneConverter));
-
-        _localizer = CreateModelStringLocalizer();
-
+        
         _maxNumberOfSets = matchRule.MaxNumOfSets();
         MapEntityToFormFields();
     }
 
-    private StringLocalizer<EnterResultViewModel> CreateModelStringLocalizer()
+    private static StringLocalizer<EnterResultViewModel> CreateModelStringLocalizer()
     {
         // no need for any params if using a StringLocalizer<T>
         var options = Microsoft.Extensions.Options.Options.Create(new LocalizationOptions());
@@ -56,18 +54,18 @@ public class EnterResultViewModel
 
     public void MapEntityToFormFields()
     {
-        if (Match.RealStart.HasValue && Match.RealEnd.HasValue)
+        if (Match!.RealStart.HasValue && Match.RealEnd.HasValue)
         {
-            var startDate = TimeZoneConverter.ToZonedTime(Match.RealStart);
+            var startDate = TimeZoneConverter!.ToZonedTime(Match.RealStart);
             var endDate = TimeZoneConverter.ToZonedTime(Match.RealEnd);
-            MatchDate = startDate.DateTimeOffset.Date;
-            MatchTimeFrom = startDate.DateTimeOffset.TimeOfDay;
-            MatchTimeTo = endDate.DateTimeOffset.TimeOfDay;
+            MatchDate = startDate?.DateTimeOffset.Date;
+            MatchTimeFrom = startDate?.DateTimeOffset.TimeOfDay;
+            MatchTimeTo = endDate?.DateTimeOffset.TimeOfDay;
             Remarks = Match.Remarks;
         }
         else
         {
-            MatchDate = TimeZoneConverter.ToZonedTime(Match.PlannedStart)?.DateTimeOffset.Date;
+            MatchDate = TimeZoneConverter!.ToZonedTime(Match.PlannedStart)?.DateTimeOffset.Date;
         }
 
         Match.Sets.Sort((int)SetFieldIndex.SequenceNo, ListSortDirection.Ascending);
@@ -92,11 +90,11 @@ public class EnterResultViewModel
         if (MatchDate.HasValue && MatchTimeFrom.HasValue && MatchTimeTo.HasValue)
         {
             var period = new DateTimePeriod(MatchDate?.Add(MatchTimeFrom.Value), MatchDate?.Add(MatchTimeTo.Value));
-            Match.SetRealStart(TimeZoneConverter.ToUtc(period.Start), period.Duration());
+            Match!.SetRealStart(TimeZoneConverter!.ToUtc(period.Start), period.Duration());
         }
         else
         {
-            Match.SetRealStart(null, TimeSpan.Zero);
+            Match!.SetRealStart(null, TimeSpan.Zero);
         }
 
         // Add sets to entity
@@ -112,7 +110,7 @@ public class EnterResultViewModel
         }
 
         // point calculation must run before validation because of tie-break handling
-        Match.Sets.CalculateSetPoints(Round.SetRule, Round.MatchRule);
+        Match.Sets.CalculateSetPoints(Round!.SetRule, Round.MatchRule);
         Match.Remarks = Remarks;
         Match.ChangeSerial++;
         Match.IsComplete = true;
@@ -121,17 +119,17 @@ public class EnterResultViewModel
     #region *** Form fields ***
 
     [HiddenInput]
-    public long Id { get; set; }
+    public long? Id { get; set; }
 
     [HiddenInput]
-    public string Hash { get; set; }
+    public string? Hash { get; set; }
 
     /// <summary>
     /// <see cref="ReturnUrl"/> is needed to return to either fixtures or results,
     /// when the cancel button is clicked.
     /// </summary>
     [HiddenInput]
-    public string ReturnUrl { get; set; }
+    public string? ReturnUrl { get; set; }
 
     [Display(Name = "Match date")]
     public DateTime? MatchDate { get; set; }
@@ -147,19 +145,19 @@ public class EnterResultViewModel
 
     [Display(Name="Remarks")]
     [MaxLength(2000)]
-    public string Remarks { get; set; }
+    public string? Remarks { get; set; }
 
     public List<PointResultNullable> Sets { get; set; } = new();
 
     #endregion
 
-    public TournamentEntity Tournament { get; set; }
+    public TournamentEntity? Tournament { get; set; }
 
-    public RoundEntity Round { get; set; }
+    public RoundEntity? Round { get; set; }
 
-    public MatchEntity Match { get;}
+    public MatchEntity? Match { get;}
 
-    public Opponent Opponent { get; }
+    public Opponent? Opponent { get; }
 
 
     /// <summary>
@@ -170,7 +168,7 @@ public class EnterResultViewModel
     /// <summary>
     /// The TimeZoneConverter, used by the razor view
     /// </summary>
-    public Axuno.Tools.DateAndTime.TimeZoneConverter TimeZoneConverter { get; }
+    public Axuno.Tools.DateAndTime.TimeZoneConverter? TimeZoneConverter { get; }
 
     private string ComputeInputHash()
     {
@@ -248,7 +246,7 @@ public class EnterResultViewModel
 
     public class MatchResultMessage
     {
-        public long MatchId { get; set; }
+        public long? MatchId { get; set; }
         public bool ChangeSuccess { get; set; }
     }
 }

@@ -1,4 +1,5 @@
-﻿namespace League.ConfigurationPoco;
+﻿
+namespace League.ConfigurationPoco;
 
 public class SocialLogins
 {
@@ -9,18 +10,18 @@ public class SocialLogins
 
 public class Facebook
 {
-    public string AppId { get; set; }
-    public string AppSecret { get; set; }
+    public string AppId { get; set; } = string.Empty;
+    public string AppSecret { get; set; } = string.Empty;
 }
 
 public class Google
 {
-    public string ClientId { get; set; }
-    public string ClientSecret { get; set; }
+    public string ClientId { get; set; } = string.Empty;
+    public string ClientSecret { get; set; } = string.Empty;
 }
 
 public class Microsoft
 {
-    public string ClientId { get; set; }
-    public string ClientSecret { get; set; }
+    public string ClientId { get; set; } = string.Empty;
+    public string ClientSecret { get; set; } = string.Empty;
 }

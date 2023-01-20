@@ -85,13 +85,13 @@ public class TeamPhotoStaticFile : AbstractStaticFile
         }
     }
 
-    public (string Filename, DateTime Date) GetFileInfo(long teamId)
+    public (string? Filename, DateTime Date) GetFileInfo(long teamId)
     {
         return GetFileInfo(new DirectoryInfo(Path.Combine(_webHostEnvironment.WebRootPath, _folder)),
             string.Format(_fileSearchPattern, _tenantContext.Identifier, teamId));
     }
 
-    public (string Uri, DateTime Date) GetUriInfo(long teamId)
+    public (string? Uri, DateTime Date) GetUriInfo(long teamId)
     {
         var (filename, date) = GetFileInfo(teamId);
         return (filename != null ?  $"~/{_folder}/{filename}" : null, Date: date);

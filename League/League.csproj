@@ -6,15 +6,16 @@
 		<RootNamespace>League</RootNamespace>
 		<UserSecretsId>ceea2bf6-8147-49b9-be85-26fca01f9ed3</UserSecretsId>
         <LangVersion>latest</LangVersion>
-        <Nullable>disable</Nullable>
+        <Nullable>enable</Nullable>
 		<NeutralLanguage>en</NeutralLanguage>
-		<Version>4.5.3</Version>
-        <AssemblyVersion>4.5.3.0</AssemblyVersion>
+		<Version>6.0.0</Version>
+        <FileVersion>6.0.0</FileVersion>
+        <AssemblyVersion>6.0.0.0</AssemblyVersion>
 		<PackageId>Volleyball-League</PackageId>
 		<Authors>axuno gGmbH</Authors>
 		<Product>Volleyball-League</Product>
 		<Description>Volleyball League is an open source sports platform that brings everything necessary to organize and to run a league.</Description>
-		<Copyright>(C) 2000-2021 axuo gGmbH</Copyright>
+		<Copyright>(C) 2000-2023 axuo gGmbH</Copyright>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
         <PackageProjectUrl>https://github.com/axuno/Volleyball-League</PackageProjectUrl>
 		<RepositoryUrl>https://github.com/axuno/Volleyball-League</RepositoryUrl>
@@ -199,12 +200,6 @@
 	<ItemGroup>
         <EmbeddedResource Include="Templates\Email\*.tpl" />
     </ItemGroup>
-
-	<ItemGroup>
-	  <None Remove="Templates\Email\AnnounceNextMatchTxt\en.tpl" />
-	  <None Remove="Templates\Email\RemindMatchResultTxt\en.tpl" />
-	  <None Remove="Templates\Email\UrgeMatchResultTxt\en.tpl" />
-	</ItemGroup>
 
 	<ItemGroup>
 	  <EmbeddedResource Include="Templates\Email\AnnounceNextMatchTxt\en.tpl" />

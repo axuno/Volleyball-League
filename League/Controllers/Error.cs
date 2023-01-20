@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using League.Models.Error;
-using System.Threading.Tasks;
 using Microsoft.Extensions.Localization;
 using TournamentManager.MultiTenancy;
 

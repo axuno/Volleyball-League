@@ -6,7 +6,6 @@ using System.Runtime.CompilerServices;
 using System.Threading;
 using Axuno.TextTemplating;
 using Axuno.TextTemplating.Localization;
-using League.Emailing.Creators;
 using League.Emailing.TemplateModels;
 using League.Templates.Email.Localization;
 using MailMergeLib;
@@ -15,9 +14,7 @@ using Microsoft.Extensions.Localization;
 using SD.LLBLGen.Pro.ORMSupportClasses;
 using SD.LLBLGen.Pro.QuerySpec;
 using TournamentManager.DAL.HelperClasses;
-using TournamentManager.DAL.TypedViewClasses;
 using TournamentManager.MultiTenancy;
-#nullable enable
 
 namespace League.Emailing.Creators;
 

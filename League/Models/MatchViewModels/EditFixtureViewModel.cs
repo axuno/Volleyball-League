@@ -17,13 +17,13 @@ public class EditFixtureViewModel
     public EditFixtureViewModel()
     {}
 
-    public EditFixtureViewModel(PlannedMatchRow plannedMatch, Axuno.Tools.DateAndTime.TimeZoneConverter timeZoneConverter)
+    public EditFixtureViewModel(PlannedMatchRow? plannedMatch, Axuno.Tools.DateAndTime.TimeZoneConverter timeZoneConverter)
     {
         PlannedMatch = plannedMatch;
         TimeZoneConverter = timeZoneConverter;
 
         // Set form fields
-        if (plannedMatch != null)
+        if (PlannedMatch != null)
         {
             Id = PlannedMatch.Id;
             VenueId = PlannedMatch.VenueId;
@@ -45,7 +45,7 @@ public class EditFixtureViewModel
     public long Id { get; set; }
 
     [HiddenInput]
-    public string Hash { get; set; }
+    public string? Hash { get; set; }
 
     [Display(Name = "Match date")]
     public DateTime? MatchDate { get; set; }
@@ -61,9 +61,9 @@ public class EditFixtureViewModel
 
     #endregion
 
-    public TournamentEntity Tournament { get; set; }
+    public TournamentEntity? Tournament { get; set; }
 
-    public PlannedMatchRow PlannedMatch { get;}
+    public PlannedMatchRow? PlannedMatch { get;}
 
 
     /// <summary>
@@ -79,22 +79,22 @@ public class EditFixtureViewModel
     /// <summary>
     /// The list of venues for this fixture belonging to the home or guest team.
     /// </summary>
-    public List<VenueEntity> VenuesOfMatchTeams { get; set; }
+    public List<VenueEntity> VenuesOfMatchTeams { get; set; } = new();
 
     /// <summary>
     /// The list of active venues to select for this fixture.
     /// </summary>
-    public List<VenueEntity> ActiveVenues { get; set; }
+    public List<VenueEntity> ActiveVenues { get; set; } = new();
 
     /// <summary>
     /// The list of unused venues to select for this fixture.
     /// </summary>
-    public List<VenueEntity> UnusedVenues { get; set; }
+    public List<VenueEntity> UnusedVenues { get; set; } = new();
 
     /// <summary>
     /// The TimeZoneConverter, used by the razor view
     /// </summary>
-    public Axuno.Tools.DateAndTime.TimeZoneConverter TimeZoneConverter { get; }
+    public Axuno.Tools.DateAndTime.TimeZoneConverter? TimeZoneConverter { get; }
 
     private string ComputeInputHash()
     {

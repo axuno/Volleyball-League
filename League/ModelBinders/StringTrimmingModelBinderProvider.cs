@@ -2,7 +2,6 @@
 // Copyright SmartFormat Project maintainers and contributors.
 // Licensed under the MIT license.
 
-using System;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Binders;
 using Microsoft.Extensions.DependencyInjection;
@@ -22,7 +21,7 @@ namespace League.ModelBinders;
 public class StringTrimmingModelBinderProvider : IModelBinderProvider
 {
     /// <inheritdoc/>
-    public IModelBinder GetBinder(ModelBinderProviderContext context)
+    public IModelBinder? GetBinder(ModelBinderProviderContext context)
     {
         return context.Metadata.ModelType == typeof(string) || context.Metadata.ModelType == typeof(string)
             ? new StringTrimmingModelBinder(context.Services.GetRequiredService<ILoggerFactory>())

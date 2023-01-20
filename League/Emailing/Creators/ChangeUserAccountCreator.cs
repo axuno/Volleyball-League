@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using Axuno.TextTemplating;
@@ -12,7 +11,6 @@ using MailMergeLib;
 using MailMergeLib.AspNet;
 using Microsoft.Extensions.Localization;
 using TournamentManager.MultiTenancy;
-#nullable enable
 
 namespace League.Emailing.Creators;
 
