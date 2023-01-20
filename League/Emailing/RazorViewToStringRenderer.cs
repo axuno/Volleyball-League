@@ -90,6 +90,6 @@ public class RazorViewToStringRenderer
     private ActionContext GetActionContext()
     {
         var httpContext = new DefaultHttpContext {RequestServices = _serviceProvider};
-        return new ActionContext(httpContext, new RouteData(), new ActionDescriptor());
+        return new ActionContext(httpContext, new RouteData(), new ActionDescriptor { DisplayName = nameof(RazorViewToStringRenderer) });
     }
 }

@@ -1,15 +1,16 @@
 ﻿// Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 // Taken from: https://github.com/dotnet/aspnetcore/blob/main/src/Mvc/Mvc.Localization/src/ViewLocalizer.cs
-// 2021-02-07: Modifications by axuno 
+// 2021-02-07: Modifications by axuno
+// 2023-01-20: Modifications by axuno
 
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Globalization;
 using System.IO;
 using System.Reflection;
 using System.Text;
+using MailMergeLib.AspNet;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.Mvc.Localization;
@@ -117,19 +118,21 @@ public class ViewLocalizer : IViewLocalizer, IViewContextAware
 
         Debug.Assert(!string.IsNullOrEmpty(path), "Couldn't determine a path for the view");
 
-        #region ** Modification 2021-02-07 by axuno **
+        #region ** Modification 2021-02-07 & 2023-01-20 by axuno **
         // To generate the path to the localization resource, the original ViewLocalizer
         // is using the hostingEnvironment.ApplicationName.
         // If the view is loaded from a different assembly (e.g. from a Razor Class Library),
         // the generated path is wrong for the _localizerFactory.
         // This is the workaround to set the applicationName to the Razor Class Library assembly:
-        if (viewContext.ActionDescriptor is ControllerActionDescriptor controllerActionDescriptor)
+        if (viewContext.ActionDescriptor is ControllerActionDescriptor { ControllerTypeInfo.Assembly.FullName: { } } controllerActionDescriptor)
         {
-            if (controllerActionDescriptor.ControllerTypeInfo.Assembly.FullName != null)
-            {
-                var appName = new AssemblyName(controllerActionDescriptor.ControllerTypeInfo.Assembly.FullName).Name;
-                if (appName != null) _applicationName = appName;
-            }
+            var appName = new AssemblyName(controllerActionDescriptor.ControllerTypeInfo.Assembly.FullName).Name;
+            if (appName != null) _applicationName = appName;
+        } else if (viewContext.ActionDescriptor is { DisplayName: nameof(RazorViewToStringRenderer) })
+        {
+            // Action is invoked outside a ControllerContext
+            // => RazorViewToStringRenderer where he have set the DisplayName
+            _applicationName = nameof(League);
         }
         #endregion
             

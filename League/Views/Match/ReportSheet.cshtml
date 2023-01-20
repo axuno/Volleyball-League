@@ -1,19 +1,10 @@
 ﻿@using TournamentManager.MultiTenancy
-@using League.Views
-@using Microsoft.Extensions.Localization
 @inject ITenantContext TenantContext
 @inject Axuno.Tools.DateAndTime.TimeZoneConverter TimeZoneConverter
-@inject IStringLocalizerFactory StringLocalizerFactory
-
+@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer localizer
 @model TournamentManager.DAL.TypedViewClasses.MatchReportSheetRow
 @{
     Layout = null;
-    
-    // Injecting an IViewLocalizer does not seem to work when using a RazorViewToStringRenderer,
-    // because the resource file can't be found.
-    // So we create an IStringLocalizer from the injected IStringLocalizerFactory:
-    const string resourceBaseName = $"{nameof(League)}.{nameof(League.Views)}.{nameof(ViewNames.Match)}.{ViewNames.Match.ReportSheet}";
-    var localizer = StringLocalizerFactory.Create(resourceBaseName, nameof(League));
 
     ViewData["Title"] = localizer["Match Report Sheet"].Value;
     var ballPointsToWin = new List<int>();

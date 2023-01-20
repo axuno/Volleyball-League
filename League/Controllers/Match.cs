@@ -664,7 +664,7 @@ public class Match : AbstractController
         var htmlUri = new Uri(htmlFile).AbsoluteUri;
 
         // Temporary file for the PDF stream form Chromium
-        var streamFile = Path.Combine(tempFolder, Path.GetRandomFileName());
+        var streamFile = Path.Combine(tempFolder, Path.GetRandomFileName() + ".pdf");
 
         // Run Chromium
         // Command line switches overview: https://kapeli.com/cheat_sheets/Chromium_Command_Line_Switches.docset/Contents/Resources/Documents/index
