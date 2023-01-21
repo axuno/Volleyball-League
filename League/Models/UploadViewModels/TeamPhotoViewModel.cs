@@ -9,5 +9,5 @@ public class TeamPhotoViewModel
 
     public DateTime? PhotoFileDate { get; set; }
 
-    public TeamEntity? Team { get; set; }
+    public TeamEntity Team { get; set; } = new();
 }

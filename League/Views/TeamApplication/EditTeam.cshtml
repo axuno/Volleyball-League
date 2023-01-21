@@ -64,6 +64,11 @@
     <partial name="@nameof(League.Views.ViewNames.Shared._DateTimePickerScriptPartial)" />
     <script type="text/javascript" site-on-content-loaded="true">
         @* Focus the 'Round.SelectedRoundId' selectpicker button *@
-        $('button[data-id=@Html.IdFor(m => m.Round.SelectedRoundId)]').focus();
+        @{
+            if (Model.Round?.SelectedRoundId != null)
+            {
+                <text>$('button[data-id=</text>@Html.IdFor(m => m.Round!.SelectedRoundId!)<text>]').focus();</text>
+            }
+        }
     </script>
 }

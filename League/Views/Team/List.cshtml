@@ -5,7 +5,7 @@
 @inject ITenantContext TenantContext
 @model League.Models.TeamViewModels.TeamListModel
 @{
-    ViewData["Title"] = Localizer["Teams"].Value + " - " + Model.Tournament.Name;
+    ViewData["Title"] = Localizer["Teams"].Value + " - " + Model.Tournament?.Name;
     var tenantUrlSegment = TenantContext.SiteContext.UrlSegmentValue;
     if (Model.RoundsWithTeams.Count == 0)
     {
@@ -66,7 +66,7 @@
                         </tbody>
                     </table>
                 </div>
-                @{ var maxModifiedOn = Model.TimeZoneConverter.ToZonedTime(Model.RoundsWithTeams.Where(m => m.RoundId == r.RoundId).Max(m => m.TeamModifiedOn)); }
+                @{ var maxModifiedOn = Model.TimeZoneConverter.ToZonedTime(Model.RoundsWithTeams.Where(m => m.RoundId == r.RoundId).Max(m => m.TeamModifiedOn))!; }
                 <div class="text-muted">
                     @Localizer[Model.RoundsWithTeams.Count > 1 ? "{0} out of {1} teams" : "{0} out of {1} team", teamsInThisRound, Model.RoundsWithTeams.Count]<br />
                     @Localizer["Last update"]: @maxModifiedOn.DateTimeOffset.DateTime.ToShortDateString() @maxModifiedOn.DateTimeOffset.DateTime.ToLongTimeString() @maxModifiedOn.Abbreviation

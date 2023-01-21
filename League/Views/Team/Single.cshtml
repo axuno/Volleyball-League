@@ -8,7 +8,7 @@
 @inject PhoneNumberService PhoneNumberService
 @model League.Models.TeamViewModels.TeamSingleModel
 @{
-    ViewData["Title"] = Localizer["Team Details"].Value + " - " + Model.Tournament.Name;
+    ViewData["Title"] = Localizer["Team Details"].Value + " - " + Model.Tournament!.Name;
     var tenantUrlSegment = TenantContext.SiteContext.UrlSegmentValue;
     string DisplayPhoneNo(string phoneNo)
     {
@@ -21,7 +21,7 @@
 }
 <div class="mb-0 pb-2">
     <h2 class="h2">@ViewData["Title"]</h2>
-    <h4 class="h4 d-inline-block mr-4">@Model.TeamVenueRoundInfo.RoundDescription</h4>
+    <h4 class="h4 d-inline-block mr-4">@Model.TeamVenueRoundInfo!.RoundDescription</h4>
     <span class="text-info">@Model.TeamVenueRoundInfo.RoundTypeDescription</span>
     <hr class="mb-3" />
     <div class="row">
@@ -36,7 +36,7 @@
         {
             // MatchTime is defined as a zoned time, NOT UTC. It is always the same, never mind DST
             <div class="text-success col-md-3">@Localizer["Home match day"]</div>
-            <div class="col-md-9 mb-2"><i class="far fa-calendar-alt"></i><span class="d-inline-block mr-2"></span>@DateTimeFormatInfo.CurrentInfo?.GetDayName((DayOfWeek)Model.TeamVenueRoundInfo.MatchDayOfWeek), @(DateTime.UtcNow.Date.Add(Model.TeamVenueRoundInfo.MatchTime.Value).ToShortTimeString()) @(Model.TimeZoneConverter.ToZonedTime(DateTime.UtcNow).Abbreviation)</div>
+            <div class="col-md-9 mb-2"><i class="far fa-calendar-alt"></i><span class="d-inline-block mr-2"></span>@DateTimeFormatInfo.CurrentInfo.GetDayName((DayOfWeek)Model.TeamVenueRoundInfo.MatchDayOfWeek), @(DateTime.UtcNow.Date.Add(Model.TeamVenueRoundInfo.MatchTime.Value).ToShortTimeString()) @(Model.TimeZoneConverter.ToZonedTime(DateTime.UtcNow)!.Abbreviation)</div>
         }
         @if (Model.TeamVenueRoundInfo.VenueId.HasValue)
         {
@@ -81,11 +81,11 @@
         }
         <div class="text-success col-md-3">@Localizer["Team Photo"]</div>
         <div class="col-md-7">
-            @if (Model.PhotoUriInfo.Uri != null)
+            @if (string.IsNullOrEmpty(Model.PhotoUriInfo.Uri))
             {
-                var zonedLastModified = Model.TimeZoneConverter.ToZonedTime(Model.PhotoUriInfo.Date);
+                var zonedLastModified = Model.TimeZoneConverter.ToZonedTime(Model.PhotoUriInfo.Date)!;
                 <div><img src="@Url.Content(Model.PhotoUriInfo.Uri)" class="img-fluid img-thumbnail" alt="@(Model.TeamVenueRoundInfo.TeamName)" /></div>
-                <div><small class="text-muted">@Localizer["Photo of"] @zonedLastModified?.DateTimeOffset.DateTime.ToShortDateString() @zonedLastModified.Abbreviation</small></div>
+                <div><small class="text-muted">@Localizer["Photo of"] @zonedLastModified.DateTimeOffset.DateTime.ToShortDateString() @zonedLastModified.Abbreviation</small></div>
             }
             else
             {

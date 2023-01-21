@@ -3,12 +3,13 @@
 @using League.Controllers
 @using Microsoft.AspNetCore.Mvc.Localization
 @using TournamentManager.MultiTenancy
-@inject RegionInfo RegionInfo
 @inject ITenantContext TenantContext
 @inject IViewLocalizer Localizer
 @{ ViewContext.ClientValidationEnabled = false;}  @* We rely on datepicker and server side validation *@
 @model League.Models.MatchViewModels.EditFixtureViewModel
 @{
+    if (Model.Tournament == null || Model.PlannedMatch == null) return;
+
     ViewData["Title"] = Localizer["Edit Fixture"].Value + " - " + Model.Tournament.Name;
     var tenantUrlSegment = TenantContext.SiteContext.UrlSegmentValue;
 }

@@ -270,8 +270,8 @@ public class Account : AbstractController
             Email = model.Email,
             EmailConfirmed = true,
             Gender = model.Gender,
-            FirstName = model.FirstName,
-            LastName = model.LastName,
+            FirstName = model.FirstName ?? string.Empty,
+            LastName = model.LastName ?? string.Empty,
             PhoneNumber = string.IsNullOrWhiteSpace(model.PhoneNumber)
                 ? string.Empty
                 : _phoneNumberService.FormatForStorage(model.PhoneNumber, _regionInfo.TwoLetterISORegionName),
@@ -472,7 +472,7 @@ public class Account : AbstractController
         if (!ModelState.IsValid) return View(model);
 
         ApplicationUser? user = null;
-        if (model.EmailOrUsername.Contains('@'))
+        if (model.EmailOrUsername != null && model.EmailOrUsername.Contains('@'))
         {
             user = await _signInManager.UserManager.FindByEmailAsync(model.EmailOrUsername);
         }
@@ -520,7 +520,7 @@ public class Account : AbstractController
         }
 
         ApplicationUser? user = null;
-        if (model.EmailOrUsername.Contains('@'))
+        if (model.EmailOrUsername != null && model.EmailOrUsername.Contains('@'))
         {
             user = await _signInManager.UserManager.FindByEmailAsync(model.EmailOrUsername);
         }

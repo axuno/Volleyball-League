@@ -7,7 +7,7 @@
 @inject ITenantContext TenantContext
 @model League.Models.MatchViewModels.ResultsViewModel
 @{
-    ViewData["Title"] = Localizer["Match Results"].Value + " - " + Model.Tournament.Name;
+    ViewData["Title"] = Localizer["Match Results"].Value + " - " + Model.Tournament?.Name;
     var tenantUrlSegment = TenantContext.SiteContext.UrlSegmentValue;
     if (Model.CompletedMatches.Count == 0)
     {
@@ -76,7 +76,7 @@
                                 const string unknown = "-";
                                 var matches = Model.CompletedMatches.Where(m => m.RoundId == r.RoundId).OrderBy(m => m.RoundLegSequenceNo).ThenBy(m => m.MatchDate).ToList();
                                 var legs = matches.GroupBy(m => m.RoundLegSequenceNo).ToList();
-                                Axuno.Tools.DateAndTime.ZonedTime zonedTime;
+                                Axuno.Tools.DateAndTime.ZonedTime? zonedTime;
                                 for (var i = 0; i < matches.Count; i++)
                                 {
                                     var match = matches[i];
@@ -85,7 +85,7 @@
                                         <tr><td colspan="@columnCount" class="leg-change"><span class="badge badge-dark">@match.RoundLegDescription</span></td></tr>
                                     }
                                     <tr>
-                                        <td class="opponents@(Model?.MatchResultMessage?.MatchId == match.Id ? " changed-result" : string.Empty)">
+                                        <td class="opponents@(Model.MatchResultMessage?.MatchId == match.Id ? " changed-result" : string.Empty)">
                                             <div class="text-truncate">@match.HomeTeamNameForRound</div>
                                             <div class="text-truncate">@match.GuestTeamNameForRound</div>
                                         </td>
@@ -166,7 +166,7 @@
                 </div>
                 @{ zonedTime = Model.TimeZoneConverter.ToZonedTime(Model.CompletedMatches.Where(m => m.RoundId == r.RoundId).Max(m => m.ModifiedOn)); }
                 <div class="text-muted">
-                    @Localizer["Last update"]: @zonedTime.DateTimeOffset.DateTime.ToShortDateString() @zonedTime.DateTimeOffset.DateTime.ToLongTimeString() @zonedTime.Abbreviation
+                    @Localizer["Last update"]: @zonedTime?.DateTimeOffset.DateTime.ToShortDateString() @zonedTime?.DateTimeOffset.DateTime.ToLongTimeString() @zonedTime?.Abbreviation
                 </div>
             </div>
         }

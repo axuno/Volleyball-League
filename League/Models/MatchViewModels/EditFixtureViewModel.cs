@@ -74,7 +74,7 @@ public class EditFixtureViewModel
     /// <summary>
     /// This is the key for a "not specified" venue. If this value is null, "not specified" cannot be selected
     /// </summary>
-    public long? VenueNotSpecifiedKey = null;
+    public long? VenueNotSpecifiedKey;
 
     /// <summary>
     /// The list of venues for this fixture belonging to the home or guest team.

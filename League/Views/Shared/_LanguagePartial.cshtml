@@ -13,7 +13,7 @@
             <div class="dropdown-menu shadow dropdown-menu-right" style="margin-top: -0.3rem">
                 @{
                     var encodedCurrentRequest = WebUtility.UrlEncode($"{Context.Request.Path}{Context.Request.QueryString}");
-                    foreach (var c in LocalizationOptions.Value.SupportedCultures)
+                    foreach (var c in LocalizationOptions.Value.SupportedCultures!)
                     {
                         <a asp-action="@nameof(League.Controllers.Language.Index)" asp-controller="@nameof(League.Controllers.Language)" asp-route-culture="@c.TwoLetterISOLanguageName" asp-route-uiCulture="@c.TwoLetterISOLanguageName" asp-route-returnUrl="@encodedCurrentRequest" class="dropdown-item">@(Html.Raw(c.NativeName))</a>
                     }

@@ -1,9 +1,8 @@
 ﻿@using Microsoft.AspNetCore.Mvc.Localization
-@using TournamentManager.DAL.EntityClasses
 @model League.Models.MapViewModels.MapModel
 @inject IViewLocalizer Localizer
-@{ ViewData["Title"] = Localizer["Venues"].Value + " - " + Model.Tournament.Name;}
-        @if (!Model.Venues.Any(v => v?.Latitude != null && v?.Longitude != null))
+@{ ViewData["Title"] = Localizer["Venues"].Value + " - " + Model.Tournament?.Name;}
+        @if (!Model.Venues.Any(v => v.Latitude != null && v.Longitude != null))
         {
             <div class="row">
                 <div class="col-12 pb-2">
@@ -75,7 +74,7 @@
 }
 @section scripts
 {
-    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=@(Model.GoogleConfiguration.WebApiKey)"></script>
+    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=@(Model.GoogleConfiguration!.WebApiKey)"></script>
     <script type="text/javascript">
         //<![CDATA[
         window.google = window.google || {};

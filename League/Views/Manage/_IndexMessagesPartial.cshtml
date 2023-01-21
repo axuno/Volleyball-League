@@ -2,9 +2,9 @@
 @using Microsoft.AspNetCore.Mvc.Localization
 @inject MetaDataHelper Metadata
 @inject IViewLocalizer Localizer
-@model ManageMessage
-@if (Model == null) { return; }
+@model ManageMessage?
 @{
+    if (Model == null) return;
     const string settingHasBeenUpdated = "Setting for '{0}' has been updated";
     const string hasBeenSet = "'{0}' has been set";
     const string settingUpdateFailed = "Changing the setting for '{0}' failed";
@@ -13,37 +13,37 @@
         @switch (Model.MessageId)
         {
             case MessageId.ChangeUsernameSuccess:
-                W‌rite(Localizer[settingHasBeenUpdated, Metadata.GetDisplayName<ChangeUsernameViewModel>(nameof(ChangeUsernameViewModel.Username))]);
+                @Localizer[settingHasBeenUpdated, Metadata.GetDisplayName<ChangeUsernameViewModel>(nameof(ChangeUsernameViewModel.Username))!]
                 break;
             case MessageId.ChangeUsernameFailure:
-                W‌rite(Localizer[settingUpdateFailed, Metadata.GetDisplayName<ChangeUsernameViewModel>(nameof(ChangeUsernameViewModel.Username))]);
+                @Localizer[settingUpdateFailed, Metadata.GetDisplayName<ChangeUsernameViewModel>(nameof(ChangeUsernameViewModel.Username))!]
                 break;
             case MessageId.ChangePasswordSuccess:
-                W‌rite(Localizer[settingHasBeenUpdated, Metadata.GetDisplayName<RegisterViewModel>(nameof(RegisterViewModel.Password))]);
+                @Localizer[settingHasBeenUpdated, Metadata.GetDisplayName<RegisterViewModel>(nameof(RegisterViewModel.Password))!]
                 break;
             case MessageId.ChangePasswordFailure:
-                W‌rite(Localizer[settingUpdateFailed, Metadata.GetDisplayName<RegisterViewModel>(nameof(RegisterViewModel.Password))]);
+                @Localizer[settingUpdateFailed, Metadata.GetDisplayName<RegisterViewModel>(nameof(RegisterViewModel.Password))!]
                 break;
             case MessageId.SetPasswordSuccess:
-                W‌rite(Localizer[hasBeenSet, Metadata.GetDisplayName<RegisterViewModel>(nameof(RegisterViewModel.Password))]);
+                @Localizer[hasBeenSet, Metadata.GetDisplayName<RegisterViewModel>(nameof(RegisterViewModel.Password))!]
                 break;
             case MessageId.SetPasswordFailure:
-                W‌rite(Localizer[settingUpdateFailed, Metadata.GetDisplayName<RegisterViewModel>(nameof(RegisterViewModel.Password))]);
+                @Localizer[settingUpdateFailed, Metadata.GetDisplayName<RegisterViewModel>(nameof(RegisterViewModel.Password))!]
                 break;
             case MessageId.ChangeEmailConfirmationSent:
                 W‌rite(Localizer["A confirmation code has been sent to the new primary email"]);
                 break;
             case MessageId.ChangeEmailSuccess:
-                W‌rite(Localizer[settingHasBeenUpdated, Metadata.GetDisplayName<ChangeEmailViewModel>(nameof(ChangeEmailViewModel.Email))]);
+                @Localizer[settingHasBeenUpdated, Metadata.GetDisplayName<ChangeEmailViewModel>(nameof(ChangeEmailViewModel.Email))!]
                 break;
             case MessageId.ChangeEmailFailure:
-                W‌rite(Localizer[settingUpdateFailed, Metadata.GetDisplayName<ChangeEmailViewModel>(nameof(ChangeEmailViewModel.Email))]);
+                @Localizer[settingUpdateFailed, Metadata.GetDisplayName<ChangeEmailViewModel>(nameof(ChangeEmailViewModel.Email))!]
                 break;
             case MessageId.ChangeEmail2Success:
-                W‌rite(Localizer[settingHasBeenUpdated, Metadata.GetDisplayName<EditEmail2ViewModel>(nameof(EditEmail2ViewModel.Email2))]);
+                @Localizer[settingHasBeenUpdated, Metadata.GetDisplayName<EditEmail2ViewModel>(nameof(EditEmail2ViewModel.Email2))!]
                 break;
             case MessageId.ChangeEmail2Failure:
-                W‌rite(Localizer[settingUpdateFailed, Metadata.GetDisplayName<EditEmail2ViewModel>(nameof(EditEmail2ViewModel.Email2))]);
+                @Localizer[settingUpdateFailed, Metadata.GetDisplayName<EditEmail2ViewModel>(nameof(EditEmail2ViewModel.Email2))!]
                 break;
             case MessageId.ChangePersonalDetailsSuccess:
                 W‌rite(Localizer["Your personal details have been updated"]);
@@ -52,16 +52,16 @@
                 W‌rite(Localizer["Updating your personal details failed"]);
                 break;
             case MessageId.ChangePhoneSuccess:
-                W‌rite(Localizer[settingHasBeenUpdated, Metadata.GetDisplayName<EditPhoneViewModel>(nameof(EditPhoneViewModel.PhoneNumber))]);
+                @Localizer[settingHasBeenUpdated, Metadata.GetDisplayName<EditPhoneViewModel>(nameof(EditPhoneViewModel.PhoneNumber))!]
                 break;
             case MessageId.ChangePhoneFailure:
-                W‌rite(Localizer[settingUpdateFailed, Metadata.GetDisplayName<EditPhoneViewModel>(nameof(EditPhoneViewModel.PhoneNumber))]);
+                @Localizer[settingUpdateFailed, Metadata.GetDisplayName<EditPhoneViewModel>(nameof(EditPhoneViewModel.PhoneNumber))!]
                 break;
             case MessageId.ChangePhone2Success:
-                W‌rite(Localizer[settingHasBeenUpdated, Metadata.GetDisplayName<EditPhone2ViewModel>(nameof(EditPhone2ViewModel.PhoneNumber2))]);
+                @Localizer[settingHasBeenUpdated, Metadata.GetDisplayName<EditPhone2ViewModel>(nameof(EditPhone2ViewModel.PhoneNumber2))!]
                 break;
             case MessageId.ChangePhone2Failure:
-                W‌rite(Localizer[settingUpdateFailed, Metadata.GetDisplayName<EditPhone2ViewModel>(nameof(EditPhone2ViewModel.PhoneNumber2))]);
+                @Localizer[settingUpdateFailed, Metadata.GetDisplayName<EditPhone2ViewModel>(nameof(EditPhone2ViewModel.PhoneNumber2))!]
                 break;
             case MessageId.ManageLoginFailure:
                 W‌rite(Localizer["Trying to manage social logins failed"]);

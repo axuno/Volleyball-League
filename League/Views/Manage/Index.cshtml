@@ -18,7 +18,7 @@
 <div class="mb-0 pb-1">
     <ul class="list-inline no-gutters">
         <li class="list-inline-item text-success col-md-3">@(Metadata.GetDisplayName<ChangeUsernameViewModel>(nameof(ChangeUsernameViewModel.Username)))</li>
-        <li class="list-inline-item col-md-7">@(User.Identity.Name)</li>
+        <li class="list-inline-item col-md-7">@(User.Identity?.Name)</li>
         <li class="list-inline-item col-md-auto"><button type="button" site-toggle-modal-ajax site-data-url="@Url.Action(nameof(Manage.ChangeUserName), nameof(Manage), new { Organization = tenantUrlSegment })" class="btn btn-sm btn-primary">@Localizer["Edit"]</button></li>
     </ul>
     <ul class="list-inline no-gutters">
@@ -46,7 +46,7 @@
     </ul>
     <ul class="list-inline no-gutters">
         <li class="list-inline-item text-success col-md-3">@Localizer["Personal Details"]</li>
-        <li class="list-inline-item col-md-7">@Model.ApplicationUser.CompleteName</li>
+        <li class="list-inline-item col-md-7">@Model.ApplicationUser!.CompleteName</li>
         <li class="list-inline-item col-md-auto"><button type="button" site-toggle-modal-ajax site-data-url="@Url.Action(nameof(Manage.EditPersonalDetails), nameof(Manage), new { Organization = tenantUrlSegment })" class="btn btn-sm btn-primary">@Localizer["Edit"]</button></li>
     </ul>
     <ul class="list-inline no-gutters">
@@ -92,7 +92,7 @@
         <li class="list-inline-item col-md-auto"><button type="button" site-toggle-modal-ajax site-data-url="@Url.Action(nameof(Manage.DeleteAccount), nameof(Manage), new { Organization = tenantUrlSegment })" class="btn btn-sm btn-outline-danger">@Localizer["Delete"]</button></li>
     </ul>
     <div class="text-muted">
-        @{ var zonedTime = Model.TimeZoneConverter.ToZonedTime(Model.ApplicationUser.ModifiedOn);}
+        @{ var zonedTime = Model.TimeZoneConverter.ToZonedTime(Model.ApplicationUser.ModifiedOn)!;}
         @Localizer["Last update"]: @zonedTime.DateTimeOffset.DateTime.ToShortDateString() @zonedTime.DateTimeOffset.DateTime.ToLongTimeString() @zonedTime.Abbreviation
     </div>
 </div>

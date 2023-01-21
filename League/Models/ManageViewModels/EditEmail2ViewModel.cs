@@ -7,5 +7,5 @@ public class EditEmail2ViewModel
 {
     [EmailAddress(ErrorMessageResourceName = nameof(DataAnnotationResource.EmailAddressInvalid), ErrorMessageResourceType = typeof(DataAnnotationResource))]
     [Display(Name = "Additional Email")]
-    public string Email2 { get; set; } = string.Empty;
+    public string? Email2 { get; set; }
 }

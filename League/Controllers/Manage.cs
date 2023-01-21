@@ -126,7 +126,7 @@ public class Manage : AbstractController
                 TempData.Put<ManageMessage>(nameof(ManageMessage), new ManageMessage { AlertType = SiteAlertTagHelper.AlertType.Success, MessageId = MessageId.ChangeUsernameSuccess });
                 return JsonAjaxRedirectForModal(Url.Action(nameof(Index), nameof(Manage), new { Organization = _tenantContext.SiteContext.UrlSegmentValue }));
             }
-            user.UserName = model.Username;
+            user.UserName = model.Username ?? string.Empty;
             var result = await _userManager.UpdateAsync(user);
             if (result.Succeeded)
             {
@@ -186,7 +186,7 @@ public class Manage : AbstractController
             return PartialView(ViewNames.Manage._ChangeEmailModalPartial, model);
         }
 
-        await SendEmail(user, model.Email);
+        if (model.Email != null) await SendEmail(user, model.Email);
 
         TempData.Put<ManageMessage>(nameof(ManageMessage), new ManageMessage { AlertType = SiteAlertTagHelper.AlertType.Success, MessageId = MessageId.ChangeEmailConfirmationSent });
         return JsonAjaxRedirectForModal(Url.Action(nameof(Index), nameof(Manage), new { Organization = _tenantContext.SiteContext.UrlSegmentValue }));
@@ -235,6 +235,12 @@ public class Manage : AbstractController
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> EditEmail2(EditEmail2ViewModel model, CancellationToken cancellationToken)
     {
+        // Empty field is used to remove data
+        if (string.IsNullOrEmpty(model.Email2))
+        {
+            ModelState.Clear();
+        }
+
         if (!ModelState.IsValid)
         {
             return PartialView(ViewNames.Manage._EditEmail2ModalPartial, model);

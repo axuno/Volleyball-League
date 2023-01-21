@@ -8,7 +8,7 @@
 @inject ITenantContext TenantContext
 @model League.Models.MatchViewModels.FixturesViewModel
 @{
-    ViewData["Title"] = Localizer["Fixtures"].Value + " - " + Model.Tournament.Name;
+    ViewData["Title"] = Localizer["Fixtures"].Value + " - " + Model.Tournament?.Name;
     var tenantUrlSegment = TenantContext.SiteContext.UrlSegmentValue;
     if (Model.PlannedMatches.Count == 0)
     {
@@ -97,7 +97,7 @@
                                         <tr><td colspan="@columnCount" class="leg-change"><span class="badge badge-dark">@match.RoundLegDescription</span></td></tr>
                                     }
                                     <tr>
-                                        <td class="opponents@(Model?.FixtureMessage?.MatchId == match.Id ? " changed-fixture" : string.Empty)">
+                                        <td class="opponents@(Model.FixtureMessage?.MatchId == match.Id ? " changed-fixture" : string.Empty)">
                                             <div class="text-truncate">@match.HomeTeamNameForRound</div>
                                             <div class="text-truncate">@match.GuestTeamNameForRound</div>
                                         </td>
@@ -143,7 +143,7 @@
                         </tbody>
                     </table>
                 </div>
-                @{ var zonedTime = Model.TimeZoneConverter.ToZonedTime(Model.PlannedMatches.Where(m => m.RoundId == r.RoundId).Max(m => m.ModifiedOn)); }
+                @{ var zonedTime = Model.TimeZoneConverter.ToZonedTime(Model.PlannedMatches.Where(m => m.RoundId == r.RoundId).Max(m => m.ModifiedOn))!; }
                 <div class="text-muted">
                     @Localizer["Last update"]: @zonedTime.DateTimeOffset.DateTime.ToShortDateString() @zonedTime.DateTimeOffset.DateTime.ToLongTimeString() @zonedTime.Abbreviation
                 </div>

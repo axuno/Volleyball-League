@@ -9,7 +9,7 @@
 }
 <h2 class="h2">@ViewData["Title"].</h2>
 <div class="pb-4">
-    @if (User.Identity.IsAuthenticated)
+    @if (User.Identity is {IsAuthenticated: true })
     {
         @* Signed in, but account does not have enough privileges *@
         <p>@Localizer["Your user account is not permitted to access the requested page"]</p>

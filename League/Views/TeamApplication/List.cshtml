@@ -1,15 +1,14 @@
-﻿@using System.Security.Policy
-@using Microsoft.AspNetCore.Mvc.Localization
+﻿@using Microsoft.AspNetCore.Mvc.Localization
 @using TournamentManager.MultiTenancy
 @inject IViewLocalizer Localizer
 @inject ITenantContext TenantContext
 @model League.Models.TeamApplicationViewModels.ApplicationListModel
 @{
-    ViewData["Title"] = Localizer["Team Registrations"].Value + " - " + Model.Tournament.Name;
+    ViewData["Title"] = Localizer["Team Registrations"].Value + " - " + Model.Tournament?.Name;
     var tenantUrlSegment = TenantContext.SiteContext.UrlSegmentValue;
     string ZonedTimeString(long teamId)
     {
-        return Model.TimeZoneConverter.ToZonedTime(Model.TeamRegisteredOn[teamId]).DateTimeOffset.DateTime.ToShortDateString();
+        return Model.TimeZoneConverter.ToZonedTime(Model.TeamRegisteredOn[teamId])!.DateTimeOffset.DateTime.ToShortDateString();
     }
 }
     <div class="mb-0 pb-1">
