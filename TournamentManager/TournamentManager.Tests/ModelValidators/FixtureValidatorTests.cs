@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -23,7 +24,7 @@ public class FixtureValidatorTests
 #pragma warning disable IDE0052 // Remove unread private members
     private readonly AppDb _appDb; // mocked in CTOR
 #pragma warning restore IDE0052 // Remove unread private members
-
+    private readonly CultureInfo _culture = CultureInfo.GetCultureInfo("en-US");
     private const string ExcludedDateReason = "Unit-Test";
 
     public FixtureValidatorTests()
@@ -32,7 +33,7 @@ public class FixtureValidatorTests
 
         var tzProvider = new NodaTime.TimeZones.DateTimeZoneCache(NodaTime.TimeZones.TzdbDateTimeZoneSource.Default);
         var tzId = "Europe/Berlin";
-        _data.TimeZoneConverter = new Axuno.Tools.DateAndTime.TimeZoneConverter(tzProvider, tzId, System.Globalization.CultureInfo.GetCultureInfo("en-US"), NodaTime.TimeZones.Resolvers.LenientResolver);
+        _data.TimeZoneConverter = new Axuno.Tools.DateAndTime.TimeZoneConverter(tzProvider, tzId, _culture, NodaTime.TimeZones.Resolvers.LenientResolver);
 
         #endregion
 
@@ -291,6 +292,7 @@ public class FixtureValidatorTests
     [TestCase(null, 102, true, true)]
     public async Task PlannedStart_Is_Excluded_MatchDate(DateTime? plannedStart, long matchId, bool onlyDatePart, bool expected)
     {
+        Thread.CurrentThread.CurrentCulture = _culture;
         _data.TenantConext.TournamentContext.FixtureRuleSet = new FixtureRuleSet { UseOnlyDatePartForTeamFreeBusyTimes = onlyDatePart };
         var match = new MatchEntity
         {
@@ -308,9 +310,9 @@ public class FixtureValidatorTests
         {
             Assert.AreEqual(expected, factResult.Success);
             Assert.IsTrue(factResult.Success || factResult.Message.Contains(ExcludedDateReason));
-            Assert.IsTrue(factResult.Success || StringContainsDateSeparatorBetweenApostrophes(factResult.Message));
+            Assert.IsTrue(factResult.Success || StringContainsDateSeparatorBetweenApostrophes(factResult.Message, _culture));
             Assert.IsTrue(factResult.Success || onlyDatePart ||
-                          StringContainsTimeSeparatorBetweenApostrophes(factResult.Message));
+                          StringContainsTimeSeparatorBetweenApostrophes(factResult.Message, _culture));
             Assert.IsNull(factResult.Exception);
         });
     }
@@ -335,18 +337,18 @@ public class FixtureValidatorTests
         Assert.AreEqual(expected, factResult.Success);
     }
 
-    private static bool StringContainsDateSeparatorBetweenApostrophes(string toTest)
+    private static bool StringContainsDateSeparatorBetweenApostrophes(string toTest, CultureInfo culture)
     {
         // string should look like '07/07/2020' - in this case tested for '/'
         return toTest.Split('\'', StringSplitOptions.RemoveEmptyEntries)[0]
-            .Contains(System.Globalization.CultureInfo.CurrentUICulture.DateTimeFormat.DateSeparator);
+            .Contains(culture.DateTimeFormat.DateSeparator);
     }
 
-    private static bool StringContainsTimeSeparatorBetweenApostrophes(string toTest)
+    private static bool StringContainsTimeSeparatorBetweenApostrophes(string toTest, CultureInfo culture)
     {
         // string should look like '07/07/2020 3:15 PM' - in this case tested for ':'
         return toTest.Split('\'', StringSplitOptions.RemoveEmptyEntries)[0]
-            .Contains(System.Globalization.CultureInfo.CurrentUICulture.DateTimeFormat.TimeSeparator);
+            .Contains(culture.DateTimeFormat.TimeSeparator);
     }
 
     [Test]

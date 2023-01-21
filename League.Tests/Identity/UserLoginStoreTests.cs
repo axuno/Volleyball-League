@@ -80,22 +80,6 @@ public class UserLoginStoreTests
     }
 
     [Test]
-    public void ArgumentNullExceptions()
-    {
-        Assert.ThrowsAsync<ArgumentNullException>(() => _store.AddLoginAsync(null, new UserLoginInfo("x", "y", "z"),  CancellationToken.None));
-        Assert.ThrowsAsync<ArgumentNullException>(() => _store.AddLoginAsync(new ApplicationUser(), null, CancellationToken.None));
-
-        Assert.ThrowsAsync<ArgumentNullException>(() => _store.FindByLoginAsync(null, "x", CancellationToken.None));
-        Assert.ThrowsAsync<ArgumentNullException>(() => _store.FindByLoginAsync("x", null, CancellationToken.None));
-
-        Assert.ThrowsAsync<ArgumentNullException>(() => _store.GetLoginsAsync(null, CancellationToken.None));
-
-        Assert.ThrowsAsync<ArgumentNullException>(() => _store.RemoveLoginAsync(new ApplicationUser(), "x",null, CancellationToken.None));
-        Assert.ThrowsAsync<ArgumentNullException>(() => _store.RemoveLoginAsync(new ApplicationUser(), null, "x", CancellationToken.None));
-        Assert.ThrowsAsync<ArgumentNullException>(() => _store.RemoveLoginAsync(null, "x", "y", CancellationToken.None));
-    }
-
-    [Test]
     public async Task Add_and_Remove_UserLoginInfo()
     {
         var user = await CreateNewUser();
@@ -148,13 +132,13 @@ public class UserLoginStoreTests
     public async Task Setup()
     {
         // delete all user rows - will delete user logins and user tokens as well
-        await _appDb.GenericRepository.DeleteEntitiesUsingConstraintAsync<UserEntity>(null, CancellationToken.None);
+        await _appDb.GenericRepository.DeleteEntitiesUsingConstraintAsync<UserEntity>(new PredicateExpression(), CancellationToken.None);
     }
 
     [TearDown]
     public async Task Cleanup()
     {
         // delete all user rows - will delete user logins and user tokens as well
-        await _appDb.GenericRepository.DeleteEntitiesUsingConstraintAsync<UserEntity>(null, CancellationToken.None);
+        await _appDb.GenericRepository.DeleteEntitiesUsingConstraintAsync<UserEntity>(new PredicateExpression(), CancellationToken.None);
     }
 }

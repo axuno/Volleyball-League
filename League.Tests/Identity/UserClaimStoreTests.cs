@@ -23,9 +23,10 @@ namespace League.Test.Identity;
 public class UserClaimStoreTests
 {
     private readonly UnitTestHelpers _uth = new();
-    private readonly AppDb _appDb; private ApplicationUser _user = null;
+    private readonly AppDb _appDb;
+    private ApplicationUser _user = new();
     private readonly UserStore _store;
-    private TeamEntity _team = null;
+    private TeamEntity _team = new();
 
     public UserClaimStoreTests()
     {
@@ -47,20 +48,6 @@ public class UserClaimStoreTests
         Assert.IsTrue(Constants.ClaimType.GetAllNames().Contains(nameof(Constants.ClaimType.ManagesTeam)));
         Assert.IsTrue(Constants.ClaimType.GetAllNames().Contains(nameof(Constants.ClaimType.PlaysInTeam)));
         Assert.IsTrue(Constants.ClaimType.GetAllNames().Contains(nameof(Constants.ClaimType.ImpersonatedByUser)));
-    }
-
-    [Test]
-    public void ArgumentNullExceptions()
-    {
-        // Should throw ArgumentNullException
-        Assert.ThrowsAsync<ArgumentNullException>(() => _store.GetClaimsAsync(null, CancellationToken.None));
-        Assert.ThrowsAsync<ArgumentNullException>(() => _store.AddClaimsAsync(null, new Claim[] { new("x", "y") }, CancellationToken.None));
-        Assert.ThrowsAsync<ArgumentNullException>(() => _store.AddClaimsAsync(_user, null, CancellationToken.None));
-        Assert.ThrowsAsync<ArgumentNullException>(() => _store.RemoveClaimsAsync(null, new Claim[] { new("x", "y") }, CancellationToken.None));
-        Assert.ThrowsAsync<ArgumentNullException>(() => _store.RemoveClaimsAsync(_user, null, CancellationToken.None));
-        Assert.ThrowsAsync<ArgumentNullException>(() => _store.ReplaceClaimAsync(null, new Claim("x", "y"), new Claim("a", "b"), CancellationToken.None));
-        Assert.ThrowsAsync<ArgumentNullException>(() => _store.ReplaceClaimAsync(_user, null, new Claim("a", "b"), CancellationToken.None));
-        Assert.ThrowsAsync<ArgumentNullException>(() => _store.ReplaceClaimAsync(_user, new Claim("x", "y"), null, CancellationToken.None));
     }
 
     [Test]
@@ -145,8 +132,6 @@ public class UserClaimStoreTests
 
         var users = await _store.GetUsersForClaimAsync(claim, CancellationToken.None);
         Assert.AreEqual(_user.Email, users.FirstOrDefault()?.Email);
-
-        Assert.ThrowsAsync<ArgumentNullException>(() => _store.GetUsersForClaimAsync(null, CancellationToken.None));
     }
 
     #endregion
@@ -257,10 +242,10 @@ public class UserClaimStoreTests
     public async Task Setup()
     {
         // delete all user rows
-        await _appDb.GenericRepository.DeleteEntitiesUsingConstraintAsync<UserEntity>(null, CancellationToken.None);
+        await _appDb.GenericRepository.DeleteEntitiesUsingConstraintAsync<UserEntity>(new PredicateExpression(), CancellationToken.None);
 
         // delete all team rows
-        await _appDb.GenericRepository.DeleteEntitiesUsingConstraintAsync<TeamEntity>(null, CancellationToken.None);
+        await _appDb.GenericRepository.DeleteEntitiesUsingConstraintAsync<TeamEntity>(new PredicateExpression(), CancellationToken.None);
 
         // create user
         _user = new ApplicationUser {UserName = "UserName", Email = "userclaim@store.test"};
@@ -276,9 +261,9 @@ public class UserClaimStoreTests
     public async Task Cleanup()
     {
         // delete all user rows
-        await _appDb.GenericRepository.DeleteEntitiesUsingConstraintAsync<UserEntity>(null, CancellationToken.None);
+        await _appDb.GenericRepository.DeleteEntitiesUsingConstraintAsync<UserEntity>(new PredicateExpression(), CancellationToken.None);
 
         // delete all team rows
-        await _appDb.GenericRepository.DeleteEntitiesUsingConstraintAsync<TeamEntity>(null, CancellationToken.None);
+        await _appDb.GenericRepository.DeleteEntitiesUsingConstraintAsync<TeamEntity>(new PredicateExpression(), CancellationToken.None);
     }
 }

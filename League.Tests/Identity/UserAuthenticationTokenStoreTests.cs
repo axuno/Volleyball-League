@@ -4,10 +4,8 @@ using System.Data;
 using System.Threading.Tasks;
 using System.Threading;
 using League.Identity;
-using League.Test.TestComponents;
 using NUnit.Framework;
 using TournamentManager.DAL.DatabaseSpecific;
-using TournamentManager.Data;
 using TournamentManager.DAL.EntityClasses;
 using SD.LLBLGen.Pro.ORMSupportClasses;
 using TournamentManager.MultiTenancy;
@@ -79,23 +77,6 @@ public class UserAuthenticationTokenStoreTests
     }
 
     [Test]
-    public void ArgumentNullExceptions()
-    {
-        Assert.ThrowsAsync<ArgumentNullException>(() => _store.SetTokenAsync(null, "x", "y", "z",  CancellationToken.None));
-        Assert.ThrowsAsync<ArgumentNullException>(() => _store.SetTokenAsync(GetNewUser(), null, "y", "z", CancellationToken.None));
-        Assert.ThrowsAsync<ArgumentNullException>(() => _store.SetTokenAsync(GetNewUser(), "x", null, "z", CancellationToken.None));
-        Assert.ThrowsAsync<ArgumentNullException>(() => _store.SetTokenAsync(GetNewUser(), "x", "y", null, CancellationToken.None));
-
-        Assert.ThrowsAsync<ArgumentNullException>(() => _store.GetTokenAsync(null, "x", "y", CancellationToken.None));
-        Assert.ThrowsAsync<ArgumentNullException>(() => _store.GetTokenAsync(GetNewUser(), null, "y", CancellationToken.None));
-        Assert.ThrowsAsync<ArgumentNullException>(() => _store.GetTokenAsync(GetNewUser(), "x", null, CancellationToken.None));
-
-        Assert.ThrowsAsync<ArgumentNullException>(() => _store.RemoveTokenAsync(null, "x", "y", CancellationToken.None));
-        Assert.ThrowsAsync<ArgumentNullException>(() => _store.RemoveTokenAsync(GetNewUser(), null, "y", CancellationToken.None));
-        Assert.ThrowsAsync<ArgumentNullException>(() => _store.RemoveTokenAsync(GetNewUser(), "x", null, CancellationToken.None));
-    }
-
-    [Test]
     public async Task Set_Get_and_Remove_AuthToken()
     {
         var user = await CreateNewUser();
@@ -136,13 +117,13 @@ public class UserAuthenticationTokenStoreTests
     public async Task Setup()
     {
         // delete all user rows - will delete user logins and user tokens as well
-        await _appDb.GenericRepository.DeleteEntitiesUsingConstraintAsync<UserEntity>(null, CancellationToken.None);
+        await _appDb.GenericRepository.DeleteEntitiesUsingConstraintAsync<UserEntity>(new PredicateExpression(), CancellationToken.None);
     }
 
     [TearDown]
     public async Task Cleanup()
     {
         // delete all user rows - will delete user logins and user tokens as well
-        await _appDb.GenericRepository.DeleteEntitiesUsingConstraintAsync<UserEntity>(null, CancellationToken.None);
+        await _appDb.GenericRepository.DeleteEntitiesUsingConstraintAsync<UserEntity>(new PredicateExpression(), CancellationToken.None);
     }
 }

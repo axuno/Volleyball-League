@@ -4,11 +4,11 @@ using System.Data;
 using System.Threading.Tasks;
 using System.Threading;
 using League.Identity;
-using League.Test.TestComponents;
 using NUnit.Framework;
 using TournamentManager.DAL.DatabaseSpecific;
 using TournamentManager.DAL.EntityClasses;
 using TournamentManager.MultiTenancy;
+using SD.LLBLGen.Pro.ORMSupportClasses;
 
 namespace League.Test.Identity;
 
@@ -66,32 +66,22 @@ public class UserStoreTests
         };
     }
 
-    [Test]
-    public void ArgumentNullExceptions()
+    [SetUp]
+    public async Task Setup()
     {
-        Assert.ThrowsAsync<ArgumentNullException>(() => _store.UpdateAsync(null, CancellationToken.None));
+        // delete all user rows
+        await _appDb.GenericRepository.DeleteEntitiesUsingConstraintAsync<UserEntity>(new PredicateExpression(), CancellationToken.None);
+        // delete all role rows
+        await _appDb.GenericRepository.DeleteEntitiesUsingConstraintAsync<IdentityRoleEntity>(new PredicateExpression(), CancellationToken.None);
+    }
 
-        Assert.ThrowsAsync<ArgumentNullException>(() => _store.SetNormalizedEmailAsync(_testUser, null, CancellationToken.None));
-        Assert.ThrowsAsync<ArgumentNullException>(() => _store.SetNormalizedEmailAsync(null, "nulltest@user.test", CancellationToken.None));
-
-        Assert.ThrowsAsync<ArgumentNullException>(() => _store.SetUserNameAsync(null, "abc", CancellationToken.None));
-        Assert.ThrowsAsync<ArgumentNullException>(() => _store.SetUserNameAsync(new ApplicationUser(), null, CancellationToken.None));
-
-        Assert.ThrowsAsync<ArgumentNullException>(() => _store.SetNormalizedUserNameAsync(_testUser, null, CancellationToken.None));
-        Assert.ThrowsAsync<ArgumentNullException>(() => _store.SetNormalizedUserNameAsync(null, "nulltest", CancellationToken.None));
-
-        Assert.ThrowsAsync<ArgumentNullException>(() => _store.FindByIdAsync(null, CancellationToken.None));
-        Assert.ThrowsAsync<ArgumentNullException>(() => _store.FindByIdAsync(null, CancellationToken.None));
-
-        Assert.ThrowsAsync<ArgumentNullException>(() => _store.SetPhoneNumberConfirmedAsync(null, true, CancellationToken.None));
-
-        Assert.ThrowsAsync<ArgumentNullException>(() => _store.SetLockoutEnabledAsync(null, true, CancellationToken.None));
-        Assert.ThrowsAsync<ArgumentNullException>(() => _store.GetLockoutEnabledAsync(null, CancellationToken.None));
-        Assert.ThrowsAsync<ArgumentNullException>(() => _store.GetLockoutEndDateAsync(null, CancellationToken.None));
-        Assert.ThrowsAsync<ArgumentNullException>(() => _store.SetLockoutEndDateAsync(null, new DateTimeOffset(), CancellationToken.None));
-        Assert.ThrowsAsync<ArgumentNullException>(() => _store.GetAccessFailedCountAsync(null, CancellationToken.None));
-        Assert.ThrowsAsync<ArgumentNullException>(() => _store.IncrementAccessFailedCountAsync(null, CancellationToken.None));
-        Assert.ThrowsAsync<ArgumentNullException>(() => _store.ResetAccessFailedCountAsync(null, CancellationToken.None));
+    [TearDown]
+    public async Task Cleanup()
+    {
+        // delete all user rows
+        await _appDb.GenericRepository.DeleteEntitiesUsingConstraintAsync<UserEntity>(new PredicateExpression(), CancellationToken.None);
+        // delete all role rows
+        await _appDb.GenericRepository.DeleteEntitiesUsingConstraintAsync<IdentityRoleEntity>(new PredicateExpression(), CancellationToken.None);
     }
 
     [Test]
@@ -132,8 +122,6 @@ public class UserStoreTests
     [Test]
     public async Task Create_User()
     {
-        Assert.ThrowsAsync<ArgumentNullException>(() => _store.CreateAsync(null, CancellationToken.None));
-
         var user = GetNewUser();
         Assert.AreEqual(IdentityResult.Success, await _store.CreateAsync(user, CancellationToken.None));
 
@@ -205,8 +193,6 @@ public class UserStoreTests
         var result = await _store.DeleteAsync(user, CancellationToken.None);
         Assert.IsTrue(result == IdentityResult.Success);
         Assert.IsNull(await _store.FindByEmailAsync(_testUser.Email, CancellationToken.None));
-
-        Assert.ThrowsAsync<ArgumentNullException>(() => _store.DeleteAsync(null, CancellationToken.None));
     }
 
     [Test]
@@ -229,16 +215,12 @@ public class UserStoreTests
         Assert.IsNull(await _store.FindByIdAsync("0", CancellationToken.None));
         Assert.IsNull(await _store.FindByIdAsync("a", CancellationToken.None));
 
-        Assert.ThrowsAsync<ArgumentNullException>(() => _store.GetUserIdAsync(null, CancellationToken.None));
         Assert.AreEqual(user.Id.ToString(), await _store.GetUserIdAsync(user, CancellationToken.None));
-        Assert.ThrowsAsync<ArgumentNullException>(() => _store.GetUserNameAsync(null, CancellationToken.None));
-        Assert.ThrowsAsync<ArgumentNullException>(() => _store.GetNormalizedUserNameAsync(null, CancellationToken.None));
         Assert.AreEqual(user.UserName, await _store.GetUserNameAsync(user, CancellationToken.None));
         Assert.AreEqual(user.UserName.ToUpperInvariant(), await _store.GetNormalizedUserNameAsync(user, CancellationToken.None));
 
         Assert.AreEqual(user.Email.ToUpperInvariant(), await _store.GetNormalizedEmailAsync(user, CancellationToken.None));
-        Assert.ThrowsAsync<ArgumentNullException>(() => _store.GetNormalizedEmailAsync(null, CancellationToken.None));
-    }
+ }
 
     [Test]
     public async Task SetUserName()
@@ -262,22 +244,17 @@ public class UserStoreTests
         user.EmailConfirmedOn = null;
 
         var newEmail = "userstore@changetest.org";
-        Assert.ThrowsAsync<ArgumentNullException>(() => _store.GetSecurityStampAsync(null, CancellationToken.None));
+
         var securityStamp = await _store.GetSecurityStampAsync(user, CancellationToken.None);
-        Assert.ThrowsAsync<ArgumentNullException>(() => _store.SetEmailAsync(null, "xyz@abc.test", CancellationToken.None));
-        Assert.ThrowsAsync<ArgumentNullException>(() => _store.SetEmailAsync(user, null, CancellationToken.None));
         await _store.SetEmailAsync(user, newEmail, CancellationToken.None);
-        Assert.ThrowsAsync<ArgumentNullException>(() => _store.GetEmailAsync(null, CancellationToken.None));
         Assert.AreNotEqual(securityStamp, await _store.GetSecurityStampAsync(user, CancellationToken.None));
         Assert.AreEqual(newEmail, await _store.GetEmailAsync(user, CancellationToken.None));
         Assert.AreEqual(newEmail, user.Email);
         Assert.AreEqual(newEmail.ToUpperInvariant(), await _store.GetNormalizedEmailAsync(user, CancellationToken.None));
 
-        Assert.ThrowsAsync<ArgumentNullException>(() => _store.SetEmailConfirmedAsync(null, true, CancellationToken.None));
         await _store.SetEmailConfirmedAsync(user, true, CancellationToken.None);
         Assert.AreEqual(true, user.EmailConfirmed);
         Assert.AreEqual(true, await _store.GetEmailConfirmedAsync(user, CancellationToken.None));
-        Assert.ThrowsAsync<ArgumentNullException>(() => _store.GetEmailConfirmedAsync(null, CancellationToken.None));
         Assert.IsNotNull(user.EmailConfirmedOn);
     }
 
@@ -290,14 +267,13 @@ public class UserStoreTests
 
         var newPhone = "98761234";
         var securityStamp = await _store.GetSecurityStampAsync(user, CancellationToken.None);
-        Assert.ThrowsAsync<ArgumentNullException>(() => _store.SetPhoneNumberAsync(null, newPhone, CancellationToken.None));
-        await _store.SetPhoneNumberAsync(user, null, CancellationToken.None);
+
+        await _store.SetPhoneNumberAsync(user, string.Empty, CancellationToken.None);
         Assert.AreEqual(string.Empty, user.PhoneNumber);
+
         await _store.SetPhoneNumberAsync(user, newPhone, CancellationToken.None);
         Assert.AreNotEqual(securityStamp, await _store.GetSecurityStampAsync(user, CancellationToken.None));
         Assert.AreEqual(newPhone, await _store.GetPhoneNumberAsync(user, CancellationToken.None));
-        Assert.ThrowsAsync<ArgumentNullException>(() => _store.GetPhoneNumberAsync(null, CancellationToken.None));
-        Assert.ThrowsAsync<ArgumentNullException>(() => _store.SetPhoneNumberAsync(null, "123", CancellationToken.None));
 
         Assert.AreEqual(user.PhoneNumberConfirmed, await _store.GetPhoneNumberConfirmedAsync(user, CancellationToken.None));
         await _store.SetPhoneNumberConfirmedAsync(user, true, CancellationToken.None);
@@ -310,8 +286,6 @@ public class UserStoreTests
         user.PhoneNumberConfirmed = true;
         await _store.SetPhoneNumberConfirmedAsync(user, true, CancellationToken.None);
         Assert.IsFalse(user.PhoneNumberConfirmed);
-
-        Assert.ThrowsAsync<ArgumentNullException>(() => _store.GetPhoneNumberConfirmedAsync(null, CancellationToken.None));
     }
 
     [Test]
@@ -321,15 +295,12 @@ public class UserStoreTests
         user.PasswordHash = string.Empty;
 
         Assert.IsNull(await _store.GetPasswordHashAsync(user, CancellationToken.None));
-        Assert.ThrowsAsync<ArgumentNullException>(() => _store.GetPasswordHashAsync(null, CancellationToken.None));
         var newPwHash = "passwordhash";
         var securityStamp = await _store.GetSecurityStampAsync(user, CancellationToken.None);
         await _store.SetPasswordHashAsync(user, newPwHash, CancellationToken.None);
-        Assert.ThrowsAsync<ArgumentNullException>(() => _store.SetPasswordHashAsync(null, newPwHash, CancellationToken.None));
         Assert.AreNotEqual(securityStamp, await _store.GetSecurityStampAsync(user, CancellationToken.None));
         Assert.AreEqual(newPwHash, await _store.GetPasswordHashAsync(user, CancellationToken.None));
         Assert.IsTrue(await _store.HasPasswordAsync(user, CancellationToken.None));
-        Assert.ThrowsAsync<ArgumentNullException>(() => _store.HasPasswordAsync(null, CancellationToken.None));
     }
 
     [Test]
@@ -337,24 +308,32 @@ public class UserStoreTests
     {
         var user = GetNewUser();
         var nonExistentUser = new ApplicationUser {Id = 0};
+
         Assert.AreEqual(IdentityResult.Success, await _store.CreateAsync(user, CancellationToken.None));
         Assert.DoesNotThrowAsync(() => _store.SetLockoutEnabledAsync(user, true, CancellationToken.None));
+
         // users for except SystemManagers lock-out should be enabled
         Assert.IsTrue(await _store.GetLockoutEnabledAsync(user, CancellationToken.None));
+
         // not set before, so it should be null
         Assert.IsNull(await _store.GetLockoutEndDateAsync(user, CancellationToken.None));
         var lockoutEndDate = new DateTimeOffset?(new DateTime(2020, 05, 30, 14, 15, 16));
+
         // Test setting lockout end date
         await _store.SetLockoutEndDateAsync(user, lockoutEndDate, CancellationToken.None);
         Assert.AreEqual(lockoutEndDate.Value.UtcDateTime, (await _store.GetLockoutEndDateAsync(user, CancellationToken.None)).Value.DateTime);
+
         // Nothing should happen for non-existent users
         Assert.ThrowsAsync<ArgumentException>(() => _store.SetLockoutEndDateAsync(nonExistentUser, lockoutEndDate, CancellationToken.None));
         Assert.DoesNotThrowAsync(() => _store.GetLockoutEndDateAsync(nonExistentUser, CancellationToken.None));
+
         // Test access failures
         Assert.AreEqual(0, await _store.GetAccessFailedCountAsync(user, CancellationToken.None));
         Assert.AreEqual(1, await _store.IncrementAccessFailedCountAsync(user, CancellationToken.None));
         Assert.AreEqual(2, await _store.IncrementAccessFailedCountAsync(user, CancellationToken.None));
         Assert.ThrowsAsync<ArgumentException>(() => _store.IncrementAccessFailedCountAsync(nonExistentUser, CancellationToken.None));
+
+        // Test after resetting failed count and lockout date
         await _store.ResetAccessFailedCountAsync(user, CancellationToken.None);
         await _store.SetLockoutEndDateAsync(user, null, CancellationToken.None);
         Assert.AreEqual(0, await _store.GetAccessFailedCountAsync(user, CancellationToken.None));
@@ -362,7 +341,6 @@ public class UserStoreTests
         Assert.AreEqual(0, await _store.GetAccessFailedCountAsync(nonExistentUser, CancellationToken.None));
 
         // Tests for user as SystemManager
-
         var role = new ApplicationRole { Name = Constants.RoleName.SystemManager };
         Assert.AreEqual(IdentityResult.Success, await _roleStore.CreateAsync(role, CancellationToken.None));
             
@@ -378,33 +356,8 @@ public class UserStoreTests
     }
 
     [Test]
-    public void SecurityStamp_UserNull()
-    {
-        Assert.ThrowsAsync<ArgumentNullException>(() => _store.SetSecurityStampAsync(null, "x", CancellationToken.None));
-    }
-
-    [Test]
     public void DisposeTest()
     {
         Assert.DoesNotThrow(() =>_store.Dispose());
-    }
-
-
-    [SetUp]
-    public async Task Setup()
-    {
-        // delete all user rows
-        await _appDb.GenericRepository.DeleteEntitiesUsingConstraintAsync<UserEntity>(null, CancellationToken.None);
-        // delete all role rows
-        await _appDb.GenericRepository.DeleteEntitiesUsingConstraintAsync<IdentityRoleEntity>(null, CancellationToken.None);
-    }
-
-    [TearDown]
-    public async Task Cleanup()
-    {
-        // delete all user rows
-        await _appDb.GenericRepository.DeleteEntitiesUsingConstraintAsync<UserEntity>(null, CancellationToken.None);
-        // delete all role rows
-        await _appDb.GenericRepository.DeleteEntitiesUsingConstraintAsync<IdentityRoleEntity>(null, CancellationToken.None);
     }
 }

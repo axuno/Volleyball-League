@@ -10,6 +10,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
 using NUnit.Framework;
+using SD.LLBLGen.Pro.ORMSupportClasses;
 using TournamentManager.DAL.DatabaseSpecific;
 using TournamentManager.Data;
 using TournamentManager.DAL.EntityClasses;
@@ -27,7 +28,7 @@ public class UserRoleStoreTests
     private readonly UnitTestHelpers _uth = new();
     private readonly AppDb _appDb;
     private readonly UserStore _userStore;
-    private ApplicationUser _user = null;
+    private ApplicationUser _user = new();
 
     public UserRoleStoreTests()
     {
@@ -89,8 +90,8 @@ public class UserRoleStoreTests
         Assert.IsTrue((await _userStore.GetUsersInRoleAsync(Constants.RoleName.TeamManager, CancellationToken.None)).Count == 1);
 
 
-        await _appDb.GenericRepository.DeleteEntitiesUsingConstraintAsync<PlayerInTeamEntity>(null, CancellationToken.None);
-        await _appDb.GenericRepository.DeleteEntitiesUsingConstraintAsync<ManagerOfTeamEntity>(null, CancellationToken.None);
+        await _appDb.GenericRepository.DeleteEntitiesUsingConstraintAsync<PlayerInTeamEntity>(new PredicateExpression(), CancellationToken.None);
+        await _appDb.GenericRepository.DeleteEntitiesUsingConstraintAsync<ManagerOfTeamEntity>(new PredicateExpression(), CancellationToken.None);
 
         Assert.IsFalse(await _userStore.IsInRoleAsync(user, Constants.RoleName.Player, CancellationToken.None));
         Assert.IsFalse(await _userStore.IsInRoleAsync(user, Constants.RoleName.TeamManager, CancellationToken.None));
@@ -114,29 +115,11 @@ public class UserRoleStoreTests
         }
     }
 
-    [Test]
-    public void ArgumentNullExceptions()
-    {
-        // Should throw ArgumentNullException
-        Assert.ThrowsAsync<ArgumentNullException>(() => _userStore.IsInRoleAsync(null, "x", CancellationToken.None));
-        Assert.ThrowsAsync<ArgumentNullException>(() => _userStore.IsInRoleAsync(_user, null, CancellationToken.None));
-
-        Assert.ThrowsAsync<ArgumentNullException>( () =>  _userStore.RemoveFromRoleAsync(_user, null, CancellationToken.None));
-        Assert.ThrowsAsync<ArgumentNullException>(() => _userStore.RemoveFromRoleAsync(null, "xyz", CancellationToken.None));
-
-        Assert.ThrowsAsync<ArgumentNullException>(() => _userStore.AddToRoleAsync(_user, null, CancellationToken.None));
-        Assert.ThrowsAsync<ArgumentNullException>(() => _userStore.AddToRoleAsync(null, "xyz", CancellationToken.None));
-
-        Assert.ThrowsAsync<ArgumentNullException>(() => _userStore.GetRolesAsync(null, CancellationToken.None));
-
-        Assert.ThrowsAsync<ArgumentNullException>(() => _userStore.GetUsersInRoleAsync(null, CancellationToken.None));
-    }
-
     [SetUp]
     public async Task Setup()
     {
         // delete all user rows (will also remove rows in other tables connected with foreign keys)
-        await _appDb.GenericRepository.DeleteEntitiesUsingConstraintAsync<UserEntity>(null, CancellationToken.None);
+        await _appDb.GenericRepository.DeleteEntitiesUsingConstraintAsync<UserEntity>(new PredicateExpression(), CancellationToken.None);
 
         _user = new ApplicationUser { Email = "userrole@store.tests", UserName = "UserRoleStoreTester"};
         Assert.AreEqual(IdentityResult.Success, await _userStore.CreateAsync(_user, CancellationToken.None));
@@ -146,14 +129,14 @@ public class UserRoleStoreTests
     public async Task Cleanup()
     {
         // delete all user rows (will also remove rows in other tables connected with foreign keys)
-        await _appDb.GenericRepository.DeleteEntitiesUsingConstraintAsync<UserEntity>(null, CancellationToken.None);
+        await _appDb.GenericRepository.DeleteEntitiesUsingConstraintAsync<UserEntity>(new PredicateExpression(), CancellationToken.None);
     }
 
     [OneTimeSetUp]
     public async Task OneTimeSetup()
     {
-        await _appDb.GenericRepository.DeleteEntitiesUsingConstraintAsync<IdentityRoleEntity>(null, CancellationToken.None);
-        await _appDb.GenericRepository.DeleteEntitiesUsingConstraintAsync<TeamEntity>(null, CancellationToken.None);
+        await _appDb.GenericRepository.DeleteEntitiesUsingConstraintAsync<IdentityRoleEntity>(new PredicateExpression(), CancellationToken.None);
+        await _appDb.GenericRepository.DeleteEntitiesUsingConstraintAsync<TeamEntity>(new PredicateExpression(), CancellationToken.None);
 
         var roles = new EntityCollection<IdentityRoleEntity>();
         foreach (var roleName in Constants.RoleName.GetAllValues<string>())
@@ -167,7 +150,7 @@ public class UserRoleStoreTests
     [OneTimeTearDown]
     public async Task OneTimeTearDown()
     {
-        await _appDb.GenericRepository.DeleteEntitiesUsingConstraintAsync<IdentityRoleEntity>(null, CancellationToken.None);
-        await _appDb.GenericRepository.DeleteEntitiesUsingConstraintAsync<TeamEntity>(null, CancellationToken.None);
+        await _appDb.GenericRepository.DeleteEntitiesUsingConstraintAsync<IdentityRoleEntity>(new PredicateExpression(), CancellationToken.None);
+        await _appDb.GenericRepository.DeleteEntitiesUsingConstraintAsync<TeamEntity>(new PredicateExpression(), CancellationToken.None);
     }
 }

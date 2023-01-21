@@ -9,7 +9,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TournamentManager.DAL.DbGen
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TournamentManager.DAL.DBSpecific", "TournamentManager\DAL\DatabaseSpecific\TournamentManager.DAL.DBSpecific.csproj", "{708E9DDF-EB26-4082-AA3A-FAE109FC233B}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "League.Test", "League.Test\League.Test.csproj", "{7E91B999-8A40-4FA5-99D2-969DEC20AE85}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "League.Tests", "League.Tests\League.Tests.csproj", "{7E91B999-8A40-4FA5-99D2-969DEC20AE85}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "League", "League\League.csproj", "{5E67E5AA-3AF9-4F72-A5BC-8EF790DE85A3}"
 EndProject
@@ -21,7 +21,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Axuno.BackgroundTask", "Axu
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Axuno.BackgroundTask.Tests", "Axuno.BackgroundTask.Test\Axuno.BackgroundTask.Tests.csproj", "{2EDD4835-C74D-4184-AFDD-406D45A914DD}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TournamentManager.Tests", "TournamentManager\TournamentManager.Test\TournamentManager.Tests.csproj", "{30D5235D-766F-463C-BCE4-F49321EC22AB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TournamentManager.Tests", "TournamentManager\TournamentManager.Tests\TournamentManager.Tests.csproj", "{30D5235D-766F-463C-BCE4-F49321EC22AB}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "League.Demo", "League.Demo\League.Demo.csproj", "{D44B54A5-FBDC-4446-BB94-901DA3FB4DA2}"
 EndProject

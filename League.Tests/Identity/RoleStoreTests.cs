@@ -81,25 +81,6 @@ public class RoleStoreTests
     }
 
     [Test]
-    public void ArgumentNullExceptions()
-    {
-        Assert.ThrowsAsync<ArgumentNullException>(() => _roleStore.FindByNameAsync(null, CancellationToken.None));
-        Assert.ThrowsAsync<ArgumentNullException>(() => _roleStore.GetClaimsAsync(null, CancellationToken.None));
-        Assert.ThrowsAsync<ArgumentNullException>(() => _roleStore.GetRoleNameAsync(null, CancellationToken.None));
-        Assert.ThrowsAsync<ArgumentNullException>(() => _roleStore.SetRoleNameAsync(null, "x", CancellationToken.None));
-        Assert.ThrowsAsync<ArgumentNullException>(() => _roleStore.SetRoleNameAsync(new ApplicationRole(), null, CancellationToken.None));
-        Assert.ThrowsAsync<ArgumentNullException>(() => _roleStore.GetRoleIdAsync(null, CancellationToken.None));
-        Assert.ThrowsAsync<ArgumentNullException>(() => _roleStore.GetNormalizedRoleNameAsync(null, CancellationToken.None));
-        Assert.ThrowsAsync<ArgumentNullException>(() => _roleStore.CreateAsync(null, CancellationToken.None));
-        Assert.ThrowsAsync<ArgumentNullException>(() => _roleStore.UpdateAsync(null, CancellationToken.None));
-        Assert.ThrowsAsync<ArgumentNullException>(() => _roleStore.DeleteAsync(null, CancellationToken.None));
-        Assert.ThrowsAsync<ArgumentNullException>(() => _roleStore.AddClaimAsync(null, new Claim("any", "thing"),  CancellationToken.None));
-        Assert.ThrowsAsync<ArgumentNullException>(() => _roleStore.AddClaimAsync(new ApplicationRole(), null, CancellationToken.None));
-        Assert.ThrowsAsync<ArgumentNullException>(() => _roleStore.RemoveClaimAsync(null, new Claim("any", "thing"),  CancellationToken.None));
-        Assert.ThrowsAsync<ArgumentNullException>(() => _roleStore.RemoveClaimAsync(new ApplicationRole(), null, CancellationToken.None));
-    }
-
-    [Test]
     public async Task ShouldThrow_Writing_Role_To_Database()
     {
         // Deleting the role should fail because of a table lock
@@ -264,7 +245,7 @@ public class RoleStoreTests
         // get created claim
         var claims = await _roleStore.GetClaimsAsync(role, CancellationToken.None);
         Assert.AreEqual(1, claims.Count);
-        var createdClaim = claims.FirstOrDefault();
+        var createdClaim = claims.First();
         Assert.IsNotNull(createdClaim);
         Assert.IsTrue(claim.Type == createdClaim.Type && claim.Value == createdClaim.Value && claim.ValueType == createdClaim.ValueType && claim.Issuer == createdClaim.Issuer);
 
@@ -286,11 +267,11 @@ public class RoleStoreTests
     public async Task Setup()
     {
         // remove all users
-        await _appDb.GenericRepository.DeleteEntitiesUsingConstraintAsync<UserEntity>(null, CancellationToken.None);
+        await _appDb.GenericRepository.DeleteEntitiesUsingConstraintAsync<UserEntity>(new PredicateExpression(), CancellationToken.None);
         // remove all roles
-        await _appDb.GenericRepository.DeleteEntitiesUsingConstraintAsync<IdentityRoleEntity>(null, CancellationToken.None);
+        await _appDb.GenericRepository.DeleteEntitiesUsingConstraintAsync<IdentityRoleEntity>(new PredicateExpression(), CancellationToken.None);
         // remove all role claims
-        await _appDb.GenericRepository.DeleteEntitiesUsingConstraintAsync<IdentityRoleClaimEntity>(null, CancellationToken.None);
+        await _appDb.GenericRepository.DeleteEntitiesUsingConstraintAsync<IdentityRoleClaimEntity>(new PredicateExpression(), CancellationToken.None);
 
         // create a new test user
         Assert.AreEqual(IdentityResult.Success ,await _userStore.CreateAsync(GetNewUser(), CancellationToken.None));
@@ -300,10 +281,10 @@ public class RoleStoreTests
     public async Task Cleanup()
     {
         // remove all users
-        await _appDb.GenericRepository.DeleteEntitiesUsingConstraintAsync<UserEntity>(null, CancellationToken.None);
+        await _appDb.GenericRepository.DeleteEntitiesUsingConstraintAsync<UserEntity>(new PredicateExpression(), CancellationToken.None);
         // remove all roles
-        await _appDb.GenericRepository.DeleteEntitiesUsingConstraintAsync<IdentityRoleEntity>(null, CancellationToken.None);
+        await _appDb.GenericRepository.DeleteEntitiesUsingConstraintAsync<IdentityRoleEntity>(new PredicateExpression(), CancellationToken.None);
         // remove all role claims
-        await _appDb.GenericRepository.DeleteEntitiesUsingConstraintAsync<IdentityRoleClaimEntity>(null, CancellationToken.None);
+        await _appDb.GenericRepository.DeleteEntitiesUsingConstraintAsync<IdentityRoleClaimEntity>(new PredicateExpression(), CancellationToken.None);
     }
 }

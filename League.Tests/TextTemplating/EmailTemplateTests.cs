@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Axuno.TextTemplating;
 using League.Emailing.TemplateModels;
 using League.Models.ContactViewModels;
@@ -320,7 +317,7 @@ public class EmailTemplateTests
                 RealStart = realStart,
                 RealEnd = realStart.AddHours(2),
                 HomePoints = 2, GuestPoints = 0,
-                Remarks = withRemarks ? "Some remarks" : null,
+                Remarks = withRemarks ? "Some remarks" : string.Empty,
                 ChangeSerial = 7
             }
         };
@@ -338,13 +335,13 @@ public class EmailTemplateTests
             Assert.DoesNotThrowAsync(async () =>
             {
                 text = await _renderer.RenderAsync(TemplateName.ResultEnteredTxt, m, cultureName);
-                Console.WriteLine($"*** {TemplateName.ResultEnteredTxt} ***");
+                Console.WriteLine($@"*** {TemplateName.ResultEnteredTxt} ***");
                 Console.WriteLine(text);
             } );
                 
             Assert.That(text.Contains(L("Result", cultureName)));
             if (withRemarks) Assert.That(text.Contains(m.Match.Remarks));
-            if (isOrigStartSet) Assert.That(text.Contains(m.Match.OrigPlannedStart?.ToString("d", new CultureInfo(cultureName))));
+            if (isOrigStartSet) Assert.That(text.Contains(m.Match.OrigPlannedStart?.ToString("d", new CultureInfo(cultureName))!));
         });
     }
 

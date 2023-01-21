@@ -22,7 +22,7 @@ namespace League.Test;
 
 public class UnitTestHelpers
 {
-    private ServiceProvider _serviceProvider;
+    private ServiceProvider? _serviceProvider;
     private readonly ITenantContext _tenantContext;
     private readonly string _configPath;
 
