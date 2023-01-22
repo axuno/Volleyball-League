@@ -211,7 +211,7 @@ public class Startup
         });
             
         services.AddScoped<MultiTenancy.TenantResolver>();
-        services.AddScoped<TournamentManager.MultiTenancy.ITenantContext>(sp => sp.GetRequiredService<MultiTenancy.TenantResolver>().Resolve());
+        services.AddScoped<ITenantContext>(sp => sp.GetRequiredService<MultiTenancy.TenantResolver>().Resolve());
             
         #endregion
 
