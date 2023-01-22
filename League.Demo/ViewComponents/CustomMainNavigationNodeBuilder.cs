@@ -15,13 +15,13 @@ namespace League.Web.ViewComponents;
 /// Builds the standard league main navigation nodes
 /// plus individual nodes
 /// </summary>
-public class DemoMainNavigationNodeBuilder : MainNavigationNodeBuilder
+public class CustomMainNavigationNodeBuilder : MainNavigationNodeBuilder
 {
-    /// <inheritdoc />>
-    public DemoMainNavigationNodeBuilder(TenantStore tenantStore, ITenantContext tenantContext, IAuthorizationService authorizationService, IUrlHelper urlHelper, IStringLocalizer<MainNavigationNodeBuilder> localizer, ILogger<MainNavigationNodeBuilder> logger) : base(tenantStore, tenantContext, authorizationService, urlHelper, localizer, logger)
+    /// <inheritdoc />
+    public CustomMainNavigationNodeBuilder(TenantStore tenantStore, ITenantContext tenantContext, IAuthorizationService authorizationService, IUrlHelper urlHelper, IStringLocalizer<MainNavigationNodeBuilder> localizer, ILogger<MainNavigationNodeBuilder> logger) : base(tenantStore, tenantContext, authorizationService, urlHelper, localizer, logger)
     { }
 
-    /// <inheritdoc />>
+    /// <inheritdoc />
     protected override async Task CreateStandardNavigationNodes()
     {
         // Create the standard league navigation

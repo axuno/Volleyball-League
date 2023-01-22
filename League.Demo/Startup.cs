@@ -64,7 +64,7 @@ public class Startup
         });
             
         // Add custom navigation menu items to the League default navigation system
-        services.AddScoped<IMainNavigationNodeBuilder, DemoMainNavigationNodeBuilder>();
+        services.AddScoped<IMainNavigationNodeBuilder, CustomMainNavigationNodeBuilder>();
     }
 
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
