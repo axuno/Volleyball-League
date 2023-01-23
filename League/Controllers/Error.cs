@@ -23,6 +23,7 @@ public class Error : AbstractController
     }
 
     [Route("error/{id?}")]
+    [HttpGet]
     public IActionResult Index(string id)
     {
         ViewBag.TitleTagText = $"{_tenantContext.OrganizationContext.ShortName} - {_localizer["Error"]}";
@@ -58,6 +59,7 @@ public class Error : AbstractController
     }
 
     [Route("{organization:MatchingTenant}/error/access-denied")]
+    [HttpGet]
     public IActionResult AccessDenied(string returnUrl)
     {
         ViewData["ReturnUrl"] = returnUrl;

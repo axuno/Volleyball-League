@@ -11,12 +11,14 @@ namespace League.Areas.Admin.Controllers;
 public class System : AbstractController
 {
     [Route("")]
+    [HttpGet]
     public IActionResult Index()
     {
         return Content("League.Areas.Admin.Controllers.System.Index");
     }
 
     [Route("[action]")]
+    [HttpGet]
     public IActionResult ShowClaims()
     {
         return View(Views.ViewNames.Area.Admin.System.ShowClaims);

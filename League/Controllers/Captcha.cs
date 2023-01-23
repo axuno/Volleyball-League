@@ -13,6 +13,7 @@ namespace League.Controllers;
 [Route("captcha")]
 public class Captcha : AbstractController
 {
+    [HttpGet]
     public async Task<IActionResult> Index()
     {
         return await GetSvgContent();

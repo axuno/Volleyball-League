@@ -294,6 +294,7 @@ public class Match : AbstractController
     /// <returns></returns>
     [Authorize(Policy = Authorization.PolicyName.MatchPolicy)]
     [HttpPost("enter-result/{*segments}")]
+    [ValidateAntiForgeryToken]
     public async Task<IActionResult> EnterResult([FromForm] EnterResultViewModel? model, CancellationToken cancellationToken)
     {
         MatchEntity? match;
@@ -417,6 +418,7 @@ public class Match : AbstractController
     /// <returns></returns>
     [Authorize(Policy = Authorization.PolicyName.MatchPolicy)]
     [HttpPost("edit-fixture/{*segments}")]
+    [ValidateAntiForgeryToken]  
     public async Task<IActionResult> EditFixture([FromForm] EditFixtureViewModel model, CancellationToken cancellationToken)
     {
         // [FromBody] => 'content-type': 'application/json'

@@ -305,6 +305,7 @@ public class Team : AbstractController
     }
 
     [HttpPost("[action]/{*segments}")]
+    [ValidateAntiForgeryToken]
     public async Task<IActionResult> SelectVenue([FromForm][Bind("TeamId, VenueId")] TeamVenueSelectModel model, CancellationToken cancellationToken)
     {
         // model binding is not case-sensitive

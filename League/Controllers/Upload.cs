@@ -84,6 +84,7 @@ public class Upload : AbstractController
     }
 
     [HttpPost("team-photo/{*segments}")]
+    [ValidateAntiForgeryToken]
     public async Task<IActionResult> TeamPhoto([FromForm] IFormFile file, [FromForm] long teamId, CancellationToken cancellationToken)
     {
         if (!(await _authorizationService.AuthorizeAsync(User, new TeamEntity(teamId),

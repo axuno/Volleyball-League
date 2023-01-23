@@ -36,6 +36,7 @@ public class Map : AbstractController
     }
 
     [Route("")]
+    [HttpGet]
     public async Task<IActionResult> Index(CancellationToken cancellationToken)
     {
         var venues = await _appDb.VenueRepository.GetVenueTeamRowsAsync(
@@ -55,6 +56,7 @@ public class Map : AbstractController
     }
 
     [Route("[action]/{id}")]
+    [HttpGet]
     public async Task<IActionResult> Venue(long id, CancellationToken cancellationToken)
     {
         var venue = (await _appDb.VenueRepository.GetVenueTeamRowsAsync(

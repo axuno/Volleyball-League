@@ -83,7 +83,7 @@ public abstract class AbstractStaticFile
     /// <param name="searchPattern"></param>
     protected void DeleteMostRecentFile(DirectoryInfo dirInfo, string searchPattern)
     {
-        var fileInfo = dirInfo.GetFiles(searchPattern).OrderByDescending(fi => fi.LastWriteTimeUtc).FirstOrDefault();
+        var fileInfo = dirInfo.GetFiles(searchPattern).MaxBy(fi => fi.LastWriteTimeUtc);
         if (fileInfo != null)
         {
             try

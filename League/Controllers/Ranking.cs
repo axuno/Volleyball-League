@@ -40,6 +40,7 @@ public class Ranking : AbstractController
         _memoryCache = memoryCache;
     }
 
+    [HttpGet]
     public IActionResult Index()
     {
         return Redirect(Url.Action(nameof(Table), nameof(Ranking), new { Organization = _tenantContext.SiteContext.UrlSegmentValue }) ?? string.Empty);

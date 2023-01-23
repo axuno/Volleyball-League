@@ -674,6 +674,7 @@ public class Manage : AbstractController
     }
 
     [HttpPost("[action]")]
+    [ValidateAntiForgeryToken]
     public async Task<ActionResult> DeleteAccountConfirmed()
     {
         var user = await GetCurrentUserAsync();

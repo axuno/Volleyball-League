@@ -59,6 +59,7 @@ public class Contact : AbstractController
 
     [HttpPost("{organization:MatchingTenant}/contact", Name = RouteNames.TenantContact)]
     [HttpPost("/contact", Name = RouteNames.GeneralContact)]
+    [ValidateAntiForgeryToken]
     public IActionResult Index(ContactViewModel model)
     {
         if (model.Captcha != HttpContext.Session.GetString(CaptchaSvgGenerator.CaptchaSessionKeyName))

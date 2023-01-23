@@ -194,6 +194,7 @@ public class Account : AbstractController
 
     [HttpPost("create")]
     [AllowAnonymous]
+    [ValidateAntiForgeryToken]
     public async Task<IActionResult> CreateAccount(CreateAccountViewModel model, string? returnUrl = null)
     {
         ViewData["ReturnUrl"] = returnUrl;
