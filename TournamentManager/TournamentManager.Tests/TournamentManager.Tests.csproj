@@ -2,7 +2,6 @@
 
     <PropertyGroup>
         <TargetFramework>net6.0</TargetFramework>
-        <nullable>enable</nullable>
         <NeutralLanguage>en</NeutralLanguage>
     </PropertyGroup>
 
@@ -14,8 +13,8 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\DAL\DatabaseGeneric\TournamentManager.DAL.DbGeneric.csproj" />
-      <ProjectReference Include="..\DAL\DatabaseSpecific\TournamentManager.DAL.DBSpecific.csproj" />
-      <ProjectReference Include="..\TournamentManager\TournamentManager.csproj" />
+        <ProjectReference Include="..\DAL\DatabaseGeneric\TournamentManager.DAL.DbGeneric.csproj" />
+        <ProjectReference Include="..\DAL\DatabaseSpecific\TournamentManager.DAL.DBSpecific.csproj" />
+        <ProjectReference Include="..\TournamentManager\TournamentManager.csproj" />
     </ItemGroup>
 </Project>
