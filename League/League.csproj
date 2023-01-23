@@ -64,6 +64,10 @@
 		<PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="6.0.2" />
 		<PackageReference Include="NLog" Version="5.1.1" />
 		<PackageReference Include="NLog.Web.AspNetCore" Version="5.2.1" />
+		<PackageReference Include="NuGetizer" Version="0.9.1">
+		  <PrivateAssets>all</PrivateAssets>
+		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
 		<PackageReference Include="PuppeteerSharp" Version="9.0.0" />
 		<PackageReference Include="StackifyMiddleware" Version="3.0.5.2" />
 	</ItemGroup>
@@ -79,6 +83,14 @@
 		<ProjectReference Include="..\TournamentManager\DAL\DatabaseSpecific\TournamentManager.DAL.DBSpecific.csproj" />
 		<ProjectReference Include="..\TournamentManager\TournamentManager\TournamentManager.csproj" />
 	</ItemGroup>
+
+    <ItemGroup>
+        <PackDependencies Include="..\Axuno.BackgroundTask\Axuno.BackgroundTask.csproj" />
+        <PackDependencies Include="..\Axuno.Web\Axuno.Web.csproj" />
+        <PackDependencies Include="..\TournamentManager\DAL\DatabaseGeneric\TournamentManager.DAL.DbGeneric.csproj" />
+        <PackDependencies Include="..\TournamentManager\DAL\DatabaseSpecific\TournamentManager.DAL.DBSpecific.csproj" />
+        <PackDependencies Include="..\TournamentManager\TournamentManager\TournamentManager.csproj" />
+    </ItemGroup>
 
     <ItemGroup>
         <Content Update="Configuration\*.*">
