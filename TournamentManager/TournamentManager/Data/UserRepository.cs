@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
@@ -206,8 +207,7 @@ public class UserRepository
         var userNameToTry = (email ?? defaultName).Split(new[] {'@'}, 2)[0];
         userNameToTry = ReplaceDisallowedCharacters(userNameToTry.Length == 0 ? defaultName : userNameToTry,
             allowedCharacters);
-        var rnd = new Random();
-        var i = rnd.Next(1122, 9922);
+        var i = RandomNumberGenerator.GetInt32(1122, 9922 + 1);
 
         do
         {
@@ -223,14 +223,13 @@ public class UserRepository
     {
         if (string.IsNullOrEmpty(allowedCharacters) || string.IsNullOrEmpty(input)) return input;
 
-        var rnd = new Random();
         var result = input.ToCharArray();
         var allowedCharSet = new System.Collections.Generic.HashSet<char>(allowedCharacters);
         for (var i = 0; i < result.Length; i++)
         {
             if (!allowedCharSet.Contains(result[i]))
             {
-                result[i] = allowedCharSet.ElementAt(rnd.Next(0, allowedCharSet.Count - 1));
+                result[i] = allowedCharSet.ElementAt(RandomNumberGenerator.GetInt32(0, allowedCharSet.Count));
             }
         }
 

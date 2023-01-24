@@ -69,9 +69,10 @@ public class ExpiringTripleDES<T> where T : class
         { get; internal set; }
     }
 
-
+#pragma warning disable CA5350
     // define the triple des provider
     private readonly TripleDES _tripleDES = TripleDES.Create();
+#pragma warning restore CA5350
 
     // define the string handler
     private readonly UTF8Encoding _utf8Encoding = new();
@@ -79,18 +80,31 @@ public class ExpiringTripleDES<T> where T : class
     // characters to use for random Key and IV
     private const string CharsToUse = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 
+    /// <summary>
+    /// CTOR.
+    /// </summary>
     public ExpiringTripleDES()
     {
         _tripleDES.Padding = PaddingMode.PKCS7;
         GenerateKeyAndIV();
     }
 
+    /// <summary>
+    /// CTOR.
+    /// </summary>
+    /// <param name="key"></param>
+    /// <param name="iv"></param>
     public ExpiringTripleDES(byte[] key, byte[] iv)
     {
         _tripleDES.Key = key;
         _tripleDES.IV = iv;
     }
 
+    /// <summary>
+    /// CTOR.
+    /// </summary>
+    /// <param name="key"></param>
+    /// <param name="iv"></param>
     public ExpiringTripleDES(string key, string iv)
     {
         Key = key;
@@ -107,9 +121,8 @@ public class ExpiringTripleDES<T> where T : class
     /// </remarks>
     private void GenerateKeyAndIV()
     {
-        var random = new Random();
-        IV = new string(Enumerable.Repeat(CharsToUse, 8).Select(s => s[random.Next(s.Length)]).ToArray());
-        Key = new string(Enumerable.Repeat(CharsToUse, 24).Select(s => s[random.Next(s.Length)]).ToArray());
+        IV = new string(Enumerable.Repeat(CharsToUse, 8).Select(s => s[RandomNumberGenerator.GetInt32(0, s.Length + 1)]).ToArray());
+        Key = new string(Enumerable.Repeat(CharsToUse, 24).Select(s => s[RandomNumberGenerator.GetInt32(0, s.Length + 1)]).ToArray());
     }
 
     /// <summary>

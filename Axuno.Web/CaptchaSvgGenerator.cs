@@ -2,6 +2,7 @@
 using System.Drawing;
 using System.Globalization;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Xml.Linq;
 
@@ -43,6 +44,10 @@ public class CaptchaSvgGenerator : IDisposable
         SetDimensions(width, height);
     }
 
+    /// <summary>
+    /// Create an instance of <see cref="CaptchaSvgGenerator"/>.
+    /// </summary>
+    /// <param name="text"></param>
     public CaptchaSvgGenerator(string? text)
     {
         Text = !(string.IsNullOrWhiteSpace(text) || text.Length < 2) ? text : GenerateRandomString(2);
@@ -63,10 +68,9 @@ public class CaptchaSvgGenerator : IDisposable
     public string GenerateRandomString(int length)
     {
         length = length < 2 ? 2 : length;
-        var random = new Random();
         var s = "";
         for (var i = 0; i < length; i++)
-            s = string.Concat(s, _captureChars[random.Next(0, _captureChars.Length)]);
+            s = string.Concat(s, _captureChars[RandomNumberGenerator.GetInt32(0, _captureChars.Length + 1)]);
 
         return s;
     }
@@ -78,35 +82,32 @@ public class CaptchaSvgGenerator : IDisposable
     /// <returns>Returns the result of the math task.</returns>
     public int SetTextWithMathCalc(int calcRule = 1)
     {
-        // For generating random numbers.
-        var random = new Random((int)DateTime.Now.Ticks);
-
         int firstNum;
         int secondNum;
 
-        if (calcRule >= 5 ) calcRule = random.Next(1, 5);
+        if (calcRule >= 5 ) calcRule = RandomNumberGenerator.GetInt32(1, 5 + 1);
         if (calcRule < 0) calcRule = 1;
             
         switch (calcRule)
         {
             case 1: // add
-                firstNum = random.Next(10, 90);
-                secondNum = random.Next(1, 9);
+                firstNum = RandomNumberGenerator.GetInt32(10, 90 + 1);
+                secondNum = RandomNumberGenerator.GetInt32(1, 9 + 1);
                 Text = string.Format($"{firstNum} + {secondNum}");
                 return firstNum + secondNum;
             case 2: // subtract
-                firstNum = random.Next(10, 90) / 10 * 10;
-                secondNum = random.Next(1, 9);
+                firstNum = RandomNumberGenerator.GetInt32(10, 90 + 1) / 10 * 10;
+                secondNum = RandomNumberGenerator.GetInt32(1, 9 + 1);
                 Text = string.Format($"{firstNum} – {secondNum}");
                 return firstNum - secondNum;
             case 3: // multiply
-                firstNum = random.Next(2, 6);
-                secondNum = random.Next(1, 9);
+                firstNum = RandomNumberGenerator.GetInt32(2, 6 + 1);
+                secondNum = RandomNumberGenerator.GetInt32(1, 9 + 1);
                 Text = string.Format($"{firstNum} * {secondNum}");
                 return firstNum * secondNum;
             default: // divide
-                firstNum = random.Next(2, 9);
-                secondNum = random.Next(1, 9);
+                firstNum = RandomNumberGenerator.GetInt32(2, 9 + 1);
+                secondNum = RandomNumberGenerator.GetInt32(1, 9 + 1);
                 var result = firstNum * secondNum;
                 Text = string.Format($"{result} / {secondNum}");
                 return result / secondNum;
@@ -195,11 +196,13 @@ public class CaptchaSvgGenerator : IDisposable
         Dispose(true);
     }
 
+#pragma warning disable CA1822
     private void Dispose(bool disposing)
     {
         if (disposing)
         { }
     }
+#pragma warning restore CA1822
 
     private void SetDimensions(int width, int height)
     {

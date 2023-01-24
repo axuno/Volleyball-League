@@ -22,11 +22,11 @@ public static class Hash
         /// <returns>Returns the hashed and hex string.</returns>
         public static string GetHash(string input, Encoding? encoding = null)
         {
-            using var md5 = MD5.Create();
             encoding ??= Encoding.UTF8;
             var inputBytes = encoding.GetBytes(input);
-            var hashBytes = md5.ComputeHash(inputBytes);
-
+#pragma warning disable CA5351
+            var hashBytes = MD5.HashData(inputBytes);
+#pragma warning restore CA5351
             var sb = new StringBuilder();
             foreach (var b in hashBytes)
             {

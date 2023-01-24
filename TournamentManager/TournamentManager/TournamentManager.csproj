@@ -34,6 +34,14 @@ Volleyball League is an open source sports platform that brings everything neces
         <ProjectReference Include="..\DAL\DatabaseSpecific\TournamentManager.DAL.DBSpecific.csproj" />
     </ItemGroup>
 
+    <!-- Custom PropertyGroup to add the Environment name during publish. The EnvironmentName property is used for the 'Environment' variable in web.config when publishing. -->
+    <PropertyGroup Condition=" '$(Configuration)' == '' Or '$(Configuration)' == 'Debug'">
+        <EnvironmentName>Development</EnvironmentName>
+    </PropertyGroup>
+    <PropertyGroup Condition=" '$(Configuration)' != '' AND '$(Configuration)' != 'Debug' ">
+        <EnvironmentName>Production</EnvironmentName>
+    </PropertyGroup>
+
     <ItemGroup>
         <Compile Update="ModelValidators\FixtureValidatorResource.Designer.cs">
             <DesignTime>True</DesignTime>
