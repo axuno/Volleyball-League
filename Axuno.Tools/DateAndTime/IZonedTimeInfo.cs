@@ -3,6 +3,9 @@ using System.Globalization;
 
 namespace Axuno.Tools.DateAndTime;
 
+/// <summary>
+/// Interface.
+/// </summary>
 public interface IZonedTimeInfo
 {
     /// <summary>

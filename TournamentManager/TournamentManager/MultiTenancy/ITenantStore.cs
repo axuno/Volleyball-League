@@ -23,9 +23,9 @@ public interface ITenantStore<T> where T: class, ITenantContext, ITenant
     IReadOnlyDictionary<string, T> GetTenants();
 
     /// <summary>
-    /// Gets the <see cref="ITenant"/> configuration for the tenant with the specified <see cref="identifier"/>.
+    /// Gets the <see cref="ITenant"/> configuration for the tenant with the specified <paramref name="identifier"/>.
     /// </summary>
-    /// <returns>Returns the <see cref="ITenantContext"/> configuration for the tenant with the specified <see cref="identifier"/>.</returns>
+    /// <returns>Returns the <see cref="ITenantContext"/> configuration for the tenant with the specified <paramref name="identifier"/>.</returns>
     ITenantContext? GetTenantByIdentifier(string identifier);
 
     /// <summary>

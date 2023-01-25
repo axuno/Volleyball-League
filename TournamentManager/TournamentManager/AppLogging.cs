@@ -76,20 +76,20 @@ public static class AppLogging
     }
 
     /// <summary>
-    /// Creates an <see cref="ILogger"/> for type <see cref="T"/>.
+    /// Creates an <see cref="ILogger"/> for type <typeparamref name="T"/>.
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    /// <returns>Returns an <see cref="ILogger"/> instance for type <see cref="T"/>.</returns>
+    /// <returns>Returns an <see cref="ILogger"/> instance for type <typeparamref name="T"/>.</returns>
     public static ILogger CreateLogger<T>()
     {
         return LoggerFactory.CreateLogger<T>();
     }
 
     /// <summary>
-    /// Creates an <see cref="ILogger"/> with name <see cref="name"/>.
+    /// Creates an <see cref="ILogger"/> with name <paramref name="name"/>.
     /// </summary>
     /// <param name="name">The name for the <see cref="ILogger"/>.</param>
-    /// <returns>Returns an <see cref="ILogger"/> with name <see cref="name"/>.</returns>
+    /// <returns>Returns an <see cref="ILogger"/> with name <paramref name="name"/>.</returns>
     public static ILogger CreateLogger(string name)
     {
         return LoggerFactory.CreateLogger(name);

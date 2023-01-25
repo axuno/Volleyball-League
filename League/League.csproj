@@ -9,13 +9,13 @@
         <NeutralLanguage>en</NeutralLanguage>
         <PackageId>Volleyball-League</PackageId>
         <Description>Volleyball League is an open source sports platform that brings everything necessary to organize and to run a league.
-Localizations for English and German are included.
+Localizations for English and German are included. The library is in operation on platform https://volleyball-liga.de/
         </Description>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <PackageProjectUrl>https://github.com/axuno/Volleyball-League</PackageProjectUrl>
         <RepositoryType>Git</RepositoryType>
         <PackageTags>competition platform league asp-net sport volleyball net60</PackageTags>
-        <PackageReleaseNotes>Production release for platform https://volleyball-liga.de/</PackageReleaseNotes>
+        <PackageReleaseNotes></PackageReleaseNotes>
         <IsPackable>true</IsPackable>
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
         <GeneratePackageOnBuild>false</GeneratePackageOnBuild>

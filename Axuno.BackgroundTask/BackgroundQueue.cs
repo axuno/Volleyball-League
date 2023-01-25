@@ -31,7 +31,7 @@ public class BackgroundQueue : IBackgroundQueue
     }
 
     /// <summary>
-    /// Queues the <param name="taskItem"></param>.
+    /// Queues a <see cref="IBackgroundTask"/>.
     /// </summary>
     /// <param name="taskItem">The <see cref="IBackgroundTask"/> to append to the queue.</param>
     public void QueueTask(IBackgroundTask taskItem)

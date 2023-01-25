@@ -156,11 +156,11 @@ public abstract class AbstractValidator<TModel, TData, TFactId>
     }
 
     /// <summary>
-    /// Gets the <see cref="TModel"/> of the validator.
+    /// Gets the <typeparamref name="TModel"/> of the validator.
     /// </summary>
     public TModel Model { get; }
     /// <summary>
-    /// Gets the <see cref="TData"/> needed for validation.
+    /// Gets the <typeparamref name="TData"/> needed for validation.
     /// </summary>
     public TData Data { get; protected set; }
     /// <summary>
@@ -183,7 +183,7 @@ public abstract class AbstractValidator<TModel, TData, TFactId>
     }
 
     /// <summary>
-    /// Invokes the Check for a fact with the <see cref="TFactId"/> identifier.
+    /// Invokes the Check for a fact with the <typeparamref name="TFactId"/> identifier.
     /// </summary>
     /// <param name="id">The identifier of the <see cref="Fact{TFactId}"/></param>
     /// <param name="cancellationToken"></param>

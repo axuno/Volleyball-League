@@ -51,7 +51,7 @@ public abstract class AbstractStaticFile
             throw;
         }
     }
-
+#pragma warning disable CA3003
     /// <summary>
     /// Deletes all but the latest 2 files from the specified <see cref="DirectoryInfo"/>.
     /// </summary>
@@ -97,6 +97,7 @@ public abstract class AbstractStaticFile
             }
         }
     }
+#pragma warning restore CA3003
 
     /// <summary>
     /// Gets a <see cref="ValueTuple"/> with the file name and the date extracted from the <see cref="DateTime.Ticks"/> part of the file name.

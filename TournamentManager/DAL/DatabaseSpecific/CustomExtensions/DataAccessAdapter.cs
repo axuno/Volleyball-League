@@ -9,6 +9,11 @@ public partial class DataAccessAdapter
 {
     private QueryCreationManagerExt _queryCreationManager;
 
+    /// <summary>
+    /// Creates a <see cref="QueryCreationManager"/> instance.
+    /// </summary>
+    /// <param name="persistenceInfoProvider"></param>
+    /// <returns></returns>
     protected override QueryCreationManager CreateQueryCreationManager(IPersistenceInfoProvider persistenceInfoProvider)
     {
         _queryCreationManager = new QueryCreationManagerExt(this, persistenceInfoProvider);

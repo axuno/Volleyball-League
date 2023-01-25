@@ -55,7 +55,7 @@ public class MatchPlanner
     public List<long> TeamsWithoutHomeMatches { get; } = new();
 
     /// <summary>
-    /// Generates dates which are excluded for the tournament with <see cref="OrganizationContext.MatchPlanTournamentId"/>
+    /// Generates dates which are excluded for the tournament with <see cref="TournamentContext.MatchPlanTournamentId"/>
     /// and saves them to persistent storage. Existing entries for the tournament are removed.
     /// </summary>
     /// <param name="excelImportFile"></param>

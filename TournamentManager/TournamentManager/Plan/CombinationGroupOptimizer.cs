@@ -20,12 +20,12 @@ public enum CombinationGroupOptimization
 /// <typeparam name="T">The type of the team objects. Objects must have IComparable implemented.</typeparam>
 internal class CombinationGroupOptimizer<T>
 {
-    private readonly TeamCombinationGroup<T> _group = new();
+    private readonly TeamCombinationGroup<T> _group;
 
     /// <summary>
     /// Constructor.
     /// </summary>
-    /// <param name="matches">A collection of team  combinations with type T objects.</param>
+    /// <param name="group">A collection of team  combinations with type <typeparamref name="T"/> objects.</param>
     internal CombinationGroupOptimizer(TeamCombinationGroup<T> group)
     {
         _group = group;

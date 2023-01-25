@@ -30,28 +30,28 @@ public class AbstractTenantStore<T> : ITenantStore<T> where T: class, ITenantCon
     }
         
     /// <summary>
-    /// Gets a list of <see cref="T"/>.
+    /// Gets a list of <typeparamref name="T"/>.
     /// </summary>
-    /// <returns>Returns a list of <see cref="T"/> tenant configurations.</returns>
+    /// <returns>Returns a list of <typeparamref name="T"/> tenant configurations.</returns>
     public IReadOnlyDictionary<string, T> GetTenants()
     {
         return Tenants;
     }
 
     /// <summary>
-    /// Gets the <see cref="ITenantContext"/> configuration for the tenant with the specified <see cref="identifier"/>.
+    /// Gets the <see cref="ITenantContext"/> configuration for the tenant with the specified <paramref name="identifier"/>.
     /// </summary>
-    /// <returns>Returns the <see cref="ITenantContext"/> configuration for the tenant with the specified <see cref="identifier"/> or <seealso langword="null"/> if it could not be found.</returns>
+    /// <returns>Returns the <see cref="ITenantContext"/> configuration for the tenant with the specified <paramref name="identifier"/> or <see langword="null"/> if it could not be found.</returns>
     public ITenantContext? GetTenantByIdentifier(string identifier)
     {
         return Tenants.ContainsKey(identifier) ? Tenants[identifier] : null;
     }
 
     /// <summary>
-    /// Gets the <see cref="ITenantContext"/> configuration for the tenant with the specified <see cref="urlSegmentValue"/>.
-    /// Neither <see cref="urlSegmentValue"/> nor the <see cref="SiteContext.UrlSegmentValue"/> may be <seealso langword="null"/> or whitespace.
+    /// Gets the <see cref="ITenantContext"/> configuration for the tenant with the specified <paramref name="urlSegmentValue"/>.
+    /// Neither <paramref name="urlSegmentValue"/> nor the <see cref="SiteContext.UrlSegmentValue"/> may be <see langword="null"/> or whitespace.
     /// </summary>
-    /// <returns>Returns the <see cref="ITenantContext"/> configuration for the tenant with the specified <see cref="urlSegmentValue"/> if found, or <seealso langword="null"/> if not found.</returns>
+    /// <returns>Returns the <see cref="ITenantContext"/> configuration for the tenant with the specified <paramref name="urlSegmentValue"/> if found, or <see langword="null"/> if not found.</returns>
     public ITenantContext? GetTenantByUrlSegment(string urlSegmentValue)
     {
         return Tenants.Values.FirstOrDefault(t =>
@@ -69,9 +69,9 @@ public class AbstractTenantStore<T> : ITenantStore<T> where T: class, ITenantCon
     }
 
     /// <summary>
-    /// Attempts to add the <see cref="T"/> to the <seealso cref="TenantStore"/>.
+    /// Attempts to add the <typeparamref name="T"/> to the <see cref="TenantStore"/>.
     /// </summary>
-    /// <param name="tenant">The <see cref="T"/> to add.</param>
+    /// <param name="tenant">The <typeparamref name="T"/> to add.</param>
     /// <returns>Returns <see langword="true"/>, if the <see cref="ITenant"/> was added, or <see langword="false"/> if the <see cref="ITenant.Identifier"/> already exists in the <see cref="TenantStore"/>.</returns>
     public bool TryAddTenant(T tenant)
     {
@@ -81,7 +81,7 @@ public class AbstractTenantStore<T> : ITenantStore<T> where T: class, ITenantCon
     }
         
     /// <summary>
-    /// Attempts to remove the <see cref="T"/> instance from the <seealso cref="TenantStore"/>.
+    /// Attempts to remove the <typeparamref name="T"/> instance from the <see cref="TenantStore"/>.
     /// </summary>
     /// <param name="identifier">The <see cref="ITenant.Identifier"/> to remove.</param>
     /// <returns>Returns <see langword="true"/>, if the <see cref="ITenant"/> was removed, or <see langword="false"/> if the <see cref="ITenant.Identifier"/> was not found in the <see cref="TenantStore"/>.</returns>
@@ -93,10 +93,10 @@ public class AbstractTenantStore<T> : ITenantStore<T> where T: class, ITenantCon
     }
 
     /// <summary>
-    /// Attempts to update the <see cref="T"/> instance with <see cref="ITenant.Identifier"/> in the <seealso cref="TenantStore"/>.
+    /// Attempts to update the <typeparamref name="T"/> instance with <see cref="ITenant.Identifier"/> in the <see cref="TenantStore"/>.
     /// </summary>
     /// <param name="identifier">The <see cref="ITenant.Identifier"/> to remove.</param>
-    /// <param name="newTenant">The new <see cref="T"/> instances.</param>
+    /// <param name="newTenant">The new <typeparamref name="T"/> instances.</param>
     /// <returns>Returns <see langword="true"/>, if the <see cref="ITenant"/> was updated, or <see langword="false"/> if the <see cref="ITenant.Identifier"/> was not found in the <see cref="TenantStore"/>.</returns>
     public bool TryUpdateTenant(string identifier, T newTenant)
     {
@@ -112,7 +112,7 @@ public class AbstractTenantStore<T> : ITenantStore<T> where T: class, ITenantCon
     }
         
     /// <summary>
-    /// Clears any existing <see cref="T"/> instances from the <see cref="ITenantStore{T}"/> and loads tenant configurations from the file system using the <see cref="GetTenantConfigurationFiles"/> delegate.
+    /// Clears any existing <typeparamref name="T"/> instances from the <see cref="ITenantStore{T}"/> and loads tenant configurations from the file system using the <see cref="GetTenantConfigurationFiles"/> delegate.
     /// <see cref="IDbContext.ConnectionString"/>s are added to the <see cref="DbContext"/> using the <see cref="DbContext.ConnectionKey"/>.
     /// </summary>
     /// <returns>Returns the current implementation of a <see cref="AbstractTenantStore{T}"/>.</returns>

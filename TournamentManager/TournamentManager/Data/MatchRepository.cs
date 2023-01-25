@@ -9,14 +9,11 @@ using SD.LLBLGen.Pro.LinqSupportClasses;
 using SD.LLBLGen.Pro.ORMSupportClasses;
 using SD.LLBLGen.Pro.QuerySpec;
 using SD.LLBLGen.Pro.QuerySpec.Adapter;
-using TournamentManager.DAL;
-using TournamentManager.DAL.DatabaseSpecific;
 using TournamentManager.DAL.EntityClasses;
 using TournamentManager.DAL.FactoryClasses;
 using TournamentManager.DAL.HelperClasses;
 using TournamentManager.DAL.Linq;
 using TournamentManager.DAL.TypedViewClasses;
-using TournamentManager.Plan;
 
 namespace TournamentManager.Data;
 
@@ -247,7 +244,7 @@ public class MatchRepository
     /// Predicate for a certain tournament:
     /// <code>new PredicateExpression(RoundFields.TournamentId == 22)</code>
     /// Predicate for not completed matches of a round:
-    /// <code>new PredicateExpression(RoundFields.Id == 123 & MatchFields.IsComplete == false)</code>
+    /// <code>new PredicateExpression(RoundFields.Id == 123 &amp; MatchFields.IsComplete == false)</code>
     /// </example>
     public virtual async Task<int> GetMatchCountAsync(PredicateExpression filter, CancellationToken cancellationToken)
     {

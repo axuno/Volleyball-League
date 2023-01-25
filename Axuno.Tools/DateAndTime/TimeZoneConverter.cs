@@ -55,7 +55,7 @@ public class TimeZoneConverter
     /// <remarks><see cref="DateTimeKind.Unspecified"/> will be treated like <see cref="DateTimeKind.Utc"/></remarks>
     /// <param name="dateTimeOfAnyKind"></param>
     /// <param name="cultureInfo">The <see cref="CultureInfo"/> to use for time zone localization. If <see langword="null"/>, the default culture will be used.</param>
-    /// <returns>Returns the converted <see cref="DateTime"/> as a <see cref="ZonedTime"/> instance or null, if the <see cref="dateTimeOfAnyKind"/> parameter is null.</returns>
+    /// <returns>Returns the converted <see cref="DateTime"/> as a <see cref="ZonedTime"/> instance or null, if the <paramref name="dateTimeOfAnyKind"/> parameter is null.</returns>
     public ZonedTime? ToZonedTime(DateTime? dateTimeOfAnyKind, CultureInfo? cultureInfo = null)
     {
         return ToZonedTime(dateTimeOfAnyKind, _timeZoneId, cultureInfo ?? _cultureInfo, _dateTimeZoneProvider);
@@ -77,7 +77,7 @@ public class TimeZoneConverter
     /// Converts the <see cref="DateTime"/> of any <see cref="DateTimeKind"/> to a <see cref="DateTime"/> of <see cref="DateTimeKind.Utc"/>.
     /// </summary>
     /// <param name="zoneDateTime">A <see cref="DateTime"/> in the the timezone specified with the timezone ID given when creating this converter instance.</param>
-    /// <returns>Returns the converted <see cref="DateTime"/> with <see cref="DateTimeKind.Utc"/> or null, if the <see cref="zoneDateTime"/> parameter is null.</returns>
+    /// <returns>Returns the converted <see cref="DateTime"/> with <see cref="DateTimeKind.Utc"/> or null, if the <paramref name="zoneDateTime"/> parameter is null.</returns>
     public DateTime? ToUtc(DateTime? zoneDateTime)
     {
         return ToUtc(zoneDateTime, _timeZoneId, _dateTimeZoneProvider, _resolver);
@@ -96,10 +96,10 @@ public class TimeZoneConverter
     /// <summary>
     /// Converts the <see cref="DateTime"/> of any <see cref="DateTimeKind"/> to a <see cref="DateTime"/> of <see cref="DateTimeKind.Utc"/>.
     /// </summary>
-    /// <param name="zoneDateTime">A <see cref="DateTime"/> in the timezone specified with parameter <see cref="timeZoneId"/>.</param>
+    /// <param name="zoneDateTime">A <see cref="DateTime"/> in the timezone specified with parameter <paramref name="timeZoneId"/>.</param>
     /// <param name="timeZoneId">The ID of the IANA timezone database, https://en.wikipedia.org/wiki/List_of_tz_database_time_zones.</param>
-    /// <returns>Returns the converted <see cref="DateTime"/> with <see cref="DateTimeKind.Utc"/> or null, if the <see cref="zoneDateTime"/> parameter is null.</returns>
-    /// <exception cref="DateTimeZoneNotFoundException">If <see cref="timeZoneId"/> is unknown.</exception>
+    /// <returns>Returns the converted <see cref="DateTime"/> with <see cref="DateTimeKind.Utc"/> or null, if the <paramref name="zoneDateTime"/> parameter is <see langword="null"/>.</returns>
+    /// <exception cref="DateTimeZoneNotFoundException">If <paramref name="timeZoneId"/> is unknown.</exception>
     public DateTime? ToUtc(DateTime? zoneDateTime, string timeZoneId)
     {
         return ToUtc(zoneDateTime, timeZoneId, _dateTimeZoneProvider, _resolver);
@@ -108,10 +108,10 @@ public class TimeZoneConverter
     /// <summary>
     /// Converts the <see cref="DateTime"/> of any <see cref="DateTimeKind"/> to a <see cref="DateTime"/> of <see cref="DateTimeKind.Utc"/>.
     /// </summary>
-    /// <param name="zoneDateTime">A <see cref="DateTime"/> in the timezone specified with parameter <see cref="timeZoneId"/>.</param>
+    /// <param name="zoneDateTime">A <see cref="DateTime"/> in the timezone specified with parameter <paramref name="timeZoneId"/>.</param>
     /// <param name="timeZoneId">The ID of the IANA timezone database, https://en.wikipedia.org/wiki/List_of_tz_database_time_zones.</param>
     /// <returns>Returns the converted <see cref="DateTime"/> with <see cref="DateTimeKind.Utc"/>.</returns>
-    /// <exception cref="DateTimeZoneNotFoundException">If <see cref="timeZoneId"/> is unknown.</exception>
+    /// <exception cref="DateTimeZoneNotFoundException">If <paramref name="timeZoneId"/> is unknown.</exception>
     public DateTime ToUtc(DateTime zoneDateTime, string timeZoneId)
     {
         return ToUtc(zoneDateTime, timeZoneId, _dateTimeZoneProvider, _resolver);
@@ -129,8 +129,8 @@ public class TimeZoneConverter
     /// IDateTimeZoneProvider dtzp = new DateTimeZoneCache(TzdbDateTimeZoneSource.Default)
     /// </example>
     /// </param>
-    /// <returns>Returns the converted <see cref="DateTime"/> as a <see cref="ZonedTime"/> instance or null, if the <see cref="dateTimeOfAnyKind"/> parameter is null.</returns>
-    /// <exception cref="DateTimeZoneNotFoundException">If <see cref="timeZoneId"/> is unknown.</exception>
+    /// <returns>Returns the converted <see cref="DateTime"/> as a <see cref="ZonedTime"/> instance or null, if the <paramref name="dateTimeOfAnyKind"/> parameter is null.</returns>
+    /// <exception cref="DateTimeZoneNotFoundException">If <paramref name="timeZoneId"/> is unknown.</exception>
     public static ZonedTime? ToZonedTime(DateTime? dateTimeOfAnyKind, string timeZoneId,
         CultureInfo? cultureInfo = null, IDateTimeZoneProvider? timeZoneProvider = null)
     {
@@ -158,7 +158,7 @@ public class TimeZoneConverter
     /// </example>
     /// </param>
     /// <returns>Returns the converted <see cref="DateTime"/> as a <see cref="ZonedTime"/> instance.</returns>
-    /// <exception cref="DateTimeZoneNotFoundException">If <see cref="timeZoneId"/> is unknown.</exception>
+    /// <exception cref="DateTimeZoneNotFoundException">If <paramref name="timeZoneId"/> is unknown.</exception>
     public static ZonedTime? ToZonedTime(DateTime dateTimeOfAnyKind, string timeZoneId,
         CultureInfo? cultureInfo = null, IDateTimeZoneProvider? timeZoneProvider = null)
     {
@@ -176,8 +176,8 @@ public class TimeZoneConverter
     /// IDateTimeZoneProvider dtzp = new DateTimeZoneCache(TzdbDateTimeZoneSource.Default)
     /// </example>
     /// </param>
-    /// <returns>Returns the converted <see cref="Nullable{DateTimeOffset}"/> as a <see cref="ZonedTime"/> instance  or null, if the <see cref="dateTimeOffset"/> parameter is null.</returns>
-    /// <exception cref="DateTimeZoneNotFoundException">If IANA <see cref="timeZoneId"/> is unknown.</exception>
+    /// <returns>Returns the converted <see cref="Nullable{DateTimeOffset}"/> as a <see cref="ZonedTime"/> instance  or null, if the <paramref name="dateTimeOffset"/> parameter is null.</returns>
+    /// <exception cref="DateTimeZoneNotFoundException">If IANA <paramref name="timeZoneId"/> is unknown.</exception>
     public static ZonedTime? ToZonedTime(DateTimeOffset? dateTimeOffset, string timeZoneId,
         CultureInfo? cultureInfo = null, IDateTimeZoneProvider? timeZoneProvider = null)
     {
@@ -227,7 +227,7 @@ public class TimeZoneConverter
     /// </example>
     /// </param>
     /// <returns>Returns the converted <see cref="Nullable{DateTimeOffset}"/> as a <see cref="ZonedTime"/> instance.</returns>
-    /// <exception cref="DateTimeZoneNotFoundException">If IANA <see cref="timeZoneId"/> is unknown.</exception>
+    /// <exception cref="DateTimeZoneNotFoundException">If IANA <paramref name="timeZoneId"/> is unknown.</exception>
     public static ZonedTime? ToZonedTime(DateTimeOffset dateTimeOffset, string timeZoneId,
         CultureInfo? cultureInfo = null, IDateTimeZoneProvider? timeZoneProvider = null)
     {
@@ -241,8 +241,8 @@ public class TimeZoneConverter
     /// <param name="timeZoneId">The ID of the IANA timezone database, https://en.wikipedia.org/wiki/List_of_tz_database_time_zones.</param>
     /// <param name="timeZoneProvider"></param>
     /// <param name="resolver">The <see cref="ZoneLocalMappingResolver"/> to use. Default is <see cref="Resolvers.LenientResolver"/>´, which never throws an exception due to ambiguity or skipped time.</param>
-    /// <returns>Returns the converted <see cref="DateTime"/> with <see cref="DateTimeKind.Utc"/> or null, if the <see cref="zoneDateTime"/> parameter is null.</returns>
-    /// <exception cref="DateTimeZoneNotFoundException">If <see cref="timeZoneId"/> is unknown.</exception>
+    /// <returns>Returns the converted <see cref="DateTime"/> with <see cref="DateTimeKind.Utc"/> or null, if the <paramref name="zoneDateTime"/> parameter is null.</returns>
+    /// <exception cref="DateTimeZoneNotFoundException">If <paramref name="timeZoneId"/> is unknown.</exception>
     public static DateTime? ToUtc(DateTime? zoneDateTime, string timeZoneId,
         IDateTimeZoneProvider? timeZoneProvider, ZoneLocalMappingResolver? resolver = null)
     {
@@ -267,7 +267,7 @@ public class TimeZoneConverter
     /// <param name="timeZoneProvider"></param>
     /// <param name="resolver">The <see cref="ZoneLocalMappingResolver"/> to use. Default is <see cref="Resolvers.LenientResolver"/>´, which never throws an exception due to ambiguity or skipped time.</param>
     /// <returns>Returns the converted <see cref="DateTime"/> with <see cref="DateTimeKind.Utc"/>.</returns>
-    /// <exception cref="DateTimeZoneNotFoundException">If <see cref="timeZoneId"/> is unknown.</exception>
+    /// <exception cref="DateTimeZoneNotFoundException">If <paramref name="timeZoneId"/> is unknown.</exception>
     public static DateTime ToUtc(DateTime zoneDateTime, string timeZoneId,
         IDateTimeZoneProvider timeZoneProvider, ZoneLocalMappingResolver? resolver = null)
     {
