@@ -10,21 +10,23 @@ namespace League.Controllers;
 public class Error : AbstractController
 {
     private readonly ILogger _logger;
+    private readonly ILogger _notFoundLogger;
     private readonly IStringLocalizer<Error> _localizer;
     private readonly IWebHostEnvironment _environment;
     private readonly ITenantContext _tenantContext;
 
-    public Error(ILogger<Error> logger, IStringLocalizer<Error> localizer, IWebHostEnvironment environment, ITenantContext tenantContext)
+    public Error(ILogger<Error> logger, IStringLocalizer<Error> localizer, ILoggerFactory loggerFactory, IWebHostEnvironment environment, ITenantContext tenantContext)
     {
         _logger = logger;
         _environment = environment;
         _tenantContext = tenantContext;
         _localizer = localizer;
+        _notFoundLogger = loggerFactory.CreateLogger(nameof(League) + ".NotFound");
     }
 
     [Route("error/{id?}")]
     [HttpGet]
-    public IActionResult Index(string id)
+    public IActionResult Index(string? id)
     {
         ViewBag.TitleTagText = $"{_tenantContext.OrganizationContext.ShortName} - {_localizer["Error"]}";
         id ??= string.Empty;
@@ -47,8 +49,12 @@ public class Error : AbstractController
         else
         {
             viewModel.OrigPath = HttpContext.Features
-                .Get<Microsoft.AspNetCore.Diagnostics.IStatusCodeReExecuteFeature>()?.OriginalPath;
-            _logger.LogInformation("Path: {origPath}, StatusCode: {id}", viewModel.OrigPath, id);
+                .Get<Microsoft.AspNetCore.Diagnostics.IStatusCodeReExecuteFeature>()?.OriginalPath ?? string.Empty;
+
+            if (Response.StatusCode == 404)
+                _notFoundLogger.LogInformation("{NotFound}", new {Status = Response.StatusCode, Ip = HttpContext.Connection.RemoteIpAddress?.ToString() ?? "127.0.0.1", Path = viewModel.OrigPath});
+            else
+                _logger.LogWarning("StatusCode: {StatusCode}, Path: {OrigPath}", Response.StatusCode, viewModel.OrigPath);
         }
 
         viewModel.StatusCode = id;
