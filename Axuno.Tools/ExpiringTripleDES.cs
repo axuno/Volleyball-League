@@ -121,8 +121,8 @@ public class ExpiringTripleDES<T> where T : class
     /// </remarks>
     private void GenerateKeyAndIV()
     {
-        IV = new string(Enumerable.Repeat(CharsToUse, 8).Select(s => s[RandomNumberGenerator.GetInt32(0, s.Length + 1)]).ToArray());
-        Key = new string(Enumerable.Repeat(CharsToUse, 24).Select(s => s[RandomNumberGenerator.GetInt32(0, s.Length + 1)]).ToArray());
+        IV = new string(Enumerable.Repeat(CharsToUse, 8).Select(s => s[RandomNumberGenerator.GetInt32(0, s.Length)]).ToArray());
+        Key = new string(Enumerable.Repeat(CharsToUse, 24).Select(s => s[RandomNumberGenerator.GetInt32(0, s.Length)]).ToArray());
     }
 
     /// <summary>

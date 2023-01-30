@@ -70,7 +70,7 @@ public class CaptchaSvgGenerator : IDisposable
         length = length < 2 ? 2 : length;
         var s = "";
         for (var i = 0; i < length; i++)
-            s = string.Concat(s, _captureChars[RandomNumberGenerator.GetInt32(0, _captureChars.Length + 1)]);
+            s = string.Concat(s, _captureChars[RandomNumberGenerator.GetInt32(0, _captureChars.Length)]);
 
         return s;
     }
