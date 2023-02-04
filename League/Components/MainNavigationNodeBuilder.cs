@@ -4,6 +4,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using League.Authorization;
 using League.Controllers;
+using League.MultiTenancy;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -39,9 +40,9 @@ public class MainNavigationNodeBuilder : IMainNavigationNodeBuilder
     protected readonly HttpContext HttpContext;
         
     /// <summary>
-    /// Gets the <see cref="IUrlHelper"/>.
+    /// Gets the <see cref="TenantUrlHelper"/>.
     /// </summary>
-    protected readonly IUrlHelper UrlHelper;
+    protected readonly TenantUrlHelper TenantUrl;
         
     /// <summary>
     /// Gets the <see cref="AuthorizationService"/>.
@@ -72,17 +73,17 @@ public class MainNavigationNodeBuilder : IMainNavigationNodeBuilder
     /// <param name="tenantStore"></param>
     /// <param name="tenantContext"></param>
     /// <param name="authorizationService"></param>
-    /// <param name="urlHelper"></param>
+    /// <param name="teanantUrl"></param>
     /// <param name="localizer"></param>
     /// <param name="logger"></param>
-    public MainNavigationNodeBuilder(TenantStore tenantStore, ITenantContext tenantContext, IAuthorizationService authorizationService, IUrlHelper urlHelper, IStringLocalizer<MainNavigationNodeBuilder> localizer, ILogger<MainNavigationNodeBuilder> logger)
+    public MainNavigationNodeBuilder(TenantStore tenantStore, ITenantContext tenantContext, IAuthorizationService authorizationService, TenantUrlHelper teanantUrl, IStringLocalizer<MainNavigationNodeBuilder> localizer, ILogger<MainNavigationNodeBuilder> logger)
     {
         TenantStore = tenantStore;
         TenantContext = tenantContext;
-        UserClaimsPrincipal = urlHelper.ActionContext.HttpContext.User;
+        UserClaimsPrincipal = teanantUrl.Url.ActionContext.HttpContext.User;
         AuthorizationService = authorizationService;
-        UrlHelper = urlHelper;
-        HttpContext = urlHelper.ActionContext.HttpContext;
+        TenantUrl = teanantUrl;
+        HttpContext = teanantUrl.Url.ActionContext.HttpContext;
         Logger = logger;
         NavigationNodes = new List<MainNavigationComponentModel.NavigationNode>();
         Localizer = localizer;
@@ -162,8 +163,7 @@ public class MainNavigationNodeBuilder : IMainNavigationNodeBuilder
             ParentNode = null,
             Key = "Top_Teams",
             Text = Localizer["Teams"],
-            Url = UrlHelper.Action(nameof(Team.Index), nameof(Team),
-                new {organization = TenantContext.SiteContext.UrlSegmentValue})
+            Url = TenantUrl.Action(nameof(Team.Index), nameof(Team))
         };
         teamInfos.ChildNodes.AddRange(new []
         {
@@ -172,8 +172,7 @@ public class MainNavigationNodeBuilder : IMainNavigationNodeBuilder
                 ParentNode = teamInfos,
                 Key = "Teams_MyTeam",
                 Text = Localizer["My team"],
-                Url = UrlHelper.Action(nameof(Team.MyTeam), nameof(Team),
-                    new {organization = TenantContext.SiteContext.UrlSegmentValue}),
+                Url = TenantUrl.Action(nameof(Team.MyTeam), nameof(Team)),
                 IsVisible = (await AuthorizationService.AuthorizeAsync(UserClaimsPrincipal, PolicyName.MyTeamAdminPolicy)).Succeeded
             },
             new MainNavigationComponentModel.NavigationNode
@@ -181,24 +180,21 @@ public class MainNavigationNodeBuilder : IMainNavigationNodeBuilder
                 ParentNode = teamInfos,
                 Key = "Teams_Application",
                 Text = Localizer["Register team for next season"],
-                Url = UrlHelper.Action(nameof(TeamApplication.List), nameof(TeamApplication),
-                    new {organization = TenantContext.SiteContext.UrlSegmentValue})
+                Url = TenantUrl.Action(nameof(TeamApplication.List), nameof(TeamApplication))
             },
             new MainNavigationComponentModel.NavigationNode
             {
                 ParentNode = teamInfos,
                 Key = "Teams_Contact",
                 Text = Localizer["Contact teams"],
-                Url = UrlHelper.Action(nameof(Team.List), nameof(Team),
-                    new {organization = TenantContext.SiteContext.UrlSegmentValue})
+                Url = TenantUrl.Action(nameof(Team.List), nameof(Team))
             },
             new MainNavigationComponentModel.NavigationNode
             {
                 ParentNode = teamInfos,
                 Key = "Teams_Map",
                 Text = Localizer["Geographical spread"],
-                Url = UrlHelper.Action(nameof(Map.Index), nameof(Map),
-                    new {organization = TenantContext.SiteContext.UrlSegmentValue})
+                Url = TenantUrl.Action(nameof(Map.Index), nameof(Map))
             }
         });
         #endregion
@@ -209,8 +205,7 @@ public class MainNavigationNodeBuilder : IMainNavigationNodeBuilder
             ParentNode = null,
             Key = "Top_Matches",
             Text = Localizer["Matches"],
-            Url = UrlHelper.Action(nameof(Match.Index), nameof(Match),
-                new {organization = TenantContext.SiteContext.UrlSegmentValue})
+            Url = TenantUrl.Action(nameof(Match.Index), nameof(Match))
         };
         teamOverview.ChildNodes.AddRange(new[]
         {
@@ -219,16 +214,14 @@ public class MainNavigationNodeBuilder : IMainNavigationNodeBuilder
                 ParentNode = teamOverview,
                 Key = "Matches_Fixtures",
                 Text = Localizer["Fixtures"],
-                Url = UrlHelper.Action(nameof(Match.Fixtures), nameof(Match),
-                    new {organization = TenantContext.SiteContext.UrlSegmentValue})
+                Url = TenantUrl.Action(nameof(Match.Fixtures), nameof(Match))
             },
             new MainNavigationComponentModel.NavigationNode
             {
                 ParentNode = teamOverview,
                 Key = "Matches_Results",
                 Text = Localizer["Match results"],
-                Url = UrlHelper.Action(nameof(Match.Results), nameof(Match),
-                    new {organization = TenantContext.SiteContext.UrlSegmentValue})
+                Url = TenantUrl.Action(nameof(Match.Results), nameof(Match))
             }
         });
         #endregion
@@ -239,8 +232,7 @@ public class MainNavigationNodeBuilder : IMainNavigationNodeBuilder
             ParentNode = null,
             Key = "Top_Ranking",
             Text = Localizer["Tables"],
-            Url = UrlHelper.Action(nameof(Ranking.Index), nameof(Ranking),
-                new {organization = TenantContext.SiteContext.UrlSegmentValue})
+            Url = TenantUrl.Action(nameof(Ranking.Index), nameof(Ranking))
         };
         rankingTables.ChildNodes.AddRange(new[]
         {
@@ -249,16 +241,14 @@ public class MainNavigationNodeBuilder : IMainNavigationNodeBuilder
                 ParentNode = rankingTables,
                 Key = "Ranking_Table",
                 Text = Localizer["Current season"],
-                Url = UrlHelper.Action(nameof(Ranking.Table), nameof(Ranking),
-                    new {organization = TenantContext.SiteContext.UrlSegmentValue})
+                Url = TenantUrl.Action(nameof(Ranking.Table), nameof(Ranking))
             },
             new MainNavigationComponentModel.NavigationNode
             {
                 ParentNode = rankingTables,
                 Key = "Ranking_AllTimeTable",
                 Text = Localizer["All-time tables"],
-                Url = UrlHelper.Action(nameof(Ranking.AllTimeTournament), nameof(Ranking),
-                    new {organization = TenantContext.SiteContext.UrlSegmentValue})
+                Url = TenantUrl.Action(nameof(Ranking.AllTimeTournament), nameof(Ranking))
             }
         });
         #endregion
@@ -274,8 +264,7 @@ public class MainNavigationNodeBuilder : IMainNavigationNodeBuilder
                 ParentNode = null,
                 Key = "Top_Account",
                 Text = string.Empty,
-                Url = UrlHelper.Action(nameof(Manage.Index), nameof(Manage),
-                    new {organization = TenantContext.SiteContext.UrlSegmentValue}),
+                Url = TenantUrl.Action(nameof(Manage.Index), nameof(Manage)),
                 IconCssClass = "fas fa-1x fa-user-check",
                 CssClass = "dropdown-menu-right"
             };
@@ -286,24 +275,21 @@ public class MainNavigationNodeBuilder : IMainNavigationNodeBuilder
                     ParentNode = account,
                     Key = "Account_Auth_Manage",
                     Text = Localizer["Manage account"],
-                    Url = UrlHelper.Action(nameof(Manage.Index), nameof(Manage),
-                        new {organization = TenantContext.SiteContext.UrlSegmentValue})
+                    Url = TenantUrl.Action(nameof(Manage.Index), nameof(Manage))
                 },
                 new MainNavigationComponentModel.NavigationNode
                 {
                     ParentNode = account,
                     Key = "Account_Auth_SignIn",
                     Text = Localizer["Sign in with other account"],
-                    Url = UrlHelper.Action(nameof(Account.SignIn), nameof(Account),
-                        new {organization = TenantContext.SiteContext.UrlSegmentValue})
+                    Url = TenantUrl.Action(nameof(Account.SignIn), nameof(Account))
                 },
                 new MainNavigationComponentModel.NavigationNode
                 {
                     ParentNode = account,
                     Key = "Account_Auth_SignOut",
                     Text = Localizer["Sign out"],
-                    Url = UrlHelper.Action(nameof(Account.SignOut), nameof(Account),
-                        new {organization = TenantContext.SiteContext.UrlSegmentValue})
+                    Url = TenantUrl.Action(nameof(Account.SignOut), nameof(Account))
                 }
             });
         }
@@ -314,8 +300,7 @@ public class MainNavigationNodeBuilder : IMainNavigationNodeBuilder
                 ParentNode = null,
                 Key = "Top_Account",
                 Text = string.Empty,
-                Url = UrlHelper.Action(nameof(Account.SignIn), nameof(Account),
-                    new {organization = TenantContext.SiteContext.UrlSegmentValue}),
+                Url = TenantUrl.Action(nameof(Account.SignIn), nameof(Account)),
                 IconCssClass = "fas fa-user-plus",
                 CssClass = "dropdown-menu-right"
             };
@@ -326,16 +311,14 @@ public class MainNavigationNodeBuilder : IMainNavigationNodeBuilder
                     ParentNode = account,
                     Key = "Account_Anonymous_SignIn",
                     Text = Localizer["Sign in"],
-                    Url = UrlHelper.Action(nameof(Account.SignIn), nameof(Account),
-                        new {organization = TenantContext.SiteContext.UrlSegmentValue})
+                    Url = TenantUrl.Action(nameof(Account.SignIn), nameof(Account))
                 },
                 new MainNavigationComponentModel.NavigationNode
                 {
                     ParentNode = account,
                     Key = "Account_Anonymous_Create",
                     Text = Localizer["Create account"],
-                    Url = UrlHelper.Action(nameof(Account.CreateAccount), nameof(Account),
-                        new {organization = TenantContext.SiteContext.UrlSegmentValue})
+                    Url = TenantUrl.Action(nameof(Account.CreateAccount), nameof(Account))
                 }
             });
         }

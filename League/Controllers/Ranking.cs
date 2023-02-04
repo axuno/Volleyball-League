@@ -6,6 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using League.BackgroundTasks;
 using League.Models.RankingViewModels;
+using League.MultiTenancy;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
@@ -43,7 +44,7 @@ public class Ranking : AbstractController
     [HttpGet]
     public IActionResult Index()
     {
-        return Redirect(Url.Action(nameof(Table), nameof(Ranking), new { Organization = _tenantContext.SiteContext.UrlSegmentValue }) ?? string.Empty);
+        return Redirect(TenantUrl.Action(nameof(Table), nameof(Ranking)) ?? string.Empty);
     }
 
     /// <summary>

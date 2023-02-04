@@ -41,6 +41,7 @@ using Axuno.BackgroundTask;
 using Axuno.VirtualFileSystem;
 using League.BackgroundTasks;
 using League.ConfigurationPoco;
+using League.MultiTenancy;
 using Microsoft.AspNetCore.Authorization;
 using TournamentManager.DI;
 using TournamentManager.MultiTenancy;
@@ -225,6 +226,8 @@ public class Startup
             var factory = sp.GetRequiredService<IUrlHelperFactory>();
             return factory.GetUrlHelper(actionContext);
         });
+        services.AddScoped<TenantUrlHelper>(sp => new TenantUrlHelper(sp.GetRequiredService<IUrlHelper>(),
+            sp.GetRequiredService<MultiTenancy.TenantResolver>().Resolve()));
 
         services.AddSingleton<IConfiguration>(Configuration);
 

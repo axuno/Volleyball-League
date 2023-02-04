@@ -14,6 +14,7 @@ using League.Helpers;
 using League.Models.TeamApplicationViewModels;
 using League.Models.TeamViewModels;
 using League.Models.VenueViewModels;
+using League.MultiTenancy;
 using League.TagHelpers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -70,7 +71,7 @@ public class TeamApplication : AbstractController
     [HttpGet("")]
     public IActionResult Index()
     {
-        return Redirect(Url.Action(nameof(List), nameof(TeamApplication), new { Organization = _tenantContext.SiteContext.UrlSegmentValue }) ?? string.Empty);
+        return Redirect(TenantUrl.Action(nameof(List), nameof(TeamApplication)) ?? string.Empty);
     }
 
     [HttpGet("[action]")]
@@ -205,7 +206,7 @@ public class TeamApplication : AbstractController
                     Authorization.TeamOperations.SignUpForSeason)).Succeeded)
             {
                 return RedirectToAction(nameof(Error.AccessDenied), nameof(Error),
-                    new { ReturnUrl = Url.Action(nameof(EditTeam), nameof(TeamApplication), new { Organization = _tenantContext.SiteContext.UrlSegmentValue }) });
+                    new { ReturnUrl = TenantUrl.Action(nameof(EditTeam), nameof(TeamApplication)) });
             }
         }
 
@@ -242,7 +243,7 @@ public class TeamApplication : AbstractController
                     Authorization.TeamOperations.SignUpForSeason)).Succeeded)
             {
                 return RedirectToAction(nameof(Error.AccessDenied), nameof(Error),
-                    new { ReturnUrl = Url.Action(nameof(EditTeam), nameof(TeamApplication), new { Organization = _tenantContext.SiteContext.UrlSegmentValue }) });
+                    new { ReturnUrl = TenantUrl.Action(nameof(EditTeam), nameof(TeamApplication)) });
             }
 
             teamEntity.TeamInRounds.AddRange(await _appDb.TeamInRoundRepository.GetTeamInRoundAsync(
@@ -537,7 +538,7 @@ public class TeamApplication : AbstractController
                         IsNewApplication = isNewApplication,
                         RoundId = teamInRoundEntity.RoundId,
                         RegisteredByUserId = GetCurrentUserId(),
-                        UrlToEditApplication = Url.Action(nameof(EditTeam), nameof(TeamApplication), new { Organization = _tenantContext.SiteContext.UrlSegmentValue, teamId = teamInRoundEntity.TeamId}, Request.Scheme, Request.Host.ToString()) ?? string.Empty
+                        UrlToEditApplication = TenantUrl.Action(nameof(EditTeam), nameof(TeamApplication), new { teamId = teamInRoundEntity.TeamId}, Request.Scheme, Request.Host.ToString()) ?? string.Empty
                     }
                 });
                     

@@ -9,13 +9,13 @@
     ViewData["Title"] = Localizer["User Impersonation"].Value;
     var search = @HttpContextAccessor.HttpContext?.Request.Query["search"].ToString().Trim();
     int.TryParse(ViewData["Limit"]?.ToString(), out var limit);
-    var organizationRoute = TenantContext.SiteContext.UrlSegmentValue;
+    var tenantRoute = TenantContext.SiteContext.UrlSegmentValue;
 }
 @model List<TournamentManager.DAL.EntityClasses.UserEntity>
 <div class="mb-0 pb-1">
     <h2 class="h2">@ViewData["Title"]</h2>
     <div>
-        <form asp-controller="@nameof(League.Areas.Admin.Controllers.Impersonation)" asp-action="@nameof(League.Areas.Admin.Controllers.Impersonation.Index)" asp-route-organization="@organizationRoute" method="get" role="form">
+        <form asp-controller="@nameof(League.Areas.Admin.Controllers.Impersonation)" asp-action="@nameof(League.Areas.Admin.Controllers.Impersonation.Index)" asp-route-organization="@tenantRoute" method="get" role="form">
             <div class="form-group">
                 <label for="search">@Localizer["Find by email, first/last/nick name"]</label>
                 <input id="search" name="search" required="required" class="form-control" value="@search" aria-describedby="searchHelpBlock" />
@@ -44,7 +44,7 @@
         <ul>
             @foreach (var user in Model)
             {
-                <li>@user.CompleteNameWithNickName - @user.Email <a class="btn btn-sm btn-primary" asp-area="@nameof(League.Areas.Admin)" asp-controller="@nameof(League.Areas.Admin.Controllers.Impersonation)" asp-action="@nameof(League.Areas.Admin.Controllers.Impersonation.Start)" asp-route-organization="@organizationRoute" asp-route-id="@user.Id">@Localizer["Impersonate"]</a></li>
+                <li>@user.CompleteNameWithNickName - @user.Email <a class="btn btn-sm btn-primary" asp-area="@nameof(League.Areas.Admin)" asp-controller="@nameof(League.Areas.Admin.Controllers.Impersonation)" asp-action="@nameof(League.Areas.Admin.Controllers.Impersonation.Start)" asp-route-organization="@tenantRoute" asp-route-id="@user.Id">@Localizer["Impersonate"]</a></li>
             }
         </ul>
         <div>

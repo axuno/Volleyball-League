@@ -2,9 +2,9 @@
 using System.Linq;
 using System.Threading.Tasks;
 using League.Components;
+using League.MultiTenancy;
 using League.Web.Controllers;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
 using TournamentManager.MultiTenancy;
@@ -18,7 +18,7 @@ namespace League.Web.ViewComponents;
 public class CustomMainNavigationNodeBuilder : MainNavigationNodeBuilder
 {
     /// <inheritdoc />
-    public CustomMainNavigationNodeBuilder(TenantStore tenantStore, ITenantContext tenantContext, IAuthorizationService authorizationService, IUrlHelper urlHelper, IStringLocalizer<MainNavigationNodeBuilder> localizer, ILogger<MainNavigationNodeBuilder> logger) : base(tenantStore, tenantContext, authorizationService, urlHelper, localizer, logger)
+    public CustomMainNavigationNodeBuilder(TenantStore tenantStore, ITenantContext tenantContext, IAuthorizationService authorizationService, TenantUrlHelper tenantUrlHelper, IStringLocalizer<MainNavigationNodeBuilder> localizer, ILogger<MainNavigationNodeBuilder> logger) : base(tenantStore, tenantContext, authorizationService, tenantUrlHelper, localizer, logger)
     { }
 
     /// <inheritdoc />
@@ -35,8 +35,7 @@ public class CustomMainNavigationNodeBuilder : MainNavigationNodeBuilder
             ? new MainNavigationComponentModel.NavigationNode
             {
                 Text = string.Empty,
-                Url =  UrlHelper.Action(nameof(Home.Welcome), nameof(Home),
-                    new {organization = TenantContext.SiteContext.UrlSegmentValue}),
+                Url =  TenantUrl.Action(nameof(Home.Welcome), nameof(Home)),
                 IconCssClass = "fas fa-1x fa-home", Key = "Home_League"
             }
             : new MainNavigationComponentModel.NavigationNode
@@ -53,9 +52,9 @@ public class CustomMainNavigationNodeBuilder : MainNavigationNodeBuilder
         {
             Key = "Top_Info",
             Text = Localizer["Info"],
-            Url = UrlHelper.Action(nameof(League.Controllers.TenantContent.Index),
+            Url = TenantUrl.Action(nameof(League.Controllers.TenantContent.Index),
                 nameof(League.Controllers.TenantContent),
-                new { organization = TenantContext.SiteContext.UrlSegmentValue, category = "info", content = string.Empty })
+                new { category = "info", content = string.Empty })
         };
         info.ChildNodes.AddRange(new []
         {
@@ -63,15 +62,15 @@ public class CustomMainNavigationNodeBuilder : MainNavigationNodeBuilder
             {
                 Key = "Info_RuleOfGame",
                 Text = Localizer["Rule of game"],
-                Url = UrlHelper.Action(nameof(League.Controllers.TenantContent.Index), nameof(League.Controllers.TenantContent),
-                    new { organization = TenantContext.SiteContext.UrlSegmentValue, category = "info", topic = "ruleofgame" })
+                Url = TenantUrl.Action(nameof(League.Controllers.TenantContent.Index), nameof(League.Controllers.TenantContent),
+                    new { category = "info", topic = "ruleofgame" })
             },
             new MainNavigationComponentModel.NavigationNode
             {
                 Key = "Info_News",
                 Text = Localizer["News"],
-                Url = UrlHelper.Action(nameof(League.Controllers.TenantContent.Index), nameof(League.Controllers.TenantContent),
-                    new { organization = TenantContext.SiteContext.UrlSegmentValue, category = "info", topic = "news"})
+                Url = TenantUrl.Action(nameof(League.Controllers.TenantContent.Index), nameof(League.Controllers.TenantContent),
+                    new { category = "info", topic = "news"})
             }
         });
             

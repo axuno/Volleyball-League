@@ -9,6 +9,7 @@ using League.BackgroundTasks;
 using League.Emailing.Creators;
 using League.Helpers;
 using League.Models.MatchViewModels;
+using League.MultiTenancy;
 using League.Views;
 using MailMergeLib.AspNet;
 using Microsoft.AspNetCore.Authorization;
@@ -89,7 +90,7 @@ public class Match : AbstractController
     [HttpGet("")]
     public IActionResult Index()
     {
-        return Redirect(Url.Action(nameof(Results), nameof(Match), new { Organization = _tenantContext.SiteContext.UrlSegmentValue })!);
+        return Redirect(TenantUrl.Action(nameof(Results), nameof(Match))!);
     }
 
     /// <summary>
@@ -788,8 +789,8 @@ public class Match : AbstractController
     private string GetReturnUrl()
     {
         var returnUrl = HttpContext.Request.GetTypedHeaders().Referer?.ToString();
-        return (returnUrl == Url.Action(nameof(Results), nameof(Match), new { Organization = _tenantContext.SiteContext.UrlSegmentValue }, Url.ActionContext.HttpContext.Request.Scheme)
-            ? Url.Action(nameof(Results), nameof(Match), new { Organization = _tenantContext.SiteContext.UrlSegmentValue }) // editing a result is exceptional
-            : Url.Action(nameof(Fixtures), nameof(Match), new { Organization = _tenantContext.SiteContext.UrlSegmentValue })) ?? string.Empty; // coming from fixtures is normal
+        return (returnUrl == TenantUrl.Action(nameof(Results), nameof(Match))
+            ? TenantUrl.Action(nameof(Results), nameof(Match)) // editing a result is exceptional
+            : TenantUrl.Action(nameof(Fixtures), nameof(Match))) ?? string.Empty; // coming from fixtures is normal
     }
 }

@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using League.BackgroundTasks;
 using League.Controllers;
 using League.Emailing.Creators;
+using League.MultiTenancy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
@@ -182,9 +183,8 @@ public class Cron : AbstractController
                     CultureInfo = CultureInfo.DefaultThreadCurrentUICulture ?? CultureInfo.CurrentCulture,
                     ReferenceDateUtc =
                         referenceDateUtc.AddDays(_tenantContext.SiteContext.MatchNotifications.DaysBeforeNextmatch * -1),
-                    IcsCalendarBaseUrl = Url.Action(nameof(Calendar), nameof(Match),
-                        new {Organization = _tenantContext.SiteContext.UrlSegmentValue},
-                        Url.ActionContext.HttpContext.Request.Scheme) ?? string.Empty
+                    IcsCalendarBaseUrl = TenantUrl.Action(nameof(Calendar), nameof(Match), null,
+                        null, TenantUrl.Url.ActionContext.HttpContext.Request.Scheme) ?? string.Empty
                 }
             });
             _queue.QueueTask(smt);

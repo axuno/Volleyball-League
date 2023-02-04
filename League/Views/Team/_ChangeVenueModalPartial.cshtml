@@ -2,10 +2,12 @@
 @using Microsoft.AspNetCore.Mvc.Localization
 @using TournamentManager.MultiTenancy
 @using TournamentManager.DAL.TypedViewClasses
+
 @inject IViewLocalizer Localizer
 @inject ITenantContext TenantContext
+@inject TenantUrlHelper TenantUrl
 @model (long TeamId, long? VenueId)
-@{var tenantUrlSegment = TenantContext.SiteContext.UrlSegmentValue;}
+@{ var tenantUrlSegment = TenantContext.SiteContext.UrlSegmentValue; }
 <!-- Modal -->
 <modal id="change-venue" title="@Localizer["Change team venue"].Value" tabindex="-1">
     <modal-body>
@@ -17,8 +19,8 @@
                        asp-controller="@nameof(Venue)"
                        asp-route-id="@Model.VenueId"
                        asp-route-organization="@tenantUrlSegment"
-                       asp-route-returnurl="@Url.Action(nameof(Team.MyTeam), nameof(Team), new { Organization = tenantUrlSegment })"
-                       site-authorize-resource site-resource="@new List<VenueTeamRow>{{ new VenueTeamRow{ TeamId = Model.TeamId, VenueId = Model.VenueId.Value }}}"
+                       asp-route-returnurl="@(TenantUrl.Action(nameof(Team.MyTeam), nameof(Team)))"
+                       site-authorize-resource site-resource="@(new List<VenueTeamRow>{{ new VenueTeamRow{ TeamId = Model.TeamId, VenueId = Model.VenueId.Value }}})"
                        site-requirement="@League.Authorization.VenueOperations.EditVenue"
                        class="btn btn-primary btn-block">@Localizer["Edit current venue"]</a>
                 }
@@ -33,8 +35,8 @@
                    asp-controller="@nameof(Venue)"
                    asp-route-organization="@tenantUrlSegment"
                    asp-route-tid="@Model.TeamId"
-                   asp-route-returnurl="@Url.Action(nameof(Team.MyTeam), nameof(Team), new { Organization = tenantUrlSegment })"
-                   site-authorize-resource site-resource="@new List<VenueTeamRow>()"
+                   asp-route-returnurl="@TenantUrl.Action(nameof(Team.MyTeam), nameof(Team))"
+                   site-authorize-resource site-resource="@(new List<VenueTeamRow>())"
                    site-requirement="@League.Authorization.VenueOperations.CreateVenue"
                    class="btn btn-primary btn-block">@Localizer["Create new team venue"]</a>
                 <div class="small text-muted">@Localizer["Please check the list of know venues, before creating a new one."]</div>

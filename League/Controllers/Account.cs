@@ -9,6 +9,7 @@ using League.BackgroundTasks;
 using League.Emailing.Creators;
 using League.Identity;
 using League.Models.AccountViewModels;
+using League.MultiTenancy;
 using League.Templates.Email;
 using League.Views;
 using Microsoft.AspNetCore.Authorization;
@@ -303,7 +304,7 @@ public class Account : AbstractController
     public IActionResult ExternalSignIn(string provider, string? returnUrl = null)
     {
         // Request a redirect to the external login provider.
-        var redirectUrl = Url.Action(nameof(ExternalSignInCallback), nameof(Account), new { Organization = _tenantContext.SiteContext.UrlSegmentValue, ReturnUrl = returnUrl });
+        var redirectUrl = TenantUrl.Action(nameof(ExternalSignInCallback), nameof(Account), new { ReturnUrl = returnUrl });
         var properties = _signInManager.ConfigureExternalAuthenticationProperties(provider, redirectUrl);
 
         return Challenge(properties, provider);
@@ -667,9 +668,9 @@ public class Account : AbstractController
                     {
                         Email = user.Email,
                         Subject = _localizer["Please confirm your email address"].Value,
-                        CallbackUrl = Url.Action(nameof(Register), nameof(Account),
-                            new {Organization = _tenantContext.SiteContext.UrlSegmentValue, code},
-                            protocol: HttpContext.Request.Scheme),
+                        CallbackUrl = TenantUrl.Action(nameof(Register), nameof(Account),
+                            new {code},
+                            protocol: HttpContext.Request.Scheme, null),
                         DeadlineUtc = deadline,
                         CultureInfo = CultureInfo.CurrentUICulture,
                         TemplateNameTxt = TemplateName.PleaseConfirmEmailTxt,
@@ -685,9 +686,9 @@ public class Account : AbstractController
                     {
                         Email = user.Email,
                         Subject = _localizer["Please confirm your email address"].Value,
-                        CallbackUrl = Url.Action(nameof(ResetPassword), nameof(Account),
-                            new {Organization = _tenantContext.SiteContext.UrlSegmentValue, id = user.Id, code},
-                            protocol: HttpContext.Request.Scheme),
+                        CallbackUrl = TenantUrl.Action(nameof(ResetPassword), nameof(Account),
+                            new {id = user.Id, code},
+                            protocol: HttpContext.Request.Scheme, null),
                         DeadlineUtc = deadline,
                         CultureInfo = CultureInfo.CurrentUICulture,
                         TemplateNameTxt = TemplateName.PasswordResetTxt,
