@@ -371,7 +371,7 @@ public class Match : AbstractController
         }
 
         // redirect to results overview, where success message is shown
-        return RedirectToAction(nameof(Results), nameof(Match), new { Organization = _tenantContext.SiteContext.UrlSegmentValue });
+        return Redirect(TenantLink.Action(nameof(Results), nameof(Match))!);
     }
 
     /// <summary>
@@ -495,7 +495,7 @@ public class Match : AbstractController
 
         // redirect to fixture overview, where success message is shown
         TempData.Put<EditFixtureViewModel.FixtureMessage>(nameof(EditFixtureViewModel.FixtureMessage), fixtureMessage);
-        return RedirectToAction(nameof(Fixtures), nameof(Match), new { Organization = _tenantContext.SiteContext.UrlSegmentValue });
+        return Redirect(TenantLink.Action(nameof(Fixtures), nameof(Match))!);
     }
 
     /// <summary>

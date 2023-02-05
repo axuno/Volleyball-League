@@ -21,6 +21,7 @@ using TournamentManager.DAL.EntityClasses;
 using TournamentManager.DI;
 using TournamentManager.MultiTenancy;
 using League.MultiTenancy;
+using Microsoft.AspNetCore.Routing;
 
 namespace League.Controllers;
 
@@ -75,7 +76,7 @@ public class Manage : AbstractController
         var user = await GetCurrentUserAsync();
         if (user == null)
         {
-            return RedirectToAction(nameof(Account.SignIn), nameof(Account), new { Organization = _tenantContext.SiteContext.UrlSegmentValue });
+            return Redirect(TenantLink.Action(nameof(Account.SignIn), nameof(Account))!);
         }
             
         var model = new IndexViewModel(_timeZoneConverter)
@@ -201,7 +202,7 @@ public class Manage : AbstractController
         if (user == null)
         {
             TempData.Put<ManageMessage>(nameof(ManageMessage), new ManageMessage { AlertType = SiteAlertTagHelper.AlertType.Danger, MessageId = MessageId.ChangeEmailFailure });
-            return RedirectToAction(nameof(Index), nameof(Manage), new { Organization = _tenantContext.SiteContext.UrlSegmentValue });
+            return Redirect(TenantLink.Action(nameof(Index), nameof(Manage))!);
         }
 
         // ChangeEmailAsync also sets EmailConfirmed = true
@@ -209,11 +210,11 @@ public class Manage : AbstractController
         if (result != IdentityResult.Success)
         {
             TempData.Put<ManageMessage>(nameof(ManageMessage), new ManageMessage { AlertType = SiteAlertTagHelper.AlertType.Danger, MessageId = MessageId.ChangeEmailFailure });
-            return RedirectToAction(nameof(Index), nameof(Manage), new { Organization = _tenantContext.SiteContext.UrlSegmentValue });
+            return Redirect(TenantLink.Action(nameof(Index), nameof(Manage))!);
         }
 
         TempData.Put<ManageMessage>(nameof(ManageMessage), new ManageMessage { AlertType = SiteAlertTagHelper.AlertType.Success, MessageId = MessageId.ChangeEmailSuccess });
-        return RedirectToAction(nameof(Index), nameof(Manage), new { Organization = _tenantContext.SiteContext.UrlSegmentValue });
+        return Redirect(TenantLink.Action(nameof(Index), nameof(Manage))!);
     }
 
     [HttpGet("[action]")]
@@ -650,13 +651,13 @@ public class Manage : AbstractController
         if (user == null)
         {
             TempData.Put<ManageMessage>(nameof(ManageMessage), new ManageMessage { AlertType = SiteAlertTagHelper.AlertType.Danger, MessageId = MessageId.AddLoginFailure });
-            return RedirectToAction(nameof(Index));
+            return Redirect(GeneralLink.GetUriByAction(HttpContext, nameof(Index))!);
         }
         var info = await _signInManager.GetExternalLoginInfoAsync(await _userManager.GetUserIdAsync(user));
         if (info == null)
         {
             TempData.Put<ManageMessage>(nameof(ManageMessage), new ManageMessage { AlertType = SiteAlertTagHelper.AlertType.Danger, MessageId = MessageId.AddLoginFailure });
-            return RedirectToAction(nameof(Index), nameof(Manage), new { Organization = _tenantContext.SiteContext.UrlSegmentValue });
+            return Redirect(TenantLink.Action(nameof(Index), nameof(Manage))!);
         }
         var result = await _userManager.AddLoginAsync(user, info);
         TempData.Put<ManageMessage>(nameof(ManageMessage), result.Succeeded
@@ -665,7 +666,7 @@ public class Manage : AbstractController
             : new ManageMessage
                 {AlertType = SiteAlertTagHelper.AlertType.Danger, MessageId = MessageId.AddLoginFailure});
 
-        return RedirectToAction(nameof(Index),nameof(Manage), new { Organization = _tenantContext.SiteContext.UrlSegmentValue });
+        return Redirect(TenantLink.Action(nameof(Index),nameof(Manage))!);
     }
 
     [HttpGet("[action]")]

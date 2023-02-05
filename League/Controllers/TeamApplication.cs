@@ -19,6 +19,7 @@ using League.TagHelpers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
@@ -128,7 +129,7 @@ public class TeamApplication : AbstractController
         sessionModel.Team!.IsNew = true;
         SaveModelToSession(sessionModel);
             
-        return RedirectToAction(nameof(EditTeam), new { Organization = _tenantContext.SiteContext.UrlSegmentValue });
+        return Redirect(TenantLink.Action(nameof(EditTeam))!);
     }
 
     [HttpPost("select-team/{*segments}")]
@@ -156,7 +157,7 @@ public class TeamApplication : AbstractController
         sessionModel.Team.IsNew = false;
             
         SaveModelToSession(sessionModel);
-        return RedirectToAction(nameof(EditTeam), new { Organization = _tenantContext.SiteContext.UrlSegmentValue });
+        return Redirect(TenantLink.Action(nameof(EditTeam))!);
     }
 
     [HttpGet("edit-team/{teamId:long}")]
@@ -165,21 +166,21 @@ public class TeamApplication : AbstractController
         var teamSelectModel = await GetTeamSelectModel(cancellationToken);
         if (teamSelectModel.TeamsManagedByUser.All(t => t.TeamId != teamId))
         {
-            return RedirectToAction(nameof(SelectTeam), new { Organization = _tenantContext.SiteContext.UrlSegmentValue });
+            return Redirect(TenantLink.Action(nameof(SelectTeam))!);
         }
 
         var sessionModel = await GetNewSessionModel(cancellationToken);
         sessionModel.Team!.Id = teamId;
         sessionModel.Team.IsNew = false;
         SaveModelToSession(sessionModel);
-        return RedirectToAction(nameof(EditTeam), new { Organization = _tenantContext.SiteContext.UrlSegmentValue, teamId = string.Empty });
+        return Redirect(TenantLink.Action(nameof(EditTeam))!);
     }
 
     [HttpGet("edit-team")]
     public async Task<IActionResult> EditTeam(CancellationToken cancellationToken)
     {
         var sessionModel = await GetModelFromSession(cancellationToken);
-        if (!sessionModel.IsFromSession) return RedirectToAction(nameof(SelectTeam), new { Organization = _tenantContext.SiteContext.UrlSegmentValue });
+        if (!sessionModel.IsFromSession) return Redirect(TenantLink.Action(nameof(SelectTeam))!);
         ViewData["TournamentName"] = sessionModel.TournamentName;
 
         if (sessionModel.Team!.IsNew)
@@ -196,7 +197,7 @@ public class TeamApplication : AbstractController
             teamEntity = await _appDb.TeamRepository.GetTeamEntityAsync(
                 new PredicateExpression(TeamFields.Id == sessionModel.Team.Id),
                 cancellationToken);
-            if (teamEntity == null) return RedirectToAction(nameof(SelectTeam), new { Organization = _tenantContext.SiteContext.UrlSegmentValue });
+            if (teamEntity == null) return Redirect(TenantLink.Action(nameof(SelectTeam))!);
             sessionModel.Team.MapEntityToFormFields(teamEntity);
         }
 
@@ -205,8 +206,8 @@ public class TeamApplication : AbstractController
             if (!(await _authorizationService.AuthorizeAsync(User, new TeamEntity(teamEntity.Id),
                     Authorization.TeamOperations.SignUpForSeason)).Succeeded)
             {
-                return RedirectToAction(nameof(Error.AccessDenied), nameof(Error),
-                    new { ReturnUrl = TenantLink.Action(nameof(EditTeam), nameof(TeamApplication)) });
+                return Redirect(GeneralLink.GetPathByAction(nameof(Error.AccessDenied), nameof(Error),
+                    new { ReturnUrl = TenantLink.Action(nameof(EditTeam), nameof(TeamApplication)) })!);
             }
         }
 
@@ -227,7 +228,7 @@ public class TeamApplication : AbstractController
     public async Task<IActionResult> EditTeam([FromForm] TeamEditModel teamEditModel, CancellationToken cancellationToken)
     {
         var sessionModel = await GetModelFromSession(cancellationToken);
-        if (!sessionModel.IsFromSession) return RedirectToAction(nameof(SelectTeam), new { Organization = _tenantContext.SiteContext.UrlSegmentValue });
+        if (!sessionModel.IsFromSession) return Redirect(TenantLink.Action(nameof(SelectTeam))!);
         ViewData["TournamentName"] = sessionModel.TournamentName;
 
         TeamEntity? teamEntity = null;
@@ -236,14 +237,14 @@ public class TeamApplication : AbstractController
             teamEntity = await _appDb.TeamRepository.GetTeamEntityAsync(new PredicateExpression(TeamFields.Id == teamEditModel.Team.Id), cancellationToken);
             if (teamEntity == null)
             {
-                return RedirectToAction(nameof(SelectTeam), new { Organization = _tenantContext.SiteContext.UrlSegmentValue });
+                return Redirect(TenantLink.Action(nameof(SelectTeam))!);
             }
 
             if (!(await _authorizationService.AuthorizeAsync(User, new TeamEntity(teamEntity.Id),
                     Authorization.TeamOperations.SignUpForSeason)).Succeeded)
             {
-                return RedirectToAction(nameof(Error.AccessDenied), nameof(Error),
-                    new { ReturnUrl = TenantLink.Action(nameof(EditTeam), nameof(TeamApplication)) });
+                return Redirect(GeneralLink.GetPathByAction(nameof(Error.AccessDenied), nameof(Error),
+                    new { ReturnUrl = TenantLink.Action(nameof(EditTeam), nameof(TeamApplication)) })!);
             }
 
             teamEntity.TeamInRounds.AddRange(await _appDb.TeamInRoundRepository.GetTeamInRoundAsync(
@@ -285,14 +286,14 @@ public class TeamApplication : AbstractController
         sessionModel.TeamIsSet = true;
         SaveModelToSession(sessionModel);
 
-        return RedirectToAction(nameof(SelectVenue), new { Organization = _tenantContext.SiteContext.UrlSegmentValue });
+        return Redirect(TenantLink.Action(nameof(SelectVenue))!);
     }
 
     [HttpGet("select-venue")]
     public async Task<IActionResult> SelectVenue(CancellationToken cancellationToken)
     {
         var sessionModel = await GetModelFromSession(cancellationToken);
-        if (!sessionModel.IsFromSession) return RedirectToAction(nameof(SelectTeam), new { Organization = _tenantContext.SiteContext.UrlSegmentValue });
+        if (!sessionModel.IsFromSession) return Redirect(TenantLink.Action(nameof(SelectTeam))!);
         ViewData["TournamentName"] = sessionModel.TournamentName;
 
         sessionModel.Venue!.IsNew = true;
@@ -304,7 +305,7 @@ public class TeamApplication : AbstractController
             teamEntity = await _appDb.TeamRepository.GetTeamEntityAsync(
                 new PredicateExpression(TeamFields.Id == sessionModel.Team.Id),
                 cancellationToken);
-            if (teamEntity == null) return RedirectToAction(nameof(SelectTeam), new { Organization = _tenantContext.SiteContext.UrlSegmentValue });
+            if (teamEntity == null) return Redirect(TenantLink.Action(nameof(SelectTeam))!);
         }
 
         return View(Views.ViewNames.TeamApplication.SelectVenue, new TeamVenueSelectModel
@@ -326,7 +327,7 @@ public class TeamApplication : AbstractController
         // Note: TeamId is not taken from TeamVenueSelectModel, but from ApplicationSessionModel
 
         var sessionModel = await GetModelFromSession(cancellationToken);
-        if (!sessionModel.IsFromSession) return RedirectToAction(nameof(SelectTeam), new { Organization = _tenantContext.SiteContext.UrlSegmentValue });
+        if (!sessionModel.IsFromSession) return Redirect(TenantLink.Action(nameof(SelectTeam))!);
         ViewData["TournamentName"] = sessionModel.TournamentName;
 
         if (!sessionModel.Team!.IsNew)
@@ -334,12 +335,12 @@ public class TeamApplication : AbstractController
             var teamEntity = await _appDb.TeamRepository.GetTeamEntityAsync(
                 new PredicateExpression(TeamFields.Id == sessionModel.Team.Id),
                 cancellationToken);
-            if (teamEntity == null) return RedirectToAction(nameof(SelectTeam), new { Organization = _tenantContext.SiteContext.UrlSegmentValue });
+            if (teamEntity == null) return Redirect(TenantLink.Action(nameof(SelectTeam))!);
         }
 
         if (selectVenueModel.VenueId.HasValue && !await _appDb.VenueRepository.IsValidVenueIdAsync(selectVenueModel.VenueId, cancellationToken))
         {
-            return RedirectToAction(nameof(SelectVenue), new { Organization = _tenantContext.SiteContext.UrlSegmentValue });
+            return Redirect(TenantLink.Action(nameof(SelectVenue))!);
         }
 
         selectVenueModel.TournamentId = sessionModel.PreviousTournamentId ?? _tenantContext.TournamentContext.ApplicationTournamentId;
@@ -354,14 +355,14 @@ public class TeamApplication : AbstractController
             
         SaveModelToSession(sessionModel);
 
-        return RedirectToAction(nameof(EditVenue), new { Organization = _tenantContext.SiteContext.UrlSegmentValue });
+        return Redirect(TenantLink.Action(nameof(EditVenue))!);
     }
 
     [HttpGet("edit-venue")]
     public async Task<IActionResult> EditVenue(bool? isNew, CancellationToken cancellationToken)
     {
         var sessionModel = await GetModelFromSession(cancellationToken);
-        if (!sessionModel.IsFromSession) return RedirectToAction(nameof(SelectTeam), new { Organization = _tenantContext.SiteContext.UrlSegmentValue });
+        if (!sessionModel.IsFromSession) return Redirect(TenantLink.Action(nameof(SelectTeam))!);
         ViewData["TournamentName"] = sessionModel.TournamentName;
 
         if (isNew.HasValue && isNew.Value)
@@ -380,7 +381,7 @@ public class TeamApplication : AbstractController
 
             if (venueEntity == null)
             {
-                return RedirectToAction(nameof(SelectVenue), new { Organization = _tenantContext.SiteContext.UrlSegmentValue });
+                return Redirect(TenantLink.Action(nameof(SelectVenue))!);
             }
 
             venueTeams = await _appDb.VenueRepository.GetVenueTeamRowsAsync(new PredicateExpression(VenueTeamFields.VenueId == venueEntity.Id), cancellationToken);
@@ -400,7 +401,7 @@ public class TeamApplication : AbstractController
     public async Task<IActionResult> EditVenue([FromForm] VenueEditModel venueEditModel, CancellationToken cancellationToken)
     {
         var sessionModel = await GetModelFromSession(cancellationToken);
-        if (!sessionModel.IsFromSession) return RedirectToAction(nameof(SelectTeam), new { Organization = _tenantContext.SiteContext.UrlSegmentValue });
+        if (!sessionModel.IsFromSession) return Redirect(TenantLink.Action(nameof(SelectTeam))!);
         ViewData["TournamentName"] = sessionModel.TournamentName;
 
         var venueEntity = new VenueEntity();
@@ -412,7 +413,7 @@ public class TeamApplication : AbstractController
 
             if (venueEntity == null)
             {
-                return RedirectToAction(nameof(SelectVenue), new { Organization = _tenantContext.SiteContext.UrlSegmentValue });
+                return Redirect(TenantLink.Action(nameof(SelectVenue))!);
             }
         }
 
@@ -449,14 +450,14 @@ public class TeamApplication : AbstractController
         sessionModel.VenueIsSet = true;
         SaveModelToSession(sessionModel);
             
-        return RedirectToAction(nameof(Confirm), new { Organization = _tenantContext.SiteContext.UrlSegmentValue });
+        return Redirect(TenantLink.Action(nameof(Confirm))!);
     }
 
     [HttpGet("[action]")]
     public async Task<IActionResult> Confirm(CancellationToken cancellationToken)
     {
         var sessionModel = await GetModelFromSession(cancellationToken);
-        if (!sessionModel.IsFromSession) return RedirectToAction(nameof(SelectTeam), new { Organization = _tenantContext.SiteContext.UrlSegmentValue });
+        if (!sessionModel.IsFromSession) return Redirect(TenantLink.Action(nameof(SelectTeam))!);
         SaveModelToSession(sessionModel);
 
         var roundWithType = (await _appDb.RoundRepository.GetRoundsWithTypeAsync(
@@ -465,7 +466,7 @@ public class TeamApplication : AbstractController
         if (roundWithType == null)
         {
             _logger.LogCritical("No round found for '{RoundId}'", sessionModel.TeamInRound.RoundId);
-            return RedirectToAction(nameof(Start), new { Organization = _tenantContext.SiteContext.UrlSegmentValue });
+            return Redirect(TenantLink.Action(nameof(Start))!);
         }
 
         return View(Views.ViewNames.TeamApplication.Confirm,
@@ -482,7 +483,7 @@ public class TeamApplication : AbstractController
     public async Task<IActionResult> Confirm(bool done, CancellationToken cancellationToken)
     {
         var sessionModel = await GetModelFromSession(cancellationToken);
-        if (!sessionModel.IsFromSession) return RedirectToAction(nameof(SelectTeam), new { Organization = _tenantContext.SiteContext.UrlSegmentValue });
+        if (!sessionModel.IsFromSession) return Redirect(TenantLink.Action(nameof(SelectTeam))!);
         try
         {
             var teamInRoundEntity = new TeamInRoundEntity();
@@ -544,7 +545,7 @@ public class TeamApplication : AbstractController
                     
                 _queue.QueueTask(_sendEmailTask);
 
-                return RedirectToAction(nameof(List), new { Organization = _tenantContext.SiteContext.UrlSegmentValue });
+                return Redirect(TenantLink.Action(nameof(List))!);
             }
 
             throw new Exception($"Saving the {nameof(TeamInRoundEntity)} failed.");
@@ -560,7 +561,7 @@ public class TeamApplication : AbstractController
                     AlertType = SiteAlertTagHelper.AlertType.Danger,
                     MessageId = TeamApplicationMessageModel.MessageId.ApplicationFailure
                 });
-            return RedirectToAction(nameof(List), new { Organization = _tenantContext.SiteContext.UrlSegmentValue });
+            return Redirect(TenantLink.Action(nameof(List))!);
         }
     }
 

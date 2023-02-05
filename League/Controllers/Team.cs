@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
@@ -95,7 +96,7 @@ public class Team : AbstractController
             
         if (id.HasValue && !userTeamIds.Contains(id.Value))
         {
-            return RedirectToAction(nameof(MyTeam), nameof(Team), new { Organization = _tenantContext.SiteContext.UrlSegmentValue, id = default(long?) });
+            return Redirect(TenantLink.Action(nameof(MyTeam), nameof(Team), new { id = default(long?) })!);
         }
 
         var teamUserRoundInfos = await _appDb.TeamRepository.GetTeamUserRoundInfosAsync(
@@ -290,8 +291,8 @@ public class Team : AbstractController
         if (!(await _authorizationService.AuthorizeAsync(User, new TeamEntity(teamEntity.Id),
                 Authorization.TeamOperations.EditTeam)).Succeeded)
         {
-            return RedirectToAction(nameof(Error.AccessDenied), nameof(Error),
-                new { ReturnUrl = TenantLink.Action(nameof(MyTeam), nameof(Team), new {tid}) });
+            return Redirect(GeneralLink.GetPathByAction(nameof(Error.AccessDenied), nameof(Error),
+                new { ReturnUrl = Redirect(TenantLink.Action(nameof(MyTeam), nameof(Team), new {tid})!) })!);
         }
 
         return PartialView(Views.ViewNames.Team._SelectVenueModalPartial,

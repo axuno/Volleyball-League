@@ -93,7 +93,7 @@ public class Ranking : AbstractController
 
             id ??= roundLegPeriods.Max(rlp => rlp.TournamentId);
             if (roundLegPeriods.Count > 0 && roundLegPeriods.All(rlp => rlp.TournamentId != id))
-                return RedirectToAction(nameof(AllTimeTournament), nameof(Ranking), new { Organization = _tenantContext.SiteContext.UrlSegmentValue, id = string.Empty });
+                return Redirect(TenantLink.Action(nameof(AllTimeTournament), nameof(Ranking), new { id = string.Empty })!);
 
             var model = new AllTimeTournamentModel(rankingList, roundLegPeriods) { SelectedTournamentId = id };
             return View(Views.ViewNames.Ranking.AllTimeForTournament, model);
@@ -114,7 +114,7 @@ public class Ranking : AbstractController
             var roundLegPeriods = await GetRoundLegPeriodsCached(rankingList, cancellationToken);
 
             if (rankingList.Count > 0 && rankingList.All(rl => rl.TeamId != id))
-                return RedirectToAction(nameof(AllTimeTournament), nameof(Ranking), new { Organization = _tenantContext.SiteContext.UrlSegmentValue, id = string.Empty });
+                return Redirect(TenantLink.Action(nameof(AllTimeTournament), nameof(Ranking), new { id = string.Empty })!);
 
             var model = new AllTimeTeamModel(rankingList, roundLegPeriods) { SelectedTeamId = id };
             return View(Views.ViewNames.Ranking.AllTimeForTeam, model);

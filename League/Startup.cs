@@ -227,6 +227,7 @@ public class Startup
             var factory = sp.GetRequiredService<IUrlHelperFactory>();
             return factory.GetUrlHelper(actionContext);
         });
+        // TenantLink simplifies tenant-specific path/uri generation
         services.AddScoped<TenantLink>(sp =>
             new TenantLink(sp.GetRequiredService<IHttpContextAccessor>(),
             sp.GetRequiredService<LinkGenerator>(),
@@ -748,7 +749,7 @@ public class Startup
         app.UseAuthentication();
         app.UseAuthorization();
             
-        /* Before using endpoint routing, all anchor, form tags Url.(...) and RedirectToAction(...) tag helpers had to be updated with {organization}
+        /* Before using endpoint routing, all anchor, form tags Url.(...) and TenantLink.Action(...) tag helpers had to be updated with {organization}
            (ViewContext.RouteData.Values["organization"]) because ambient parameters are not preserved here (as opposed to IRoute) */
         app.UseEndpoints(endpoints =>
         {

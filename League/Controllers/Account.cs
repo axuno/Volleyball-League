@@ -163,11 +163,11 @@ public class Account : AbstractController
                 _signInManager.UserManager.Options.SignIn.RequireConfirmedEmail)
             {
                 _logger.LogInformation("Sign-in not allowed: Email for user id '{userId}' is not confirmed", user.Id);
-                return RedirectToAction(nameof(Message), nameof(Account), new { Organization = _tenantContext.SiteContext.UrlSegmentValue, messageTypeText = MessageType.SignInRejectedEmailNotConfirmed });
+                return Redirect(TenantLink.Action(nameof(Message), nameof(Account), new { messageTypeText = MessageType.SignInRejectedEmailNotConfirmed })!);
             }
             
             _logger.LogInformation("Account for user id '{userId}': {result}", user.Id, result);
-            return RedirectToAction(nameof(Message), nameof(Account), new { Organization = _tenantContext.SiteContext.UrlSegmentValue, messageTypeText = MessageType.SignInRejected });
+            return Redirect(TenantLink.Action(nameof(Message), nameof(Account), new { messageTypeText = MessageType.SignInRejected })!);
         }
 
         // PasswordSignIn failed
@@ -217,7 +217,7 @@ public class Account : AbstractController
         }
 
         await SendCodeByEmail(new ApplicationUser {Email = model.Email}, EmailPurpose.PleaseConfirmEmail);
-        return RedirectToAction(nameof(Message), nameof(Account), new { Organization = _tenantContext.SiteContext.UrlSegmentValue, messageTypeText = MessageType.PleaseConfirmEmail });
+        return Redirect(TenantLink.Action(nameof(Message), nameof(Account), new { messageTypeText = MessageType.PleaseConfirmEmail })!);
     }
 
     [HttpGet("register")]
@@ -226,7 +226,7 @@ public class Account : AbstractController
     {
         if (!_dataProtector.TryDecrypt(code?.Base64UrlDecode() ?? string.Empty, out var email, out var expiration))
         {
-            return RedirectToAction(nameof(Message), nameof(Account), new { Organization = _tenantContext.SiteContext.UrlSegmentValue, messageTypeText = MessageType.ConfirmEmailError });
+            return Redirect(TenantLink.Action(nameof(Message), nameof(Account), new { messageTypeText = MessageType.ConfirmEmailError })!);
         }
 
         // Note: We check, whether the email is available only during POST
@@ -245,7 +245,7 @@ public class Account : AbstractController
 
         if (!_dataProtector.TryDecrypt(model.Code?.Base64UrlDecode() ?? string.Empty, out var email, out var expiration))
         {
-            return RedirectToAction(nameof(Message), nameof(Account), new { Organization = _tenantContext.SiteContext.UrlSegmentValue, messageTypeText = MessageType.ConfirmEmailError });
+            return Redirect(TenantLink.Action(nameof(Message), nameof(Account), new { messageTypeText = MessageType.ConfirmEmailError })!);
         }
         model.Email = email;
         if (await _signInManager.UserManager.FindByEmailAsync(model.Email) != null)
@@ -290,7 +290,7 @@ public class Account : AbstractController
                 await _signInManager.SignInAsync(user, isPersistent: false);
             }
 
-            return RedirectToAction(nameof(Manage.Index), nameof(Manage), new { Organization = _tenantContext.SiteContext.UrlSegmentValue });
+            return Redirect(TenantLink.Action(nameof(Manage.Index), nameof(Manage))!);
         }
 
         _logger.LogError("User (email: {userEmail}) could not be created. {errors}", user.Email, result.Errors);
@@ -410,7 +410,7 @@ public class Account : AbstractController
         if (info == null)
         {
             _logger.LogInformation($"{nameof(ExternalSignInConfirmation)} failed to get external sign-in information");
-            return RedirectToAction(nameof(Message), nameof(Account), new { Organization = _tenantContext.SiteContext.UrlSegmentValue, messageTypeText = MessageType.ExternalSignInFailure });
+            return Redirect(TenantLink.Action(nameof(Message), nameof(Account), new { messageTypeText = MessageType.ExternalSignInFailure })!);
         }
         var user = new ApplicationUser
         {
@@ -448,8 +448,8 @@ public class Account : AbstractController
                     return RedirectToLocal(returnUrl ?? "/" + _tenantContext.SiteContext.UrlSegmentValue);
                 }
 
-                return RedirectToAction(nameof(Message), nameof(Account),
-                    new {Organization = _tenantContext.SiteContext.UrlSegmentValue, messageTypeText = MessageType.PleaseConfirmEmail});
+                return Redirect(TenantLink.Action(nameof(Message), nameof(Account),
+                    new { messageTypeText = MessageType.PleaseConfirmEmail})!);
             }
         }
 
@@ -491,7 +491,7 @@ public class Account : AbstractController
             
         await SendCodeByEmail(user, EmailPurpose.PasswordReset);
 
-        return RedirectToAction(nameof(Message), nameof(Account), new { Organization = _tenantContext.SiteContext.UrlSegmentValue, messageTypeText = MessageType.ForgotPassword });
+        return Redirect(TenantLink.Action(nameof(Message), nameof(Account), new { messageTypeText = MessageType.ForgotPassword })!);
     }
 
     [HttpGet(nameof(ResetPassword))]
@@ -513,7 +513,7 @@ public class Account : AbstractController
     {
         if (model.Code == null)
         {
-            return RedirectToAction(nameof(ResetPassword), nameof(Account), new { Organization = _tenantContext.SiteContext.UrlSegmentValue });
+            return Redirect(TenantLink.Action(nameof(ResetPassword), nameof(Account))!);
         }
 
         if (!ModelState.IsValid)
@@ -539,7 +539,7 @@ public class Account : AbstractController
         var result = await _signInManager.UserManager.ResetPasswordAsync(user, model.Code.Base64UrlDecode(), model.Password);
         if (result.Succeeded)
         {
-            return RedirectToAction(nameof(Message), nameof(Account), new { Organization = _tenantContext.SiteContext.UrlSegmentValue, messageTypeText = MessageType.PasswordChanged });
+            return Redirect(TenantLink.Action(nameof(Message), nameof(Account), new { messageTypeText = MessageType.PasswordChanged })!);
         }
             
         var invalidCode = result.Errors.FirstOrDefault(e => e.Code == _signInManager.UserManager.ErrorDescriber.InvalidToken().Code);
