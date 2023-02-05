@@ -53,7 +53,7 @@ public class Team : AbstractController
     [HttpGet("")]
     public IActionResult Index()
     {
-        return Redirect(TenantUrl.Action(nameof(List), nameof(Team)) ?? string.Empty);
+        return Redirect(TenantLink.Action(nameof(List), nameof(Team)) ?? string.Empty);
     }
 
     [HttpGet("[action]")]
@@ -170,7 +170,7 @@ public class Team : AbstractController
                 Authorization.TeamOperations.EditTeam)).Succeeded)
         {
             return JsonAjaxRedirectForModal(Url.Action(nameof(Error.AccessDenied), nameof(Error),
-                new { ReturnUrl = TenantUrl.Action(nameof(MyTeam), nameof(Team)) }));
+                new { ReturnUrl = TenantLink.Action(nameof(MyTeam), nameof(Team)) }));
         }
 
         var model = new TeamEditModel
@@ -199,7 +199,7 @@ public class Team : AbstractController
                     Authorization.TeamOperations.EditTeam)).Succeeded)
             {
                 return JsonAjaxRedirectForModal(Url.Action(nameof(Error.AccessDenied), nameof(Error),
-                    new {ReturnUrl = TenantUrl.Action(nameof(MyTeam), nameof(Team))}));
+                    new {ReturnUrl = TenantLink.Action(nameof(MyTeam), nameof(Team))}));
             }
 
             team.TeamInRounds.AddRange(await _appDb.TeamInRoundRepository.GetTeamInRoundAsync(
@@ -248,14 +248,14 @@ public class Team : AbstractController
             if (await _appDb.GenericRepository.SaveEntityAsync(model.TeamEntity, false, true, cancellationToken))
             {
                 TempData.Put<MyTeamMessageModel.MyTeamMessage>(nameof(MyTeamMessageModel.MyTeamMessage), new MyTeamMessageModel.MyTeamMessage { AlertType = SiteAlertTagHelper.AlertType.Success, MessageId = MyTeamMessageModel.MessageId.TeamDataSuccess });
-                return JsonAjaxRedirectForModal(TenantUrl.Action(nameof(MyTeam), nameof(Team), new { id = team.Id}));
+                return JsonAjaxRedirectForModal(TenantLink.Action(nameof(MyTeam), nameof(Team), new { id = team.Id}));
             }
         }
         catch (Exception e)
         {
             TempData.Put<MyTeamMessageModel.MyTeamMessage>(nameof(MyTeamMessageModel.MyTeamMessage), new MyTeamMessageModel.MyTeamMessage { AlertType = SiteAlertTagHelper.AlertType.Danger, MessageId = MyTeamMessageModel.MessageId.TeamDataFailure});
             _logger.LogCritical(e, "Error saving team id '{teamId}'", model.Team.IsNew ? "new" : model.Team.Id.ToString());
-            return JsonAjaxRedirectForModal(TenantUrl.Action(nameof(MyTeam), nameof(Team),new { id = team.Id }));
+            return JsonAjaxRedirectForModal(TenantLink.Action(nameof(MyTeam), nameof(Team),new { id = team.Id }));
         }
 
         // We never should come this far
@@ -291,7 +291,7 @@ public class Team : AbstractController
                 Authorization.TeamOperations.EditTeam)).Succeeded)
         {
             return RedirectToAction(nameof(Error.AccessDenied), nameof(Error),
-                new { ReturnUrl = TenantUrl.Action(nameof(MyTeam), nameof(Team), new {tid}) });
+                new { ReturnUrl = TenantLink.Action(nameof(MyTeam), nameof(Team), new {tid}) });
         }
 
         return PartialView(Views.ViewNames.Team._SelectVenueModalPartial,
@@ -300,7 +300,7 @@ public class Team : AbstractController
                 TournamentId = _tenantContext.TournamentContext.TeamTournamentId, TeamId = teamEntity.Id, VenueId = teamEntity.VenueId,
                 ReturnUrl = (Url.IsLocalUrl(returnUrl)
                     ? returnUrl
-                    : TenantUrl.Action(nameof(MyTeam), nameof(Team))) ?? string.Empty
+                    : TenantLink.Action(nameof(MyTeam), nameof(Team))) ?? string.Empty
             }
         );
     }
@@ -325,7 +325,7 @@ public class Team : AbstractController
                 Authorization.TeamOperations.EditTeam)).Succeeded)
         {
             return JsonAjaxRedirectForModal(Url.Action(nameof(Error.AccessDenied), nameof(Error),
-                new { ReturnUrl = TenantUrl.Action(nameof(MyTeam), nameof(Team), new { model.TeamId }) }));
+                new { ReturnUrl = TenantLink.Action(nameof(MyTeam), nameof(Team), new { model.TeamId }) }));
         }
 
         model.TournamentId = _tenantContext.TournamentContext.TeamTournamentId;
@@ -353,7 +353,7 @@ public class Team : AbstractController
             _logger.LogCritical(e, "Failed to save selected venue for team id {teamId}, venue id {venueId}", model.TeamId, model.VenueId);
         }
             
-        return JsonAjaxRedirectForModal(TenantUrl.Action(nameof(MyTeam), nameof(Team), new { model.TeamId }));
+        return JsonAjaxRedirectForModal(TenantLink.Action(nameof(MyTeam), nameof(Team), new { model.TeamId }));
     }
 
     private IList<long> GetUserClaimTeamIds()

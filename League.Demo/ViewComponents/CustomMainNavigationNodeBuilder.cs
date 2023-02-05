@@ -18,7 +18,7 @@ namespace League.Web.ViewComponents;
 public class CustomMainNavigationNodeBuilder : MainNavigationNodeBuilder
 {
     /// <inheritdoc />
-    public CustomMainNavigationNodeBuilder(TenantStore tenantStore, ITenantContext tenantContext, IAuthorizationService authorizationService, TenantUrlHelper tenantUrlHelper, IStringLocalizer<MainNavigationNodeBuilder> localizer, ILogger<MainNavigationNodeBuilder> logger) : base(tenantStore, tenantContext, authorizationService, tenantUrlHelper, localizer, logger)
+    public CustomMainNavigationNodeBuilder(TenantStore tenantStore, ITenantContext tenantContext, IAuthorizationService authorizationService, TenantLink tenantUrlHelper, IStringLocalizer<MainNavigationNodeBuilder> localizer, ILogger<MainNavigationNodeBuilder> logger) : base(tenantStore, tenantContext, authorizationService, tenantUrlHelper, localizer, logger)
     { }
 
     /// <inheritdoc />
@@ -35,7 +35,7 @@ public class CustomMainNavigationNodeBuilder : MainNavigationNodeBuilder
             ? new MainNavigationComponentModel.NavigationNode
             {
                 Text = string.Empty,
-                Url =  TenantUrl.Action(nameof(Home.Welcome), nameof(Home)),
+                Url =  TenantLink.Action(nameof(Home.Welcome), nameof(Home)),
                 IconCssClass = "fas fa-1x fa-home", Key = "Home_League"
             }
             : new MainNavigationComponentModel.NavigationNode
@@ -52,7 +52,7 @@ public class CustomMainNavigationNodeBuilder : MainNavigationNodeBuilder
         {
             Key = "Top_Info",
             Text = Localizer["Info"],
-            Url = TenantUrl.Action(nameof(League.Controllers.TenantContent.Index),
+            Url = TenantLink.Action(nameof(League.Controllers.TenantContent.Index),
                 nameof(League.Controllers.TenantContent),
                 new { category = "info", content = string.Empty })
         };
@@ -62,14 +62,14 @@ public class CustomMainNavigationNodeBuilder : MainNavigationNodeBuilder
             {
                 Key = "Info_RuleOfGame",
                 Text = Localizer["Rule of game"],
-                Url = TenantUrl.Action(nameof(League.Controllers.TenantContent.Index), nameof(League.Controllers.TenantContent),
+                Url = TenantLink.Action(nameof(League.Controllers.TenantContent.Index), nameof(League.Controllers.TenantContent),
                     new { category = "info", topic = "ruleofgame" })
             },
             new MainNavigationComponentModel.NavigationNode
             {
                 Key = "Info_News",
                 Text = Localizer["News"],
-                Url = TenantUrl.Action(nameof(League.Controllers.TenantContent.Index), nameof(League.Controllers.TenantContent),
+                Url = TenantLink.Action(nameof(League.Controllers.TenantContent.Index), nameof(League.Controllers.TenantContent),
                     new { category = "info", topic = "news"})
             }
         });

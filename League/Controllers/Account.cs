@@ -165,7 +165,7 @@ public class Account : AbstractController
                 _logger.LogInformation("Sign-in not allowed: Email for user id '{userId}' is not confirmed", user.Id);
                 return RedirectToAction(nameof(Message), nameof(Account), new { Organization = _tenantContext.SiteContext.UrlSegmentValue, messageTypeText = MessageType.SignInRejectedEmailNotConfirmed });
             }
-
+            
             _logger.LogInformation("Account for user id '{userId}': {result}", user.Id, result);
             return RedirectToAction(nameof(Message), nameof(Account), new { Organization = _tenantContext.SiteContext.UrlSegmentValue, messageTypeText = MessageType.SignInRejected });
         }
@@ -304,7 +304,7 @@ public class Account : AbstractController
     public IActionResult ExternalSignIn(string provider, string? returnUrl = null)
     {
         // Request a redirect to the external login provider.
-        var redirectUrl = TenantUrl.Action(nameof(ExternalSignInCallback), nameof(Account), new { ReturnUrl = returnUrl });
+        var redirectUrl = TenantLink.Action(nameof(ExternalSignInCallback), nameof(Account), new { ReturnUrl = returnUrl });
         var properties = _signInManager.ConfigureExternalAuthenticationProperties(provider, redirectUrl);
 
         return Challenge(properties, provider);
@@ -599,12 +599,7 @@ public class Account : AbstractController
 
     private IActionResult RedirectToLocal(string returnUrl)
     {
-        if (Url.IsLocalUrl(returnUrl))
-        {
-            return Redirect(returnUrl);
-        }
-            
-        return RedirectToAction("");
+        return Redirect(Url.IsLocalUrl(returnUrl) ? returnUrl : string.Empty);
     }
 
     private IActionResult SocialMediaSignInFailure(string logErrorText, string errorMessage)
@@ -668,9 +663,8 @@ public class Account : AbstractController
                     {
                         Email = user.Email,
                         Subject = _localizer["Please confirm your email address"].Value,
-                        CallbackUrl = TenantUrl.Action(nameof(Register), nameof(Account),
-                            new {code},
-                            protocol: HttpContext.Request.Scheme, null),
+                        CallbackUrl = TenantLink.ActionLink(nameof(Register), nameof(Account),
+                            new {code}, scheme: HttpContext.Request.Scheme),
                         DeadlineUtc = deadline,
                         CultureInfo = CultureInfo.CurrentUICulture,
                         TemplateNameTxt = TemplateName.PleaseConfirmEmailTxt,
@@ -686,9 +680,8 @@ public class Account : AbstractController
                     {
                         Email = user.Email,
                         Subject = _localizer["Please confirm your email address"].Value,
-                        CallbackUrl = TenantUrl.Action(nameof(ResetPassword), nameof(Account),
-                            new {id = user.Id, code},
-                            protocol: HttpContext.Request.Scheme, null),
+                        CallbackUrl = TenantLink.ActionLink(nameof(ResetPassword), nameof(Account),
+                            new {id = user.Id, code}, scheme: HttpContext.Request.Scheme),
                         DeadlineUtc = deadline,
                         CultureInfo = CultureInfo.CurrentUICulture,
                         TemplateNameTxt = TemplateName.PasswordResetTxt,

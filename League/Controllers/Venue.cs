@@ -235,7 +235,7 @@ public class Venue : AbstractController
         
     private string SetAdjustedReturnResult(string method, string returnUrl, bool isSuccess)
     {
-        if (method.Equals(nameof(Edit)) && returnUrl.Contains(TenantUrl.Action(nameof(Team.MyTeam), nameof(Team)) ?? string.Empty))
+        if (method.Equals(nameof(Edit)) && returnUrl.Contains(TenantLink.Action(nameof(Team.MyTeam), nameof(Team)) ?? string.Empty))
         {
             TempData.Put<MyTeamMessageModel.MyTeamMessage>(nameof(MyTeamMessageModel.MyTeamMessage),
                 new MyTeamMessageModel.MyTeamMessage
@@ -247,7 +247,7 @@ public class Venue : AbstractController
             return returnUrl;
         }
 
-        if (method.Equals(nameof(Create)) && returnUrl.Contains(TenantUrl.Action(nameof(Team.MyTeam), nameof(Team)) ?? string.Empty))
+        if (method.Equals(nameof(Create)) && returnUrl.Contains(TenantLink.Action(nameof(Team.MyTeam), nameof(Team)) ?? string.Empty))
         {
             TempData.Put<MyTeamMessageModel.MyTeamMessage>(nameof(MyTeamMessageModel.MyTeamMessage),
                 new MyTeamMessageModel.MyTeamMessage

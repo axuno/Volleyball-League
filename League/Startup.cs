@@ -47,6 +47,7 @@ using TournamentManager.DI;
 using TournamentManager.MultiTenancy;
 using League.TextTemplatingModule;
 using Microsoft.AspNetCore.Mvc.Localization;
+using Microsoft.AspNetCore.Routing;
 using NLog.Extensions.Logging;
 
 #endregion
@@ -226,8 +227,10 @@ public class Startup
             var factory = sp.GetRequiredService<IUrlHelperFactory>();
             return factory.GetUrlHelper(actionContext);
         });
-        services.AddScoped<TenantUrlHelper>(sp => new TenantUrlHelper(sp.GetRequiredService<IUrlHelper>(),
-            sp.GetRequiredService<MultiTenancy.TenantResolver>().Resolve()));
+        services.AddScoped<TenantLink>(sp =>
+            new TenantLink(sp.GetRequiredService<IHttpContextAccessor>(),
+            sp.GetRequiredService<LinkGenerator>(),
+            sp.GetRequiredService<ITenantContext>()));
 
         services.AddSingleton<IConfiguration>(Configuration);
 

@@ -90,7 +90,7 @@ public class Match : AbstractController
     [HttpGet("")]
     public IActionResult Index()
     {
-        return Redirect(TenantUrl.Action(nameof(Results), nameof(Match))!);
+        return Redirect(TenantLink.Action(nameof(Results), nameof(Match))!);
     }
 
     /// <summary>
@@ -789,8 +789,8 @@ public class Match : AbstractController
     private string GetReturnUrl()
     {
         var returnUrl = HttpContext.Request.GetTypedHeaders().Referer?.ToString();
-        return (returnUrl == TenantUrl.Action(nameof(Results), nameof(Match))
-            ? TenantUrl.Action(nameof(Results), nameof(Match)) // editing a result is exceptional
-            : TenantUrl.Action(nameof(Fixtures), nameof(Match))) ?? string.Empty; // coming from fixtures is normal
+        return (returnUrl == TenantLink.Action(nameof(Results), nameof(Match))
+            ? TenantLink.Action(nameof(Results), nameof(Match)) // editing a result is exceptional
+            : TenantLink.Action(nameof(Fixtures), nameof(Match))) ?? string.Empty; // coming from fixtures is normal
     }
 }

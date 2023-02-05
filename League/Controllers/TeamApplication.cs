@@ -71,7 +71,7 @@ public class TeamApplication : AbstractController
     [HttpGet("")]
     public IActionResult Index()
     {
-        return Redirect(TenantUrl.Action(nameof(List), nameof(TeamApplication)) ?? string.Empty);
+        return Redirect(TenantLink.Action(nameof(List), nameof(TeamApplication)) ?? string.Empty);
     }
 
     [HttpGet("[action]")]
@@ -206,7 +206,7 @@ public class TeamApplication : AbstractController
                     Authorization.TeamOperations.SignUpForSeason)).Succeeded)
             {
                 return RedirectToAction(nameof(Error.AccessDenied), nameof(Error),
-                    new { ReturnUrl = TenantUrl.Action(nameof(EditTeam), nameof(TeamApplication)) });
+                    new { ReturnUrl = TenantLink.Action(nameof(EditTeam), nameof(TeamApplication)) });
             }
         }
 
@@ -243,7 +243,7 @@ public class TeamApplication : AbstractController
                     Authorization.TeamOperations.SignUpForSeason)).Succeeded)
             {
                 return RedirectToAction(nameof(Error.AccessDenied), nameof(Error),
-                    new { ReturnUrl = TenantUrl.Action(nameof(EditTeam), nameof(TeamApplication)) });
+                    new { ReturnUrl = TenantLink.Action(nameof(EditTeam), nameof(TeamApplication)) });
             }
 
             teamEntity.TeamInRounds.AddRange(await _appDb.TeamInRoundRepository.GetTeamInRoundAsync(
@@ -538,7 +538,7 @@ public class TeamApplication : AbstractController
                         IsNewApplication = isNewApplication,
                         RoundId = teamInRoundEntity.RoundId,
                         RegisteredByUserId = GetCurrentUserId(),
-                        UrlToEditApplication = TenantUrl.Action(nameof(EditTeam), nameof(TeamApplication), new { teamId = teamInRoundEntity.TeamId}, Request.Scheme, Request.Host.ToString()) ?? string.Empty
+                        UrlToEditApplication = TenantLink.ActionLink(nameof(EditTeam), nameof(TeamApplication), new { teamId = teamInRoundEntity.TeamId }, scheme: Request.Scheme, host: Request.Host) ?? string.Empty
                     }
                 });
                     

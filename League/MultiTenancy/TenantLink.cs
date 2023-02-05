@@ -3,11 +3,9 @@
 // Licensed under the MIT license.
 //
 
-using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Routing;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 using TournamentManager.MultiTenancy;
 
@@ -15,9 +13,9 @@ namespace League.MultiTenancy;
 
 /// <summary>
 /// A class that contains methods to
-/// build tenant-specific URLs for ASP.NET MVC within the <see cref="League"/> application.
+/// build tenant-specific paths or URIs MVC within the <see cref="League"/> application.
 /// </summary>
-public class TenantUrlHelper
+public class TenantLink
 {
     // Perf: Reuse the RouteValueDictionary across multiple calls of Action for this UrlHelper
     private readonly RouteValueDictionary _routeValueDictionary = new();
@@ -28,18 +26,24 @@ public class TenantUrlHelper
     public ISiteContext SiteContext { get; }
 
     /// <summary>
-    /// Gets or sets the <see cref="IUrlHelper"/>.
+    /// Gets the underlying <see cref="LinkGenerator"/> used by <see cref="TenantLink"/>.
     /// </summary>
-    public IUrlHelper Url { get; set; }
+    public LinkGenerator LinkGenerator { get; }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="TenantUrlHelper" /> class using the specified
-    /// <paramref name="urlHelper"/> and <paramref name="tenantContext"/> .
+    /// Gets the <see cref="HttpContext"/> for the current request.
     /// </summary>
-    public TenantUrlHelper(IUrlHelper urlHelper, ITenantContext tenantContext)
+    public HttpContext HttpContext { get; }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="TenantLink" /> class using the specified
+    /// <paramref name="context"/>, <paramref name="defaultLinkGenerator"/> and <paramref name="tenantContext"/> .
+    /// </summary>
+    public TenantLink(IHttpContextAccessor context, LinkGenerator defaultLinkGenerator, ITenantContext tenantContext)
     {
         SiteContext = tenantContext.SiteContext;
-        Url = urlHelper;
+        LinkGenerator = defaultLinkGenerator;
+        HttpContext = context.HttpContext!;
     }
 
     /// <summary>

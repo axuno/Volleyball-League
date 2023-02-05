@@ -8,6 +8,7 @@ using League.Controllers;
 using League.Emailing.Creators;
 using League.MultiTenancy;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
@@ -183,8 +184,8 @@ public class Cron : AbstractController
                     CultureInfo = CultureInfo.DefaultThreadCurrentUICulture ?? CultureInfo.CurrentCulture,
                     ReferenceDateUtc =
                         referenceDateUtc.AddDays(_tenantContext.SiteContext.MatchNotifications.DaysBeforeNextmatch * -1),
-                    IcsCalendarBaseUrl = TenantUrl.Action(nameof(Calendar), nameof(Match), null,
-                        null, TenantUrl.Url.ActionContext.HttpContext.Request.Scheme) ?? string.Empty
+                    IcsCalendarBaseUrl = TenantLink.ActionLink(nameof(Calendar), nameof(Match), null,
+                        scheme: TenantLink.HttpContext.Request.Scheme) ?? string.Empty
                 }
             });
             _queue.QueueTask(smt);
@@ -227,8 +228,8 @@ public class Cron : AbstractController
         var url = string.Empty;
         try
         {
-            url = Url.Action(nameof(AutoMail), nameof(Cron),
-                new {organization = urlSegmentValue, key = GetAuthKey() }, Uri.UriSchemeHttps)!;
+            url = GeneralLink!.GetUriByAction(HttpContext, nameof(AutoMail), nameof(Cron),
+                new { organization = urlSegmentValue, key = GetAuthKey() }, scheme: Uri.UriSchemeHttps) ?? string.Empty;
 
             var result = await httpClient.GetAsync(url);
             _logger.LogInformation("Get request for url '{url}' completed.", url);
@@ -243,7 +244,7 @@ public class Cron : AbstractController
         catch(Exception e)
         {
             const string message = "Error after sending get request for url '{url}'";
-            _logger.LogError(e, message, (string.IsNullOrWhiteSpace(url) ? urlSegmentValue : url));
+            _logger.LogError(e, message, url);
             var now = DateTime.UtcNow;
                 
             return new InvocationResult

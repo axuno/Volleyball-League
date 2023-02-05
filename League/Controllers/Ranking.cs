@@ -44,7 +44,7 @@ public class Ranking : AbstractController
     [HttpGet]
     public IActionResult Index()
     {
-        return Redirect(TenantUrl.Action(nameof(Table), nameof(Ranking)) ?? string.Empty);
+        return Redirect(TenantLink.Action(nameof(Table), nameof(Ranking)) ?? string.Empty);
     }
 
     /// <summary>

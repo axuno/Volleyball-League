@@ -5,7 +5,7 @@
 
 @inject IViewLocalizer Localizer
 @inject ITenantContext TenantContext
-@inject TenantUrlHelper TenantUrl
+@inject TenantLink TenantLink
 @model (long TeamId, long? VenueId)
 @{ var tenantUrlSegment = TenantContext.SiteContext.UrlSegmentValue; }
 <!-- Modal -->
@@ -19,7 +19,7 @@
                        asp-controller="@nameof(Venue)"
                        asp-route-id="@Model.VenueId"
                        asp-route-organization="@tenantUrlSegment"
-                       asp-route-returnurl="@(TenantUrl.Action(nameof(Team.MyTeam), nameof(Team)))"
+                       asp-route-returnurl="@(TenantLink.Action(nameof(Team.MyTeam), nameof(Team)))"
                        site-authorize-resource site-resource="@(new List<VenueTeamRow>{{ new VenueTeamRow{ TeamId = Model.TeamId, VenueId = Model.VenueId.Value }}})"
                        site-requirement="@League.Authorization.VenueOperations.EditVenue"
                        class="btn btn-primary btn-block">@Localizer["Edit current venue"]</a>
@@ -35,7 +35,7 @@
                    asp-controller="@nameof(Venue)"
                    asp-route-organization="@tenantUrlSegment"
                    asp-route-tid="@Model.TeamId"
-                   asp-route-returnurl="@TenantUrl.Action(nameof(Team.MyTeam), nameof(Team))"
+                   asp-route-returnurl="@TenantLink.Action(nameof(Team.MyTeam), nameof(Team))"
                    site-authorize-resource site-resource="@(new List<VenueTeamRow>())"
                    site-requirement="@League.Authorization.VenueOperations.CreateVenue"
                    class="btn btn-primary btn-block">@Localizer["Create new team venue"]</a>

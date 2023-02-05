@@ -38,8 +38,9 @@ public class Language : Controller
     /// <param name="returnUrl"></param>
     /// <returns></returns>
     [HttpGet("")]
-    public IActionResult Index(string culture, string uiCulture, string returnUrl)
+    public IActionResult Index(string? culture, string? uiCulture, string? returnUrl)
     {
+        returnUrl ??= "/";
         // QueryStringRequestCultureProvider processes arguments and requires one of both
         if (culture == null && uiCulture == null)
         {
