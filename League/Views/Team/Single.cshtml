@@ -81,7 +81,7 @@
         }
         <div class="text-success col-md-3">@Localizer["Team Photo"]</div>
         <div class="col-md-7">
-            @if (string.IsNullOrEmpty(Model.PhotoUriInfo.Uri))
+            @if (!string.IsNullOrEmpty(Model.PhotoUriInfo.Uri))
             {
                 var zonedLastModified = Model.TimeZoneConverter.ToZonedTime(Model.PhotoUriInfo.Date)!;
                 <div><img src="@Url.Content(Model.PhotoUriInfo.Uri)" class="img-fluid img-thumbnail" alt="@(Model.TeamVenueRoundInfo.TeamName)" /></div>
