@@ -22,7 +22,7 @@
             if (loginProviders.Count != 0)
             {
                 <h3 class="h3">@Localizer["Register with a social network account"]</h3>
-                <form asp-controller="@nameof(Account)" asp-action="@nameof(Account.ExternalSignIn)" asp-route-organization="@tenantUrlSegment" asp-route-returnurl="@ViewData["ReturnUrl"]" method="post" class="" role="form">
+                <form asp-controller="@nameof(Account)" asp-action="@nameof(Account.ExternalSignIn)" asp-route-tenant="@tenantUrlSegment" asp-route-returnurl="@ViewData["ReturnUrl"]" method="post" class="" role="form">
                     <div class="flex-row">
                         @foreach (var provider in loginProviders)
                         {
@@ -41,7 +41,7 @@
         @Localizer["We will send you a message containing the confirmation code to your email address."]<br />
         @Localizer["Once your email is confirmed, you can finalize the registration."]
     </p>
-    <form asp-controller="@nameof(Account)" asp-action="@nameof(Account.CreateAccount)" asp-route-organization="@tenantUrlSegment" asp-route-returnurl="@ViewData["ReturnUrl"]" method="post" class="col-md-8 col-sm-10 col-12 pl-0" role="form">
+    <form asp-controller="@nameof(Account)" asp-action="@nameof(Account.CreateAccount)" asp-route-tenant="@tenantUrlSegment" asp-route-returnurl="@ViewData["ReturnUrl"]" method="post" class="col-md-8 col-sm-10 col-12 pl-0" role="form">
         <site-validation-summary show="All">
             <b>@Localizer["Input has some issues"]:</b>
         </site-validation-summary>

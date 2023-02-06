@@ -65,7 +65,7 @@
                     }
                     else
                     {
-                        <a asp-route="@RouteNames.TenantContact" asp-route-organization="@TenantContext.SiteContext.UrlSegmentValue" class="d-inline-block mr-4">@Localizer["Contact"]</a>
+                        <a asp-route="@RouteNames.TenantContact" asp-route-tenant="@TenantContext.SiteContext.UrlSegmentValue" class="d-inline-block mr-4">@Localizer["Contact"]</a>
                     }
                 }
             </div>

@@ -27,7 +27,7 @@ public class TenantRouteConstraint : IRouteConstraint
     /// <summary>
     /// The key of the tenant used in a <see cref="RouteValueDictionary"/>
     /// </summary>
-    public const string Key = "Organization";
+    public const string Key = "tenant";
 
     /// <summary>
     /// The value for the constraint used in <see cref="Route"/> templates.

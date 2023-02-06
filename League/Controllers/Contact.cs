@@ -54,7 +54,7 @@ public class Contact : AbstractController
         }
             
         // Note: The form will use route name to generate the action url
-        // Also, if we are in an organization context, the organization contact url will be used, otherwise the general one
+        // Also, if we are in an tenant context, the tenant organization contact url will be used, otherwise the general one
         return View(ViewNames.Contact.Index, model);
     }
 

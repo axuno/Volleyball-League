@@ -13,7 +13,7 @@
     <modal-body>
         <site-validation-summary show="All"></site-validation-summary>
         @* Form with only 1 input field can be submitted with enter key. So we have to prevent default submit behavior and trigger a click on saveBtn *@
-        <form asp-controller="@nameof(Role)" asp-action="@nameof(Role.Add)" asp-route-organization="@tenantUrlSegment" method="post" role="form" onsubmit="$('#@(League.TagHelpers.Modal.SiteAjaxSubmitTagHelper.TagHelperAttributeName)').trigger('click');return false;">
+        <form asp-controller="@nameof(Role)" asp-action="@nameof(Role.Add)" asp-route-tenant="@tenantUrlSegment" method="post" role="form" onsubmit="$('#@(League.TagHelpers.Modal.SiteAjaxSubmitTagHelper.TagHelperAttributeName)').trigger('click');return false;">
             <input name="IsValid" type="hidden" value="@ViewData.ModelState.IsValid.ToString()" />
             <input asp-for="TeamId" type="hidden" />
             <input asp-for="ReturnUrl" type="hidden" />

@@ -89,7 +89,7 @@
                                 <a class="btn btn-sm btn-primary d-inline-block"
                                    asp-controller="@nameof(Upload)"
                                    asp-action="@nameof(Upload.TeamPhoto)"
-                                   asp-route-organization="@tenantUrlSegment"
+                                   asp-route-tenant="@tenantUrlSegment"
                                    asp-route-id="@teamVenueInfo.TeamId"
                                    site-authorize-resource site-resource="@(new TeamEntity(teamVenueInfo.TeamId))"
                                    site-requirement="@League.Authorization.TeamOperations.ChangePhoto">@Localizer["Change"]</a>
@@ -103,7 +103,7 @@
                                 <a class="btn btn-sm btn-primary d-inline-block"
                                    asp-controller="@nameof(Upload)"
                                    asp-action="@nameof(Upload.TeamPhoto)"
-                                   asp-route-organization="@tenantUrlSegment"
+                                   asp-route-tenant="@tenantUrlSegment"
                                    asp-route-id="@teamVenueInfo.TeamId"
                                    site-authorize-resource site-resource="@(new TeamEntity(teamVenueInfo.TeamId))"
                                    site-requirement="@League.Authorization.TeamOperations.ChangePhoto">@Localizer["Upload"]</a>
@@ -136,7 +136,7 @@
                                     <div>
                                         <a class="link" asp-action="@nameof(Map.Venue)"
                                            asp-controller="@nameof(Map)"
-                                           asp-route-organization="@tenantUrlSegment"
+                                           asp-route-tenant="@tenantUrlSegment"
                                            asp-route-id="@teamVenueInfo.VenueId.Value">@Localizer["Direction"]</a>
                                     </div>
                                     <div class="text-muted small">
