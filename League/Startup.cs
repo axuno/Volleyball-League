@@ -441,7 +441,7 @@ public class Startup
         {
             options.Cookie.HttpOnly = true;
             options.Cookie.IsEssential = true;
-            // MUST use the default options.CookieManager: After callback from social login, "organization" url segment will not be set,
+            // MUST use the default options.CookieManager: After callback from social login, tenant url segment will not be set,
             // because the CallbackPath from the provider will be sth. like "/signin-facebook" with cookie path to the same path.
             options.Cookie.Name = ".ExtAuth.League";
             options.Cookie.Path = "/";
@@ -531,7 +531,7 @@ public class Startup
             options.Secure = CookieSecurePolicy.SameAsRequest; // SameSite=None requires Secure
         });
 
-        // expand search path to organization key sub-paths per HttpRequest
+        // expand search path to tenant key sub-paths per HttpRequest
         services.Configure<RazorViewEngineOptions>(options =>
         {
             options.ViewLocationExpanders.Add(new Views.LeagueViewLocationExpander()); // R# will not resolve
@@ -749,8 +749,8 @@ public class Startup
         app.UseAuthentication();
         app.UseAuthorization();
             
-        /* Before using endpoint routing, all anchor, form tags Url.(...) and TenantLink.Action(...) tag helpers had to be updated with {organization}
-           (ViewContext.RouteData.Values["organization"]) because ambient parameters are not preserved here (as opposed to IRoute) */
+        /* Before using endpoint routing, all anchor, form tags Url.(...) and TenantLink.Action(...) tag helpers had to be updated with TenantRouteConstraint.Template
+           (ViewContext.RouteData.Values[TenantRouteConstraint.Key]) because ambient parameters are not preserved here (as opposed to IRoute) */
         app.UseEndpoints(endpoints =>
         {
             endpoints.MapControllers();

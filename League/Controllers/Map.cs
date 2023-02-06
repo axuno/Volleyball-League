@@ -3,6 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using League.ConfigurationPoco;
 using League.Models.MapViewModels;
+using League.Routing;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Localization;
@@ -13,7 +14,7 @@ using TournamentManager.MultiTenancy;
 
 namespace League.Controllers;
 
-[Route("{organization:MatchingTenant}/[controller]")]
+[Route(TenantRouteConstraint.Template + "/[controller]")]
 public class Map : AbstractController
 {
     private readonly IConfiguration _configuration;

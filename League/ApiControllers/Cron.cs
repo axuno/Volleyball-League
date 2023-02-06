@@ -7,6 +7,7 @@ using League.BackgroundTasks;
 using League.Controllers;
 using League.Emailing.Creators;
 using League.MultiTenancy;
+using League.Routing;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Caching.Memory;
@@ -109,7 +110,7 @@ public class Cron : AbstractController
     /// <param name="key">The authentication key for the service.</param>
     /// <param name="referenceDate">The reference date which will be taken for queuing mails.</param>
     /// <returns></returns>
-    [HttpGet("{organization:MatchingTenant}/api/cron/automail/{key}/{referenceDate?}")]
+    [HttpGet(TenantRouteConstraint.Template + "/api/cron/automail/{key}/{referenceDate?}")]
     public IActionResult AutoMail(string key, string? referenceDate)
     {
         if(!IsAuthorized(key)) return Unauthorized("Incorrect authorization key");
@@ -228,8 +229,12 @@ public class Cron : AbstractController
         var url = string.Empty;
         try
         {
-            url = GeneralLink!.GetUriByAction(HttpContext, nameof(AutoMail), nameof(Cron),
-                new { organization = urlSegmentValue, key = GetAuthKey() }, scheme: Uri.UriSchemeHttps) ?? string.Empty;
+            var routeValues = new RouteValueDictionary {
+                { TenantRouteConstraint.Key, urlSegmentValue },
+                { "key", GetAuthKey() }
+            };
+            url = GeneralLink.GetUriByAction(HttpContext, nameof(AutoMail), nameof(Cron),
+                routeValues, scheme: Uri.UriSchemeHttps) ?? string.Empty;
 
             var result = await httpClient.GetAsync(url);
             _logger.LogInformation("Get request for url '{url}' completed.", url);

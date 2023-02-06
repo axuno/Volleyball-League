@@ -15,6 +15,7 @@ using League.Models.TeamApplicationViewModels;
 using League.Models.TeamViewModels;
 using League.Models.VenueViewModels;
 using League.MultiTenancy;
+using League.Routing;
 using League.TagHelpers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -34,7 +35,7 @@ using TournamentManager.MultiTenancy;
 
 namespace League.Controllers;
 
-[Route("{organization:MatchingTenant}/team-application")]
+[Route(TenantRouteConstraint.Template + "/team-application")]
 [ControllerAttributes.TeamApplicationAllowed] // if not allowed, all controller actions are redirected to action "list"
 [Authorize]
 public class TeamApplication : AbstractController

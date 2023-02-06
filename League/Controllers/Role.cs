@@ -6,6 +6,7 @@ using League.Helpers;
 using League.Models.RoleViewModels;
 using League.Models.TeamViewModels;
 using League.MultiTenancy;
+using League.Routing;
 using League.TagHelpers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -17,7 +18,7 @@ using TournamentManager.MultiTenancy;
 
 namespace League.Controllers;
 
-[Route("{organization:MatchingTenant}/[controller]")]
+[Route(TenantRouteConstraint.Template + "/[controller]")]
 public class Role : AbstractController
 {
     private readonly ITenantContext _tenantContext;

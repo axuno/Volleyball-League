@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using League.BackgroundTasks;
 using League.Models.RankingViewModels;
 using League.MultiTenancy;
+using League.Routing;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
@@ -23,7 +24,7 @@ namespace League.Controllers;
 /// <summary>
 /// The <see cref="Controller"/> for ranking tables.
 /// </summary>
-[Route("{organization:MatchingTenant}/[controller]")]
+[Route(TenantRouteConstraint.Template + "/[controller]")]
 public class Ranking : AbstractController
 {
     private readonly ITenantContext _tenantContext;

@@ -21,12 +21,13 @@ using TournamentManager.DAL.EntityClasses;
 using TournamentManager.DI;
 using TournamentManager.MultiTenancy;
 using League.MultiTenancy;
+using League.Routing;
 using Microsoft.AspNetCore.Routing;
 
 namespace League.Controllers;
 
 [Authorize]
-[Route("{organization:MatchingTenant}/[controller]")]
+[Route(TenantRouteConstraint.Template + "/[controller]")]
 public class Manage : AbstractController
 {
     private readonly UserManager<ApplicationUser> _userManager;

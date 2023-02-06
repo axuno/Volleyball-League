@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using League.Models.Error;
+using League.Routing;
 using Microsoft.Extensions.Localization;
 using TournamentManager.MultiTenancy;
 
@@ -64,7 +65,7 @@ public class Error : AbstractController
         return View(Views.ViewNames.Error.Index, viewModel);
     }
 
-    [Route("{organization:MatchingTenant}/error/access-denied")]
+    [Route(TenantRouteConstraint.Template + "/error/access-denied")]
     [HttpGet]
     public IActionResult AccessDenied(string returnUrl)
     {

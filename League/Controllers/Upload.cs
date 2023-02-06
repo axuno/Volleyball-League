@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using League.Models.UploadViewModels;
 using League.MultiTenancy;
+using League.Routing;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -19,7 +20,7 @@ using TournamentManager.MultiTenancy;
 
 namespace League.Controllers;
 
-[Route("{organization:MatchingTenant}/[controller]")]
+[Route(TenantRouteConstraint.Template + "/[controller]")]
 public class Upload : AbstractController
 {
     private readonly ITenantContext _tenantContext;

@@ -3,8 +3,8 @@
 // Licensed under the MIT license.
 //
 
+using League.Routing;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Routing;
 
 namespace League.MultiTenancy;
@@ -26,8 +26,8 @@ public static class TenantLinkExtensions
     {
         var valuesDict = tenantLink.GetValuesDictionary(values);
         
-        if (!valuesDict.ContainsKey("organization"))
-            valuesDict.Add("organization", tenantLink.SiteContext.UrlSegmentValue);
+        if (!valuesDict.ContainsKey(TenantRouteConstraint.Key))
+            valuesDict.Add(TenantRouteConstraint.Key, tenantLink.SiteContext.UrlSegmentValue);
 
         return tenantLink.LinkGenerator.GetPathByAction(tenantLink.HttpContext, action, controller, valuesDict, pathBase, fragment);
     }
@@ -56,8 +56,8 @@ public static class TenantLinkExtensions
     {
         var valuesDict = tenantLink.GetValuesDictionary(values);
         
-        if (!valuesDict.ContainsKey("organization"))
-            valuesDict.Add("organization", tenantLink.SiteContext.UrlSegmentValue);
+        if (!valuesDict.ContainsKey(TenantRouteConstraint.Key))
+            valuesDict.Add(TenantRouteConstraint.Key, tenantLink.SiteContext.UrlSegmentValue);
 
         return tenantLink.LinkGenerator.GetUriByAction(tenantLink.HttpContext, action, controller, valuesDict, scheme, host, pathBase, fragment);
     }

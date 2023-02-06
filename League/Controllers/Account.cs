@@ -10,6 +10,7 @@ using League.Emailing.Creators;
 using League.Identity;
 using League.Models.AccountViewModels;
 using League.MultiTenancy;
+using League.Routing;
 using League.Templates.Email;
 using League.Views;
 using Microsoft.AspNetCore.Authorization;
@@ -25,7 +26,7 @@ using TournamentManager.MultiTenancy;
 namespace League.Controllers;
 
 [Authorize]
-[Route("{organization:MatchingTenant}/[controller]")]
+[Route(TenantRouteConstraint.Template + "/[controller]")]
 public class Account : AbstractController
 {
     #region *** Private Enums ***

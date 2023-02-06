@@ -8,6 +8,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using League.Controllers;
 using League.Identity;
+using League.Routing;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -21,7 +22,7 @@ using TournamentManager.MultiTenancy;
 namespace League.Areas.Admin.Controllers;
 
 [Area("Admin")]
-[Route("{organization:MatchingTenant}/[area]/[controller]")]
+[Route(TenantRouteConstraint.Template + "/[area]/[controller]")]
 public class Impersonation : AbstractController
 {
     private readonly ILogger<Language> _logger;

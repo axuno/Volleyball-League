@@ -10,6 +10,7 @@ using League.Emailing.Creators;
 using League.Helpers;
 using League.Models.MatchViewModels;
 using League.MultiTenancy;
+using League.Routing;
 using League.Views;
 using MailMergeLib.AspNet;
 using Microsoft.AspNetCore.Authorization;
@@ -34,7 +35,7 @@ namespace League.Controllers;
 /// <summary>
 /// The class for handling matches.
 /// </summary>
-[Route("{organization:MatchingTenant}/[controller]")]
+[Route(TenantRouteConstraint.Template + "/[controller]")]
 public class Match : AbstractController
 {
     private readonly ITenantContext _tenantContext;

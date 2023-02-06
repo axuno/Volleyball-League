@@ -19,7 +19,22 @@ public class TenantRouteConstraint : IRouteConstraint
         _tenantStore = tenantStore;
     }
 
+    /// <summary>
+    /// The name used as for this <see cref="TenantRouteConstraint"/>.
+    /// </summary>
     public const string Name = "MatchingTenant";
+
+    /// <summary>
+    /// The key of the tenant used in a <see cref="RouteValueDictionary"/>
+    /// </summary>
+    public const string Key = "Organization";
+
+    /// <summary>
+    /// The value for the constraint used in <see cref="Route"/> templates.
+    /// </summary>
+    public const string Template = "{" + Key + ":" + Name + "}";
+
+    /// <inheritdoc />
     public bool Match(HttpContext? httpContext, IRouter? route, string parameterName, RouteValueDictionary values, RouteDirection routeDirection)
     {
         switch (routeDirection)
