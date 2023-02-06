@@ -6,7 +6,10 @@ using System.Threading.Tasks;
 using League.BackgroundTasks;
 using League.Controllers;
 using League.Emailing.Creators;
+using League.MultiTenancy;
+using League.Routing;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
@@ -107,7 +110,7 @@ public class Cron : AbstractController
     /// <param name="key">The authentication key for the service.</param>
     /// <param name="referenceDate">The reference date which will be taken for queuing mails.</param>
     /// <returns></returns>
-    [HttpGet("{organization:MatchingTenant}/api/cron/automail/{key}/{referenceDate?}")]
+    [HttpGet(TenantRouteConstraint.Template + "/api/cron/automail/{key}/{referenceDate?}")]
     public IActionResult AutoMail(string key, string? referenceDate)
     {
         if(!IsAuthorized(key)) return Unauthorized("Incorrect authorization key");
@@ -182,9 +185,8 @@ public class Cron : AbstractController
                     CultureInfo = CultureInfo.DefaultThreadCurrentUICulture ?? CultureInfo.CurrentCulture,
                     ReferenceDateUtc =
                         referenceDateUtc.AddDays(_tenantContext.SiteContext.MatchNotifications.DaysBeforeNextmatch * -1),
-                    IcsCalendarBaseUrl = Url.Action(nameof(Calendar), nameof(Match),
-                        new {Organization = _tenantContext.SiteContext.UrlSegmentValue},
-                        Url.ActionContext.HttpContext.Request.Scheme) ?? string.Empty
+                    IcsCalendarBaseUrl = TenantLink.ActionLink(nameof(Calendar), nameof(Match), null,
+                        scheme: TenantLink.HttpContext.Request.Scheme) ?? string.Empty
                 }
             });
             _queue.QueueTask(smt);
@@ -227,8 +229,12 @@ public class Cron : AbstractController
         var url = string.Empty;
         try
         {
-            url = Url.Action(nameof(AutoMail), nameof(Cron),
-                new {organization = urlSegmentValue, key = GetAuthKey() }, Uri.UriSchemeHttps)!;
+            var routeValues = new RouteValueDictionary {
+                { TenantRouteConstraint.Key, urlSegmentValue },
+                { "key", GetAuthKey() }
+            };
+            url = GeneralLink.GetUriByAction(HttpContext, nameof(AutoMail), nameof(Cron),
+                routeValues, scheme: Uri.UriSchemeHttps) ?? string.Empty;
 
             var result = await httpClient.GetAsync(url);
             _logger.LogInformation("Get request for url '{url}' completed.", url);
@@ -243,7 +249,7 @@ public class Cron : AbstractController
         catch(Exception e)
         {
             const string message = "Error after sending get request for url '{url}'";
-            _logger.LogError(e, message, (string.IsNullOrWhiteSpace(url) ? urlSegmentValue : url));
+            _logger.LogError(e, message, url);
             var now = DateTime.UtcNow;
                 
             return new InvocationResult

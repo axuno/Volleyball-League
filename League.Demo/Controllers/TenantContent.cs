@@ -1,4 +1,4 @@
-﻿using System.Net;
+﻿using League.Routing;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.ViewEngines;
@@ -9,7 +9,7 @@ namespace League.Controllers;
 /// <summary>
 /// This controller is able to return any tenant-specific content from <see cref="Scriban"/> templates.
 /// </summary>
-[Route("{organization:MatchingTenant}")]
+[Route(TenantRouteConstraint.Template)]
 public class TenantContent : AbstractController
 {
     // Note:
@@ -33,7 +33,7 @@ public class TenantContent : AbstractController
     [Route("{category=home}/{topic=index}")]
     public IActionResult Index(string category = "home", string topic = "index")
     {
-        // Note: Indicate the current controller-specific directory ("Organization") with the "./" prefix
+        // Note: Indicate the current controller-specific tenant directory with the "./" prefix
         var view = $"./{_tenantContext.SiteContext.FolderName}/{category}_{topic}";
         var result = _viewEngine.FindView(_actionContext, view, false);
         if(!result.Success) return NotFound();

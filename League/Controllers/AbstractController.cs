@@ -1,5 +1,9 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
+using League.MultiTenancy;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Routing;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace League.Controllers;
 
@@ -8,6 +12,9 @@ namespace League.Controllers;
 /// </summary>
 public abstract class AbstractController : Controller
 {
+    private TenantLink? _tenantLink;
+    private LinkGenerator? _generalLink;
+
     /// <summary>
     /// Returns a JSON result which will be evaluated in the JavaScript for a
     /// Bootstrap modal form in order to redirect the browser to the target URL.
@@ -34,5 +41,29 @@ public abstract class AbstractController : Controller
     protected long GetCurrentUserId()
     {
         return long.Parse(User.Claims.First(c => c.Type == System.Security.Claims.ClaimTypes.NameIdentifier).Value);
+    }
+
+    /// <summary>
+    /// Gets the <see cref="MultiTenancy.TenantLink" /> generator.
+    /// </summary>
+    protected TenantLink TenantLink
+    {
+        get
+        {
+            _tenantLink ??= HttpContext.RequestServices.GetRequiredService<TenantLink>();
+            return _tenantLink;
+        }
+    }
+
+    /// <summary>
+    /// Gets the <see cref="LinkGenerator" /> from the AspNetCore.Routing namespace.
+    /// </summary>
+    protected LinkGenerator GeneralLink
+    {
+        get
+        {
+            _generalLink ??= TenantLink.LinkGenerator;
+            return _generalLink;
+        }
     }
 }

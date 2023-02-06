@@ -1,6 +1,8 @@
 ﻿using System;
+using League.MultiTenancy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.Extensions.DependencyInjection;
 using TournamentManager.MultiTenancy;
 
 namespace League.ControllerAttributes;
@@ -19,8 +21,9 @@ public class TeamApplicationAllowedAttribute : ActionFilterAttribute
                                                                              StringComparison.OrdinalIgnoreCase)
                 )))
         {
-            filterContext.Result = new RedirectToActionResult(nameof(Controllers.TeamApplication.List),
-                nameof(Controllers.TeamApplication), new { Organization = tenantContext.SiteContext.UrlSegmentValue });
+            var tenantLink = filterContext.HttpContext.RequestServices.GetRequiredService<TenantLink>();
+            filterContext.Result = new RedirectResult(tenantLink.Action(nameof(Controllers.TeamApplication.List),
+                nameof(Controllers.TeamApplication))!);
         }
     }
 }

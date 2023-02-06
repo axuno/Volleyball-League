@@ -36,7 +36,7 @@ public class TenantResolver
 
         var request = _httpContext.Request;
         // first segment:  /
-        // second segment: organization/
+        // second segment: tenant/
         // third segment:  account/
         var uri = new Uri(request.GetDisplayUrl());
         // used if site is identified by the first segment of the URI

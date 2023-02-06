@@ -4,6 +4,8 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using League.Models.UploadViewModels;
+using League.MultiTenancy;
+using League.Routing;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -18,7 +20,7 @@ using TournamentManager.MultiTenancy;
 
 namespace League.Controllers;
 
-[Route("{organization:MatchingTenant}/[controller]")]
+[Route(TenantRouteConstraint.Template + "/[controller]")]
 public class Upload : AbstractController
 {
     private readonly ITenantContext _tenantContext;
@@ -167,6 +169,6 @@ public class Upload : AbstractController
             _loggerFactory.CreateLogger<TeamPhotoStaticFile>());
         photoFile.DeleteMostRecentFile(id);
 
-        return RedirectToAction(nameof(TeamPhoto), nameof(Upload), new { Organization = _tenantContext.SiteContext.UrlSegmentValue, id});
+        return Redirect(TenantLink.Action(nameof(TeamPhoto), nameof(Upload), new { id })!);
     }
 }

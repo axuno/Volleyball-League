@@ -6,6 +6,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using League.BackgroundTasks;
 using League.Models.RankingViewModels;
+using League.MultiTenancy;
+using League.Routing;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
@@ -22,7 +24,7 @@ namespace League.Controllers;
 /// <summary>
 /// The <see cref="Controller"/> for ranking tables.
 /// </summary>
-[Route("{organization:MatchingTenant}/[controller]")]
+[Route(TenantRouteConstraint.Template + "/[controller]")]
 public class Ranking : AbstractController
 {
     private readonly ITenantContext _tenantContext;
@@ -43,7 +45,7 @@ public class Ranking : AbstractController
     [HttpGet]
     public IActionResult Index()
     {
-        return Redirect(Url.Action(nameof(Table), nameof(Ranking), new { Organization = _tenantContext.SiteContext.UrlSegmentValue }) ?? string.Empty);
+        return Redirect(TenantLink.Action(nameof(Table), nameof(Ranking)) ?? string.Empty);
     }
 
     /// <summary>
@@ -92,7 +94,7 @@ public class Ranking : AbstractController
 
             id ??= roundLegPeriods.Max(rlp => rlp.TournamentId);
             if (roundLegPeriods.Count > 0 && roundLegPeriods.All(rlp => rlp.TournamentId != id))
-                return RedirectToAction(nameof(AllTimeTournament), nameof(Ranking), new { Organization = _tenantContext.SiteContext.UrlSegmentValue, id = string.Empty });
+                return Redirect(TenantLink.Action(nameof(AllTimeTournament), nameof(Ranking), new { id = string.Empty })!);
 
             var model = new AllTimeTournamentModel(rankingList, roundLegPeriods) { SelectedTournamentId = id };
             return View(Views.ViewNames.Ranking.AllTimeForTournament, model);
@@ -113,7 +115,7 @@ public class Ranking : AbstractController
             var roundLegPeriods = await GetRoundLegPeriodsCached(rankingList, cancellationToken);
 
             if (rankingList.Count > 0 && rankingList.All(rl => rl.TeamId != id))
-                return RedirectToAction(nameof(AllTimeTournament), nameof(Ranking), new { Organization = _tenantContext.SiteContext.UrlSegmentValue, id = string.Empty });
+                return Redirect(TenantLink.Action(nameof(AllTimeTournament), nameof(Ranking), new { id = string.Empty })!);
 
             var model = new AllTimeTeamModel(rankingList, roundLegPeriods) { SelectedTeamId = id };
             return View(Views.ViewNames.Ranking.AllTimeForTeam, model);

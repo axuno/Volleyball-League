@@ -30,7 +30,7 @@ public class RankingUpdateTask : IBackgroundTask
     public const string RankingImageFolder = "ranking-images";
 
     /// <summary>
-    /// Template for chart images. {0}: organization key, {1}: round number {2}: <see cref="string.Empty"/> or * for searching files.
+    /// Template for chart images. {0}: tenant key, {1}: round number {2}: <see cref="string.Empty"/> or * for searching files.
     /// </summary>
     public const string RankingChartFilenameTemplate = "chart_{0}_round_{1}_t{2}.png";
 

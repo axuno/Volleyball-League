@@ -13,7 +13,7 @@
     <h2 class="h2">@ViewData["Title"]</h2>
     <hr class="mb-2" />
     @* Form with only 1 input field can be submitted with enter key. So we have to prevent default submit behavior and trigger a click on saveBtn *@
-    <form asp-controller="@nameof(TeamApplication)" asp-action="@nameof(TeamApplication.SelectTeam)" asp-route-organization="@tenantUrlSegment" method="post" role="form">
+    <form asp-controller="@nameof(TeamApplication)" asp-action="@nameof(TeamApplication.SelectTeam)" asp-route-tenant="@tenantUrlSegment" method="post" role="form">
         <site-validation-summary show="All" unique-error-text="true"></site-validation-summary>
         <div class="row">
             <div class="form-group col-12 col-md-8">
@@ -47,12 +47,12 @@
         <div class="row">
             <div class="form-group col-12 col-md-6">
                 <label class="mt-0">@Localizer["The team has never participated before"]</label>
-                <a asp-controller="@nameof(TeamApplication)" asp-action="@nameof(TeamApplication.EditTeam)" asp-route-organization="@tenantUrlSegment" asp-route-isnew="true" class="btn btn-primary">@Localizer["Create a new team"]</a>
+                <a asp-controller="@nameof(TeamApplication)" asp-action="@nameof(TeamApplication.EditTeam)" asp-route-tenant="@tenantUrlSegment" asp-route-isnew="true" class="btn btn-primary">@Localizer["Create a new team"]</a>
             </div>
         </div>
         <div class="row">
             <div class="form-group col-12 col-md-6">
-                <a asp-controller="@nameof(TeamApplication)" asp-action="@nameof(TeamApplication.Start)" asp-route-organization="@tenantUrlSegment" class="btn btn-secondary">@Localizer["Back"]</a>
+                <a asp-controller="@nameof(TeamApplication)" asp-action="@nameof(TeamApplication.Start)" asp-route-tenant="@tenantUrlSegment" class="btn btn-secondary">@Localizer["Back"]</a>
             </div>
         </div>
     </form>

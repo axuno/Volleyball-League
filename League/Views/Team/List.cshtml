@@ -59,7 +59,7 @@
                                     <tr>
                                         <td>@t.TeamNameForRound</td>
                                         <td>@t.TeamClubName</td>
-                                        <td class="text-center"><a asp-action="@nameof(League.Controllers.Team.Single)" asp-controller="@nameof(League.Controllers.Team)" asp-route-organization="@tenantUrlSegment" asp-route-id="@t.TeamId" class=""><i class="fas fa-ellipsis-h"></i></a></td>
+                                        <td class="text-center"><a asp-action="@nameof(League.Controllers.Team.Single)" asp-controller="@nameof(League.Controllers.Team)" asp-route-tenant="@tenantUrlSegment" asp-route-id="@t.TeamId" class=""><i class="fas fa-ellipsis-h"></i></a></td>
                                     </tr>
                                 }
                             }

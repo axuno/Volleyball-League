@@ -18,12 +18,12 @@ public class TeamPhotoStaticFile : AbstractStaticFile
     private readonly ILogger<TeamPhotoStaticFile> _logger;
 
     /// <summary>
-    /// Template for saving team photos. {0}: organization key, {1}: team id {2}: <see cref="DateTime.Ticks"/>  {3} file extension
+    /// Template for saving team photos. {0}: tenant key, {1}: team id {2}: <see cref="DateTime.Ticks"/>  {3} file extension
     /// </summary>
     private readonly string _filenameTemplate = "photo_{0}_team_{1}_t{2}.{3}";
 
     /// <summary>
-    /// Pattern for finding team photos. {0}: organization key, {1}: team id
+    /// Pattern for finding team photos. {0}: tenant key, {1}: team id
     /// </summary>
     private readonly string _fileSearchPattern = "photo_{0}_team_{1}_t*.*";
 

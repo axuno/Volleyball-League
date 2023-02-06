@@ -25,7 +25,7 @@
 <div class="mb-0 pb-1">
     <h2 class="h2">@ViewData["Title"]</h2>
     <hr />
-    <form asp-controller="@nameof(Match)" asp-action="@nameof(Match.EnterResult)" asp-route-organization="@tenantUrlSegment" method="post" role="form">
+    <form asp-controller="@nameof(Match)" asp-action="@nameof(Match.EnterResult)" asp-route-tenant="@tenantUrlSegment" method="post" role="form">
         <site-validation-summary show="All" warning="@Model.IsWarning"></site-validation-summary>
         <input name="IsValid" type="hidden" value="@ViewData.ModelState.IsValid.ToString()" />@* needed for unobtrusive validation *@
         <input hidden="hidden" asp-for="Id" />
@@ -127,7 +127,7 @@
                     }
                     else
                     {
-                        <a asp-controller="@nameof(Match)" asp-action="@nameof(Match.Fixtures)" asp-route-organization="@tenantUrlSegment" class="btn btn-lg btn-secondary">@Localizer["Cancel"]</a>
+                        <a asp-controller="@nameof(Match)" asp-action="@nameof(Match.Fixtures)" asp-route-tenant="@tenantUrlSegment" class="btn btn-lg btn-secondary">@Localizer["Cancel"]</a>
                     }
                 }
                 <button type="submit" class="btn btn-lg btn-primary">@Localizer["Save"]</button>

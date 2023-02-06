@@ -44,11 +44,11 @@
             }
             if (tournamentCount >= 5)
             {
-                <a class="btn btn-primary btn-sm mr-2 mb-2 d-none@(id == Model.SelectedTournamentId ? " active" : "")" asp-action="@nameof(League.Controllers.Ranking.AllTimeTournament)" asp-controller="@nameof(Ranking)" asp-route-organization="@tenantUrlSegment" asp-route-id="@id" data-toggle="tooltip" title="@name" role="button">@($"{period.Start.Value.Year}.{period.Start.Value.Month} - {period.End.Value.Year}.{period.End.Value.Month}")</a>
+                <a class="btn btn-primary btn-sm mr-2 mb-2 d-none@(id == Model.SelectedTournamentId ? " active" : "")" asp-action="@nameof(League.Controllers.Ranking.AllTimeTournament)" asp-controller="@nameof(Ranking)" asp-route-tenant="@tenantUrlSegment" asp-route-id="@id" data-toggle="tooltip" title="@name" role="button">@($"{period.Start.Value.Year}.{period.Start.Value.Month} - {period.End.Value.Year}.{period.End.Value.Month}")</a>
             }
             else
             {
-                <a class="btn btn-primary btn-sm mr-2 mb-2@(id == Model.SelectedTournamentId ? " active" : "")" asp-action="@nameof(League.Controllers.Ranking.AllTimeTournament)" asp-controller="@nameof(Ranking)" asp-route-organization="@tenantUrlSegment" asp-route-id="@id" data-toggle="tooltip" title="@name" role="button">@($"{period.Start.Value.Year}.{period.Start.Value.Month} - {period.End.Value.Year}.{period.End.Value.Month}")</a>
+                <a class="btn btn-primary btn-sm mr-2 mb-2@(id == Model.SelectedTournamentId ? " active" : "")" asp-action="@nameof(League.Controllers.Ranking.AllTimeTournament)" asp-controller="@nameof(Ranking)" asp-route-tenant="@tenantUrlSegment" asp-route-id="@id" data-toggle="tooltip" title="@name" role="button">@($"{period.Start.Value.Year}.{period.Start.Value.Month} - {period.End.Value.Year}.{period.End.Value.Month}")</a>
             }
         }
     </div>
@@ -104,7 +104,7 @@
                                         <td class="team">
                                             @{ var linkTitle = rankRow.TeamName != rankRow.TeamNameForRound ? Localizer["Team name in this round"].Value + ": \"" + rankRow.TeamNameForRound + "\"" : null;}
                                             <div class="text-truncate" data-toggle="tooltip" title="@linkTitle">
-                                                <a asp-action="@nameof(Ranking.AllTimeTeam)" asp-controller="@nameof(Ranking)" asp-route-organization="@tenantUrlSegment" asp-route-id="@rankRow.TeamId">@rankRow.TeamName</a>
+                                                <a asp-action="@nameof(Ranking.AllTimeTeam)" asp-controller="@nameof(Ranking)" asp-route-tenant="@tenantUrlSegment" asp-route-id="@rankRow.TeamId">@rankRow.TeamName</a>
                                             </div>
                                             <div class="text-truncate">@rankRow.ClubName</div>
                                         </td>

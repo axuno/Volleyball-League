@@ -17,7 +17,7 @@
 }
 <h2 class="h2">@(Localizer.GetHtml("Associate your <strong>{0}</strong> account", loginProvider)).</h2>
 <hr />
-<form asp-controller="@nameof(Account)" asp-action="@nameof(Account.ExternalSignInConfirmation)" asp-route-organization="@tenantUrlSegment" asp-route-returnurl="@ViewData["ReturnUrl"]" method="post" class="col-md-8 col-sm-10 col-12 pl-0" role="form">
+<form asp-controller="@nameof(Account)" asp-action="@nameof(Account.ExternalSignInConfirmation)" asp-route-tenant="@tenantUrlSegment" asp-route-returnurl="@ViewData["ReturnUrl"]" method="post" class="col-md-8 col-sm-10 col-12 pl-0" role="form">
     <site-alert type="Success">
         @(Localizer.GetHtml("You have successfully authenticated with <strong>{0}</strong>", loginProvider)).
     </site-alert>

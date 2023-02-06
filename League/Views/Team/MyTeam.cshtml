@@ -8,6 +8,7 @@
 @using TournamentManager.DAL.EntityClasses
 @inject IViewLocalizer Localizer
 @inject ITenantContext TenantContext
+@inject TenantLink TenantLink
 @inject RegionInfo Region
 @inject PhoneNumberService PhoneNumberService
 @model League.Models.TeamViewModels.MyTeamShowModel
@@ -49,7 +50,7 @@
                             <div><h5>@Localizer["Team"]</h5></div>
                             <div>
                                 <button type="button" site-toggle-modal-ajax
-                                        site-data-url="@Url.Action(nameof(Team.Edit), nameof(Team), new { Organization = tenantUrlSegment, teamId = teamVenueInfo.TeamId})"
+                                        site-data-url="@TenantLink.Action(nameof(Team.Edit), nameof(Team), new { teamId = teamVenueInfo.TeamId })"
                                         site-authorize-resource site-resource="@(new TeamEntity(teamVenueInfo.TeamId))"
                                         site-requirement="@League.Authorization.TeamOperations.EditTeam" class="btn btn-sm btn-primary">
                                     @Localizer["Edit"]
@@ -88,7 +89,7 @@
                                 <a class="btn btn-sm btn-primary d-inline-block"
                                    asp-controller="@nameof(Upload)"
                                    asp-action="@nameof(Upload.TeamPhoto)"
-                                   asp-route-organization="@tenantUrlSegment"
+                                   asp-route-tenant="@tenantUrlSegment"
                                    asp-route-id="@teamVenueInfo.TeamId"
                                    site-authorize-resource site-resource="@(new TeamEntity(teamVenueInfo.TeamId))"
                                    site-requirement="@League.Authorization.TeamOperations.ChangePhoto">@Localizer["Change"]</a>
@@ -102,7 +103,7 @@
                                 <a class="btn btn-sm btn-primary d-inline-block"
                                    asp-controller="@nameof(Upload)"
                                    asp-action="@nameof(Upload.TeamPhoto)"
-                                   asp-route-organization="@tenantUrlSegment"
+                                   asp-route-tenant="@tenantUrlSegment"
                                    asp-route-id="@teamVenueInfo.TeamId"
                                    site-authorize-resource site-resource="@(new TeamEntity(teamVenueInfo.TeamId))"
                                    site-requirement="@League.Authorization.TeamOperations.ChangePhoto">@Localizer["Upload"]</a>
@@ -116,7 +117,7 @@
                             <div><h5>@Localizer["Venue"]</h5></div>
                             <div>
                                 <button type="button"
-                                        site-toggle-modal-ajax site-data-url="@Url.Action(nameof(Team.ChangeVenue), new { Organization = tenantUrlSegment, tid = teamVenueInfo.TeamId })"
+                                        site-toggle-modal-ajax site-data-url="@TenantLink.Action(nameof(Team.ChangeVenue), nameof(Team), new { tid = teamVenueInfo.TeamId })"
                                         site-authorize-resource site-resource="@(new TeamEntity(teamVenueInfo.TeamId))"
                                         site-requirement="@League.Authorization.TeamOperations.EditTeam"
                                         class="btn btn-sm btn-primary">
@@ -135,7 +136,7 @@
                                     <div>
                                         <a class="link" asp-action="@nameof(Map.Venue)"
                                            asp-controller="@nameof(Map)"
-                                           asp-route-organization="@tenantUrlSegment"
+                                           asp-route-tenant="@tenantUrlSegment"
                                            asp-route-id="@teamVenueInfo.VenueId.Value">@Localizer["Direction"]</a>
                                     </div>
                                     <div class="text-muted small">
@@ -160,8 +161,8 @@
                                 <div>
                                     <button type="button"
                                             site-toggle-modal-ajax
-                                            site-data-url="@Url.Action(nameof(Role.Add),
-                                                           nameof(Role), new {Organization = tenantUrlSegment, tid = teamVenueInfo.TeamId, ReturnUrl = Url.Action(nameof(Team.MyTeam), nameof(Team), new {Organization = tenantUrlSegment, id = teamVenueInfo.TeamId})})} )"
+                                            site-data-url="@TenantLink.Action(nameof(Role.Add),
+                                                           nameof(Role), new { tid = teamVenueInfo.TeamId, ReturnUrl = TenantLink.Action(nameof(Team.MyTeam), nameof(Team), new { id = teamVenueInfo.TeamId})})} )"
                                             site-authorize-resource site-resource="@(new TeamEntity(teamVenueInfo.TeamId))"
                                             site-requirement="@League.Authorization.TeamOperations.AddTeamMember"
                                             class="btn btn-sm btn-primary">
@@ -208,7 +209,7 @@
                                                 }
                                                 <div>
                                                     <button type="button"
-                                                            site-toggle-modal-ajax site-data-url="@Url.Action(nameof(Role.Remove), nameof(Role), new { Organization = tenantUrlSegment, rolename = userInfo.IsManager ? League.Identity.Constants.ClaimType.ManagesTeam : League.Identity.Constants.ClaimType.PlaysInTeam, uid = userInfo.UserId, un = userInfo.CompleteName, tid = teamVenueInfo.TeamId, ReturnUrl = Url.Action(nameof(Team.MyTeam), new {Organization = tenantUrlSegment, id = teamVenueInfo.TeamId})})"
+                                                            site-toggle-modal-ajax site-data-url="@TenantLink.Action(nameof(Role.Remove), nameof(Role), new { rolename = userInfo.IsManager ? League.Identity.Constants.ClaimType.ManagesTeam : League.Identity.Constants.ClaimType.PlaysInTeam, uid = userInfo.UserId, un = userInfo.CompleteName, tid = teamVenueInfo.TeamId, ReturnUrl = TenantLink.Action(nameof(Team.MyTeam), nameof(Team), new { id = teamVenueInfo.TeamId})})"
                                                             site-authorize-resource site-resource="@(new TeamEntity(teamVenueInfo.TeamId))"
                                                             site-requirement="@League.Authorization.TeamOperations.RemoveTeamMember"
                                                             class="btn btn-sm btn-primary">

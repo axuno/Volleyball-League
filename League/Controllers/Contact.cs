@@ -9,6 +9,7 @@ using League.Routing;
 using League.Views;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
 using TournamentManager.MultiTenancy;
@@ -39,7 +40,7 @@ public class Contact : AbstractController
         _tenantContext = tenantContext;
     }
         
-    [HttpGet("{organization:MatchingTenant}/contact", Name = RouteNames.TenantContact)]
+    [HttpGet(TenantRouteConstraint.Template + "/contact", Name = RouteNames.TenantContact)]
     [HttpGet("/contact", Name = RouteNames.GeneralContact)]
     public IActionResult Index()
     {
@@ -53,11 +54,11 @@ public class Contact : AbstractController
         }
             
         // Note: The form will use route name to generate the action url
-        // Also, if we are in an organization context, the organization contact url will be used, otherwise the general one
+        // Also, if we are in an tenant context, the tenant organization contact url will be used, otherwise the general one
         return View(ViewNames.Contact.Index, model);
     }
 
-    [HttpPost("{organization:MatchingTenant}/contact", Name = RouteNames.TenantContact)]
+    [HttpPost(TenantRouteConstraint.Template + "/contact", Name = RouteNames.TenantContact)]
     [HttpPost("/contact", Name = RouteNames.GeneralContact)]
     [ValidateAntiForgeryToken]
     public IActionResult Index(ContactViewModel model)
@@ -74,10 +75,13 @@ public class Contact : AbstractController
         SendEmail(model);
         _logger.LogDebug("Mail sent: {@model}", model);
 
-        return _tenantContext.IsDefault ? RedirectToRoute(RouteNames.GeneralContactConfirmation) : RedirectToRoute(RouteNames.TenantContactConfirmation, new { Organization = _tenantContext.SiteContext.UrlSegmentValue });
+        return _tenantContext.IsDefault
+            ? RedirectToRoute(RouteNames.GeneralContactConfirmation)
+            : RedirectToRoute(RouteNames.TenantContactConfirmation,
+                new RouteValueDictionary { { TenantRouteConstraint.Key, _tenantContext.SiteContext.UrlSegmentValue } });
     }
 
-    [HttpGet("{organization:MatchingTenant}/contact-confirmation", Name = RouteNames.TenantContactConfirmation)]
+    [HttpGet(TenantRouteConstraint.Template + "/contact-confirmation", Name = RouteNames.TenantContactConfirmation)]
     [HttpGet("/contact-confirmation", Name = RouteNames.GeneralContactConfirmation)]
     public IActionResult ContactConfirmation()
     {

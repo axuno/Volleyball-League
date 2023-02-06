@@ -9,6 +9,8 @@ using League.BackgroundTasks;
 using League.Emailing.Creators;
 using League.Helpers;
 using League.Models.MatchViewModels;
+using League.MultiTenancy;
+using League.Routing;
 using League.Views;
 using MailMergeLib.AspNet;
 using Microsoft.AspNetCore.Authorization;
@@ -33,7 +35,7 @@ namespace League.Controllers;
 /// <summary>
 /// The class for handling matches.
 /// </summary>
-[Route("{organization:MatchingTenant}/[controller]")]
+[Route(TenantRouteConstraint.Template + "/[controller]")]
 public class Match : AbstractController
 {
     private readonly ITenantContext _tenantContext;
@@ -89,7 +91,7 @@ public class Match : AbstractController
     [HttpGet("")]
     public IActionResult Index()
     {
-        return Redirect(Url.Action(nameof(Results), nameof(Match), new { Organization = _tenantContext.SiteContext.UrlSegmentValue })!);
+        return Redirect(TenantLink.Action(nameof(Results), nameof(Match))!);
     }
 
     /// <summary>
@@ -370,7 +372,7 @@ public class Match : AbstractController
         }
 
         // redirect to results overview, where success message is shown
-        return RedirectToAction(nameof(Results), nameof(Match), new { Organization = _tenantContext.SiteContext.UrlSegmentValue });
+        return Redirect(TenantLink.Action(nameof(Results), nameof(Match))!);
     }
 
     /// <summary>
@@ -494,7 +496,7 @@ public class Match : AbstractController
 
         // redirect to fixture overview, where success message is shown
         TempData.Put<EditFixtureViewModel.FixtureMessage>(nameof(EditFixtureViewModel.FixtureMessage), fixtureMessage);
-        return RedirectToAction(nameof(Fixtures), nameof(Match), new { Organization = _tenantContext.SiteContext.UrlSegmentValue });
+        return Redirect(TenantLink.Action(nameof(Fixtures), nameof(Match))!);
     }
 
     /// <summary>
@@ -788,8 +790,8 @@ public class Match : AbstractController
     private string GetReturnUrl()
     {
         var returnUrl = HttpContext.Request.GetTypedHeaders().Referer?.ToString();
-        return (returnUrl == Url.Action(nameof(Results), nameof(Match), new { Organization = _tenantContext.SiteContext.UrlSegmentValue }, Url.ActionContext.HttpContext.Request.Scheme)
-            ? Url.Action(nameof(Results), nameof(Match), new { Organization = _tenantContext.SiteContext.UrlSegmentValue }) // editing a result is exceptional
-            : Url.Action(nameof(Fixtures), nameof(Match), new { Organization = _tenantContext.SiteContext.UrlSegmentValue })) ?? string.Empty; // coming from fixtures is normal
+        return (returnUrl == TenantLink.Action(nameof(Results), nameof(Match))
+            ? TenantLink.Action(nameof(Results), nameof(Match)) // editing a result is exceptional
+            : TenantLink.Action(nameof(Fixtures), nameof(Match))) ?? string.Empty; // coming from fixtures is normal
     }
 }

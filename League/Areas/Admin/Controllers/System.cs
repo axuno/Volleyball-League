@@ -1,5 +1,6 @@
 ﻿using League.Controllers;
 using League.Identity;
+using League.Routing;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -7,7 +8,7 @@ namespace League.Areas.Admin.Controllers;
 
 [Authorize(Roles = Constants.RoleName.SystemManager)]
 [Area("Admin")]
-[Route("{organization:MatchingTenant}/[area]/[controller]")]
+[Route(TenantRouteConstraint.Template + "/[area]/[controller]")]
 public class System : AbstractController
 {
     [Route("")]
