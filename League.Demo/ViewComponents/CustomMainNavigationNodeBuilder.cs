@@ -52,8 +52,8 @@ public class CustomMainNavigationNodeBuilder : MainNavigationNodeBuilder
         {
             Key = "Top_Info",
             Text = Localizer["Info"],
-            Url = TenantLink.Action(nameof(League.Controllers.TenantContent.Index),
-                nameof(League.Controllers.TenantContent),
+            Url = TenantLink.Action(nameof(TenantContent.Index),
+                nameof(TenantContent),
                 new { category = "info", content = string.Empty })
         };
         info.ChildNodes.AddRange(new []
@@ -62,14 +62,14 @@ public class CustomMainNavigationNodeBuilder : MainNavigationNodeBuilder
             {
                 Key = "Info_RuleOfGame",
                 Text = Localizer["Rule of game"],
-                Url = TenantLink.Action(nameof(League.Controllers.TenantContent.Index), nameof(League.Controllers.TenantContent),
+                Url = TenantLink.Action(nameof(TenantContent.Index), nameof(TenantContent),
                     new { category = "info", topic = "ruleofgame" })
             },
             new MainNavigationComponentModel.NavigationNode
             {
                 Key = "Info_News",
                 Text = Localizer["News"],
-                Url = TenantLink.Action(nameof(League.Controllers.TenantContent.Index), nameof(League.Controllers.TenantContent),
+                Url = TenantLink.Action(nameof(TenantContent.Index), nameof(TenantContent),
                     new { category = "info", topic = "news"})
             }
         });

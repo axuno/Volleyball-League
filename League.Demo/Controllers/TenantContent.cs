@@ -4,13 +4,13 @@ using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.ViewEngines;
 using TournamentManager.MultiTenancy;
 
-namespace League.Controllers;
+namespace League.Web.Controllers;
 
 /// <summary>
 /// This controller is able to return any tenant-specific content from <see cref="Scriban"/> templates.
 /// </summary>
 [Route(TenantRouteConstraint.Template)]
-public class TenantContent : AbstractController
+public class TenantContent : League.Controllers.AbstractController
 {
     // Note:
     // We cannot search a view by 'File.Exists' because this won't work with precompiled views.
@@ -31,6 +31,7 @@ public class TenantContent : AbstractController
     }
 
     [Route("{category=home}/{topic=index}")]
+    [HttpGet]
     public IActionResult Index(string category = "home", string topic = "index")
     {
         // Note: Indicate the current controller-specific tenant directory with the "./" prefix

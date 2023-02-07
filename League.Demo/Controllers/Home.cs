@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using League.Views;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -20,6 +19,7 @@ public class Home : League.Controllers.AbstractController
     }
 
     [Route("")]
+    [HttpGet]
     public IActionResult Index()
     {
         if (Request.Cookies.TryGetValue(CookieNames.MostRecentTenant, out var urlSegmentValue) && _tenantStore.GetTenants().Any(sl => sl.Value.SiteContext.UrlSegmentValue == urlSegmentValue))
@@ -31,36 +31,42 @@ public class Home : League.Controllers.AbstractController
     }
 
     [Route("/[action]")]
+    [HttpGet]
     public IActionResult Welcome()
     {
         return View(ViewNames.Home.Welcome);
     }
 
     [Route("/about-league")]
+    [HttpGet]
     public IActionResult AboutLeague()
     {
         return View(ViewNames.Home.AboutLeague);
     }
 
     [Route("/[action]")]
+    [HttpGet]
     public IActionResult Overview()
     {
         return View(ViewNames.Home.Overview);
     }
 
     [Route("/legal-disclosure")]
+    [HttpGet]
     public IActionResult LegalDisclosure()
     {
         return View(ViewNames.Home.LegalDisclosure);
     }
 
     [Route("/[action]")]
+    [HttpGet]
     public IActionResult Privacy()
     {
         return View(ViewNames.Home.Privacy);
     }
 
     [Route("/picture-credits")]
+    [HttpGet]
     public IActionResult PictureCredits()
     {
         return View(ViewNames.Home.PictureCredits);

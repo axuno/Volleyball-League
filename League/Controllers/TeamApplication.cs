@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Threading;
@@ -144,7 +143,7 @@ public class TeamApplication : AbstractController
         }
 
         // The SelectedTeamId is a required field => must have a value now
-        Debug.Assert(selectTeamModel.SelectedTeamId != null, "selectTeamModel.SelectedTeamId != null");
+        System.Diagnostics.Debug.Assert(selectTeamModel.SelectedTeamId != null, "selectTeamModel.SelectedTeamId != null");
 
         var sessionModel = await GetModelFromSession(cancellationToken);
         if (sessionModel.TeamInRoundIsSet && sessionModel.TeamIsSet &&
