@@ -3,9 +3,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using League.Components;
-using League.Web.ViewComponents;
+using League.WebApp.ViewComponents;
 
-namespace League.Web;
+namespace League.WebApp;
 
 /// <summary>
 /// The demo startup class to setup and configure the league.

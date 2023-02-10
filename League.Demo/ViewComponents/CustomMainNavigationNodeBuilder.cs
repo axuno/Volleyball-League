@@ -3,13 +3,13 @@ using System.Linq;
 using System.Threading.Tasks;
 using League.Components;
 using League.MultiTenancy;
-using League.Web.Controllers;
+using League.WebApp.Controllers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
 using TournamentManager.MultiTenancy;
 
-namespace League.Web.ViewComponents;
+namespace League.WebApp.ViewComponents;
 
 /// <summary>
 /// Builds the standard league main navigation nodes

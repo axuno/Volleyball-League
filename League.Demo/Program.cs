@@ -11,7 +11,7 @@ using NLog.Extensions.Logging;
 using TournamentManager.MultiTenancy;
 using Axuno.BackgroundTask;
 
-namespace League.Web;
+namespace League.WebApp;
 
 public class Program
 {

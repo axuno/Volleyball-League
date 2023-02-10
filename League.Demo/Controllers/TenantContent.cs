@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.ViewEngines;
 using TournamentManager.MultiTenancy;
 
-namespace League.Web.Controllers;
+namespace League.WebApp.Controllers;
 
 /// <summary>
 /// This controller is able to return any tenant-specific content from <see cref="Scriban"/> templates.

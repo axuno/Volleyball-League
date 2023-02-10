@@ -6,7 +6,7 @@
  */
  #pragma warning disable CS1591
 
-namespace League.Web.Views;
+namespace League.WebApp.Views;
 
 public class ViewNames
 {
