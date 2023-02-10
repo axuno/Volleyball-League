@@ -158,31 +158,21 @@ public class RankingUpdateTask : IBackgroundTask
                 var newRankingList = newRanking.GetList(out var newLastUpdated);
                     
                 // Has there been a change to the ranking?
-                if (newLastUpdated == currentLastUpdated && !EnforceUpdate) continue;
+                if (newLastUpdated == currentLastUpdated && !EnforceUpdate)
+                {
+                    if (!RoundChartImageExist(roundId, currentLastUpdated))
+                    {
+                        await CreateRankingChart(roundId, newRanking, teamsInRound, currentLastUpdated, cancellationToken); 
+                    }
+                    continue;
+                }
                 rankingWasUpdated = true;
-
+                
                 // Update the ranking table
                 await TenantContext.DbContext.AppDb.RankingRepository.ReplaceAsync(newRankingList,
                     roundId, cancellationToken);
 
-                /***** Chart file generation *****/
-
-                var chart = new RankingChart(newRanking,
-                        teamsInRound.Select(tir => (tir.TeamId, tir.TeamNameForRound)).ToList(),
-                        new RankingChart.ChartSettings
-                        {
-                            Title = string.Empty, XTitle = "MD", YTitle = "R", Width = 700, Height = 400,
-                            GraphBackgroundColorArgb = "#FFEFFFEF", PlotAreaBackgroundColorArgb = "#FFFFFFFF",
-                            FontName = "Arial, Helvetica, sans-serif", ShowLegend = false
-                        })
-                    {UseMatchDayMarker = true};
-
-                await using var chartStream = chart.GetPng();
-                await using var fileStream = File.Create(Path.Combine(_webHostEnvironment.WebRootPath, RankingImageFolder,
-                    string.Format(RankingChartFilenameTemplate, TenantContext.Identifier, roundId,
-                        DateTime.UtcNow.Ticks)));
-                chartStream.Seek(0, SeekOrigin.Begin);
-                await chartStream.CopyToAsync(fileStream, cancellationToken);
+                await CreateRankingChart(roundId, newRanking, teamsInRound, newLastUpdated, cancellationToken);
             }
         }
         catch (Exception e)
@@ -195,6 +185,44 @@ public class RankingUpdateTask : IBackgroundTask
         stopWatch.Stop();
         _logger.LogInformation("{RankingTask} completed in {ElapsedTime}ms", nameof(RankingUpdateTask), stopWatch.ElapsedMilliseconds);
 #endif
+    }
+
+    private async Task CreateRankingChart(long roundId, Ranking newRanking, IList<TeamInRoundEntity> teamsInRound,
+        DateTime updateTime, CancellationToken cancellationToken)
+    {
+        var chart = new RankingChart(newRanking,
+                teamsInRound.Select(tir => (tir.TeamId, tir.TeamNameForRound)).ToList(),
+                new RankingChart.ChartSettings
+                {
+                    Title = string.Empty, XTitle = "MD", YTitle = "R", Width = 700, Height = 400,
+                    GraphBackgroundColorArgb = "#FFEFFFEF", PlotAreaBackgroundColorArgb = "#FFFFFFFF",
+                    FontName = "Arial, Helvetica, sans-serif", ShowLegend = false
+                })
+            { UseMatchDayMarker = true };
+
+        await using var chartStream = chart.GetPng();
+        await using var fileStream = File.Create(Path.Combine(_webHostEnvironment.WebRootPath, RankingImageFolder,
+            string.Format(RankingChartFilenameTemplate, TenantContext!.Identifier, roundId,
+                updateTime.Ticks)));
+        chartStream.Seek(0, SeekOrigin.Begin);
+        await chartStream.CopyToAsync(fileStream, cancellationToken);
+        await fileStream.FlushAsync(cancellationToken);
+    }
+
+    private bool RoundChartImageExist(long roundId, DateTime updateTime)
+    {
+        try
+        {
+            var chartDirectory = new DirectoryInfo(Path.Combine(_webHostEnvironment.WebRootPath, RankingImageFolder));
+            return File.Exists(Path.Combine(chartDirectory.FullName,
+                string.Format(RankingChartFilenameTemplate, TenantContext!.Identifier, roundId, updateTime.Ticks)));
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e, "Could not delete one or more obsolete chart image files");
+        }
+
+        return false;
     }
 
     private void DeleteObsoleteChartImageFiles(IEnumerable<long> roundIds)
@@ -216,7 +244,7 @@ public class RankingUpdateTask : IBackgroundTask
         }
         catch (Exception e)
         {
-            _logger.LogError(e, "Could not delete one or more obsolete chart image files");
+            _logger.LogCritical(e, "Could not delete one or more obsolete chart image files");
         }
     }
 }

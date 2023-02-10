@@ -59,7 +59,7 @@ public class Program
         }
         catch (Exception e)
         {
-            logger.Fatal(e, "Application stopped after Exception {Exception}.");
+            logger.Fatal(e, "Application stopped after Exception.");
             throw;
         }
         finally
