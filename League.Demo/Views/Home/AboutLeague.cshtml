@@ -57,7 +57,7 @@
     <div class="row">
         <article class="col-8">
             @{
-                var leagueAssembly = System.Reflection.Assembly.GetAssembly(typeof(League.Startup))?.GetName();
+                var leagueAssembly = System.Reflection.Assembly.GetAssembly(typeof(League.LeagueStartup))?.GetName();
                 var tmAssembly = System.Reflection.Assembly.GetAssembly(typeof(TournamentManager.DateTimePeriod))?.GetName();
                 if (leagueAssembly != null && tmAssembly != null)
                 {

@@ -27,7 +27,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Net.Http.Headers;
-using NLog.Web;
 using SD.LLBLGen.Pro.ORMSupportClasses;
 using System;
 using System.Collections.Generic;
@@ -55,38 +54,21 @@ using NLog.Extensions.Logging;
 namespace League;
 
 /// <summary>
-/// The <see cref="League"/> start-up class.
+/// The startup class to setup and configure the the <see cref="League"/> Razor Class Library.
+/// Used in a derived class.
 /// </summary>
-public class Startup
+public static class LeagueStartup
 {
     /// <summary>
     /// The name of the configuration folder, which is relative to <see cref="HostingEnvironment.ContentRootPath"/>.
     /// </summary>
     public const string ConfigurationFolder = "Configuration";
-        
-    /// <summary>
-    /// This method gets called by the runtime. Use this method to add services to the container.
-    /// </summary>
-    /// <param name="configuration"></param>
-    /// <param name="webHostEnvironment"></param>
-    public Startup(IConfiguration configuration, IWebHostEnvironment webHostEnvironment)
-    {
-        Configuration = configuration;
-        WebHostEnvironment = webHostEnvironment;
-            
-        var loggerFactory = LoggerFactory.Create(builder =>
-        {
-            builder.AddNLog();                
-        });
 
-        Logger = loggerFactory.CreateLogger<Startup>();
-    }
-
-    private void ConfigureLlblgenPro(TenantStore tenantStore)
+    private static void ConfigureLLblGenPro(TenantStore tenantStore, IWebHostEnvironment environment, IConfiguration configuration)
     {
         foreach (var tenant in tenantStore.GetTenants().Values)
         {
-            var connectionString = Configuration.GetConnectionString(tenant.DbContext.ConnectionKey);
+            var connectionString = configuration.GetConnectionString(tenant.DbContext.ConnectionKey);
             RuntimeConfiguration.AddConnectionString(tenant.DbContext.ConnectionKey, connectionString);
             // Enable low-level (result set) caching when specified in selected queries
             // The cache of a query can be overwritten using property 'OverwriteIfPresent'
@@ -94,7 +76,7 @@ public class Startup
             CacheController.CachingEnabled = true;
         }
 
-        if (WebHostEnvironment.IsProduction())
+        if (environment.IsProduction())
         {
             RuntimeConfiguration.ConfigureDQE<SD.LLBLGen.Pro.DQE.SqlServer.SQLServerDQEConfiguration>(c => c
                 .SetTraceLevel(TraceLevel.Off)
@@ -112,32 +94,17 @@ public class Startup
     }
 
     /// <summary>
-    /// Gets the application configuration properties of this application.
+    /// This method MUST be called from the derived class.
+    /// It is used to add required <see cref="League"/> services to the service container.
     /// </summary>
-    public IConfiguration Configuration { get; }
-
-    /// <summary>
-    /// Gets the information about the web hosting environment of this application.
-    /// </summary>
-    public IWebHostEnvironment WebHostEnvironment { get; }
-        
-    /// <summary>
-    /// Gets the logger for class <see cref="Startup"/>.
-    /// </summary>
-    public ILogger<Startup> Logger { get; }
-
-    /// <summary>
-    /// This method MUST get called by the app using the League library.
-    /// It is used to add required League services to the service container.
-    /// </summary>
-    public void ConfigureServices(IServiceCollection services)
+    public static void ConfigureServices(IServiceCollection services, IWebHostEnvironment environment, IConfiguration configuration)
     {
         // Add services required for using options.
         services.AddOptions();
 
         #region * DataProtection service configuration *
 
-        // Usage: 
+        // Usage:
         // private readonly IDataProtector protector;
         // public SomeController(IDataProtectionProvider provider)
         // {  protector = provider.CreateProtector("isolation purpose");}
@@ -148,10 +115,10 @@ public class Startup
 
         // required for cookies and session cookies (will throw CryptographicException without)
         services.AddDataProtection()
-            .SetApplicationName(nameof(League))
+            .SetApplicationName(environment.ApplicationName)
             .SetDefaultKeyLifetime(TimeSpan.FromDays(360))
             .PersistKeysToFileSystem(
-                new DirectoryInfo(Path.Combine(WebHostEnvironment.ContentRootPath, "DataProtectionKeys")))
+                new DirectoryInfo(Path.Combine(environment.ContentRootPath, "DataProtectionKeys")))
             .UseCryptographicAlgorithms(new AuthenticatedEncryptorConfiguration()
             {
                 EncryptionAlgorithm = EncryptionAlgorithm.AES_256_CBC,
@@ -160,7 +127,7 @@ public class Startup
 
         // register the multi purpose DataProtector
         services.AddSingleton(typeof(League.DataProtection.DataProtector));
-            
+
         #endregion
 
         // Configure form upload limits
@@ -169,36 +136,37 @@ public class Startup
             fo.ValueLengthLimit = int.MaxValue;
             fo.MultipartBodyLengthLimit = int.MaxValue;
         });
-            
+
         // The default region of this app is "us", unless configured differently
         // The region info is used for country-specific data like phone numbers
-        var regionInfo = new RegionInfo(Configuration.GetSection("RegionInfo").Value ?? "us");
+        var regionInfo = new RegionInfo(configuration.GetSection("RegionInfo").Value ?? "us");
         services.AddSingleton<RegionInfo>(regionInfo);
 
         // The default culture of this app is "en". Supported cultures: en, de
-        CultureInfo.DefaultThreadCurrentCulture = new CultureInfo(Configuration.GetSection("CultureInfo:Culture").Value ?? $"en-{regionInfo.TwoLetterISORegionName}");
-        CultureInfo.DefaultThreadCurrentUICulture = new CultureInfo(Configuration.GetSection("CultureInfo:UiCulture").Value ?? $"en-{regionInfo.TwoLetterISORegionName}");
-            
+        CultureInfo.DefaultThreadCurrentCulture = new CultureInfo(configuration.GetSection("CultureInfo:Culture").Value ?? $"en-{regionInfo.TwoLetterISORegionName}");
+        CultureInfo.DefaultThreadCurrentUICulture = new CultureInfo(configuration.GetSection("CultureInfo:UiCulture").Value ?? $"en-{regionInfo.TwoLetterISORegionName}");
+
         // DO NOT USE `options => options.ResourcesPath = "..."` because then resource files in other locations won't be recognized (e.g. resx in the same folder as the controller class)
         services.AddLocalization();
 
-        #region **** New Multi Tenancy (since v4.3.0) *****************************
+        #region ******** Multi Tenancy ********************************************
 
         services.AddSingleton<TenantStore>(sp =>
         {
-            var store = (TenantStore) new TenantStore(Configuration, sp.GetRequiredService<ILogger<TournamentManager.MultiTenancy.TenantStore>>())
+            var logger = sp.GetRequiredService<ILogger<TournamentManager.MultiTenancy.TenantStore>>();
+            var store = (TenantStore) new TenantStore(configuration, logger)
             {
                 GetTenantConfigurationFiles = () =>
                 {
                     var configFolderFiles = Directory.GetFiles(
-                        Path.Combine(WebHostEnvironment.ContentRootPath, ConfigurationFolder),
-                        $"Tenant.*.{WebHostEnvironment.EnvironmentName}.config", SearchOption.TopDirectoryOnly).ToList();
+                        Path.Combine(environment.ContentRootPath, ConfigurationFolder),
+                        $"Tenant.*.{environment.EnvironmentName}.config", SearchOption.TopDirectoryOnly).ToList();
 
-                    Logger.LogInformation("Tenant config files: {Config}", configFolderFiles);
+                    logger.LogInformation("Tenant config files: {Config}", configFolderFiles);
                     return configFolderFiles.ToArray();
                 }
             }.LoadTenants();
-                
+
             var tenants = store.GetTenants().Values.ToList();
             if (!tenants.Any(t => t.IsDefault)) throw new Exception("No default tenant configuration found.");
             tenants.ForEach(t =>
@@ -206,15 +174,15 @@ public class Startup
                 if (string.IsNullOrWhiteSpace(t.DbContext.ConnectionString))
                     throw new Exception($"Tenant '{t.Identifier}': Connection string for key '{t.DbContext.ConnectionKey}' not found.");
             });
-                
-            ConfigureLlblgenPro(store);
-                
+
+            ConfigureLLblGenPro(store, environment, configuration);
+
             return store;
         });
-            
+
         services.AddScoped<MultiTenancy.TenantResolver>();
         services.AddScoped<ITenantContext>(sp => sp.GetRequiredService<MultiTenancy.TenantResolver>().Resolve());
-            
+
         #endregion
 
         services.Configure<IISOptions>(options => { });
@@ -233,8 +201,6 @@ public class Startup
             sp.GetRequiredService<LinkGenerator>(),
             sp.GetRequiredService<ITenantContext>()));
 
-        services.AddSingleton<IConfiguration>(Configuration);
-
         services.AddMemoryCache(); // Adds a default in-memory cache implementation
         // MUST be before AddMvc!
         services.AddSession(options =>
@@ -246,8 +212,8 @@ public class Startup
         });
 
         #region ** Identity and Authentication **
-           
-        var socialLogins = Configuration.GetSection(nameof(SocialLogins)).Get<SocialLogins>();
+
+        var socialLogins = configuration.GetSection(nameof(SocialLogins)).Get<SocialLogins>();
         if (socialLogins == null)
         {
             throw new InvalidOperationException("No social login configuration found.");
@@ -268,7 +234,7 @@ public class Startup
                 options.ClaimActions.MapJsonKey("urn:facebook:picture", "picture", "picture.data.url");
                 options.SaveTokens = true;
                 options.CorrelationCookie.Name = ".CorrAuth.League";
-                options.Events.OnRemoteFailure = context => 
+                options.Events.OnRemoteFailure = context =>
                 {
                     // Note: If this delegate is missing, errors with the external login lead to a System.Exception: access_denied;Description=Permissions error
                     var qsParameter =
@@ -332,7 +298,7 @@ public class Startup
         // Add before Application and External Cookie configuration and ConfigureApplicationCookie
         services.AddIdentity<ApplicationUser, ApplicationRole>(options =>
             {
-                Configuration.Bind("IdentityOptions", options); // bind to IdentityOptions section of appsettings.json
+                configuration.Bind("IdentityOptions", options); // bind to IdentityOptions section of appsettings.json
             })
             .AddDefaultTokenProviders()
             .AddUserStore<UserStore>()
@@ -348,7 +314,7 @@ public class Startup
             options.TokenLifespan = TimeSpan.FromDays(3)); // default: 1 day
 
         // Add for required user name length et al
-        services.Configure<LeagueUserValidatorOptions>(Configuration.GetSection(nameof(LeagueUserValidatorOptions)));
+        services.Configure<LeagueUserValidatorOptions>(configuration.GetSection(nameof(LeagueUserValidatorOptions)));
 
         #endregion
 
@@ -436,7 +402,7 @@ public class Startup
                 }
             };
         });
-            
+
         services.ConfigureExternalCookie(options =>
         {
             options.Cookie.HttpOnly = true;
@@ -451,7 +417,7 @@ public class Startup
             options.Cookie.SameSite = Microsoft.AspNetCore.Http.SameSiteMode.Lax; // don't use Strict here
             options.ExpireTimeSpan = TimeSpan.FromDays(30);
             options.SlidingExpiration = true;
-                
+
             options.Events.OnRedirectToAccessDenied = context =>
             {
                 var returnUrl = "?ReturnUrl=" + context.Request.Path + context.Request.QueryString;
@@ -486,15 +452,15 @@ public class Startup
             options =>
             {
                 options.Settings = Settings.Deserialize(
-                    Path.Combine(WebHostEnvironment.ContentRootPath, ConfigurationFolder,
-                        $@"MailMergeLib.{WebHostEnvironment.EnvironmentName}.config"),
+                    Path.Combine(environment.ContentRootPath, ConfigurationFolder,
+                        $@"MailMergeLib.{environment.EnvironmentName}.config"),
                     System.Text.Encoding.UTF8);
-                var fms = FileMessageStore.Deserialize(Path.Combine(WebHostEnvironment.ContentRootPath, League.Startup.ConfigurationFolder,
+                var fms = FileMessageStore.Deserialize(Path.Combine(environment.ContentRootPath, League.LeagueStartup.ConfigurationFolder,
                     "MailMergeLibMessageStore.config"), System.Text.Encoding.UTF8);
                 for (var i = 0; i < fms.SearchFolders.Length; i++)
                 {
                     // make relative paths absolute - ready to use
-                    fms.SearchFolders[i] = Path.Combine(WebHostEnvironment.WebRootPath, fms.SearchFolders[i]);
+                    fms.SearchFolders[i] = Path.Combine(environment.WebRootPath, fms.SearchFolders[i]);
                 }
                 options.MessageStore = fms;
             });
@@ -505,8 +471,8 @@ public class Startup
 
         services.AddSingleton<NodaTime.TimeZones.DateTimeZoneCache>(sp =>
             new NodaTime.TimeZones.DateTimeZoneCache(NodaTime.TimeZones.TzdbDateTimeZoneSource.Default));
-            
-        var tzId = Configuration.GetSection("TimeZone").Value ?? "America/New_York";
+
+        var tzId = configuration.GetSection("TimeZone").Value ?? "America/New_York";
         // TimeZoneConverter will use the culture of the current scope
         services.AddScoped(sp => new Axuno.Tools.DateAndTime.TimeZoneConverter(
             sp.GetRequiredService<NodaTime.TimeZones.DateTimeZoneCache>(), tzId, CultureInfo.CurrentCulture,
@@ -535,12 +501,12 @@ public class Startup
         services.Configure<RazorViewEngineOptions>(options =>
         {
             options.ViewLocationExpanders.Add(new Views.LeagueViewLocationExpander()); // R# will not resolve
-            // R# will resolve: options.ViewLocationFormats.Add("/Views/Path/{0}.cshtml"); 
+            // R# will resolve: options.ViewLocationFormats.Add("/Views/Path/{0}.cshtml");
         });
 
         #region *** Request Localization ***
 
-        if (bool.TryParse(Configuration.GetSection("CultureInfo:CulturePerRequest").Value, out var isCulturePerRequest) && isCulturePerRequest)
+        if (bool.TryParse(configuration.GetSection("CultureInfo:CulturePerRequest").Value, out var isCulturePerRequest) && isCulturePerRequest)
         {
             var supportedCultures = new[]
             {
@@ -583,10 +549,10 @@ public class Startup
 
         // Custom ViewLocalizer, necessary for views located in a library (still required in NET60):
         services.AddTransient<IViewLocalizer, League.Views.ViewLocalizer>();
-            
+
         var mvcBuilder = services.AddMvc(options =>
             {
-                options.EnableEndpointRouting = true;
+                options.EnableEndpointRouting = true; // the default
                 // Add model binding messages for errors that do not reach data annotation validation
                 options.ModelBindingMessageProvider.SetValueMustNotBeNullAccessor(x => string.Format(Resources.ModelBindingMessageResource.ValueMustNotBeNull));
                 options.ModelBindingMessageProvider.SetAttemptedValueIsInvalidAccessor((x, val) => string.Format(Resources.ModelBindingMessageResource.AttemptedValueIsInvalid, x, val));
@@ -607,7 +573,7 @@ public class Startup
             .AddControllersAsServices(); // will add controllers with ServiceLifetime.Transient
 #if DEBUG
         // Not to be added in production!
-        if (WebHostEnvironment.IsDevelopment())
+        if (environment.IsDevelopment())
         {
             mvcBuilder.AddRazorRuntimeCompilation();
         }
@@ -617,7 +583,7 @@ public class Startup
         services.AddTextTemplatingModule(vfs =>
             {
                 // The complete Templates folder is embedded in the project file
-                vfs.FileSets.AddEmbedded<Startup>(nameof(League) + ".Templates");
+                vfs.FileSets.AddEmbedded<LeagueTemplateRenderer>(nameof(League) + ".Templates");
                 // vfs.FileSets.AddPhysical(Path.Combine(Directory.GetCurrentDirectory(), "Templates"));
             },
             locOpt =>
@@ -629,15 +595,15 @@ public class Startup
                 renderOptions.MemberNotFoundAction = RenderErrorAction.ThrowError;
                 renderOptions.VariableNotFoundAction = RenderErrorAction.ThrowError;
 #else
-                    renderOptions.MemberNotFoundAction = RenderErrorAction.MaintainToken;
-                    renderOptions.VariableNotFoundAction = RenderErrorAction.MaintainToken;
+                renderOptions.MemberNotFoundAction = RenderErrorAction.MaintainToken;
+                renderOptions.VariableNotFoundAction = RenderErrorAction.MaintainToken;
 #endif
             });
-            
+
         #endregion
-            
+
         #region *** HostedServices related ***
-            
+
         // RazorViewToStringRenderer must be used with the current HttpContext
         // Note: RazorViewToStringRenderer is currently only used for MatchReport
         services.AddTransient<RazorViewToStringRenderer>();
@@ -646,49 +612,30 @@ public class Startup
         services.AddConcurrentBackgroundQueueService();
         services.AddTransient<SendEmailTask>();
         services.AddTransient<RankingUpdateTask>();
-            
+
         #endregion
     }
 
     /// <summary>
-    /// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+    /// This method MUST be called from the derived class.
+    /// It is used to configure the <see cref="League"/> Razor Class Library.
     /// </summary>
     /// <param name="app"></param>
-    /// <param name="_"></param>
     /// <param name="loggerFactory"></param>
-    public void Configure(IApplicationBuilder app, IHostEnvironment _, ILoggerFactory loggerFactory)
+    public static void Configure(WebApplication app, ILoggerFactory loggerFactory)
     {
+        var environment = app.Environment;
+
+        var configuration = app.Configuration;
+
         #region *** Logging ***
+
+        var logger = loggerFactory.CreateLogger(nameof(LeagueStartup));
 
         // Allow TournamentManager to make use of Microsoft.Extensions.Logging
         TournamentManager.AppLogging.Configure(loggerFactory);
 
-        #endregion
-
-        #region *** Ensure file system setup ***
-
-        foreach (var folder in new[]{ RankingUpdateTask.RankingImageFolder, Models.UploadViewModels.TeamPhotoStaticFile.TeamPhotoFolder})
-        {
-            var folderName = Path.Combine(WebHostEnvironment.WebRootPath, folder);
-            if (!Directory.Exists(folderName))
-            {
-                Logger.LogInformation("Folder '{folderName}' does not exist.", folderName);
-                try
-                {
-                    Directory.CreateDirectory(folderName);
-                    Logger.LogInformation("Folder '{folderName}' created.", folderName);
-                }
-                catch (Exception e)
-                {
-                    Logger.LogCritical(e, "Folder '{folderName}': Does not exist and could not be created.", folderName);
-                }
-            }
-        }
-            
-        #endregion
-
-        #region *** JsNLog ***
-        // add the JSNLog middleware before the UseStaticFiles middleware. 
+        // add the JSNLog middleware before the UseStaticFiles middleware.
         var jsNLogConfiguration =
             new JsnlogConfiguration
             {
@@ -698,6 +645,29 @@ public class Startup
                 }
             };
         app.UseJSNLog(new LoggingAdapter(loggerFactory), jsNLogConfiguration);
+
+        #endregion
+
+        #region *** Ensure file system setup ***
+
+        foreach (var folder in new[]{ RankingUpdateTask.RankingImageFolder, Models.UploadViewModels.TeamPhotoStaticFile.TeamPhotoFolder})
+        {
+            var folderName = Path.Combine(environment.WebRootPath, folder);
+            if (!Directory.Exists(folderName))
+            {
+                logger.LogInformation("Folder '{folderName}' does not exist.", folderName);
+                try
+                {
+                    Directory.CreateDirectory(folderName);
+                    logger.LogInformation("Folder '{folderName}' created.", folderName);
+                }
+                catch (Exception e)
+                {
+                    logger.LogCritical(e, "Folder '{folderName}': Does not exist and could not be created.", folderName);
+                }
+            }
+        }
+
         #endregion
 
         #region *** Static files ***
@@ -712,7 +682,7 @@ public class Startup
                 headers.CacheControl = new CacheControlHeaderValue
                 {
                     Public = true,
-                    MaxAge = TimeSpan.FromDays(30)
+                    MaxAge = TimeSpan.FromHours(1)
                 };
             }
         });
@@ -729,18 +699,18 @@ public class Startup
                 headers.CacheControl = new CacheControlHeaderValue
                 {
                     Public = true,
-                    MaxAge = TimeSpan.FromDays(30)
+                    MaxAge = TimeSpan.FromHours(1)
                 };
             }
         });
         #endregion
 
         app.UseCookiePolicy();
-            
+
         // Must be before UseMvc to avoid InvalidOperationException
         app.UseSession();
 
-        if (bool.TryParse(Configuration.GetSection("CultureInfo:CulturePerRequest").Value, out var isCulturePerRequest) && isCulturePerRequest)
+        if (bool.TryParse(configuration.GetSection("CultureInfo:CulturePerRequest").Value, out var isCulturePerRequest) && isCulturePerRequest)
             app.UseRequestLocalization(); // options are defined in services
 
         app.UseRouting();
@@ -748,29 +718,27 @@ public class Startup
         // UseAuthentication and UseAuthorization: after UseRouting and UseCors, but before UseEndpoints
         app.UseAuthentication();
         app.UseAuthorization();
-            
-        /* Before using endpoint routing, all anchor, form tags Url.(...) and TenantLink.Action(...) tag helpers had to be updated with TenantRouteConstraint.Template
-           (ViewContext.RouteData.Values[TenantRouteConstraint.Key]) because ambient parameters are not preserved here (as opposed to IRoute) */
-        app.UseEndpoints(endpoints =>
+
+        app.MapControllers();
+        app.MapRazorPages();
+    }
+
+    /// <summary>
+    /// Initializes the ranking table and charts on startup.
+    /// </summary>
+    /// <param name="tenantStore"></param>
+    /// <param name="queue"></param>
+    /// <param name="serviceProvider"></param>
+    public static void InitializeRankingAndCharts(TenantStore tenantStore, IBackgroundQueue queue, IServiceProvider serviceProvider)
+    {
+        foreach (var tenant in tenantStore.GetTenants().Values.Where(tc => !(string.IsNullOrEmpty(tc.Identifier) || tc.IsDefault)))
         {
-            endpoints.MapControllers();
-        });
-            
-        #region *** Initialize ranking tables and charts ***
-            
-        var tenantStore = app.ApplicationServices.GetRequiredService<TenantStore>();
-        var queue = app.ApplicationServices.GetRequiredService<IBackgroundQueue>();
-            
-        foreach (var tenant in tenantStore.GetTenants().Values.Where(tc => !(string.IsNullOrEmpty(tc.Identifier) || tc.IsDefault)))  
-        {
-            var rankingUpdateTask = app.ApplicationServices.GetRequiredService<RankingUpdateTask>();
+            var rankingUpdateTask = serviceProvider.GetRequiredService<RankingUpdateTask>();
             rankingUpdateTask.TenantContext = tenant;
             rankingUpdateTask.TournamentId = tenant.TournamentContext.MatchResultTournamentId;
             rankingUpdateTask.Timeout = TimeSpan.FromMinutes(5);
             rankingUpdateTask.EnforceUpdate = false;
             queue.QueueTask(rankingUpdateTask);
         }
-            
-        #endregion
     }
 }

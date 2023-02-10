@@ -49,6 +49,6 @@ public class DirectoryLocator
     /// <returns>Returns the full path to the folder that contains configuration files.</returns>
     public static string GetTargetConfigurationPath()
     {
-        return new DirectoryInfo(Path.Combine(GetTargetProjectPath(typeof(League.Startup)), League.Startup.ConfigurationFolder)).FullName;
+        return new DirectoryInfo(Path.Combine(GetTargetProjectPath(typeof(League.LeagueStartup)), League.LeagueStartup.ConfigurationFolder)).FullName;
     }
 }

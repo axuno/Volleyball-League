@@ -27,8 +27,6 @@ public static class AppLogging
         // So in Startup.Configure, we grab that reference of the LoggerFactory
         // and set it to this logging class so it becomes the primary reference.
         _factory = factory;
-            
-        // _factory.AddProvider(new NLog.Extensions.Logging.NLogLoggerProvider());
     }
 
     /// <summary>

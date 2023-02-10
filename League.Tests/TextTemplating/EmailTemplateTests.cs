@@ -59,7 +59,7 @@ public class EmailTemplateTests
     [Test]
     public void LeagueAssembly_Should_Contain_Embedded_Email_Templates()
     {
-        var resources = System.Reflection.Assembly.GetAssembly(typeof(League.Startup))?.GetManifestResourceNames();
+        var resources = System.Reflection.Assembly.GetAssembly(typeof(League.LeagueStartup))?.GetManifestResourceNames();
         Assert.That(resources != null && resources.Any(r => r.ToString().Contains("League.Templates.Email")));
     }
 

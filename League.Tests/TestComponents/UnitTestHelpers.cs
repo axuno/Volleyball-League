@@ -29,21 +29,21 @@ public class UnitTestHelpers
     public UnitTestHelpers()
     {
         _configPath = DirectoryLocator.GetTargetConfigurationPath();
-        var msSqlPath = Path.Combine(DirectoryLocator.GetTargetProjectPath(typeof(League.Startup)), @"..\..\MsSqlDb");
-            
+        var msSqlPath = Path.Combine(DirectoryLocator.GetTargetProjectPath(typeof(League.LeagueStartup)), @"..\..\MsSqlDb");
+
         // For the unit tests we
         _tenantContext = new TenantContext
         {
             DbContext =
             {
-                Catalog = "LeagueIntegration", 
-                Schema = "dbo", 
+                Catalog = "LeagueIntegration",
+                Schema = "dbo",
                 ConnectionKey = "dummy"
             }
         };
         _tenantContext.DbContext.ConnectionString =
             $"Server=(LocalDB)\\MSSQLLocalDB;AttachDbFilename={msSqlPath}\\LeagueIntegrationTest.mdf;Database={_tenantContext.DbContext.Catalog};Integrated Security=true";
-            
+
         // Make sure we can connect to the database
         using (var connection = new Microsoft.Data.SqlClient.SqlConnection(_tenantContext.DbContext.ConnectionString))
             try
@@ -54,7 +54,7 @@ public class UnitTestHelpers
             {
                 connection.Close();
             }
-            
+
         InitializeLlBlGenPro();
     }
 
@@ -124,7 +124,7 @@ public class UnitTestHelpers
             .AddTextTemplatingModule(vfs =>
                 {
                     // The complete Templates folder is embedded in the project file
-                    vfs.FileSets.AddEmbedded<Startup>(nameof(League) + ".Templates");
+                    vfs.FileSets.AddEmbedded<LeagueTemplateRenderer>(nameof(League) + ".Templates");
                     // vfs.FileSets.AddPhysical(Path.Combine(Directory.GetCurrentDirectory(), "Templates"));
                 },
                 locOpt =>
@@ -137,16 +137,15 @@ public class UnitTestHelpers
                 })
             .BuildServiceProvider();
     }
-        
+
 
     public static TestServer GetLeagueTestServer()
     {
-        var server = new TestServer(new Microsoft.AspNetCore.Hosting.WebHostBuilder()
-            .UseStartup<Startup>());
-            
+        var server = new TestServer(new Microsoft.AspNetCore.Hosting.WebHostBuilder());
+
         return server;
     }
-        
+
     private void HowToUseServices()
     {
         var logger = (ILogger) GetStandardServiceProvider().GetRequiredService(typeof(ILogger<UnitTestHelpers>));
