@@ -80,7 +80,7 @@
                                 for (var i = 0; i < matches.Count; i++)
                                 {
                                     var match = matches[i];
-                                    if (legs.Count > 1 && (i == 0 || match.RoundLegSequenceNo != matches[i - 1].RoundLegSequenceNo))
+                                    if (legs.Count >= 1 && !string.IsNullOrWhiteSpace(match.RoundLegDescription) && (i == 0 || match.RoundLegSequenceNo != matches[i - 1].RoundLegSequenceNo))
                                     {
                                         <tr><td colspan="@columnCount" class="leg-change"><span class="badge badge-dark">@match.RoundLegDescription</span></td></tr>
                                     }
