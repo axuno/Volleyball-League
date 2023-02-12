@@ -61,14 +61,23 @@ public class MatchRepository
         using var da = _dbContext.GetNewAdapter();
         return await da.FetchQueryAsync<PlannedMatchRow>(
             new QueryFactory().PlannedMatch.Where(filter), cancellationToken);
-
-        // return await Task.Run(() => GetPlannedMatches(tournamentId), cancellationToken);
     }
 
+    /// <summary>
+    /// Gets all data required for a match report sheet.
+    /// </summary>
+    /// <param name="tournamentId"></param>
+    /// <param name="id"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns>A <see cref="MatchReportSheetRow"/>, for the <see paramref="tournamentId"/> and the <see paramref="id"/> of the match, if the match does not already contain a result.</returns>
     public virtual async Task<MatchReportSheetRow?> GetMatchReportSheetAsync(long tournamentId, long id,
         CancellationToken cancellationToken)
     {
         using var da = _dbContext.GetNewAdapter();
+
+        if (!(await GetPlannedMatchesAsync(new PredicateExpression(PlannedMatchFields.TournamentId == tournamentId & PlannedMatchFields.Id == id), cancellationToken)).Any())
+            return null;
+
         return (await da.FetchQueryAsync(
             new QueryFactory().MatchReportSheet.Where(
                 MatchReportSheetFields.TournamentId == tournamentId & MatchReportSheetFields.Id == id),

@@ -19,6 +19,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
+using NuGet.Packaging.Signing;
 using PuppeteerSharp;
 using PuppeteerSharp.Media;
 using SD.LLBLGen.Pro.ORMSupportClasses;
@@ -616,14 +617,20 @@ public class Match : AbstractController
     }
 
     /// <summary>
-    /// Gets a match report sheet suitable for a printout.
+    /// Gets a match report sheet suitable for a printout,
+    /// if the match has not already been played.
     /// </summary>
     /// <param name="id"></param>
+    /// <param name="val">Expected to be greater than DateTime.UtcNow.AddHours(-12).Ticks</param>
     /// <param name="cancellationToken"></param>
-    /// <returns></returns>
-    [HttpGet("[action]/{id:long}")]
-    public async Task<IActionResult> ReportSheet(long id, CancellationToken cancellationToken)
+    /// <returns>A match report sheet suitable for a printout, if the match has not already been played.</returns>
+    [HttpGet("[action]/{id:long}/{val:long}")]
+    public async Task<IActionResult> ReportSheet(long id, long val, CancellationToken cancellationToken)
     {
+        // Prevent crawlers to download report sheets (link is valid for 12 hours)
+        if (!(val >= DateTime.UtcNow.AddHours(-12).Ticks && val <= DateTime.UtcNow.Ticks))
+            return Redirect(TenantLink.Action(nameof(Fixtures), nameof(Match))!);
+
         MatchReportSheetRow? model = null;
             
         try
