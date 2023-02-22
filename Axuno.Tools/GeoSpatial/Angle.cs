@@ -132,7 +132,7 @@ public class Angle : IComparable<Angle>, IEquatable<Angle>, IFormattable
     /// true if the value of angleA is different from the value of angleB;
     /// otherwise, false.
     /// </returns>
-    public static bool operator !=(Angle angleA, Angle angleB)
+    public static bool operator !=(Angle? angleA, Angle? angleB)
     {
         return !(angleA == angleB);
     }
@@ -389,7 +389,7 @@ public class Angle : IComparable<Angle>, IEquatable<Angle>, IFormattable
             numberFormat = provider.GetFormat(typeof(NumberFormatInfo)) as NumberFormatInfo;
         }
 
-        return numberFormat ?? CultureInfo.CurrentUICulture.NumberFormat;            
+        return numberFormat ?? CultureInfo.CurrentUICulture.NumberFormat;
     }
 
     /// <summary>

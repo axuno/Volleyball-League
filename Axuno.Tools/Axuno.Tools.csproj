@@ -3,6 +3,8 @@
     <PropertyGroup>
         <Product>Axuno.Tools</Product>
         <TargetFramework>net6.0</TargetFramework>
+        <LangVersion>latest</LangVersion>
+        <Nullable>enable</Nullable>
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
         <NoWarn>1591</NoWarn>
     </PropertyGroup>
