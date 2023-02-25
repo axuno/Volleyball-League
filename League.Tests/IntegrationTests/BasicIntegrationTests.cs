@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
 using NUnit.Framework;
 
-namespace League.Tests;
+namespace League.Test;
 
 [TestFixture]
 public class BasicIntegrationTests
