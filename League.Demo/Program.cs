@@ -20,11 +20,11 @@ public class Program
         // NLog: setup the logger first to catch all errors
         var currentDir = Directory.GetCurrentDirectory();
         var logger = NLogBuilder
-            .ConfigureNLog($@"{currentDir}\{LeagueStartup.ConfigurationFolder}\NLog.Internal.config")
+            .ConfigureNLog($@"{currentDir}{Path.DirectorySeparatorChar}{LeagueStartup.ConfigurationFolder}{Path.DirectorySeparatorChar}NLog.Internal.config")
             .GetCurrentClassLogger();
 
         // Allows for <target name="file" xsi:type="File" fileName = "${var:logDirectory}logfile.log"... >
-        NLog.LogManager.Configuration.Variables["logDirectory"] = currentDir + "\\";
+        NLog.LogManager.Configuration.Variables["logDirectory"] = currentDir + Path.DirectorySeparatorChar;
             
         try
         {
@@ -75,8 +75,9 @@ public class Program
         {
             Args = args,
             ApplicationName = typeof(Program).Assembly.GetName().Name, // don't use Assembly.Fullname
-            ContentRootPath = Directory.GetCurrentDirectory(),
-            WebRootPath = "wwwroot"
+            // Note: ContentRootPath and WebRootPath are detected by the framework.
+            //       If set explicitly as WebApplicationOptions, 
+            //       WebApplicationFactory in unit tests does not override them.
         });
         
         var absoluteConfigurationPath = Path.Combine(builder.Environment.ContentRootPath,
