@@ -50,6 +50,7 @@ public class ContactFormCreator : IMailMessageCreator
                 
             mailMergeMessage.MailMergeAddresses.Add(new MailMergeAddress(MailAddressType.From, tenantContext.SiteContext.Email.ContactFrom.Address));
             mailMergeMessage.MailMergeAddresses.Add(new MailMergeAddress(MailAddressType.To, tenantContext.SiteContext.Email.ContactTo.Address));
+            mailMergeMessage.MailMergeAddresses.Add(new MailMergeAddress(MailAddressType.ReplyTo, model.Form.Email));
 
             mailMergeMessage.PlainText = await renderer.RenderAsync(Templates.Email.TemplateName.ContactFormTxt, model,
                 Parameters.CultureInfo.TwoLetterISOLanguageName);
