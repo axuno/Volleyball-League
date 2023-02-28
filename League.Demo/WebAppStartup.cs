@@ -1,9 +1,13 @@
+using System.IO;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using League.Components;
 using League.WebApp.ViewComponents;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation;
+using Microsoft.Extensions.FileProviders;
 
 namespace League.WebApp;
 
@@ -15,7 +19,7 @@ public static class WebAppStartup
     /// <summary>
     /// The method gets called by <see cref="Program"/> at startup, BEFORE building the app is completed.
     /// </summary>
-    public static void ConfigureServices(IServiceCollection services)
+    public static void ConfigureServices(WebHostBuilderContext context, IServiceCollection services)
     {
         services.AddHttpsRedirection(options =>
         {
@@ -24,6 +28,20 @@ public static class WebAppStartup
             
         // Add custom navigation menu items to the League default navigation system
         services.AddScoped<IMainNavigationNodeBuilder, CustomMainNavigationNodeBuilder>();
+
+        if (context.HostingEnvironment.IsDevelopment())
+        {
+            // Add runtime compilation for the app
+            services.AddRazorPages().AddRazorRuntimeCompilation();
+            // Add runtime compilation for the League RCL
+            services.Configure<MvcRazorRuntimeCompilationOptions>(options =>
+            {
+                var leagueLibraryPath = Path.GetFullPath(
+                    Path.Combine(context.HostingEnvironment.ContentRootPath, "..", nameof(League)));
+
+                options.FileProviders.Add(new PhysicalFileProvider(leagueLibraryPath));
+            });
+        }
     }
 
     /// <summary>
@@ -54,7 +72,7 @@ public static class WebAppStartup
         }
 
         #endregion
-
+        
         app.UseHttpsRedirection();
 
         // DO NOT add the default endpoints! => Url.Action(...) could produce Urls violating attribute routes

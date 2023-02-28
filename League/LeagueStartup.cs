@@ -97,8 +97,11 @@ public static class LeagueStartup
     /// This method MUST be called from the derived class.
     /// It is used to add required <see cref="League"/> services to the service container.
     /// </summary>
-    public static void ConfigureServices(IServiceCollection services, IWebHostEnvironment environment, IConfiguration configuration)
+    public static void ConfigureServices(WebHostBuilderContext context, IServiceCollection services)
     {
+        var configuration = context.Configuration;
+        var environment = context.HostingEnvironment;
+
         // Add services required for using options.
         services.AddOptions();
 
@@ -213,11 +216,9 @@ public static class LeagueStartup
 
         #region ** Identity and Authentication **
 
-        var socialLogins = configuration.GetSection(nameof(SocialLogins)).Get<SocialLogins>();
-        if (socialLogins == null)
-        {
-            throw new InvalidOperationException("No social login configuration found.");
-        }
+        var socialLogins = configuration.GetSection(nameof(SocialLogins)).Get<SocialLogins>()
+                           ?? throw new InvalidOperationException("No social login configuration found.");
+
         services.AddAuthentication(options =>
             {
                 options.DefaultScheme = IdentityConstants.ApplicationScheme;
@@ -571,13 +572,7 @@ public static class LeagueStartup
                 options.ModelBinderProviders.Insert(0, new DateTimeModelBinderProvider());
             })
             .AddControllersAsServices(); // will add controllers with ServiceLifetime.Transient
-#if DEBUG
-        // Not to be added in production!
-        if (environment.IsDevelopment())
-        {
-            mvcBuilder.AddRazorRuntimeCompilation();
-        }
-#endif
+
         #region *** Text Templating ***
 
         services.AddTextTemplatingModule(vfs =>

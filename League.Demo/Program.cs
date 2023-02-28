@@ -42,8 +42,8 @@ public class Program
 
             builder.WebHost.ConfigureServices((context, services) =>
             {
-                LeagueStartup.ConfigureServices(services, context.HostingEnvironment, context.Configuration);
-                WebAppStartup.ConfigureServices(services);
+                LeagueStartup.ConfigureServices(context, services);
+                WebAppStartup.ConfigureServices(context, services);
             });
 
             var app = builder.Build();
@@ -75,9 +75,10 @@ public class Program
         {
             Args = args,
             ApplicationName = typeof(Program).Assembly.GetName().Name, // don't use Assembly.Fullname
-            // Note: ContentRootPath and WebRootPath are detected by the framework.
-            //       If set explicitly as WebApplicationOptions, 
-            //       WebApplicationFactory in unit tests does not override them.
+            WebRootPath = "wwwroot"
+            // Note: ContentRootPath is detected by the framework.
+            // If set explicitly as WebApplicationOptions, WebApplicationFactory in unit tests does not override it.
+            // Set WebRootPath as folder relative to ContentRootPath.
         });
         
         var absoluteConfigurationPath = Path.Combine(builder.Environment.ContentRootPath,
