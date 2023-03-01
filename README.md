@@ -35,7 +35,7 @@ This is the 4th generation of the software developed over the last 20 years and 
  
  ## Technology
  
-  * ASP.NET Core 3.1 web-development framework
+  * ASP.NET 6.0 web-development framework
   * C# programming language
   * Microsoft SQL-Server 2016+ database is currently implemented. [See supported databases](https://www.llblgen.com/Pages/specifications.aspx)
   * Bootstrap 4 and jQuery as the HTML, CSS, and JavaScript frameworks
