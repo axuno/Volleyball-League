@@ -3,53 +3,50 @@ using System.Linq;
 using System.Reflection;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 
-#nullable enable
+namespace League.Helpers;
 
-namespace League.Helpers
+/// <summary>
+/// Helper class for model meta data.
+/// </summary>
+public class MetaDataHelper
 {
+    private readonly IModelMetadataProvider _metadataProvider;
+
     /// <summary>
-    /// Helper class for model meta data.
+    /// CTOR.
     /// </summary>
-    public class MetaDataHelper
+    /// <param name="metadataProvider"></param>
+    public MetaDataHelper(IModelMetadataProvider metadataProvider)
     {
-        private readonly IModelMetadataProvider _metadataProvider;
+        _metadataProvider = metadataProvider;
+    }
 
-        /// <summary>
-        /// CTOR.
-        /// </summary>
-        /// <param name="metadataProvider"></param>
-        public MetaDataHelper(IModelMetadataProvider metadataProvider)
-        {
-            _metadataProvider = metadataProvider;
-        }
+    /// <summary>
+    /// Get the (not localized) DisplayName for the property of a model with <see cref="System.ComponentModel.DataAnnotations"/>.
+    /// </summary>
+    /// <typeparam name="T">The type of the class.</typeparam>
+    /// <param name="fieldName">The field name to get the raw (not localized) DisplayName.</param>
+    /// <example>
+    /// var displayName = MetaDataHelper.GetDisplayName(typeof(ChangeUsernameViewModel), nameof(ChangeUsernameViewModel.Username));
+    /// </example>
+    /// <returns>Returns the DisplayName, or NULL if the name was not found.</returns>
+    public static string? GetRawDisplayName<T>(string fieldName)
+    {
+        // First look into attributes of a type and its parents
+        // Note: There is also a DisplayNameAttribute
+        var attr = typeof(T).GetProperty(fieldName)?.GetCustomAttribute<DisplayAttribute>(true);
+        return attr?.Name;
+    }
 
-        /// <summary>
-        /// Get the (not localized) DisplayName for the property of a model with <see cref="System.ComponentModel.DataAnnotations"/>.
-        /// </summary>
-        /// <typeparam name="T">The type of the class.</typeparam>
-        /// <param name="fieldName">The field name to get the raw (not localized) DisplayName.</param>
-        /// <example>
-        /// var displayName = MetaDataHelper.GetDisplayName(typeof(ChangeUsernameViewModel), nameof(ChangeUsernameViewModel.Username));
-        /// </example>
-        /// <returns>Returns the DisplayName, or NULL if the name was not found.</returns>
-        public static string? GetRawDisplayName<T>(string fieldName)
-        {
-            // First look into attributes of a type and its parents
-            // Note: There is also a DisplayNameAttribute
-            var attr = typeof(T).GetProperty(fieldName)?.GetCustomAttribute<DisplayAttribute>(true);
-            return attr?.Name;
-        }
-
-        /// <summary>
-        /// Get the localized DisplayName for the property of a model with <see cref="System.ComponentModel.DataAnnotations"/>.
-        /// </summary>
-        /// <typeparam name="T">The type of the class.</typeparam>
-        /// <param name="propertyName">The field name to get the localized DisplayName.</param>
-        /// <returns>Returns the localized DisplayName, or NULL if the name was not found</returns>
-        public string? GetDisplayName<T>(string propertyName)
-        {
-            var mdp = _metadataProvider.GetMetadataForProperties(typeof(T));
-            return mdp.FirstOrDefault(d => d.Name == propertyName)?.DisplayName; // localized if resource file is present
-        }
+    /// <summary>
+    /// Get the localized DisplayName for the property of a model with <see cref="System.ComponentModel.DataAnnotations"/>.
+    /// </summary>
+    /// <typeparam name="T">The type of the class.</typeparam>
+    /// <param name="propertyName">The field name to get the localized DisplayName.</param>
+    /// <returns>Returns the localized DisplayName, or NULL if the name was not found</returns>
+    public string? GetDisplayName<T>(string propertyName)
+    {
+        var mdp = _metadataProvider.GetMetadataForProperties(typeof(T));
+        return mdp.FirstOrDefault(d => d.Name == propertyName)?.DisplayName; // localized if resource file is present
     }
 }

@@ -8,248 +8,245 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.Localization;
-using SD.LLBLGen.Pro.LinqSupportClasses;
 using TournamentManager;
 using TournamentManager.DAL;
 using TournamentManager.DAL.EntityClasses;
-using TournamentManager.DAL.HelperClasses;
 using TournamentManager.ExtensionMethods;
 using TournamentManager.Match;
 using TournamentManager.ModelValidators;
 
-namespace League.Models.MatchViewModels
+namespace League.Models.MatchViewModels;
+
+public class EnterResultViewModel
 {
-    public class EnterResultViewModel
+    private readonly IStringLocalizer<EnterResultViewModel> _localizer;
+    private readonly int _maxNumberOfSets;
+
+    public EnterResultViewModel()
     {
-        private readonly IStringLocalizer<EnterResultViewModel> _localizer;
-        private readonly int _maxNumberOfSets;
+        _localizer = CreateModelStringLocalizer();
+    }
 
-        public EnterResultViewModel()
-        { }
+    public EnterResultViewModel(TournamentEntity tournament, RoundEntity round, 
+        MatchEntity match, MatchRuleEntity matchRule, IList<TeamInRoundEntity> teamInRound, 
+        Axuno.Tools.DateAndTime.TimeZoneConverter timeZoneConverter) : this()
+    {
+        Tournament = tournament ?? throw new ArgumentNullException(nameof(tournament));
+        Round = round ?? throw new ArgumentNullException(nameof(round));
+        Match = match ?? throw new ArgumentNullException(nameof(match));
+        Opponent = new Opponent(
+            teamInRound.FirstOrDefault(o => o.TeamId == match.HomeTeamId)?.TeamNameForRound ?? throw new ArgumentNullException(nameof(teamInRound)),
+            teamInRound.FirstOrDefault(o => o.TeamId == match.GuestTeamId)?.TeamNameForRound ?? throw new ArgumentNullException(nameof(teamInRound))); ;
+        TimeZoneConverter = timeZoneConverter ?? throw new ArgumentNullException(nameof(timeZoneConverter));
+        
+        _maxNumberOfSets = matchRule.MaxNumOfSets();
+        MapEntityToFormFields();
+    }
 
-        public EnterResultViewModel(TournamentEntity tournament, RoundEntity round, 
-            MatchEntity match, MatchRuleEntity matchRule, IList<TeamInRoundEntity> teamInRound, 
-            Axuno.Tools.DateAndTime.TimeZoneConverter timeZoneConverter)
+    private static StringLocalizer<EnterResultViewModel> CreateModelStringLocalizer()
+    {
+        // no need for any params if using a StringLocalizer<T>
+        var options = Microsoft.Extensions.Options.Options.Create(new LocalizationOptions());
+        var factory = new ResourceManagerStringLocalizerFactory(options, Microsoft.Extensions.Logging.Abstractions.NullLoggerFactory.Instance);
+        // Note: The resource is also used by System.ComponentModel.DataAnnotations
+        return new StringLocalizer<EnterResultViewModel>(factory);
+    }
+
+    public void MapEntityToFormFields()
+    {
+        if (Match!.RealStart.HasValue && Match.RealEnd.HasValue)
         {
-            Tournament = tournament ?? throw new ArgumentNullException(nameof(tournament));
-            Round = round ?? throw new ArgumentNullException(nameof(round));
-            Match = match ?? throw new ArgumentNullException(nameof(match));
-            Opponent = new Opponent(
-                teamInRound.FirstOrDefault(o => o.TeamId == match.HomeTeamId)?.TeamNameForRound ?? throw new ArgumentNullException(nameof(teamInRound)),
-                teamInRound.FirstOrDefault(o => o.TeamId == match.GuestTeamId)?.TeamNameForRound ?? throw new ArgumentNullException(nameof(teamInRound))); ;
-            TimeZoneConverter = timeZoneConverter ?? throw new ArgumentNullException(nameof(timeZoneConverter));
-
-            _localizer = CreateModelStringLocalizer();
-
-            _maxNumberOfSets = matchRule.MaxNumOfSets();
-            MapEntityToFormFields();
-        }
-
-        private StringLocalizer<EnterResultViewModel> CreateModelStringLocalizer()
-        {
-            // no need for any params if using a StringLocalizer<T>
-            var options = Microsoft.Extensions.Options.Options.Create(new LocalizationOptions());
-            var factory = new ResourceManagerStringLocalizerFactory(options, Microsoft.Extensions.Logging.Abstractions.NullLoggerFactory.Instance);
-            // Note: The resource is also used by System.ComponentModel.DataAnnotations
-            return new StringLocalizer<EnterResultViewModel>(factory);
-        }
-
-        public void MapEntityToFormFields()
-        {
-            if (Match.RealStart.HasValue && Match.RealEnd.HasValue)
-            {
-                var startDate = TimeZoneConverter.ToZonedTime(Match.RealStart);
-                var endDate = TimeZoneConverter.ToZonedTime(Match.RealEnd);
-                MatchDate = startDate.DateTimeOffset.Date;
-                MatchTimeFrom = startDate.DateTimeOffset.TimeOfDay;
-                MatchTimeTo = endDate.DateTimeOffset.TimeOfDay;
-                Remarks = Match.Remarks;
-            }
-            else
-            {
-                MatchDate = TimeZoneConverter.ToZonedTime(Match.PlannedStart)?.DateTimeOffset.Date;
-            }
-
-            Match.Sets.Sort((int)SetFieldIndex.SequenceNo, ListSortDirection.Ascending);
-            foreach (var set in Match.Sets)
-            {
-                Sets.Add(new PointResultNullable(set.HomeBallPoints, set.GuestBallPoints));
-            }
-
-            while (Sets.Count < _maxNumberOfSets)
-            {
-                Sets.Add(new PointResultNullable(null, null));
-            }
-
-            Id = Match.Id;
-
+            var startDate = TimeZoneConverter!.ToZonedTime(Match.RealStart);
+            var endDate = TimeZoneConverter.ToZonedTime(Match.RealEnd);
+            MatchDate = startDate?.DateTimeOffset.Date;
+            MatchTimeFrom = startDate?.DateTimeOffset.TimeOfDay;
+            MatchTimeTo = endDate?.DateTimeOffset.TimeOfDay;
             Remarks = Match.Remarks;
         }
-
-        public void MapFormFieldsToEntity()
+        else
         {
-            // Save match date/time to entity
-            if (MatchDate.HasValue && MatchTimeFrom.HasValue && MatchTimeTo.HasValue)
-            {
-                var period = new DateTimePeriod(MatchDate?.Add(MatchTimeFrom.Value), MatchDate?.Add(MatchTimeTo.Value));
-                Match.SetRealStart(TimeZoneConverter.ToUtc(period.Start), period.Duration());
-            }
-            else
-            {
-                Match.SetRealStart(null, TimeSpan.Zero);
-            }
-
-            // Add sets to entity
-            Match.Sets.Clear(true);
-            for (var i = 0; i < Sets.Count; i++)
-            {
-                // sets where home and guest ball points are NULL, will be ignored
-                if (Sets[i].Home.HasValue || Sets[i].Guest.HasValue)
-                {
-                    // home or guest NULL values are invalidated with -1
-                    Match.Sets.Add(new SetEntity { MatchId = Match.Id, SequenceNo = i + 1, HomeBallPoints = Sets[i].Home ?? -1, GuestBallPoints = Sets[i].Guest ?? -1 });
-                }
-            }
-
-            // point calculation must run before validation because of tie-break handling
-            Match.Sets.CalculateSetPoints(Round.SetRule, Round.MatchRule);
-            Match.Remarks = Remarks;
-            Match.ChangeSerial++;
-            Match.IsComplete = true;
+            MatchDate = TimeZoneConverter!.ToZonedTime(Match.PlannedStart)?.DateTimeOffset.Date;
         }
 
-        #region *** Form fields ***
+        Match.Sets.Sort((int)SetFieldIndex.SequenceNo, ListSortDirection.Ascending);
+        foreach (var set in Match.Sets)
+        {
+            Sets.Add(new PointResultNullable(set.HomeBallPoints, set.GuestBallPoints));
+        }
 
-        [HiddenInput]
-        public long Id { get; set; }
+        while (Sets.Count < _maxNumberOfSets)
+        {
+            Sets.Add(new PointResultNullable(null, null));
+        }
 
-        [HiddenInput]
-        public string Hash { get; set; }
+        Id = Match.Id;
 
-        /// <summary>
-        /// <see cref="ReturnUrl"/> is needed to return to either fixtures or results,
-        /// when the cancel button is clicked.
-        /// </summary>
-        [HiddenInput]
-        public string ReturnUrl { get; set; }
+        Remarks = Match.Remarks;
+    }
 
-        [Display(Name = "Match date")]
-        public DateTime? MatchDate { get; set; }
+    public void MapFormFieldsToEntity()
+    {
+        // Save match date/time to entity
+        if (MatchDate.HasValue && MatchTimeFrom.HasValue && MatchTimeTo.HasValue)
+        {
+            var period = new DateTimePeriod(MatchDate?.Add(MatchTimeFrom.Value), MatchDate?.Add(MatchTimeTo.Value));
+            Match!.SetRealStart(TimeZoneConverter!.ToUtc(period.Start), period.Duration());
+        }
+        else
+        {
+            Match!.SetRealStart(null, TimeSpan.Zero);
+        }
 
-        [Display(Name = "Match start time")]
-        public TimeSpan? MatchTimeFrom { get; set; }
+        // Add sets to entity
+        Match.Sets.Clear(true);
+        for (var i = 0; i < Sets.Count; i++)
+        {
+            // sets where home and guest ball points are NULL, will be ignored
+            if (Sets[i].Home.HasValue || Sets[i].Guest.HasValue)
+            {
+                // home or guest NULL values are invalidated with -1
+                Match.Sets.Add(new SetEntity { MatchId = Match.Id, SequenceNo = i + 1, HomeBallPoints = Sets[i].Home ?? -1, GuestBallPoints = Sets[i].Guest ?? -1 });
+            }
+        }
 
-        [Display(Name = "Match end time")]
-        public TimeSpan? MatchTimeTo { get; set; }
+        // point calculation must run before validation because of tie-break handling
+        Match.Sets.CalculateSetPoints(Round!.SetRule, Round.MatchRule);
+        Match.Remarks = Remarks;
+        Match.ChangeSerial++;
+        Match.IsComplete = true;
+    }
 
-        [Display(Name = "Ignore notices")]
-        public bool OverrideWarnings { get; set; }
+    #region *** Form fields ***
 
-        [Display(Name="Remarks")]
-        [MaxLength(2000)]
-        public string Remarks { get; set; }
+    [HiddenInput]
+    public long? Id { get; set; }
 
-        public List<PointResultNullable> Sets { get; set; } = new();
+    [HiddenInput]
+    public string? Hash { get; set; }
 
-        #endregion
+    /// <summary>
+    /// <see cref="ReturnUrl"/> is needed to return to either fixtures or results,
+    /// when the cancel button is clicked.
+    /// </summary>
+    [HiddenInput]
+    public string? ReturnUrl { get; set; }
 
-        public TournamentEntity Tournament { get; set; }
+    [Display(Name = "Match date")]
+    public DateTime? MatchDate { get; set; }
 
-        public RoundEntity Round { get; set; }
+    [Display(Name = "Match start time")]
+    public TimeSpan? MatchTimeFrom { get; set; }
 
-        public MatchEntity Match { get;}
+    [Display(Name = "Match end time")]
+    public TimeSpan? MatchTimeTo { get; set; }
 
-        public Opponent Opponent { get; }
+    [Display(Name = "Ignore notices")]
+    public bool OverrideWarnings { get; set; }
+
+    [Display(Name="Remarks")]
+    [MaxLength(2000)]
+    public string? Remarks { get; set; }
+
+    public List<PointResultNullable> Sets { get; set; } = new();
+
+    #endregion
+
+    public TournamentEntity? Tournament { get; set; }
+
+    public RoundEntity? Round { get; set; }
+
+    public MatchEntity? Match { get;}
+
+    public Opponent? Opponent { get; }
 
 
-        /// <summary>
-        /// If <c>true</c>, validation messages are warnings, which can be overridden with <see cref="OverrideWarnings"/>.
-        /// </summary>
-        public bool IsWarning { get; set; }
+    /// <summary>
+    /// If <c>true</c>, validation messages are warnings, which can be overridden with <see cref="OverrideWarnings"/>.
+    /// </summary>
+    public bool IsWarning { get; set; }
  
-        /// <summary>
-        /// The TimeZoneConverter, used by the razor view
-        /// </summary>
-        public Axuno.Tools.DateAndTime.TimeZoneConverter TimeZoneConverter { get; }
+    /// <summary>
+    /// The TimeZoneConverter, used by the razor view
+    /// </summary>
+    public Axuno.Tools.DateAndTime.TimeZoneConverter? TimeZoneConverter { get; }
 
-        private string ComputeInputHash()
+    private string ComputeInputHash()
+    {
+        return Axuno.Tools.Hash.Md5.GetHash(string.Join(string.Empty,
+            Id.ToString(),
+            MatchDate?.Ticks.ToString() ?? string.Empty,
+            MatchTimeFrom?.Ticks.ToString() ?? string.Empty,
+            MatchTimeTo?.ToString() ?? string.Empty,
+            string.Join(string.Empty, Sets.Select(s => s.Home.ToString() + s.Guest.ToString())), 
+            Remarks));
+    }
+
+    public async Task<bool> ValidateAsync(MatchResultValidator validator, ModelStateDictionary modelState)
+    {
+        await validator.CheckAsync(CancellationToken.None);
+
+        foreach (var fact in validator.GetFailedFacts())
         {
-            return Axuno.Tools.Hash.Md5.GetHash(string.Join(string.Empty,
-                Id.ToString(),
-                MatchDate?.Ticks.ToString() ?? string.Empty,
-                MatchTimeFrom?.Ticks.ToString() ?? string.Empty,
-                MatchTimeTo?.ToString() ?? string.Empty,
-                string.Join(string.Empty, Sets.Select(s => s.Home.ToString() + s.Guest.ToString())), 
-                Remarks));
-        }
-
-        public async Task<bool> ValidateAsync(MatchResultValidator validator, ModelStateDictionary modelState)
-        {
-            await validator.CheckAsync(CancellationToken.None);
-
-            foreach (var fact in validator.GetFailedFacts())
+            if (fact.Type == FactType.Critical || fact.Type == FactType.Error)
             {
-                if (fact.Type == FactType.Critical || fact.Type == FactType.Error)
+                if (fact.FieldNames.Contains(nameof(MatchResultValidator.Model.RealStart)) 
+                    || fact.FieldNames.Contains(nameof(MatchResultValidator.Model.RealEnd)))
                 {
-                    if (fact.FieldNames.Contains(nameof(MatchResultValidator.Model.RealStart)) 
-                        || fact.FieldNames.Contains(nameof(MatchResultValidator.Model.RealEnd)))
-                    {
-                        modelState.AddModelError(nameof(EnterResultViewModel.MatchDate), fact.Message);
-                    }
+                    modelState.AddModelError(nameof(EnterResultViewModel.MatchDate), fact.Message);
+                }
 
-                    if (fact.Id == MatchResultValidator.FactId.SetsValidatorSuccessful)
+                if (fact.Id == MatchResultValidator.FactId.SetsValidatorSuccessful)
+                {
+                    foreach (var setsError in validator.SetsValidator.GetFailedFacts())
                     {
-                        foreach (var setsError in validator.SetsValidator.GetFailedFacts())
+                        // This the the hint for existing errors in single sets
+                        if (setsError.Id == SetsValidator.FactId.AllSetsAreValid)
                         {
-                            // This the the hint for existing errors in single sets
-                            if (setsError.Id == SetsValidator.FactId.AllSetsAreValid)
+                            foreach (var singleSet in validator.SetsValidator.SingleSetErrors)
                             {
-                                foreach (var singleSet in validator.SetsValidator.SingleSetErrors)
-                                {
-                                    modelState.AddModelError($"set-{singleSet.SequenceNo-1}", string.Concat(string.Format(_localizer["Set #{0}"], singleSet.SequenceNo), ": ", singleSet.ErrorMessage));
-                                }
+                                modelState.AddModelError($"set-{singleSet.SequenceNo-1}", string.Concat(string.Format(_localizer["Set #{0}"], singleSet.SequenceNo), ": ", singleSet.ErrorMessage));
                             }
-                            else
-                            {
-                                // Errors about sets in general
-                                modelState.AddModelError("", setsError.Message);
-                            }
+                        }
+                        else
+                        {
+                            // Errors about sets in general
+                            modelState.AddModelError("", setsError.Message);
                         }
                     }
                 }
-                else
-                {
-                    modelState.AddModelError(string.Empty, fact.Message);
-                    // Validator generates FactType.Warning only, if no errors exist
-                    IsWarning = true;
-                }
             }
-
-            // The Hash is re-calculated with the new submitted values.
-            // We have to compare to the original hidden Hash field value,
-            // because to override warnings, form fields must be unchanged since last post
-            var newHash = ComputeInputHash();
-            if (IsWarning && OverrideWarnings && newHash == Hash)
+            else
             {
-                modelState.Clear();
-                IsWarning = false;
+                modelState.AddModelError(string.Empty, fact.Message);
+                // Validator generates FactType.Warning only, if no errors exist
+                IsWarning = true;
             }
-
-            if (!modelState.IsValid)
-            {
-                // Show checkbox unchecked
-                OverrideWarnings = false;
-                // Set hash field value to latest form fields content
-                Hash = newHash;
-            }
-
-            return modelState.IsValid;
         }
 
-        public class MatchResultMessage
+        // The Hash is re-calculated with the new submitted values.
+        // We have to compare to the original hidden Hash field value,
+        // because to override warnings, form fields must be unchanged since last post
+        var newHash = ComputeInputHash();
+        if (IsWarning && OverrideWarnings && newHash == Hash)
         {
-            public long MatchId { get; set; }
-            public bool ChangeSuccess { get; set; }
+            modelState.Clear();
+            IsWarning = false;
         }
+
+        if (!modelState.IsValid)
+        {
+            // Show checkbox unchecked
+            OverrideWarnings = false;
+            // Set hash field value to latest form fields content
+            Hash = newHash;
+        }
+
+        return modelState.IsValid;
+    }
+
+    public class MatchResultMessage
+    {
+        public long? MatchId { get; set; }
+        public bool ChangeSuccess { get; set; }
     }
 }

@@ -11,7 +11,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TournamentManager", "Tourna
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Axuno.Tools", "..\Axuno.Tools\Axuno.Tools.csproj", "{0C1CC276-0494-4F1F-BE9F-94663F74F0B8}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TournamentManager.Tests", "TournamentManager.Test\TournamentManager.Tests.csproj", "{9DEB1B50-7917-4E0B-84FF-7DC053232D8F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TournamentManager.Tests", "TournamentManager.Tests\TournamentManager.Tests.csproj", "{9DEB1B50-7917-4E0B-84FF-7DC053232D8F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -4,7 +4,7 @@
 @inject Axuno.Tools.DateAndTime.TimeZoneConverter TimeZoneConverter
 @inject IOptions<DataProtectionTokenProviderOptions> TokenProviderOptions
 @{
-    var tokenExpiresOn = TimeZoneConverter.ToZonedTime(DateTime.UtcNow.Add(TokenProviderOptions.Value.TokenLifespan));
+    var tokenExpiresOn = TimeZoneConverter.ToZonedTime(DateTime.UtcNow.Add(TokenProviderOptions.Value.TokenLifespan))!;
     ViewData["Title"] = Localizer["Please confirm your email address"];
 }
 <h2>@ViewData["Title"].</h2>

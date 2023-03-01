@@ -2,12 +2,11 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace TournamentManager.Ranking
+namespace TournamentManager.Ranking;
+
+public enum RankComparerEnum
 {
-    public enum RankComparerEnum
-    {
-        StandardRankComparer,
-        AlternateRankComparer1,
-        AlternateRankComparer2
-    }
+    StandardRankComparer,
+    AlternateRankComparer1,
+    AlternateRankComparer2
 }

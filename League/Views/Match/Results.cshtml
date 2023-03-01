@@ -7,7 +7,7 @@
 @inject ITenantContext TenantContext
 @model League.Models.MatchViewModels.ResultsViewModel
 @{
-    ViewData["Title"] = Localizer["Match Results"].Value + " - " + Model.Tournament.Name;
+    ViewData["Title"] = Localizer["Match Results"].Value + " - " + Model.Tournament?.Name;
     var tenantUrlSegment = TenantContext.SiteContext.UrlSegmentValue;
     if (Model.CompletedMatches.Count == 0)
     {
@@ -76,16 +76,16 @@
                                 const string unknown = "-";
                                 var matches = Model.CompletedMatches.Where(m => m.RoundId == r.RoundId).OrderBy(m => m.RoundLegSequenceNo).ThenBy(m => m.MatchDate).ToList();
                                 var legs = matches.GroupBy(m => m.RoundLegSequenceNo).ToList();
-                                Axuno.Tools.DateAndTime.ZonedTime zonedTime;
+                                Axuno.Tools.DateAndTime.ZonedTime? zonedTime;
                                 for (var i = 0; i < matches.Count; i++)
                                 {
                                     var match = matches[i];
-                                    if (legs.Count > 1 && (i == 0 || match.RoundLegSequenceNo != matches[i - 1].RoundLegSequenceNo))
+                                    if (legs.Count >= 1 && !string.IsNullOrWhiteSpace(match.RoundLegDescription) && (i == 0 || match.RoundLegSequenceNo != matches[i - 1].RoundLegSequenceNo))
                                     {
                                         <tr><td colspan="@columnCount" class="leg-change"><span class="badge badge-dark">@match.RoundLegDescription</span></td></tr>
                                     }
                                     <tr>
-                                        <td class="opponents@(Model?.MatchResultMessage?.MatchId == match.Id ? " changed-result" : string.Empty)">
+                                        <td class="opponents@(Model.MatchResultMessage?.MatchId == match.Id ? " changed-result" : string.Empty)">
                                             <div class="text-truncate">@match.HomeTeamNameForRound</div>
                                             <div class="text-truncate">@match.GuestTeamNameForRound</div>
                                         </td>
@@ -139,7 +139,7 @@
                                                 </a>
                                                 <div class="dropdown-menu shadow" role="menu">
                                                     <a href="#" tabindex="0" data-round-id="@match.RoundId" data-team-name="@match.HomeTeamNameForRound" class="dropdown-item filter-link">@Localizer["Filter matches for this team"]</a>
-                                                    <a asp-action=@nameof(League.Controllers.Match.EnterResult) asp-controller=@nameof(League.Controllers.Match) asp-route-organization="@tenantUrlSegment" asp-route-id=@(match.Id)
+                                                    <a asp-action=@nameof(League.Controllers.Match.EnterResult) asp-controller=@nameof(League.Controllers.Match) asp-route-tenant="@tenantUrlSegment" asp-route-id=@(match.Id)
                                                        tabindex="0" class="dropdown-item"
                                                        site-authorize-resource site-resource=@ToMatchEntity(match)
                                                        site-requirement=@League.Authorization.MatchOperations.EnterResult>@Localizer["Edit this match"]</a>
@@ -151,7 +151,7 @@
                                                 </a>
                                                 <div class="dropdown-menu shadow" role="menu" aria-labelledby="dropdownMenuLink">
                                                     <a href="#" tabindex="0" data-round-id="@match.RoundId" data-team-name="@match.GuestTeamNameForRound" class="dropdown-item filter-link">@Localizer["Filter matches for this team"]</a>
-                                                    <a asp-action=@nameof(League.Controllers.Match.EnterResult) asp-controller=@nameof(League.Controllers.Match) asp-route-organization="@tenantUrlSegment" asp-route-id=@(match.Id)
+                                                    <a asp-action=@nameof(League.Controllers.Match.EnterResult) asp-controller=@nameof(League.Controllers.Match) asp-route-tenant="@tenantUrlSegment" asp-route-id=@(match.Id)
                                                        tabindex="0" class="dropdown-item"
                                                        site-authorize-resource site-resource=@ToMatchEntity(match)
                                                        site-requirement=@League.Authorization.MatchOperations.EnterResult>@Localizer["Edit this match"]</a>
@@ -166,7 +166,7 @@
                 </div>
                 @{ zonedTime = Model.TimeZoneConverter.ToZonedTime(Model.CompletedMatches.Where(m => m.RoundId == r.RoundId).Max(m => m.ModifiedOn)); }
                 <div class="text-muted">
-                    @Localizer["Last update"]: @zonedTime.DateTimeOffset.DateTime.ToShortDateString() @zonedTime.DateTimeOffset.DateTime.ToLongTimeString() @zonedTime.Abbreviation
+                    @Localizer["Last update"]: @zonedTime?.DateTimeOffset.DateTime.ToShortDateString() @zonedTime?.DateTimeOffset.DateTime.ToLongTimeString() @zonedTime?.Abbreviation
                 </div>
             </div>
         }
@@ -179,6 +179,11 @@
         var contextMenuColWidth = 5;
         var dateColWidth = 10;
         var opponentColWidth = 100 - resultColWidth * 3 - resultColWidth * maxNumOfSets - dateColWidth - contextMenuColWidth;
+        // CSS classes as string removes "CSS03 Unexpected character sequence in property value."
+        var resultCssClass = $".result {{ text-align: center; width: {resultColWidth}%;}}";
+        var contextMenuCssClass = $".context-menu {{ text-align: center; width: {contextMenuColWidth}%;}}";
+        var dateCssClass = $".date {{ width: {dateColWidth}%;}}";
+        var opponentsCssClass = $".opponents {{width: {opponentColWidth}%);}}";
     }
     <style type="text/css">
         #round-tabs .nav-link:not(.active) {border:solid 1px lightgray;}
@@ -187,11 +192,11 @@
         .changed-result { font-weight: bold; border-left: solid 8px lightgray !important}
         .team-filter { cursor: pointer;}
         .filter-link { /* javascript only */ }
-        .leg-change { padding: 0, margin:0}
-        .result { text-align: center; width:@(resultColWidth)%;}
-        .context-menu { text-align: center; width:@(contextMenuColWidth)%;}
-        .date { width: @(dateColWidth)%;}
-        .opponents {width:@(opponentColWidth)%)}
+        .leg-change { padding: 0; margin:0}
+        @(resultCssClass)
+        @(contextMenuCssClass)
+        @(dateCssClass)
+        @(opponentsCssClass)
         .opponents > div {max-width: calc(45 * 1vw); padding-right: .5rem }
         @* /* striping */
         .odd { background-color: lightgray;}

@@ -67,7 +67,7 @@
                             <tr>
                                 <td class="tournament">
                                     <div class="text-truncate">
-                                        <a asp-action="@nameof(Ranking.AllTimeTournament)" asp-controller="@nameof(Ranking)" asp-route-organization="@tenantUrlSegment" asp-route-id="@rankRow.TournamentId">@rankRow.TournamentName</a>
+                                        <a asp-action="@nameof(Ranking.AllTimeTournament)" asp-controller="@nameof(Ranking)" asp-route-tenant="@tenantUrlSegment" asp-route-id="@rankRow.TournamentId">@rankRow.TournamentName</a>
                                     </div>
                                 </td>
                                 <td class="round">

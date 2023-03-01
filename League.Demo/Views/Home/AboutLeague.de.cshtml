@@ -1,0 +1,79 @@
+﻿@using League.Controllers
+@using League.Helpers
+@using League.Routing
+@using League.TagHelpers
+@{
+    ViewData.Title("Über Volleyball-Liga");
+}
+<div>
+    <h2 class="h2">@ViewData.Title()</h2>
+    <hr />
+</div>
+<div class="mb-0 pb-1">
+    <div class="row">
+        <article class="col-md-8">
+            <p class="font-weight-bolder text-primary">Die Volleyball-Liga Plattform bringt alles Notwendige mit, um eine Liga zu organisieren und den Spielbetrieb durchzuführen.</p>
+        </article>
+    </div>
+    <div class="row">
+        <article class="col-10 col-sm-8">
+            <h3 class="h3 pl-2 rounded">Features</h3>
+            <ul class="fa-ul">
+                <li><span class="fa-li"><i class="fas fa-check-square text-primary"></i></span>Hallen- und Beach-Ligen</li>
+                <li><span class="fa-li"><i class="fas fa-check-square text-primary"></i></span>Anmeldung von Teams</li>
+                <li><span class="fa-li"><i class="fas fa-check-square text-primary"></i></span>Teamkontakte und Spieler</li>
+                <li><span class="fa-li"><i class="fas fa-check-square text-primary"></i></span>Benutzerverwaltung und Berechtigungen</li>
+                <li><span class="fa-li"><i class="fas fa-check-square text-primary"></i></span>Spielpläne inkl. Kalenderexport</li>
+                <li><span class="fa-li"><i class="fas fa-check-square text-primary"></i></span>Spieltagänderungen und Eintragen von Ergebnissen</li>
+                <li><span class="fa-li"><i class="fas fa-check-square text-primary"></i></span>Ergebnislisten und -tabellen</li>
+                <li><span class="fa-li"><i class="fas fa-check-square text-primary"></i></span>Automatische Benachrichtigungen und Erinnerungen</li>
+                <li><span class="fa-li"><i class="fas fa-check-square text-primary"></i></span>Gemeinsame Nutzung von Spielorten</li>
+                <li><span class="fa-li"><i class="fas fa-check-square text-primary"></i></span>Schiedsrichter</li>
+            </ul>
+        </article>
+        <article class="col-2 col-sm-4">
+            <img class="img-fluid rounded text-right" src="/images/logo-volleyball-league.svg" alt="League">
+        </article>
+    </div>
+    <div class="row">
+        <article class="col-10 col-sm-8">
+            <h3 class="h3 pl-2 rounded">Software</h3>
+            <ul class="fa-ul">
+                <li><span class="fa-li"><i class="fas fa-check-square text-primary"></i></span>Individuelle Einstellungen (z.B. Anzahl der Sätze, Anzahl der Runden u.v.m.)</li>
+                <li><span class="fa-li"><i class="fas fa-check-square text-primary"></i></span>Individuelle Seiten, z.B. für die Spielordnung</li>
+                <li><span class="fa-li"><i class="fas fa-check-square text-primary"></i></span>Optimiert für mobile Geräte: Komfortable Bedienung per Smartphone, Tablet oder Desktop PC</li>
+                <li><span class="fa-li"><i class="fas fa-check-square text-primary"></i></span>Lokalisierbar für Sprache, Region und Zeitzone</li>
+                <li><span class="fa-li"><i class="fas fa-check-square text-primary"></i></span>Lauffähig auf Windows und Linux</li>
+                <li><span class="fa-li"><i class="fas fa-check-square text-primary"></i></span>Die Software der Plattform ist Open Source und veröffentlicht auf <a href="https://github.com/axuno/Volleyball-League" class="link" target="_blank">GitHub</a>.</li>
+            </ul>
+        </article>
+        <article class="col-2 col-sm-4">
+            <img class="img-fluid rounded text-right" src="/images/software.png" alt="League">
+        </article>
+    </div>
+    <div class="row mb-4">
+        <article class="col-8">
+            <div class="p-2 border rounded border-success"><a asp-route="@RouteNames.GeneralContact" class="link font-weight-bolder">Kontaktiere uns</a> um eine Liga mit dieser Plattform zu organisieren.</div>
+        </article>
+    </div>
+    <div class="row">
+        <article class="col-8">
+            @{
+                var leagueAssembly = System.Reflection.Assembly.GetAssembly(typeof(League.LeagueStartup))?.GetName();
+                var tmAssembly = System.Reflection.Assembly.GetAssembly(typeof(TournamentManager.DateTimePeriod))?.GetName();
+                if (leagueAssembly != null && tmAssembly != null)
+                {
+                    <div>Eingesetzt: @leagueAssembly.Name v@(leagueAssembly.Version) und @tmAssembly.Name v@(tmAssembly.Version)</div>
+                }
+            }
+        </article>
+    </div>
+</div>
+@section styles {
+    <style type="text/css">
+        .h3 {
+            background: linear-gradient(to right, #018dff 10%, #01df02 100%);
+            color: white;
+        }
+    </style>
+}

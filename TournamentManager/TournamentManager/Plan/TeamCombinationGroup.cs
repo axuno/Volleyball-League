@@ -1,10 +1,9 @@
 using System.Collections.ObjectModel;
 using TournamentManager.Data;
 
-namespace TournamentManager.Plan
+namespace TournamentManager.Plan;
+
+public class TeamCombinationGroup<T> : Collection<TeamCombination<T>>
 {
-	public class TeamCombinationGroup<T> : Collection<TeamCombination<T>>
-	{
-		internal DateTimePeriod DateTimePeriod = new();
-	}
+    internal DateTimePeriod DateTimePeriod = new();
 }

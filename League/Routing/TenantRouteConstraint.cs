@@ -6,35 +6,50 @@ using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
 using TournamentManager.MultiTenancy;
 
-namespace League.Routing
+namespace League.Routing;
+
+public class TenantRouteConstraint : IRouteConstraint
 {
-    public class TenantRouteConstraint : IRouteConstraint
+    private readonly TenantStore _tenantStore;
+
+    public TenantRouteConstraint(TenantStore tenantStore)
     {
-        public TenantRouteConstraint()
-        {
-            // Note: Dependency injection for IRouteConstraint only works for Singleton services.
-            //       => TenantStore could be used for DI, TenantResolver could not.
-            //       => We acquire all service types in the 'Match' method from HttpContext scope.
-        }
+        // Note: Dependency injection for IRouteConstraint only works for Singleton services.
+        //       => TenantStore can be used for DI, TenantResolver as scoped service cannot.
+        _tenantStore = tenantStore;
+    }
 
-        public const string Name = "MatchingTenant";
-        public bool Match(HttpContext httpContext, IRouter route, string parameterName, RouteValueDictionary values, RouteDirection routeDirection)
-        {
-            var tenantResolver = httpContext.RequestServices.GetRequiredService<TenantResolver>();
-            var tenantStore = httpContext.RequestServices.GetRequiredService<TenantStore>();
+    /// <summary>
+    /// The name used as for this <see cref="TenantRouteConstraint"/>.
+    /// </summary>
+    public const string Name = "MatchingTenant";
 
-            switch (routeDirection)
-            {
-                case RouteDirection.IncomingRequest:
-                    var tenant = tenantResolver.Resolve();
-                    return tenant != null && tenantResolver.Resolve().SiteContext.UrlSegmentValue
-                        .Equals(values[parameterName]?.ToString(), StringComparison.InvariantCultureIgnoreCase);
-                case RouteDirection.UrlGeneration:
-                default:
-                    return tenantStore.GetTenants().Values.FirstOrDefault(t =>
-                        t.SiteContext.UrlSegmentValue.Equals(values[parameterName]?.ToString(),
-                            StringComparison.InvariantCultureIgnoreCase)) != null;
-            }
+    /// <summary>
+    /// The key of the tenant used in a <see cref="RouteValueDictionary"/>
+    /// </summary>
+    public const string Key = "tenant";
+
+    /// <summary>
+    /// The value for the constraint used in <see cref="Route"/> templates.
+    /// </summary>
+    public const string Template = "{" + Key + ":" + Name + "}";
+
+    /// <inheritdoc />
+    public bool Match(HttpContext? httpContext, IRouter? route, string parameterName, RouteValueDictionary values, RouteDirection routeDirection)
+    {
+        switch (routeDirection)
+        {
+            case RouteDirection.IncomingRequest:
+                ArgumentNullException.ThrowIfNull(httpContext);
+                var tenantResolver = httpContext.RequestServices.GetRequiredService<TenantResolver>();
+                var tenant = tenantResolver.Resolve();
+                return tenant.SiteContext.UrlSegmentValue
+                    .Equals(values[parameterName]?.ToString(), StringComparison.InvariantCultureIgnoreCase);
+            case RouteDirection.UrlGeneration:
+            default:
+                return _tenantStore.GetTenants().Values.FirstOrDefault(t =>
+                    t.SiteContext.UrlSegmentValue.Equals(values[parameterName]?.ToString(),
+                        StringComparison.InvariantCultureIgnoreCase)) != null;
         }
     }
 }

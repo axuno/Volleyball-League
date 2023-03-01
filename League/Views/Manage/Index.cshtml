@@ -5,6 +5,7 @@
 @inject IViewLocalizer Localizer
 @inject ITenantContext TenantContext
 @inject MetaDataHelper Metadata
+@inject TenantLink TenantLink
 @model IndexViewModel
 @{
     ViewData["Title"] = Localizer["Change account settings"];
@@ -18,8 +19,8 @@
 <div class="mb-0 pb-1">
     <ul class="list-inline no-gutters">
         <li class="list-inline-item text-success col-md-3">@(Metadata.GetDisplayName<ChangeUsernameViewModel>(nameof(ChangeUsernameViewModel.Username)))</li>
-        <li class="list-inline-item col-md-7">@(User.Identity.Name)</li>
-        <li class="list-inline-item col-md-auto"><button type="button" site-toggle-modal-ajax site-data-url="@Url.Action(nameof(Manage.ChangeUserName), nameof(Manage), new { Organization = tenantUrlSegment })" class="btn btn-sm btn-primary">@Localizer["Edit"]</button></li>
+        <li class="list-inline-item col-md-7">@(User.Identity?.Name)</li>
+        <li class="list-inline-item col-md-auto"><button type="button" site-toggle-modal-ajax site-data-url="@(TenantLink.Action(nameof(Manage.ChangeUserName), nameof(Manage)))" class="btn btn-sm btn-primary">@Localizer["Edit"]</button></li>
     </ul>
     <ul class="list-inline no-gutters">
         <li class="list-inline-item text-success col-md-3">@(Metadata.GetDisplayName<RegisterViewModel>(nameof(RegisterViewModel.Password)))</li>
@@ -36,38 +37,38 @@
         <li class="list-inline-item col-md-auto">
             @if (Model.HasPassword)
             {
-                <button type="button" site-toggle-modal-ajax site-data-url="@Url.Action(nameof(Manage.ChangePassword), nameof(Manage), new { Organization = tenantUrlSegment })" class="btn btn-sm btn-primary">@Localizer["Edit"]</button>
+                <button type="button" site-toggle-modal-ajax site-data-url="@(TenantLink.Action(nameof(Manage.ChangePassword), nameof(Manage)))" class="btn btn-sm btn-primary">@Localizer["Edit"]</button>
             }
             else
             {
-                <button type="button" site-toggle-modal-ajax site-data-url="@Url.Action(nameof(Manage.SetPassword), nameof(Manage), new { Organization = tenantUrlSegment })" class="btn btn-sm btn-primary">@Localizer["Create"]</button>
+                <button type="button" site-toggle-modal-ajax site-data-url="@(TenantLink.Action(nameof(Manage.SetPassword), nameof(Manage)))" class="btn btn-sm btn-primary">@Localizer["Create"]</button>
             }
         </li>
     </ul>
     <ul class="list-inline no-gutters">
         <li class="list-inline-item text-success col-md-3">@Localizer["Personal Details"]</li>
-        <li class="list-inline-item col-md-7">@Model.ApplicationUser.CompleteName</li>
-        <li class="list-inline-item col-md-auto"><button type="button" site-toggle-modal-ajax site-data-url="@Url.Action(nameof(Manage.EditPersonalDetails), nameof(Manage), new { Organization = tenantUrlSegment })" class="btn btn-sm btn-primary">@Localizer["Edit"]</button></li>
+        <li class="list-inline-item col-md-7">@Model.ApplicationUser!.CompleteName</li>
+        <li class="list-inline-item col-md-auto"><button type="button" site-toggle-modal-ajax site-data-url="@TenantLink.Action(nameof(Manage.EditPersonalDetails), nameof(Manage))" class="btn btn-sm btn-primary">@Localizer["Edit"]</button></li>
     </ul>
     <ul class="list-inline no-gutters">
         <li class="list-inline-item text-success col-md-3">@(Metadata.GetDisplayName<ChangeEmailViewModel>(nameof(ChangeEmailViewModel.Email)))</li>
         <li class="list-inline-item col-md-7">@Model.ApplicationUser.Email</li>
-        <li class="list-inline-item col-md-auto"><button type="button" site-toggle-modal-ajax site-data-url="@Url.Action(nameof(Manage.ChangeEmail), nameof(Manage), new { Organization = tenantUrlSegment })" class="btn btn-sm btn-primary">@Localizer["Edit"]</button></li>
+        <li class="list-inline-item col-md-auto"><button type="button" site-toggle-modal-ajax site-data-url="@TenantLink.Action(nameof(Manage.ChangeEmail), nameof(Manage))" class="btn btn-sm btn-primary">@Localizer["Edit"]</button></li>
     </ul>
     <ul class="list-inline no-gutters">
         <li class="list-inline-item text-success col-md-3">@(Metadata.GetDisplayName<EditEmail2ViewModel>(nameof(EditEmail2ViewModel.Email2)))</li>
         <li class="list-inline-item col-md-7">@(Model.ApplicationUser.Email2 ?? Localizer["[Not set]"].Value)</li>
-        <li class="list-inline-item col-md-auto"><button type="button" site-toggle-modal-ajax site-data-url="@Url.Action(nameof(Manage.EditEmail2), nameof(Manage), new { Organization = tenantUrlSegment })" class="btn btn-sm btn-primary">@Localizer["Edit"]</button></li>
+        <li class="list-inline-item col-md-auto"><button type="button" site-toggle-modal-ajax site-data-url="@TenantLink.Action(nameof(Manage.EditEmail2), nameof(Manage))" class="btn btn-sm btn-primary">@Localizer["Edit"]</button></li>
     </ul>
     <ul class="list-inline no-gutters">
         <li class="list-inline-item text-success col-md-3">@(Metadata.GetDisplayName<EditPhoneViewModel>(nameof(EditPhoneViewModel.PhoneNumber)))</li>
         <li class="list-inline-item col-md-7">@Html.Raw(string.IsNullOrEmpty(Model.ApplicationUser.PhoneNumber) ? Localizer["[Not set]"].Value : Model.ApplicationUser.PhoneNumber)</li>
-        <li class="list-inline-item col-md-auto"><button type="button" site-toggle-modal-ajax site-data-url="@Url.Action(nameof(Manage.EditPhoneNumber), nameof(Manage), new { Organization = tenantUrlSegment })" class="btn btn-sm btn-primary">@Localizer["Edit"]</button></li>
+        <li class="list-inline-item col-md-auto"><button type="button" site-toggle-modal-ajax site-data-url="@TenantLink.Action(nameof(Manage.EditPhoneNumber), nameof(Manage))" class="btn btn-sm btn-primary">@Localizer["Edit"]</button></li>
     </ul>
     <ul class="list-inline no-gutters">
         <li class="list-inline-item text-success col-md-3">@(Metadata.GetDisplayName<EditPhone2ViewModel>(nameof(EditPhone2ViewModel.PhoneNumber2)))</li>
         <li class="list-inline-item col-md-7">@Html.Raw(string.IsNullOrEmpty(Model.ApplicationUser.PhoneNumber2) ? Localizer["[Not set]"].Value : Model.ApplicationUser.PhoneNumber2)</li>
-        <li class="list-inline-item col-md-auto"><button type="button" site-toggle-modal-ajax site-data-url="@Url.Action(nameof(Manage.EditPhoneNumber2), nameof(Manage), new { Organization = tenantUrlSegment })" class="btn btn-sm btn-primary">@Localizer["Edit"]</button></li>
+        <li class="list-inline-item col-md-auto"><button type="button" site-toggle-modal-ajax site-data-url="@TenantLink.Action(nameof(Manage.EditPhoneNumber2), nameof(Manage))" class="btn btn-sm btn-primary">@Localizer["Edit"]</button></li>
     </ul>
     <ul class="list-inline no-gutters">
         <li class="list-inline-item text-success col-md-3">@Localizer["Linked Social Logins"]</li>
@@ -83,16 +84,16 @@
                 }
             }
         </li>
-        <li class="list-inline-item col-md-auto"><button type="button" site-toggle-modal-ajax site-data-url="@Url.Action(nameof(Manage.ManageLogins), nameof(Manage), new { Organization = tenantUrlSegment })" class="btn btn-sm btn-primary">@Localizer["Edit"]</button></li>
+        <li class="list-inline-item col-md-auto"><button type="button" site-toggle-modal-ajax site-data-url="@TenantLink.Action(nameof(Manage.ManageLogins), nameof(Manage))" class="btn btn-sm btn-primary">@Localizer["Edit"]</button></li>
     </ul>
     <h4 class="text-danger">@Localizer["Danger Zone"]</h4>
     <ul class="list-inline no-gutters">
         <li class="list-inline-item text-success col-md-3">@Localizer["Delete Account"]</li>
         <li class="list-inline-item col-md-7">@Localizer["Caution: Once the account is deleted, this is final."]</li>
-        <li class="list-inline-item col-md-auto"><button type="button" site-toggle-modal-ajax site-data-url="@Url.Action(nameof(Manage.DeleteAccount), nameof(Manage), new { Organization = tenantUrlSegment })" class="btn btn-sm btn-outline-danger">@Localizer["Delete"]</button></li>
+        <li class="list-inline-item col-md-auto"><button type="button" site-toggle-modal-ajax site-data-url="@TenantLink.Action(nameof(Manage.DeleteAccount), nameof(Manage))" class="btn btn-sm btn-outline-danger">@Localizer["Delete"]</button></li>
     </ul>
     <div class="text-muted">
-        @{ var zonedTime = Model.TimeZoneConverter.ToZonedTime(Model.ApplicationUser.ModifiedOn);}
+        @{ var zonedTime = Model.TimeZoneConverter.ToZonedTime(Model.ApplicationUser.ModifiedOn)!;}
         @Localizer["Last update"]: @zonedTime.DateTimeOffset.DateTime.ToShortDateString() @zonedTime.DateTimeOffset.DateTime.ToLongTimeString() @zonedTime.Abbreviation
     </div>
 </div>

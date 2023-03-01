@@ -1,11 +1,10 @@
-namespace TournamentManager
+namespace TournamentManager;
+
+public interface IOpponent<out T>
 {
-	public interface IOpponent<out T>
-	{
-		T Home { get; }
+    T Home { get; }
 
-		T Guest { get; }
+    T Guest { get; }
 
-		string? ToString();
-	}
+    string? ToString();
 }

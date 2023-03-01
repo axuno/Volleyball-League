@@ -1,7 +1,6 @@
 ﻿@using System.Globalization
 @using Axuno.Tools.DateAndTime
 @using League.Controllers
-@using League.Views
 @using Microsoft.AspNetCore.Mvc.Localization
 @using TournamentManager.MultiTenancy
 @inject IViewLocalizer Localizer
@@ -9,6 +8,7 @@
 @inject ITenantContext TenantContext
 @model League.Models.TeamApplicationViewModels.ApplicationConfirmModel
 @{
+
     ViewData["Title"] = Localizer["Team Registration"].Value + " - " + Model.SessionModel.TournamentName;
     var tenantUrlSegment = TenantContext.SiteContext.UrlSegmentValue;
 }
@@ -20,7 +20,7 @@
         <div class="col-md-9">
             <div><span class="font-weight-bold d-inline-block mr-3">@Model.RoundDescription</span><span class="text-muted small">@Model.RoundTypeDescription</span></div>
         </div>
-        <div class="text-success col-md-3">@(Model.SessionModel.Team.IsNew ? Localizer["New team"] : Localizer["Existing team"])</div>
+        <div class="text-success col-md-3">@(Model.SessionModel.Team!.IsNew ? Localizer["New team"] : Localizer["Existing team"])</div>
         <div class="col-md-9 font-weight-bold">@Model.SessionModel.Team.Name</div>
         @if (!string.IsNullOrEmpty(Model.SessionModel.Team.ClubName))
         {
@@ -31,9 +31,9 @@
         {
             // MatchTime is defined as a zoned time, NOT UTC. It is always the same, never mind DST
             <div class="text-success col-md-3">@Localizer["Home match day"]</div>
-            <div class="col-md-9 mb-2"><i class="far fa-calendar-alt"></i><span class="d-inline-block mr-2"></span>@DateTimeFormatInfo.CurrentInfo?.GetDayName((DayOfWeek)Model.SessionModel.Team.MatchDayOfWeek), @(DateTime.UtcNow.Date.Add(Model.SessionModel.Team.MatchTime.Value).ToShortTimeString()) @(TimeZoneConverter.ToZonedTime(DateTime.UtcNow).Abbreviation)</div>
+            <div class="col-md-9 mb-2"><i class="far fa-calendar-alt"></i><span class="d-inline-block mr-2"></span>@DateTimeFormatInfo.CurrentInfo.GetDayName((DayOfWeek)Model.SessionModel.Team.MatchDayOfWeek), @(DateTime.UtcNow.Date.Add(Model.SessionModel.Team.MatchTime.Value).ToShortTimeString()) @(TimeZoneConverter.ToZonedTime(DateTime.UtcNow)!.Abbreviation)</div>
         }
-        <div class="text-success col-md-3">@(Model.SessionModel.Venue.IsNew ? Localizer["New venue"] : Localizer["Existing venue"])</div>
+        <div class="text-success col-md-3">@(Model.SessionModel.Venue!.IsNew ? Localizer["New venue"] : Localizer["Existing venue"])</div>
         <div class="col-md-7 mb-2">
             <div><i class="fas fa-map-marker-alt"></i><span class="d-inline-block mr-2"></span><span class="font-weight-bold">@Model.SessionModel.Venue.Name</span></div>
             <div>@(string.Join(", ", Model.SessionModel.Venue.PostalCode, Model.SessionModel.Venue.City, Model.SessionModel.Venue.Street))</div>
@@ -48,8 +48,8 @@
     </div>
     <div class="row">
         <div class="form-group col-12 col-md-6">
-            <form asp-controller="@nameof(TeamApplication)" asp-action="@nameof(TeamApplication.Confirm)" asp-route-organization="@tenantUrlSegment" method="post" role="form">
-                <a asp-controller="@nameof(TeamApplication)" asp-action="@nameof(TeamApplication.EditVenue)" asp-route-organization="@tenantUrlSegment" class="btn btn-secondary d-inline-block">@Localizer["Back"]</a>
+            <form asp-controller="@nameof(TeamApplication)" asp-action="@nameof(TeamApplication.Confirm)" asp-route-tenant="@tenantUrlSegment" method="post" role="form">
+                <a asp-controller="@nameof(TeamApplication)" asp-action="@nameof(TeamApplication.EditVenue)" asp-route-tenant="@tenantUrlSegment" class="btn btn-secondary d-inline-block">@Localizer["Back"]</a>
                 <input type="hidden" id="Done" name="Done" value="true" />
                 <button type="submit" class="btn btn-primary d-inline-block ">@Localizer["Confirm and save"]</button>
             </form>

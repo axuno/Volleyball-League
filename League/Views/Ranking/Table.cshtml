@@ -7,7 +7,7 @@
 @inject Axuno.Tools.DateAndTime.TimeZoneConverter TimeZoneConverter
 @model League.Models.RankingViewModels.RankingListModel
 @{
-    ViewData["Title"] = Localizer["Table"].Value + " - " + Model.Tournament.Name;
+    ViewData["Title"] = Localizer["Table"].Value + " - " + Model.Tournament?.Name;
     if (Model.RankingList.Count == 0)
     {
         <div class="mb-0 pb-1">
@@ -106,9 +106,9 @@
                 </div>
                 @{
                     var zonedMaxModifiedOn = TimeZoneConverter.ToZonedTime(
-                        Model.RankingList.Where(m => m.RoundId == r.RoundId).Max(m => m.ModifiedOn));
+                        Model.RankingList.Where(m => m.RoundId == r.RoundId).Max(m => m.ModifiedOn))!;
                     var zonedMaxMatchDate = TimeZoneConverter.ToZonedTime(
-                        Model.RankingList.Where(m => m.RoundId == r.RoundId).Max(m => m.ValuationDate));
+                        Model.RankingList.Where(m => m.RoundId == r.RoundId).Max(m => m.ValuationDate))!;
                 }
                 @{
                     if (Model.ChartFileInfos.ContainsKey(r.RoundId))

@@ -1,0 +1,136 @@
+﻿{
+	"Name": "TournamentManager Model Documentation",
+	"Source": ".",
+	"Destination": "..\\Site\\",
+	"Theme": "Light",
+	"Footer" : "TournamentManager Model Documentation. &copy;2023 axuno gGmbH",
+	"MaxLevelInToC": 3,
+	"Pages": 
+	{
+		"__index": "index.md",
+		"General information": "generalinformation.md",
+		"Entity model" :
+		{
+			"General information": "EntityModel\\generalinformation.md",
+			"Entities":
+			{
+				"__index" : "EntityModel\\_DefaultGroup\\Entities\\__index.md",
+				"AvailableMatchDate" : "EntityModel\\_DefaultGroup\\Entities\\AvailableMatchDate.md",
+				"ExcludeMatchDate" : "EntityModel\\_DefaultGroup\\Entities\\ExcludeMatchDate.md",
+				"IdentityRole" : "EntityModel\\_DefaultGroup\\Entities\\IdentityRole.md",
+				"IdentityRoleClaim" : "EntityModel\\_DefaultGroup\\Entities\\IdentityRoleClaim.md",
+				"IdentityUserClaim" : "EntityModel\\_DefaultGroup\\Entities\\IdentityUserClaim.md",
+				"IdentityUserLogin" : "EntityModel\\_DefaultGroup\\Entities\\IdentityUserLogin.md",
+				"IdentityUserRole" : "EntityModel\\_DefaultGroup\\Entities\\IdentityUserRole.md",
+				"IdentityUserToken" : "EntityModel\\_DefaultGroup\\Entities\\IdentityUserToken.md",
+				"ManagerOfTeam" : "EntityModel\\_DefaultGroup\\Entities\\ManagerOfTeam.md",
+				"Match" : "EntityModel\\_DefaultGroup\\Entities\\Match.md",
+				"MatchRule" : "EntityModel\\_DefaultGroup\\Entities\\MatchRule.md",
+				"PlayerInTeam" : "EntityModel\\_DefaultGroup\\Entities\\PlayerInTeam.md",
+				"Ranking" : "EntityModel\\_DefaultGroup\\Entities\\Ranking.md",
+				"Registration" : "EntityModel\\_DefaultGroup\\Entities\\Registration.md",
+				"Round" : "EntityModel\\_DefaultGroup\\Entities\\Round.md",
+				"RoundLeg" : "EntityModel\\_DefaultGroup\\Entities\\RoundLeg.md",
+				"RoundType" : "EntityModel\\_DefaultGroup\\Entities\\RoundType.md",
+				"Set" : "EntityModel\\_DefaultGroup\\Entities\\Set.md",
+				"SetRule" : "EntityModel\\_DefaultGroup\\Entities\\SetRule.md",
+				"Team" : "EntityModel\\_DefaultGroup\\Entities\\Team.md",
+				"TeamInRound" : "EntityModel\\_DefaultGroup\\Entities\\TeamInRound.md",
+				"Tournament" : "EntityModel\\_DefaultGroup\\Entities\\Tournament.md",
+				"TournamentType" : "EntityModel\\_DefaultGroup\\Entities\\TournamentType.md",
+				"User" : "EntityModel\\_DefaultGroup\\Entities\\User.md",
+				"Venue" : "EntityModel\\_DefaultGroup\\Entities\\Venue.md",
+			},
+			"Typed views":
+			{
+				"__index" : "EntityModel\\_DefaultGroup\\TypedViews\\__index.md",
+				"Calendar" : "EntityModel\\_DefaultGroup\\TypedViews\\Calendar.md",
+				"CompletedMatch" : "EntityModel\\_DefaultGroup\\TypedViews\\CompletedMatch.md",
+				"LatestTeamTournament" : "EntityModel\\_DefaultGroup\\TypedViews\\LatestTeamTournament.md",
+				"MatchCompleteRaw" : "EntityModel\\_DefaultGroup\\TypedViews\\MatchCompleteRaw.md",
+				"MatchReportSheet" : "EntityModel\\_DefaultGroup\\TypedViews\\MatchReportSheet.md",
+				"MatchToPlayRaw" : "EntityModel\\_DefaultGroup\\TypedViews\\MatchToPlayRaw.md",
+				"PlannedMatch" : "EntityModel\\_DefaultGroup\\TypedViews\\PlannedMatch.md",
+				"RankingList" : "EntityModel\\_DefaultGroup\\TypedViews\\RankingList.md",
+				"RoundLegPeriod" : "EntityModel\\_DefaultGroup\\TypedViews\\RoundLegPeriod.md",
+				"RoundTeam" : "EntityModel\\_DefaultGroup\\TypedViews\\RoundTeam.md",
+				"TeamUserRound" : "EntityModel\\_DefaultGroup\\TypedViews\\TeamUserRound.md",
+				"TeamVenueRound" : "EntityModel\\_DefaultGroup\\TypedViews\\TeamVenueRound.md",
+				"VenueDistanceResult" : "EntityModel\\_DefaultGroup\\TypedViews\\VenueDistanceResult.md",
+				"VenueTeam" : "EntityModel\\_DefaultGroup\\TypedViews\\VenueTeam.md",
+			},
+			"Stored procedure calls":
+			{
+				"__index" : "EntityModel\\_DefaultGroup\\SPCalls\\__index.md",
+				"VenueDistance" : "EntityModel\\_DefaultGroup\\SPCalls\\VenueDistance.md",
+			},
+		},
+		"Meta data" : 
+		{
+			"SQL Server (SqlClient)" : 
+			{
+				"__index" : "SQL_Server_SqlClient\\__index.md",
+				"General information" : "SQL_Server_SqlClient\\generalinformation.md",
+				"TestOrg" : 
+				{
+					"__index" : "SQL_Server_SqlClient\\TestOrg\\__index.md",
+					"General information" : "SQL_Server_SqlClient\\TestOrg\\generalinformation.md",
+					"dbo":
+					{
+						"__index" : "SQL_Server_SqlClient\\TestOrg\\dbo\\__index.md",
+						"General information" : "SQL_Server_SqlClient\\TestOrg\\dbo\\generalinformation.md",
+						"Tables" :
+						{
+							"AvailableMatchDate" : "SQL_Server_SqlClient\\TestOrg\\dbo\\AvailableMatchDate.md",
+							"ExcludeMatchDate" : "SQL_Server_SqlClient\\TestOrg\\dbo\\ExcludeMatchDate.md",
+							"IdentityRole" : "SQL_Server_SqlClient\\TestOrg\\dbo\\IdentityRole.md",
+							"IdentityRoleClaim" : "SQL_Server_SqlClient\\TestOrg\\dbo\\IdentityRoleClaim.md",
+							"IdentityUserClaim" : "SQL_Server_SqlClient\\TestOrg\\dbo\\IdentityUserClaim.md",
+							"IdentityUserLogin" : "SQL_Server_SqlClient\\TestOrg\\dbo\\IdentityUserLogin.md",
+							"IdentityUserRole" : "SQL_Server_SqlClient\\TestOrg\\dbo\\IdentityUserRole.md",
+							"IdentityUserToken" : "SQL_Server_SqlClient\\TestOrg\\dbo\\IdentityUserToken.md",
+							"ManagerOfTeam" : "SQL_Server_SqlClient\\TestOrg\\dbo\\ManagerOfTeam.md",
+							"Match" : "SQL_Server_SqlClient\\TestOrg\\dbo\\Match.md",
+							"MatchRule" : "SQL_Server_SqlClient\\TestOrg\\dbo\\MatchRule.md",
+							"PlayerInTeam" : "SQL_Server_SqlClient\\TestOrg\\dbo\\PlayerInTeam.md",
+							"Ranking" : "SQL_Server_SqlClient\\TestOrg\\dbo\\Ranking.md",
+							"Registration" : "SQL_Server_SqlClient\\TestOrg\\dbo\\Registration.md",
+							"Round" : "SQL_Server_SqlClient\\TestOrg\\dbo\\Round.md",
+							"RoundLeg" : "SQL_Server_SqlClient\\TestOrg\\dbo\\RoundLeg.md",
+							"RoundType" : "SQL_Server_SqlClient\\TestOrg\\dbo\\RoundType.md",
+							"Set" : "SQL_Server_SqlClient\\TestOrg\\dbo\\Set.md",
+							"SetRule" : "SQL_Server_SqlClient\\TestOrg\\dbo\\SetRule.md",
+							"Team" : "SQL_Server_SqlClient\\TestOrg\\dbo\\Team.md",
+							"TeamInRound" : "SQL_Server_SqlClient\\TestOrg\\dbo\\TeamInRound.md",
+							"Tournament" : "SQL_Server_SqlClient\\TestOrg\\dbo\\Tournament.md",
+							"TournamentType" : "SQL_Server_SqlClient\\TestOrg\\dbo\\TournamentType.md",
+							"User" : "SQL_Server_SqlClient\\TestOrg\\dbo\\User.md",
+							"Venue" : "SQL_Server_SqlClient\\TestOrg\\dbo\\Venue.md",
+						},
+						"Views" :
+						{
+							"Calendar" : "SQL_Server_SqlClient\\TestOrg\\dbo\\Calendar.md",
+							"CompletedMatch" : "SQL_Server_SqlClient\\TestOrg\\dbo\\CompletedMatch.md",
+							"LatestTeamTournament" : "SQL_Server_SqlClient\\TestOrg\\dbo\\LatestTeamTournament.md",
+							"MatchCompleteRaw" : "SQL_Server_SqlClient\\TestOrg\\dbo\\MatchCompleteRaw.md",
+							"MatchReportSheet" : "SQL_Server_SqlClient\\TestOrg\\dbo\\MatchReportSheet.md",
+							"MatchToPlayRaw" : "SQL_Server_SqlClient\\TestOrg\\dbo\\MatchToPlayRaw.md",
+							"PlannedMatch" : "SQL_Server_SqlClient\\TestOrg\\dbo\\PlannedMatch.md",
+							"RankingList" : "SQL_Server_SqlClient\\TestOrg\\dbo\\RankingList.md",
+							"RoundLegPeriod" : "SQL_Server_SqlClient\\TestOrg\\dbo\\RoundLegPeriod.md",
+							"RoundTeam" : "SQL_Server_SqlClient\\TestOrg\\dbo\\RoundTeam.md",
+							"TeamUserRound" : "SQL_Server_SqlClient\\TestOrg\\dbo\\TeamUserRound.md",
+							"TeamVenueRound" : "SQL_Server_SqlClient\\TestOrg\\dbo\\TeamVenueRound.md",
+							"VenueTeam" : "SQL_Server_SqlClient\\TestOrg\\dbo\\VenueTeam.md",
+						},
+						"Stored procedures" :
+						{
+							"VenueDistance" : "SQL_Server_SqlClient\\TestOrg\\dbo\\VenueDistance.md",
+						},
+					},
+				},
+
+			},
+		}
+	}
+}

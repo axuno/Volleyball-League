@@ -7,6 +7,7 @@
 @{
     ViewData["Title"] = Localizer["Associate social network account"];
     var tenantUrlSegment = TenantContext.SiteContext.UrlSegmentValue;
+    var loginProvider = ViewData["LoginProvider"]!;
     List<SelectListItem> GenderList()
     {
         return new List<SelectListItem> {new() {Value = string.Empty, Text = Localizer["Please choose"].Value},
@@ -14,11 +15,11 @@
             new() {Value = "m", Text = Localizer["Mr."].Value}};
     }
 }
-<h2 class="h2">@(Localizer.GetHtml("Associate your <strong>{0}</strong> account", ViewData["LoginProvider"])).</h2>
+<h2 class="h2">@(Localizer.GetHtml("Associate your <strong>{0}</strong> account", loginProvider)).</h2>
 <hr />
-<form asp-controller="@nameof(Account)" asp-action="@nameof(Account.ExternalSignInConfirmation)" asp-route-organization="@tenantUrlSegment" asp-route-returnurl="@ViewData["ReturnUrl"]" method="post" class="col-md-8 col-sm-10 col-12 pl-0" role="form">
+<form asp-controller="@nameof(Account)" asp-action="@nameof(Account.ExternalSignInConfirmation)" asp-route-tenant="@tenantUrlSegment" asp-route-returnurl="@ViewData["ReturnUrl"]" method="post" class="col-md-8 col-sm-10 col-12 pl-0" role="form">
     <site-alert type="Success">
-        @(Localizer.GetHtml("You have successfully authenticated with <strong>{0}</strong>", ViewData["LoginProvider"])).
+        @(Localizer.GetHtml("You have successfully authenticated with <strong>{0}</strong>", loginProvider)).
     </site-alert>
     <p>
         @(Localizer.GetHtml("Please enter your contact data below below to finish signing in with <strong>{0}</strong>", TenantContext.OrganizationContext.ShortName)).

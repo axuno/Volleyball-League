@@ -5,19 +5,18 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using TournamentManager.DAL.TypedViewClasses;
 
-namespace League.Models.TeamApplicationViewModels
+namespace League.Models.TeamApplicationViewModels;
+
+public class ApplicationSelectTeamModel
 {
-    public class ApplicationSelectTeamModel
-    {
-        [BindProperty]
-        [Required(AllowEmptyStrings = false, ErrorMessageResourceName = nameof(DataAnnotationResource.PropertyValueRequired), ErrorMessageResourceType = typeof(DataAnnotationResource))]
-        [Display(Name = "Existing team")]
-        public long? SelectedTeamId { get; set; }
+    [BindProperty]
+    [Required(AllowEmptyStrings = false, ErrorMessageResourceName = nameof(DataAnnotationResource.PropertyValueRequired), ErrorMessageResourceType = typeof(DataAnnotationResource))]
+    [Display(Name = "Existing team")]
+    public long? SelectedTeamId { get; set; }
 
-        [BindNever]
-        public List<LatestTeamTournamentRow> TeamsManagedByUser { get; set; } = new();
+    [BindNever]
+    public List<LatestTeamTournamentRow> TeamsManagedByUser { get; set; } = new();
 
-        [BindNever]
-        public string TournamentName { get; set; }
-    }
+    [BindNever]
+    public string TournamentName { get; set; } = string.Empty;
 }

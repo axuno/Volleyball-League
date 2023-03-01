@@ -1,22 +1,15 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using TournamentManager.MultiTenancy;
+﻿using Microsoft.AspNetCore.Mvc;
 
-namespace League.Components
+namespace League.Components;
+
+public class VenueEditor : ViewComponent
 {
-    public class VenueEditor : ViewComponent
+    /// <summary>
+    /// Creates the model for the component and renders it.
+    /// </summary>
+    /// <returns></returns>
+    public IViewComponentResult Invoke(VenueEditorComponentModel venue)
     {
-        /// <summary>
-        /// Creates the model for the component and renders it.
-        /// </summary>
-        /// <returns></returns>
-        public IViewComponentResult Invoke(VenueEditorComponentModel venue)
-        {
-            return View(venue);
-        }
+        return View(venue);
     }
 }

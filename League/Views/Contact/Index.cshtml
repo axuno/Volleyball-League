@@ -1,5 +1,4 @@
-﻿@using League.Controllers
-@using League.Helpers
+﻿@using League.Helpers
 @using Microsoft.AspNetCore.Mvc.Localization
 @using TournamentManager.MultiTenancy
 @model League.Models.ContactViewModels.ContactViewModel
@@ -7,21 +6,23 @@
 @inject IViewLocalizer Localizer
 @{
     ViewData.Title(Localizer["Message"].Value);
+#pragma warning disable CS8321 // This method is actually used in this view
     List<SelectListItem> GenderList()
     {
         return new List<SelectListItem> {new() {Value = string.Empty, Text = Localizer["Please choose"].Value}, 
             new() {Value = "f", Text = Localizer["Mrs."].Value}, 
             new() {Value = "m", Text = Localizer["Mr."].Value}};
     }
+#pragma warning restore CS8321
 }
 <div>
     <h2 class="h2 d-inline-block">@ViewData.Title()</h2>
-    <h4 class="h4 d-inline-block">@Localizer["to"] @(TenantContext.IsDefault ? "volleyball-liga.de" : TenantContext.OrganizationContext.ShortName )</h4>
+    <h4 class="h4 d-inline-block">@Localizer["to"] @(TenantContext.OrganizationContext.ShortName)</h4>
     <hr />
 </div>
 <div>
     @* Create the action url using the same named route as when invoking the controller action method *@
-    <form asp-route="@ViewContext.ActionDescriptor.AttributeRouteInfo.Name" method="post" class="col-md-8 col-sm-10 col-12 pl-0" role="form">
+    <form asp-route="@ViewContext.ActionDescriptor.AttributeRouteInfo?.Name" method="post" class="col-md-8 col-sm-10 col-12 pl-0" role="form">
         <site-validation-summary show="All">
             <b>@Localizer["Input has some issues"]:</b>
         </site-validation-summary>

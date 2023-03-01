@@ -9,7 +9,7 @@
 @{ ViewContext.ClientValidationEnabled = false;}  @* We rely on datepicker and server side validation *@
 @model League.Models.MatchViewModels.EnterResultViewModel
 @{
-    ViewData["Title"] = Localizer["Enter Match Result"].Value + " - " + Model.Tournament.Name;
+    ViewData["Title"] = Localizer["Enter Match Result"].Value + " - " + Model.Tournament?.Name;
     var tenantUrlSegment = TenantContext.SiteContext.UrlSegmentValue;
 
     string AddSetErr(int setIndex)
@@ -25,7 +25,7 @@
 <div class="mb-0 pb-1">
     <h2 class="h2">@ViewData["Title"]</h2>
     <hr />
-    <form asp-controller="@nameof(Match)" asp-action="@nameof(Match.EnterResult)" asp-route-organization="@tenantUrlSegment" method="post" role="form">
+    <form asp-controller="@nameof(Match)" asp-action="@nameof(Match.EnterResult)" asp-route-tenant="@tenantUrlSegment" method="post" role="form">
         <site-validation-summary show="All" warning="@Model.IsWarning"></site-validation-summary>
         <input name="IsValid" type="hidden" value="@ViewData.ModelState.IsValid.ToString()" />@* needed for unobtrusive validation *@
         <input hidden="hidden" asp-for="Id" />
@@ -44,7 +44,7 @@
         <div class="row">
             <div class="form-group col-12 col-md-6">
                 <label class="mt-0">@Localizer["Opponents"]</label>
-                <div class="font-weight-bold d-inline-block">@Model.Opponent.Home</div><div class="font-weight-bold d-inline-block">&nbsp;:&nbsp;</div><div class="font-weight-bold d-inline-block">@Model.Opponent.Guest</div>
+                <div class="font-weight-bold d-inline-block">@Model.Opponent!.Home</div><div class="font-weight-bold d-inline-block">&nbsp;:&nbsp;</div><div class="font-weight-bold d-inline-block">@Model.Opponent.Guest</div>
             </div>
         </div>
         <div class="row">
@@ -127,7 +127,7 @@
                     }
                     else
                     {
-                        <a asp-controller="@nameof(Match)" asp-action="@nameof(Match.Fixtures)" asp-route-organization="@tenantUrlSegment" class="btn btn-lg btn-secondary">@Localizer["Cancel"]</a>
+                        <a asp-controller="@nameof(Match)" asp-action="@nameof(Match.Fixtures)" asp-route-tenant="@tenantUrlSegment" class="btn btn-lg btn-secondary">@Localizer["Cancel"]</a>
                     }
                 }
                 <button type="submit" class="btn btn-lg btn-primary">@Localizer["Save"]</button>

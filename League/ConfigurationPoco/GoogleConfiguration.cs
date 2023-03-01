@@ -1,9 +1,9 @@
-﻿namespace League.ConfigurationPoco
+﻿
+namespace League.ConfigurationPoco;
+
+public class GoogleConfiguration
 {
-    public class GoogleConfiguration
-    {
-        public string WebApiKey { get; set; }
-        public string ServiceApiKey { get; set; }
-        public string AnalyticsTrackingId { get; set; }
-    }
+    public string WebApiKey { get; set; } = string.Empty;
+    public string ServiceApiKey { get; set; } = string.Empty;
+    public string AnalyticsTrackingId { get; set; } = string.Empty;
 }

@@ -1,147 +1,150 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-	<PropertyGroup>
-	<TargetFramework>net6.0</TargetFramework>
-	<NeutralLanguage>en</NeutralLanguage>
-    <Nullable>enable</Nullable>
-    <Version>4.5.0</Version>
-    <Authors>axuno gGmbH</Authors>
-    <Company>axuno gGmbH</Company>
-    <Copyright>(C) 2000-2021 axuo gGmbH</Copyright>
-    <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <PackageProjectUrl>https://github.com/axuno/Volleyball-League</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/axuno/Volleyball-League</RepositoryUrl>
-    <PackageTags>volleyball league competition asp.net-core</PackageTags>
-    <PackageReleaseNotes>Production release for platform https://volleyball-liga.de/</PackageReleaseNotes>
-    <Description>TournamentManager is the backend for Volleyball League.
-Volleyball League is an open source sports platform that brings everything necessary to organize and to run a league.</Description>
-	</PropertyGroup>
+    <PropertyGroup>
+        <Product>Tournament Manager</Product>
+        <TargetFramework>net6.0</TargetFramework>
+        <NeutralLanguage>en</NeutralLanguage>
+        <Version>6.0.0</Version>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+        <NoWarn>1591</NoWarn>
+        <Description>TournamentManager is the backend for Volleyball League.
+Volleyball League is an open source sports platform that brings everything necessary to organize and to run a league.
+        </Description>
+    </PropertyGroup>
 
-	<ItemGroup>
-		<PackageReference Include="EPPlus" Version="5.8.8" />
-		<PackageReference Include="NuGetizer" Version="0.7.5">
-		  <PrivateAssets>all</PrivateAssets>
-		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-		</PackageReference>
-		<PackageReference Include="OxyPlot.Core" Version="2.1.0" />
-		<PackageReference Include="OxyPlot.SkiaSharp" Version="2.1.0" />
-		<PackageReference Include="System.Reflection.TypeExtensions" Version="4.7.0" />
-		<PackageReference Include="Ical.Net" Version="4.2.0" />
-		<PackageReference Include="libphonenumber-csharp" Version="8.12.45" />
-		<PackageReference Include="NLog.Extensions.Logging" Version="1.7.4" />
-		<PackageReference Include="System.Data.SqlClient" Version="4.8.3" />
-		<PackageReference Include="YAXLib" Version="3.0.1" />
-	</ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="EPPlus" Version="6.1.1" />
+        <PackageReference Include="NuGetizer" Version="0.9.1">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+        <PackageReference Include="OxyPlot.Core" Version="2.1.2" />
+        <PackageReference Include="OxyPlot.SkiaSharp" Version="2.1.2" />
+        <PackageReference Include="System.Reflection.TypeExtensions" Version="4.7.0" />
+        <PackageReference Include="Ical.Net" Version="4.2.0" />
+        <PackageReference Include="libphonenumber-csharp" Version="8.13.4" />
+        <PackageReference Include="NLog.Extensions.Logging" Version="5.2.1" />
+        <PackageReference Include="System.Data.SqlClient" Version="4.8.5" />
+        <PackageReference Include="YAXLib" Version="4.0.0" />
+    </ItemGroup>
 
-	<ItemGroup>
-		<ProjectReference Include="..\..\Axuno.Tools\Axuno.Tools.csproj" />
-		<ProjectReference Include="..\DAL\DatabaseGeneric\TournamentManager.DAL.DbGeneric.csproj" />
-		<ProjectReference Include="..\DAL\DatabaseSpecific\TournamentManager.DAL.DBSpecific.csproj" />
-	</ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\..\Axuno.Tools\Axuno.Tools.csproj" />
+        <ProjectReference Include="..\DAL\DatabaseGeneric\TournamentManager.DAL.DbGeneric.csproj" />
+        <ProjectReference Include="..\DAL\DatabaseSpecific\TournamentManager.DAL.DBSpecific.csproj" />
+    </ItemGroup>
 
-	<ItemGroup>
-		<Compile Update="ModelValidators\FixtureValidatorResource.Designer.cs">
-			<DesignTime>True</DesignTime>
-			<AutoGen>True</AutoGen>
-			<DependentUpon>FixtureValidatorResource.resx</DependentUpon>
-		</Compile>
-		<Compile Update="EntityValidators\UserEntityValidatorResource.Designer.cs">
-			<DesignTime>True</DesignTime>
-			<AutoGen>True</AutoGen>
-			<DependentUpon>UserEntityValidatorResource.resx</DependentUpon>
-		</Compile>
-		<Compile Update="ModelValidators\MatchResultPermissionValidatorResource.Designer.cs">
-			<DesignTime>True</DesignTime>
-			<AutoGen>True</AutoGen>
-			<DependentUpon>MatchResultPermissionValidatorResource.resx</DependentUpon>
-		</Compile>
-		<Compile Update="ModelValidators\MatchResultValidatorResource.Designer.cs">
-			<DesignTime>True</DesignTime>
-			<AutoGen>True</AutoGen>
-			<DependentUpon>MatchResultValidatorResource.resx</DependentUpon>
-		</Compile>
-		<Compile Update="ModelValidators\PhoneNumberValidatorResource.Designer.cs">
-			<DesignTime>True</DesignTime>
-			<AutoGen>True</AutoGen>
-			<DependentUpon>PhoneNumberValidatorResource.resx</DependentUpon>
-		</Compile>
-		<Compile Update="ModelValidators\SetsValidatorResource.Designer.cs">
-			<DesignTime>True</DesignTime>
-			<AutoGen>True</AutoGen>
-			<DependentUpon>SetsValidatorResource.resx</DependentUpon>
-		</Compile>
-		<Compile Update="ModelValidators\SingleSetValidatorResource.Designer.cs">
-			<DesignTime>True</DesignTime>
-			<AutoGen>True</AutoGen>
-			<DependentUpon>SingleSetValidatorResource.resx</DependentUpon>
-		</Compile>
-		<Compile Update="ModelValidators\TeamInRoundValidatorResource.Designer.cs">
-			<DesignTime>True</DesignTime>
-			<AutoGen>True</AutoGen>
-			<DependentUpon>TeamInRoundValidatorResource.resx</DependentUpon>
-		</Compile>
-		<Compile Update="ModelValidators\TeamValidatorResource.Designer.cs">
-		  <DesignTime>True</DesignTime>
-		  <AutoGen>True</AutoGen>
-		  <DependentUpon>TeamValidatorResource.resx</DependentUpon>
-		</Compile>
-		<Compile Update="ModelValidators\VenueValidatorResource.Designer.cs">
-			<DesignTime>True</DesignTime>
-			<AutoGen>True</AutoGen>
-			<DependentUpon>VenueValidatorResource.resx</DependentUpon>
-		</Compile>
-	</ItemGroup>
+    <!-- Custom PropertyGroup to add the Environment name during publish. The EnvironmentName property is used for the 'Environment' variable in web.config when publishing. -->
+    <PropertyGroup Condition=" '$(Configuration)' == '' Or '$(Configuration)' == 'Debug'">
+        <EnvironmentName>Development</EnvironmentName>
+    </PropertyGroup>
+    <PropertyGroup Condition=" '$(Configuration)' != '' AND '$(Configuration)' != 'Debug' ">
+        <EnvironmentName>Production</EnvironmentName>
+    </PropertyGroup>
 
-	<ItemGroup>
-		<EmbeddedResource Update="ModelValidators\FixtureValidatorResource.resx">
-			<Generator>ResXFileCodeGenerator</Generator>
-			<LastGenOutput>FixtureValidatorResource.Designer.cs</LastGenOutput>
-		</EmbeddedResource>
-		<EmbeddedResource Update="EntityValidators\UserEntityValidatorResource.resx">
-			<Generator>PublicResXFileCodeGenerator</Generator>
-			<LastGenOutput>UserEntityValidatorResource.Designer.cs</LastGenOutput>
-		</EmbeddedResource>
-		<EmbeddedResource Update="ModelValidators\MatchResultPermissionValidatorResource.resx">
-			<Generator>ResXFileCodeGenerator</Generator>
-			<LastGenOutput>MatchResultPermissionValidatorResource.Designer.cs</LastGenOutput>
-		</EmbeddedResource>
-		<EmbeddedResource Update="ModelValidators\MatchResultValidatorResource.resx">
-			<Generator>ResXFileCodeGenerator</Generator>
-			<LastGenOutput>MatchResultValidatorResource.Designer.cs</LastGenOutput>
-		</EmbeddedResource>
-		<EmbeddedResource Update="ModelValidators\PhoneNumberValidatorResource.resx">
-			<Generator>ResXFileCodeGenerator</Generator>
-			<LastGenOutput>PhoneNumberValidatorResource.Designer.cs</LastGenOutput>
-		</EmbeddedResource>
-		<EmbeddedResource Update="ModelValidators\SetsValidatorResource.resx">
-			<Generator>ResXFileCodeGenerator</Generator>
-			<LastGenOutput>SetsValidatorResource.Designer.cs</LastGenOutput>
-		</EmbeddedResource>
-		<EmbeddedResource Update="ModelValidators\SingleSetValidatorResource.resx">
-			<Generator>ResXFileCodeGenerator</Generator>
-			<LastGenOutput>SingleSetValidatorResource.Designer.cs</LastGenOutput>
-		</EmbeddedResource>
-		<EmbeddedResource Update="ModelValidators\TeamInRoundValidatorResource.resx">
-			<LastGenOutput>TeamInRoundValidatorResource.Designer.cs</LastGenOutput>
-			<Generator>ResXFileCodeGenerator</Generator>
-		</EmbeddedResource>
-		<EmbeddedResource Update="ModelValidators\VenueValidatorResource.resx">
-			<LastGenOutput>VenueValidatorResource.Designer.cs</LastGenOutput>
-			<Generator>PublicResXFileCodeGenerator</Generator>
-		</EmbeddedResource>
-		<EmbeddedResource Update="ModelValidators\TeamValidatorResource.resx">
-			<Generator>PublicResXFileCodeGenerator</Generator>
-			<LastGenOutput>TeamValidatorResource.Designer.cs</LastGenOutput>
-		</EmbeddedResource>
-	</ItemGroup>
+    <ItemGroup>
+        <Compile Update="ModelValidators\FixtureValidatorResource.Designer.cs">
+            <DesignTime>True</DesignTime>
+            <AutoGen>True</AutoGen>
+            <DependentUpon>FixtureValidatorResource.resx</DependentUpon>
+        </Compile>
+        <Compile Update="EntityValidators\UserEntityValidatorResource.Designer.cs">
+            <DesignTime>True</DesignTime>
+            <AutoGen>True</AutoGen>
+            <DependentUpon>UserEntityValidatorResource.resx</DependentUpon>
+        </Compile>
+        <Compile Update="ModelValidators\MatchResultPermissionValidatorResource.Designer.cs">
+            <DesignTime>True</DesignTime>
+            <AutoGen>True</AutoGen>
+            <DependentUpon>MatchResultPermissionValidatorResource.resx</DependentUpon>
+        </Compile>
+        <Compile Update="ModelValidators\MatchResultValidatorResource.Designer.cs">
+            <DesignTime>True</DesignTime>
+            <AutoGen>True</AutoGen>
+            <DependentUpon>MatchResultValidatorResource.resx</DependentUpon>
+        </Compile>
+        <Compile Update="ModelValidators\PhoneNumberValidatorResource.Designer.cs">
+            <DesignTime>True</DesignTime>
+            <AutoGen>True</AutoGen>
+            <DependentUpon>PhoneNumberValidatorResource.resx</DependentUpon>
+        </Compile>
+        <Compile Update="ModelValidators\SetsValidatorResource.Designer.cs">
+            <DesignTime>True</DesignTime>
+            <AutoGen>True</AutoGen>
+            <DependentUpon>SetsValidatorResource.resx</DependentUpon>
+        </Compile>
+        <Compile Update="ModelValidators\SingleSetValidatorResource.Designer.cs">
+            <DesignTime>True</DesignTime>
+            <AutoGen>True</AutoGen>
+            <DependentUpon>SingleSetValidatorResource.resx</DependentUpon>
+        </Compile>
+        <Compile Update="ModelValidators\TeamInRoundValidatorResource.Designer.cs">
+            <DesignTime>True</DesignTime>
+            <AutoGen>True</AutoGen>
+            <DependentUpon>TeamInRoundValidatorResource.resx</DependentUpon>
+        </Compile>
+        <Compile Update="ModelValidators\TeamValidatorResource.Designer.cs">
+            <DesignTime>True</DesignTime>
+            <AutoGen>True</AutoGen>
+            <DependentUpon>TeamValidatorResource.resx</DependentUpon>
+        </Compile>
+        <Compile Update="ModelValidators\VenueValidatorResource.Designer.cs">
+            <DesignTime>True</DesignTime>
+            <AutoGen>True</AutoGen>
+            <DependentUpon>VenueValidatorResource.resx</DependentUpon>
+        </Compile>
+    </ItemGroup>
 
-	<ItemGroup>
-		<AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
-			<_Parameter1>$(AssemblyName).Tests</_Parameter1>
-		</AssemblyAttribute>
-		<AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
-			<_Parameter1>DynamicProxyGenAssembly2</_Parameter1>
-		</AssemblyAttribute>
-	</ItemGroup>
+    <ItemGroup>
+        <EmbeddedResource Update="ModelValidators\FixtureValidatorResource.resx">
+            <Generator>ResXFileCodeGenerator</Generator>
+            <LastGenOutput>FixtureValidatorResource.Designer.cs</LastGenOutput>
+        </EmbeddedResource>
+        <EmbeddedResource Update="EntityValidators\UserEntityValidatorResource.resx">
+            <Generator>PublicResXFileCodeGenerator</Generator>
+            <LastGenOutput>UserEntityValidatorResource.Designer.cs</LastGenOutput>
+        </EmbeddedResource>
+        <EmbeddedResource Update="ModelValidators\MatchResultPermissionValidatorResource.resx">
+            <Generator>ResXFileCodeGenerator</Generator>
+            <LastGenOutput>MatchResultPermissionValidatorResource.Designer.cs</LastGenOutput>
+        </EmbeddedResource>
+        <EmbeddedResource Update="ModelValidators\MatchResultValidatorResource.resx">
+            <Generator>ResXFileCodeGenerator</Generator>
+            <LastGenOutput>MatchResultValidatorResource.Designer.cs</LastGenOutput>
+        </EmbeddedResource>
+        <EmbeddedResource Update="ModelValidators\PhoneNumberValidatorResource.resx">
+            <Generator>ResXFileCodeGenerator</Generator>
+            <LastGenOutput>PhoneNumberValidatorResource.Designer.cs</LastGenOutput>
+        </EmbeddedResource>
+        <EmbeddedResource Update="ModelValidators\SetsValidatorResource.resx">
+            <Generator>ResXFileCodeGenerator</Generator>
+            <LastGenOutput>SetsValidatorResource.Designer.cs</LastGenOutput>
+        </EmbeddedResource>
+        <EmbeddedResource Update="ModelValidators\SingleSetValidatorResource.resx">
+            <Generator>ResXFileCodeGenerator</Generator>
+            <LastGenOutput>SingleSetValidatorResource.Designer.cs</LastGenOutput>
+        </EmbeddedResource>
+        <EmbeddedResource Update="ModelValidators\TeamInRoundValidatorResource.resx">
+            <LastGenOutput>TeamInRoundValidatorResource.Designer.cs</LastGenOutput>
+            <Generator>ResXFileCodeGenerator</Generator>
+        </EmbeddedResource>
+        <EmbeddedResource Update="ModelValidators\VenueValidatorResource.resx">
+            <LastGenOutput>VenueValidatorResource.Designer.cs</LastGenOutput>
+            <Generator>PublicResXFileCodeGenerator</Generator>
+        </EmbeddedResource>
+        <EmbeddedResource Update="ModelValidators\TeamValidatorResource.resx">
+            <Generator>PublicResXFileCodeGenerator</Generator>
+            <LastGenOutput>TeamValidatorResource.Designer.cs</LastGenOutput>
+        </EmbeddedResource>
+    </ItemGroup>
+
+    <ItemGroup>
+        <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+            <_Parameter1>$(AssemblyName).Tests</_Parameter1>
+        </AssemblyAttribute>
+        <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+            <_Parameter1>DynamicProxyGenAssembly2</_Parameter1>
+        </AssemblyAttribute>
+    </ItemGroup>
 
 </Project>

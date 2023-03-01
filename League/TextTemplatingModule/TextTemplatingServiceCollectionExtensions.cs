@@ -9,53 +9,52 @@ using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Options;
-#nullable enable
-namespace League.TextTemplatingModule
+
+namespace League.TextTemplatingModule;
+
+public static class TextTemplatingServiceCollectionExtensions
 {
-    public static class TextTemplatingServiceCollectionExtensions
+    public static IServiceCollection AddTextTemplatingModule(this IServiceCollection services, Action<VirtualFileSystemOptions>? virtualFileSystemOptions = null, Action<LocalizationOptions>? localizationOptions = null, Action<LeagueTemplateRendererOptions>? renderOptions = null)
     {
-        public static IServiceCollection AddTextTemplatingModule(this IServiceCollection services, Action<VirtualFileSystemOptions>? virtualFileSystemOptions = null, Action<LocalizationOptions>? localizationOptions = null, Action<LeagueTemplateRendererOptions>? renderOptions = null)
+        services.Configure<VirtualFileSystemOptions>(virtualFileSystemOptions ?? (options => { }));
+        services.Configure<LocalizationOptions>(localizationOptions ?? (options => { }));
+        services.Configure<LeagueTemplateRendererOptions>(renderOptions ?? (options => { }));
+
+        services.Configure<TextTemplatingOptions>(options =>
         {
-            services.Configure<VirtualFileSystemOptions>(virtualFileSystemOptions ?? (options => { }));
-            services.Configure<LocalizationOptions>(localizationOptions ?? (options => { }));
-            services.Configure<LeagueTemplateRendererOptions>(renderOptions ?? (options => { }));
+            // Don't forget to add content and definition providers as services
+            options.DefinitionProviders.Add(typeof(EmailTemplateDefinitionProvider));
+            options.ContentContributors.Add(typeof(VirtualFileTemplateContentContributor));
+        });
 
-            services.Configure<TextTemplatingOptions>(options =>
-            {
-                // Don't forget to add content and definition providers as services
-                options.DefinitionProviders.Add(typeof(EmailTemplateDefinitionProvider));
-                options.ContentContributors.Add(typeof(VirtualFileTemplateContentContributor));
-            });
-
-            services.AddTransient<EmailTemplateDefinitionProvider>();
-            services.AddSingleton<IFileProvider, VirtualFileProvider>();
-            services.AddSingleton<IDynamicFileProvider, DynamicFileProvider>();
-            services.AddTransient<VirtualFileTemplateContentContributor>();
-            services.AddSingleton<ILocalizedTemplateContentReaderFactory, LocalizedTemplateContentReaderFactory>();
+        services.AddTransient<EmailTemplateDefinitionProvider>();
+        services.AddSingleton<IFileProvider, VirtualFileProvider>();
+        services.AddSingleton<IDynamicFileProvider, DynamicFileProvider>();
+        services.AddTransient<VirtualFileTemplateContentContributor>();
+        services.AddSingleton<ILocalizedTemplateContentReaderFactory, LocalizedTemplateContentReaderFactory>();
            
-            services.AddSingleton<ITemplateDefinitionManager, TemplateDefinitionManager>();
-            services.AddTransient<ITemplateContentProvider, TemplateContentProvider>();
-            services.AddTransient<ITemplateRenderer, LeagueTemplateRenderer>();
+        services.AddSingleton<ITemplateDefinitionManager, TemplateDefinitionManager>();
+        services.AddTransient<ITemplateContentProvider, TemplateContentProvider>();
+        services.AddTransient<ITemplateRenderer, LeagueTemplateRenderer>();
 
-            // The following services have probably already been registered
+        // The following services have probably already been registered
             
-            services.TryAddSingleton<IStringLocalizerFactory>(s => new ResourceManagerStringLocalizerFactory(s.GetRequiredService<IOptions<LocalizationOptions>>(), NullLoggerFactory.Instance));
-            services.TryAddSingleton(typeof(IStringLocalizer<>), typeof(StringLocalizer<>));
+        services.TryAddSingleton<IStringLocalizerFactory>(s => new ResourceManagerStringLocalizerFactory(s.GetRequiredService<IOptions<LocalizationOptions>>(), NullLoggerFactory.Instance));
+        services.TryAddSingleton(typeof(IStringLocalizer<>), typeof(StringLocalizer<>));
 
-            #region ** Timezone service **
+        #region ** Timezone service **
 
-            services.TryAddSingleton<NodaTime.TimeZones.DateTimeZoneCache>(sp =>
-                new NodaTime.TimeZones.DateTimeZoneCache(NodaTime.TimeZones.TzdbDateTimeZoneSource.Default));
+        services.TryAddSingleton<NodaTime.TimeZones.DateTimeZoneCache>(sp =>
+            new NodaTime.TimeZones.DateTimeZoneCache(NodaTime.TimeZones.TzdbDateTimeZoneSource.Default));
             
-            var tzId = "America/New_York"; // America/New_York
-            // TimeZoneConverter will use the culture of the current scope
-            services.TryAddTransient<Axuno.Tools.DateAndTime.TimeZoneConverter>(sp => new Axuno.Tools.DateAndTime.TimeZoneConverter(
-                sp.GetRequiredService<NodaTime.TimeZones.DateTimeZoneCache>(), tzId, CultureInfo.GetCultureInfo("en"),
-                NodaTime.TimeZones.Resolvers.LenientResolver));
+        var tzId = "America/New_York"; // America/New_York
+        // TimeZoneConverter will use the culture of the current scope
+        services.TryAddTransient<Axuno.Tools.DateAndTime.TimeZoneConverter>(sp => new Axuno.Tools.DateAndTime.TimeZoneConverter(
+            sp.GetRequiredService<NodaTime.TimeZones.DateTimeZoneCache>(), tzId, CultureInfo.GetCultureInfo("en"),
+            NodaTime.TimeZones.Resolvers.LenientResolver));
 
-            #endregion
+        #endregion
             
-            return services;
-        }
+        return services;
     }
 }

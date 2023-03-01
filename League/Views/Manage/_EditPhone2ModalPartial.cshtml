@@ -5,11 +5,13 @@
 @inject ITenantContext TenantContext
 @model EditPhone2ViewModel
 @{ const string BtnRemove = "btn-remove";
-    ViewContext.ClientValidationEnabled = true; var tenantUrlSegment = TenantContext.SiteContext.UrlSegmentValue;}
+    ViewContext.ClientValidationEnabled = true;
+    var tenantUrlSegment = TenantContext.SiteContext.UrlSegmentValue;
+}
 <!-- Modal -->
 <modal id="change-email" title="@Localizer["Change Additional Phone Number"].Value" tabindex="-1">
     <modal-body>
-        <form asp-controller="@nameof(Manage)" asp-action="@nameof(Manage.EditPhoneNumber2)" asp-route-organization="@tenantUrlSegment" method="post" role="form">
+        <form asp-controller="@nameof(Manage)" asp-action="@nameof(Manage.EditPhoneNumber2)" asp-route-tenant="@tenantUrlSegment" method="post" role="form">
             <site-validation-summary show="All"></site-validation-summary>
             <input name="IsValid" type="hidden" value="@ViewData.ModelState.IsValid.ToString()" />
             <div class="form-group">
@@ -26,7 +28,6 @@
         @* The script must be inside modal-body in order to run if the form is re-displayed after validation *@
         <script type="text/javascript">
             $('#@BtnRemove').on('click', function () { $('#@nameof(Model.PhoneNumber2)').val(''); });
-            //# sourceURL=dynamic.js
         </script>
         @{ if (ViewContext.ClientValidationEnabled) { await Html.RenderPartialAsync(League.Views.ViewNames.Shared._ValidationScriptsPartial); } /* register the modal form for validation */ }
     </modal-body>
