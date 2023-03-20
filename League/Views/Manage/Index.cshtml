@@ -8,7 +8,7 @@
 @inject TenantLink TenantLink
 @model IndexViewModel
 @{
-    ViewData["Title"] = Localizer["Change account settings"];
+    ViewData["Title"] = Localizer["Change account settings"].Value;
     var tenantUrlSegment = TenantContext.SiteContext.UrlSegmentValue;
 }
 <div>
