@@ -2,7 +2,7 @@
 @using TournamentManager.MultiTenancy
 @inject IViewLocalizer Localizer
 @inject ITenantContext TenantContext
-@{ ViewData["Title"] = Localizer["Sign-in with the social network account failed"];
+@{ ViewData["Title"] = Localizer["Sign-in with the social network account failed"].Value;
                 var tenantUrlSegment = TenantContext.SiteContext.UrlSegmentValue; }
 <h2 class="h2">@ViewData["Title"].</h2>
 <hr />

@@ -5,7 +5,7 @@
 @inject IOptions<DataProtectionTokenProviderOptions> TokenProviderOptions
 @{
     var tokenExpiresOn = TimeZoneConverter.ToZonedTime(DateTime.UtcNow.Add(TokenProviderOptions.Value.TokenLifespan))!;
-    ViewData["Title"] = Localizer["Please confirm your email address"];
+    ViewData["Title"] = Localizer["Please confirm your email address"].Value;
 }
 <h2>@ViewData["Title"].</h2>
 <hr />
