@@ -7,7 +7,7 @@
 @inject IViewLocalizer Localizer
 @inject ITenantContext TenantContext
 @{
-    ViewData["Title"] = Localizer["Create a new user account"];
+    ViewData["Title"] = Localizer["Create a new user account"].Value;
     var tenantUrlSegment = TenantContext.SiteContext.UrlSegmentValue;
 }
 <div>

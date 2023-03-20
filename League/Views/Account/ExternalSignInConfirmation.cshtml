@@ -5,7 +5,7 @@
 @using TournamentManager.MultiTenancy
 @model ExternalSignConfirmationViewModel
 @{
-    ViewData["Title"] = Localizer["Associate social network account"];
+    ViewData["Title"] = Localizer["Associate social network account"].Value;
     var tenantUrlSegment = TenantContext.SiteContext.UrlSegmentValue;
     var loginProvider = ViewData["LoginProvider"]!;
     List<SelectListItem> GenderList()

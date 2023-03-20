@@ -7,15 +7,15 @@
     var tenantUrlSegment = TenantContext.SiteContext.UrlSegmentValue;
     if (Model == Microsoft.AspNetCore.Identity.SignInResult.LockedOut)
     {
-        ViewData["Title"] = Localizer["Account has been locked out"];
+        ViewData["Title"] = Localizer["Account has been locked out"].Value;
     }
     else if (Model == Microsoft.AspNetCore.Identity.SignInResult.NotAllowed)
     {
-        ViewData["Title"] = Localizer["Account is currently disabled"];
+        ViewData["Title"] = Localizer["Account is currently disabled"].Value;
     }
     else
     {
-        ViewData["Title"] = Localizer["Sign-in is currently not possible"];
+        ViewData["Title"] = Localizer["Sign-in is currently not possible"].Value;
     }
 }
 <h2 class="h2">@ViewData["Title"].</h2>

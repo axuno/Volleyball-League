@@ -3,7 +3,7 @@
 @inject IViewLocalizer Localizer
 @inject ITenantContext TenantContext
 @{
-    ViewData["Title"] = Localizer["Account is currently disabled"];
+    ViewData["Title"] = Localizer["Account is currently disabled"].Value;
     var tenantUrlSegment = TenantContext.SiteContext.UrlSegmentValue;
 }
 <h2 class="h2">@ViewData["Title"].</h2>

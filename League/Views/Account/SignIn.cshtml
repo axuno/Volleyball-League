@@ -7,7 +7,7 @@
 @inject ITenantContext TenantContext
 @inject IViewLocalizer Localizer
 @{
-    ViewData["Title"] = Localizer["Sign in"];
+    ViewData["Title"] = Localizer["Sign in"].Value;
     var tenantUrlSegment = TenantContext.SiteContext.UrlSegmentValue;
 }
 <h2 class="h2">@ViewData["Title"]</h2>
