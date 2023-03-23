@@ -39,6 +39,7 @@ using System.Threading.Tasks;
 using Axuno.BackgroundTask;
 using Axuno.VirtualFileSystem;
 using League.BackgroundTasks;
+using League.Caching;
 using League.ConfigurationPoco;
 using League.MultiTenancy;
 using Microsoft.AspNetCore.Authorization;
@@ -199,10 +200,8 @@ public static class LeagueStartup
             return factory.GetUrlHelper(actionContext);
         });
         // TenantLink simplifies tenant-specific path/uri generation
-        services.AddScoped<TenantLink>(sp =>
-            new TenantLink(sp.GetRequiredService<IHttpContextAccessor>(),
-            sp.GetRequiredService<LinkGenerator>(),
-            sp.GetRequiredService<ITenantContext>()));
+        services.AddScoped<TenantLink>();
+        services.AddScoped<ReportSheetCache>();
 
         services.AddMemoryCache(); // Adds a default in-memory cache implementation
         // MUST be before AddMvc!

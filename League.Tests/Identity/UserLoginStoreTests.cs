@@ -5,15 +5,13 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Threading;
 using League.Identity;
-using League.Test.TestComponents;
 using NUnit.Framework;
 using TournamentManager.DAL.DatabaseSpecific;
-using TournamentManager.Data;
 using TournamentManager.DAL.EntityClasses;
 using SD.LLBLGen.Pro.ORMSupportClasses;
 using TournamentManager.MultiTenancy;
 
-namespace League.Test.Identity;
+namespace League.Tests.Identity;
 
 /// <summary>
 /// Integration tests

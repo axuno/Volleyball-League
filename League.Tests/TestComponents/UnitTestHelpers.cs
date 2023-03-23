@@ -1,12 +1,15 @@
-﻿using System.Globalization;
+﻿using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using Axuno.VirtualFileSystem;
+using League.Caching;
 using League.Identity;
-using League.Test.TestComponents;
+using League.Tests.TestComponents;
 using League.TextTemplatingModule;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.TestHost;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
@@ -18,7 +21,7 @@ using SD.LLBLGen.Pro.ORMSupportClasses;
 using TournamentManager.MultiTenancy;
 using ILogger = Microsoft.Extensions.Logging.ILogger;
 
-namespace League.Test;
+namespace League.Tests;
 
 public class UnitTestHelpers
 {
@@ -135,6 +138,31 @@ public class UnitTestHelpers
                     renderOptions.MemberNotFoundAction = RenderErrorAction.ThrowError;
                     renderOptions.VariableNotFoundAction = RenderErrorAction.ThrowError;
                 })
+            .BuildServiceProvider();
+    }
+
+    public static ServiceProvider GetReportSheetCacheServiceProvider(ITenantContext tenantContext, IWebHostEnvironment webHostEnvironment, IEnumerable<KeyValuePair<string,string?>> chromiumPath)
+    {
+        return new ServiceCollection()
+            .AddLogging(builder =>
+            {
+                builder.SetMinimumLevel(Microsoft.Extensions.Logging.LogLevel.Trace);
+                builder.AddNLog(new NLogProviderOptions
+                {
+                    CaptureMessageTemplates = true,
+                    CaptureMessageProperties = true
+                });
+            })
+            .AddTransient<IConfiguration>(sp =>
+            {
+                var c = new ConfigurationManager();
+                c.AddInMemoryCollection(chromiumPath);
+                return c;
+            })
+            .AddTransient<ITenantContext>(sp => tenantContext)
+            .AddTransient<IWebHostEnvironment>(sp => webHostEnvironment)
+            .AddTransient<ReportSheetCache>()
+            .AddLocalization()
             .BuildServiceProvider();
     }
 
