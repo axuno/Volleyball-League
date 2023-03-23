@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using League.BackgroundTasks;
+using League.Caching;
 using League.Emailing.Creators;
 using League.Helpers;
 using League.Models.MatchViewModels;
@@ -14,14 +15,12 @@ using League.Routing;
 using League.Views;
 using MailMergeLib.AspNet;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
-using NuGet.Packaging.Signing;
-using PuppeteerSharp;
-using PuppeteerSharp.Media;
 using SD.LLBLGen.Pro.ORMSupportClasses;
 using SD.LLBLGen.Pro.QuerySpec;
 using TournamentManager.DAL.EntityClasses;
@@ -49,9 +48,7 @@ public class Match : AbstractController
     private readonly SendEmailTask _sendMailTask;
     private readonly RankingUpdateTask _rankingUpdateTask;
     private readonly RazorViewToStringRenderer _razorViewToStringRenderer;
-    private readonly IConfiguration _configuration;
-    private readonly string _pathToChromium;
-
+    
     /// <summary>
     /// The controller for handling <see cref="MatchEntity"/>s.
     /// </summary>
@@ -63,13 +60,12 @@ public class Match : AbstractController
     /// <param name="sendMailTask"></param>
     /// <param name="rankingUpdateTask"></param>
     /// <param name="razorViewToStringRenderer"></param>
-    /// <param name="configuration"></param>
     /// <param name="logger"></param>
     public Match(ITenantContext tenantContext, IStringLocalizer<Match> localizer,
         IAuthorizationService authorizationService,
         Axuno.Tools.DateAndTime.TimeZoneConverter timeZoneConverter, Axuno.BackgroundTask.IBackgroundQueue queue,
         SendEmailTask sendMailTask, RankingUpdateTask rankingUpdateTask,
-        RazorViewToStringRenderer razorViewToStringRenderer, IConfiguration configuration, ILogger<Match> logger)
+        RazorViewToStringRenderer razorViewToStringRenderer, ILogger<Match> logger)
     {
         _tenantContext = tenantContext;
         _appDb = tenantContext.DbContext.AppDb;
@@ -80,9 +76,7 @@ public class Match : AbstractController
         _sendMailTask = sendMailTask;
         _rankingUpdateTask = rankingUpdateTask;
         _razorViewToStringRenderer = razorViewToStringRenderer;
-        _configuration = configuration;
         _logger = logger;
-        _pathToChromium = Path.Combine(Directory.GetCurrentDirectory(), _configuration["Chromium:ExecutablePath"] ?? string.Empty);
     }
 
     /// <summary>
@@ -621,135 +615,43 @@ public class Match : AbstractController
     /// if the match has not already been played.
     /// </summary>
     /// <param name="id"></param>
-    /// <param name="val">Expected to be greater than DateTime.UtcNow.AddHours(-12).Ticks</param>
+    /// <param name="cache">The cache injected from services.</param>
     /// <param name="cancellationToken"></param>
     /// <returns>A match report sheet suitable for a printout, if the match has not already been played.</returns>
-    [HttpGet("[action]/{id:long}/{val:long}")]
-    public async Task<IActionResult> ReportSheet(long id, long val, CancellationToken cancellationToken)
+    [HttpGet("[action]/{id:long}")]
+    public async Task<IActionResult> ReportSheet(long id, [FromServices] ReportSheetCache cache, CancellationToken cancellationToken)
     {
-        // Prevent crawlers to download report sheets (link is valid for 12 hours)
-        if (!(val >= DateTime.UtcNow.AddHours(-12).Ticks && val <= DateTime.UtcNow.Ticks))
-            return Redirect(TenantLink.Action(nameof(Fixtures), nameof(Match))!);
-
         MatchReportSheetRow? model = null;
             
         try
         {
             model = await _appDb.MatchRepository.GetMatchReportSheetAsync(_tenantContext.TournamentContext.MatchPlanTournamentId, id, cancellationToken);
-
+            
             if (model == null) return NotFound();
 
-            if (System.IO.File.Exists(_pathToChromium))
-            {
-                var contentDisposition = new Microsoft.Net.Http.Headers.ContentDispositionHeaderValue("attachment");
-                contentDisposition.SetHttpFileName($"{_localizer["Report Sheet"].Value}_{model.Id}.pdf");
-                Response.Headers[Microsoft.Net.Http.Headers.HeaderNames.ContentDisposition] =
-                    contentDisposition.ToString();
+            var contentDisposition = new Microsoft.Net.Http.Headers.ContentDispositionHeaderValue("attachment");
+            contentDisposition.SetHttpFileName($"{_localizer["Report Sheet"].Value}_{model.Id}.pdf");
+            Response.Headers[Microsoft.Net.Http.Headers.HeaderNames.ContentDisposition] =
+                contentDisposition.ToString();
 
-                var html = await _razorViewToStringRenderer.RenderViewToStringAsync(
-                    $"~/Views/{nameof(Match)}/{ViewNames.Match.ReportSheet}.cshtml", model);
+            var html = await _razorViewToStringRenderer.RenderViewToStringAsync(
+                $"~/Views/{nameof(Match)}/{ViewNames.Match.ReportSheet}.cshtml", model);
 
-                //return await GetReportSheetPuppeteer(html);
-                return await GetReportSheetChromium(html);
-            }
+            //var cache = new ReportSheetCache(_tenantContext, _configuration, _webHostEnvironment);
+            var stream = await cache.GetOrCreatePdf(model, html, cancellationToken);
+            _logger.LogInformation("PDF file returned for tenant '{Tenant}' and match id '{MatchId}'", _tenantContext.Identifier, id);
+            return new FileStreamResult(stream, "application/pdf");
         }
         catch (Exception e)
         {
             _logger.LogCritical(e, "{method} failed for match ID '{matchId}'", nameof(ReportSheet), id);
         }
             
-        // without Chromium installed or throwing exception: return HTML
+        // Not able to render report sheet as PDF: return HTML
         Response.Clear();
         return View(ViewNames.Match.ReportSheet, model);
     }
-
-    private async Task<FileResult> GetReportSheetChromium(string html)
-    {
-        // Create folder in TempPath
-        var tempFolder = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
-        if (!Directory.Exists(tempFolder)) Directory.CreateDirectory(tempFolder);
-            
-        // Temporary file with HTML content - extension must be ".html"!
-        var htmlFile = Path.Combine(tempFolder, Path.GetRandomFileName() + ".html");
-        await System.IO.File.WriteAllTextAsync(htmlFile, html, CancellationToken.None);
-        var htmlUri = new Uri(htmlFile).AbsoluteUri;
-
-        // Temporary file for the PDF stream form Chromium
-        var streamFile = Path.Combine(tempFolder, Path.GetRandomFileName() + ".pdf");
-
-        // Run Chromium
-        // Command line switches overview: https://kapeli.com/cheat_sheets/Chromium_Command_Line_Switches.docset/Contents/Resources/Documents/index
-        var startInfo = new System.Diagnostics.ProcessStartInfo(_pathToChromium,
-                $"--allow-pre-commit-input --disable-background-networking --disable-background-timer-throttling --disable-backgrounding-occluded-windows --disable-breakpad --disable-client-side-phishing-detection --disable-component-extensions-with-background-pages --disable-component-update --disable-default-apps --disable-dev-shm-usage --disable-extensions --disable-features=Translate,BackForwardCache,AcceptCHFrame,MediaRouter,OptimizationHints --disable-hang-monitor --disable-ipc-flooding-protection --disable-popup-blocking --disable-prompt-on-repost --disable-renderer-backgrounding --disable-sync --enable-automation --enable-blink-features=IdleDetection --enable-features=NetworkServiceInProcess2 --export-tagged-pdf --force-color-profile=srgb --metrics-recording-only --no-first-run --password-store=basic --use-mock-keychain --headless --hide-scrollbars --mute-audio --no-sandbox --disable-gpu --use-cmd-decoder=passthrough --no-margins --user-data-dir={tempFolder} --print-to-pdf={streamFile} {htmlUri}")
-            {CreateNoWindow = true, UseShellExecute = false};
-        var proc = System.Diagnostics.Process.Start(startInfo);
-
-        if (proc is null)
-        {
-            _logger.LogCritical("Process '{PathToChromium}' could not be started.", _pathToChromium);
-            throw new InvalidOperationException($"Process '{_pathToChromium}' could not be started.");
-        }
-
-        const int timeout = 8000;
-        var timePassed = 0;
-        while (!proc.HasExited)
-        {
-            timePassed += 100;
-            await Task.Delay(100, default);
-            if (timePassed < timeout) continue;
-
-            proc.Kill(true);
-            throw new OperationCanceledException($"Chromium timed out after {timeout}ms.");
-        }
-
-        var streamFileInfo = new FileInfo(streamFile);
-        _logger.LogInformation("Chromium exit code: {ExitCode}. File info: {Path} - {Size} bytes", proc.ExitCode, streamFileInfo.FullName, streamFileInfo.Length);
-        var stream = System.IO.File.OpenRead(streamFile);
-        return new FileStreamResult(stream, "application/pdf");
-    }
-
-    private async Task<FileStreamResult> GetReportSheetPuppeteer(string html)
-    {
-        var options = new LaunchOptions
-        {
-            Headless = true,
-            Product = Product.Chrome,
-            // Alternative: --use-cmd-decoder=validating 
-            Args = new[]
-                { "--no-sandbox", "--disable-gpu", "--disable-extensions", "--use-cmd-decoder=passthrough" },
-            ExecutablePath = _pathToChromium,
-            Timeout = 5000
-        };
-        // Use Puppeteer as a wrapper for the browser, which can generate PDF from HTML
-        // Start command line arguments set by Puppeteer:
-        // --allow-pre-commit-input --disable-background-networking --disable-background-timer-throttling --disable-backgrounding-occluded-windows --disable-breakpad --disable-client-side-phishing-detection --disable-component-extensions-with-background-pages --disable-component-update --disable-default-apps --disable-dev-shm-usage --disable-extensions --disable-features=Translate,BackForwardCache,AcceptCHFrame,MediaRouter,OptimizationHints --disable-hang-monitor --disable-ipc-flooding-protection --disable-popup-blocking --disable-prompt-on-repost --disable-renderer-backgrounding --disable-sync --enable-automation --enable-blink-features=IdleDetection --enable-features=NetworkServiceInProcess2 --export-tagged-pdf --force-color-profile=srgb --metrics-recording-only --no-first-run --password-store=basic --use-mock-keychain --headless
-        await using var browser = await Puppeteer.LaunchAsync(options).ConfigureAwait(false);
-        await using var page = await browser.NewPageAsync().ConfigureAwait(false);
-
-        await page.SetContentAsync(html); // Bootstrap 5 is loaded from CDN
-        await page.EvaluateExpressionHandleAsync("document.fonts.ready"); // Wait for fonts to be loaded. Omitting this might result in no text rendered in pdf.
-
-        _logger.LogInformation("Chromium Start arguments: {commandLineArgs}", browser.Process?.StartInfo.Arguments);
-
-        // browser.Process?.Refresh();
-        //_logger.LogInformation("Chromium Process physical memory: {physicalMemory:#,0} bytes.", browser.Process?.WorkingSet64);
-
-        // Test, whether the chromium browser renders at all
-        /* return new FileStreamResult(
-            await page.ScreenshotStreamAsync(new PuppeteerSharp.ScreenshotOptions
-                {FullPage = true, Quality = 100, Type = ScreenshotType.Jpeg}).ConfigureAwait(false),
-            "image/jpeg");
-        */
-
-        // Todo: This part works on the development machine, but throws on the external web server
-        var result = new FileStreamResult(
-            await page.PdfStreamAsync(new PuppeteerSharp.PdfOptions
-                { Scale = 1.0M, Format = PaperFormat.A4 }).ConfigureAwait(false),
-            "application/pdf");
-        _logger.LogInformation("PDF stream created with length {length}", result.FileStream.Length);
-        return result;
-    }
-
+    
     private void SendFixtureNotification(long matchId)
     {
         _sendMailTask.SetMessageCreator(new ChangeFixtureCreator

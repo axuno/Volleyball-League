@@ -10,7 +10,7 @@ using TournamentManager.DAL.EntityClasses;
 using TournamentManager.MultiTenancy;
 using SD.LLBLGen.Pro.ORMSupportClasses;
 
-namespace League.Test.Identity;
+namespace League.Tests.Identity;
 
 /// <summary>
 /// Integration tests

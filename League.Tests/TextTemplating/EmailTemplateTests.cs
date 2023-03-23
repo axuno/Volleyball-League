@@ -6,7 +6,7 @@ using League.Emailing.TemplateModels;
 using League.Models.ContactViewModels;
 using League.Templates.Email;
 using League.Templates.Email.Localization;
-using League.Test.TestComponents;
+using League.Tests.TestComponents;
 using League.TextTemplatingModule;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Localization;
@@ -14,7 +14,7 @@ using NUnit.Framework;
 using TournamentManager.DAL.TypedViewClasses;
 using TournamentManager.MultiTenancy;
 
-namespace League.Test.TextTemplating;
+namespace League.Tests.TextTemplating;
 
 /// <summary>
 /// Tests for all email templates.
