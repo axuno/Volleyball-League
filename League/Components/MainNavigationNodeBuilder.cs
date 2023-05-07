@@ -173,7 +173,8 @@ public class MainNavigationNodeBuilder : IMainNavigationNodeBuilder
                 Key = "Teams_MyTeam",
                 Text = Localizer["My team"],
                 Url = TenantLink.Action(nameof(Team.MyTeam), nameof(Team)),
-                IsVisible = (await AuthorizationService.AuthorizeAsync(UserClaimsPrincipal, PolicyName.MyTeamAdminPolicy)).Succeeded
+                IsVisible = (await AuthorizationService.AuthorizeAsync(UserClaimsPrincipal, PolicyName.MyTeamPolicy)).Succeeded
+                    || (await AuthorizationService.AuthorizeAsync(UserClaimsPrincipal, PolicyName.MyTeamAdminPolicy)).Succeeded
             },
             new MainNavigationComponentModel.NavigationNode
             {

@@ -11,10 +11,8 @@ public static class TeamOperations
     public static readonly OperationAuthorizationRequirement ChangePhoto = new() { Name = nameof(ChangePhoto) };
     public static readonly OperationAuthorizationRequirement EditTeam = new() { Name = nameof(EditTeam) };
     public static readonly OperationAuthorizationRequirement AddTeamMember = new() { Name = nameof(AddTeamMember) };
-    public static readonly OperationAuthorizationRequirement RemoveTeamMember =
-        new() { Name = nameof(RemoveTeamMember) };
-    public static readonly OperationAuthorizationRequirement SignUpForSeason =
-        new() { Name = nameof(SignUpForSeason) };
+    public static readonly OperationAuthorizationRequirement RemoveTeamMember = new() { Name = nameof(RemoveTeamMember) };
+    public static readonly OperationAuthorizationRequirement SignUpForSeason = new() { Name = nameof(SignUpForSeason) };
 }
 
 public class TeamAuthorizationHandler : AuthorizationHandler<OperationAuthorizationRequirement, TeamEntity>

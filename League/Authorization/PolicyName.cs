@@ -11,7 +11,7 @@ public static class PolicyName
     /// </summary>
     public const string SeeTeamContactsPolicy = nameof(SeeTeamContactsPolicy);
     /// <summary>
-    /// Policy for "my team" views
+    /// Policy for "my team" views, primarily for team managers and players.
     /// </summary>
     public const string MyTeamPolicy = nameof(MyTeamPolicy);
     /// <summary>
