@@ -713,6 +713,9 @@ public static class LeagueStartup
         app.UseAuthentication();
         app.UseAuthorization();
 
+        // Suppress exceptions when the connection is closed by the client
+        // Controllers and Razor Pages should be next in sequence
+        app.UseMiddleware<Middleware.ClientAbortMiddleware>();
         app.MapControllers();
         app.MapRazorPages();
     }
