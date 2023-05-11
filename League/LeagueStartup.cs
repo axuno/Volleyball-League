@@ -47,8 +47,6 @@ using TournamentManager.DI;
 using TournamentManager.MultiTenancy;
 using League.TextTemplatingModule;
 using Microsoft.AspNetCore.Mvc.Localization;
-using Microsoft.AspNetCore.Routing;
-using NLog.Extensions.Logging;
 
 #endregion
 
@@ -488,6 +486,7 @@ public static class LeagueStartup
         #endregion
 
         services.AddSingleton<Helpers.MetaDataHelper>();
+        services.AddTransient<Middleware.ClientAbortMiddleware>();
 
         services.Configure<CookiePolicyOptions>(options =>
         {
@@ -713,6 +712,9 @@ public static class LeagueStartup
         app.UseAuthentication();
         app.UseAuthorization();
 
+        // Suppress exceptions when the connection is closed by the client
+        // Controllers and Razor Pages should be next in sequence
+        app.UseMiddleware<Middleware.ClientAbortMiddleware>();
         app.MapControllers();
         app.MapRazorPages();
     }
