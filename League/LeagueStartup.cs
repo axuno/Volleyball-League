@@ -486,7 +486,6 @@ public static class LeagueStartup
         #endregion
 
         services.AddSingleton<Helpers.MetaDataHelper>();
-
         services.AddTransient<ClientAbortMiddleware>();
 
         services.Configure<CookiePolicyOptions>(options =>
