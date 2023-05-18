@@ -3,7 +3,7 @@
 @using TournamentManager.DAL.EntityClasses
 @using TournamentManager.DAL.TypedViewClasses
 @using TournamentManager.MultiTenancy
-@using League.MultiTenancy
+@using League.MultiTenancy @* don't remove *@
 @inject IViewLocalizer Localizer
 @inject ITenantContext TenantContext
 @inject TenantLink TenantLink
@@ -24,7 +24,8 @@
     }
 
     var activeRoundId = Model.ActiveRoundId ?? 0;
-    var rounds = Model.PlannedMatches.GroupBy(m => m.RoundName, (key, m) => new { RoundName = key, RoundId = m.First().RoundId, RoundDescription = m.First().RoundDescription, RoundTypeDescription = m.First().RoundTypeDescription }).ToList();
+    var rounds = Model.PlannedMatches.GroupBy(m => m.RoundName, (key, m) => new { RoundName = key, RoundId = m.First().RoundId, RoundDescription = m.First().RoundDescription, RoundTypeDescription = m.First().RoundTypeDescription })
+        .OrderBy(m => m.RoundName).ToList();
     var useRecentRoundCookie = !(Model.ActiveRoundId.HasValue && rounds.Any(r => r.RoundId == Model.ActiveRoundId));
     if (useRecentRoundCookie) { activeRoundId = rounds.FirstOrDefault()?.RoundId ?? 0; }
 
