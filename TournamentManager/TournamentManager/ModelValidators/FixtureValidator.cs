@@ -238,10 +238,19 @@ public class FixtureValidator : AbstractValidator<MatchEntity, (ITenantContext T
                         
                     var homeTeam = _teamsInMatch.FirstOrDefault(m => m.Id == Model.HomeTeamId);
                     var guestTeam = _teamsInMatch.FirstOrDefault(m => m.Id == Model.GuestTeamId);
+                    var plannedStartDayOfWeek = (int?) Model.PlannedStart.Value.DayOfWeek;
 
                     if (homeTeam?.MatchDayOfWeek == null || guestTeam?.MatchDayOfWeek == null) return _successResult;
-
-                    if ((int?)Model.PlannedStart.Value.DayOfWeek !=
+                    
+                    // 2 teams using the same venue have a match,
+                    // and the planned start week day is either the home or guest team weekday
+                    if (homeTeam.VenueId == guestTeam.VenueId && Model.VenueId == homeTeam.VenueId
+                        && (plannedStartDayOfWeek == homeTeam.MatchDayOfWeek || plannedStartDayOfWeek == guestTeam.MatchDayOfWeek))
+                    {
+                        return _successResult;
+                    }
+                    
+                    if (plannedStartDayOfWeek !=
                         homeTeam.MatchDayOfWeek
                         && Model.VenueId == homeTeam.VenueId)
                     {
@@ -254,7 +263,7 @@ public class FixtureValidator : AbstractValidator<MatchEntity, (ITenantContext T
                         };
                     }
 
-                    if ((int?)Model.PlannedStart.Value.DayOfWeek !=
+                    if (plannedStartDayOfWeek !=
                         guestTeam.MatchDayOfWeek
                         && Model.VenueId == guestTeam.VenueId)
                     {

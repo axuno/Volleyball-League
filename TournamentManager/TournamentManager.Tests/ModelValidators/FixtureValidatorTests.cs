@@ -92,7 +92,8 @@ public class FixtureValidatorTests
                     },
                     new() {
                         Id = team2Id,
-                        VenueId = 200 + team2Id,
+                        // make both venue ids equal
+                        VenueId = team2Id != 123 ? 200 + team2Id : 100 + team1Id,
                         MatchDayOfWeek = team2Id < 10000 ? (int)(team2Id % 6) : default(int?),
                         MatchTime = new TimeSpan(19, 0, 0)
                     }
@@ -322,18 +323,19 @@ public class FixtureValidatorTests
     [TestCase(1, 2, "2020-06-16 19:30:00", 202, true)] // venueId = 200 + guestTeamId, weekday = guestTeamId % 6
     [TestCase(1, 2, "2020-06-16 18:00:00", 101, false)] // home venue but other weekday home team
     [TestCase(1, 2, "2020-06-17 19:30:00", 202, false)] // home venue but other weekday guest team
+    [TestCase(1, 123, "2020-06-15 18:00:00", 101, true)] // guest team as same venue as home teams
     [TestCase(1, 2, "2020-06-16 18:00:00", 999, true)] // not home weekday but also not home venue
     [TestCase(1, 2, "2020-06-17 19:30:00", 999, true)] // not home weekday but also not home venue
     [TestCase(10001, 2, "2020-06-15 18:00:00", 101, true)] // homeTeamId > 10000 makes home weekday null
     [TestCase(1, 10002, "2020-06-16 19:30:00", 101, true)] // guestTeamId > 10000 makes guest weekday null
     [TestCase(1, 2, null, 101, true)]
     [TestCase(1, 2, "2020-06-15 18:00:00", null, true)]
-    public void PlannedStart_Is_Team_Weekday(long homeTeam, long guestTeam, DateTime? plannedStart, long? venueId, bool expected)
+    public async Task PlannedStart_Is_Team_Weekday(long homeTeam, long guestTeam, DateTime? plannedStart, long? venueId, bool expected)
     {
         _data.TenantConext.TournamentContext.FixtureRuleSet = new FixtureRuleSet();
         var match = new MatchEntity { Id = 9999, HomeTeamId = homeTeam, GuestTeamId = guestTeam, PlannedStart = plannedStart, VenueId = venueId};
         var fv = new FixtureValidator(match, _data, DateTime.UtcNow);
-        var factResult = fv.CheckAsync(FixtureValidator.FactId.PlannedStartWeekdayIsTeamWeekday, CancellationToken.None).Result;
+        var factResult = await fv.CheckAsync(FixtureValidator.FactId.PlannedStartWeekdayIsTeamWeekday, CancellationToken.None);
         Assert.AreEqual(expected, factResult.Success);
     }
 
