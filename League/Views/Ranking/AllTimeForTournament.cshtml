@@ -18,7 +18,10 @@
 
         return;
     }
-    var rounds = Model.RankingList.Where(rl => rl.TournamentId == Model.SelectedTournamentId).GroupBy(m => m.RoundName, (key, m) => new { RoundName = key, RoundId = m.First().RoundId, RoundDescription = m.First().RoundDescription, RoundTypeDescription = m.First().RoundTypeDescription }).ToList();
+    var rounds = Model.RankingList
+        .Where(rl => rl.TournamentId == Model.SelectedTournamentId)
+        .GroupBy(m => m.RoundName, (key, m) => new { RoundName = key, RoundId = m.First().RoundId, RoundDescription = m.First().RoundDescription, RoundTypeDescription = m.First().RoundTypeDescription })
+        .OrderBy(m => m.RoundName).ToList();
     var activeRoundId = rounds.First().RoundId;
 }
 <div class="mb-0 pb-1">
