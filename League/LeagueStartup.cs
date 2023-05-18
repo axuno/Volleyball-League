@@ -491,7 +491,7 @@ public static class LeagueStartup
         services.Configure<CookiePolicyOptions>(options =>
         {
             // determines whether user consent for non-essential cookies is needed for a given request.
-            options.CheckConsentNeeded = context => false;
+            options.CheckConsentNeeded = _ => false;
             options.MinimumSameSitePolicy = Microsoft.AspNetCore.Http.SameSiteMode.Lax;
             options.Secure = CookieSecurePolicy.SameAsRequest; // SameSite=None requires Secure
         });
