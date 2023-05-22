@@ -60,19 +60,20 @@ public class SiteScriptTagHelper : TagHelper
 
             if (OnContentLoaded)
             {
-                sb.Append("document.addEventListener('DOMContentLoaded',");
+                sb.Append($"if (document.readyState != 'loading') {jsFunctionName}(); ");
+                sb.Append("else document.addEventListener('DOMContentLoaded',");
                 sb.Append(jsFunctionName);
                 sb.Append(");\n");
             }
             if (OnAjaxComplete)
             {
-                sb.Append("$(document).ajaxComplete(");
+                sb.Append("if (window.jquery) $(document).ajaxComplete(");
                 sb.Append(jsFunctionName);
                 sb.Append(");\n");
             }
             if (OnBootstrapModelShown)
             {
-                sb.Append("$(document).on('shown.bs.modal',");
+                sb.Append("if (window.jquery) $(document).on('shown.bs.modal',");
                 sb.Append(jsFunctionName);
                 sb.Append(");\n");
             }

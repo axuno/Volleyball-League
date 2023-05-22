@@ -323,7 +323,8 @@ public class FixtureValidatorTests
     [TestCase(1, 2, "2020-06-16 19:30:00", 202, true)] // venueId = 200 + guestTeamId, weekday = guestTeamId % 6
     [TestCase(1, 2, "2020-06-16 18:00:00", 101, false)] // home venue but other weekday home team
     [TestCase(1, 2, "2020-06-17 19:30:00", 202, false)] // home venue but other weekday guest team
-    [TestCase(1, 123, "2020-06-15 18:00:00", 101, true)] // guest team as same venue as home teams
+    [TestCase(1, 123, "2020-06-15 18:00:00", 101, true)] // guest team has same venue as home team, but different home weekdays - here home weekday fits
+    [TestCase(1, 123, "2020-06-17 19:30:00", 101, true)] // guest team has same venue as home team, but different home weekdays - here guest weekday fits
     [TestCase(1, 2, "2020-06-16 18:00:00", 999, true)] // not home weekday but also not home venue
     [TestCase(1, 2, "2020-06-17 19:30:00", 999, true)] // not home weekday but also not home venue
     [TestCase(10001, 2, "2020-06-15 18:00:00", 101, true)] // homeTeamId > 10000 makes home weekday null

@@ -26,14 +26,14 @@ ViewContext.ViewData.TemplateInfo.HtmlFieldPrefix = Model.HtmlFieldPrefix;
     <div class="form-group col-12 col-md-6">
         <label asp-for="MatchDayOfWeek" class="mt-0"></label>
         <div class="input-group">
-            <select asp-for="MatchDayOfWeek" class="form-control d-block col-6 selectpicker show-tick" title="@Localizer["Please select a weekday"]..." data-width="auto">
-                <option value="@((int)DayOfWeek.Monday)">@DateTimeFormatInfo.CurrentInfo?.GetDayName(DayOfWeek.Monday)</option>
-                <option value="@((int)DayOfWeek.Tuesday)">@DateTimeFormatInfo.CurrentInfo?.GetDayName(DayOfWeek.Tuesday)</option>
-                <option value="@((int)DayOfWeek.Wednesday)">@DateTimeFormatInfo.CurrentInfo?.GetDayName(DayOfWeek.Wednesday)</option>
-                <option value="@((int)DayOfWeek.Thursday)">@DateTimeFormatInfo.CurrentInfo?.GetDayName(DayOfWeek.Thursday)</option>
-                <option value="@((int)DayOfWeek.Friday)">@DateTimeFormatInfo.CurrentInfo?.GetDayName(DayOfWeek.Friday)</option>
-                <option value="@((int)DayOfWeek.Saturday)">@DateTimeFormatInfo.CurrentInfo?.GetDayName(DayOfWeek.Saturday)</option>
-                <option value="@((int)DayOfWeek.Sunday)">@DateTimeFormatInfo.CurrentInfo?.GetDayName(DayOfWeek.Sunday)</option>
+            <select asp-for="MatchDayOfWeek" class="form-control d-block col-6" style="min-width: max-content !important" title="@Localizer["Please select a weekday"]...">
+                <option value="@((int)DayOfWeek.Monday)">@DateTimeFormatInfo.CurrentInfo.GetDayName(DayOfWeek.Monday)</option>
+                <option value="@((int)DayOfWeek.Tuesday)">@DateTimeFormatInfo.CurrentInfo.GetDayName(DayOfWeek.Tuesday)</option>
+                <option value="@((int)DayOfWeek.Wednesday)">@DateTimeFormatInfo.CurrentInfo.GetDayName(DayOfWeek.Wednesday)</option>
+                <option value="@((int)DayOfWeek.Thursday)">@DateTimeFormatInfo.CurrentInfo.GetDayName(DayOfWeek.Thursday)</option>
+                <option value="@((int)DayOfWeek.Friday)">@DateTimeFormatInfo.CurrentInfo.GetDayName(DayOfWeek.Friday)</option>
+                <option value="@((int)DayOfWeek.Saturday)">@DateTimeFormatInfo.CurrentInfo.GetDayName(DayOfWeek.Saturday)</option>
+                <option value="@((int)DayOfWeek.Sunday)">@DateTimeFormatInfo.CurrentInfo.GetDayName(DayOfWeek.Sunday)</option>
                 @if (Model.MatchDayOfWeek == null)
                 {
                     <option value="" selected="selected">@Localizer["Not specified"]</option>
@@ -43,7 +43,7 @@ ViewContext.ViewData.TemplateInfo.HtmlFieldPrefix = Model.HtmlFieldPrefix;
                     <option value="">@Localizer["Not specified"]</option>
                 }
             </select>
-            <span id="@Html.IdFor(m => m.MatchDayOfWeek)-calendar" class="input-group-append input-group-text">
+            <span id="@Html.IdFor(m => m.MatchDayOfWeek)" class="input-group-append input-group-text">
                 <i class="far fa-calendar-alt"></i>
             </span>
             @*<span asp-validation-for="MatchDayOfWeek" class="text-danger"></span>*@
@@ -65,7 +65,7 @@ ViewContext.ViewData.TemplateInfo.HtmlFieldPrefix = Model.HtmlFieldPrefix;
         @*<span asp-validation-for="MatchTime" class="text-danger"></span>*@
     </div>
 </div>
-<script type="text/javascript" site-on-content-loaded="true" site-on-modal-shown="true" site-inline="true">
+<script type="text/javascript" site-on-content-loaded="true" site-on-modal-shown="true" site-inline="false">
     var onMatchDayOfWeekChangeFunction =
         function() {
             if (this.value === '') {
@@ -77,11 +77,6 @@ ViewContext.ViewData.TemplateInfo.HtmlFieldPrefix = Model.HtmlFieldPrefix;
             }
         };
     $('#@Html.IdFor(m => m.MatchDayOfWeek)').off('change', onMatchDayOfWeekChangeFunction).on('change', onMatchDayOfWeekChangeFunction);
-    $('#@Html.IdFor(m => m.MatchDayOfWeek)-calendar').css('cursor', 'pointer').off('click').on('click', function () { @* first remove delegates in case they were added after DOMContentLoaded and later with Bootstrap 4 modal *@
-        $('#@Html.IdFor(m => m.MatchDayOfWeek)').selectpicker('toggle');
-    });
-
     $('#@Html.IdFor(m => m.MatchDayOfWeek)').trigger('change'); // initialize
-    $('select').selectpicker();
     $('#picker_@Html.IdFor(m => m.MatchTime)').datetimepicker({ format: 'LT', stepping: 15 });
 </script>

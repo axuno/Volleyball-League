@@ -11,16 +11,16 @@
         @if (Model.ShowSelector)
         {
             <label asp-for="SelectedRoundId" class="mt-0"></label>
-            <select asp-for="SelectedRoundId" class="form-control d-block col-7 selectpicker show-tick" data-show-subtext="true" data-size="auto" title="@Localizer["Please select a round"]..." data-width="fit">
+            <select asp-for="SelectedRoundId" class="form-control d-block col-7" style="min-width: max-content !important" title="@Localizer["Please select a round"]...">
                 @foreach (var rwt in Model.RoundWithTypeList)
                 {
                     if (rwt.Id == Model.SelectedRoundId)
                     {
-                        <option value="@rwt.Id" selected="selected" data-subtext="&nbsp;&nbsp;@rwt.RoundType.Description">@rwt.Description</option>
+                        <option value="@rwt.Id" selected="selected">@rwt.Description&nbsp;&nbsp;(@rwt.RoundType.Description)</option>
                     }
                     else
                     {
-                        <option value="@rwt.Id" data-subtext="&nbsp;&nbsp;@rwt.RoundType.Description">@rwt.Description</option>
+                        <option value="@rwt.Id">@rwt.Description&nbsp;&nbsp;(@rwt.RoundType.Description)</option>
                     }
                 }
                 @if (Model.RoundNotSpecifiedKey.HasValue)
