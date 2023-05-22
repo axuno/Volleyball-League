@@ -170,7 +170,6 @@
         });
         $('#picker_@Html.IdFor(m => m.MatchTimeFrom)').datetimepicker({ format: 'LT', stepping: 1 });
         $('#picker_@Html.IdFor(m => m.MatchTimeTo)').datetimepicker({ format: 'LT', stepping: 1 });
-        $('select').selectpicker();
     });
 
     $('#@nameof(Model.MatchDate)').on('change',

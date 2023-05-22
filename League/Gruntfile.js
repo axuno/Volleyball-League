@@ -104,16 +104,13 @@ module.exports = function (grunt) {
                 src: ['node_modules/popper.js/dist/umd/popper.min.js',
                     'node_modules/popper.js/dist/umd/popper-utils.min.js',
                     'node_modules/tether/dist/js/tether.min.js',
-                    'node_modules/bootstrap/dist/js/bootstrap.min.js',
-                    'node_modules/bootstrap-select/dist/js/bootstrap-select.min.js'
+                    'node_modules/bootstrap/dist/js/bootstrap.min.js'
                     ],
                 dest: 'wwwroot/lib/bootstrap/bootstrap-all.min.js',
                 nonull: true
             },
             bootstrap_css_all: {
-                src: ['wwwroot/lib/bootstrap/bootstrap.min.css',
-                    'node_modules/bootstrap-select/dist/css/bootstrap-select.min.css'
-                ],
+                src: ['wwwroot/lib/bootstrap/bootstrap.min.css'],
                 dest: "wwwroot/lib/bootstrap/bootstrap.min.css",
                 nonull: true
             },
