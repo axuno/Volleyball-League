@@ -6,7 +6,6 @@
 @model EditPhoneViewModel
 @{
     const string BtnRemove = "btn-remove";
-    ViewContext.ClientValidationEnabled = true;
     var tenantUrlSegment = TenantContext.SiteContext.UrlSegmentValue;
 }
 <!-- Modal -->
@@ -30,7 +29,6 @@
         <script type="text/javascript">
             $('#@BtnRemove').on('click', function() { $('#@nameof(Model.PhoneNumber)').val(''); });
         </script>
-        @{ if (ViewContext.ClientValidationEnabled) { await Html.RenderPartialAsync(League.Views.ViewNames.Shared._ValidationScriptsPartial); } /* register the modal form for validation */ }
     </modal-body>
     <modal-footer show-dismiss="true" dismiss-text="@Localizer["Cancel"].Value">
         <button site-ajax-submit id="@BtnRemove" class="btn btn-info" type="button">@Localizer["Remove"].Value</button>
