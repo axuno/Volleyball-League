@@ -5,7 +5,6 @@
 @inject IViewLocalizer Localizer
 @inject ITenantContext TenantContext
 @{
-    ViewContext.ClientValidationEnabled = true;
     var tenantUrlSegment = TenantContext.SiteContext.UrlSegmentValue;
     List<SelectListItem> GenderList()
     {
@@ -53,4 +52,4 @@
         <button site-ajax-submit class="btn btn-primary">@Localizer["Save"].Value</button>
     </modal-footer>
 </modal>
-@{ if (ViewContext.ClientValidationEnabled) { await Html.RenderPartialAsync(League.Views.ViewNames.Shared._ValidationScriptsPartial); } /* register the modal form for validation */ }
+

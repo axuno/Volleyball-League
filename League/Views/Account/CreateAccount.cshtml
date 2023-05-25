@@ -75,9 +75,6 @@
     </form>
 </div>
 @section Scripts {
-    @{
-        await Html.RenderPartialAsync(League.Views.ViewNames.Shared._ValidationScriptsPartial);
-    }
     <script type="text/javascript">
         $('#@Html.IdFor(m => m.Email)').focus();
         $('input').one('keypress', function() { $('#social-network').animate({ height: 0, opacity: 0 }, 'slow'); });

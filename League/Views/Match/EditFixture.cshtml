@@ -5,7 +5,6 @@
 @using TournamentManager.MultiTenancy
 @inject ITenantContext TenantContext
 @inject IViewLocalizer Localizer
-@{ ViewContext.ClientValidationEnabled = false;}  @* We rely on datepicker and server side validation *@
 @model League.Models.MatchViewModels.EditFixtureViewModel
 @{
     if (Model.Tournament == null || Model.PlannedMatch == null) return;
@@ -139,10 +138,6 @@
     <script type="text/javascript" src="~/lib/Moment/moment.min.js"></script>
     <script type="text/javascript" src="~/lib/tempusdominus-bootstrap-4/tempusdominus-bootstrap-4.min.js"></script>
     <partial name="@nameof(League.Views.ViewNames.Shared._DateTimePickerScriptPartial)" />
-    @if (ViewContext.ClientValidationEnabled)
-    {
-        <partial name="@nameof(League.Views.ViewNames.Shared._ValidationScriptsPartial)" />
-    }
     <script type="text/javascript">
         $(document).ready(function () {
             // don't use attribute 'autofocus' with datetimepicker - this will focus before initialization

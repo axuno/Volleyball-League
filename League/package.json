@@ -22,8 +22,6 @@
         "grunt-postcss": "0.9.0",
         "grunt-sass": "3.1.0",
         "jquery": "3.5.1",
-        "jquery-validation": "1.19.5",
-        "jquery-validation-unobtrusive": "3.2.12",
         "js-cookie": "2.2.1",
         "jsnlog": "2.30.0",
         "moment": "2.29.4",

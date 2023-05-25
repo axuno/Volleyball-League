@@ -5,7 +5,7 @@
 @inject IViewLocalizer Localizer
 @inject ITenantContext TenantContext
 @model League.Models.TeamViewModels.TeamEditModel
-@{ ViewContext.ClientValidationEnabled = false; var tenantUrlSegment = TenantContext.SiteContext.UrlSegmentValue;}
+@{ var tenantUrlSegment = TenantContext.SiteContext.UrlSegmentValue;}
 <!-- Modal -->
 <modal id="edit-team" title="@Localizer["Edit team"].Value" dialog-class="modal-xl" tabindex="-1">
     <modal-body>
@@ -31,12 +31,6 @@
     </modal-body>
     <modal-footer show-dismiss="true" dismiss-text="@Localizer["Cancel"].Value">
         <button site-ajax-submit class="btn btn-primary">@Localizer["Save"]</button>
-        @{ if (ViewContext.ClientValidationEnabled)
-            {
-                /* register the modal form for validation */
-                <partial name="@nameof(League.Views.ViewNames.Shared._ValidationScriptsPartial)" />
-            }
-        }
     </modal-footer>
 </modal>
 

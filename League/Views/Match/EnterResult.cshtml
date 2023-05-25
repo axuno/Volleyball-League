@@ -6,7 +6,6 @@
 @inject RegionInfo RegionInfo
 @inject IViewLocalizer Localizer
 @inject ITenantContext TenantContext
-@{ ViewContext.ClientValidationEnabled = false;}  @* We rely on datepicker and server side validation *@
 @model League.Models.MatchViewModels.EnterResultViewModel
 @{
     ViewData["Title"] = Localizer["Enter Match Result"].Value + " - " + Model.Tournament?.Name;
@@ -158,10 +157,6 @@
     <script type="text/javascript" src="~/lib/Moment/moment.min.js"></script>
     <script type="text/javascript" src="~/lib/tempusdominus-bootstrap-4/tempusdominus-bootstrap-4.min.js"></script>
     <partial name="@nameof(League.Views.ViewNames.Shared._DateTimePickerScriptPartial)" />
-    @if (ViewContext.ClientValidationEnabled)
-    {
-        <partial name="@nameof(League.Views.ViewNames.Shared._ValidationScriptsPartial)" />
-    }
     <script type="text/javascript">
     $(document).ready(function() {
         // don't use attribute 'autofocus' with datetimepicker - this will focus before initialization

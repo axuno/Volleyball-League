@@ -6,8 +6,7 @@
 @inject IViewLocalizer Localizer
 @inject ITenantContext TenantContext
 @model League.Models.VenueViewModels.VenueEditModel
-@{ ViewContext.ClientValidationEnabled = false;
-    ViewData["Title"] = Localizer["Team Registration"].Value + " - " + ViewData["TournamentName"];
+@{  ViewData["Title"] = Localizer["Team Registration"].Value + " - " + ViewData["TournamentName"];
     var tenantUrlSegment = TenantContext.SiteContext.UrlSegmentValue;
 }
 <div class="mb-0 pb-1">

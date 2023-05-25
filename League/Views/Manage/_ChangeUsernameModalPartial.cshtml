@@ -7,7 +7,6 @@
 @inject ITenantContext TenantContext
 @inject IUserValidator<ApplicationUser> userValidator
 @{ var UserValidator = (LeagueUserValidator<ApplicationUser>)this.userValidator;
-    ViewContext.ClientValidationEnabled = false;
     var tenantUrlSegment = TenantContext.SiteContext.UrlSegmentValue;}
 @model ChangeUsernameViewModel
 @{ var allowedUsernameCharacters = Axuno.Tools.StringFormatter.GroupedValidCharacters(UserManager.Options.User.AllowedUserNameCharacters);}
@@ -32,4 +31,3 @@
         <button site-ajax-submit class="btn btn-primary">@Localizer["Save"]</button>
     </modal-footer>
 </modal>
-@{ if (ViewContext.ClientValidationEnabled) { await Html.RenderPartialAsync(League.Views.ViewNames.Shared._ValidationScriptsPartial); } /* register the modal form for validation */ }

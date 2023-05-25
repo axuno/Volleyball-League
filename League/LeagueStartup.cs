@@ -569,6 +569,7 @@ public static class LeagueStartup
                 options.ModelBinderProviders.Insert(0, new TimeSpanModelBinderProvider());
                 options.ModelBinderProviders.Insert(0, new DateTimeModelBinderProvider());
             })
+            .AddViewOptions(options => options.HtmlHelperOptions.ClientValidationEnabled = false)
             .AddControllersAsServices(); // will add controllers with ServiceLifetime.Transient
 
         #region *** Text Templating ***

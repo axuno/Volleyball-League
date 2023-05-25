@@ -90,16 +90,6 @@ module.exports = function (grunt) {
                 dest: 'wwwroot/lib/jquery/jquery.min.js',
                 nonull: true
             },
-            jquery_validation: {
-                src: [
-                    'node_modules/jquery-validation/dist/jquery.validate.min.js',
-                    'node_modules/jquery-validation/dist/localization/methods_de.js',
-                    'node_modules/jquery-validation/dist/localization/messages_de.js',
-                    'node_modules/jquery-validation-unobtrusive/dist/jquery.validate.unobtrusive.min.js'
-                ],
-                dest: 'wwwroot/lib/jquery-validation/jquery-validation-all.min.js',
-                nonull: true
-            },
             bootstrap_js_all: {
                 src: ['node_modules/popper.js/dist/umd/popper.min.js',
                     'node_modules/popper.js/dist/umd/popper-utils.min.js',

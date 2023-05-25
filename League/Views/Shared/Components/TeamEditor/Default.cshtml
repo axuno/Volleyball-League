@@ -1,7 +1,6 @@
 ﻿@using System.Globalization
 @using Microsoft.AspNetCore.Mvc.Localization
 @{ Layout = null; 
-ViewContext.ClientValidationEnabled = false;  @* We rely on datepicker and server side validation *@
 ViewContext.ViewData.TemplateInfo.HtmlFieldPrefix = Model.HtmlFieldPrefix;
 }
 @inject IViewLocalizer Localizer

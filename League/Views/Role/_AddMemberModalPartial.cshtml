@@ -5,7 +5,6 @@
 @model League.Models.RoleViewModels.RoleAddModel
 @{
     var selectableRoleNames = new[] { League.Identity.Constants.ClaimType.PlaysInTeam, League.Identity.Constants.ClaimType.ManagesTeam };
-    ViewContext.ClientValidationEnabled = false;
     var tenantUrlSegment = TenantContext.SiteContext.UrlSegmentValue;
 }
 <!-- Modal -->
@@ -39,11 +38,5 @@
     </modal-body>
     <modal-footer show-dismiss="true" dismiss-text="@_AddMemberModalPartial.Cancel">
         <button site-ajax-submit class="btn btn-primary">@_AddMemberModalPartial.Add</button>
-        @{ if (ViewContext.ClientValidationEnabled)
-            {
-                /* register the modal form for validation */
-                <partial name="@nameof(League.Views.ViewNames.Shared._ValidationScriptsPartial)" />
-            }
-        }
     </modal-footer>
 </modal>

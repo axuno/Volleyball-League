@@ -1,6 +1,5 @@
 ﻿@using Microsoft.AspNetCore.Mvc.Localization
 @inject IViewLocalizer Localizer
-@{ ViewContext.ClientValidationEnabled = false;}  @* We rely on datepicker and server side validation *@
 @model (TournamentManager.DAL.EntityClasses.TournamentEntity Tournament, string Message)
 @{
     ViewData["Title"] = Localizer["Enter Match Result"].Value + " - " + Model.Tournament.Name;
