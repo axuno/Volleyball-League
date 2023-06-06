@@ -17,8 +17,8 @@
         <meta name="description" content="@ViewData.Description()" />
     }
     <partial name="@League.Views.ViewNames.Shared._FavIcons" />
-    <link rel="stylesheet" href="~/lib/bootstrap/bootstrap.min.css">
-    <link rel="stylesheet" href="~/css/site.min.css" />
+    <link rel="stylesheet" href="~/lib/bootstrap/bootstrap.min.css"> @* embedded resource *@
+    <link rel="stylesheet" href="~/css/site.min.css" /> @* embedded resource *@
     <style type="text/css">
         .site-sticky-top {
             position: -webkit-sticky;
@@ -45,12 +45,15 @@
         </div>
     </header>
     <nav id="nav-main" class="navbar navbar-expand-md navbar-dark rounded pl-2 site-sticky-top">
-        @* bootstrap 4 class "sticky-top" interferes with modal, that's why we use our identical "site-sticky-top" *@
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-header" aria-controls="navbar-header" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div id="navbar-header" class="collapse navbar-collapse">
-            @await (Component.InvokeAsync<League.Components.MainNavigation>())
+        @* bootstrap class "sticky-top" interferes with modal, that's why we use our identical "site-sticky-top" *@
+        <div class="container-fluid">
+            @* <a class="navbar-brand" href="#">axuno</a>*@
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar-menu-items" aria-controls="navbar-menu-items" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div id="navbar-menu-items" class="collapse navbar-collapse">
+                @(await Component.InvokeAsync<League.Components.MainNavigation>())
+            </div>
         </div>
     </nav>
     <div id="content" class="container-fluid rounded pb-1">
@@ -76,11 +79,11 @@
         </div>
     </footer>
     <jl-javascript-logger-definitions request-id="@ViewContext.HttpContext.TraceIdentifier" />
-    <script src="~/lib/jsnlog/jsnlog.min.js"></script>
-    <script src="~/lib/jquery/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/bootstrap-all.min.js"></script>
-    <script src="~/lib/i18n/i18n-all.min.js"></script>
-    <script src="~/js/site.min.js"></script>
+    <script src="~/lib/jsnlog/jsnlog.min.js"></script> @* embedded resource *@
+    <script src="~/lib/jquery/jquery.min.js"></script> @* embedded resource *@
+    <script src="~/lib/bootstrap/bootstrap-all.min.js"></script> @* embedded resource *@
+    <script src="~/lib/i18n/i18n-all.min.js"></script> @* embedded resource *@
+    <script src="~/js/site.min.js"></script> @* embedded resource *@
     <environment include="Production"><partial name="@League.Views.ViewNames.Shared._GoogleAnalyticsScriptsPartial" /></environment>
     @await RenderSectionAsync("scripts", required: false)
 </body>

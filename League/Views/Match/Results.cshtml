@@ -41,7 +41,7 @@
         @foreach (var r in rounds)
         {
             <li class="nav-item">
-                <a class="nav-link py-1@{if (r.RoundId == activeRoundId){<text> active</text>}}" id="tab-link-@(r.RoundId)" data-toggle="tab" href="#tab-@(r.RoundId)" role="tab" aria-controls="@r.RoundDescription" aria-selected="@(r.RoundId == activeRoundId ? "true" : "false")">@r.RoundDescription</a>
+                <a class="nav-link py-1@{if (r.RoundId == activeRoundId){<text> active</text>}}" id="tab-link-@(r.RoundId)" data-bs-toggle="tab" href="#tab-@(r.RoundId)" role="tab" aria-controls="@r.RoundDescription" aria-selected="@(r.RoundId == activeRoundId ? "true" : "false")">@r.RoundDescription</a>
             </li>
         }
     </ul>
@@ -50,7 +50,7 @@
         {
             <div class="tab-pane@{if (r.RoundId == activeRoundId) {<text> show active</text>}}" id="tab-@(r.RoundId)" role="tabpanel" aria-labelledby="@r.RoundDescription-tab">
                 <div class="text-success">@r.RoundTypeDescription</div>
-                <div id="team-filter-@r.RoundId" class="team-filter my-2 d-none" data-toggle="tooltip" title="@Localizer["Remove filter for team"]" tabindex="0">
+                <div id="team-filter-@r.RoundId" class="team-filter my-2 d-none" data-bs-toggle="tooltip" title="@Localizer["Remove filter for team"]" tabindex="0">
                     <i class="fas fa-1x fa-times-circle mr-2"></i>
                     <span class="badge badge-dark"></span>
                 </div>
@@ -63,14 +63,14 @@
                             <tr>
                                 <th class="opponents">@Localizer["Opponents"]</th>
                                 <th class="date">@Localizer["Date"]</th>
-                                <th class="result" data-toggle="tooltip" title="@Localizer["Match Points"]">@Localizer["MP"]</th>
-                                <th class="result" data-toggle="tooltip" title="@Localizer["Set Points"]">@Localizer["SP"]</th>
-                                <th class="result" data-toggle="tooltip" title="@Localizer["Ball Points"]">@Localizer["BP"]</th>
+                                <th class="result" data-bs-toggle="tooltip" title="@Localizer["Match Points"]">@Localizer["MP"]</th>
+                                <th class="result" data-bs-toggle="tooltip" title="@Localizer["Set Points"]">@Localizer["SP"]</th>
+                                <th class="result" data-bs-toggle="tooltip" title="@Localizer["Ball Points"]">@Localizer["BP"]</th>
                                 @for (var i = 0; i < maxNumOfSets; i++)
                                 {
-                                    <th class="result" data-toggle="tooltip" title="@Localizer["Set {0}", i + 1]: @Localizer["Ball Points"]">@Localizer["S"]@(i + 1)</th>
+                                    <th class="result" data-bs-toggle="tooltip" title="@Localizer["Set {0}", i + 1]: @Localizer["Ball Points"]">@Localizer["S"]@(i + 1)</th>
                                 }
-                                <th class="context-menu" data-toggle="tooltip" title="@Localizer["Menu"]"><i class="fas fa-ellipsis-v"></i></th>
+                                <th class="context-menu" data-bs-toggle="tooltip" title="@Localizer["Menu"]"><i class="fas fa-ellipsis-v"></i></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -136,7 +136,7 @@
                                         }
                                         <td class="context-menu">
                                             <div class="dropdown text-center">
-                                                <a href="#" class="stretched-link" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                <a href="#" class="stretched-link" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                                     <i class="fas fa-ellipsis-v" style="font-size: .8rem"></i>
                                                 </a>
                                                 <div class="dropdown-menu shadow" role="menu">
@@ -148,7 +148,7 @@
                                                 </div>
                                             </div>
                                             <div class="dropdown">
-                                                <a href="#" class="stretched-link" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                <a href="#" class="stretched-link" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                                     <i class="fas fa-ellipsis-v" style="font-size: .8rem"></i>
                                                 </a>
                                                 <div class="dropdown-menu shadow" role="menu" aria-labelledby="dropdownMenuLink">
@@ -213,7 +213,7 @@
         var useRecentRoundCookie = @useRecentRoundCookie.ToString().ToLowerInvariant();
         Cookies = window.Cookies; @* js-cookies.js *@
         $(document).ready(function() {
-            $('[data-toggle="tooltip"]').tooltip();
+            $('[data-bs-toggle="tooltip"]').tooltip();
             @* Try to set the active tab from a cookie *@
             if (useRecentRoundCookie) {
                 var $activeRoundFromCookie = Cookies.get(mostRecentRoundCookieName);
@@ -260,7 +260,7 @@
                     $(this).parent().find('table').find('tbody').find('tr:odd:not(:has(td.leg-change))').addClass('odd');
                     *@
                 });
-            $('a[data-toggle="tab"]').on('shown.bs.tab',
+            $('a[data-bs-toggle="tab"]').on('shown.bs.tab',
                 function(e) {
                     var id = e.target.id.replace('tab-link-', ''); // newly activated tab with round id
                     Cookies.set(mostRecentRoundCookieName,
