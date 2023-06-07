@@ -29,13 +29,13 @@ public class ModalFooterTagHelper : TagHelper
 
         if (ShowDismiss)
         {
-            output.PreContent.AppendFormat(@"<button type='button' class='btn btn-secondary' data-dismiss='modal'>{0}</button>", DismissText);
+            output.PreContent.AppendFormat(@"<button type='button' class='btn btn-secondary' data-bs-dismiss='modal'>{0}</button>", DismissText);
         }
         var childContent = await output.GetChildContentAsync();
         var footerContent = new DefaultTagHelperContent();
         if (ShowDismiss)
         {
-            _ = footerContent.AppendFormat(@"<button type='button' class='btn btn-secondary' data-dismiss='modal'>{0}</button>", DismissText);
+            _ = footerContent.AppendFormat(@"<button type='button' class='btn btn-secondary' data-bs-dismiss='modal'>{0}</button>", DismissText);
         }
         _ = footerContent.AppendHtml(childContent);
         var modalContext = (ModalContext)context.Items[typeof(ModalTagHelper)];

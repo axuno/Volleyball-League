@@ -73,10 +73,10 @@
                     <label asp-for="VenueId" class="mt-0"></label>
                     <div class="input-group">
                         <input type="hidden" asp-for="VenueId" />
-                        <div id="venue-text" class="form-control overflow-hidden" style="height:auto" data-target="#select-venue" data-toggle="modal">
+                        <div id="venue-text" class="form-control overflow-hidden" style="height:auto" data-bs-target="#select-venue" data-bs-toggle="modal">
                             @string.Join(", ", Model.PlannedMatch.VenueName, Model.PlannedMatch.VenueExtension).TrimEnd(',', ' ')
                         </div>
-                        <span class="input-group-append input-group-text" data-target="#select-venue" data-toggle="modal">
+                        <span class="input-group-append input-group-text" data-bs-target="#select-venue" data-bs-toggle="modal">
                             <i class="fas fa-edit"></i>
                         </span>
                     </div>

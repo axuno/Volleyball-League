@@ -34,7 +34,7 @@
 // class "input-validation-error" is set programmatically on input fields with errors
 .input-validation-error {
     //font-size: 1rem;
-    border: 2px solid theme-color('danger') !important;
+    border: 2px solid $danger !important;
 }
 
 // used by "asp-validation-for" tag helper
@@ -67,7 +67,7 @@
 label {
     //font-size: 1rem;
     font-weight: normal;
-    color: theme-color('success');
+    color: $success;
     background-color: transparent;
     margin-top: .75rem;
     margin-bottom: 0rem;
@@ -80,6 +80,5 @@ label {
 
 // e.g. <input type="text" required />
 input[type=text]:required, input[type=password] {
-    border-left: .5rem solid theme-color('success');
+    border-left: .5rem solid $success;
 }
-

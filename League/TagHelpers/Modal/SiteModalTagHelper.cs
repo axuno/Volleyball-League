@@ -41,8 +41,8 @@ public class ModalTagHelper : TagHelper
         var modalContext = new ModalContext();
         context.Items.Add(typeof(ModalTagHelper), modalContext);
 
-        await output.GetChildContentAsync().ConfigureAwait(false);
-        var closeButton = "<button type='button' class='btn btn-secondary float-right' data-dismiss='modal' aria-label='Close'><span aria-hidden='true'><i class='fa fa-times'></i></span ></button>";
+        _ = await output.GetChildContentAsync().ConfigureAwait(false);
+        var closeButton = "<button type='button' class='btn btn-secondary btn-close float-right' data-bs-dismiss='modal' aria-label='Close'></button>";
 
         var modalDialogClass = string.Join(' ', "modal-dialog", string.IsNullOrWhiteSpace(DialogClass) ? string.Empty : DialogClass);
 

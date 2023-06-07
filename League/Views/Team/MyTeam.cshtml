@@ -34,7 +34,7 @@
         <ul class="nav nav-tabs mb-3" id="team-tabs" role="tablist">
             @foreach (var team in Model.TeamVenueRoundInfos)
             {
-                <li class="nav-item"><a id="team-@team.TeamId" class="nav-link py-1@{if (team.TeamId == Model.ActiveTeamId){<text> active</text>}}" data-toggle="tab" href="#tab-@(team.TeamId)" role="tab" aria-controls="@team.TeamName">@team.TeamName</a></li>
+                <li class="nav-item"><a id="team-@team.TeamId" class="nav-link py-1@{if (team.TeamId == Model.ActiveTeamId){<text> active</text>}}" data-bs-toggle="tab" href="#tab-@(team.TeamId)" role="tab" aria-controls="@team.TeamName">@team.TeamName</a></li>
             }
         </ul>
     }
@@ -84,7 +84,7 @@
                         {
                             <div class="col-12">
                                 <span class="d-inline-block mr-2"><i class="fas fa-camera"></i> @Localizer["Photo of {0}", zonedLastModified.DateTimeOffset.DateTime.ToShortDateString() + " " + zonedLastModified.Abbreviation]</span>
-                                <a class="btn btn-sm btn-primary d-inline-block mr-2" data-target="#show-team-photo-@(teamVenueInfo.TeamId)" data-toggle="modal" href="#">
+                                <a class="btn btn-sm btn-primary d-inline-block mr-2" data-bs-target="#show-team-photo-@(teamVenueInfo.TeamId)" data-bs-toggle="modal" href="#">
                                     @Localizer["View"]
                                 </a>
                                 <a class="btn btn-sm btn-primary d-inline-block"
@@ -191,7 +191,7 @@
 
                                         <div class="col-12">
                                             <div class="font-weight-normal">
-                                                <a data-toggle="collapse" href="#user-@userInfo.UserId" aria-expanded="false" class="d-inline-block collapsed">
+                                                <a data-bs-toggle="collapse" href="#user-@userInfo.UserId" aria-expanded="false" class="d-inline-block collapsed">
                                                     <i class="fas fa-user"></i><span class="username d-inline-block ml-2 mr-2">@userInfo.CompleteNameWithNickName</span>
                                                     <i class="fas fa-chevron-left pull-right text-success"></i>
                                                 </a>

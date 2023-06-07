@@ -21,7 +21,7 @@
         <input name="IsValid" type="hidden" value="@ViewData.ModelState.IsValid.ToString()" />
         @if (Model.VenuesForDistance.Any())
         {
-            <button class="btn btn-warning btn-sm mb-2" data-target="#show-vicinity-venues" data-toggle="modal" onclick="event.preventDefault()">
+            <button class="btn btn-warning btn-sm mb-2" data-bs-target="#show-vicinity-venues" data-bs-toggle="modal" onclick="event.preventDefault()">
                 @Localizer["Show vicinity venues"]
             </button>
         }
