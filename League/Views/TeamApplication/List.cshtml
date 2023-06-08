@@ -21,7 +21,7 @@
         }
         else
         {
-            <div class="font-weight-bolder my-2">@Localizer["The registration deadline for this season has unfortunately already expired"].</div>
+            <div class="fw-bolder my-2">@Localizer["The registration deadline for this season has unfortunately already expired"].</div>
         }
         @if (Model.TournamentRoundTeams.Count == 0)
         {
@@ -39,16 +39,16 @@
                     <tr>
                         <th>@Localizer["Team"]</th>
                         <th>@Localizer["Club"]</th>
-                        <th class="text-right">@Localizer["Registered"]</th>
+                        <th class="text-end">@Localizer["Registered"]</th>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach (var round in Model.TournamentRoundTeams.OrderBy(r => r.RoundName).ToList().Select(r => (Id: r.RoundId, RoundDescription: r.RoundDescription, RoundTypeDescription: r.RoundTypeDescription)).Distinct())
                     {
-                        <tr><td colspan="3"><h4 class="d-inline-block"><span class="badge badge-dark">@round.RoundDescription</span></h4><span class="text-muted small ml-3">@round.RoundTypeDescription</span></td></tr>
+                        <tr><td colspan="3"><h4 class="d-inline-block"><span class="badge badge-dark">@round.RoundDescription</span></h4><span class="text-muted small ms-3">@round.RoundTypeDescription</span></td></tr>
                         foreach (var rt in Model.TournamentRoundTeams.Where(r => r.RoundId == round.Id).OrderBy(r => r.TeamName))
                         {
-                            <tr><td>@rt.TeamName</td><td>@rt.TeamClubName</td><td class="text-right">@(ZonedTimeString(rt.TeamId))</td></tr>
+                            <tr><td>@rt.TeamName</td><td>@rt.TeamClubName</td><td class="text-end">@(ZonedTimeString(rt.TeamId))</td></tr>
                         }
                     }
                 </tbody>

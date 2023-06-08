@@ -48,7 +48,7 @@
 
     string GetBoldClass(bool hasValue)
     {
-        return hasValue ? " font-weight-bold" : string.Empty;
+        return hasValue ? " fw-bold" : string.Empty;
     }
     MatchEntity ToMatchEntity(PlannedMatchRow pmr)
     {
@@ -73,7 +73,7 @@
             <div class="tab-pane@{if (r.RoundId == activeRoundId) {<text> show active</text>}}" id="tab-@(r.RoundId)" role="tabpanel" aria-labelledby="@r.RoundDescription-tab">
                 <div class="text-success">@r.RoundTypeDescription</div>
                 <div id="team-filter-@r.RoundId" class="team-filter my-2 d-none" data-bs-toggle="tooltip" title="@Localizer["Remove filter for team"]" style="display: none" tabindex="0">
-                    <i class="fas fa-1x fa-times-circle mr-2"></i>
+                    <i class="fas fa-1x fa-times-circle me-2"></i>
                     <span class="badge badge-dark"></span>
                 </div>
                 <div class="rounded table-responsive" style="min-height: 13rem">@* min height assures dropdowns are not clipped *@

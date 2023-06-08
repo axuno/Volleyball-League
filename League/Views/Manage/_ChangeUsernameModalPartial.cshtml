@@ -17,8 +17,8 @@
         <form asp-controller="@nameof(Manage)" asp-action="@nameof(Manage.ChangeUserName)" asp-route-tenant="@tenantUrlSegment" method="post" role="form" onsubmit="$('#@(League.TagHelpers.Modal.SiteAjaxSubmitTagHelper.TagHelperAttributeName)').trigger('click');return false;">
             <site-validation-summary show="All"></site-validation-summary>
             <input name="IsValid" type="hidden" value="@ViewData.ModelState.IsValid.ToString()" />
-            <div class="form-group">
-                <label asp-for="Username"></label>
+            <div class="mb-3">
+                <label asp-for="Username" class="form-label"></label>
                 <input asp-for="Username" autofocus class="form-control" aria-describedby="usernameHelpBlock" />
                 <small id="usernameHelpBlock" class="form-text text-muted">
                     @Localizer["Min."] @UserValidator.RequiredUsernameLength @Localizer["characters out of"]: @allowedUsernameCharacters

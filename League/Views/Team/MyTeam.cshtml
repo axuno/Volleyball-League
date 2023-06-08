@@ -61,9 +61,9 @@
                     </div>
                     <div class="card-text">
                         <div class="text-success col-12">@Localizer["Round"]</div>
-                        <div class="col-12"><span class="font-weight-bold d-inline-block mr-3">@teamVenueInfo.RoundDescription</span><span class="text-muted small">@teamVenueInfo.RoundTypeDescription</span></div>
+                        <div class="col-12"><span class="fw-bold d-inline-block me-3">@teamVenueInfo.RoundDescription</span><span class="text-muted small">@teamVenueInfo.RoundTypeDescription</span></div>
                         <div class="text-success col-12">@Localizer["Team name"]</div>
-                        <div class="col-12 font-weight-bold">@teamVenueInfo.TeamName</div>
+                        <div class="col-12 fw-bold">@teamVenueInfo.TeamName</div>
                         @if (!string.IsNullOrEmpty(teamVenueInfo.TeamClubName))
                         {
                             <div class="text-success col-12">@Localizer["Club"]</div>
@@ -73,7 +73,7 @@
                         {
                             // MatchTime is defined as a zoned time, NOT UTC. It is always the same, never mind DST
                             <div class="text-success col-12">@Localizer["Home match day"]</div>
-                            <div class="col-12 mb-2"><i class="far fa-calendar-alt"></i><span class="d-inline-block mr-2"></span>@DateTimeFormatInfo.CurrentInfo?.GetDayName((DayOfWeek)teamVenueInfo.MatchDayOfWeek), @(DateTime.UtcNow.Date.Add(teamVenueInfo.MatchTime.Value).ToShortTimeString()) @(Model.TimeZoneConverter.ToZonedTime(DateTime.UtcNow)?.Abbreviation)</div>
+                            <div class="col-12 mb-2"><i class="far fa-calendar-alt"></i><span class="d-inline-block me-2"></span>@DateTimeFormatInfo.CurrentInfo?.GetDayName((DayOfWeek)teamVenueInfo.MatchDayOfWeek), @(DateTime.UtcNow.Date.Add(teamVenueInfo.MatchTime.Value).ToShortTimeString()) @(Model.TimeZoneConverter.ToZonedTime(DateTime.UtcNow)?.Abbreviation)</div>
                         }
                         <div class="text-muted small col-12">
                             @{ var zonedTime = Model.TimeZoneConverter.ToZonedTime(teamVenueInfo.TeamModifiedOn)!;}
@@ -83,8 +83,8 @@
                         @if (teamPhotoInfo.Uri != null)
                         {
                             <div class="col-12">
-                                <span class="d-inline-block mr-2"><i class="fas fa-camera"></i> @Localizer["Photo of {0}", zonedLastModified.DateTimeOffset.DateTime.ToShortDateString() + " " + zonedLastModified.Abbreviation]</span>
-                                <a class="btn btn-sm btn-primary d-inline-block mr-2" data-bs-target="#show-team-photo-@(teamVenueInfo.TeamId)" data-bs-toggle="modal" href="#">
+                                <span class="d-inline-block me-2"><i class="fas fa-camera"></i> @Localizer["Photo of {0}", zonedLastModified.DateTimeOffset.DateTime.ToShortDateString() + " " + zonedLastModified.Abbreviation]</span>
+                                <a class="btn btn-sm btn-primary d-inline-block me-2" data-bs-target="#show-team-photo-@(teamVenueInfo.TeamId)" data-bs-toggle="modal" href="#">
                                     @Localizer["View"]
                                 </a>
                                 <a class="btn btn-sm btn-primary d-inline-block"
@@ -131,7 +131,7 @@
                             <div class="col-12 mb-2">
                                 @if (teamVenueInfo.VenueId.HasValue)
                                 {
-                                    <div><i class="fas fa-map-marker-alt"></i><span class="d-inline-block mr-2"></span><span class="font-weight-bold">@teamVenueInfo.VenueName</span> <span>@{if (!string.IsNullOrWhiteSpace(teamVenueInfo.VenueExtension))
+                                    <div><i class="fas fa-map-marker-alt"></i><span class="d-inline-block me-2"></span><span class="fw-bold">@teamVenueInfo.VenueName</span> <span>@{if (!string.IsNullOrWhiteSpace(teamVenueInfo.VenueExtension))
                                         {<text>(@teamVenueInfo.VenueExtension)</text>}}</span></div>
                                     <div>@(string.Join(", ", teamVenueInfo.VenuePostalCode, teamVenueInfo.VenueCity, teamVenueInfo.VenueStreet))</div>
                                     <div>
@@ -148,7 +148,7 @@
                                 else
                                 {
                                     <div>
-                                        <i class="fas fa-map-marker-alt"></i><span class="d-inline-block mr-2"></span>
+                                        <i class="fas fa-map-marker-alt"></i><span class="d-inline-block me-2"></span>
                                         @Localizer["There is no venue assigned to the team"].
                                     </div>
                                 }
@@ -192,14 +192,14 @@
                                         <div class="col-12">
                                             <div class="font-weight-normal">
                                                 <a data-bs-toggle="collapse" href="#user-@userInfo.UserId" aria-expanded="false" class="d-inline-block collapsed">
-                                                    <i class="fas fa-user"></i><span class="username d-inline-block ml-2 mr-2">@userInfo.CompleteNameWithNickName</span>
-                                                    <i class="fas fa-chevron-left pull-right text-success"></i>
+                                                    <i class="fas fa-user"></i><span class="username d-inline-block ms-2 me-2">@userInfo.CompleteNameWithNickName</span>
+                                                    <i class="fas fa-chevron-left pull-end text-success"></i>
                                                 </a>
                                             </div>
-                                            <div id="user-@userInfo.UserId" class="collapse mb-2 ml-5">
-                                                <div><i class="far fa-envelope"></i><span class="d-inline-block mr-2"></span><a href="mailto:@userInfo.Email">@userInfo.Email</a></div>
-                                                <span class="d-inline-block mr-4">
-                                                    <i class="fas fa-phone-square-alt"></i><span class="d-inline-block mr-2"></span><a href="@TelUriPhoneNo(userInfo.PhoneNumber)">@DisplayPhoneNo(userInfo.PhoneNumber)</a>
+                                            <div id="user-@userInfo.UserId" class="collapse mb-2 ms-5">
+                                                <div><i class="far fa-envelope"></i><span class="d-inline-block me-2"></span><a href="mailto:@userInfo.Email">@userInfo.Email</a></div>
+                                                <span class="d-inline-block me-4">
+                                                    <i class="fas fa-phone-square-alt"></i><span class="d-inline-block me-2"></span><a href="@TelUriPhoneNo(userInfo.PhoneNumber)">@DisplayPhoneNo(userInfo.PhoneNumber)</a>
                                                 </span>
                                                 @if (!string.IsNullOrEmpty(userInfo.PhoneNumber2))
                                                 {
@@ -276,19 +276,6 @@
         #venue-picker .input-group {
             cursor: pointer;
         }
-
-        /* Start: Change Bootstrap 4 default custom checkbox color */
-        .custom-checkbox .custom-control-input:checked ~ .custom-control-label::before {
-            background-color: var(--warning);
-            border-color: var(--warning);
-        }
-
-        .custom-control-input:checked ~ .custom-control-label::before {
-            color: #fff;
-            background-color: var(--warning);
-            border-color: var(--warning);
-        }
-        /* End: Change Bootstrap 4 default custom checkbox color */
     </style>
 }
 @section scripts

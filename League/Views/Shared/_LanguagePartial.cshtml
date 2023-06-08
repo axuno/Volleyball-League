@@ -10,7 +10,7 @@
             <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="/" role="button">
                 @(System.Threading.Thread.CurrentThread.CurrentCulture.ThreeLetterISOLanguageName.ToUpperInvariant().First() + System.Threading.Thread.CurrentThread.CurrentCulture.ThreeLetterISOLanguageName[1..].ToLowerInvariant())
             </a>
-            <ul class="dropdown-menu shadow dropdown-menu-right" style="margin-top: -0.3rem">
+            <ul class="dropdown-menu shadow dropdown-menu-end" style="margin-top: -0.3rem">
                 @{
                     var encodedCurrentRequest = WebUtility.UrlEncode($"{Context.Request.Path}{Context.Request.QueryString}");
                     foreach (var c in LocalizationOptions.Value.SupportedCultures!)

@@ -2,7 +2,7 @@
 @model (League.Components.MainNavigationComponentModel MainNav, League.Components.MainNavigationComponentModel.NavigationNode Node)
 @if (Model.MainNav != null && Model.Node.HasVisibleChildNodes())
 {
-    <ul class="dropdown-menu shadow@(ViewData["dropdown-menu-right"])" style="margin-top: -0.3rem">
+    <ul class="dropdown-menu shadow@(ViewData["dropdown-menu-end"])" style="margin-top: -0.3rem">
         @foreach (var childNode in Model.Node.ChildNodes)
         {
             if (!childNode.ShouldShow())

@@ -21,7 +21,7 @@ namespace League.TagHelpers;
 /// Expects the following css class definitions are set:
 /// .site-alert {
 ///     &amp; div:first-of-type {
-///         margin-left: 1rem !important;
+///         margin-start: 1rem !important;
 ///     }
 /// }
 /// 

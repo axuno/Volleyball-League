@@ -43,15 +43,15 @@
             // Only display the most recent 5 tournaments
             if (tournaments.Count > 5 && tournamentCount == 5)
             {
-                <a id="btn-more-tournaments" class="btn btn-success btn-sm mr-2 mb-2" href="#" role="button">@Localizer["more..."]</a>
+                <a id="btn-more-tournaments" class="btn btn-success btn-sm me-2 mb-2" href="#" role="button">@Localizer["more..."]</a>
             }
             if (tournamentCount >= 5)
             {
-                <a class="btn btn-primary btn-sm mr-2 mb-2 d-none@(id == Model.SelectedTournamentId ? " active" : "")" asp-action="@nameof(League.Controllers.Ranking.AllTimeTournament)" asp-controller="@nameof(Ranking)" asp-route-tenant="@tenantUrlSegment" asp-route-id="@id" data-bs-toggle="tooltip" title="@name" role="button">@($"{period.Start.Value.Year}.{period.Start.Value.Month} - {period.End.Value.Year}.{period.End.Value.Month}")</a>
+                <a class="btn btn-primary btn-sm me-2 mb-2 d-none@(id == Model.SelectedTournamentId ? " active" : "")" asp-action="@nameof(League.Controllers.Ranking.AllTimeTournament)" asp-controller="@nameof(Ranking)" asp-route-tenant="@tenantUrlSegment" asp-route-id="@id" data-bs-toggle="tooltip" title="@name" role="button">@($"{period.Start.Value.Year}.{period.Start.Value.Month} - {period.End.Value.Year}.{period.End.Value.Month}")</a>
             }
             else
             {
-                <a class="btn btn-primary btn-sm mr-2 mb-2@(id == Model.SelectedTournamentId ? " active" : "")" asp-action="@nameof(League.Controllers.Ranking.AllTimeTournament)" asp-controller="@nameof(Ranking)" asp-route-tenant="@tenantUrlSegment" asp-route-id="@id" data-bs-toggle="tooltip" title="@name" role="button">@($"{period.Start.Value.Year}.{period.Start.Value.Month} - {period.End.Value.Year}.{period.End.Value.Month}")</a>
+                <a class="btn btn-primary btn-sm me-2 mb-2@(id == Model.SelectedTournamentId ? " active" : "")" asp-action="@nameof(League.Controllers.Ranking.AllTimeTournament)" asp-controller="@nameof(Ranking)" asp-route-tenant="@tenantUrlSegment" asp-route-id="@id" data-bs-toggle="tooltip" title="@name" role="button">@($"{period.Start.Value.Year}.{period.Start.Value.Month} - {period.End.Value.Year}.{period.End.Value.Month}")</a>
             }
         }
     </div>

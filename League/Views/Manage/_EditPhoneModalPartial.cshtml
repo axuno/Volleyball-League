@@ -14,11 +14,11 @@
         <form asp-controller="@nameof(Manage)" asp-action="@nameof(Manage.EditPhoneNumber)" asp-route-tenant="@tenantUrlSegment" method="post" role="form">
             <site-validation-summary show="All"></site-validation-summary>
             <input name="IsValid" type="hidden" value="@ViewData.ModelState.IsValid.ToString()" />
-            <div class="form-group">
-                <label asp-for="PhoneNumber"></label>
+            <div class="mb-3">
+                <label asp-for="PhoneNumber" class="form-label"></label>
                 <div class="input-group">
                     <input asp-for="PhoneNumber" class="form-control" autofocus type="text" />
-                    <span class="input-group-append input-group-text">
+                    <span class="input-group-text">
                         <i class="fas fa-phone"></i>
                     </span>
                 </div>

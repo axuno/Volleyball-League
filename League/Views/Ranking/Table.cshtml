@@ -90,7 +90,7 @@
                                     var bgColor = i < rankBgColors.Count ? ToColor(rankBgColors[i]) : Color.Gray;
                                     var rankRow = rankingList[i];
                                     <tr>
-                                        <td class="rank">@rankRow.Rank <span class="badge badge-pill" style="font-size: .7rem; background-color: rgba(@bgColor.R, @bgColor.G, @bgColor.B, @bgColor.A)">&nbsp;</span></td>
+                                        <td class="rank">@rankRow.Rank <span class="badge rounded-pill" style="font-size: .7rem; background-color: rgba(@bgColor.R, @bgColor.G, @bgColor.B, @bgColor.A)">&nbsp;</span></td>
                                         <td class="team">
                                             <div class="text-truncate">@rankRow.TeamNameForRound</div>
                                             <div class="text-truncate">@rankRow.ClubName</div>
