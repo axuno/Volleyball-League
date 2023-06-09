@@ -17,16 +17,16 @@
             <input asp-for="TeamId" type="hidden" />
             <input asp-for="ReturnUrl" type="hidden" />
             <div class="row">
-                <div class="form-group col-12">
-                    <label asp-for="UserEmail" class="mt-0"></label>
+                <div class="mb-3 col-12">
+                    <label asp-for="UserEmail" class="form-label"></label>
                     <input asp-for="UserEmail" type="text" autofocus autocomplete="off" class="form-control" />
                     <span class="small text-muted">@_AddMemberModalPartial.MemberMustHaveAnAccount</span>
                 </div>
             </div>
             <div class="row">
-                <div class="form-group col-12">
-                    <label asp-for="ClaimType" class="mt-0"></label>
-                    <select asp-for="ClaimType" class="form-control d-block col-6" title="@(_AddMemberModalPartial.Please_select)...">
+                <div class="mb-3 col-12">
+                    <label asp-for="ClaimType" class="form-label"></label>
+                    <select asp-for="ClaimType" class="form-select d-block col-6" title="@(_AddMemberModalPartial.Please_select)...">
                         @foreach (var rn in selectableRoleNames)
                         {
                             <option value="@rn">@_AddMemberModalPartial.ResourceManager.GetString(rn)</option>

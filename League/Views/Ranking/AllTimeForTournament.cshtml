@@ -43,15 +43,15 @@
             // Only display the most recent 5 tournaments
             if (tournaments.Count > 5 && tournamentCount == 5)
             {
-                <a id="btn-more-tournaments" class="btn btn-success btn-sm mr-2 mb-2" href="#" role="button">@Localizer["more..."]</a>
+                <a id="btn-more-tournaments" class="btn btn-success btn-sm me-2 mb-2" href="#" role="button">@Localizer["more..."]</a>
             }
             if (tournamentCount >= 5)
             {
-                <a class="btn btn-primary btn-sm mr-2 mb-2 d-none@(id == Model.SelectedTournamentId ? " active" : "")" asp-action="@nameof(League.Controllers.Ranking.AllTimeTournament)" asp-controller="@nameof(Ranking)" asp-route-tenant="@tenantUrlSegment" asp-route-id="@id" data-toggle="tooltip" title="@name" role="button">@($"{period.Start.Value.Year}.{period.Start.Value.Month} - {period.End.Value.Year}.{period.End.Value.Month}")</a>
+                <a class="btn btn-primary btn-sm me-2 mb-2 d-none@(id == Model.SelectedTournamentId ? " active" : "")" asp-action="@nameof(League.Controllers.Ranking.AllTimeTournament)" asp-controller="@nameof(Ranking)" asp-route-tenant="@tenantUrlSegment" asp-route-id="@id" data-bs-toggle="tooltip" title="@name" role="button">@($"{period.Start.Value.Year}.{period.Start.Value.Month} - {period.End.Value.Year}.{period.End.Value.Month}")</a>
             }
             else
             {
-                <a class="btn btn-primary btn-sm mr-2 mb-2@(id == Model.SelectedTournamentId ? " active" : "")" asp-action="@nameof(League.Controllers.Ranking.AllTimeTournament)" asp-controller="@nameof(Ranking)" asp-route-tenant="@tenantUrlSegment" asp-route-id="@id" data-toggle="tooltip" title="@name" role="button">@($"{period.Start.Value.Year}.{period.Start.Value.Month} - {period.End.Value.Year}.{period.End.Value.Month}")</a>
+                <a class="btn btn-primary btn-sm me-2 mb-2@(id == Model.SelectedTournamentId ? " active" : "")" asp-action="@nameof(League.Controllers.Ranking.AllTimeTournament)" asp-controller="@nameof(Ranking)" asp-route-tenant="@tenantUrlSegment" asp-route-id="@id" data-bs-toggle="tooltip" title="@name" role="button">@($"{period.Start.Value.Year}.{period.Start.Value.Month} - {period.End.Value.Year}.{period.End.Value.Month}")</a>
             }
         }
     </div>
@@ -63,7 +63,7 @@
         @foreach (var r in rounds)
         {
             <li class="nav-item">
-                <a class="nav-link py-1@{if (r.RoundId == activeRoundId){<text> active</text>}}" id="tab-link-@(r.RoundId)" data-toggle="tab" href="#tab-@(r.RoundId)" role="tab" aria-controls="@r.RoundDescription" aria-selected="@(r.RoundId == activeRoundId ? "true" : "false")">@r.RoundDescription</a>
+                <a class="nav-link py-1@{if (r.RoundId == activeRoundId){<text> active</text>}}" id="tab-link-@(r.RoundId)" data-bs-toggle="tab" href="#tab-@(r.RoundId)" role="tab" aria-controls="@r.RoundDescription" aria-selected="@(r.RoundId == activeRoundId ? "true" : "false")">@r.RoundDescription</a>
             </li>
         }
     </ul>
@@ -74,7 +74,7 @@
             <div class="tab-pane@{if (r.RoundId == activeRoundId) {<text> show active</text>}}" id="tab-@(r.RoundId)" role="tabpanel" aria-labelledby="@r.RoundDescription-tab">
                 <div class="text-success">@r.RoundTypeDescription</div>
                 <div class="rounded table-responsive">
-                    <table class="table table-sm table-light table-bordered table">
+                    <table class="table table-sm">
                         <thead class="rounded">
                             <tr>
                                 <th class="rank">@Localizer["Rank"]</th>
@@ -106,7 +106,7 @@
                                         <td class="rank">@rankRow.Rank</td>
                                         <td class="team">
                                             @{ var linkTitle = rankRow.TeamName != rankRow.TeamNameForRound ? Localizer["Team name in this round"].Value + ": \"" + rankRow.TeamNameForRound + "\"" : null;}
-                                            <div class="text-truncate" data-toggle="tooltip" title="@linkTitle">
+                                            <div class="text-truncate" data-bs-toggle="tooltip" title="@linkTitle">
                                                 <a asp-action="@nameof(Ranking.AllTimeTeam)" asp-controller="@nameof(Ranking)" asp-route-tenant="@tenantUrlSegment" asp-route-id="@rankRow.TeamId">@rankRow.TeamName</a>
                                             </div>
                                             <div class="text-truncate">@rankRow.ClubName</div>
@@ -132,9 +132,9 @@
         var teamColWidth = 100 - rankColWidth - 3 * resultColWidth;
     }
     <style type="text/css">
-        #round-tabs .nav-link:not(.active) {border:solid 1px lightgray;}
-        #ranking-table table tbody tr {border-bottom: solid 2px lightgray}
-        #ranking-table table thead {background-color: lightgray}
+        #round-tabs .nav-link:not(.active) {border:solid 1px var(--bs-gray-500)}
+        #ranking-table table tbody tr {border-bottom: solid 2px var(--bs-gray-300)}
+        #ranking-table table thead {--bs-table-bg: var(--bs-gray-300)}
         .rank { width: @(rankColWidth)%; text-align: center}
         .team {width:@(teamColWidth)%}
         .team > a {text-decoration: none}
@@ -148,7 +148,7 @@
     <script type="text/javascript">
         //<![CDATA[
         $(document).ready(function () {
-            $('[data-toggle="tooltip"]').tooltip();
+            $('[data-bs-toggle="tooltip"]').tooltip();
             $('#btn-more-tournaments').on('click',
                 function (e) {
                     $('#tournament-list > .btn').removeClass('d-none');

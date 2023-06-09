@@ -30,7 +30,7 @@
         @{
             if (!string.IsNullOrWhiteSpace(selectedTeam.ClubName))
             {
-                <span class="ml-3 text-muted">(@selectedTeam.ClubName)</span>
+                <span class="ms-3 text-muted">(@selectedTeam.ClubName)</span>
             }
         }
         <div>@Localizer["Click on a tournament name to show the all time list of it"]</div>
@@ -38,7 +38,7 @@
 
     <div class="tab-content mt-1" id="ranking-table">
         <div class="rounded table-responsive">
-            <table class="table table-sm table-light table-bordered table">
+            <table class="table table-sm">
                 <thead class="rounded">
                     <tr>
                         <th class="tournament">
@@ -96,8 +96,8 @@
         var tournamentColWidth = 100 - rankColWidth - roundColWidth - 3 * resultColWidth;
     }
     <style type="text/css">
-        #ranking-table table tbody tr {border-bottom: solid 2px lightgray}
-        #ranking-table table thead {background-color: lightgray}
+        #ranking-table table tbody tr {border-bottom: solid 2px var(--bs-gray-300)}
+        #ranking-table table thead {--bs-table-bg: var(--bs-gray-300)}
         .round {width: @(roundColWidth)%; text-align: center}
         .rank { width: @(rankColWidth)%; text-align: center}
         .tournament {width:@(tournamentColWidth)%}
@@ -112,7 +112,7 @@
     <script type="text/javascript">
         //<![CDATA[
         $(document).ready(function () {
-            $('[data-toggle="tooltip"]').tooltip();
+            $('[data-bs-toggle="tooltip"]').tooltip();
         });
         //]]>
     </script>

@@ -48,7 +48,7 @@
 
     string GetBoldClass(bool hasValue)
     {
-        return hasValue ? " font-weight-bold" : string.Empty;
+        return hasValue ? " fw-bold" : string.Empty;
     }
     MatchEntity ToMatchEntity(PlannedMatchRow pmr)
     {
@@ -63,7 +63,7 @@
         @foreach (var r in rounds)
         {
             <li class="nav-item">
-                <a class="nav-link py-1@{if (r.RoundId == activeRoundId){<text> active</text>}}" id="tab-link-@(r.RoundId)" data-toggle="tab" href="#tab-@(r.RoundId)" role="tab" aria-controls="@r.RoundDescription" aria-selected="@(r.RoundId == activeRoundId ? "true" : "false")">@r.RoundDescription</a>
+                <a class="nav-link py-1@{if (r.RoundId == activeRoundId){<text> active</text>}}" id="tab-link-@(r.RoundId)" data-bs-toggle="tab" href="#tab-@(r.RoundId)" role="tab" aria-controls="@r.RoundDescription" aria-selected="@(r.RoundId == activeRoundId ? "true" : "false")">@r.RoundDescription</a>
             </li>
         }
     </ul>
@@ -72,18 +72,18 @@
         {
             <div class="tab-pane@{if (r.RoundId == activeRoundId) {<text> show active</text>}}" id="tab-@(r.RoundId)" role="tabpanel" aria-labelledby="@r.RoundDescription-tab">
                 <div class="text-success">@r.RoundTypeDescription</div>
-                <div id="team-filter-@r.RoundId" class="team-filter my-2 d-none" data-toggle="tooltip" title="@Localizer["Remove filter for team"]" style="display: none" tabindex="0">
-                    <i class="fas fa-1x fa-times-circle mr-2"></i>
-                    <span class="badge badge-dark"></span>
+                <div id="team-filter-@r.RoundId" class="team-filter my-2 d-none" data-bs-toggle="tooltip" title="@Localizer["Remove filter for team"]" style="display: none" tabindex="0">
+                    <i class="fas fa-1x fa-times-circle me-2"></i>
+                    <span class="badge bg-dark"></span>
                 </div>
                 <div class="rounded table-responsive" style="min-height: 13rem">@* min height assures dropdowns are not clipped *@
-                    <table class="table table-sm table-light table-bordered table">
+                    <table class="table table-sm">
                         <thead class="rounded">
                             <tr>
                                 <th class="opponents">@Localizer["Opponents"]</th>
                                 <th class="date">@Localizer["Match Date"]</th>
-                                <th class="result" data-toggle="tooltip" title="@Localizer["Venue"]">@Localizer["Venue"]</th>
-                                <th class="context-menu" data-toggle="tooltip" title="@Localizer["Menu"]"><i class="fas fa-ellipsis-v"></i></th>
+                                <th class="result" data-bs-toggle="tooltip" title="@Localizer["Venue"]">@Localizer["Venue"]</th>
+                                <th class="context-menu" data-bs-toggle="tooltip" title="@Localizer["Menu"]"><i class="fas fa-ellipsis-v"></i></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -96,18 +96,18 @@
                                     var match = matches[i];
                                     if (legs.Count >= 1 && !string.IsNullOrWhiteSpace(match.RoundLegDescription) && (i == 0 || match.RoundLegSequenceNo != matches[i - 1].RoundLegSequenceNo))
                                     {
-                                        <tr><td colspan="@columnCount" class="leg-change"><span class="badge badge-dark">@match.RoundLegDescription</span></td></tr>
+                                        <tr><td colspan="@columnCount" class="leg-change"><span class="badge bg-dark">@match.RoundLegDescription</span></td></tr>
                                     }
                                     <tr>
                                         <td class="opponents@(Model.FixtureMessage?.MatchId == match.Id ? " changed-fixture" : string.Empty)">
                                             <div class="text-truncate">@match.HomeTeamNameForRound</div>
                                             <div class="text-truncate">@match.GuestTeamNameForRound</div>
                                         </td>
-                                        <td class="date text-nowrap@(GetBoldClass(match.OrigPlannedStart.HasValue))" data-toggle="tooltip" title="@(FmtOrigDate(match.OrigPlannedStart))">@(Html.Raw(FmtDate(match.PlannedStart)))</td>
-                                        <td class="venue@(GetBoldClass(match.OrigVenueId.HasValue))" data-toggle="tooltip" title="@(FmtOrigVenue(match.OrigVenueName))"><div class="text-truncate">@(match.VenueName ?? Localizer["unknown"].Value)</div></td>
+                                        <td class="date text-nowrap@(GetBoldClass(match.OrigPlannedStart.HasValue))" data-bs-toggle="tooltip" title="@(FmtOrigDate(match.OrigPlannedStart))">@(Html.Raw(FmtDate(match.PlannedStart)))</td>
+                                        <td class="venue@(GetBoldClass(match.OrigVenueId.HasValue))" data-bs-toggle="tooltip" title="@(FmtOrigVenue(match.OrigVenueName))"><div class="text-truncate">@(match.VenueName ?? Localizer["unknown"].Value)</div></td>
                                         <td class="context-menu">
                                             <div class="dropdown text-center">
-                                                <a href="#" class="stretched-link" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                <a href="#" class="stretched-link" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                                     <i class="fas fa-ellipsis-v" style="font-size: .8rem"></i>
                                                 </a>
                                                 <div class="dropdown-menu shadow-lg" role="menu">
@@ -123,7 +123,7 @@
                                                 </div>
                                             </div>
                                             <div class="dropdown">
-                                                <a href="#" class="stretched-link" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                <a href="#" class="stretched-link" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                                     <i class="fas fa-ellipsis-v" style="font-size: .8rem"></i>
                                                 </a>
                                                 <div class="dropdown-menu shadow-lg" role="menu" aria-labelledby="dropdownMenuLink">
@@ -167,10 +167,10 @@
         var opponentsCssClass = $".opponents {{width: {opponentColWidth}%);}}";
     }
     <style type="text/css">
-        #round-tabs .nav-link:not(.active) {border:solid 1px lightgray;}
-        #fixtures table tbody tr {border-bottom: solid 2px lightgray}
-        #fixtures table thead {background-color: lightgray}
-        .changed-fixture { font-weight: bold; border-left: solid 8px lightgray !important}
+        #round-tabs .nav-link:not(.active) {border:solid 1px var(--bs-gray-500)}
+        #fixtures table tbody tr {border-bottom: solid 2px var(--bs-gray-300)}
+        #fixtures table thead {--bs-table-bg: var(--bs-gray-300)}
+        .changed-fixture { font-weight: bold; border-left: solid 8px var(--bs-gray-300) !important}
         .team-filter { cursor: pointer;}
         .filter-link { /* javascript only */ }
         .leg-change { padding: 0; margin:0}
@@ -191,7 +191,7 @@
         var useRecentRoundCookie = @useRecentRoundCookie.ToString().ToLowerInvariant();
         Cookies = window.Cookies; @* js-cookies.js *@
         $(document).ready(function() {
-            $('[data-toggle="tooltip"]').tooltip();
+            $('[data-bs-toggle="tooltip"]').tooltip();
             @* Try to set the active tab from a cookie *@
             if (useRecentRoundCookie) {
                 var $activeRoundFromCookie = Cookies.get(mostRecentRoundCookieName);
@@ -225,7 +225,7 @@
                     $(this).removeClass('d-inline-block').addClass('d-none');
                     $(this).parent().find('table tbody > tr').show();
                 });
-            $('a[data-toggle="tab"]').on('shown.bs.tab',
+            $('a[data-bs-toggle="tab"]').on('shown.bs.tab',
                 function(e) {
                     var id = e.target.id.replace('tab-link-', ''); // newly activated tab with round id
                     Cookies.set(mostRecentRoundCookieName,

@@ -267,7 +267,7 @@ public class MainNavigationNodeBuilder : IMainNavigationNodeBuilder
                 Text = string.Empty,
                 Url = TenantLink.Action(nameof(Manage.Index), nameof(Manage)),
                 IconCssClass = "fas fa-1x fa-user-check",
-                CssClass = "dropdown-menu-right"
+                CssClass = "dropdown-menu-end"
             };
             account.ChildNodes.AddRange(new []
             {
@@ -303,7 +303,7 @@ public class MainNavigationNodeBuilder : IMainNavigationNodeBuilder
                 Text = string.Empty,
                 Url = TenantLink.Action(nameof(Account.SignIn), nameof(Account)),
                 IconCssClass = "fas fa-user-plus",
-                CssClass = "dropdown-menu-right"
+                CssClass = "dropdown-menu-end"
             };
             account.ChildNodes.AddRange(new[]
             {

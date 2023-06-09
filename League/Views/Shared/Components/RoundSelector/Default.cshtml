@@ -7,11 +7,11 @@
     var round = Model.RoundWithTypeList.FirstOrDefault(rt => rt.Id == Model.SelectedRoundId);
 }
 <div class="row">
-    <div class="form-group col-12 col-md-6">
+    <div class="mb-3 col-12 col-md-6">
         @if (Model.ShowSelector)
         {
-            <label asp-for="SelectedRoundId" class="mt-0"></label>
-            <select asp-for="SelectedRoundId" class="form-control d-block col-7" style="min-width: max-content !important" title="@Localizer["Please select a round"]...">
+            <label asp-for="SelectedRoundId" class="form-label"></label>
+            <select asp-for="SelectedRoundId" class="form-select d-block col-7" style="min-width: max-content !important" title="@Localizer["Please select a round"]...">
                 @foreach (var rwt in Model.RoundWithTypeList)
                 {
                     if (rwt.Id == Model.SelectedRoundId)
@@ -31,9 +31,9 @@
         }
         @if(!Model.ShowSelector)
         {
-            <label asp-for="SelectedRoundId" class="mt-0"></label>
-            <div class="ml-0">
-                <span class="d-inline-block font-weight-bold mr-2">@(round?.Description ?? Localizer["Not specified"].Value)</span>
+            <label asp-for="SelectedRoundId" class="form-label"></label>
+            <div class="ms-0">
+                <span class="d-inline-block fw-bold me-2">@(round?.Description ?? Localizer["Not specified"].Value)</span>
                 <span class="text-muted small">@(round?.RoundType?.Description ?? string.Empty)</span>
                 <small class="d-block form-text text-muted">
                     @Localizer["Can only be edited as long as no matches exist"]

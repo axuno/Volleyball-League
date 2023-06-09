@@ -1,7 +1,8 @@
-﻿@using League.Controllers
-@using League.Helpers
+﻿@using League.Helpers
 @using League.Routing
-@using League.TagHelpers
+@using League.WebApp
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using System.Reflection
 @{
     ViewData.Title("Über Volleyball-Liga");
 }
@@ -12,12 +13,12 @@
 <div class="mb-0 pb-1">
     <div class="row">
         <article class="col-md-8">
-            <p class="font-weight-bolder text-primary">Die Volleyball-Liga Plattform bringt alles Notwendige mit, um eine Liga zu organisieren und den Spielbetrieb durchzuführen.</p>
+            <p class="fw-bolder text-primary">Die Volleyball-Liga Plattform bringt alles Notwendige mit, um eine Liga zu organisieren und den Spielbetrieb durchzuführen.</p>
         </article>
     </div>
     <div class="row">
         <article class="col-10 col-sm-8">
-            <h3 class="h3 pl-2 rounded">Features</h3>
+            <h3 class="h3 ps-2 rounded">Features</h3>
             <ul class="fa-ul">
                 <li><span class="fa-li"><i class="fas fa-check-square text-primary"></i></span>Hallen- und Beach-Ligen</li>
                 <li><span class="fa-li"><i class="fas fa-check-square text-primary"></i></span>Anmeldung von Teams</li>
@@ -37,7 +38,7 @@
     </div>
     <div class="row">
         <article class="col-10 col-sm-8">
-            <h3 class="h3 pl-2 rounded">Software</h3>
+            <h3 class="h3 ps-2 rounded">Software</h3>
             <ul class="fa-ul">
                 <li><span class="fa-li"><i class="fas fa-check-square text-primary"></i></span>Individuelle Einstellungen (z.B. Anzahl der Sätze, Anzahl der Runden u.v.m.)</li>
                 <li><span class="fa-li"><i class="fas fa-check-square text-primary"></i></span>Individuelle Seiten, z.B. für die Spielordnung</li>
@@ -59,11 +60,12 @@
     <div class="row">
         <article class="col-8">
             @{
-                var leagueAssembly = System.Reflection.Assembly.GetAssembly(typeof(League.LeagueStartup))?.GetName();
-                var tmAssembly = System.Reflection.Assembly.GetAssembly(typeof(TournamentManager.DateTimePeriod))?.GetName();
-                if (leagueAssembly != null && tmAssembly != null)
+                var webAppInfo = new Axuno.Tools.AssemblyInfo(typeof(WebAppStartup));
+                var leagueInfo = new Axuno.Tools.AssemblyInfo(typeof(LeagueStartup));
+                var tmInfo = new Axuno.Tools.AssemblyInfo(typeof(TournamentManager.MultiTenancy.AppDb));
+                if (webAppInfo.Name != null && leagueInfo.Version != null && tmInfo.Name != null && tmInfo.Version != null)
                 {
-                    <div>Eingesetzt: @leagueAssembly.Name v@(leagueAssembly.Version) und @tmAssembly.Name v@(tmAssembly.Version)</div>
+                    <div>Im Einsatz: @(webAppInfo.Product) v@(webAppInfo.Version), @(leagueInfo.Name) v@(leagueInfo.Version) und @(tmInfo.Name) v@(tmInfo.Version)</div>
                 }
             }
         </article>
@@ -72,7 +74,7 @@
 @section styles {
     <style type="text/css">
         .h3 {
-            background: linear-gradient(to right, #018dff 10%, #01df02 100%);
+            background: linear-gradient(to right, var(--bs-primary) 10%, var(--bs-success) 100%);
             color: white;
         }
     </style>

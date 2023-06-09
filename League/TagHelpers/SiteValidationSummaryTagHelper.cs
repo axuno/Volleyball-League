@@ -23,11 +23,11 @@ namespace League.TagHelpers;
 /// Expects the following css class definitions are set:
 /// .validation-summary-errors {
 ///     &amp; ul {
-///         padding-left: 1rem !important;
+///         padding-start: 1rem !important;
 ///         margin-bottom: 0 !important;
 ///     }
 ///     &amp; div:first-of-type {
-///         margin-left: 1rem !important;
+///         margin-start: 1rem !important;
 ///     }
 /// }
 /// 
@@ -120,7 +120,7 @@ public class SiteValidationSummaryTagHelper : TagHelper
         if (ValidationSummary == ValidationSummary.None)
             return;
             
-        // bug in asp.net core 2.1: headertag argument is never used
+        // bug in asp.net core 2.1: header tag argument is never used
         var validationSummaryHtml = Generator.GenerateValidationSummary(ViewContext,
             ValidationSummary == ValidationSummary.ModelOnly, string.Empty, string.Empty, string.Empty);
 

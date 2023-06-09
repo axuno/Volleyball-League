@@ -21,18 +21,16 @@
         <input name="IsValid" type="hidden" value="@ViewData.ModelState.IsValid.ToString()" />
         @if (Model.VenuesForDistance.Any())
         {
-            <button class="btn btn-warning btn-sm mb-2" data-target="#show-vicinity-venues" data-toggle="modal" onclick="event.preventDefault()">
+            <button class="btn btn-warning btn-sm mb-2" data-bs-target="#show-vicinity-venues" data-bs-toggle="modal" onclick="event.preventDefault()">
                 @Localizer["Show vicinity venues"]
             </button>
         }
         @if (Model.IsWarning)
         {
-            <div class="row mb-2">
-                <div class="form-group col-12 col-md-6">
-                    <div class="custom-control custom-checkbox border border-warning rounded py-2">
-                        <input asp-for="OverrideWarnings" type="checkbox" class="custom-control-input">
-                        <label class="custom-control-label text-warning ml-2 mt-0" asp-for="OverrideWarnings"></label>
-                    </div>
+            <div class="p-1 mb-2 col-12 col-md-6 border border-warning rounded">
+                <div class="form-check">
+                    <input asp-for="OverrideWarnings" type="checkbox" class="form-check-input">
+                    <label class="form-check-label text-warning mt-0" asp-for="OverrideWarnings"></label>
                 </div>
             </div>
         }
@@ -40,7 +38,7 @@
         {
             <div class="row mb-2">
                 <div class="col-12">
-                    <h4 class="h4">@(Model.Venue.IsNew ? Localizer["New venue for team"].Value : Localizer["Venue for team"].Value) <span class="font-weight-bold">@Model.ForTeamName</span></h4>
+                    <h4 class="h4">@(Model.Venue.IsNew ? Localizer["New venue for team"].Value : Localizer["Venue for team"].Value) <span class="fw-bold">@Model.ForTeamName</span></h4>
                 </div>
             </div>
         }
@@ -53,14 +51,14 @@
                         <div>@Localizer["Changes will have effect for the following teams using this venue"]:</div>
                         @foreach (var teamName in Model.TeamsUsingTheVenue)
                         {
-                            <span class="badge badge-secondary d-inline-block mr-2">@teamName</span>
+                            <span class="badge bg-secondary d-inline-block me-2">@teamName</span>
                         }
                     </div>
                 </div>
             </div>
         }
         <div class="row">
-            <div class="form-group col-12 col-md-6 mt-2">
+            <div class="mb-3 col-12 col-md-6 mt-2">
                 <a href="@(Model.ReturnUrl)" class="btn btn-lg btn-secondary">@Localizer["Cancel"]</a>
                 <button type="submit" class="btn btn-lg btn-primary">@Localizer["Save"]</button>
             </div>
@@ -104,17 +102,15 @@
             background-color: lightgray
         }
 
-        /* Start: Change Bootstrap 4 default custom checkbox color */
-        .custom-checkbox .custom-control-input:checked ~ .custom-control-label::before {
-            background-color: var(--warning);
-            border-color: var(--warning);
+        /* Start: Change checkbox color */
+        .border-warning > .form-check > input[type=checkbox]:checked {
+            background-color: var(--bs-warning);
         }
 
-        .custom-control-input:checked ~ .custom-control-label::before {
-            color: #fff;
-            background-color: var(--warning);
-            border-color: var(--warning);
+        .border-warning > .form-check > input[type=checkbox] {
+            border: 2px solid var(--bs-warning);
+            background-color: transparent;
         }
-        /* End: Change Bootstrap 4 default custom checkbox color */
+        /* End: Change checkbox color */
     </style>
 }

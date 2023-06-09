@@ -29,7 +29,7 @@ module.exports = function (grunt) {
             dist: {
                 files: [
                     {
-                        'wwwroot/lib/bootstrap/bootstrap.css': 'Styles/bootstrap/bootstrap-custom.scss',  // "destination": "source"
+                        'wwwroot/lib/bootstrap/bootstrap.css': ['Styles/bootstrap/_custom.scss', 'node_modules/bootstrap/scss/bootstrap.scss'],  // "destination": "source"
                         'wwwroot/lib/fontawesome/fontawesome.css': 'Styles/fontawesome/fontawesome.scss',
                         'wwwroot/lib/tempusdominus-bootstrap-4/tempusdominus-bootstrap-4.css': 'Styles/tempusdominus-bootstrap-4/tempusdominus-custom.scss',
                         'wwwroot/css/site.css': 'Styles/site/site.scss'
@@ -91,9 +91,7 @@ module.exports = function (grunt) {
                 nonull: true
             },
             bootstrap_js_all: {
-                src: ['node_modules/popper.js/dist/umd/popper.min.js',
-                    'node_modules/popper.js/dist/umd/popper-utils.min.js',
-                    'node_modules/tether/dist/js/tether.min.js',
+                src: ['node_modules/@popperjs/core/dist/umd/popper.min.js',
                     'node_modules/bootstrap/dist/js/bootstrap.min.js'
                     ],
                 dest: 'wwwroot/lib/bootstrap/bootstrap-all.min.js',

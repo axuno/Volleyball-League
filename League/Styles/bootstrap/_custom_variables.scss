@@ -1,0 +1,89 @@
+// Bootstrap variable overrides
+
+//
+// Color system
+//
+// This value is used in color-contrast(...) function
+// and influences the required contrast between background and text color.
+$min-contrast-ratio: 3; // default is 4.5
+
+$white: #fff;
+$gray-100: #f8f9fa;
+$gray-200: #e9ecef;
+$gray-300: #dee2e6;
+$gray-400: #ced4da;
+$gray-500: #adb5bd;
+$gray-600: #868e96;
+$gray-700: #495057;
+$gray-800: #343a40;
+$gray-900: #212529;
+$black: #000;
+
+$primary: #018DFF;
+$secondary: $gray-600;
+$success: #01DF02;
+$info: #015496;
+$warning: #FF8901;
+$danger: #E401CD;
+$light: $gray-100;
+$dark: $gray-800;
+
+// Reassign color vars to semantic color scheme
+$theme-colors: ( 'primary': $primary, 'secondary': $secondary, 'success': $success, 'info': $info, 'warning': $warning, 'danger': $danger, 'light': $light, 'dark': $dark);
+
+$table-bg: $light;
+
+// Body
+//
+// Settings for the `<body>` element.
+$body-bg: $white; /* $body-bg is used in many other components */
+$body-color: $black;
+
+// Fonts
+//
+// Font, line-height, and color for body text, headings, and more.
+$font-family-sans-serif: Arial, "Helvetica Neue", Helvetica, sans-serif;
+
+// Dropdowns
+//
+// Dropdown menu container and contents.
+$dropdown-link-color: $gray-800;
+$dropdown-link-hover-bg: transparentize(lighten($primary, 30%), .6);
+
+$dropdown-link-active-color: $black;
+$dropdown-link-active-bg: lighten($primary, 30%);
+
+// Borders
+$border-radius: 0.4rem;
+
+// Links
+//
+// Style anchor elements.
+
+$link-color: $black;
+$link-decoration: none;
+$link-hover-color: $link-color;
+$link-hover-decoration: underline;
+
+// Forms
+
+$input-focus-bg: transparentize(lighten($success, 50%),.5);
+$input-bg: $white;
+$form-select-bg: $input-bg;
+
+// Navbar
+$navbar-dark-active-color: $white;
+
+// Navs
+$nav-tabs-border-color: $primary;
+// $nav-tabs-link-hover-border-color: $gray-200 $gray-200 $nav-tabs-border-color !default; // DOES NOT WORK, see hover mix-in
+$nav-tabs-link-active-color: $black;
+$nav-tabs-link-active-bg: lighten($success, 45%);
+$nav-tabs-link-active-border-color: $nav-tabs-border-color $nav-tabs-border-color $nav-tabs-border-color;
+
+// Components
+//
+// Box-Shadow
+$box-shadow-sm: 0 .125rem .25rem rgba($black, .015);
+$box-shadow: 0 .5rem 1rem rgba($black, .30);
+$box-shadow-lg: 0 1rem 3rem rgba($black, .35);

@@ -17,10 +17,10 @@
             @if (Model.IsWarning)
             {
                 <div class="row">
-                    <div class="form-group col-12 col-md-6">
-                        <div class="custom-control custom-checkbox border border-warning rounded py-2">
-                            <input asp-for="OverrideWarnings" type="checkbox" class="custom-control-input">
-                            <label class="custom-control-label text-warning ml-2 mt-0" asp-for="OverrideWarnings"></label>
+                    <div class="mb-3 col-12 col-md-6">
+                        <div class="form-check border border-warning rounded py-2">
+                            <input asp-for="OverrideWarnings" type="checkbox" class="form-check-input">
+                            <label class="form-check-label text-warning ms-2 mt-0" asp-for="OverrideWarnings"></label>
                         </div>
                     </div>
                 </div>

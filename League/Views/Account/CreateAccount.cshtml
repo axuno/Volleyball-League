@@ -14,7 +14,7 @@
     <h2 class="h2">@ViewData["Title"]</h2>
     <hr />
 </div>
-<div id="social-network" class="col-md-8 col-sm-10 col-12 pl-0">
+<div id="social-network" class="col-md-8 col-sm-10 col-12 ps-0">
     @{
         if (ViewContext.ViewData.ModelState.IsValid)
         {
@@ -26,7 +26,7 @@
                     <div class="flex-row">
                         @foreach (var provider in loginProviders)
                         {
-                            <button type="submit" class="btn btn-lg btn-secondary mb-2 mr-2" name="provider" value="@provider.Name">@provider.Name</button>
+                            <button type="submit" class="btn btn-lg btn-secondary mb-2 me-2" name="provider" value="@provider.Name">@provider.Name</button>
                         }
                     </div>
                 </form>
@@ -41,35 +41,35 @@
         @Localizer["We will send you a message containing the confirmation code to your email address."]<br />
         @Localizer["Once your email is confirmed, you can finalize the registration."]
     </p>
-    <form asp-controller="@nameof(Account)" asp-action="@nameof(Account.CreateAccount)" asp-route-tenant="@tenantUrlSegment" asp-route-returnurl="@ViewData["ReturnUrl"]" method="post" class="col-md-8 col-sm-10 col-12 pl-0" role="form">
+    <form asp-controller="@nameof(Account)" asp-action="@nameof(Account.CreateAccount)" asp-route-tenant="@tenantUrlSegment" asp-route-returnurl="@ViewData["ReturnUrl"]" method="post" class="col-md-8 col-sm-10 col-12 ps-0" role="form">
         <site-validation-summary show="All">
             <b>@Localizer["Input has some issues"]:</b>
         </site-validation-summary>
-        <div class="form-group">
-            <label asp-for="Email"></label>
+        <div class="mb-3">
+            <label asp-for="Email" class="form-label"></label>
             <div class="input-group">
                 <input asp-for="Email" class="form-control" required="required" type="text" />
-                <span class="input-group-append input-group-text">
+                <span class="input-group-text">
                     <i class="fas fa-envelope"></i>
                 </span>
             </div>
             <span asp-validation-for="Email" class="text-danger"></span>
         </div>
-        <div class="form-group">
+        <div class="mb-3">
             <div class="mt-2">
                 <img id="CaptchaImage" style="vertical-align: bottom; display:inline" src="@Url.Action(nameof(League.Controllers.Captcha.Index), nameof(League.Controllers.Captcha))@("?guid=" + Guid.NewGuid())" alt="Captcha" title="" />
                 <label class="d-inline" onclick="javascript:if (document.images) document.images.CaptchaImage.src = '@Url.Action(nameof(League.Controllers.Captcha.Index), nameof(League.Controllers.Captcha))?new=1&amp;time=' + new Date().getTime();" style="cursor: pointer"><i class="fa fa-sync-alt fa-2x" style="margin: 0 5px 0 5px;" title="@Localizer["Reload"]"></i></label><br />
             </div>
-            <label asp-for="Captcha"></label>
+            <label asp-for="Captcha" class="form-label mt-2"></label>
             <div class="input-group">
                 <input asp-for="Captcha" required="required" type="text" class="form-control" maxlength="7" />
-                <span class="input-group-append input-group-text">
+                <span class="input-group-text">
                     <i class="fas fa-equals"></i>
                 </span>
             </div>
             <span asp-validation-for="Captcha" class="text-danger"></span>
         </div>
-        <div class="form-group">
+        <div class="mb-3">
             <button type="submit" class="btn btn-lg btn-primary col-10">@Localizer["Submit"]</button>
         </div>
     </form>

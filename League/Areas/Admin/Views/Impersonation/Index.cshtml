@@ -16,18 +16,18 @@
     <h2 class="h2">@ViewData["Title"]</h2>
     <div>
         <form asp-controller="@nameof(League.Areas.Admin.Controllers.Impersonation)" asp-action="@nameof(League.Areas.Admin.Controllers.Impersonation.Index)" asp-route-tenant="@tenantRoute" method="get" role="form">
-            <div class="form-group">
-                <label for="search">@Localizer["Find by email, first/last/nick name"]</label>
+            <div class="mb-3">
+                <label for="search" class="form-label">@Localizer["Find by email, first/last/nick name"]</label>
                 <input id="search" name="search" required="required" class="form-control" value="@search" aria-describedby="searchHelpBlock" />
                 <small id="searchHelpBlock" class="form-text text-muted">
                     @Localizer["Wildcards (%) are allowed"]
                 </small>
             </div>
-            <div class="form-group">
-                <label for="limit">@Localizer["Limit"]</label>
+            <div class="mb-3">
+                <label for="limit" class="form-label">@Localizer["Limit"]</label>
                 <input id="limit" name="limit" value="@limit" required="required" class="form-control" />
             </div>
-            <div class="form-group">
+            <div class="mb-3">
                 <button type="submit" class="btn btn-lg btn-primary">@Localizer["Find"]</button>
             </div>
         </form>

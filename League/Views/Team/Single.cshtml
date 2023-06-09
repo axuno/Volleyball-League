@@ -21,12 +21,12 @@
 }
 <div class="mb-0 pb-2">
     <h2 class="h2">@ViewData["Title"]</h2>
-    <h4 class="h4 d-inline-block mr-4">@Model.TeamVenueRoundInfo!.RoundDescription</h4>
+    <h4 class="h4 d-inline-block me-4">@Model.TeamVenueRoundInfo!.RoundDescription</h4>
     <span class="text-info">@Model.TeamVenueRoundInfo.RoundTypeDescription</span>
     <hr class="mb-3" />
     <div class="row">
         <div class="text-success col-md-3">@Localizer["Team"]</div>
-        <div class="col-md-9 font-weight-bold">@Model.TeamVenueRoundInfo.TeamName</div>
+        <div class="col-md-9 fw-bold">@Model.TeamVenueRoundInfo.TeamName</div>
         @if (!string.IsNullOrEmpty(Model.TeamVenueRoundInfo.TeamClubName))
         {
             <div class="text-success col-md-3">@Localizer["Club"]</div>
@@ -36,13 +36,13 @@
         {
             // MatchTime is defined as a zoned time, NOT UTC. It is always the same, never mind DST
             <div class="text-success col-md-3">@Localizer["Home match day"]</div>
-            <div class="col-md-9 mb-2"><i class="far fa-calendar-alt"></i><span class="d-inline-block mr-2"></span>@DateTimeFormatInfo.CurrentInfo.GetDayName((DayOfWeek)Model.TeamVenueRoundInfo.MatchDayOfWeek), @(DateTime.UtcNow.Date.Add(Model.TeamVenueRoundInfo.MatchTime.Value).ToShortTimeString()) @(Model.TimeZoneConverter.ToZonedTime(DateTime.UtcNow)!.Abbreviation)</div>
+            <div class="col-md-9 mb-2"><i class="far fa-calendar-alt"></i><span class="d-inline-block me-2"></span>@DateTimeFormatInfo.CurrentInfo.GetDayName((DayOfWeek)Model.TeamVenueRoundInfo.MatchDayOfWeek), @(DateTime.UtcNow.Date.Add(Model.TeamVenueRoundInfo.MatchTime.Value).ToShortTimeString()) @(Model.TimeZoneConverter.ToZonedTime(DateTime.UtcNow)!.Abbreviation)</div>
         }
         @if (Model.TeamVenueRoundInfo.VenueId.HasValue)
         {
             <div class="text-success col-md-3">@Localizer["Venue"]</div>
             <div class="col-md-7 mb-2">
-                <div><i class="fas fa-map-marker-alt"></i><span class="d-inline-block mr-2"></span><span class="font-weight-bold">@Model.TeamVenueRoundInfo.VenueName</span> <span>@{if (!string.IsNullOrWhiteSpace(Model.TeamVenueRoundInfo.VenueExtension))
+                <div><i class="fas fa-map-marker-alt"></i><span class="d-inline-block me-2"></span><span class="fw-bold">@Model.TeamVenueRoundInfo.VenueName</span> <span>@{if (!string.IsNullOrWhiteSpace(Model.TeamVenueRoundInfo.VenueExtension))
                     {<text>(@Model.TeamVenueRoundInfo.VenueExtension)</text>}}</span></div>
                 <div>@(string.Join(", ", Model.TeamVenueRoundInfo.VenuePostalCode, Model.TeamVenueRoundInfo.VenueCity, Model.TeamVenueRoundInfo.VenueStreet))</div>
                 <div><a class="link" asp-action="@nameof(League.Controllers.Map.Venue)" asp-controller="@nameof(League.Controllers.Map)" asp-route-tenant="@tenantUrlSegment" asp-route-id="@Model.TeamVenueRoundInfo.VenueId.Value">@Localizer["Direction"]</a></div>
@@ -57,11 +57,11 @@
 
                     <div class="text-success col-md-3">@Localizer["Team contact"]</div>
                     <div class="col-md-7 mb-2">
-                        <div class="font-weight-bold"><i class="fas fa-user"></i><span class="d-inline-block mr-2"></span>@userInfo.CompleteNameWithNickName</div>
-                        <div><i class="far fa-envelope"></i><span class="d-inline-block mr-2"></span><a href="mailto:@userInfo.Email">@userInfo.Email</a></div>
+                        <div class="fw-bold"><i class="fas fa-user"></i><span class="d-inline-block me-2"></span>@userInfo.CompleteNameWithNickName</div>
+                        <div><i class="far fa-envelope"></i><span class="d-inline-block me-2"></span><a href="mailto:@userInfo.Email">@userInfo.Email</a></div>
 
-                        <span class="d-inline-block mr-4">
-                            <i class="fas fa-phone-square-alt"></i><span class="d-inline-block mr-2"></span><a href="@TelUriPhoneNo(userInfo.PhoneNumber)">@DisplayPhoneNo(userInfo.PhoneNumber)</a>
+                        <span class="d-inline-block me-4">
+                            <i class="fas fa-phone-square-alt"></i><span class="d-inline-block me-2"></span><a href="@TelUriPhoneNo(userInfo.PhoneNumber)">@DisplayPhoneNo(userInfo.PhoneNumber)</a>
                         </span>
                         @if (!string.IsNullOrEmpty(userInfo.PhoneNumber2))
                         {
@@ -90,7 +90,7 @@
             else
             {
                 <div class="d-inline-block p-3" style="background-color: lightgray">
-                    <i class="fas fa-users fa-3x d-inline-block mr-3"></i>
+                    <i class="fas fa-users fa-3x d-inline-block me-3"></i>
                     <i class="far fa-question-circle fa-3x"></i>
                 </div>
             }

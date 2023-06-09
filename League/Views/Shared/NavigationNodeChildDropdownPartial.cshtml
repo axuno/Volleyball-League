@@ -2,7 +2,7 @@
 @model (League.Components.MainNavigationComponentModel MainNav, League.Components.MainNavigationComponentModel.NavigationNode Node)
 @if (Model.MainNav != null && Model.Node.HasVisibleChildNodes())
 {
-    <div class="dropdown-menu shadow@(ViewData["dropdown-menu-right"])" style="margin-top: -0.3rem">
+    <ul class="dropdown-menu shadow@(ViewData["dropdown-menu-end"])" style="margin-top: -0.3rem">
         @foreach (var childNode in Model.Node.ChildNodes)
         {
             if (!childNode.ShouldShow())
@@ -12,19 +12,25 @@
 
             if (childNode.Text == "Separator")
             {
-                <div class="dropdown-divider"></div>
+                <li>
+                    <span class="dropdown-divider"></span>
+                </li>
                 continue;
             }
             if (childNode.HasVisibleChildNodes())
             {
-                <a href="@Url.Content(childNode.Url!)" class="@Model.MainNav.GetClass(Context, childNode, "dropdown-item", "active", true)">@childNode.Text</a>
+                <li>
+                    <a href="@Url.Content(childNode.Url!)" class="@Model.MainNav.GetClass(Context, childNode, "dropdown-item", "active", true)">@childNode.Text</a>
+                </li>
             }
             else
             {
-                <a href="@Url.Content(childNode.Url!)" class="@Model.MainNav.GetClass(Context, childNode, "dropdown-item", "active", true)">@childNode.Text</a>
-                <partial name="@League.Views.ViewNames.Shared.NavigationNodeChildDropdownPartial" model="(Model.MainNav, childNode)" /> @*recursion*@
+                <li>
+                    <a href="@Url.Content(childNode.Url!)" class="@Model.MainNav.GetClass(Context, childNode, "dropdown-item", "active", true)">@childNode.Text</a>
+                    <partial name="@League.Views.ViewNames.Shared.NavigationNodeChildDropdownPartial" model="(Model.MainNav, childNode)" /> @*recursion*@
+                </li>
             }
         }
-    </div>
+    </ul>
 }
 

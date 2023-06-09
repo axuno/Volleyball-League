@@ -21,7 +21,7 @@ namespace League.TagHelpers;
 /// Expects the following css class definitions are set:
 /// .site-alert {
 ///     &amp; div:first-of-type {
-///         margin-left: 1rem !important;
+///         margin-start: 1rem !important;
 ///     }
 /// }
 /// 
@@ -155,8 +155,7 @@ public class SiteAlertTagHelper : TagHelper
 
         if (Dismissible)
             sb.Append(
-                "<button type =\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\">\r\n" +
-                "   <span aria-hidden=\"true\">&times;</span>\r\n" +
+                "<button type =\"button\" class=\"btn-close\" data-bs-dismiss=\"alert\" aria-label=\"Close\">\r\n" +
                 "</button>\r\n");
 
         sb.Append(content.GetContent());

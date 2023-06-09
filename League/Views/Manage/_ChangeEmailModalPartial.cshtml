@@ -15,11 +15,11 @@
         <form asp-controller="@nameof(Manage)" asp-action="@nameof(Manage.ChangeEmail)" asp-route-tenant="@tenantUrlSegment" method="post" role="form">
             <site-validation-summary show="All"></site-validation-summary>
             <input name="IsValid" type="hidden" value="@ViewData.ModelState.IsValid.ToString()" />
-            <div class="form-group">
-                <label asp-for="Email"></label>
+            <div class="mb-3">
+                <label asp-for="Email" class="form-label"></label>
                 <div class="input-group">
                     <input asp-for="Email" class="form-control" autofocus required="required" type="text" />
-                    <span class="input-group-append input-group-text">
+                    <span class="input-group-text">
                         <i class="fas fa-envelope"></i>
                     </span>
                 </div>

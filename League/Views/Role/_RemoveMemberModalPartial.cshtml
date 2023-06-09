@@ -19,7 +19,7 @@
             <input asp-for="ReturnUrl" type="hidden" />
             <div class="row">
                 <div class="col-12">
-                    <div class="font-weight-bold">@string.Format(_RemoveMemberModalPartial.RemoveMemberAs, Model.UserName, Model.ClaimType == League.Identity.Constants.ClaimType.ManagesTeam ? _RemoveMemberModalPartial.ManagesTeam : _RemoveMemberModalPartial.PlaysInTeam)</div>
+                    <div class="fw-bold">@string.Format(_RemoveMemberModalPartial.RemoveMemberAs, Model.UserName, Model.ClaimType == League.Identity.Constants.ClaimType.ManagesTeam ? _RemoveMemberModalPartial.ManagesTeam : _RemoveMemberModalPartial.PlaysInTeam)</div>
                 </div>
             </div>
         </form>

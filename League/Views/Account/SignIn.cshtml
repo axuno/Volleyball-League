@@ -17,7 +17,7 @@
     if (loginProviders.Count != 0)
     {
     <hr/>
-    <div class="col-md-8 col-sm-10 col-12 pl-0">
+    <div class="col-md-8 col-sm-10 col-12 ps-0">
         <h3 class="h3">@Localizer["Sign-in using a social network account"]</h3>
         <form asp-controller="@nameof(Account)" asp-action="@nameof(Account.ExternalSignIn)" asp-route-tenant="@tenantUrlSegment" asp-route-returnurl="@ViewData["ReturnUrl"]" method="post" role="form">
             @if (ViewData["Form"]?.ToString() == "SocialMedia")
@@ -28,7 +28,7 @@
             <div class="flex-row">
                 @foreach (var provider in loginProviders)
                 {
-                    <button type="submit" class="btn btn-lg btn-secondary mb-2 mr-2" name="provider" value="@provider.Name">@provider.DisplayName</button>
+                    <button type="submit" class="btn btn-lg btn-secondary mb-2 me-2" name="provider" value="@provider.Name">@provider.DisplayName</button>
                 }
             </div>
         </form>
@@ -36,42 +36,42 @@
     }
 }
     <hr />
-    <div class="col-md-8 col-sm-10 col-12 pl-0">
+    <div class="col-md-8 col-sm-10 col-12 ps-0">
         <h3 class="h3">@Localizer["Sign-in with your user account credentials"]</h3>
-        <form asp-controller="@nameof(Account)" asp-action="@nameof(Account.SignIn)" asp-route-tenant="@tenantUrlSegment" asp-route-returnurl="@ViewData["ReturnUrl"]" method="post" role="form" class="pl-0">
+        <form asp-controller="@nameof(Account)" asp-action="@nameof(Account.SignIn)" asp-route-tenant="@tenantUrlSegment" asp-route-returnurl="@ViewData["ReturnUrl"]" method="post" role="form" class="ps-0">
             @if (ViewData["Form"]?.ToString() != "SocialMedia")
             {
                 <site-validation-summary show="All">
                     <b>@Localizer["Input has some issues"]:</b>
                 </site-validation-summary>
             }
-            <div class="form-group">
-                <label asp-for="EmailOrUsername"></label>
+            <div class="mb-3">
+            <label asp-for="EmailOrUsername" class="form-label"></label>
                 <div class="input-group">
                     <input asp-for="EmailOrUsername" class="form-control" required="required" />
-                    <span class="input-group-append input-group-text">
+                    <span class="input-group-text">
                         <i class="fas fa-user"></i>
                     </span>
                 </div>
                 <span asp-validation-for="EmailOrUsername" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="Password"></label>
+            <div class="mb-3">
+            <label asp-for="Password" class="form-label"></label>
                 <div class="input-group">
                     <input asp-for="Password" class="form-control" required="required" type="text" />@* js will change type to "password" *@
-                    <span class="input-group-append input-group-text" style="cursor: pointer" onclick="Site.ShowHidePassword($(this))">
+                    <span class="input-group-text" style="cursor: pointer" onclick="Site.ShowHidePassword($(this))">
                         <i class="fas fa-eye"></i>
                     </span>
                 </div>
                 <span asp-validation-for="Password" class="text-danger"></span>
             </div>
-            <div class="form-group">
+            <div class="mb-3">
                 <div class="form-check">
                     <input asp-for="RememberMe" class="form-check-input" checked="checked" />
                     <label asp-for="RememberMe" class="form-check-label"></label>
                 </div>
             </div>
-            <div class="form-group">
+            <div class="mb-3">
                 <button type="submit" class="btn btn-lg btn-primary col-10">@Localizer["Sign in"]</button>
             </div>
         </form>

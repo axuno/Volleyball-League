@@ -22,27 +22,25 @@
         <input hidden="hidden" asp-for="Hash" />
         @if (Model.IsWarning)
         {
-            <div class="row">
-                <div class="form-group col-12 col-md-6">
-                    <div class="custom-control custom-checkbox border border-warning rounded py-2">
-                        <input asp-for="OverrideWarnings" type="checkbox" class="custom-control-input">
-                        <label class="custom-control-label text-warning ml-2 mt-0" asp-for="OverrideWarnings"></label>
-                    </div>
+            <div class="p-1 col-12 col-md-6 border border-warning rounded">
+                <div class="form-check">
+                    <input asp-for="OverrideWarnings" type="checkbox" class="form-check-input">
+                    <label class="form-check-label text-warning mt-0" asp-for="OverrideWarnings"></label>
                 </div>
             </div>
         }
         <div class="row">
-            <div class="form-group col-12 col-md-6">
-                <label class="mt-0">@Localizer["Opponents"]</label>
-                <div class="font-weight-bold">@Model.PlannedMatch.HomeTeamNameForRound : @Model.PlannedMatch.GuestTeamNameForRound</div>
+            <div class="mb-3 col-12 col-md-6">
+                <label class="form-label">@Localizer["Opponents"]</label>
+                <div class="fw-bold">@Model.PlannedMatch.HomeTeamNameForRound : @Model.PlannedMatch.GuestTeamNameForRound</div>
             </div>
         </div>
         <div class="row">
-            <div class="form-group col-12 col-md-6">
-                <label asp-for="MatchDate" class="mt-0"></label>
+            <div class="mb-3 col-12 col-md-6">
+                <label asp-for="MatchDate" class="form-label"></label>
                 <div class="input-group" id="picker_@nameof(Model.MatchDate)" data-target-input="nearest">
                     <input asp-for="MatchDate" type="text" autofocus autocomplete="off" class="form-control datepicker datetimepicker-input" data-target="#picker_@nameof(Model.MatchDate)" aria-describedby="@nameof(Model.MatchDate)HelpBlock" />
-                    <span class="input-group-append input-group-text" data-target="#picker_@nameof(Model.MatchDate)" data-toggle="datetimepicker">
+                    <span class="input-group-text" data-target="#picker_@nameof(Model.MatchDate)" data-toggle="datetimepicker">
                         <i class="far fa-calendar-alt"></i>
                     </span>
                 </div>
@@ -53,11 +51,11 @@
             </div>
         </div>
         <div class="row">
-            <div class="form-group col-12 col-md-6">
-                <label asp-for="MatchTime" class="mt-0"></label>
+            <div class="mb-3 col-12 col-md-6">
+                <label asp-for="MatchTime" class="form-label"></label>
                 <div class="input-group" id="picker_@nameof(Model.MatchTime)" data-target-input="nearest">
                     <input asp-for="MatchTime" type="text" autocomplete="off" class="form-control datepicker datetimepicker-input" data-target="#picker_@nameof(Model.MatchTime)" aria-describedby="@nameof(Model.MatchDate)HelpBlock" />
-                    <span class="input-group-append input-group-text" data-target="#picker_@nameof(Model.MatchTime)" data-toggle="datetimepicker">
+                    <span class="input-group-text" data-target="#picker_@nameof(Model.MatchTime)" data-toggle="datetimepicker">
                         <i class="far fa-clock"></i>
                     </span>
                 </div>
@@ -69,14 +67,14 @@
         </div>
         <div id="venue-picker">
             <div class="row">
-                <div class="form-group col-12 col-md-6">
-                    <label asp-for="VenueId" class="mt-0"></label>
+                <div class="mb-3 col-12 col-md-6">
+                    <label asp-for="VenueId" class="form-label"></label>
                     <div class="input-group">
                         <input type="hidden" asp-for="VenueId" />
-                        <div id="venue-text" class="form-control overflow-hidden" style="height:auto" data-target="#select-venue" data-toggle="modal">
+                        <div id="venue-text" class="form-control overflow-hidden" style="height:auto" data-bs-target="#select-venue" data-bs-toggle="modal">
                             @string.Join(", ", Model.PlannedMatch.VenueName, Model.PlannedMatch.VenueExtension).TrimEnd(',', ' ')
                         </div>
-                        <span class="input-group-append input-group-text" data-target="#select-venue" data-toggle="modal">
+                        <span class="input-group-text" data-bs-target="#select-venue" data-bs-toggle="modal">
                             <i class="fas fa-edit"></i>
                         </span>
                     </div>
@@ -84,7 +82,7 @@
             </div>
         </div>
         <div class="row">
-            <div class="form-group col-12 col-md-6 mt-2">
+            <div class="mb-3 col-12 col-md-6 mt-2">
                 <a asp-controller="@nameof(Match)" asp-action="@nameof(Match.Fixtures)" asp-route-tenant="@tenantUrlSegment" class="btn btn-lg btn-secondary">@Localizer["Cancel"]</a>
                 <button type="submit" class="btn btn-lg btn-primary">@Localizer["Save"]</button>
             </div>
@@ -119,18 +117,16 @@
             cursor: pointer;
         }
 
-        /* Start: Change Bootstrap 4 default custom checkbox color */
-        .custom-checkbox .custom-control-input:checked ~ .custom-control-label::before {
-            background-color: var(--warning);
-            border-color: var(--warning);
+        /* Start: Change checkbox color */
+        .border-warning > .form-check > input[type=checkbox]:checked {
+            background-color: var(--bs-warning);
         }
 
-        .custom-control-input:checked ~ .custom-control-label::before {
-            color: #fff;
-            background-color: var(--warning);
-            border-color: var(--warning);
+        .border-warning > .form-check > input[type=checkbox] {
+            border: 2px solid var(--bs-warning);
+            background-color: transparent;
         }
-        /* End: Change Bootstrap 4 default custom checkbox color */
+        /* End: Change checkbox color */
     </style>
 }
 @section scripts

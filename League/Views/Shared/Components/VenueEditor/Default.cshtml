@@ -10,43 +10,43 @@
 <div class="row">
     <input type="hidden" asp-for="Id" />
     <input type="hidden" asp-for="IsNew" />
-    <div class="form-group col-12 col-md-6">
-        <label asp-for="Name" class="mt-0"></label>
+    <div class="mb-3 col-12 col-md-6">
+        <label asp-for="Name" class="form-label"></label>
         <input asp-for="Name" type="text" autofocus autocomplete="off" class="form-control" />
         <span asp-validation-for="Name" class="text-danger"></span>
     </div>
 </div>
 <div class="row">
-    <div class="form-group col-12 col-md-6">
-        <label asp-for="Extension" class="mt-0"></label>
+    <div class="mb-3 col-12 col-md-6">
+        <label asp-for="Extension" class="form-label"></label>
         <input asp-for="Extension" type="text" autocomplete="off" class="form-control" />
         <span asp-validation-for="Extension" class="text-danger"></span>
     </div>
 </div>
 <div class="row">
-    <div class="form-group col-12 col-md-6">
-        <label asp-for="PostalCode" class="mt-0"></label>
+    <div class="mb-3 col-12 col-md-6">
+        <label asp-for="PostalCode" class="form-label"></label>
         <input asp-for="PostalCode" type="text" autocomplete="off" class="form-control" />
         <span asp-validation-for="PostalCode" class="text-danger"></span>
     </div>
 </div>
 <div class="row">
-    <div class="form-group col-12 col-md-6">
-        <label asp-for="City" class="mt-0"></label>
+    <div class="mb-3 col-12 col-md-6">
+        <label asp-for="City" class="form-label"></label>
         <input asp-for="City" type="text" autocomplete="off" class="form-control" />
         <span asp-validation-for="City" class="text-danger"></span>
     </div>
 </div>
 <div class="row">
-    <div class="form-group col-12 col-md-6">
-        <label asp-for="Street" class="mt-0"></label>
+    <div class="mb-3 col-12 col-md-6">
+        <label asp-for="Street" class="form-label"></label>
         <input asp-for="Street" type="text" autocomplete="off" class="form-control" />
         <span asp-validation-for="Street" class="text-danger"></span>
     </div>
 </div>
 <div class="row">
-    <div class="form-group col-12 col-md-6">
-        <label asp-for="Direction" class="mt-0"></label>
+    <div class="mb-3 col-12 col-md-6">
+        <label asp-for="Direction" class="form-label"></label>
         <textarea asp-for="Direction" type="text" autocomplete="off" class="form-control"></textarea>
         <span asp-validation-for="Direction" class="text-danger"></span>
     </div>
@@ -54,15 +54,15 @@
 @if (Model.ShowLatLng)
 {
     <div class="row">
-        <div class="form-group col-12 col-md-6">
-            <label asp-for="Longitude" class="mt-0"></label>
+        <div class="mb-3 col-12 col-md-6">
+            <label asp-for="Longitude" class="form-label"></label>
             <input asp-for="Longitude" type="text" autocomplete="off" class="form-control" />
             <span asp-validation-for="Longitude" class="text-danger"></span>
         </div>
     </div>
     <div class="row">
-        <div class="form-group col-12 col-md-6">
-            <label asp-for="Latitude" class="mt-0"></label>
+        <div class="mb-3 col-12 col-md-6">
+            <label asp-for="Latitude" class="form-label"></label>
             <input asp-for="Latitude" type="text" autocomplete="off" class="form-control" />
             <span asp-validation-for="Latitude" class="text-danger"></span>
         </div>

@@ -17,8 +17,8 @@
         <meta name="description" content="@ViewData.Description()" />
     }
     <partial name="@League.Views.ViewNames.Shared._FavIcons" />
-    <link rel="stylesheet" href="~/lib/bootstrap/bootstrap.min.css">
-    <link rel="stylesheet" href="~/css/site.min.css" />
+    <link rel="stylesheet" href="~/lib/bootstrap/bootstrap.min.css"> @* embedded resource *@
+    <link rel="stylesheet" href="~/css/site.min.css" /> @* embedded resource *@
     <style type="text/css">
         .site-sticky-top {
             position: -webkit-sticky;
@@ -35,7 +35,7 @@
             <div class="my-auto order-2 order-md-1">
                 <h1 class="h4 header-organization">@(TenantContext.OrganizationContext.Name)</h1>
             </div>
-            <div class="my-auto order-1 order-md-2 text-md-right header-logo">
+            <div class="my-auto order-1 order-md-2 text-md-end header-logo">
                 <a class="d-block" href="@Url.Action(nameof(Home.Welcome), nameof(Home))" style="text-decoration: none">
                     <span class="d-inline-block part1">volleyball league</span>
                     <span class="d-inline-block part2">demo</span>
@@ -44,13 +44,16 @@
             </div>
         </div>
     </header>
-    <nav id="nav-main" class="navbar navbar-expand-md navbar-dark rounded pl-2 site-sticky-top">
-        @* bootstrap 4 class "sticky-top" interferes with modal, that's why we use our identical "site-sticky-top" *@
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-header" aria-controls="navbar-header" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div id="navbar-header" class="collapse navbar-collapse">
-            @await (Component.InvokeAsync<League.Components.MainNavigation>())
+    <nav id="nav-main" class="navbar navbar-expand-md navbar-dark rounded ps-2 site-sticky-top">
+        @* bootstrap class "sticky-top" interferes with modal, that's why we use our identical "site-sticky-top" *@
+        <div class="container-fluid ps-0">
+            @* <a class="navbar-brand" href="#">axuno</a>*@
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar-menu-items" aria-controls="navbar-menu-items" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div id="navbar-menu-items" class="collapse navbar-collapse">
+                @(await Component.InvokeAsync<League.Components.MainNavigation>())
+            </div>
         </div>
     </nav>
     <div id="content" class="container-fluid rounded pb-1">
@@ -62,25 +65,25 @@
                 @{
                     if (TenantContext.IsDefault)
                     {
-                        <a asp-route="@RouteNames.GeneralContact" class="d-inline-block mr-4">@Localizer["Contact"]</a>
+                        <a asp-route="@RouteNames.GeneralContact" class="d-inline-block me-4">@Localizer["Contact"]</a>
                     }
                     else
                     {
-                        <a asp-route="@RouteNames.TenantContact" asp-route-tenant="@TenantContext.SiteContext.UrlSegmentValue" class="d-inline-block mr-4">@Localizer["Contact"]</a>
+                        <a asp-route="@RouteNames.TenantContact" asp-route-tenant="@TenantContext.SiteContext.UrlSegmentValue" class="d-inline-block me-4">@Localizer["Contact"]</a>
                     }
                 }
-                <a asp-action="@nameof(Home.LegalDisclosure)" asp-controller="@nameof(Home)" class="d-inline-block mr-4">@Localizer["Legal Disclosure"]</a>
-                <a asp-action="@nameof(Home.Privacy)" asp-controller="@nameof(Home)" class="d-inline-block mr-4">@Localizer["Privacy"]</a>
-                <a asp-action="@nameof(Home.PictureCredits)" asp-controller="@nameof(Home)" class="d-inline-block mr-4">@Localizer["Picture Credits"]</a>
+                <a asp-action="@nameof(Home.LegalDisclosure)" asp-controller="@nameof(Home)" class="d-inline-block me-4">@Localizer["Legal Disclosure"]</a>
+                <a asp-action="@nameof(Home.Privacy)" asp-controller="@nameof(Home)" class="d-inline-block me-4">@Localizer["Privacy"]</a>
+                <a asp-action="@nameof(Home.PictureCredits)" asp-controller="@nameof(Home)" class="d-inline-block me-4">@Localizer["Picture Credits"]</a>
             </div>
         </div>
     </footer>
     <jl-javascript-logger-definitions request-id="@ViewContext.HttpContext.TraceIdentifier" />
-    <script src="~/lib/jsnlog/jsnlog.min.js"></script>
-    <script src="~/lib/jquery/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/bootstrap-all.min.js"></script>
-    <script src="~/lib/i18n/i18n-all.min.js"></script>
-    <script src="~/js/site.min.js"></script>
+    <script src="~/lib/jsnlog/jsnlog.min.js"></script> @* embedded resource *@
+    <script src="~/lib/jquery/jquery.min.js"></script> @* embedded resource *@
+    <script src="~/lib/bootstrap/bootstrap-all.min.js"></script> @* embedded resource *@
+    <script src="~/lib/i18n/i18n-all.min.js"></script> @* embedded resource *@
+    <script src="~/js/site.min.js"></script> @* embedded resource *@
     <environment include="Production"><partial name="@League.Views.ViewNames.Shared._GoogleAnalyticsScriptsPartial" /></environment>
     @await RenderSectionAsync("scripts", required: false)
 </body>

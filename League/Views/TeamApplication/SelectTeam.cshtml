@@ -16,8 +16,8 @@
     <form asp-controller="@nameof(TeamApplication)" asp-action="@nameof(TeamApplication.SelectTeam)" asp-route-tenant="@tenantUrlSegment" method="post" role="form">
         <site-validation-summary show="All" unique-error-text="true"></site-validation-summary>
         <div class="row">
-            <div class="form-group col-12 col-md-8">
-                <label asp-for="SelectedTeamId" class="d-block mt-0"></label>
+            <div class="mb-3 col-12 col-md-8">
+                <label asp-for="SelectedTeamId" class="d-block form-label"></label>
                 <div class="table-responsive-sm">
                     @* Wrapping this way make tables responsive and 100% width *@
                     <table class="table table-sm table-light mb-0">
@@ -40,18 +40,18 @@
             </div>
         </div>
         <div class="row">
-            <div class="form-group col-12 col-md-6">
+            <div class="mb-3 col-12 col-md-6">
                 <input type="submit" class="btn btn-primary" value="@Localizer["Continue with selected team"]">
             </div>
         </div>
         <div class="row">
-            <div class="form-group col-12 col-md-6">
-                <label class="mt-0">@Localizer["The team has never participated before"]</label>
+            <div class="mb-3 col-12 col-md-6">
+                <label class="form-label">@Localizer["The team has never participated before"]</label>
                 <a asp-controller="@nameof(TeamApplication)" asp-action="@nameof(TeamApplication.EditTeam)" asp-route-tenant="@tenantUrlSegment" asp-route-isnew="true" class="btn btn-primary">@Localizer["Create a new team"]</a>
             </div>
         </div>
         <div class="row">
-            <div class="form-group col-12 col-md-6">
+            <div class="mb-3 col-12 col-md-6">
                 <a asp-controller="@nameof(TeamApplication)" asp-action="@nameof(TeamApplication.Start)" asp-route-tenant="@tenantUrlSegment" class="btn btn-secondary">@Localizer["Back"]</a>
             </div>
         </div>
