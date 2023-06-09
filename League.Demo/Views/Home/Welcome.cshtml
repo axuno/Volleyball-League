@@ -1,4 +1,5 @@
-﻿@using League.Helpers
+﻿@using League.WebApp.Controllers
+@using League.Helpers
 @using Microsoft.AspNetCore.Mvc.Localization
 @inject IViewLocalizer Localizer
 @{
@@ -10,13 +11,13 @@
     <hr />
 </div>
 <div class="mb-0 pb-1">
-    <div id="welcome-carousel" class="carousel slide" data-ride="carousel">
+    <div id="welcome-carousel" class="carousel slide" data-bs-ride="carousel">
         @*<!-- Indicators -->*@
         <ul class="carousel-indicators">
-            <li data-target="#welcome-carousel" data-slide-to="0" class="active"></li>
-            <li data-target="#welcome-carousel" data-slide-to="1"></li>
-            <li data-target="#welcome-carousel" data-slide-to="2"></li>
-            <li data-target="#welcome-carousel" data-slide-to="3"></li>
+            <li data-bs-target="#welcome-carousel" data-bs-slide-to="0" class="active"></li>
+            <li data-bs-target="#welcome-carousel" data-bs-slide-to="1"></li>
+            <li data-bs-target="#welcome-carousel" data-bs-slide-to="2"></li>
+            <li data-bs-target="#welcome-carousel" data-bs-slide-to="3"></li>
         </ul>
         @*<!-- The slide show -->*@
         <div class="carousel-inner">
@@ -34,20 +35,20 @@
             </div>
         </div>
         @*<!-- Left and right controls -->*@
-        <a class="carousel-control-prev" href="#welcome-carousel" data-slide="prev">
+        <a class="carousel-control-prev" href="#welcome-carousel" data-bs-slide="prev">
             <span class="carousel-control-prev-icon"></span>
         </a>
-        <a class="carousel-control-next" href="#welcome-carousel" data-slide="next">
+        <a class="carousel-control-next" href="#welcome-carousel" data-bs-slide="next">
             <span class="carousel-control-next-icon"></span>
         </a>
     </div>
     <div>
-        <ul class="fa-ul mt-4 ms-4">@* ms-4 means 'no indent' here*@
+        <ul class="fa-ul mt-4 ml-4">@* ml-4 means 'no indent' here*@
             <li><span class="fa-li"><i class="fas fa-question text-primary"></i></span>@Localizer["You're organizing a volleyball league?"]</li>
             <li><span class="fa-li"><i class="fas fa-question text-primary"></i></span>@Localizer["Manual work takes too much from your leisure time?"]</li>
         </ul>
         <h4 class="h5">
-            <a asp-action="@nameof(League.WebApp.Controllers.Home.AboutLeague)" asp-controller="@nameof(League.WebApp.Controllers.Home)" class="text-primary fw-bolder" ><i class="fa fa-check-circle text-primary"></i> @Localizer["Here is the solution to help you out!"]</a>
+            <a asp-action="@nameof(Home.AboutLeague)" asp-controller="@nameof(Home)" class="text-primary fw-bolder" ><i class="fa fa-check-circle text-primary"></i> @Localizer["Here is the solution to help you out!"]</a>
         </h4>
     </div>
 </div>

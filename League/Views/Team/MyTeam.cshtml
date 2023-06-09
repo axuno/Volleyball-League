@@ -46,9 +46,9 @@
 
             <div class="tab-pane@{if (Model.TeamUserRoundInfos.Any(tvr => tvr.TeamId == Model.ActiveTeamId)){<text> show active</text>}}" id="tab-@(teamVenueInfo.TeamId)" role="tabpanel" aria-labelledby="@teamVenueInfo.TeamName-tab">
                 <div class="card pb-2 mb-3">
-                    <div class="card-header px-3 py-1">
+                    <div class="card-header px-2 py-1">
                         <div class="d-flex justify-content-between align-items-baseline">
-                            <div><h5>@Localizer["Team"]</h5></div>
+                            <h4>@Localizer["Team"]</h4>
                             <div>
                                 <button type="button" site-toggle-modal-ajax
                                         site-data-url="@TenantLink.Action(nameof(Team.Edit), nameof(Team), new { teamId = teamVenueInfo.TeamId })"
@@ -59,7 +59,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="card-text">
+                    <div class="card-text px-2 py-1">
                         <div class="text-success col-12">@Localizer["Round"]</div>
                         <div class="col-12"><span class="fw-bold d-inline-block me-3">@teamVenueInfo.RoundDescription</span><span class="text-muted small">@teamVenueInfo.RoundTypeDescription</span></div>
                         <div class="text-success col-12">@Localizer["Team name"]</div>
@@ -113,9 +113,9 @@
                     </div>
                 </div>
                 <div class="card mb-3">
-                    <div class="card-header px-3 py-1">
+                    <div class="card-header px-2 py-1">
                         <div class="d-flex justify-content-between align-items-baseline">
-                            <div><h5>@Localizer["Venue"]</h5></div>
+                            <h4>@Localizer["Venue"]</h4>
                             <div>
                                 <button type="button"
                                         site-toggle-modal-ajax site-data-url="@TenantLink.Action(nameof(Team.ChangeVenue), nameof(Team), new { tid = teamVenueInfo.TeamId })"
@@ -127,7 +127,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="card-text">
+                        <div class="card-text px-2 py-1">
                             <div class="col-12 mb-2">
                                 @if (teamVenueInfo.VenueId.HasValue)
                                 {
@@ -156,9 +156,9 @@
                         </div>
                     </div>
                     <div class="card pb-2 mb-2">
-                        <div class="card-header px-3 py-1">
+                        <div class="card-header px-2 py-1">
                             <div class="d-flex justify-content-between align-items-baseline">
-                                <div><h5>@Localizer["Team members"]</h5></div>
+                                <h4>@Localizer["Team members"]</h4>
                                 <div>
                                     <button type="button"
                                             site-toggle-modal-ajax
@@ -172,7 +172,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="card-text">
+                        <div class="card-text px-2 py-1">
                             @{
                                 var predicates = new List<Func<TeamUserRoundRow, bool>> { r => r.IsManager == true, r => r.IsPlayer == true };
                                 var userInfos = Model.TeamUserRoundInfos.Where(tur => tur.TeamId == teamVenueInfo.TeamId).ToList();

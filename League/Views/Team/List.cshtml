@@ -43,7 +43,7 @@
             <div class="tab-pane@{if (r.RoundId == activeRoundId){<text> show active</text>}}" id="tab-@(r.RoundId)" role="tabpanel" aria-labelledby="@r.RoundDescription-tab">
                 <div class="text-success">@r.RoundTypeDescription</div>
                 <div id="team-list" class="rounded table-responsive">
-                    <table class="table table-sm table-light table-bordered table">
+                    <table class="table table-sm">
                         <thead class="rounded">
                             <tr>
                                 <th>@Localizer["Team"]</th>
@@ -80,16 +80,16 @@
 {
     <style type="text/css">
         #round-tabs .nav-link:not(.active) {
-            border: solid 1px lightgray;
+            border: solid 1px var(--bs-gray-500);
+            border-bottom: solid 1px var(--bs-nav-tabs-link-active-border-color)
         }
-
         #team-list table tbody tr {
-            border-bottom: solid 2px lightgray;
+            border-bottom: solid 2px var(--bs-gray-300);
             cursor: pointer
         }
 
         #team-list table thead {
-            background-color: lightgray
+            --bs-table-bg: var(--bs-gray-300);
         }
 
         #team-list th:first-child, #team-list td:first-child {

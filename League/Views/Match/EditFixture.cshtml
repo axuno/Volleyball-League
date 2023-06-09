@@ -31,13 +31,13 @@
         }
         <div class="row">
             <div class="mb-3 col-12 col-md-6">
-                <label class="mt-0 form-label">@Localizer["Opponents"]</label>
+                <label class="form-label">@Localizer["Opponents"]</label>
                 <div class="fw-bold">@Model.PlannedMatch.HomeTeamNameForRound : @Model.PlannedMatch.GuestTeamNameForRound</div>
             </div>
         </div>
         <div class="row">
             <div class="mb-3 col-12 col-md-6">
-                <label asp-for="MatchDate" class="mt-0 form-label"></label>
+                <label asp-for="MatchDate" class="form-label"></label>
                 <div class="input-group" id="picker_@nameof(Model.MatchDate)" data-target-input="nearest">
                     <input asp-for="MatchDate" type="text" autofocus autocomplete="off" class="form-control datepicker datetimepicker-input" data-target="#picker_@nameof(Model.MatchDate)" aria-describedby="@nameof(Model.MatchDate)HelpBlock" />
                     <span class="input-group-text" data-target="#picker_@nameof(Model.MatchDate)" data-toggle="datetimepicker">
@@ -52,7 +52,7 @@
         </div>
         <div class="row">
             <div class="mb-3 col-12 col-md-6">
-                <label asp-for="MatchTime" class="mt-0 form-label"></label>
+                <label asp-for="MatchTime" class="form-label"></label>
                 <div class="input-group" id="picker_@nameof(Model.MatchTime)" data-target-input="nearest">
                     <input asp-for="MatchTime" type="text" autocomplete="off" class="form-control datepicker datetimepicker-input" data-target="#picker_@nameof(Model.MatchTime)" aria-describedby="@nameof(Model.MatchDate)HelpBlock" />
                     <span class="input-group-text" data-target="#picker_@nameof(Model.MatchTime)" data-toggle="datetimepicker">
@@ -68,7 +68,7 @@
         <div id="venue-picker">
             <div class="row">
                 <div class="mb-3 col-12 col-md-6">
-                    <label asp-for="VenueId" class="mt-0 form-label"></label>
+                    <label asp-for="VenueId" class="form-label"></label>
                     <div class="input-group">
                         <input type="hidden" asp-for="VenueId" />
                         <div id="venue-text" class="form-control overflow-hidden" style="height:auto" data-bs-target="#select-venue" data-bs-toggle="modal">

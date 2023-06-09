@@ -27,7 +27,7 @@
         </div>
         <div class="row">
             <div class="mb-3 col-12 col-md-6">
-                <label class="mt-0 form-label">@Localizer["No venue from the list applies"]</label>
+                <label class="form-label">@Localizer["No venue from the list applies"]</label>
                 <a asp-controller="@nameof(TeamApplication)" asp-action="@nameof(TeamApplication.EditVenue)" asp-route-tenant="@tenantUrlSegment" asp-route-isnew="true" class="btn btn-primary">@Localizer["Create a new venue"]</a>
             </div>
         </div>

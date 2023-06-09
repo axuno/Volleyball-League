@@ -38,7 +38,7 @@
         {
             if ((Model.Group & VenueSelectorComponentModel.Criteria.VenuesOfTeams) == VenueSelectorComponentModel.Criteria.VenuesOfTeams)
             {
-                <tr><td colspan="3"><span class="badge badge-dark">@Localizer["Team venues"]</span></td></tr>
+                <tr><td colspan="3"><span class="badge bg-dark">@Localizer["Team venues"]</span></td></tr>
             }
             foreach (var v in Model.VenuesOfTeams)
             {
@@ -49,7 +49,7 @@
         {
             if ((Model.Group & VenueSelectorComponentModel.Criteria.Active) == VenueSelectorComponentModel.Criteria.Active)
             {
-                <tr><td colspan="3"><span class="badge badge-dark">@Localizer["Active venues"]</span></td></tr>
+                <tr><td colspan="3"><span class="badge bg-dark">@Localizer["Active venues"]</span></td></tr>
             }
             foreach (var v in Model.ActiveVenues)
             {
@@ -60,7 +60,7 @@
         {
             if ((Model.Group & VenueSelectorComponentModel.Criteria.Unused) == VenueSelectorComponentModel.Criteria.Unused)
             {
-                <tr><td colspan="3"><span class="badge badge-dark">@Localizer["Other venues"]</span></td></tr>
+                <tr><td colspan="3"><span class="badge bg-dark">@Localizer["Other venues"]</span></td></tr>
             }
             foreach (var v in Model.UnusedVenues)
             {

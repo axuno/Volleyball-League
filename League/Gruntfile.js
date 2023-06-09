@@ -29,7 +29,7 @@ module.exports = function (grunt) {
             dist: {
                 files: [
                     {
-                        'wwwroot/lib/bootstrap/bootstrap.css': 'Styles/bootstrap/bootstrap-custom.scss',  // "destination": "source"
+                        'wwwroot/lib/bootstrap/bootstrap.css': ['Styles/bootstrap/_custom.scss', 'node_modules/bootstrap/scss/bootstrap.scss'],  // "destination": "source"
                         'wwwroot/lib/fontawesome/fontawesome.css': 'Styles/fontawesome/fontawesome.scss',
                         'wwwroot/lib/tempusdominus-bootstrap-4/tempusdominus-bootstrap-4.css': 'Styles/tempusdominus-bootstrap-4/tempusdominus-custom.scss',
                         'wwwroot/css/site.css': 'Styles/site/site.scss'

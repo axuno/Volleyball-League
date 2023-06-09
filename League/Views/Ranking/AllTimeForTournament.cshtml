@@ -74,7 +74,7 @@
             <div class="tab-pane@{if (r.RoundId == activeRoundId) {<text> show active</text>}}" id="tab-@(r.RoundId)" role="tabpanel" aria-labelledby="@r.RoundDescription-tab">
                 <div class="text-success">@r.RoundTypeDescription</div>
                 <div class="rounded table-responsive">
-                    <table class="table table-sm table-light table-bordered table">
+                    <table class="table table-sm">
                         <thead class="rounded">
                             <tr>
                                 <th class="rank">@Localizer["Rank"]</th>
@@ -132,9 +132,9 @@
         var teamColWidth = 100 - rankColWidth - 3 * resultColWidth;
     }
     <style type="text/css">
-        #round-tabs .nav-link:not(.active) {border:solid 1px lightgray;}
-        #ranking-table table tbody tr {border-bottom: solid 2px lightgray}
-        #ranking-table table thead {background-color: lightgray}
+        #round-tabs .nav-link:not(.active) {border:solid 1px var(--bs-gray-500)}
+        #ranking-table table tbody tr {border-bottom: solid 2px var(--bs-gray-300)}
+        #ranking-table table thead {--bs-table-bg: var(--bs-gray-300)}
         .rank { width: @(rankColWidth)%; text-align: center}
         .team {width:@(teamColWidth)%}
         .team > a {text-decoration: none}

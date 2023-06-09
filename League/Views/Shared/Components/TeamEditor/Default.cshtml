@@ -9,21 +9,21 @@ ViewContext.ViewData.TemplateInfo.HtmlFieldPrefix = Model.HtmlFieldPrefix;
     <input type="hidden" asp-for="Id" />
     <input type="hidden" asp-for="IsNew" />
     <div class="mb-3 col-12 col-md-6">
-        <label asp-for="Name" class="mt-0 form-label"></label>
+        <label asp-for="Name" class="form-label"></label>
         <input asp-for="Name" type="text" autofocus autocomplete="off" class="form-control" />
         @*<span asp-validation-for="Name" class="text-danger"></span>*@
     </div>
 </div>
 <div class="row">
     <div class="mb-3 col-12 col-md-6">
-        <label asp-for="ClubName" class="mt-0 form-label"></label>
+        <label asp-for="ClubName" class="form-label"></label>
         <input asp-for="ClubName" type="text" autocomplete="off" class="form-control" />
         @*<span asp-validation-for="ClubName" class="text-danger"></span>*@
     </div>
 </div>
 <div class="row">
     <div class="mb-3 col-12 col-md-6">
-        <label asp-for="MatchDayOfWeek" class="mt-0 form-label"></label>
+        <label asp-for="MatchDayOfWeek" class="form-label"></label>
         <div class="input-group">
             <select asp-for="MatchDayOfWeek" class="form-select d-block col-6" style="min-width: max-content !important" title="@Localizer["Please select a weekday"]...">
                 <option value="@((int)DayOfWeek.Monday)">@DateTimeFormatInfo.CurrentInfo.GetDayName(DayOfWeek.Monday)</option>
@@ -51,7 +51,7 @@ ViewContext.ViewData.TemplateInfo.HtmlFieldPrefix = Model.HtmlFieldPrefix;
 </div>
 <div class="row">
     <div class="mb-3 col-12 col-md-6">
-        <label asp-for="MatchTime" class="mt-0 form-label"></label>
+        <label asp-for="MatchTime" class="form-label"></label>
         <div class="input-group" id="picker_@Html.IdFor(m => m.MatchTime)" data-target-input="nearest">
             <input asp-for="MatchTime" type="text" autocomplete="off" class="form-control d-block col-6 datepicker datetimepicker-input" data-target="#picker_@Html.IdFor(m => m.MatchTime)" aria-describedby="@nameof(Model.MatchTime)HelpBlock" />
             <span class="input-group-text" data-target="#picker_@Html.IdFor(m => m.MatchTime)" data-toggle="datetimepicker">

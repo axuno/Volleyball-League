@@ -46,7 +46,7 @@
         </div>
         <div class="row">
             <div class="mb-3 col-12 col-md-5">
-                <label asp-for="MatchDate" class="mt-0 form-label"></label>
+                <label asp-for="MatchDate" class="form-label"></label>
                 <div class="input-group" id="picker_@nameof(Model.MatchDate)" data-target-input="nearest">
                     <input asp-for="MatchDate" type="text" autocomplete="off" class="form-control@(AddDateErr()) datepicker datetimepicker-input" data-target="#picker_@nameof(Model.MatchDate)" aria-describedby="@nameof(Model.MatchDate)HelpBlock" />
                     <span class="input-group-text" data-target="#picker_@nameof(Model.MatchDate)" data-toggle="datetimepicker">
@@ -60,7 +60,7 @@
         </div>
         <div class="row">
             <div class="mb-3 col-12 col-md-4">
-                <label asp-for="MatchTimeFrom" class="mt-0 form-label"></label>
+                <label asp-for="MatchTimeFrom" class="form-label"></label>
                 <div class="input-group" id="picker_@nameof(Model.MatchTimeFrom)" data-target-input="nearest">
                     <input asp-for="MatchTimeFrom" type="text" autofocus autocomplete="off" class="form-control@(AddDateErr()) datepicker datetimepicker-input" data-target="#picker_@nameof(Model.MatchTimeFrom)" aria-describedby="@nameof(Model.MatchTimeFrom)HelpBlock" />
                     <span class="input-group-text" data-target="#picker_@nameof(Model.MatchTimeFrom)" data-toggle="datetimepicker">
@@ -72,7 +72,7 @@
                 </small>
             </div>
             <div class="mb-3 col-12 col-md-4">
-                <label asp-for="MatchTimeTo" class="mt-0 form-label"></label>
+                <label asp-for="MatchTimeTo" class="form-label"></label>
                 <div class="input-group" id="picker_@nameof(Model.MatchTimeTo)" data-target-input="nearest">
                     <input asp-for="MatchTimeTo" type="text" autocomplete="off" class="form-control@(AddDateErr()) datepicker datetimepicker-input" data-target="#picker_@nameof(Model.MatchTimeTo)" aria-describedby="@nameof(Model.MatchTimeTo)HelpBlock" />
                     <span class="input-group-text" data-target="#picker_@nameof(Model.MatchTimeTo)" data-toggle="datetimepicker">
@@ -89,7 +89,7 @@
             {
                 <div class="row">
                     <div class="mb-3 col-12">
-                        <label class="mt-0 form-label">@Localizer["Set #{0}", i + 1]</label>
+                        <label class="form-label">@Localizer["Set #{0}", i + 1]</label>
                         <div class="input-group">
                             <input asp-for="@Model.Sets[i].Home" type="text" autocomplete="off" class="form-control text-start @(AddSetErr(i))" style="max-width:5em" aria-describedby="@nameof(Model.MatchDate)HelpBlock" />
                             <span class="input-group-text">
@@ -103,7 +103,7 @@
         }
         <div class="row">
             <div class="mb-3 col-12 col-md-8">
-                <label asp-for="Remarks" class="mt-0 form-label"></label>
+                <label asp-for="Remarks" class="form-label"></label>
                 <textarea asp-for="Remarks" row="2" class="form-control" aria-describedby="@nameof(Model.Remarks)HelpBlock"></textarea>
                 <small id="@nameof(Model.Remarks)HelpBlock" class="d-block form-text text-muted">
                     @Localizer["Remarks become part of the result submission"]

@@ -52,10 +52,10 @@
                 <div class="text-success">@r.RoundTypeDescription</div>
                 <div id="team-filter-@r.RoundId" class="team-filter my-2 d-none" data-bs-toggle="tooltip" title="@Localizer["Remove filter for team"]" tabindex="0">
                     <i class="fas fa-1x fa-times-circle me-2"></i>
-                    <span class="badge badge-dark"></span>
+                    <span class="badge bg-dark"></span>
                 </div>
                 <div class="rounded table-responsive" style="min-height: 13rem">@* min height assures dropdowns are not clipped *@
-                    <table class="table table-sm table-light table-bordered table">
+                    <table class="table table-sm">
                         <thead class="rounded">
                             @{
                                 var columnCount = 6 + maxNumOfSets;
@@ -84,7 +84,7 @@
                                     var match = matches[i];
                                     if (legs.Count >= 1 && !string.IsNullOrWhiteSpace(match.RoundLegDescription) && (i == 0 || match.RoundLegSequenceNo != matches[i - 1].RoundLegSequenceNo))
                                     {
-                                        <tr><td colspan="@columnCount" class="leg-change"><span class="badge badge-dark">@match.RoundLegDescription</span></td></tr>
+                                        <tr><td colspan="@columnCount" class="leg-change"><span class="badge bg-dark">@match.RoundLegDescription</span></td></tr>
                                     }
                                     <tr>
                                         <td class="opponents@(Model.MatchResultMessage?.MatchId == match.Id ? " changed-result" : string.Empty)">
@@ -188,10 +188,10 @@
         var opponentsCssClass = $".opponents {{width: {opponentColWidth}%);}}";
     }
     <style type="text/css">
-        #round-tabs .nav-link:not(.active) {border:solid 1px lightgray;}
-        #match-results table tbody tr {border-bottom: solid 2px lightgray}
-        #match-results table thead {background-color: lightgray}
-        .changed-result { font-weight: bold; border-left: solid 8px lightgray !important}
+        #round-tabs .nav-link:not(.active) {border:solid 1px var(--bs-gray-500)}
+        #match-results table tbody tr {border-bottom: solid 2px var(--bs-gray-300)}
+        #match-results table thead {--bs-table-bg: var(--bs-gray-300)}
+        .changed-result { font-weight: bold; border-left: solid 8px var(--bs-gray-300) !important}
         .team-filter { cursor: pointer;}
         .filter-link { /* javascript only */ }
         .leg-change { padding: 0; margin:0}

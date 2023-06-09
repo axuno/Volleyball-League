@@ -60,7 +60,7 @@
                 <img id="CaptchaImage" style="vertical-align: bottom; display:inline" src="@Url.Action(nameof(League.Controllers.Captcha.Index), nameof(League.Controllers.Captcha))@("?guid=" + Guid.NewGuid())" alt="Captcha" title="" />
                 <label class="d-inline" onclick="javascript:if (document.images) document.images.CaptchaImage.src = '@Url.Action(nameof(League.Controllers.Captcha.Index), nameof(League.Controllers.Captcha))?new=1&amp;time=' + new Date().getTime();" style="cursor: pointer"><i class="fa fa-sync-alt fa-2x" style="margin: 0 5px 0 5px;" title="@Localizer["Reload"]"></i></label><br />
             </div>
-            <label asp-for="Captcha"></label>
+            <label asp-for="Captcha" class="form-label mt-2"></label>
             <div class="input-group">
                 <input asp-for="Captcha" required="required" type="text" class="form-control" maxlength="7" />
                 <span class="input-group-text">

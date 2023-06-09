@@ -44,12 +44,14 @@
     </header>
     <nav id="nav-main" class="navbar navbar-expand-md navbar-dark rounded ps-2 site-sticky-top">
         @* bootstrap 4 class "sticky-top" interferes with modal, that's why we use our identical "site-sticky-top" *@
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar-header" aria-controls="navbar-header" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div id="navbar-header" class="collapse navbar-collapse">
-            @* <a class="navbar-brand" href="#">axuno</a>*@
-            <div>NavBar for Admin area</div>
+        <div class="container-fluid ps-0">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar-header" aria-controls="navbar-header" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div id="navbar-header" class="collapse navbar-collapse">
+                @* <a class="navbar-brand" href="#">axuno</a>*@
+                <div>NavBar for Admin area</div>
+            </div>
         </div>
     </nav>
     <div id="content" class="container-fluid rounded pb-1">

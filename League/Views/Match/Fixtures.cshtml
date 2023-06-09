@@ -74,10 +74,10 @@
                 <div class="text-success">@r.RoundTypeDescription</div>
                 <div id="team-filter-@r.RoundId" class="team-filter my-2 d-none" data-bs-toggle="tooltip" title="@Localizer["Remove filter for team"]" style="display: none" tabindex="0">
                     <i class="fas fa-1x fa-times-circle me-2"></i>
-                    <span class="badge badge-dark"></span>
+                    <span class="badge bg-dark"></span>
                 </div>
                 <div class="rounded table-responsive" style="min-height: 13rem">@* min height assures dropdowns are not clipped *@
-                    <table class="table table-sm table-light table-bordered table">
+                    <table class="table table-sm">
                         <thead class="rounded">
                             <tr>
                                 <th class="opponents">@Localizer["Opponents"]</th>
@@ -96,7 +96,7 @@
                                     var match = matches[i];
                                     if (legs.Count >= 1 && !string.IsNullOrWhiteSpace(match.RoundLegDescription) && (i == 0 || match.RoundLegSequenceNo != matches[i - 1].RoundLegSequenceNo))
                                     {
-                                        <tr><td colspan="@columnCount" class="leg-change"><span class="badge badge-dark">@match.RoundLegDescription</span></td></tr>
+                                        <tr><td colspan="@columnCount" class="leg-change"><span class="badge bg-dark">@match.RoundLegDescription</span></td></tr>
                                     }
                                     <tr>
                                         <td class="opponents@(Model.FixtureMessage?.MatchId == match.Id ? " changed-fixture" : string.Empty)">
@@ -167,10 +167,10 @@
         var opponentsCssClass = $".opponents {{width: {opponentColWidth}%);}}";
     }
     <style type="text/css">
-        #round-tabs .nav-link:not(.active) {border:solid 1px lightgray;}
-        #fixtures table tbody tr {border-bottom: solid 2px lightgray}
-        #fixtures table thead {background-color: lightgray}
-        .changed-fixture { font-weight: bold; border-left: solid 8px lightgray !important}
+        #round-tabs .nav-link:not(.active) {border:solid 1px var(--bs-gray-500)}
+        #fixtures table tbody tr {border-bottom: solid 2px var(--bs-gray-300)}
+        #fixtures table thead {--bs-table-bg: var(--bs-gray-300)}
+        .changed-fixture { font-weight: bold; border-left: solid 8px var(--bs-gray-300) !important}
         .team-filter { cursor: pointer;}
         .filter-link { /* javascript only */ }
         .leg-change { padding: 0; margin:0}

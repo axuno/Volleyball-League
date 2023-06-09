@@ -10,7 +10,7 @@
     <div class="mb-3 col-12 col-md-6">
         @if (Model.ShowSelector)
         {
-            <label asp-for="SelectedRoundId" class="mt-0 form-label"></label>
+            <label asp-for="SelectedRoundId" class="form-label"></label>
             <select asp-for="SelectedRoundId" class="form-select d-block col-7" style="min-width: max-content !important" title="@Localizer["Please select a round"]...">
                 @foreach (var rwt in Model.RoundWithTypeList)
                 {
@@ -31,7 +31,7 @@
         }
         @if(!Model.ShowSelector)
         {
-            <label asp-for="SelectedRoundId" class="mt-0 form-label"></label>
+            <label asp-for="SelectedRoundId" class="form-label"></label>
             <div class="ms-0">
                 <span class="d-inline-block fw-bold me-2">@(round?.Description ?? Localizer["Not specified"].Value)</span>
                 <span class="text-muted small">@(round?.RoundType?.Description ?? string.Empty)</span>

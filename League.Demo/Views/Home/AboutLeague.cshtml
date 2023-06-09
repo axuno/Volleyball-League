@@ -1,5 +1,7 @@
 ﻿@using League.Routing
 @using League.Helpers
+@using League.WebApp
+@using Microsoft.AspNetCore.Mvc.TagHelpers
 @{
     ViewData.Title("About Volleyball League");
 }
@@ -30,7 +32,7 @@
             </ul>
         </article>
         <article class="col-2 col-sm-4">
-            <img class="img-fluid rounded text-end" src="/images/logo-volleyball-league.svg" alt="League">
+            <img class="img-fluid rounded text-right" src="/images/logo-volleyball-league.svg" alt="League">
         </article>
     </div>
     <div class="row">
@@ -46,22 +48,23 @@
             </ul>
         </article>
         <article class="col-4 col-sm-4">
-            <img class="img-fluid rounded text-end" src="/images/software.png" alt="League">
+            <img class="img-fluid rounded text-right" src="/images/software.png" alt="League">
         </article>
     </div>
     <div class="row mb-4">
         <article class="col-8">
-            <div class="p-2 border rounded border-success"><a asp-route="@RouteNames.GeneralContact" class="link fw-bolder">Contact us</a> to run a league on this platform.</div>
+            <div class="p-2 border rounded border-success"><a asp-route="@RouteNames.GeneralContact" class="link font-weight-bolder">Contact us</a> to run a league on this platform.</div>
         </article>
     </div>
     <div class="row">
         <article class="col-8">
             @{
-                var leagueAssembly = System.Reflection.Assembly.GetAssembly(typeof(League.LeagueStartup))?.GetName();
-                var tmAssembly = System.Reflection.Assembly.GetAssembly(typeof(TournamentManager.DateTimePeriod))?.GetName();
-                if (leagueAssembly != null && tmAssembly != null)
+                var webAppInfo = new Axuno.Tools.AssemblyInfo(typeof(WebAppStartup));
+                var leagueInfo = new Axuno.Tools.AssemblyInfo(typeof(LeagueStartup));
+                var tmInfo = new Axuno.Tools.AssemblyInfo(typeof(TournamentManager.MultiTenancy.AppDb));
+                if (webAppInfo.Name != null && leagueInfo.Version != null && tmInfo.Name != null && tmInfo.Version != null)
                 {
-                <div>Running @leagueAssembly.Name v@(leagueAssembly.Version) and @tmAssembly.Name v@(tmAssembly.Version)</div>
+                    <div>Running: @(webAppInfo.Product) v@(webAppInfo.Version), @(leagueInfo.Name) v@(leagueInfo.Version) and @(tmInfo.Name) v@(tmInfo.Version)</div>
                 }
             }
         </article>
@@ -70,7 +73,7 @@
 @section styles {
     <style type="text/css">
         .h3 {
-            background: linear-gradient(to right, #018dff 10%, #01df02 100%);
+            background: linear-gradient(to right, var(--bs-primary) 10%, var(--bs-success) 100%);
             color: white;
         }
     </style>
