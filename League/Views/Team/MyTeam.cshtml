@@ -48,7 +48,7 @@
                 <div class="card pb-2 mb-3">
                     <div class="card-header px-2 py-1">
                         <div class="d-flex justify-content-between align-items-baseline">
-                            <h4>@Localizer["Team"]</h4>
+                            <h4 class="h4">@Localizer["Team"]</h4>
                             <div>
                                 <button type="button" site-toggle-modal-ajax
                                         site-data-url="@TenantLink.Action(nameof(Team.Edit), nameof(Team), new { teamId = teamVenueInfo.TeamId })"
@@ -115,7 +115,7 @@
                 <div class="card mb-3">
                     <div class="card-header px-2 py-1">
                         <div class="d-flex justify-content-between align-items-baseline">
-                            <h4>@Localizer["Venue"]</h4>
+                            <h4 class="h4">@Localizer["Venue"]</h4>
                             <div>
                                 <button type="button"
                                         site-toggle-modal-ajax site-data-url="@TenantLink.Action(nameof(Team.ChangeVenue), nameof(Team), new { tid = teamVenueInfo.TeamId })"
@@ -158,7 +158,7 @@
                     <div class="card pb-2 mb-2">
                         <div class="card-header px-2 py-1">
                             <div class="d-flex justify-content-between align-items-baseline">
-                                <h4>@Localizer["Team members"]</h4>
+                                <h4 class="h4">@Localizer["Team members"]</h4>
                                 <div>
                                     <button type="button"
                                             site-toggle-modal-ajax

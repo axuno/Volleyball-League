@@ -49,7 +49,7 @@ public class TournamentCreator
     /// <returns>True, if creation was successful, false otherwise.</returns>
     public async Task<bool> CopyTournament (long fromTournamentId)
     {
-        var now = DateTime.Now;
+        var now = DateTime.UtcNow;
         var tournament = await _appDb.TournamentRepository.GetTournamentAsync(new PredicateExpression(TournamentFields.Id == fromTournamentId), CancellationToken.None);
         if (tournament is null) throw new NullReferenceException($"'{fromTournamentId}' not found.");
             
@@ -87,7 +87,7 @@ public class TournamentCreator
     public bool CopyRound(long fromTournamentId, long toTournamentId, IEnumerable<long> excludeRoundId)
     {
         const string transactionName = "CloneRounds";
-        var now = DateTime.Now;
+        var now = DateTime.UtcNow;
 
         // get the rounds of SOURCE tournament
         var roundIds = _appDb.TournamentRepository.GetTournamentRounds(fromTournamentId).Select(r => r.Id).ToList();
@@ -117,7 +117,7 @@ public class TournamentCreator
                 TypeId = round.TypeId,
                 NumOfLegs = round.NumOfLegs,
                 MatchRuleId = round.MatchRuleId,
-                SetRuleId = round.MatchRuleId,
+                SetRuleId = round.SetRuleId,
                 IsComplete = false,
                 CreatedOn = now,
                 ModifiedOn = now,
@@ -156,7 +156,7 @@ public class TournamentCreator
     public bool SetLegDates(IEnumerable<RoundEntity> rounds , int sequenceNo, DateTime start, DateTime end)
     {
         //const string transactionName = "SetLegDates";
-        var now = DateTime.Now;
+        var now = DateTime.UtcNow;
 
         var roundEntities = (rounds as RoundEntity[] ?? rounds.ToArray()).ToList();
 
@@ -212,7 +212,7 @@ public class TournamentCreator
         var tournament = await new TournamentRepository(_appDb.DbContext).GetTournamentWithRoundsAsync(tournamentId, CancellationToken.None);
         if (tournament == null) throw new InvalidOperationException($"Tournament with Id '{tournamentId}' not found.");
             
-        var now = DateTime.Now;
+        var now = DateTime.UtcNow;
 
         foreach (var round in tournament.Rounds)
         {
@@ -237,7 +237,7 @@ public class TournamentCreator
         using var da = _appDb.DbContext.GetNewAdapter();
         da.FetchEntity(round);
         round.IsComplete = true;
-        round.ModifiedOn = DateTime.Now;
+        round.ModifiedOn = DateTime.UtcNow;
         da.SaveEntity(round);
         da.CloseConnection();
     }

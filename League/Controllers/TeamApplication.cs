@@ -173,7 +173,7 @@ public class TeamApplication : AbstractController
         sessionModel.Team!.Id = teamId;
         sessionModel.Team.IsNew = false;
         SaveModelToSession(sessionModel);
-        return Redirect(TenantLink.Action(nameof(EditTeam))!);
+        return Redirect(TenantLink.Action(nameof(EditTeam), null, new {teamId = string.Empty})!);
     }
 
     [HttpGet("edit-team")]
