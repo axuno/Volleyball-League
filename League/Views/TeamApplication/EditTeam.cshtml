@@ -58,13 +58,4 @@
     <script type="text/javascript" src="~/lib/Moment/moment.min.js"></script>
     <script type="text/javascript" src="~/lib/tempusdominus-bootstrap-4/tempusdominus-bootstrap-4.min.js"></script>
     <partial name="@nameof(League.Views.ViewNames.Shared._DateTimePickerScriptPartial)" />
-    <script type="text/javascript" site-on-content-loaded="true">
-        @* Focus the 'Round.SelectedRoundId' button *@
-        @{
-            if (Model.Round?.SelectedRoundId != null)
-            {
-                <text>$('button[data-id=</text>@Html.IdFor(m => m.Round!.SelectedRoundId!)<text>]').focus();</text>
-            }
-        }
-    </script>
 }

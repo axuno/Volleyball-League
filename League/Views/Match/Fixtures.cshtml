@@ -3,7 +3,11 @@
 @using TournamentManager.DAL.EntityClasses
 @using TournamentManager.DAL.TypedViewClasses
 @using TournamentManager.MultiTenancy
-@using League.MultiTenancy @* don't remove *@
+@using League.MultiTenancy 
+@using League.TagHelpers
+@using League.Views
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@* don't remove *@
 @inject IViewLocalizer Localizer
 @inject ITenantContext TenantContext
 @inject TenantLink TenantLink
@@ -185,56 +189,8 @@
 }
 @section scripts
 {
-    <script type="text/javascript">
-        //<![CDATA[
-        var mostRecentRoundCookieName = '@League.Views.CookieNames.MostRecentRound';
-        var useRecentRoundCookie = @useRecentRoundCookie.ToString().ToLowerInvariant();
-        Cookies = window.Cookies; @* js-cookies.js *@
-        $(document).ready(function() {
-            $('[data-bs-toggle="tooltip"]').tooltip();
-            @* Try to set the active tab from a cookie *@
-            if (useRecentRoundCookie) {
-                var $activeRoundFromCookie = Cookies.get(mostRecentRoundCookieName);
-                var $tabLink = $('#tab-link-' + $activeRoundFromCookie);
-                if ($activeRoundFromCookie !== undefined && $tabLink.length) {
-                    $tabLink.tab('show');
-                } else {
-                    $('#round-tabs li:first-child a').tab('show');
-                }
-            }
-            $('.filter-link').on('click',
-                function (e) {
-                    e.preventDefault();
-                    var teamName = $(this).data('team-name');
-                    var roundId = $(this).data('round-id');
-                    var filter = $('#team-filter-' + roundId);
-                    filter.show().find('span').text(teamName);
-                    @* hide() and show() do not work for d-inline-block *@
-                    filter.removeClass('d-none').addClass('d-inline-block');
-                    @* // First make all rows visible *@
-                    $(this).closest('table').find('tbody > tr').show();
-                    @* // Then hide rows not containing the selected team name *@
-                    $(this).closest('table').find('td.context-menu:not(:has([data-team-name="' + teamName + '"]))').parent('tr').hide();
-                });
-
-            $('[id^=team-filter-]').on('click keypress',
-                function() {
-                    @* Bootstrap 4 flaw: otherwise tooltips remain visible on mobile devices *@
-                    $(this).tooltip('hide');
-                    @* hide() and show() do not work for d-inline-block *@
-                    $(this).removeClass('d-inline-block').addClass('d-none');
-                    $(this).parent().find('table tbody > tr').show();
-                });
-            $('a[data-bs-toggle="tab"]').on('shown.bs.tab',
-                function(e) {
-                    var id = e.target.id.replace('tab-link-', ''); // newly activated tab with round id
-                    Cookies.set(mostRecentRoundCookieName,
-                        id,
-                        { expires: 365, path: '/' + e.target.pathname.split('/')[1] });
-                });
-        });
-        //]]>
-    </script>
+    <partial name="@ViewNames.Shared._TabNavigationScriptPartial" model="@useRecentRoundCookie"/>
+    <partial name="@ViewNames.Shared._TabFilterTableByTeamScriptPartial"/>
 }
 @section meta
 {<meta name="robots" content="index, nofollow">}

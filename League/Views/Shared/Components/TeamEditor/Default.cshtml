@@ -65,7 +65,26 @@ ViewContext.ViewData.TemplateInfo.HtmlFieldPrefix = Model.HtmlFieldPrefix;
     </div>
 </div>
 <script type="text/javascript" site-on-content-loaded="true" site-on-modal-shown="true" site-inline="false">
-    var onMatchDayOfWeekChangeFunction =
+    const onMatchDayOfWeekChangeFunction = function() {
+        const matchTimeEle = document.getElementById('@Html.IdFor(m => m.MatchTime)');
+        if (this.value === '') {
+            matchTimeEle.setAttribute('disabled', 'disabled');
+            matchTimeEle.style.cursor = 'not-allowed';
+            matchTimeEle.value = '';
+            document.querySelector('span[data-target="#picker_@Html.IdFor(m => m.MatchTime)"]').style.cursor = 'not-allowed';
+        } else {
+            matchTimeEle.removeAttribute('disabled');
+            matchTimeEle.style.cursor = 'auto';
+            document.querySelector('span[data-target="#picker_@Html.IdFor(m => m.MatchTime)"]').style.cursor = 'pointer';
+        }
+    };
+    const matchDayOfWeek = document.getElementById('@Html.IdFor(m => m.MatchDayOfWeek)');
+    matchDayOfWeek.removeEventListener('change', onMatchDayOfWeekChangeFunction);
+    matchDayOfWeek.addEventListener('change', onMatchDayOfWeekChangeFunction);
+    matchDayOfWeek.dispatchEvent(new Event('change')); // initialize
+    $('#picker_@Html.IdFor(m => m.MatchTime)').datetimepicker({ format: 'LT', stepping: 15 });
+
+    @*var onMatchDayOfWeekChangeFunction =
         function() {
             if (this.value === '') {
                 $('#@Html.IdFor(m => m.MatchTime)').attr('disabled', 'disabled').css('cursor', 'not-allowed').val('');
@@ -77,5 +96,5 @@ ViewContext.ViewData.TemplateInfo.HtmlFieldPrefix = Model.HtmlFieldPrefix;
         };
     $('#@Html.IdFor(m => m.MatchDayOfWeek)').off('change', onMatchDayOfWeekChangeFunction).on('change', onMatchDayOfWeekChangeFunction);
     $('#@Html.IdFor(m => m.MatchDayOfWeek)').trigger('change'); // initialize
-    $('#picker_@Html.IdFor(m => m.MatchTime)').datetimepicker({ format: 'LT', stepping: 15 });
+    $('#picker_@Html.IdFor(m => m.MatchTime)').datetimepicker({ format: 'LT', stepping: 15 });*@
 </script>

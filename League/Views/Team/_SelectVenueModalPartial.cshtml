@@ -22,7 +22,7 @@
     </modal-body>
     <modal-footer show-dismiss="true" dismiss-text="@Localizer["Cancel"].Value">
         <button site-ajax-submit class="btn btn-primary">@Localizer["Save"].Value</button>
-        <script type="text/javascript" site-on-ajax-complete="true">
+        <script type="text/javascript">
 
             function CheckUncheckItems() {
                 $('#venue-list').find('tr[data-venue-id]').each(function(rowIndex, r) {

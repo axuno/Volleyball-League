@@ -5,26 +5,30 @@ if (Site === undefined) {
 
 /*
 Make characters of an <input type="password"/> field visible/invisible. Designed for Bootstrap 4.
-Bound click events get lost after jquery validation, so we call this function with "onclick=Site.ShowHidePassword($(this))"
+Bound click events get lost after jquery validation, so we call this function with "onclick=Site.ShowHidePassword(this)"
 
 Example:
 <div class="form-group">
-    <label asp-for="Password"></label>
+    <label asp-for="Password" class="form-label"></label>
 ==> <div class="input-group">
 ==>     <input asp-for="Password" class="form-control" />
-==>     <span class="input-group-append input-group-text" style="cursor: pointer" onclick="Site.ShowHidePassword($(this))">
+==>     <span class="input-group-append input-group-text" style="cursor: pointer" onclick="Site.ShowHidePassword(this)">
 ==>         <i class="fas fa-eye"></i>
         </span>
     </div>
     <span asp-validation-for="Password" class="text-danger"></span>
 </div>
 */
-Site.ShowHidePassword = function (eyeButton) {
-    if (eyeButton.find('.fas').hasClass('fa-eye')) {
-        eyeButton.find('.fas').removeClass('fa-eye').addClass('fa-eye-slash');
-        eyeButton.parent().find('input').attr('type', 'text');
+Site.ShowHidePassword = function(eyeButton) {
+    var fas = eyeButton.querySelector('.fas');
+    if (fas.classList.contains('fa-eye')) {
+        fas.classList.remove('fa-eye');
+        fas.classList.add('fa-eye-slash');
+        eyeButton.parentNode.querySelector('input').setAttribute('type', 'text');
     } else {
-        eyeButton.find('.fas').removeClass('fa-eye-slash').addClass('fa-eye');
-        eyeButton.parent().find('input').attr('type', 'password');
+        fas.classList.remove('fa-eye-slash');
+        fas.classList.add('fa-eye');
+        eyeButton.parentNode.querySelector('input').setAttribute('type', 'password');
     }
 };
+

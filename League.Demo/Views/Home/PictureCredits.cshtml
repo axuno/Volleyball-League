@@ -13,8 +13,6 @@
     <p>
         <a href="@Url.Content("~/images/logo-volleyball-league.svg")" class="credit">© vectorstock 14122148 / vectorstock.com</a><br />
         <a href="@Url.Content("~/images/logo-axuno.svg")" class="credit">© Elaelo / fotolia.com</a><br />
-        <a href="@Url.Content("~/images/a-beach.jpg")" class="credit">© 27375447_ml_madabatman / 123rf.com</a><br />
-        <a href="@Url.Content("~/images/a-indoor.jpg")" class="credit">© 27386872_ml_madabatman / 123rf.com</a><br />
         <a href="@Url.Content("~/images/home_welcome_carousel-01.png")" class="credit">© vectorstock 14122148 / vectorstock.com</a><br />
         <a href="@Url.Content("~/images/home_welcome_carousel-02.jpg")" class="credit">Capri23auto-1767157</a> / <a href="https://pixabay.com/de/?utm_source=link-attribution&amp;utm_medium=referral&amp;utm_campaign=image&amp;utm_content=3031697">Pixabay</a><br />
         <a href="@Url.Content("~/images/home_welcome_carousel-03.jpg")" class="credit">Wolfgang Gerth 2639700</a> / <a href="https://pixabay.com/de/?utm_source=link-attribution&amp;utm_medium=referral&amp;utm_campaign=image&amp;utm_content=2639700">Pixabay</a><br />
@@ -24,22 +22,24 @@
 <modal id="img-modal" title="@Localizer["Picture Credits"].Value" dialog-class="modal-md">
     <modal-body>
         <img class="img-fluid" src="" id="show-img" alt="" />
+        <div id="img-credit"></div>
+        <script site-inline="true">
+            document.querySelectorAll('.credit').forEach(function (credit) {
+                credit.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    var img = credit.getAttribute('href');
+                    document.querySelector('#show-img').setAttribute('src', img);
+                    document.querySelector('#img-credit').innerHTML = credit.innerHTML;
+                    bootstrap.Modal.getOrCreateInstance('#img-modal').show();
+                });
+            });
+        </script>
     </modal-body>
 </modal>
 @section scripts
-{
-    <script site-on-content-loaded="true">
-        $('.credit').click(function(e) {
-            var img = $(this).attr('href');
-            $('#show-img').attr('src', img);
-            $('#img-credit').html(content);
-            $('#img-modal').modal('show');
-            e.preventDefault();
-        });
-    </script>
-}
+{}
 @section styles {
     <style type="text/css">
-        .credit { }
+        .credit { }  /* only for javascript */
     </style>
 }

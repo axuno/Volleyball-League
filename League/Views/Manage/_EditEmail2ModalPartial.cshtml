@@ -29,7 +29,11 @@
         </form>
         @* The script must be inside modal-body in order to run if the form is re-displayed after validation *@
         <script type="text/javascript">
-            $('#@BtnRemove').on('click', function() { $('#@nameof(Model.Email2)').val(''); });
+
+            document.querySelector('#@(BtnRemove)').addEventListener('click', function () {
+                document.querySelector('#@nameof(Model.Email2)').value = '';
+            });
+        
         </script>
     </modal-body>
     <modal-footer show-dismiss="true" dismiss-text="@Localizer["Cancel"].Value">

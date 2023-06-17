@@ -3,240 +3,369 @@ if (Site === undefined) {
     var Site = {};
 }
 
-/* Handling of forms inside Bootstrap 4 modals */
-Site.ModalForm = function ($) {
-    var loggerName = 'JsLogger.Site.ModalForm';
+/* Handling of forms inside Bootstrap 5 modals */
+Site.ModalForm = function () {
+    const loggerName = 'JsLogger.Site.ModalForm';
+
+    // language setting is taken from <html lang="iso-code">
+    const translations = {
+        'en': {
+            'modal-form-error-occurred': 'Oops... an error occurred. Please try again.'
+        },
+        'de': {
+            'modal-form-error-occurred': 'Ups... ein Fehler ist aufgetreten. Bitte nochmals versuchen.'
+        }
+    };
+    function getLocalized(key) {
+        const locale = document.documentElement.lang;
+        const fbLocale = locale.split('-')[0];
+        if (translations[locale]) {
+            return translations[locale][key];
+        } else if (translations[fbLocale]) {
+            return translations[fbLocale][key];
+        } else if (translations['en']) {
+            return translations['en'][key];
+        }
+    }
+
+    let submittingElement;
 
     // create a dynamic DIV element and insert it as first child of BODY
-    var modalContainer = $('<div/>', { id: 'modal-container-' + Math.random().toString(36).substr(2, 16) });
-    $('body').prepend(modalContainer);
+    const modalContainer = document.createElement('div');
+    modalContainer.id = 'modal-container-' + Math.random().toString(36).substring(2, 16);
+    document.body.insertAdjacentElement('afterbegin', modalContainer);
 
-    var modalDialogTemplate = [
-        // see also: modalFullTemplate
-        '<div class="modal-dialog">',
-            '<div class="modal-content">',
-                '<div class="modal-header">',
-                    '<i class="fas fa-2x fa-bomb text-danger"></i>',
-                    '<button type="button" class="close" data-dismiss="modal">&times;</button>',
-                '</div>',
-                '<div class="modal-body">',
-                    '<div class="text-danger"><span class="h4 text-danger">$0</span> $1</div>',
-                '</div>',
-            '</div>',
-        '</div>'
-    ].join('');
+    // see also: modalFullTemplate
+    const modalDialogTemplate = `<div class="modal-dialog">
+	<div class="modal-content">
+		<div class="modal-header">
+			<i class="fas fa-2x fa-bomb text-danger"></i>
+			<button type="button" class="btn btn-close" data-bs-dismiss="modal"></button>
+		</div>
+		<div class="modal-body">
+			<div class="text-danger"><span class="h4 text-danger">$0</span> $1</div>
+		</div>
+	</div>
+</div>`;
 
-    var modalFullTemplate = [
-        '<div class="modal" data-keyboard="true" tabindex="-1">', //data-keyboard=true allows to close the modal with ESC key
-            modalDialogTemplate,
-        '</div>'
-    ].join('');
+    // see also: modalDialogTemplate
+    //data-keyboard=true allows to close the modal with ESC key
+    const modalFullTemplate = `<div class="modal" data-bs-keyboard="true" tabindex="-1">
+    ${modalDialogTemplate}
+</div>`;
 
-    var fillTemplate = function (template, errorText, errorNo) {
+    const fillErrorTemplate = function (template, errorText, errorNo) {
         return template.replace('$0', errorText).replace('$1', errorNo);
     };
 
-    var showLoading = function (jqElement, on) {
-        if (!jqElement.hasClass('btn')) {
+    const showLoading = function(btnElement, isOn) {
+        if (!btnElement.classList.contains('btn')) {
             // It's not a bootstrap 4 element displayed as a button
             return;
         }
-        if (on === true) {
-            jqElement.prepend(
-                '<span id="ajax-loading-icon" class="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true"></span>');
+        if (isOn === true) {
+            btnElement.insertAdjacentHTML('afterbegin', '<span id="site-loading-icon" class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>');
         } else {
-            jqElement.find('#ajax-loading-icon').remove();
+            btnElement.querySelector('#site-loading-icon').remove();
         }
     };
-    
-    // language setting is taken from <html lang="iso-code">
-    $.i18n().load({
-        'en': {
-            'modal-form-error-occurred': 'Oops... an error occurred.'
-        },
-        'de': {
-            'modal-form-error-occurred': 'Ups... ein Fehler ist aufgetreten.'
+
+    /**
+     * Fetches a url using a timeout
+     * https://dmitripavlutin.com/timeout-fetch-request/
+     * @param {string} url - The Url to fetch
+     * @param {any} options - The RequestInit options
+     * @returns {Response} - The server response
+     * @throws {AbortError} on timeout
+     */
+    async function fetchWithTimeout(url = '', options = {}) {
+        const timeout = options.timeout || 5000;
+
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), timeout);
+
+        const response = await fetch(url, {
+            ...options,
+            signal: controller.signal
+        });
+        clearTimeout(timeoutId);
+
+        if (response.status >= 200 && response.status < 300) {
+            return response;
+        } else {
+            throw new Error(response.statusText)
         }
-    });
+    }
+    /**
+     * 
+     * @param {any} url - The RequestInfo | Url for the Post
+     * @param {any} data - The form data to post
+     * @param {any} options - The RequestInit options
+     * @returns {Response} - The server response
+     * @throws {AbortError} on timeout
+     */
+    async function postWithTimeout(url = '', data = {}, options = {}) {
+        const timeout = options.timeout || 5000;
+        
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), timeout);
+
+        const response = await fetch(url, {
+            method: options.method,
+            mode: 'cors',
+            cache: 'no-cache',
+            credentials: 'same-origin',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'  // = default; application/json would trigger another ModelBinder! 
+            },
+            redirect: 'follow',
+            referrerPolicy: 'no-referrer',
+            // For form submit, this works:
+            //body: data, // Object.keys(data).length !== 0 ? data : undefined,
+            body: options.method && (options.method.toLowerCase() === "post") ? data : undefined,
+            signal: controller.signal
+        });
+
+        clearTimeout(timeoutId);
+
+        if (response.status >= 200 && response.status < 300) {
+            return response;
+        } else {
+            throw new Error(response.statusText)
+        }
+    }
 
     // requires an element like <button> or <a>, containing data-toggle="site-ajax-modal"
     // e.g. <button type="button" data-toggle="site-ajax-modal" data-target="#id-in-partial-view" data-url="url-to-partial-view">do sth.</button >
     // load the partial view into the placeholder and show the modal
-    $('[data-toggle="site-ajax-modal"]').click(function(event) {
-        event.preventDefault();
-        var submittingElement = $(event.target);
-        submittingElement.attr('disabled', 'disabled').css('cursor', 'not-allowed');
-        showLoading(submittingElement, true);
-        var actionUrl = $(this).data('url');
-        $.ajax(actionUrl,
-            {
-                'async': true,  // important for 'always' to be called
-                'type': 'get',
-                'timeout': 10000
-            })
-            .done(function (data, textStatus, jqXHR) {
-                // server returns JSON with redirectUrl value
-                if (isJson(data)) {
-                    if ($.isEmptyObject(data)) {
-                        JL(loggerName).warn({ 'msg': 'JSON result is empty' });
-                    } else {
-                        if (data.redirectUrl) { window.location.href = data.redirectUrl; }
-                        else { JL(loggerName).warn({ 'msg': 'JSON redirectUrl is empty' });}
-                    }
-                }
-                // Server should return a PARTIAL view with the form after server side validation.
-                // A full page view (identified by BODY element, e.g. caused by a bad action url) would mess up the browser
-                if ($.type(data) === 'string' && data.match(/<body[^>]*>/gi)) {
-                    JL(loggerName).error({
-                        'msg': 'AJAX response is not a partial view',
-                        'url': actionUrl
-                    });
-                    modalContainer.html(fillTemplate(modalFullTemplate, $.i18n('modal-form-error-occurred'), ''));
-                    modalContainer.find('.modal').modal('show');
-                    return;
-                }
-                modalContainer.html(data);
-                $(modalContainer).on('shown.bs.modal', function () {
-                    $('input[autofocus]:first').trigger('focus');
-                });
-                modalContainer.find('.modal').modal('show');
-            })
-            .fail(function (jqXHR, textStatus, errorThrown) {
-                JL(loggerName).error({
-                    'msg': "AJAX error response",
-                    'errorThrown': errorThrown,
-                    'url': actionUrl
-                });
-                modalContainer.html(fillTemplate(modalFullTemplate, $.i18n('modal-form-error-occurred'), textStatus === 'timeout' ? 'Timeout' : jqXHR.status));
-                modalContainer.find('.modal').modal('show');
-            })
-            .always(function (data, textStatus, jqXHR) { /* parameters in case of error: jqXHR, textStatus, errorThrown */
-                submittingElement.removeAttr('disabled').css('cursor', '');
-                showLoading(submittingElement, false);
-            });
+    document.querySelectorAll('[data-toggle="site-ajax-modal"]').forEach(item => {
+        item.addEventListener('click', async event => {
+            event.preventDefault();
+            submittingElement = event.target;
+            submittingElement.setAttribute('disabled', 'disabled');
+            submittingElement.style.cursor = 'not-allowed';
+            showLoading(submittingElement, true);
+            // The HTMLElement.dataset property allows access, both in reading and writing mode, 
+            // to all the custom data attributes (data-*) set on the element.
+            await fetchModalData(item.dataset.url);
+        });
     });
 
+    function tryHandleJson(data) {
+        if (isJson(data)) {
+            if (Object.keys(data).length === 0) {
+                JL(loggerName).warn({ 'msg': 'JSON result is empty' });
+                return false;
+            } else {
+                if (data.redirectUrl) {
+                    window.location.href = data.redirectUrl;
+                } else {
+                    JL(loggerName).warn({ 'msg': 'JSON redirectUrl is empty' });
+                }
+                return true;
+            }
+
+            return false;
+        }
+    }
+
+    function ensurePartialView(data) {
+        // Server should return a PARTIAL view with the form after server side validation.
+        // A full page view (identified by BODY element, e.g. caused by a bad action url) would mess up the browser
+        if (typeof data === 'string' && !data.match(/<body[^>]*>/gi)) {
+            return true;
+        }
+
+        JL(loggerName).error({
+            'msg': 'Server response is not a partial view',
+            'url': actionUrl
+        });
+        modalContainer.innerHTML = fillErrorTemplate(modalFullTemplate, getLocalized('modal-form-error-occurred'), '');
+                
+        const theModal = new bootstrap.Modal(modalContainer.querySelector('.modal'), { focus: true, keyboard: true });
+        theModal.show();
+
+        return false;
+    }
+
+    /**
+     * Fetch the data and show it in the modal container
+     * @param {any} actionUrl
+     */
+    async function fetchModalData(actionUrl) {
+        try {
+            const response = await fetchWithTimeout(actionUrl, { method: 'GET', timeout: 5000 });
+            const data = await handleResponseContentType(response);
+            
+            if (tryHandleJson(data)) return;
+            if (!ensurePartialView(data)) return;
+            setInnerHtmlWithScripts(modalContainer, data);
+            modalContainer.addEventListener('shown.bs.modal', function () {
+                const autofocus = document.querySelector('input[autofocus]');
+                if (autofocus) autofocus.focus();
+            });
+            
+            const theModal = new bootstrap.Modal(modalContainer.querySelector('.modal'), { focus: true, keyboard: true });
+            theModal.show();
+        } catch (error) {
+            JL(loggerName).error({
+                'msg': "Server error response",
+                'errorThrown': error,
+                'url': actionUrl
+            });
+            const errorText = error === 'timeout' || error.name === 'AbortError' ? 'Timeout' : error.status;
+            modalContainer.innerHTML = fillErrorTemplate(modalFullTemplate, getLocalized('modal-form-error-occurred'), errorText);
+            const theModal = new bootstrap.Modal(modalContainer.querySelector('.modal'), { focus: true, keyboard: true });
+            theModal.show();
+        } finally {
+            submittingElement.removeAttribute('disabled');
+            submittingElement.style.cursor = '';
+            showLoading(submittingElement, false);
+        }
+    }
+
     // Enter key in forms with more than one input field will also trigger 'submit'
-    modalContainer.on('keypress', function (e) {
-        if (e.keyCode === 13) {
+    modalContainer.addEventListener('keypress', function (e) {
+        if (e.key === 'Enter') {
             e.preventDefault();
-            $('[type="submit"]').trigger('click');
+            modalContainer.querySelector('[type="submit"]').click();
+        }
+    });
+
+    document.addEventListener('click', function(event) {
+        if (event.target.matches('[site-data="submit"]')) {
+            event.preventDefault();
+            handleSiteDataSubmit(event);
         }
     });
 
     // A TagHelper creates a button <button type="submit" site-data="submit">Save</button>
-    modalContainer.on('click',
-        '[site-data="submit"]',
-        function (event) {
-            event.preventDefault();
-            var submittingElement = $(event.target);
-            // first search the form where the submitting element is in.
-            var form = submittingElement.parents('form:first');
-            // If not found, take the first form inside the modal
-            if (form.length === 0) form = $(this).parents('.modal').find('form:first');
-            if (form.length === 0) {
-                JL(loggerName).error({
-                    'msg': 'No form found'
-                });
-            }
-            // form.valid() is not defined without jquery validation
-            if (form.valid && !form.valid()) { 
-                // jquery (unobtrusive) validation failed
-                return;
-            }
+    //modalContainer.querySelector('[site-data="submit"]').addEventListener('click', function(event) {
+    async function handleSiteDataSubmit(event) {
+        submittingElement = event.target;
+        // first search the form where the submitting element is in.
+        let form = submittingElement.closest('form');
+        // If not found, take the first form inside the modal
+        if (form === null) {
+            form = event.target.closest('.modal').querySelector('form');
+        }
+        if (form === null) {
+            JL(loggerName).error({
+                'msg': 'No form found'
+            });
+        }
+
+        const elements = document.querySelectorAll('.modal-footer button, .modal-footer input[type="button"], .modal-footer input[type="submit"]');
+        for (let i = 0; i < elements.length; i++) {
+            elements[i].setAttribute('disabled', 'disabled');
+            elements[i].style.cursor = 'not-allowed';
+        } // disable elements in footer
+
+        showLoading(submittingElement, true);
+
+        const actionUrl = form.getAttribute('action');
+        const formData = new FormData(form); // would be used for 'multipart/form-data '
+        const searchParams = new URLSearchParams(formData);
+        /*for (const pair of formData) {
+            searchParams.append(pair[0], pair[1]);
+        }*/
+
+        const dataToSend = searchParams;
+        //const dataToSend = new URLSearchParams(formData); // needed for 'x-www-form-urlencoded'
+        const method = form.getAttribute('method');
+
+        await postModalFormData(actionUrl, dataToSend, method);
+    }
+
+    async function postModalFormData(actionUrl, postData, method) {
+        try {
+            const options = { method: method };
+            const response = await postWithTimeout(actionUrl, postData, options)
+            const data = await handleResponseContentType(response);
             
-            $('.modal-footer button, .modal-footer input[type="button"], .modal-footer input[type="submit"]').attr('disabled', 'disabled').css('cursor', 'not-allowed'); // disable all buttons in footer
-            showLoading(submittingElement, true);
+            if (tryHandleJson(data)) return;
+            if (!ensurePartialView(data)) return;
+            
+            // extract the div containing the form
+            const tempElement = document.createElement('div'); // this is not added to the DOM
+            setInnerHtmlWithScripts(tempElement, data);
+            const newModalDialog = tempElement.querySelector('.modal-dialog');
+            // requires <input name="IsValid" type="hidden" value="@ViewData.ModelState.IsValid.ToString()" />
+            const isValid = newModalDialog.querySelector('[name="IsValid"]');
+            // replace body with partial view body from server
+            modalContainer.querySelector('.modal-dialog').replaceWith(newModalDialog);
+            // remove the modal if the form was processed without model errors
+            if (isValid && isValid.value === 'true') {
+                bootstrap.Modal.getInstance('.modal').dispose();
+            } else {
+                const autofocus = document.querySelector('input[autofocus]');
+                if (autofocus) autofocus.focus();
+            }
+        } catch (error) {
+            JL(loggerName).error({
+                'msg': 'Server error response',
+                'errorThrown': error,
+                'url': actionUrl,
+                'requestData': postData
+            });
+            // The modal container is still visible, and only the modal-dialog part will be replaced with the error message:
+            modalContainer.querySelector('.modal-dialog').replaceWith(fillErrorTemplate(modalDialogTemplate, getLocalized('modal-form-error-occurred'), error.name));
 
-            var actionUrl = form.attr('action');
-            var dataToSend = form.serialize();
-            var method = form.attr('method');
+        } finally {
+            const elements = document.querySelectorAll('.modal-footer button, .modal-footer input[type="button"], .modal-footer input[type="submit"]');
+            for (let i = 0; i < elements.length; i++) {
+                elements[i].removeAttribute('disabled');
+                elements[i].style.cursor = '';
+            } // re-enable elements in footer
 
-            $.ajax(actionUrl,
-                {
-                    'async': true, // important for 'always' to be called
-                    'data': dataToSend,
-                    headers: {
-                        'content-type': 'application/x-www-form-urlencoded'  // = default; application/json would trigger another ModelBinder! 
-                    },
-                    'method': method,
-                    'timeout': 10000
-                })
-                .done(function (data, textStatus, jqXHR) {
-                    // server returns JSON with redirectUrl value
-                    if (isJson(data)) {
-                        if ($.isEmptyObject(data)) {
-                            JL(loggerName).warn({ 'msg': 'JSON result is empty' });
-                        } else {
-                            if (data.redirectUrl) { window.location.href = data.redirectUrl; }
-                            else { JL(loggerName).warn({ 'msg': 'JSON redirectUrl is empty' }); }
-                        }
-                    }
-                    // Server should return a PARTIAL view with the form after server side validation.
-                    // A full page view (identified by BODY element, e.g. caused by a bad action url) would mess up the browser
-                    if ($.type(data) === 'string' && data.match(/<body[^>]*>/gi)) {
-                        JL(loggerName).error({
-                            'msg': 'AJAX response is not a partial view',
-                            'url': actionUrl
-                        });
-                        // The modal container is still visible, and only the modal-dialog part will be replaced:
-                        modalContainer.find('.modal-dialog').replaceWith(fillTemplate(modalDialogTemplate, $.i18n('modal-form-error-occurred'), ''));
-                        return;
-                    }
+            showLoading(submittingElement, false);
+        }
+    }
+    
+    async function handleResponseContentType(response) {
+        
+        const contentType = response.headers.get('content-type');
 
-                    // extract the div containing the form
-                    var newModalDialog = $('.modal-dialog', data);
-                    // replace body with partial view body from server
-                    modalContainer.find('.modal-dialog').replaceWith(newModalDialog);
-                    
-                    // requires <input name="IsValid" type="hidden" value="@ViewData.ModelState.IsValid.ToString()" />
-                    var isValid = newModalDialog.find('[name="IsValid"]').val() === 'true';
-                    // hide the modal if the form was processed without model errors
-                    if (isValid) {
-                        modalContainer.find('.modal').modal('hide').modal('dispose');
-                    } else {
-                        $('input[autofocus]:first').trigger('focus');
-                    }
-                })
-                .fail(function (jqXHR, textStatus, errorThrown) {
-                    JL(loggerName).error({
-                        'msg': 'AJAX error response',
-                        'errorThrown': errorThrown,
-                        'url': actionUrl,
-                        'requestData': dataToSend
-                    });
-                    // The modal container is still visible, and only the modal-dialog part will be replaced with the error message:
-                    modalContainer.find('.modal-dialog').replaceWith(fillTemplate(modalDialogTemplate, $.i18n('modal-form-error-occurred'), textStatus === 'timeout' ? 'Timeout' : jqXHR.status));
-                })
-                .always(function (data, textStatus, jqXHR) { /* parameters in case of error: jqXHR, textStatus, errorThrown */
-                    $('.modal-footer button, .modal-footer input[type="button"], .modal-footer input[type="submit"]').removeAttr('disabled').css('cursor', ''); // re-enable all footer buttons
-                    showLoading(submittingElement, false);
-                });
+        if (contentType === null || contentType.startsWith('text/')) return await response.text();
+        else if (contentType.startsWith('application/json;')) return await response.json();
+        else throw new Error(`Unsupported response content-type: ${contentType}`);
+    }
+
+    /**
+     * Sets the inner HTML of the target element in a way,
+     * that code in included <script> elements will execute.
+     * Background: Just setting Element.innerHTML will not activate scripts.
+     * Note: The scripts will run, in the moment when
+     *   * the target element already is in the DOM, or
+     *   * the target will be added to the DOM e.g. with Element.appendChild(target)
+     *     or Element.replaceWith(target)
+     * Source: https://stackoverflow.com/questions/2592092/executing-script-elements-inserted-with-innerhtml
+     * Demo: http://plnkr.co/edit/MMegiu?p=preview
+     * @param {HTMLElement} elem - Target HTMLElement
+     * @param {string} html - HTML string
+     */
+    function setInnerHtmlWithScripts(elem, html) {
+        elem.innerHTML = html;
+        [].forEach.call(elem.querySelectorAll('script'), oldScript => {
+            const newScript = document.createElement('script');
+            [].forEach.call(oldScript.attributes, attr => 
+                newScript.setAttribute(attr.name, attr.value));
+            
+            newScript.appendChild(document.createTextNode(oldScript.innerHTML));
+            oldScript.parentNode.replaceChild(newScript, oldScript);
         });
+    }
 
     function isJson(m) {
-
-        if (typeof m === 'object') {
-            try {
-                m = JSON.stringify(m);
-            } catch (err) {
-                return false;
-            }
+        try {
+            return (typeof m === 'object' && typeof JSON.stringify(m) === 'string');
         }
-
-        if (typeof m === 'string') {
-            try {
-                m = JSON.parse(m);
-            } catch (err) {
-                return false;
-            }
-        }
-
-        if (typeof m !== 'object') {
+        catch {
             return false;
         }
+
         return true;
     }
 
 };
-Site.ModalForm(window.jQuery);
+Site.ModalForm();

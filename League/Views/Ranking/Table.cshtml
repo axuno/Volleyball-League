@@ -153,31 +153,5 @@
 }
 @section scripts
 {
-    <script type="text/javascript">
-        //<![CDATA[
-        var mostRecentRoundCookieName = '@CookieNames.MostRecentRound';
-        var useRecentRoundCookie = @useRecentRoundCookie.ToString().ToLowerInvariant();
-        Cookies = window.Cookies; @* js-cookies.js *@
-        $(document).ready(function() {
-            $('[data-bs-toggle="tooltip"]').tooltip();
-            @* Try to set the active tab from a cookie *@
-            if (useRecentRoundCookie) {
-                var $activeRoundFromCookie = Cookies.get(mostRecentRoundCookieName);
-                var $tabLink = $('#tab-link-' + $activeRoundFromCookie);
-                if ($activeRoundFromCookie !== undefined && $tabLink.length) {
-                    $tabLink.tab('show');
-                } else {
-                    $('#round-tabs li:first-child a').tab('show');
-                }
-            }
-            $('a[data-bs-toggle="tab"]').on('shown.bs.tab',
-                function(e) {
-                    var id = e.target.id.replace('tab-link-', ''); // newly activated tab with round id
-                    Cookies.set(mostRecentRoundCookieName,
-                        id,
-                        { expires: 365, path: '/' + e.target.pathname.split('/')[1] });
-                });
-        });
-        //]]>
-    </script>
+    <partial name="@ViewNames.Shared._TabNavigationScriptPartial" model="@useRecentRoundCookie"/>
 }

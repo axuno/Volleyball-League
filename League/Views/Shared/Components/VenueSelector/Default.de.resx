@@ -138,6 +138,9 @@
   <data name="Other venues" xml:space="preserve">
     <value>Andere Spielorte</value>
   </data>
+  <data name="Save" xml:space="preserve">
+    <value>Speichern</value>
+  </data>
   <data name="Team venues" xml:space="preserve">
     <value>Team Spielorte</value>
   </data>

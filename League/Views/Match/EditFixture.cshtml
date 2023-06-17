@@ -141,8 +141,32 @@
                 format: 'L' /*, minDate: moment().startOf('day'), maxDate: moment('09/30/2019').startOf('day')*/
             });
             $('#picker_@Html.IdFor(m => m.MatchTime)').datetimepicker({ format: 'LT', stepping: 15 });
+            
+            document.getElementById('select-venue').addEventListener('show.bs.modal', function(e) {
+                document.querySelectorAll('#select-venue tr[data-venue-id]').forEach(function(r) {
+                    if (r.getAttribute('data-venue-id') === document.getElementById('@Html.IdFor( m => m.VenueId)').value) {
+                        r.querySelector('td:first-child').innerHTML = '<i class="fas fa-check"></i>';
+                    } else {
+                        r.querySelector('td:first-child').innerHTML = '';
+                    }
+                });
+            });
 
-            $('#select-venue').on('show.bs.modal',
+            document.querySelectorAll('#select-venue tr[data-venue-id]').forEach(function(r) {
+                r.addEventListener('click', function() {
+                    document.getElementById('@Html.IdFor( m => m.VenueId)').value = r.getAttribute('data-venue-id');
+                    document.getElementById('venue-text').textContent = r.querySelector('td:nth-child(2)').textContent;
+                    document.getElementById('select-venue').modal.hide();
+                });
+            });
+
+            document.getElementById('@nameof(Model.MatchDate)').addEventListener('change', function() {
+                if (this.value === '') {
+                    document.getElementById('Model.MatchTime').value = '';
+                }
+            });
+
+            @*$('#select-venue').on('show.bs.modal',
                 function(e) {
                     $('#select-venue').find('tr[data-venue-id]').each(function(rowIndex, r) {
                         if ($(this).attr('data-venue-id') === $('#@Html.IdFor(m => m.VenueId)').val()) {
@@ -164,6 +188,6 @@
         $('#@nameof(Model.MatchDate)').on('change',
             function() {
                 if ($(this).val() === '') $('#@nameof(Model.MatchTime)').val('');
-            });
+            });*@
     </script>
 }
