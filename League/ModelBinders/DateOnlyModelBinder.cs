@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Globalization;
-using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Binders;
 using Microsoft.Extensions.Logging;
@@ -9,71 +8,71 @@ using System.Threading.Tasks;
 namespace League.ModelBinders;
 
 /// <summary>
-/// Model binder used for <see cref="TimeSpan"/> values instead of <see cref="SimpleTypeModelBinder"/>,
+/// Model binder used for <see cref="DateOnly"/> values instead of <see cref="SimpleTypeModelBinder"/>,
 /// which is the fallback model binder.
 /// </summary>
-public class TimeSpanModelBinder : IModelBinder
+public class DateOnlyModelBinder : IModelBinder
 {
     private readonly IModelBinder _fallbackBinder;
-    private readonly ILogger<TimeSpanModelBinder> _logger;
+    private readonly ILogger<DateOnlyModelBinder> _logger;
 
     private const DateTimeStyles _dateTimeStyles = DateTimeStyles.AllowWhiteSpaces | DateTimeStyles.AllowLeadingWhite | DateTimeStyles.AllowTrailingWhite;
 
     private readonly string[] _formats = 
     {
-        // 24-hour clock 
-        "HH:mm:ss", "HH.mm.ss", "HHmmss",
-        "HH:mm", "HH.mm", "HHmm", "HH",
-        "H:mm", "H.mm",
-        // 12-hour clock
-        "hh:mm:sstt", "hh.mm.sstt", "hhmmsstt",
-        "hh:mmtt", "hh.mmtt", "hhmmtt", "hhtt",
-        "h:mmtt", "h.mmtt", "hmmtt", "htt"
+        "yyyyMMdd",
+        "yyyy-MM-dd",
+        "yy-MM-dd",
+        "M/d/yyyy",
+        "M/d/yy",
+        "d.M.yyyy",
+        "d.M.yy"
     };
-    
-    public TimeSpanModelBinder(ILoggerFactory loggerFactory)
+
+    /// <summary>
+    /// CTOR.
+    /// </summary>
+    /// <param name="loggerFactory"></param>
+    public DateOnlyModelBinder(ILoggerFactory loggerFactory)
     {
         _fallbackBinder = new SimpleTypeModelBinder(typeof(DateTime), loggerFactory);
-        _logger = loggerFactory.CreateLogger<TimeSpanModelBinder>();
+        _logger = loggerFactory.CreateLogger<DateOnlyModelBinder>();
     }
 
+    /// <inheritdoc/>
     public Task BindModelAsync(ModelBindingContext bindingContext)
     {
         var valueProviderResult = bindingContext.ValueProvider.GetValue(bindingContext.ModelName);
         if (valueProviderResult == ValueProviderResult.None) return _fallbackBinder.BindModelAsync(bindingContext);
-
+            
         bindingContext.ModelState.SetModelValue(bindingContext.ModelName, valueProviderResult);
         var valueAsString = valueProviderResult.FirstValue;
 
-        if (!TryParseTime(valueAsString, out var time))
+        if (!TryParseDateOnly(valueAsString, out var dateTime))
         {
             _logger.LogDebug("Could not bind model '{modelName}' to value '{valueAsString}', falling back to {fallbackBinder}", bindingContext.ModelName, valueAsString, nameof(SimpleTypeModelBinder));
             return _fallbackBinder.BindModelAsync(bindingContext);
         }
 
-        bindingContext.Result = ModelBindingResult.Success(time);
-        _logger.LogDebug("Parsed string '{originalValue}': {timeSpan} ", valueAsString, time);
+        bindingContext.Result = ModelBindingResult.Success(dateTime);
+        _logger.LogDebug("Parsed string '{originalValue}': {dateTime} ", valueAsString, dateTime);
         return Task.CompletedTask;
     }
 
-    private bool TryParseTime(string? text, out TimeSpan time)
+    private bool TryParseDateOnly(string? text, out DateOnly dateOnly)
     {
         if (text != null)
         {
-            text = Regex.Replace(text, "([^0-9]|^)([0-9])([0-9]{2})([^0-9]|$)", "$1$2:$3$4");
-            text = Regex.Replace(text, "^[0-9]$", "0$0");
-
             foreach (var format in _formats)
             {
-                if (!DateTime.TryParseExact(text, format, CultureInfo.InvariantCulture, _dateTimeStyles,
-                        out var value)) continue;
+                if (!DateOnly.TryParseExact(text, format, CultureInfo.InvariantCulture, _dateTimeStyles,
+                        out dateOnly)) continue;
 
-                time = value.TimeOfDay;
                 return true;
             }
         }
 
-        time = TimeSpan.Zero;
+        dateOnly = DateOnly.MinValue;
         return false;
     }
 }

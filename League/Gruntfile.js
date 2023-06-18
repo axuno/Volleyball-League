@@ -31,7 +31,6 @@ module.exports = function (grunt) {
                     {
                         'wwwroot/lib/bootstrap/bootstrap.css': ['Styles/bootstrap/_custom.scss', 'node_modules/bootstrap/scss/bootstrap.scss'],  // "destination": "source"
                         'wwwroot/lib/fontawesome/fontawesome.css': 'Styles/fontawesome/fontawesome.scss',
-                        'wwwroot/lib/tempusdominus-bootstrap-4/tempusdominus-bootstrap-4.css': 'Styles/tempusdominus-bootstrap-4/tempusdominus-custom.scss',
                         'wwwroot/css/site.css': 'Styles/site/site.scss'
                     }
                 ]
@@ -62,8 +61,7 @@ module.exports = function (grunt) {
                 files: {
                     'wwwroot/lib/bootstrap/bootstrap.min.css': 'wwwroot/lib/bootstrap/bootstrap.css',
                     'wwwroot/css/site.min.css': 'wwwroot/css/site.css',
-                    'wwwroot/lib/fontawesome/fontawesome.min.css': 'wwwroot/lib/fontawesome/fontawesome.css',
-                    'wwwroot/lib/tempusdominus-bootstrap-4/tempusdominus-bootstrap-4.min.css': 'wwwroot/lib/tempusdominus-bootstrap-4/tempusdominus-bootstrap-4.css'
+                    'wwwroot/lib/fontawesome/fontawesome.min.css': 'wwwroot/lib/fontawesome/fontawesome.css'
                 }
             }
         },
@@ -72,10 +70,14 @@ module.exports = function (grunt) {
             options: {
                 sourceMap: true
             },
+            TempusDominusFactory: {
+                files: {
+                    'Scripts/Site.TempusDominusFactory.min.js': ['Scripts/Site.TempusDominusFactory.js']
+                }
+            },
             build: {
                 files: {
                     'wwwroot/js/site.min.js': ['Scripts/Site.ShowPassword.js', 'node_modules/js-cookie/src/js.cookie.js'],
-                    'wwwroot/lib/i18n/i18n-all.min.js': ['ScriptLib/i18n/CLDRPluralRuleParser/CLDRPluralRuleParser.js', 'ScriptLib/i18n/jquery.i18n.js', 'ScriptLib/i18n/jquery.i18n.messagestore.js', 'ScriptLib/i18n/jquery.i18n.fallbacks.js', 'ScriptLib/i18n/jquery.i18n.language.js', 'ScriptLib/i18n/jquery.i18n.parser.js', 'ScriptLib/i18n/jquery.i18n.emitter.js', 'ScriptLib/i18n/jquery.i18n.emitter.bidi.js']
                 }
             }
         },
@@ -83,11 +85,6 @@ module.exports = function (grunt) {
             js_nlog: {
                 src: ['node_modules/jsnlog/jsnlog.min.js'],
                 dest: 'wwwroot/lib/jsnlog/jsnlog.min.js',
-                nonull: true
-            },
-            jquery: {
-                src: ['node_modules/jquery/dist/jquery.min.js'],
-                dest: 'wwwroot/lib/jquery/jquery.min.js',
                 nonull: true
             },
             bootstrap_js_all: {
@@ -102,15 +99,17 @@ module.exports = function (grunt) {
                 dest: "wwwroot/lib/bootstrap/bootstrap.min.css",
                 nonull: true
             },
-            moment_js: {
-                src: ['node_modules/moment/min/moment-with-locales.min.js'],
-                dest: 'wwwroot/lib/Moment/moment.min.js',
+            tempus_dominus_all_js: {
+                src: ['node_modules/@eonasdan/tempus-dominus/dist/js/tempus-dominus.min.js',
+                'node_modules/@eonasdan/tempus-dominus/dist/locales/de.js',
+                'node_modules/@eonasdan/tempus-dominus/dist/plugins/bi-one.js',
+                'Scripts/Site.TempusDominusFactory.min.js'],
+                dest: 'wwwroot/lib/tempus-dominus/tempus-dominus.all.min.js',
                 nonull: true
             },
-            tempusdominus_bootstrap_4_js: {
-                // Note: uglify is not compatible with ES6 (e.g. const instead of var)
-                src: ['node_modules/tempusdominus-bootstrap-4/build/js/tempusdominus-bootstrap-4.min.js'],
-                dest: 'wwwroot/lib/tempusdominus-bootstrap-4/tempusdominus-bootstrap-4.min.js',
+            tempus_dominus_css: {
+                src: ['node_modules/@eonasdan/tempus-dominus/dist/css/tempus-dominus.min.css'],
+                dest: 'wwwroot/lib/tempus-dominus/tempus-dominus.min.css',
                 nonull: true
             },
             dropzone_js: {

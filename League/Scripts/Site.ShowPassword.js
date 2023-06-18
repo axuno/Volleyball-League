@@ -4,8 +4,7 @@ if (Site === undefined) {
 }
 
 /*
-Make characters of an <input type="password"/> field visible/invisible. Designed for Bootstrap 4.
-Bound click events get lost after jquery validation, so we call this function with "onclick=Site.ShowHidePassword(this)"
+Make characters of an <input type="password"/> field visible/invisible.
 
 Example:
 <div class="form-group">

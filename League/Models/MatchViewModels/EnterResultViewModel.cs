@@ -59,8 +59,8 @@ public class EnterResultViewModel
             var startDate = TimeZoneConverter!.ToZonedTime(Match.RealStart);
             var endDate = TimeZoneConverter.ToZonedTime(Match.RealEnd);
             MatchDate = startDate?.DateTimeOffset.Date;
-            MatchTimeFrom = startDate?.DateTimeOffset.TimeOfDay;
-            MatchTimeTo = endDate?.DateTimeOffset.TimeOfDay;
+            MatchTimeFrom = startDate != null ? TimeOnly.FromTimeSpan(startDate.DateTimeOffset.TimeOfDay) : null;
+            MatchTimeTo = endDate != null ? TimeOnly.FromTimeSpan(endDate.DateTimeOffset.TimeOfDay) : null;
             Remarks = Match.Remarks;
         }
         else
@@ -89,7 +89,7 @@ public class EnterResultViewModel
         // Save match date/time to entity
         if (MatchDate.HasValue && MatchTimeFrom.HasValue && MatchTimeTo.HasValue)
         {
-            var period = new DateTimePeriod(MatchDate?.Add(MatchTimeFrom.Value), MatchDate?.Add(MatchTimeTo.Value));
+            var period = new DateTimePeriod(MatchDate?.Add(MatchTimeFrom.Value.ToTimeSpan()), MatchDate?.Add(MatchTimeTo.Value.ToTimeSpan()));
             Match!.SetRealStart(TimeZoneConverter!.ToUtc(period.Start), period.Duration());
         }
         else
@@ -135,10 +135,10 @@ public class EnterResultViewModel
     public DateTime? MatchDate { get; set; }
 
     [Display(Name = "Match start time")]
-    public TimeSpan? MatchTimeFrom { get; set; }
+    public TimeOnly? MatchTimeFrom { get; set; }
 
     [Display(Name = "Match end time")]
-    public TimeSpan? MatchTimeTo { get; set; }
+    public TimeOnly? MatchTimeTo { get; set; }
 
     [Display(Name = "Ignore notices")]
     public bool OverrideWarnings { get; set; }

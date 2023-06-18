@@ -31,7 +31,7 @@ public class EditFixtureViewModel
             var currentDate =
                 TimeZoneConverter.ToZonedTime(PlannedMatch.PlannedStart);
             MatchDate = currentDate?.DateTimeOffset.Date;
-            MatchTime = currentDate?.DateTimeOffset.TimeOfDay;
+            MatchTime = currentDate != null ? TimeOnly.FromTimeSpan(currentDate.DateTimeOffset.TimeOfDay) : null;
 
             // mark a list item as selected
             VenueNotSpecifiedKey = null;  // "not specified" will not show in the list
@@ -51,7 +51,7 @@ public class EditFixtureViewModel
     public DateTime? MatchDate { get; set; }
 
     [Display(Name = "Match start time")]
-    public TimeSpan? MatchTime { get; set; }
+    public TimeOnly? MatchTime { get; set; }
 
     [Display(Name = "Venue")]
     public long? VenueId { get; set; }
