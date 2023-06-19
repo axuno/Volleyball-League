@@ -52,7 +52,7 @@ ViewContext.ViewData.TemplateInfo.HtmlFieldPrefix = Model.HtmlFieldPrefix;
 <div class="row">
     <div class="mb-3 col-12 col-md-6">
         <label asp-for="MatchTime" class="form-label"></label>
-        <div id="@(Model.MatchTime)-c" class="input-group" data-input-type="time" data-td-target-input="nearest" data-td-target-toggle="nearest">
+        <div id="@nameof(Model.MatchTime)-c" class="input-group" data-input-type="time" data-td-target-input="nearest" data-td-target-toggle="nearest">
             <input asp-for="MatchTime" type="text" asp-format="{0:@(CultureInfo.CurrentCulture.DateTimeFormat.ShortTimePattern)}" autocomplete="off" class="form-control" aria-describedby="@nameof(Model.MatchTime)HelpBlock" />
             <span class="input-group-text" data-td-target="@nameof(Model.MatchTime)-c" data-td-toggle="datetimepicker">
                 <i class="far fa-clock"></i>

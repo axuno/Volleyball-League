@@ -17,8 +17,8 @@
             @if (Model.IsWarning)
             {
                 <div class="row">
-                    <div class="mb-3 col-12 col-md-6">
-                        <div class="form-check border border-warning rounded py-2">
+                    <div class="col-12 col-md-6 border border-warning rounded ms-2 py-2 mb-3">
+                        <div class="form-check form-check-warning ms-1">
                             <input asp-for="OverrideWarnings" type="checkbox" class="form-check-input">
                             <label class="form-check-label text-warning ms-2 mt-0" asp-for="OverrideWarnings"></label>
                         </div>

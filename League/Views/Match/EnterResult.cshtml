@@ -31,8 +31,8 @@
         <input hidden="hidden" asp-for="Hash" />
         @if (Model.IsWarning)
         {
-            <div class="p-1 col-12 col-md-6 border border-warning rounded">
-                <div class="form-check">
+            <div class="p-1 col-12 col-md-6 border border-warning rounded mb-3">
+                <div class="form-check form-check-warning ms-1">
                     <input asp-for="OverrideWarnings" type="checkbox" class="form-check-input">
                     <label class="form-check-label text-warning mt-0" asp-for="OverrideWarnings"></label>
                 </div>
@@ -140,11 +140,11 @@
     <link rel="stylesheet" href="~/lib/tempus-dominus/tempus-dominus.min.css" asp-append-version="true" />
     <style type="text/css">
         /* Start: Change checkbox color */
-        .border-warning > .form-check > input[type=checkbox]:checked {
+        .form-check.form-check-warning > input[type=checkbox]:checked {
             background-color: var(--bs-warning);
         }
 
-        .border-warning > .form-check > input[type=checkbox] {
+        .form-check.form-check-warning > input[type=checkbox] {
             border: 2px solid var(--bs-warning);
             background-color: transparent;
         }

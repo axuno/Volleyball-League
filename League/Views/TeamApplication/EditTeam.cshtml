@@ -1,7 +1,10 @@
 ﻿@using League.Components
 @using League.Controllers
+@using League.TagHelpers
 @using Microsoft.AspNetCore.Mvc.Localization
+@using Microsoft.AspNetCore.Mvc.TagHelpers
 @using TournamentManager.MultiTenancy
+@using System.Globalization
 @inject IViewLocalizer Localizer
 @inject ITenantContext TenantContext
 @model League.Models.TeamViewModels.TeamEditModel
@@ -18,8 +21,8 @@
         <input name="IsValid" type="hidden" value="@ViewData.ModelState.IsValid.ToString()" />
         @if (Model.IsWarning)
         {
-            <div class="p-1 col-12 col-md-6 border border-warning rounded">
-                <div class="form-check">
+            <div class="p-1 col-12 col-md-6 border border-warning rounded mb-3">
+                <div class="form-check form-check form-check-warning ms-1">
                     <input asp-for="OverrideWarnings" type="checkbox" class="form-check-input">
                     <label class="form-check-label text-warning mt-0" asp-for="OverrideWarnings"></label>
                 </div>
@@ -37,14 +40,14 @@
 </div>
 @section styles
 {
-    <link rel="stylesheet" href="~/lib/tempusdominus-bootstrap-4/tempusdominus-bootstrap-4.min.css" />
+    <link rel="stylesheet" href="~/lib/tempus-dominus/tempus-dominus.min.css" asp-append-version="true" />
     <style type="text/css">
         /* Start: Change checkbox color */
-        .border-warning > .form-check > input[type=checkbox]:checked {
+        .form-check.form-check-warning > input[type=checkbox]:checked {
             background-color: var(--bs-warning);
         }
 
-        .border-warning > .form-check > input[type=checkbox] {
+        .form-check.form-check-warning > input[type=checkbox] {
             border: 2px solid var(--bs-warning);
             background-color: transparent;
         }
@@ -54,8 +57,15 @@
 }
 @section scripts
 {
-    @* moment and tempusdominus-bootstrap-4 are required for EditTeam *@
-    <script type="text/javascript" src="~/lib/Moment/moment.min.js"></script>
-    <script type="text/javascript" src="~/lib/tempusdominus-bootstrap-4/tempusdominus-bootstrap-4.min.js"></script>
-    <partial name="@nameof(League.Views.ViewNames.Shared._DateTimePickerScriptPartial)" />
+    <script type="text/javascript" src="~/lib/tempus-dominus/tempus-dominus.all.min.js" asp-append-version="true"></script>
+    <script type="text/javascript">
+        const locale = '@(CultureInfo.CurrentCulture.ToString())';
+        const parentLocale = '@(CultureInfo.CurrentCulture.Parent.TwoLetterISOLanguageName)';
+        const hourCycle = '@(CultureInfo.CurrentCulture.DateTimeFormat.ShortTimePattern.Contains("t") ? 12 : 24)';
+
+        const tdFactory = new Site.TempusDominusFactory(locale, parentLocale, hourCycle, false);
+        [].forEach.call(document.querySelectorAll('[data-input-type="time"]'), function (el) {
+            tdFactory.CreateTimePicker(el, '@(CultureInfo.CurrentCulture.DateTimeFormat.ShortTimePattern.Replace("tt", "T"))');
+        });
+    </script>
 }

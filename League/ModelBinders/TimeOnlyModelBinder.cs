@@ -66,9 +66,8 @@ public class TimeOnlyModelBinder : IModelBinder
             foreach (var format in _formats)
             {
                 if (!TimeOnly.TryParseExact(text, format, CultureInfo.InvariantCulture, _dateTimeStyles,
-                        out var value)) continue;
+                        out time)) continue;
 
-                time = TimeOnly.MinValue;
                 return true;
             }
         }
