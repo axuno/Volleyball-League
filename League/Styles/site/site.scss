@@ -58,9 +58,19 @@ body {
         }
 
         img {
-
         }
     }
+    /* Start: Checkbox color as warning */
+    /* Used in: Match.EditFixture, Match.EnterResult, Team.MyTeam, Team.EditTeam, TeamApplication.EditVenue, Venue.EditVenue */
+    .form-check.form-check-warning > input[type=checkbox]:checked {
+        background-color: var(--bs-warning);
+    }
+
+    .form-check.form-check-warning > input[type=checkbox] {
+        border: 2px solid var(--bs-warning);
+        background-color: transparent;
+    }
+    /* End: Checkbox color as warning  */
 
     @include media-breakpoint-down(sm) {
         header .header-organization {
