@@ -78,6 +78,12 @@ Site.TempusDominusFactory = class {
         }
 
         try {
+            try {
+                // Destroy any existing widget
+                if (element._tempusDominus) element._tempusDominus.dispose();
+            }
+            catch {}
+            
             element._tempusDominus = this._tryCreateCalendarPicker(element, format);
         } catch {
             element.querySelector('input').value = '';
@@ -98,6 +104,12 @@ Site.TempusDominusFactory = class {
         }
 
         try {
+            try {
+                // Destroy any existing widget
+                if (element._tempusDominus) element._tempusDominus.dispose();
+            }
+            catch {}
+            
             element._tempusDominus = this._tryCreateTimePicker(element, format);
         } catch {
             element.querySelector('input').value = '';
