@@ -64,7 +64,7 @@ ViewContext.ViewData.TemplateInfo.HtmlFieldPrefix = Model.HtmlFieldPrefix;
         @*<span asp-validation-for="MatchTime" class="text-danger"></span>*@
     </div>
 </div>
-<script type="text/javascript" site-on-modal-shown="true">
+<script type="text/javascript" site-on-modal-shown="true" site-on-content-loaded="true">
     const onMatchDayOfWeekChangeFunction = function() {
         const matchTimeEle = document.getElementById('@Html.IdFor(m => m.MatchTime)');
         if (this.value === '') {
@@ -89,6 +89,6 @@ ViewContext.ViewData.TemplateInfo.HtmlFieldPrefix = Model.HtmlFieldPrefix;
 
     const tdFactory = new Site.TempusDominusFactory(locale, parentLocale, hourCycle, false);
     [].forEach.call(document.querySelectorAll('[data-input-type="time"]'), function (el) {
-        tdFactory.CreateTimePicker(el, '@(CultureInfo.CurrentCulture.DateTimeFormat.ShortTimePattern.Replace("tt", "T"))');
+        if (!el._tempusDominus) tdFactory.CreateTimePicker(el, '@(CultureInfo.CurrentCulture.DateTimeFormat.ShortTimePattern.Replace("tt", "T"))');
     });
 </script>
