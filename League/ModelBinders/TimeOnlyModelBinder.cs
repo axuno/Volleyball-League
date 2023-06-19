@@ -15,7 +15,7 @@ namespace League.ModelBinders;
 public class TimeOnlyModelBinder : IModelBinder
 {
     private readonly IModelBinder _fallbackBinder;
-    private readonly ILogger<TimeSpanModelBinder> _logger;
+    private readonly ILogger<TimeOnlyModelBinder> _logger;
 
     private const DateTimeStyles _dateTimeStyles = DateTimeStyles.AllowWhiteSpaces | DateTimeStyles.AllowLeadingWhite | DateTimeStyles.AllowTrailingWhite;
 
@@ -34,7 +34,7 @@ public class TimeOnlyModelBinder : IModelBinder
     public TimeOnlyModelBinder(ILoggerFactory loggerFactory)
     {
         _fallbackBinder = new SimpleTypeModelBinder(typeof(DateTime), loggerFactory);
-        _logger = loggerFactory.CreateLogger<TimeSpanModelBinder>();
+        _logger = loggerFactory.CreateLogger<TimeOnlyModelBinder>();
     }
 
     public Task BindModelAsync(ModelBindingContext bindingContext)
