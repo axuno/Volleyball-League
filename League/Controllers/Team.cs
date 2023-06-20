@@ -171,7 +171,7 @@ public class Team : AbstractController
         if (!(await _authorizationService.AuthorizeAsync(User, new TeamEntity(team.Id),
                 Authorization.TeamOperations.EditTeam)).Succeeded)
         {
-            return JsonAjaxRedirectForModal(Url.Action(nameof(Error.AccessDenied), nameof(Error),
+            return JsonResponseRedirect(Url.Action(nameof(Error.AccessDenied), nameof(Error),
                 new { ReturnUrl = TenantLink.Action(nameof(MyTeam), nameof(Team)) }));
         }
 
@@ -200,7 +200,7 @@ public class Team : AbstractController
             if (!(await _authorizationService.AuthorizeAsync(User, new TeamEntity(team.Id),
                     Authorization.TeamOperations.EditTeam)).Succeeded)
             {
-                return JsonAjaxRedirectForModal(Url.Action(nameof(Error.AccessDenied), nameof(Error),
+                return JsonResponseRedirect(Url.Action(nameof(Error.AccessDenied), nameof(Error),
                     new {ReturnUrl = TenantLink.Action(nameof(MyTeam), nameof(Team))}));
             }
 
@@ -250,14 +250,14 @@ public class Team : AbstractController
             if (await _appDb.GenericRepository.SaveEntityAsync(model.TeamEntity, false, true, cancellationToken))
             {
                 TempData.Put<MyTeamMessageModel.MyTeamMessage>(nameof(MyTeamMessageModel.MyTeamMessage), new MyTeamMessageModel.MyTeamMessage { AlertType = SiteAlertTagHelper.AlertType.Success, MessageId = MyTeamMessageModel.MessageId.TeamDataSuccess });
-                return JsonAjaxRedirectForModal(TenantLink.Action(nameof(MyTeam), nameof(Team), new { id = team.Id}));
+                return JsonResponseRedirect(TenantLink.Action(nameof(MyTeam), nameof(Team), new { id = team.Id}));
             }
         }
         catch (Exception e)
         {
             TempData.Put<MyTeamMessageModel.MyTeamMessage>(nameof(MyTeamMessageModel.MyTeamMessage), new MyTeamMessageModel.MyTeamMessage { AlertType = SiteAlertTagHelper.AlertType.Danger, MessageId = MyTeamMessageModel.MessageId.TeamDataFailure});
             _logger.LogCritical(e, "Error saving team id '{teamId}'", model.Team.IsNew ? "new" : model.Team.Id.ToString());
-            return JsonAjaxRedirectForModal(TenantLink.Action(nameof(MyTeam), nameof(Team),new { id = team.Id }));
+            return JsonResponseRedirect(TenantLink.Action(nameof(MyTeam), nameof(Team),new { id = team.Id }));
         }
 
         // We never should come this far
@@ -326,7 +326,7 @@ public class Team : AbstractController
         if (!(await _authorizationService.AuthorizeAsync(User, new TeamEntity(teamEntity.Id),
                 Authorization.TeamOperations.EditTeam)).Succeeded)
         {
-            return JsonAjaxRedirectForModal(Url.Action(nameof(Error.AccessDenied), nameof(Error),
+            return JsonResponseRedirect(Url.Action(nameof(Error.AccessDenied), nameof(Error),
                 new { ReturnUrl = TenantLink.Action(nameof(MyTeam), nameof(Team), new { model.TeamId }) }));
         }
 
@@ -355,7 +355,7 @@ public class Team : AbstractController
             _logger.LogCritical(e, "Failed to save selected venue for team id {teamId}, venue id {venueId}", model.TeamId, model.VenueId);
         }
             
-        return JsonAjaxRedirectForModal(TenantLink.Action(nameof(MyTeam), nameof(Team), new { model.TeamId }));
+        return JsonResponseRedirect(TenantLink.Action(nameof(MyTeam), nameof(Team), new { model.TeamId }));
     }
 
     private IList<long> GetUserClaimTeamIds()
