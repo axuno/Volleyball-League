@@ -265,13 +265,7 @@ Site.ModalForm = function () {
 
         const actionUrl = form.getAttribute('action');
         const formData = new FormData(form); // would be used for 'multipart/form-data '
-        const searchParams = new URLSearchParams(formData);
-        /*for (const pair of formData) {
-            searchParams.append(pair[0], pair[1]);
-        }*/
-
-        const dataToSend = searchParams;
-        //const dataToSend = new URLSearchParams(formData); // needed for 'x-www-form-urlencoded'
+        const dataToSend = new URLSearchParams(formData); // needed for 'x-www-form-urlencoded'
         const method = form.getAttribute('method');
 
         await postModalFormData(actionUrl, dataToSend, method);

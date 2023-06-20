@@ -68,7 +68,11 @@ module.exports = function (grunt) {
 
         uglify: {
             options: {
-                sourceMap: true
+                sourceMap: false
+                /* for debugging
+                sourceMap: {
+                    includeSources: true
+                }*/
             },
             TempusDominusFactory: {
                 files: {
@@ -77,7 +81,7 @@ module.exports = function (grunt) {
             },
             build: {
                 files: {
-                    'wwwroot/js/site.min.js': ['Scripts/Site.ShowPassword.js', 'node_modules/js-cookie/src/js.cookie.js'],
+                    'wwwroot/js/site.min.js': ['Scripts/Site.ModalForm.js', 'Scripts/Site.ShowPassword.js', 'node_modules/js-cookie/src/js.cookie.js'],
                 }
             }
         },
@@ -135,10 +139,6 @@ module.exports = function (grunt) {
                 files: [
                     { cwd: 'Styles/Images/', expand: 'true', src: '**/*', dest: 'wwwroot/css/images/' }
                 ]
-            },
-            js_modal_form: {
-                src: 'Scripts/Site.ModalForm.js',
-                dest: 'wwwroot/js/Site.ModalForm.js'
             }
         },
 
