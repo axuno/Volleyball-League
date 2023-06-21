@@ -13,7 +13,7 @@
         <div>
             <p>@Localizer["The Additional Email will receive the same messages as the Primary Email."]</p>
         </div>
-        <form asp-controller="@nameof(Manage)" asp-action="@nameof(Manage.EditEmail2)" asp-route-tenant="@tenantUrlSegment" method="post" role="form">
+        <form asp-controller="@nameof(Manage)" asp-action="@nameof(Manage.EditEmail2)" asp-route-tenant="@tenantUrlSegment" method="post" role="form" novalidate>
             <site-validation-summary show="All"></site-validation-summary>
             <input name="IsValid" type="hidden" value="@ViewData.ModelState.IsValid.ToString()" />
             <div class="mb-3">

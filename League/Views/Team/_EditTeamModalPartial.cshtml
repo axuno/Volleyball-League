@@ -10,7 +10,7 @@
 <modal id="edit-team" title="@Localizer["Edit team"].Value" dialog-class="modal-xl" tabindex="-1">
     <modal-body>
         @* Form with only 1 input field can be submitted with enter key. So we have to prevent default submit behavior and trigger a click on saveBtn *@
-        <form asp-controller="@nameof(Team)" asp-action="@nameof(Team.Edit)" asp-route-tenant="@tenantUrlSegment" method="post" role="form">
+        <form asp-controller="@nameof(Team)" asp-action="@nameof(Team.Edit)" asp-route-tenant="@tenantUrlSegment" method="post" role="form" novalidate>
             <site-validation-summary show="All" warning="@Model.IsWarning" unique-error-text="true"></site-validation-summary>
             <input asp-for="Hash" type="hidden" />
             <input name="IsValid" type="hidden" value="@ViewData.ModelState.IsValid.ToString()" />

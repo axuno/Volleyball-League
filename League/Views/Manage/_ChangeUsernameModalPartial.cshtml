@@ -14,7 +14,7 @@
 <modal id="change-username" title="@Localizer["Change username"].Value" tabindex="-1">
     <modal-body>
         @* Form with only 1 input field can be submitted with enter key. So we have to prevent default submit behavior and trigger a click on saveBtn *@
-        <form asp-controller="@nameof(Manage)" asp-action="@nameof(Manage.ChangeUserName)" asp-route-tenant="@tenantUrlSegment" method="post" role="form">
+        <form asp-controller="@nameof(Manage)" asp-action="@nameof(Manage.ChangeUserName)" asp-route-tenant="@tenantUrlSegment" method="post" role="form" novalidate>
             <site-validation-summary show="All"></site-validation-summary>
             <input name="IsValid" type="hidden" value="@ViewData.ModelState.IsValid.ToString()" />
             <div class="mb-3">

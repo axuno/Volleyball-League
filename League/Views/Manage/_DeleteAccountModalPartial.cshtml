@@ -11,7 +11,7 @@
         <div>
             <p>@Localizer["Once you delete your user account, there is no going back. Please be certain."]</p>
         </div>
-        <form asp-controller="@nameof(Manage)" asp-action="@nameof(Manage.DeleteAccountConfirmed)" asp-route-tenant="@tenantUrlSegment" method="post" role="form">
+        <form asp-controller="@nameof(Manage)" asp-action="@nameof(Manage.DeleteAccountConfirmed)" asp-route-tenant="@tenantUrlSegment" method="post" role="form" novalidate>
         </form>
     </modal-body>
     <modal-footer show-dismiss="true" dismiss-text="@Localizer["Cancel"].Value">

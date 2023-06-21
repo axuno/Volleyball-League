@@ -12,7 +12,7 @@
             <p>@Localizer["For changing your primary email address we will send a confirmation code to the new email."]</p>
             <p><strong>@Localizer["The primary email address will be changed only after the confirmation link in our message was submitted."]</strong></p>
         </div>
-        <form asp-controller="@nameof(Manage)" asp-action="@nameof(Manage.ChangeEmail)" asp-route-tenant="@tenantUrlSegment" method="post" role="form">
+        <form asp-controller="@nameof(Manage)" asp-action="@nameof(Manage.ChangeEmail)" asp-route-tenant="@tenantUrlSegment" method="post" role="form" novalidate>
             <site-validation-summary show="All"></site-validation-summary>
             <input name="IsValid" type="hidden" value="@ViewData.ModelState.IsValid.ToString()" />
             <div class="mb-3">

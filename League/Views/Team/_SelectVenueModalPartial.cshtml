@@ -15,7 +15,7 @@
                      League.Components.VenueSelectorComponentModel.Criteria.VenuesOfTeams | League.Components.VenueSelectorComponentModel.Criteria.Active | League.Components.VenueSelectorComponentModel.Criteria.Unused,
                      default(long?)); }
         @(await Component.InvokeAsync<League.Components.VenueSelector>(componentModel))
-        <form asp-controller="@nameof(Team)" asp-action="@nameof(Team.SelectVenue)" asp-route-tenant="@tenantUrlSegment" method="post">
+        <form asp-controller="@nameof(Team)" asp-action="@nameof(Team.SelectVenue)" asp-route-tenant="@tenantUrlSegment" method="post" novalidate>
             <input asp-for="TeamId" type="hidden" />
             <input asp-for="VenueId" type="hidden" />
         </form>
