@@ -22,8 +22,8 @@
         <input hidden="hidden" asp-for="Hash" />
         @if (Model.IsWarning)
         {
-            <div class="p-1 col-12 col-md-6 border border-warning rounded">
-                <div class="form-check">
+            <div class="p-1 col-12 col-md-6 border border-warning rounded mb-3">
+                <div class="form-check form-check-warning ms-1">
                     <input asp-for="OverrideWarnings" type="checkbox" class="form-check-input">
                     <label class="form-check-label text-warning mt-0" asp-for="OverrideWarnings"></label>
                 </div>
@@ -38,9 +38,9 @@
         <div class="row">
             <div class="mb-3 col-12 col-md-6">
                 <label asp-for="MatchDate" class="form-label"></label>
-                <div class="input-group" id="picker_@nameof(Model.MatchDate)" data-target-input="nearest">
-                    <input asp-for="MatchDate" type="text" autofocus autocomplete="off" class="form-control datepicker datetimepicker-input" data-target="#picker_@nameof(Model.MatchDate)" aria-describedby="@nameof(Model.MatchDate)HelpBlock" />
-                    <span class="input-group-text" data-target="#picker_@nameof(Model.MatchDate)" data-toggle="datetimepicker">
+                <div id="@(Model.MatchDate)-c" class="input-group" data-input-type="date" data-td-target-input="nearest" data-td-target-toggle="nearest">
+                    <input asp-for="MatchDate" type="text" asp-format="{0:@(CultureInfo.CurrentCulture.DateTimeFormat.ShortDatePattern)}" autofocus autocomplete="off" class="form-control" aria-describedby="@nameof(Model.MatchDate)HelpBlock" />
+                    <span class="input-group-text" data-td-target="@nameof(Model.MatchDate)-c" data-td-toggle="datetimepicker">
                         <i class="far fa-calendar-alt"></i>
                     </span>
                 </div>
@@ -53,9 +53,9 @@
         <div class="row">
             <div class="mb-3 col-12 col-md-6">
                 <label asp-for="MatchTime" class="form-label"></label>
-                <div class="input-group" id="picker_@nameof(Model.MatchTime)" data-target-input="nearest">
-                    <input asp-for="MatchTime" type="text" autocomplete="off" class="form-control datepicker datetimepicker-input" data-target="#picker_@nameof(Model.MatchTime)" aria-describedby="@nameof(Model.MatchDate)HelpBlock" />
-                    <span class="input-group-text" data-target="#picker_@nameof(Model.MatchTime)" data-toggle="datetimepicker">
+                <div id="@(Model.MatchTime)-c" class="input-group" data-input-type="time" data-td-target-input="nearest" data-td-target-toggle="nearest">
+                    <input asp-for="MatchTime" type="text" asp-format="{0:@(CultureInfo.CurrentCulture.DateTimeFormat.ShortTimePattern)}" autocomplete="off" class="form-control" aria-describedby="@nameof(Model.MatchTime)HelpBlock" />
+                    <span class="input-group-text" data-td-target="@nameof(Model.MatchTime)-c" data-td-toggle="datetimepicker">
                         <i class="far fa-clock"></i>
                     </span>
                 </div>
@@ -99,7 +99,7 @@
 </modal>
 @section styles
 {
-    <link rel="stylesheet" href="~/lib/tempusdominus-bootstrap-4/tempusdominus-bootstrap-4.min.css" />
+    <link rel="stylesheet" href="~/lib/tempus-dominus/tempus-dominus.min.css" asp-append-version="true"/>
     <style type="text/css">
         #venue-list tbody tr {
             border-bottom: solid 2px lightgray
@@ -116,54 +116,50 @@
         #venue-picker .input-group {
             cursor: pointer;
         }
-
-        /* Start: Change checkbox color */
-        .border-warning > .form-check > input[type=checkbox]:checked {
-            background-color: var(--bs-warning);
-        }
-
-        .border-warning > .form-check > input[type=checkbox] {
-            border: 2px solid var(--bs-warning);
-            background-color: transparent;
-        }
-        /* End: Change checkbox color */
     </style>
 }
 @section scripts
 {
-    <script type="text/javascript" src="~/lib/Moment/moment.min.js"></script>
-    <script type="text/javascript" src="~/lib/tempusdominus-bootstrap-4/tempusdominus-bootstrap-4.min.js"></script>
-    <partial name="@nameof(League.Views.ViewNames.Shared._DateTimePickerScriptPartial)" />
+    <script type="text/javascript" src="~/lib/tempus-dominus/tempus-dominus.all.min.js" asp-append-version="true"></script>
     <script type="text/javascript">
-        $(document).ready(function () {
-            // don't use attribute 'autofocus' with datetimepicker - this will focus before initialization
-            $('#picker_@Html.IdFor(m => m.MatchDate)').datetimepicker({
-                format: 'L' /*, minDate: moment().startOf('day'), maxDate: moment('09/30/2019').startOf('day')*/
+        document.addEventListener('DOMContentLoaded', OnDOMContentLoaded, false);
+        function OnDOMContentLoaded() {
+
+            const locale = '@(CultureInfo.CurrentCulture.ToString())';
+            const parentLocale = '@(CultureInfo.CurrentCulture.Parent.TwoLetterISOLanguageName)';
+            const hourCycle = '@(CultureInfo.CurrentCulture.DateTimeFormat.ShortTimePattern.Contains("t") ? 12 : 24)';
+
+            const tdFactory = new Site.TempusDominusFactory(locale, parentLocale, hourCycle, false);
+            [].forEach.call(document.querySelectorAll('[data-input-type="date"]'), function (el) {
+                tdFactory.CreateCalendarPicker(el, '@(CultureInfo.CurrentCulture.DateTimeFormat.ShortDatePattern)');
             });
-            $('#picker_@Html.IdFor(m => m.MatchTime)').datetimepicker({ format: 'LT', stepping: 15 });
-
-            $('#select-venue').on('show.bs.modal',
-                function(e) {
-                    $('#select-venue').find('tr[data-venue-id]').each(function(rowIndex, r) {
-                        if ($(this).attr('data-venue-id') === $('#@Html.IdFor(m => m.VenueId)').val()) {
-                            $(this).find('td:first').html('<i class="fas fa-check"></i>');
-                        } else {
-                            $(this).find('td:first').html('');
-                        }
-                    });
-                });
-
-            $('#select-venue tr[data-venue-id]').on('click',
-                function() {
-                    $('#@Html.IdFor( m => m.VenueId)').val($(this).attr('data-venue-id'));
-                    $('#venue-text').text($(this).find('td:nth-child(2)').text());
-                    $('#select-venue').modal('hide');
-                });
-        });
-
-        $('#@nameof(Model.MatchDate)').on('change',
-            function() {
-                if ($(this).val() === '') $('#@nameof(Model.MatchTime)').val('');
+            [].forEach.call(document.querySelectorAll('[data-input-type="time"]'), function (el) {
+                tdFactory.CreateTimePicker(el, '@(CultureInfo.CurrentCulture.DateTimeFormat.ShortTimePattern.Replace("tt", "T"))');
             });
+
+            document.getElementById('select-venue').addEventListener('show.bs.modal', function(e) {
+                document.querySelectorAll('#select-venue tr[data-venue-id]').forEach(function(r) {
+                    if (r.getAttribute('data-venue-id') === document.getElementById('@Html.IdFor(m => m.VenueId)').value) {
+                        r.querySelector('td:first-child').innerHTML = '<i class="fas fa-check"></i>';
+                    } else {
+                        r.querySelector('td:first-child').innerHTML = '';
+                    }
+                });
+            });
+
+            document.querySelectorAll('#select-venue tr[data-venue-id]').forEach(function(r) {
+                r.addEventListener('click', function() {
+                    document.getElementById('@Html.IdFor(m => m.VenueId)').value = r.getAttribute('data-venue-id');
+                    document.getElementById('venue-text').textContent = r.querySelector('td:nth-child(2)').textContent;
+                    bootstrap.Modal.getOrCreateInstance('#select-venue').hide();
+                });
+            });
+
+            document.getElementById('@nameof(Model.MatchDate)').addEventListener('change', function() {
+                if (this.value === '') {
+                    document.getElementById('Model.MatchTime').value = '';
+                }
+            });
+        }
     </script>
 }

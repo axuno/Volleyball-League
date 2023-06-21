@@ -9,13 +9,13 @@ using System.Threading.Tasks;
 namespace League.ModelBinders;
 
 /// <summary>
-/// Model binder used for <see cref="TimeSpan"/> values instead of <see cref="SimpleTypeModelBinder"/>,
+/// Model binder used for <see cref="TimeOnly"/> values instead of <see cref="SimpleTypeModelBinder"/>,
 /// which is the fallback model binder.
 /// </summary>
-public class TimeSpanModelBinder : IModelBinder
+public class TimeOnlyModelBinder : IModelBinder
 {
     private readonly IModelBinder _fallbackBinder;
-    private readonly ILogger<TimeSpanModelBinder> _logger;
+    private readonly ILogger<TimeOnlyModelBinder> _logger;
 
     private const DateTimeStyles _dateTimeStyles = DateTimeStyles.AllowWhiteSpaces | DateTimeStyles.AllowLeadingWhite | DateTimeStyles.AllowTrailingWhite;
 
@@ -30,11 +30,11 @@ public class TimeSpanModelBinder : IModelBinder
         "hh:mmtt", "hh.mmtt", "hhmmtt", "hhtt",
         "h:mmtt", "h.mmtt", "hmmtt", "htt"
     };
-    
-    public TimeSpanModelBinder(ILoggerFactory loggerFactory)
+
+    public TimeOnlyModelBinder(ILoggerFactory loggerFactory)
     {
         _fallbackBinder = new SimpleTypeModelBinder(typeof(DateTime), loggerFactory);
-        _logger = loggerFactory.CreateLogger<TimeSpanModelBinder>();
+        _logger = loggerFactory.CreateLogger<TimeOnlyModelBinder>();
     }
 
     public Task BindModelAsync(ModelBindingContext bindingContext)
@@ -45,7 +45,7 @@ public class TimeSpanModelBinder : IModelBinder
         bindingContext.ModelState.SetModelValue(bindingContext.ModelName, valueProviderResult);
         var valueAsString = valueProviderResult.FirstValue;
 
-        if (!TryParseTime(valueAsString, out var time))
+        if (!TryParseTimeOnly(valueAsString, out var time))
         {
             _logger.LogDebug("Could not bind model '{modelName}' to value '{valueAsString}', falling back to {fallbackBinder}", bindingContext.ModelName, valueAsString, nameof(SimpleTypeModelBinder));
             return _fallbackBinder.BindModelAsync(bindingContext);
@@ -56,7 +56,7 @@ public class TimeSpanModelBinder : IModelBinder
         return Task.CompletedTask;
     }
 
-    private bool TryParseTime(string? text, out TimeSpan time)
+    private bool TryParseTimeOnly(string? text, out TimeOnly time)
     {
         if (text != null)
         {
@@ -65,15 +65,14 @@ public class TimeSpanModelBinder : IModelBinder
 
             foreach (var format in _formats)
             {
-                if (!DateTime.TryParseExact(text, format, CultureInfo.InvariantCulture, _dateTimeStyles,
-                        out var value)) continue;
+                if (!TimeOnly.TryParseExact(text, format, CultureInfo.InvariantCulture, _dateTimeStyles,
+                        out time)) continue;
 
-                time = value.TimeOfDay;
                 return true;
             }
         }
-
-        time = TimeSpan.Zero;
+        
+        time = TimeOnly.MinValue;
         return false;
     }
 }

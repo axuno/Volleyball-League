@@ -28,12 +28,6 @@ public class SiteScriptTagHelper : TagHelper
     public bool OnContentLoaded { get; set; } = false;
 
     /// <summary>
-    /// Execute script only once an ajax call is loaded.
-    /// </summary>
-    [HtmlAttributeName("site-on-ajax-complete")]
-    public bool OnAjaxComplete { get; set; } = false;
-
-    /// <summary>
     /// Execute script only once the Bootstrap 4 Model is shown (event 'shown.bs.modal' is fired).
     /// </summary>
     [HtmlAttributeName("site-on-modal-shown")]
@@ -65,17 +59,11 @@ public class SiteScriptTagHelper : TagHelper
                 sb.Append(jsFunctionName);
                 sb.Append(");\n");
             }
-            if (OnAjaxComplete)
-            {
-                sb.Append("if (window.jquery) $(document).ajaxComplete(");
-                sb.Append(jsFunctionName);
-                sb.Append(");\n");
-            }
             if (OnBootstrapModelShown)
             {
-                sb.Append("if (window.jquery) $(document).on('shown.bs.modal',");
-                sb.Append(jsFunctionName);
-                sb.Append(");\n");
+                sb.Append("document.addEventListener('shown.bs.modal', function () {\n");
+                sb.Append($"{jsFunctionName}(); ");
+                sb.Append("});\n");
             }
             if (Inline)
             {

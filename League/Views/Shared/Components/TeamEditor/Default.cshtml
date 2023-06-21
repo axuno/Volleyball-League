@@ -52,9 +52,9 @@ ViewContext.ViewData.TemplateInfo.HtmlFieldPrefix = Model.HtmlFieldPrefix;
 <div class="row">
     <div class="mb-3 col-12 col-md-6">
         <label asp-for="MatchTime" class="form-label"></label>
-        <div class="input-group" id="picker_@Html.IdFor(m => m.MatchTime)" data-target-input="nearest">
-            <input asp-for="MatchTime" type="text" autocomplete="off" class="form-control d-block col-6 datepicker datetimepicker-input" data-target="#picker_@Html.IdFor(m => m.MatchTime)" aria-describedby="@nameof(Model.MatchTime)HelpBlock" />
-            <span class="input-group-text" data-target="#picker_@Html.IdFor(m => m.MatchTime)" data-toggle="datetimepicker">
+        <div id="@nameof(Model.MatchTime)-c" class="input-group" data-input-type="time" data-td-target-input="nearest" data-td-target-toggle="nearest">
+            <input asp-for="MatchTime" type="text" asp-format="{0:@(CultureInfo.CurrentCulture.DateTimeFormat.ShortTimePattern)}" autocomplete="off" class="form-control" aria-describedby="@nameof(Model.MatchTime)HelpBlock" />
+            <span class="input-group-text" data-td-target="@nameof(Model.MatchTime)-c" data-td-toggle="datetimepicker">
                 <i class="far fa-clock"></i>
             </span>
         </div>
@@ -64,18 +64,31 @@ ViewContext.ViewData.TemplateInfo.HtmlFieldPrefix = Model.HtmlFieldPrefix;
         @*<span asp-validation-for="MatchTime" class="text-danger"></span>*@
     </div>
 </div>
-<script type="text/javascript" site-on-content-loaded="true" site-on-modal-shown="true" site-inline="false">
-    var onMatchDayOfWeekChangeFunction =
-        function() {
-            if (this.value === '') {
-                $('#@Html.IdFor(m => m.MatchTime)').attr('disabled', 'disabled').css('cursor', 'not-allowed').val('');
-                $('span[data-target="#picker_@Html.IdFor(m => m.MatchTime)"]').css('cursor', 'not-allowed');
-            } else {
-                $('#@Html.IdFor(m => m.MatchTime)').removeAttr('disabled').css('cursor', 'auto');
-                $('span[data-target="#picker_@Html.IdFor(m => m.MatchTime)"]').css('cursor', 'pointer');
-            }
-        };
-    $('#@Html.IdFor(m => m.MatchDayOfWeek)').off('change', onMatchDayOfWeekChangeFunction).on('change', onMatchDayOfWeekChangeFunction);
-    $('#@Html.IdFor(m => m.MatchDayOfWeek)').trigger('change'); // initialize
-    $('#picker_@Html.IdFor(m => m.MatchTime)').datetimepicker({ format: 'LT', stepping: 15 });
+<script type="text/javascript" site-on-modal-shown="true" site-on-content-loaded="true">
+    const onMatchDayOfWeekChangeFunction = function() {
+        const matchTimeEle = document.getElementById('@Html.IdFor(m => m.MatchTime)');
+        if (this.value === '') {
+            matchTimeEle.setAttribute('disabled', 'disabled');
+            matchTimeEle.style.cursor = 'not-allowed';
+            matchTimeEle.value = '';
+            document.querySelector('span[data-td-target="@nameof(Model.MatchTime)-c"]').style.cursor = 'not-allowed';
+        } else {
+            matchTimeEle.removeAttribute('disabled');
+            matchTimeEle.style.cursor = 'auto';
+            document.querySelector('span[data-td-target="@nameof(Model.MatchTime)-c"]').style.cursor = 'pointer';
+        }
+    };
+    const matchDayOfWeek = document.getElementById('@Html.IdFor(m => m.MatchDayOfWeek)');
+    matchDayOfWeek.removeEventListener('change', onMatchDayOfWeekChangeFunction);
+    matchDayOfWeek.addEventListener('change', onMatchDayOfWeekChangeFunction);
+    matchDayOfWeek.dispatchEvent(new Event('change')); // initialize
+
+    const locale = '@(CultureInfo.CurrentCulture.ToString())';
+    const parentLocale = '@(CultureInfo.CurrentCulture.Parent.TwoLetterISOLanguageName)';
+    const hourCycle = '@(CultureInfo.CurrentCulture.DateTimeFormat.ShortTimePattern.Contains("t") ? 12 : 24)';
+
+    const tdFactory = new Site.TempusDominusFactory(locale, parentLocale, hourCycle, false);
+    [].forEach.call(document.querySelectorAll('[data-input-type="time"]'), function (el) {
+        tdFactory.CreateTimePicker(el, '@(CultureInfo.CurrentCulture.DateTimeFormat.ShortTimePattern.Replace("tt", "T"))');
+    });
 </script>

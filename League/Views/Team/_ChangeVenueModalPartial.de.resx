@@ -132,6 +132,9 @@
   <data name="Please check the list of know venues, before creating a new one." xml:space="preserve">
     <value>Bitte vor Anlegen eines neuen Spielorts die Liste bekannter Orte prüfen.</value>
   </data>
+  <data name="Save" xml:space="preserve">
+    <value>Speichern</value>
+  </data>
   <data name="Select another venue" xml:space="preserve">
     <value>Anderen Spielort auswählen</value>
   </data>

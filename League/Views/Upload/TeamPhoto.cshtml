@@ -76,7 +76,7 @@
     <script type="text/javascript" src="~/lib/dropzone/dropzone.min.js"></script>
     <script type="text/javascript">
         //<![CDATA[
-        $(document).ready(function() {
+        document.addEventListener('DOMContentLoaded', function () {
 
             var img = document.getElementById("team-photo");
             if (img != null) {
@@ -90,7 +90,7 @@
                 }
             }
         });
-        @* DO NOT include Dropzone into $(document).ready() *@
+        @* DO NOT include Dropzone into document.addEventListener('DOMContentLoaded', ...) *@
         Dropzone.options.teamPhotoUploader = {
             init: function() {
                 this.on('success',

@@ -60,7 +60,7 @@ public class Role : AbstractController
         if (!(await _authorizationService.AuthorizeAsync(User, new TeamEntity(model.TeamId),
                 Authorization.TeamOperations.RemoveTeamMember)).Succeeded)
         {
-            return JsonAjaxRedirectForModal(Url.Action(nameof(Error.AccessDenied), nameof(Error),
+            return JsonResponseRedirect(Url.Action(nameof(Error.AccessDenied), nameof(Error),
                 new {model.ReturnUrl}));
         }
 
@@ -80,7 +80,7 @@ public class Role : AbstractController
         if (!(await _authorizationService.AuthorizeAsync(User, new TeamEntity(model.TeamId),
                 Authorization.TeamOperations.RemoveTeamMember)).Succeeded)
         {
-            return JsonAjaxRedirectForModal(Url.Action(nameof(Error.AccessDenied), nameof(Error),
+            return JsonResponseRedirect(Url.Action(nameof(Error.AccessDenied), nameof(Error),
                 new {model.ReturnUrl}));
         }
 
@@ -90,7 +90,7 @@ public class Role : AbstractController
         {
             _logger.LogInformation("Rejected to remove last claim '{claimType}' for team id '{teamId}' and user id {userId}",
                 model.ClaimType, model.TeamId, model.UserId);
-            return JsonAjaxRedirectForModal(SetCannotRemoveLastTeamManagerReturnResult(model.ReturnUrl, model.TeamId));
+            return JsonResponseRedirect(SetCannotRemoveLastTeamManagerReturnResult(model.ReturnUrl, model.TeamId));
         }
 
         var removeTeamMember = await _signInManager.UserManager.FindByIdAsync(model.UserId.ToString());
@@ -105,11 +105,11 @@ public class Role : AbstractController
             catch (Exception e)
             {
                 _logger.LogError(e, "Failed to remove claim '{claimType}' for team id '{teamId}' and user id {userId}", model.ClaimType, model.TeamId, model.UserId);
-                return JsonAjaxRedirectForModal(SetAdjustedReturnResult(nameof(Remove), model.ReturnUrl, model.TeamId, false));
+                return JsonResponseRedirect(SetAdjustedReturnResult(nameof(Remove), model.ReturnUrl, model.TeamId, false));
             }
         }
 
-        return JsonAjaxRedirectForModal(SetAdjustedReturnResult(nameof(Remove), model.ReturnUrl, model.TeamId, true));
+        return JsonResponseRedirect(SetAdjustedReturnResult(nameof(Remove), model.ReturnUrl, model.TeamId, true));
     }
 
     [HttpGet("[action]/{tid:long}")]
@@ -126,7 +126,7 @@ public class Role : AbstractController
         if (!(await _authorizationService.AuthorizeAsync(User, new TeamEntity(model.TeamId),
                 Authorization.TeamOperations.AddTeamMember)).Succeeded)
         {
-            return JsonAjaxRedirectForModal(Url.Action(nameof(Error.AccessDenied), nameof(Error),
+            return JsonResponseRedirect(Url.Action(nameof(Error.AccessDenied), nameof(Error),
                 new {model.ReturnUrl}));
         }
 
@@ -151,7 +151,7 @@ public class Role : AbstractController
         if (!(await _authorizationService.AuthorizeAsync(User, new TeamEntity(model.TeamId),
                 Authorization.TeamOperations.AddTeamMember)).Succeeded)
         {
-            return JsonAjaxRedirectForModal(Url.Action(nameof(Error.AccessDenied), nameof(Error),
+            return JsonResponseRedirect(Url.Action(nameof(Error.AccessDenied), nameof(Error),
                 new { model.ReturnUrl }));
         }
 
@@ -179,7 +179,7 @@ public class Role : AbstractController
             return PartialView(Views.ViewNames.Role._AddMemberModalPartial, model);
         }
 
-        return JsonAjaxRedirectForModal(SetAdjustedReturnResult(nameof(Add), model.ReturnUrl, model.TeamId, true));
+        return JsonResponseRedirect(SetAdjustedReturnResult(nameof(Add), model.ReturnUrl, model.TeamId, true));
     }
 
     private string SetAdjustedReturnResult(string method, string returnUrl, long teamId, bool isSuccess)

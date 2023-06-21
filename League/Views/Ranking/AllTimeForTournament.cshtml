@@ -34,7 +34,7 @@
     <div id="tournament-list">
         @foreach (var (id, name, period) in tournaments)
         {
-            if (period?.Start == null || period.End == null)
+            if (period.Start == null || period.End == null)
             {
                 continue;
             }
@@ -147,14 +147,20 @@
 {
     <script type="text/javascript">
         //<![CDATA[
-        $(document).ready(function () {
-            $('[data-bs-toggle="tooltip"]').tooltip();
-            $('#btn-more-tournaments').on('click',
-                function (e) {
-                    $('#tournament-list > .btn').removeClass('d-none');
-                    $('#btn-more-tournaments').addClass('d-none');
-                    e.preventDefault();
-                });
+        document.addEventListener('DOMContentLoaded', function () {
+            // Activate tooltips
+            const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+            const tooltips = tooltipTriggerList.map(function(tooltipTriggerEl) {
+                return new bootstrap.Tooltip(tooltipTriggerEl);
+            });
+            
+            document.getElementById('btn-more-tournaments').addEventListener('click', function(e) {
+                [].forEach.call(document.querySelectorAll('#tournament-list > .btn'), function (el) {
+                    el.classList.remove('d-none')
+                    });
+                document.querySelector('#btn-more-tournaments').classList.add('d-none');
+                e.preventDefault();
+            });
         });
         //]]>
     </script>

@@ -56,6 +56,7 @@ Localizations for English and German are included. The library is in operation o
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
         <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="6.0.2" />
+        <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
         <PackageReference Include="NLog" Version="5.1.1" />
         <PackageReference Include="NLog.Web.AspNetCore" Version="5.2.1" />
         <PackageReference Include="NuGetizer" Version="0.9.1">

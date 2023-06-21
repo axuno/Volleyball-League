@@ -111,8 +111,12 @@
 {
     <script type="text/javascript">
         //<![CDATA[
-        $(document).ready(function () {
-            $('[data-bs-toggle="tooltip"]').tooltip();
+        document.addEventListener('DOMContentLoaded', function () {
+            // Activate tooltips
+            const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+            const tooltips = tooltipTriggerList.map(function(tooltipTriggerEl) {
+                return new bootstrap.Tooltip(tooltipTriggerEl);
+            });
         });
         //]]>
     </script>

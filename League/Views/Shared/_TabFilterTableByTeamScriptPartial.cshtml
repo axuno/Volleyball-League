@@ -1,0 +1,53 @@
+<script type="text/javascript">
+    //<![CDATA[
+    document.addEventListener("DOMContentLoaded", function() {
+        
+        // Activate tooltips
+        const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+        const tooltips = tooltipTriggerList.map(function(tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl);
+        });
+
+        const filterLinks = document.querySelectorAll('.filter-link');
+        filterLinks.forEach(function(filterLink) {
+            filterLink.addEventListener('click', function(e) {
+                e.preventDefault();
+                const teamName = this.dataset.teamName;
+                const roundId = this.dataset.roundId;
+                const filter = document.querySelector('#team-filter-' + roundId);
+                filter.style.display = 'block';
+				filter.querySelector('span').textContent = teamName;
+				
+				// hide() and show() do not work for d-inline-block
+                filter.classList.remove('d-none');
+                filter.classList.add('d-inline-block');
+                
+				// First make all rows visible
+                Array.from(this.closest('table').querySelectorAll('tbody > tr')).forEach(function(row) {
+                    row.style.display = 'table-row';
+                });
+                
+				// Then hide rows not containing the selected team name
+                Array.from(this.closest('table').querySelectorAll('td.context-menu:not(:has([data-team-name="' + teamName + '"]))')).forEach(function(td) {
+                    td.parentElement.style.display = 'none';
+                });
+            });
+        });
+		
+        const teamFilters = document.querySelectorAll('[id^=team-filter-]');
+        teamFilters.forEach(function(teamFilter) {
+            teamFilter.addEventListener('click', function() {
+                // Bootstrap flaw: ensure tooltips don't remain visible
+                tooltips.forEach(function(tooltip) {
+                    tooltip.hide();
+                });
+                this.classList.remove('d-inline-block');
+                this.classList.add('d-none');
+                Array.from(this.parentElement.querySelectorAll('table tbody > tr')).forEach(function(row) {
+                    row.style.display = 'table-row';
+                });
+            });
+        });
+    });
+    //]]>
+</script>

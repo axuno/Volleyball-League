@@ -16,10 +16,11 @@ public class DateTimeModelBinder : IModelBinder
     private readonly IModelBinder _fallbackBinder;
     private readonly ILogger<DateTimeModelBinder> _logger;
 
-    private const DateTimeStyles _dateTimeStyles = DateTimeStyles.AllowWhiteSpaces | DateTimeStyles.AssumeLocal | DateTimeStyles.NoCurrentDateDefault;
+    private const DateTimeStyles _dateTimeStyles = DateTimeStyles.AllowWhiteSpaces | DateTimeStyles.AllowLeadingWhite | DateTimeStyles.AllowTrailingWhite;
 
     private readonly string[] _formats = 
     {
+        // H := 24-hour clock, h := 12-hour clock
         "yyyyMMddHHmmss",
         "yyyyMMddHHmm",
         "yyyyMMdd",

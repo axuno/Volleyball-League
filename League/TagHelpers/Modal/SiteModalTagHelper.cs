@@ -16,7 +16,7 @@ public class ModalContext
 /// </summary>
 [HtmlTargetElement(TagHelperAttributeName)]
 [RestrictChildren("modal-body", "modal-footer")]
-public class ModalTagHelper : TagHelper
+public class SiteModalTagHelper : TagHelper
 {
     public const string TagHelperAttributeName = "modal";
 
@@ -39,7 +39,7 @@ public class ModalTagHelper : TagHelper
     public override async Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
     {
         var modalContext = new ModalContext();
-        context.Items.Add(typeof(ModalTagHelper), modalContext);
+        context.Items.Add(typeof(SiteModalTagHelper), modalContext);
 
         _ = await output.GetChildContentAsync().ConfigureAwait(false);
         var closeButton = "<button type='button' class='btn btn-secondary btn-close float-end' data-bs-dismiss='modal' aria-label='Close'></button>";

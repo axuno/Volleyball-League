@@ -239,7 +239,7 @@
 </div>
 @section styles
 {
-    <link rel="stylesheet" href="~/lib/tempusdominus-bootstrap-4/tempusdominus-bootstrap-4.min.css" />
+    <link rel="stylesheet" href="~/lib/tempus-dominus/tempus-dominus.min.css" asp-append-version="true"/>
     <style type="text/css">
         @* Team members *@
 
@@ -280,8 +280,6 @@
 }
 @section scripts
 {
-    @* moment and tempusdominus-bootstrap-4 are required for EditTeam modal *@
-    <script type="text/javascript" src="~/lib/Moment/moment.min.js"></script>
-    <script type="text/javascript" src="~/lib/tempusdominus-bootstrap-4/tempusdominus-bootstrap-4.min.js"></script>
-    <partial name="@nameof(League.Views.ViewNames.Shared._DateTimePickerScriptPartial)" />
+    @* tempus-dominus is required for EditTeam modal *@
+    <script type="text/javascript" src="~/lib/tempus-dominus/tempus-dominus.all.min.js" asp-append-version="true"></script>
 }

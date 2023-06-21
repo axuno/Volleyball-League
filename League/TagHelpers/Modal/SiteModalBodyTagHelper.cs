@@ -7,7 +7,7 @@ namespace League.TagHelpers.Modal;
 /// The modal-body portion of a Bootstrap modal dialog
 /// </summary>
 [HtmlTargetElement(TagHelperAttributeName, ParentTag = "modal")]
-public class ModalBodyTagHelper : TagHelper
+public class SiteModalBodyTagHelper : TagHelper
 {
     public const string TagHelperAttributeName = "modal-body";
 
@@ -15,7 +15,7 @@ public class ModalBodyTagHelper : TagHelper
     {
         output.Attributes.RemoveAll(TagHelperAttributeName);
         var childContent = await output.GetChildContentAsync();
-        var modalContext = (ModalContext)context.Items[typeof(ModalTagHelper)];
+        var modalContext = (ModalContext)context.Items[typeof(SiteModalTagHelper)];
         modalContext.Body = childContent;
         output.SuppressOutput();
     }

@@ -64,22 +64,23 @@
 {
     <script type="text/javascript" site-on-content-loaded="true">
 
-    function CheckUncheckItems() {
-        $('#venue-list').find('tr[data-venue-id]').each(function(rowIndex, r) {
-            if ($(this).attr('data-venue-id') === $('#@(Html.IdFor(m => m.VenueId))').val()) {
-                $(this).find('td:first').html('<i class="fas fa-check"></i>');
-            } else {
-                $(this).find('td:first').html('');
-            }
-        });
-    }
+        function CheckUncheckItems() {
+            document.querySelectorAll('#venue-list tr[data-venue-id]').forEach(function(r) {
+                if (r.getAttribute('data-venue-id') === document.querySelector('#@(Html.IdFor(m => m.VenueId))').value) {
+                    r.querySelector('td:first-child').innerHTML = '<i class="fas fa-check"></i>';
+                } else {
+                    r.querySelector('td:first-child').innerHTML = '';
+                }
+            });
+        }
 
-    $('#venue-list tr[data-venue-id]').on('click',
-        function() {
-            $('#@(Html.IdFor(m => m.VenueId))').val($(this).attr('data-venue-id'));
-            CheckUncheckItems();
+        document.querySelectorAll('#venue-list tr[data-venue-id]').forEach(function(r) {
+            r.addEventListener('click', function() {
+                document.querySelector('#@(Html.IdFor(m => m.VenueId))').value = r.getAttribute('data-venue-id');
+                CheckUncheckItems();
+            });
         });
 
-    CheckUncheckItems();
+        CheckUncheckItems();
     </script>
 }

@@ -48,11 +48,17 @@ public class ResultEnteredCreator : IMailMessageCreator
                 .And(TeamUserRoundFields.TournamentId == tenantContext.TournamentContext.MatchResultTournamentId)),
             cancellationToken);
 
+        var username = teamUserRoundInfos.FirstOrDefault(tur => tur.UserId == Parameters.ChangedByUserId)?.CompleteName;
+        // User is not a team member, maybe an admin
+        username ??= (await tenantContext.DbContext.AppDb.UserRepository.FindUserAsync(
+                    new PredicateExpression(UserFields.Id == Parameters.ChangedByUserId), 1, cancellationToken)).First()
+                .CompleteName;
+
         var model = new ResultEnteredModel
         {
             Match = Parameters.Match,
             RoundDescription = teamUserRoundInfos.First(tur => tur.RoundId == Parameters.Match.RoundId).RoundDescription,
-            Username = teamUserRoundInfos.First(tur => tur.UserId == Parameters.ChangedByUserId).CompleteName,
+            Username = username,
             HomeTeamName = teamUserRoundInfos.First(tur => tur.TeamId == Parameters.Match.HomeTeamId).TeamNameForRound,
             GuestTeamName = teamUserRoundInfos.First(tur => tur.TeamId == Parameters.Match.GuestTeamId).TeamNameForRound
         };

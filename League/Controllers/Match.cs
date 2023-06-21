@@ -456,7 +456,7 @@ public class Match : AbstractController
         // create a new MatchEntity for validation
         var match = FillMatchEntity(model.PlannedMatch);
         match.SetPlannedStart(model.MatchDate.HasValue && model.MatchTime.HasValue
-            ? _timeZoneConverter.ToUtc(model.MatchDate.Value.Add(model.MatchTime.Value))
+            ? _timeZoneConverter.ToUtc(model.MatchDate.Value.Add(model.MatchTime.Value.ToTimeSpan()))
             : default(DateTime?), _tenantContext.TournamentContext.FixtureRuleSet.PlannedDurationOfMatch);
         match.SetVenueId(model.VenueId);
         if (match.IsDirty) match.ChangeSerial += 1;

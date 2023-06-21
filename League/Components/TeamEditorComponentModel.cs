@@ -21,7 +21,7 @@ public class TeamEditorComponentModel
     [Display(Name = "Weekday of home matches")]
     public int? MatchDayOfWeek { get; set; }
     [Display(Name = "Start time of home matches")]
-    public TimeSpan? MatchTime { get; set; }
+    public TimeOnly? MatchTime { get; set; }
 
     /// <summary>
     /// Gets or sets the prefix for name (e.g. "prefix.field") and id (e.g. "prefix_field") of input fields.
@@ -35,7 +35,7 @@ public class TeamEditorComponentModel
         teamEntity.Id = Id;
         teamEntity.Name = Name;
         teamEntity.ClubName = ClubName;
-        teamEntity.MatchTime = MatchTime;
+        teamEntity.MatchTime = MatchTime?.ToTimeSpan();
         teamEntity.MatchDayOfWeek = MatchDayOfWeek;
     }
 
@@ -46,6 +46,6 @@ public class TeamEditorComponentModel
         Name = teamEntity.Name;
         ClubName = teamEntity.ClubName;
         MatchDayOfWeek = teamEntity.MatchDayOfWeek;
-        MatchTime = teamEntity.MatchTime;
+        MatchTime = teamEntity.MatchTime != null ? TimeOnly.FromTimeSpan((TimeSpan) teamEntity.MatchTime) : null;
     }
 }

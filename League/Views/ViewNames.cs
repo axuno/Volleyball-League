@@ -35,18 +35,6 @@ namespace League.Views
             public const string AccessDenied = "AccessDenied";
             public const string Index = "Index";
         }
-        public static class Home
-        {
-            public const string AboutLeague = "AboutLeague";
-            public const string AboutLeaguede = "AboutLeague.de";
-            public const string LegalDisclosure = "LegalDisclosure";
-            public const string LegalDisclosurede = "LegalDisclosure.de";
-            public const string Overview = "Overview";
-            public const string PictureCredits = "PictureCredits";
-            public const string Privacy = "Privacy";
-            public const string Privacyde = "Privacy.de";
-            public const string Welcome = "Welcome";
-        }
         public static class Manage
         {
             public const string Index = "Index";
@@ -97,6 +85,8 @@ namespace League.Views
             public const string _LanguagePartial = "_LanguagePartial";
             public const string _Layout = "_Layout";
             public const string _passwordRules = "_passwordRules";
+            public const string _TabFilterTableByTeamScriptPartial = "_TabFilterTableByTeamScriptPartial";
+            public const string _TabNavigationScriptPartial = "_TabNavigationScriptPartial";
             public static class Components
             {
                 public static class MainNavigation

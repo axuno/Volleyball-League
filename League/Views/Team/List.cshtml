@@ -107,39 +107,18 @@
 }
 @section scripts
 {
+    <partial name="@ViewNames.Shared._TabNavigationScriptPartial" model="@useRecentRoundCookie"/>
     <script type="text/javascript">
-        //<![CDATA[
-        var mostRecentRoundCookieName = '@CookieNames.MostRecentRound';
-        var useRecentRoundCookie = @useRecentRoundCookie.ToString().ToLowerInvariant();
-        Cookies = window.Cookies; @* js-cookies.js *@
-        $(document).ready(function() {
-            $('[data-bs-toggle="tooltip"]').tooltip();
-            @* Try to set the active tab from a cookie *@
-            if (useRecentRoundCookie) {
-                var $activeRoundFromCookie = Cookies.get(mostRecentRoundCookieName);
-                var $tabLink = $('#tab-link-' + $activeRoundFromCookie);
-                if ($activeRoundFromCookie !== undefined && $tabLink.length) {
-                    $tabLink.tab('show');
-                } else {
-                    $('#round-tabs li:first-child a').tab('show');
-                }
-            }
-
-            $('tbody > tr').on('click',
-                function(e) {
+        document.addEventListener('DOMContentLoaded', function () {
+            // Make table rows clickable
+            const rows = document.querySelectorAll('tbody > tr');
+            rows.forEach(function (row) {
+                row.addEventListener('click', function (e) {
                     e.preventDefault();
-                    var href = $(this).find('td:last-child > a').attr('href');
-                    if(href) window.location = href;
+                    const href = row.querySelector('td:last-child > a').getAttribute('href');
+                    if (href) window.location = href;
                 });
-
-            $('a[data-bs-toggle="tab"]').on('shown.bs.tab',
-                function(e) {
-                    var id = e.target.id.replace('tab-link-', ''); // newly activated tab with round id
-                    Cookies.set(mostRecentRoundCookieName,
-                        id,
-                        { expires: 365, path: `/${e.target.pathname.split('/')[1]}` });
-                });
+            });
         });
-        //]]>
     </script>
 }

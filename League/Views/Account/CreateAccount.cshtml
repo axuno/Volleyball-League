@@ -76,7 +76,15 @@
 </div>
 @section Scripts {
     <script type="text/javascript">
-        $('#@Html.IdFor(m => m.Email)').focus();
-        $('input').one('keypress', function() { $('#social-network').animate({ height: 0, opacity: 0 }, 'slow'); });
+        document.querySelector('#@Html.IdFor(m => m.Email)').focus();
+        const inputs = document.querySelectorAll('input');
+        inputs.forEach(function (input) {
+            input.addEventListener('keypress', function () {
+                const socialNetwork = document.querySelector('#social-network');
+                socialNetwork.animate({ height: 0, opacity: 0 }, { duration: 600, easing: 'ease-in-out' }).onfinish = function () {
+                    socialNetwork.style.display = 'none';
+                };
+            }, { once: true });
+        });
     </script>
 }

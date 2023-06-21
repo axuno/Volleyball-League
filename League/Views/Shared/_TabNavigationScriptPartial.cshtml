@@ -1,0 +1,34 @@
+@using League.Views
+@using League.TagHelpers
+@model bool
+@{ var useRecentRoundCookie = Model;}
+<script type="text/javascript">
+    //<![CDATA[
+    const mostRecentRoundCookieName = '@CookieNames.MostRecentRound';
+    const useRecentRoundCookie = @useRecentRoundCookie.ToString().ToLowerInvariant();
+    Cookies = window.Cookies; // js-cookies.js
+
+    document.addEventListener('DOMContentLoaded', function () {
+
+        // Try to set the active tab from a cookie
+        if (useRecentRoundCookie) {
+            const activeRoundFromCookie = Cookies.get(mostRecentRoundCookieName);
+            const tabLink = document.querySelector('#tab-link-' + activeRoundFromCookie);
+            if (activeRoundFromCookie !== undefined && tabLink) {
+                new bootstrap.Tab(tabLink).show();
+            } else {
+                new bootstrap.Tab(document.querySelector('#round-tabs li:first-child a')).show();
+            }
+        }
+        
+        // Handle clicks on tabs
+        const tabs = document.querySelectorAll('a[data-bs-toggle="tab"]');
+        tabs.forEach(function (tab) {
+            tab.addEventListener('shown.bs.tab', function (e) {
+                const id = e.target.id.replace('tab-link-', ''); // newly activated tab with round id
+                Cookies.set(mostRecentRoundCookieName, id, { expires: 365, path: `/${e.target.pathname.split('/')[1]}` });
+            });
+        });
+    });
+    //]]>
+</script>

@@ -7,7 +7,7 @@ namespace League.TagHelpers.Modal;
 /// The modal-footer portion of Bootstrap modal dialog
 /// </summary>
 [HtmlTargetElement(TagHelperAttributeName, ParentTag = "modal")]
-public class ModalFooterTagHelper : TagHelper
+public class SiteModalFooterTagHelper : TagHelper
 {
     public const string TagHelperAttributeName = "modal-footer";
 
@@ -38,7 +38,7 @@ public class ModalFooterTagHelper : TagHelper
             _ = footerContent.AppendFormat(@"<button type='button' class='btn btn-secondary' data-bs-dismiss='modal'>{0}</button>", DismissText);
         }
         _ = footerContent.AppendHtml(childContent);
-        var modalContext = (ModalContext)context.Items[typeof(ModalTagHelper)];
+        var modalContext = (ModalContext)context.Items[typeof(SiteModalTagHelper)];
         modalContext.Footer = footerContent;
         output.SuppressOutput();
     }

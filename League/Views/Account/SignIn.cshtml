@@ -59,7 +59,7 @@
             <label asp-for="Password" class="form-label"></label>
                 <div class="input-group">
                     <input asp-for="Password" class="form-control" required="required" type="text" />@* js will change type to "password" *@
-                    <span class="input-group-text" style="cursor: pointer" onclick="Site.ShowHidePassword($(this))">
+                    <span class="input-group-text" style="cursor: pointer" onclick="Site.ShowHidePassword(this)">
                         <i class="fas fa-eye"></i>
                     </span>
                 </div>
@@ -89,9 +89,8 @@
 </div>
 @section Scripts {
     <script type="text/javascript">
-        // Show tab coming from e.g. url#social-network
-        // $('.nav-tabs a[href="' + window.location.hash + '"]').tab('show');
-        $("#@Html.IdFor(m => m.Password)").attr("type", "password");
-        $("#@Html.IdFor(m => m.EmailOrUsername)").focus();
+        @* Opposed to Account.Create we keep the social logins visible *@
+        document.querySelector('#@Html.IdFor(m => m.Password)').setAttribute("type", "password");
+        document.querySelector('#@Html.IdFor(m => m.EmailOrUsername)').focus();
     </script>
 }

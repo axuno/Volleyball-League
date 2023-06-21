@@ -34,41 +34,41 @@ public class Home : League.Controllers.AbstractController
     [HttpGet]
     public IActionResult Welcome()
     {
-        return View(ViewNames.Home.Welcome);
+        return View("Welcome");
     }
 
     [Route("/about-league")]
     [HttpGet]
     public IActionResult AboutLeague()
     {
-        return View(ViewNames.Home.AboutLeague);
+        return View("AboutLeague");
     }
 
     [Route("/[action]")]
     [HttpGet]
     public IActionResult Overview()
     {
-        return View(ViewNames.Home.Overview);
+        return View("Overview");
     }
 
     [Route("/legal-disclosure")]
     [HttpGet]
     public IActionResult LegalDisclosure()
     {
-        return View(ViewNames.Home.LegalDisclosure);
+        return View("LegalDisclosure");
     }
 
     [Route("/[action]")]
     [HttpGet]
     public IActionResult Privacy()
     {
-        return View(ViewNames.Home.Privacy);
+        return View("Privacy");
     }
 
     [Route("/picture-credits")]
     [HttpGet]
     public IActionResult PictureCredits()
     {
-        return View(ViewNames.Home.PictureCredits);
+        return View("PictureCredits");
     }
 }

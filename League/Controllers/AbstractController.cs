@@ -22,10 +22,10 @@ public abstract class AbstractController : Controller
     /// <param name="redirectUrl"></param>
     /// <returns>returns { "redirectUrl": "value-of-variable-redirectUrl" }</returns>
     /// <example>
-    /// return JsonForModalAjaxRedirect(Url.Action("Index", "Home", Request.Scheme));
+    /// return JsonResponseRedirect(Url.Action("Index", "Home", Request.Scheme));
     /// </example>
     [NonAction]
-    protected JsonResult JsonAjaxRedirectForModal(string? redirectUrl)
+    protected JsonResult JsonResponseRedirect(string? redirectUrl)
     {
         var data = new { redirectUrl };
         return Json(data);

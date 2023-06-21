@@ -120,6 +120,9 @@
   <data name="Cancel" xml:space="preserve">
     <value>Abbrechen</value>
   </data>
+  <data name="Save" xml:space="preserve">
+    <value>Speichern</value>
+  </data>
   <data name="Select team venue" xml:space="preserve">
     <value>Spielort des Teams auswählen</value>
   </data>
