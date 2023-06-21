@@ -27,7 +27,7 @@
                 }
             </div>
             <div class="mb-4">
-                <form asp-controller="@nameof(Team)" asp-action="@nameof(Team.SelectVenue)" asp-route-tenant="@tenantUrlSegment" asp-route-tid="@Model.TeamId" method="get" role="form">
+                <form asp-controller="@nameof(Team)" asp-action="@nameof(Team.SelectVenue)" asp-route-tenant="@tenantUrlSegment" asp-route-tid="@Model.TeamId" method="get" role="form" novalidate>
                     <button type="button" site-ajax-submit class="btn btn-primary d-block w-100">@Localizer["Select another venue"]</button>
                 </form>
             </div>

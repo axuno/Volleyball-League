@@ -48,7 +48,7 @@
     </div>
     <div class="row">
         <div class="mb-3 col-12 col-md-6">
-            <form asp-controller="@nameof(TeamApplication)" asp-action="@nameof(TeamApplication.Confirm)" asp-route-tenant="@tenantUrlSegment" method="post" role="form">
+            <form asp-controller="@nameof(TeamApplication)" asp-action="@nameof(TeamApplication.Confirm)" asp-route-tenant="@tenantUrlSegment" method="post" role="form" novalidate>
                 <a asp-controller="@nameof(TeamApplication)" asp-action="@nameof(TeamApplication.EditVenue)" asp-route-tenant="@tenantUrlSegment" class="btn btn-secondary d-inline-block">@Localizer["Back"]</a>
                 <input type="hidden" id="Done" name="Done" value="true" />
                 <button type="submit" class="btn btn-primary d-inline-block ">@Localizer["Confirm and save"]</button>
