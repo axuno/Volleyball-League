@@ -39,7 +39,7 @@ public class SiteScriptTagHelper : TagHelper
 
         if (!OnContentLoaded && !OnBootstrapModelShown && !Inline)
         {
-            base.Process(context, output);
+            await base.ProcessAsync(context, output);
         }
         else
         {
@@ -61,7 +61,10 @@ public class SiteScriptTagHelper : TagHelper
             }
             if (OnBootstrapModelShown)
             {
-                sb.Append("document.addEventListener('shown.bs.modal', function () {\n");
+                // Makes the current script element listen to the Bootstrap event
+                // No need to remove the event listener, in case the target element gets removed
+                // by a dynamic update of the modal.
+                sb.Append("document.currentScript.addEventListener('shown.bs.modal', function () {\n");
                 sb.Append($"{jsFunctionName}(); ");
                 sb.Append("});\n");
             }
