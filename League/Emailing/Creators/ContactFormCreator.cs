@@ -46,7 +46,7 @@ public class ContactFormCreator : IMailMessageCreator
 
             var mailMergeMessage = mailMergeService.CreateStandardMessage();
             mailMergeMessage.EnableFormatter = false;
-            mailMergeMessage.Subject = model.Form.Subject; // user-generated, cannot localize!
+            mailMergeMessage.Subject = model.Form.Subject!; // user-generated, cannot localize!
                 
             mailMergeMessage.MailMergeAddresses.Add(new MailMergeAddress(MailAddressType.From, tenantContext.SiteContext.Email.ContactFrom.Address));
             mailMergeMessage.MailMergeAddresses.Add(new MailMergeAddress(MailAddressType.To, tenantContext.SiteContext.Email.ContactTo.Address));
