@@ -26,7 +26,7 @@
         "node-sass": "8.0.0",
         "pixrem": "5.0.0",
         "@popperjs/core": "2.11.7",
-        "@eonasdan/tempus-dominus": "6.7.7",
+        "@eonasdan/tempus-dominus": "6.7.10",
         "set-value": ">=4.0.1"
     },
     "dependencies": {

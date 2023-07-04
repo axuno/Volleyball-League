@@ -199,13 +199,12 @@ Site.TempusDominusFactory = class {
         });
 
         this._fixUncaughtExceptions(timePicker);
-        this._fixMeridiemButtonType(element);
         return timePicker;
     }
 
 
     /**
-    * TempusDominus v6.7.7 throws when invalid dates/times
+    * TempusDominus v6.7.10 throws when invalid dates/times
     * are entered. This workaround catches the exception by
     * overriding the default 'parseInput' method.
     * See: https://github.com/Eonasdan/tempus-dominus/discussions/2656#discussioncomment-5713755
@@ -222,21 +221,5 @@ Site.TempusDominusFactory = class {
                 widget.dates.clear();
             }
         };
-    }
-
-    /**
-    * TempusDominus v6.7.7 does not set the 'type=button' attribute
-    * for the "toggle meridiem button" of the time picker.
-    * Without this type, clicking the button submits the form where the button is located.
-    * See: https://github.com/Eonasdan/tempus-dominus/issues/2820
-    * @param {HTMLElement} element - The element used to create the TempusDominus instance.
-    */
-    _fixMeridiemButtonType(element) 
-    {
-        element.addEventListener('show.td', function () {
-            const container = this._tempusDominus.optionsStore.options.container;
-            const btn = container.querySelector('button[data-action="toggleMeridiem"]')
-            if (btn) btn.setAttribute('type', 'button');
-        });
     }
 }
