@@ -454,7 +454,7 @@ public static class LeagueStartup
                         $@"MailMergeLib.{environment.EnvironmentName}.config"),
                     System.Text.Encoding.UTF8);
                 var fms = FileMessageStore.Deserialize(Path.Combine(environment.ContentRootPath, League.LeagueStartup.ConfigurationFolder,
-                    "MailMergeLibMessageStore.config"), System.Text.Encoding.UTF8);
+                    "MailMergeLibMessageStore.config"), System.Text.Encoding.UTF8)!;
                 for (var i = 0; i < fms.SearchFolders.Length; i++)
                 {
                     // make relative paths absolute - ready to use
