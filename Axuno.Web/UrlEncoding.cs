@@ -1,6 +1,5 @@
 ﻿using System;
-using Microsoft.AspNetCore.WebUtilities;
-using System.Text;
+using Microsoft.IdentityModel.Tokens;
 
 namespace Axuno.Web;
 
@@ -12,8 +11,7 @@ public static class UrlEncoding
     /// </summary>
     public static string Base64UrlEncode(this string code)
     {
-        var codeBytes = Encoding.UTF8.GetBytes(code);
-        return WebEncoders.Base64UrlEncode(codeBytes);
+        return Base64UrlEncoder.Encode(code);
     }
 
     /// <summary>
@@ -24,8 +22,7 @@ public static class UrlEncoding
     {
         try
         {
-            var decodedBytes = WebEncoders.Base64UrlDecode(encodedString);
-            return Encoding.UTF8.GetString(decodedBytes);
+            return Base64UrlEncoder.Decode(encodedString);
         }
         catch (Exception)
         {
