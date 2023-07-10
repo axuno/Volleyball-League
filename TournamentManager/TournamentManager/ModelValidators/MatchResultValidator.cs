@@ -12,9 +12,11 @@ namespace TournamentManager.ModelValidators;
 public class MatchResultValidator : AbstractValidator<MatchEntity, (ITenantContext TenantContext,
     Axuno.Tools.DateAndTime.TimeZoneConverter TimeZoneConverter, (MatchRuleEntity MatchRule, SetRuleEntity SetRule) Rules), MatchResultValidator.FactId>
 {
+    internal DateTime Today { get; set; } = DateTime.UtcNow; // used for unit tests
     public enum FactId
     {
         RealMatchDateIsSet,
+        RealMatchDateTodayOrBefore,
         RealMatchDateWithinRoundLegs,
         RealMatchDateEqualsFixture,
         RealMatchDurationIsPlausible,
@@ -44,6 +46,21 @@ public class MatchResultValidator : AbstractValidator<MatchEntity, (ITenantConte
                     {
                         Message = MatchResultValidatorResource.ResourceManager.GetString(nameof(FactId.RealMatchDateIsSet)) ?? string.Empty,
                         Success = Model.RealStart.HasValue && Model.RealEnd.HasValue
+                    })
+            });
+
+        Facts.Add(
+            new Fact<FactId>
+            {
+                Id = FactId.RealMatchDateTodayOrBefore,
+                FieldNames = new[] { nameof(Model.RealStart), nameof(Model.RealEnd) },
+                Enabled = true,
+                Type = FactType.Error,
+                CheckAsync = (cancellationToken) => Task.FromResult(
+                    new FactResult
+                    {
+                        Message = MatchResultValidatorResource.ResourceManager.GetString(nameof(FactId.RealMatchDateTodayOrBefore)) ?? string.Empty,
+                        Success = Model.RealStart?.Date <= Today.Date && Model.RealEnd?.Date <= Today.Date
                     })
             });
 

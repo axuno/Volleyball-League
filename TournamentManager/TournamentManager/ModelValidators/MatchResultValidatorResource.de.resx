@@ -123,6 +123,9 @@
   <data name="RealMatchDateIsSet" xml:space="preserve">
     <value>Spielbeginn und -ende müssen angegeben werden</value>
   </data>
+  <data name="RealMatchDateTodayOrBefore" xml:space="preserve">
+    <value>Der tatsächliche Spieltag kann nicht in der Zukunft liegen</value>
+  </data>
   <data name="RealMatchDateWithinRoundLegs" xml:space="preserve">
     <value>Spieldatum in {0} muss innerhalb {1} sein</value>
     <comment>0 = round description, 1 = date range</comment>

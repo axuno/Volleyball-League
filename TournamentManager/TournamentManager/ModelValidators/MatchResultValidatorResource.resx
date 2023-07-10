@@ -123,6 +123,9 @@
   <data name="RealMatchDateIsSet" xml:space="preserve">
     <value>Start and end time of the match must be set</value>
   </data>
+  <data name="RealMatchDateTodayOrBefore" xml:space="preserve">
+    <value>Actual match day cannot be in the future</value>
+  </data>
   <data name="RealMatchDateWithinRoundLegs" xml:space="preserve">
     <value>Match date in {0} must be within {1}</value>
     <comment>0 = round description, 1 = date range</comment>

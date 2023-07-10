@@ -191,7 +191,7 @@ public class MatchResultValidatorTests
     }
 
     [Test]
-    public async Task RealMatchDate_May_Not_Be_Null()
+    public async Task RealMatchDate_Must_Not_Be_Null()
     {
         var match = new MatchEntity
         {
@@ -211,6 +211,32 @@ public class MatchResultValidatorTests
         {
             Assert.AreEqual(1, factResults.Count);
             Assert.AreEqual(MatchResultValidator.FactId.RealMatchDateIsSet, factResults.First().Id);
+            Assert.NotNull(factResults.First().Message);
+        });
+    }
+
+    [Test]
+    public async Task RealMatchDate_Must_Not_Be_Future_Date()
+    {
+        var today = new DateTime(2023, 7, 1, 23, 59, 59);
+        var match = new MatchEntity
+        {
+            Id = 1,
+            RealStart = today.AddDays(1),
+            RealEnd = today.AddDays(1),
+            RoundId = 2,
+            LegSequenceNo = 1,
+            HomeTeamId = 7,
+            GuestTeamId = 10
+        };
+
+        var mv = new MatchResultValidator(match, _data) { Today = today };
+        await mv.CheckAsync(MatchResultValidator.FactId.RealMatchDateTodayOrBefore, CancellationToken.None);
+        var factResults = mv.GetFailedFacts();
+        Assert.Multiple(() =>
+        {
+            Assert.AreEqual(1, factResults.Count);
+            Assert.AreEqual(MatchResultValidator.FactId.RealMatchDateTodayOrBefore, factResults.First().Id);
             Assert.NotNull(factResults.First().Message);
         });
     }
