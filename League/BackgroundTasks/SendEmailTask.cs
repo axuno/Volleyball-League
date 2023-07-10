@@ -72,7 +72,7 @@ public class SendEmailTask : IBackgroundTask
         {
             try
             {
-                await _mailMergeService.Sender.SendAsync(mmm, null!);
+                await _mailMergeService.Sender.SendAsync(mmm, null);
             }
             catch (Exception e) when (e is TaskCanceledException || e is OperationCanceledException)
             {

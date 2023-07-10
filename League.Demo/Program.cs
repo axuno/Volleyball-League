@@ -10,6 +10,7 @@ using Microsoft.Extensions.Logging;
 using NLog.Extensions.Logging;
 using TournamentManager.MultiTenancy;
 using Axuno.BackgroundTask;
+using NLog;
 
 namespace League.WebApp;
 
@@ -19,10 +20,10 @@ public class Program
     {
         // NLog: setup the logger first to catch all errors
         var currentDir = Directory.GetCurrentDirectory();
-        var logger = NLogBuilder
-            .ConfigureNLog($@"{currentDir}{Path.DirectorySeparatorChar}{LeagueStartup.ConfigurationFolder}{Path.DirectorySeparatorChar}NLog.Internal.config")
+        var logger = LogManager.Setup()
+            .LoadConfigurationFromFile(
+                $@"{currentDir}{Path.DirectorySeparatorChar}{LeagueStartup.ConfigurationFolder}{Path.DirectorySeparatorChar}NLog.Internal.config")
             .GetCurrentClassLogger();
-
         // Allows for <target name="file" xsi:type="File" fileName = "${var:logDirectory}logfile.log"... >
         NLog.LogManager.Configuration.Variables["logDirectory"] = currentDir + Path.DirectorySeparatorChar;
             
@@ -37,8 +38,8 @@ public class Program
             builder.Logging.ClearProviders();
             // Enable NLog as logging provider for Microsoft.Extension.Logging
             builder.Logging.AddNLog(loggingConfig);
-            NLogBuilder.ConfigureNLog(Path.Combine(builder.Environment.ContentRootPath, LeagueStartup.ConfigurationFolder,
-                $"NLog.{builder.Environment.EnvironmentName}.config"));
+            LogManager.Setup()
+                .LoadConfigurationFromFile($"NLog.{builder.Environment.EnvironmentName}.config");
 
             builder.WebHost.ConfigureServices((context, services) =>
             {
