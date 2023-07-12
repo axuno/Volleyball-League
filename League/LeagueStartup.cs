@@ -161,14 +161,8 @@ public static class LeagueStartup
 
         var store = (TenantStore) new TenantStore(configuration)
         {
-            GetTenantConfigurationFiles = () =>
-            {
-                var configFolderFiles = Directory.GetFiles(
-                    configDirectory,
-                    configSearchPattern, SearchOption.TopDirectoryOnly).ToList();
-
-                return configFolderFiles.ToArray();
-            }
+            GetTenantConfigurationFiles = () => Directory.GetFiles(
+                configDirectory, configSearchPattern, SearchOption.TopDirectoryOnly)
         }.LoadTenants();
 
         var tenants = store.GetTenants().Values.ToList();

@@ -34,6 +34,14 @@ public class TenantConfigWatcher
     }
 
     /// <summary>
+    /// Gets the underlying <see cref="DelayedFileSystemWatcher"/>.
+    /// </summary>
+    /// <remarks>
+    /// For unit tests.
+    /// </remarks>
+    internal DelayedFileSystemWatcher GetFileWatcher() => _watcher;
+
+    /// <summary>
     /// If a configuration files has been removed from the folder,
     /// the <see cref="ITenantContext"/> will be removed from the <see cref="ITenantStore{T}"/>.
     /// </summary>
@@ -69,10 +77,9 @@ public class TenantConfigWatcher
     /// </summary>
     private void HandleRenamedEvent(object sender, FileSystemEventArgs e)
     {
-        ITenantContext? tenant = null;
+        var tenant = _tenantStore.BuildTenantContext(e.FullPath);
         if (!_tenantStore.GetTenantConfigurationFiles.Invoke().Contains(e.FullPath))
         {
-            tenant = _tenantStore.BuildTenantContext(e.FullPath);
             if (tenant == null) return;
 
             _tenantStore.TryRemoveTenant(tenant.Identifier);
