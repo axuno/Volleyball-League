@@ -19,7 +19,7 @@ public static class WebAppStartup
     /// <summary>
     /// The method gets called by <see cref="Program"/> at startup, BEFORE building the app is completed.
     /// </summary>
-    public static void ConfigureServices(WebHostBuilderContext context, IServiceCollection services)
+    public static void ConfigureServices(WebHostBuilderContext context, IServiceCollection services, ILoggerFactory loggerFactory)
     {
         services.AddHttpsRedirection(options =>
         {

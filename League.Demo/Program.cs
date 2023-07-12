@@ -3,7 +3,6 @@ using Microsoft.Extensions.Configuration;
 using System;
 using System.IO;
 using System.Threading.Tasks;
-using NLog.Web;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -11,6 +10,7 @@ using NLog.Extensions.Logging;
 using TournamentManager.MultiTenancy;
 using Axuno.BackgroundTask;
 using NLog;
+using NLog.Web;
 
 namespace League.WebApp;
 
@@ -25,7 +25,7 @@ public class Program
                 $@"{currentDir}{Path.DirectorySeparatorChar}{LeagueStartup.ConfigurationFolder}{Path.DirectorySeparatorChar}NLog.Internal.config")
             .GetCurrentClassLogger();
         // Allows for <target name="file" xsi:type="File" fileName = "${var:logDirectory}logfile.log"... >
-        NLog.LogManager.Configuration.Variables["logDirectory"] = currentDir + Path.DirectorySeparatorChar;
+        LogManager.Configuration.Variables["logDirectory"] = currentDir + Path.DirectorySeparatorChar;
             
         try
         {
@@ -34,26 +34,36 @@ public class Program
 
             var builder = SetupBuilder(args);
 
-            var loggingConfig = builder.Configuration.GetSection("Logging");
+            #region ** Setup logging **
+
             builder.Logging.ClearProviders();
             // Enable NLog as logging provider for Microsoft.Extension.Logging
-            builder.Logging.AddNLog(loggingConfig);
-            LogManager.Setup()
-                .LoadConfigurationFromFile($"NLog.{builder.Environment.EnvironmentName}.config");
+            var nLogConfiguration = LogManager.Setup()
+                .LoadConfigurationFromFile($"NLog.{builder.Environment.EnvironmentName}.config")
+                .LogFactory.Configuration;
+            var nLogOptions = new NLogAspNetCoreOptions { AutoShutdown = true, IncludeScopes = true };
+
+            builder.Logging.AddNLog(nLogConfiguration, nLogOptions);
+            builder.Host.UseNLog();
+
+            // Create LoggerFactory for use in configuration
+            var loggerFactory = LoggerFactory.Create(b => b.AddNLog(nLogConfiguration, nLogOptions));
+
+            #endregion
 
             builder.WebHost.ConfigureServices((context, services) =>
             {
-                LeagueStartup.ConfigureServices(context, services);
-                WebAppStartup.ConfigureServices(context, services);
+                LeagueStartup.ConfigureServices(context, services, loggerFactory);
+                WebAppStartup.ConfigureServices(context, services, loggerFactory);
             });
 
             var app = builder.Build();
 
             builder.WebHost.ConfigureAppConfiguration(_ =>
             {
-                LeagueStartup.Configure(app, app.Services.GetRequiredService<ILoggerFactory>());
+                LeagueStartup.Configure(app, loggerFactory);
                 LeagueStartup.InitializeRankingAndCharts(app.Services.GetRequiredService<TenantStore>(), app.Services.GetRequiredService<IBackgroundQueue>(), app.Services);
-                WebAppStartup.Configure(app, app.Services.GetRequiredService<ILoggerFactory>());
+                WebAppStartup.Configure(app, loggerFactory);
             });
             
             await app.RunAsync();
@@ -66,7 +76,7 @@ public class Program
         finally
         {
             // Ensure to flush and stop internal timers/threads before application-exit (Avoid segmentation fault on Linux)
-            NLog.LogManager.Shutdown();
+            LogManager.Shutdown();
         }
     }
 
