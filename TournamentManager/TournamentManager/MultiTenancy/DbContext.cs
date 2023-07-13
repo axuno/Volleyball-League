@@ -12,7 +12,6 @@ namespace TournamentManager.MultiTenancy;
 public class DbContext : IDbContext
 {
     private readonly object _locker = new();
-    private bool _cacheIsRegistered = false;
 
     public DbContext()
     {
@@ -67,16 +66,11 @@ public class DbContext : IDbContext
     {
         lock (_locker)
         {
-            if (!_cacheIsRegistered)
-            {
-                var csb = new SqlConnectionStringBuilder(ConnectionString);
-                // see docs: https://www.llblgen.com/Documentation/4.2/LLBLGen%20Pro%20RTF/Using%20the%20generated%20code/gencode_resultsetcaching.htm
-                if (csb.PersistSecurityInfo == false) { csb.Password = string.Empty; }
-                // if connection string exists, the method simply returns without creating a new cache
-                CacheController.RegisterCache(csb.ConnectionString, new ResultsetCache(TimeSpan.FromDays(1).Seconds));
-                _cacheIsRegistered = true;
-            }
-                
+            // see docs: https://www.llblgen.com/Documentation/4.2/LLBLGen%20Pro%20RTF/Using%20the%20generated%20code/gencode_resultsetcaching.htm
+            // if connection string exists, the method simply returns without creating a new cache
+            // ** Note ** The connection string must be EXACTLY as it's used for queries.
+            CacheController.RegisterCache(ConnectionString, new ResultsetCache(TimeSpan.FromDays(1).Seconds));
+ 
             return new DataAccessAdapter(ConnectionString)
             {
                 KeepConnectionOpen = true,

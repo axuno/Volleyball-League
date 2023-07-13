@@ -12,7 +12,7 @@ namespace TournamentManager.MultiTenancy;
 /// </summary>
 public class TenantConfigWatcher
 {
-    private readonly DelayedFileSystemWatcher _watcher;
+    private readonly DelayedFileSystemWatcher _tenantFileWatcher;
     private readonly ITenantStore<ITenantContext> _tenantStore;
 
     /// <summary>
@@ -23,14 +23,14 @@ public class TenantConfigWatcher
     /// <param name="filter">The filter for file names that are watched.</param>
     public TenantConfigWatcher(ITenantStore<ITenantContext> tenantStore, string configPath, string filter)
     {
-        _watcher = new DelayedFileSystemWatcher(configPath, filter)
+        _tenantFileWatcher = new DelayedFileSystemWatcher(configPath, filter)
             { ConsolidationInterval = 1000, EnableRaisingEvents = true };
         _tenantStore = tenantStore;
 
-        _watcher.Changed += HandleCreatedOrChangedEvent;
-        _watcher.Created += HandleCreatedOrChangedEvent;
-        _watcher.Deleted += HandleDeletedEvent;
-        _watcher.Renamed += HandleRenamedEvent;
+        _tenantFileWatcher.Changed += HandleCreatedOrChangedEvent;
+        _tenantFileWatcher.Created += HandleCreatedOrChangedEvent;
+        _tenantFileWatcher.Deleted += HandleDeletedEvent;
+        _tenantFileWatcher.Renamed += HandleRenamedEvent;
     }
 
     /// <summary>
@@ -39,7 +39,7 @@ public class TenantConfigWatcher
     /// <remarks>
     /// For unit tests.
     /// </remarks>
-    internal DelayedFileSystemWatcher GetFileWatcher() => _watcher;
+    internal DelayedFileSystemWatcher GetTenantFileWatcher() => _tenantFileWatcher;
 
     /// <summary>
     /// If a configuration files has been removed from the folder,

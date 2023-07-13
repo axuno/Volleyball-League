@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
 using System.Threading;
@@ -70,6 +72,19 @@ public class DelayedFileSystemWatcher : IDisposable
     }
 
     /// <summary>
+    /// Initializes a new instance of the <see cref="DelayedFileSystemWatcher"/> class, given the specified directory and type of files to monitor.
+    /// </summary>
+    /// <param name="path">The directory to monitor.</param>
+    /// <param name="filters">The types of files to monitor, e.g. new[] {"*.yml", "*.yaml"}</param>
+    public DelayedFileSystemWatcher(string path, IEnumerable<string> filters)
+    {
+        _fileSystemWatcher = new FileSystemWatcher(path);
+        foreach (var filter in filters) _fileSystemWatcher.Filters.Add(filter);
+        
+        Initialize(out _timer);
+    }
+
+    /// <summary>
     /// Gets or sets a value indicating whether the component is enabled.
     /// </summary>
     /// <value>true if the component is enabled; otherwise, false. The default is false. If you are using the component on a designer in Visual Studio 2005, the default is true.</value>
@@ -94,12 +109,18 @@ public class DelayedFileSystemWatcher : IDisposable
     /// <summary>
     /// Gets or sets the filter string, used to determine what files are monitored in a directory.
     /// </summary>
-    /// <value>The filter string. The default is "*.*" (Watches all files.)</value>
+    /// <value>The filter string. The default is "*.*" (watches all files).</value>
     public string Filter
     {
         get => _fileSystemWatcher.Filter;
         set => _fileSystemWatcher.Filter = value;
     }
+
+    /// <summary>
+    /// Gets the filters collection, used to determine what files are monitored in a directory.
+    /// </summary>
+    /// <value>The collection of filter strings. The default is "*.*" (watches all files).</value>
+    public Collection<string> Filters => _fileSystemWatcher.Filters;
 
     /// <summary>
     /// Gets or sets a value indicating whether subdirectories within the specified path should be monitored.

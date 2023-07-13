@@ -23,7 +23,6 @@ public class TenantConfigWatcherTests
     private const string ConnValuePrefix = "ConnValue";
     private readonly List<string> _tenantNames = new() {"Tenant1", "Tenant2", "Tenant3", "DefaultTenant"};
     private readonly TenantStore _store;
-    private readonly TenantConfigWatcher _watcher;
 
     public TenantConfigWatcherTests()
     {
@@ -31,8 +30,8 @@ public class TenantConfigWatcherTests
         _store = new TenantStore(config, new NullLoggerFactory());
         _store.GetTenantConfigurationFiles = () => Directory.GetFiles(
             _directoryToWatch, ConfigSearchPattern, SearchOption.TopDirectoryOnly);
-        _watcher = GetTenantConfigWatcher();
-        _watcher.GetFileWatcher().ConsolidationInterval = 10;
+        var watcher = GetTenantConfigWatcher();
+        watcher.GetTenantFileWatcher().ConsolidationInterval = 10;
     }
 
     [Test]
@@ -107,7 +106,6 @@ public class TenantConfigWatcherTests
     private TenantConfigWatcher GetTenantConfigWatcher()
     {
         var watcher = new TenantConfigWatcher(_store, _directoryToWatch, ConfigSearchPattern);
-        
         return watcher;
     }
 

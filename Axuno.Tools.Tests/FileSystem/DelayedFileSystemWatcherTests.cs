@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.Design;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Axuno.Tools.FileSystem;
-using NUnit.Framework;
+﻿using NUnit.Framework;
 
 namespace Axuno.Tools.FileSystem.Tests
 {
@@ -14,29 +7,53 @@ namespace Axuno.Tools.FileSystem.Tests
     {
         private string? _directoryToWatch;
 
-        public FileSystemWatcher GetFileSystemWatcher()
+        private FileSystemWatcher GetFileSystemWatcher()
         {
             _directoryToWatch ??= CreateTempPathFolder();
-            return new FileSystemWatcher(_directoryToWatch!)
+            return new FileSystemWatcher(_directoryToWatch)
             {
                 IncludeSubdirectories = false, EnableRaisingEvents = true
             };
         }
 
-        public DelayedFileSystemWatcher GetDelayedFileSystemWatcher()
+        private DelayedFileSystemWatcher GetDelayedFileSystemWatcher(int filterType)
         {
             _directoryToWatch ??= CreateTempPathFolder();
-            return new DelayedFileSystemWatcher(_directoryToWatch!)
+            // use filterType in order to cover different CTORs
+            switch (filterType)
             {
-                IncludeSubdirectories = false, EnableRaisingEvents = true, ConsolidationInterval = 1
-            };
+                default:
+                    return new DelayedFileSystemWatcher
+                    {
+                        Path = _directoryToWatch, NotifyFilter = NotifyFilters.LastWrite | NotifyFilters.CreationTime | NotifyFilters.FileName,
+                        IncludeSubdirectories = false, EnableRaisingEvents = true, ConsolidationInterval = 1,
+                        Filter = "*.*"
+                    };
+                case 2:
+                    var dfsw = new DelayedFileSystemWatcher(_directoryToWatch)
+                    {
+                        IncludeSubdirectories = false, EnableRaisingEvents = true, ConsolidationInterval = 1,
+                    };
+                    dfsw.Filters.Add("*.*");
+                    return dfsw;
+                case 3:
+                    return new DelayedFileSystemWatcher(_directoryToWatch, "*.*")
+                    {
+                        IncludeSubdirectories = false, EnableRaisingEvents = true, ConsolidationInterval = 1
+                    };
+                case 4:
+                    return new DelayedFileSystemWatcher(_directoryToWatch, new [] {"*.*"})
+                    {
+                        IncludeSubdirectories = false, EnableRaisingEvents = true, ConsolidationInterval = 1
+                    };
+            }
         }
 
         [Test]
         public async Task CreateFile()
         {
             using var watcher = GetFileSystemWatcher();
-            using var delayedWatcher = GetDelayedFileSystemWatcher();
+            using var delayedWatcher = GetDelayedFileSystemWatcher(1);
 
             var delayedEventCount = 0;
             var watcherEventCount = 0;
@@ -67,7 +84,7 @@ namespace Axuno.Tools.FileSystem.Tests
         public async Task RenameFile()
         {
             using var watcher = GetFileSystemWatcher();
-            using var delayedWatcher = GetDelayedFileSystemWatcher();
+            using var delayedWatcher = GetDelayedFileSystemWatcher(2);
 
             var delayedEventCount = 0;
             var watcherEventCount = 0;
@@ -102,7 +119,7 @@ namespace Axuno.Tools.FileSystem.Tests
         public async Task MultipleRenameFile()
         {
             using var watcher = GetFileSystemWatcher();
-            using var delayedWatcher = GetDelayedFileSystemWatcher();
+            using var delayedWatcher = GetDelayedFileSystemWatcher(3);
             delayedWatcher.ConsolidationInterval = 100;
 
             var delayedEventCount = 0;
@@ -146,7 +163,7 @@ namespace Axuno.Tools.FileSystem.Tests
         public async Task DeleteFile()
         {
             using var watcher = GetFileSystemWatcher();
-            using var delayedWatcher = GetDelayedFileSystemWatcher();
+            using var delayedWatcher = GetDelayedFileSystemWatcher(4);
 
             var delayedEventCount = 0;
             var watcherEventCount = 0;
@@ -184,7 +201,7 @@ namespace Axuno.Tools.FileSystem.Tests
         public async Task MultipleChangeFile()
         {
             using var watcher = GetFileSystemWatcher();
-            using var delayedWatcher = GetDelayedFileSystemWatcher();
+            using var delayedWatcher = GetDelayedFileSystemWatcher(1);
             delayedWatcher.ConsolidationInterval = 200;
             delayedWatcher.EnableRaisingEvents = false;
 
