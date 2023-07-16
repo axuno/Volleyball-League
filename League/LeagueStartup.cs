@@ -59,7 +59,7 @@ namespace League;
 public static class LeagueStartup
 {
     /// <summary>
-    /// The name of the configuration folder, which is relative to <see cref="HostingEnvironment.ContentRootPath"/>.
+    /// The name of the configuration folder, which is relative to <see ref="IWebHostEnvironment.ContentRootPath"/>.
     /// </summary>
     public const string ConfigurationFolder = "Configuration";
 
@@ -96,10 +96,13 @@ public static class LeagueStartup
     /// This method MUST be called from the derived class.
     /// It is used to add required <see cref="League"/> services to the service container.
     /// </summary>
-    public static void ConfigureServices(WebHostBuilderContext context, IServiceCollection services)
+    public static void ConfigureServices(WebHostBuilderContext context, IServiceCollection services, ILoggerFactory loggerFactory)
     {
         var configuration = context.Configuration;
         var environment = context.HostingEnvironment;
+
+        // Allow TournamentManager to make use of Microsoft.Extensions.Logging
+        TournamentManager.AppLogging.Configure(loggerFactory);
 
         // Add services required for using options.
         services.AddOptions();
@@ -153,37 +156,33 @@ public static class LeagueStartup
 
         #region ******** Multi Tenancy ********************************************
 
-        services.AddSingleton<TenantStore>(sp =>
+        var configSearchPattern = $"Tenant.*.{environment.EnvironmentName}.config";
+        var configDirectory = Path.Combine(environment.ContentRootPath, ConfigurationFolder);
+        
+        var store = (TenantStore) new TenantStore(configuration)
         {
-            var logger = sp.GetRequiredService<ILogger<TournamentManager.MultiTenancy.TenantStore>>();
-            var store = (TenantStore) new TenantStore(configuration, logger)
-            {
-                GetTenantConfigurationFiles = () =>
-                {
-                    var configFolderFiles = Directory.GetFiles(
-                        Path.Combine(environment.ContentRootPath, ConfigurationFolder),
-                        $"Tenant.*.{environment.EnvironmentName}.config", SearchOption.TopDirectoryOnly).ToList();
+            GetTenantConfigurationFiles = () => Directory.GetFiles(
+                configDirectory, configSearchPattern, SearchOption.TopDirectoryOnly)
+        }.LoadTenants();
 
-                    logger.LogInformation("Tenant config files: {Config}", configFolderFiles);
-                    return configFolderFiles.ToArray();
-                }
-            }.LoadTenants();
-
-            var tenants = store.GetTenants().Values.ToList();
-            if (!tenants.Any(t => t.IsDefault)) throw new Exception("No default tenant configuration found.");
-            tenants.ForEach(t =>
-            {
-                if (string.IsNullOrWhiteSpace(t.DbContext.ConnectionString))
-                    throw new Exception($"Tenant '{t.Identifier}': Connection string for key '{t.DbContext.ConnectionKey}' not found.");
-            });
-
-            ConfigureLLblGenPro(store, environment, configuration);
-
-            return store;
+        var tenants = store.GetTenants().Values.ToList();
+        if (!tenants.Any(t => t.IsDefault)) throw new Exception("No default tenant configuration found.");
+        tenants.ForEach(t =>
+        {
+            if (string.IsNullOrWhiteSpace(t.DbContext.ConnectionString))
+                throw new Exception($"Tenant '{t.Identifier}': Connection string for key '{t.DbContext.ConnectionKey}' not found.");
         });
 
-        services.AddScoped<MultiTenancy.TenantResolver>();
-        services.AddScoped<ITenantContext>(sp => sp.GetRequiredService<MultiTenancy.TenantResolver>().Resolve());
+        ConfigureLLblGenPro(store, environment, configuration);
+
+        services.AddSingleton<TenantStore>(store);
+
+        services.AddScoped<TenantResolver>();
+        services.AddScoped<ITenantContext>(sp => sp.GetRequiredService<TenantResolver>().Resolve());
+
+        // Enable hot ITenant configuration changes 
+        services.AddSingleton<TenantConfigWatcher>(new TenantConfigWatcher(store, configDirectory,
+            configSearchPattern));
 
         #endregion
 
@@ -453,7 +452,7 @@ public static class LeagueStartup
                     Path.Combine(environment.ContentRootPath, ConfigurationFolder,
                         $@"MailMergeLib.{environment.EnvironmentName}.config"),
                     System.Text.Encoding.UTF8);
-                var fms = FileMessageStore.Deserialize(Path.Combine(environment.ContentRootPath, League.LeagueStartup.ConfigurationFolder,
+                var fms = FileMessageStore.Deserialize(Path.Combine(environment.ContentRootPath, ConfigurationFolder,
                     "MailMergeLibMessageStore.config"), System.Text.Encoding.UTF8)!;
                 for (var i = 0; i < fms.SearchFolders.Length; i++)
                 {
@@ -627,9 +626,6 @@ public static class LeagueStartup
         #region *** Logging ***
 
         var logger = loggerFactory.CreateLogger(nameof(LeagueStartup));
-
-        // Allow TournamentManager to make use of Microsoft.Extensions.Logging
-        TournamentManager.AppLogging.Configure(loggerFactory);
 
         // add the JSNLog middleware before the UseStaticFiles middleware.
         var jsNLogConfiguration =

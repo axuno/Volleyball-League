@@ -31,9 +31,7 @@ public class Map : AbstractController
         _configuration = configuration;
         _localizer = localizer;
         _logger = logger;
-
-        _googleConfig = new GoogleConfiguration();
-        _configuration.Bind(nameof(GoogleConfiguration), _googleConfig);
+        _googleConfig = _configuration.Get<GoogleConfiguration>() ?? new GoogleConfiguration();
     }
 
     [Route("")]

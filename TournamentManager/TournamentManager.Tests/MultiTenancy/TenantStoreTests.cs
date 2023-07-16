@@ -28,7 +28,7 @@ public class TenantStoreTests
         var config = cb.Build();
             
         // Create the mocked store with only 1 method setup for moq
-        var tenantStoreMock = new Mock<TenantStore>(config, new NullLogger<TenantStore>()) {
+        var tenantStoreMock = new Mock<TenantStore>(config, new NullLoggerFactory()) {
             CallBase = true // IMPORTANT if original methods shall be used
         };
         // Just override one method:

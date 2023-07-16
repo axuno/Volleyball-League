@@ -1,5 +1,4 @@
-﻿#nullable enable
-using System;
+﻿using System;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
@@ -14,10 +13,11 @@ public class TenantStore : AbstractTenantStore<ITenantContext>
     /// CTOR.
     /// </summary>
     /// <param name="configuration"></param>
-    /// <param name="logger"></param>
-    public TenantStore(IConfiguration configuration, ILogger<TenantStore> logger) : base(configuration, logger)
+    /// <param name="loggerFactory">The <see cref="ILoggerFactory"/> to use, or <see langword="null"/> to use <see cref="TournamentManager"/>.<see cref="AppLogging"/>.</param>
+    public TenantStore(IConfiguration configuration, ILoggerFactory? loggerFactory = null)
+        : base(configuration, loggerFactory?.CreateLogger<TenantStore>() ?? AppLogging.CreateLogger<TenantStore>())
     { }
-        
+
     /// <summary>
     /// Loads tenant configurations from the file system using the <see cref="ITenantStore{T}.GetTenantConfigurationFiles"/> delegate.
     /// </summary>

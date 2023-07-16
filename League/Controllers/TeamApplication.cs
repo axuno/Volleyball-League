@@ -60,8 +60,7 @@ public class TeamApplication : AbstractController
         _tenantContext = tenantContext;
         _timeZoneConverter = timeZoneConverter;
         _regionInfo = regionInfo;
-        _googleConfig = new GoogleConfiguration();
-        configuration.Bind(nameof(GoogleConfiguration), _googleConfig);
+        _googleConfig = configuration.Get<GoogleConfiguration>() ?? new GoogleConfiguration();
         _queue = queue;
         _sendEmailTask = sendEmailTask;
         _appDb = tenantContext.DbContext.AppDb;

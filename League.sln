@@ -25,6 +25,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TournamentManager.Tests", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "League.Demo", "League.Demo\League.Demo.csproj", "{D44B54A5-FBDC-4446-BB94-901DA3FB4DA2}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Axuno.Tools.Tests", "Axuno.Tools.Tests\Axuno.Tools.Tests.csproj", "{247EDA91-EAE4-4580-9C26-E6C3AB91C2D9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -75,6 +77,10 @@ Global
 		{D44B54A5-FBDC-4446-BB94-901DA3FB4DA2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D44B54A5-FBDC-4446-BB94-901DA3FB4DA2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D44B54A5-FBDC-4446-BB94-901DA3FB4DA2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{247EDA91-EAE4-4580-9C26-E6C3AB91C2D9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{247EDA91-EAE4-4580-9C26-E6C3AB91C2D9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{247EDA91-EAE4-4580-9C26-E6C3AB91C2D9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{247EDA91-EAE4-4580-9C26-E6C3AB91C2D9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

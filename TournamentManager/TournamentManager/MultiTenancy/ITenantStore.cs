@@ -23,6 +23,14 @@ public interface ITenantStore<T> where T: class, ITenantContext, ITenant
     IReadOnlyDictionary<string, T> GetTenants();
 
     /// <summary>
+    /// Loads the tenant configuration file and builds an <see cref="ITenantContext"/>.
+    /// <see cref="IDbContext.ConnectionString"/>s are added to the <see cref="DbContext"/> using the <see cref="DbContext.ConnectionKey"/>.
+    /// </summary>
+    /// <param name="filePath">The full path to the file</param>
+    /// <returns>Returns the <see cref="ITenantContext"/>, if the tenant could be built, else <see langword="null"/>.</returns>
+    ITenantContext? BuildTenantContext(string filePath);
+
+    /// <summary>
     /// Gets the <see cref="ITenant"/> configuration for the tenant with the specified <paramref name="identifier"/>.
     /// </summary>
     /// <returns>Returns the <see cref="ITenantContext"/> configuration for the tenant with the specified <paramref name="identifier"/>.</returns>

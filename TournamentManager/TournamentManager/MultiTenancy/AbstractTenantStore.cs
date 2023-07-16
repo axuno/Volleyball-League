@@ -16,7 +16,7 @@ public class AbstractTenantStore<T> : ITenantStore<T> where T: class, ITenantCon
 {
     protected readonly ConcurrentDictionary<string, T> Tenants = new();
     protected ILogger Logger;
-    internal YAXLib.YAXSerializer TenantContextSerializer = new(typeof(TenantContext));
+    internal YAXLib.YAXSerializer<TenantContext?> TenantContextSerializer = new();
 
     /// <summary>
     /// CTOR.
@@ -44,7 +44,7 @@ public class AbstractTenantStore<T> : ITenantStore<T> where T: class, ITenantCon
     /// <returns>Returns the <see cref="ITenantContext"/> configuration for the tenant with the specified <paramref name="identifier"/> or <see langword="null"/> if it could not be found.</returns>
     public ITenantContext? GetTenantByIdentifier(string identifier)
     {
-        return Tenants.ContainsKey(identifier) ? Tenants[identifier] : null;
+        return Tenants.TryGetValue(identifier, out var tenant) ? tenant : null;
     }
 
     /// <summary>
@@ -119,13 +119,14 @@ public class AbstractTenantStore<T> : ITenantStore<T> where T: class, ITenantCon
     public virtual ITenantStore<T> LoadTenants()
     {
         Tenants.Clear();
-        foreach (var configFile in GetTenantConfigurationFiles.Invoke())
+        var configFiles = GetTenantConfigurationFiles.Invoke();
+        Logger.LogInformation("Tenant config files: {Config}", configFiles.ToList());
+
+        foreach (var configFile in configFiles)
         {
-            var tc = (ITenantContext) TenantContextSerializer.Deserialize(ReadTenantConfigFile(configFile))!;
-            tc.Filename = configFile;
-            tc.DbContext.ConnectionString =
-                Configuration.GetConnectionString(tc.DbContext.ConnectionKey) ?? string.Empty;
-            SetTenantForChildContexts((T) tc);
+            var tc = BuildTenantContext(configFile)
+                     ?? throw new Exception($"{nameof(ITenantContext)} could not be built from file '{configFile}'.");
+
             if (!Tenants.TryAdd(tc.Identifier, (T) tc))
             {
                 throw new Exception($"Identifier '{tc.Identifier}' is already taken for another tenant");
@@ -133,6 +134,24 @@ public class AbstractTenantStore<T> : ITenantStore<T> where T: class, ITenantCon
         }
 
         return this;
+    }
+
+    /// <summary>
+    /// Loads the tenant configuration file and builds an <see cref="ITenantContext"/>.
+    /// <see cref="IDbContext.ConnectionString"/>s are added to the <see cref="DbContext"/> using the <see cref="DbContext.ConnectionKey"/>.
+    /// </summary>
+    /// <param name="filePath">The full path to the file</param>
+    /// <returns>Returns the <see cref="ITenantContext"/>, if the tenant could be built, else <see langword="null"/>.</returns>
+    public virtual ITenantContext? BuildTenantContext(string filePath)
+    {
+        var tc = (ITenantContext?) TenantContextSerializer.Deserialize(ReadTenantConfigFile(filePath));
+        if (tc == null) return null;
+
+        tc.Filename = filePath;
+        tc.DbContext.ConnectionString =
+            Configuration.GetConnectionString(tc.DbContext.ConnectionKey) ?? string.Empty;
+        SetTenantForChildContexts((T) tc);
+        return tc;
     }
 
     /// <summary>
