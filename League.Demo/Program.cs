@@ -20,9 +20,9 @@ public class Program
     {
         // NLog: setup the logger first to catch all errors
         var currentDir = Directory.GetCurrentDirectory();
+        var logConfigFile = Path.Combine(currentDir, LeagueStartup.ConfigurationFolder, "NLog.Internal.config");
         var logger = LogManager.Setup()
-            .LoadConfigurationFromFile(
-                $@"{currentDir}{Path.DirectorySeparatorChar}{LeagueStartup.ConfigurationFolder}{Path.DirectorySeparatorChar}NLog.Internal.config")
+            .LoadConfigurationFromFile(logConfigFile)
             .GetCurrentClassLogger();
         // Allows for <target name="file" xsi:type="File" fileName = "${var:logDirectory}logfile.log"... >
         LogManager.Configuration.Variables["logDirectory"] = currentDir + Path.DirectorySeparatorChar;
@@ -38,8 +38,9 @@ public class Program
 
             builder.Logging.ClearProviders();
             // Enable NLog as logging provider for Microsoft.Extension.Logging
+            logConfigFile = Path.Combine(currentDir, LeagueStartup.ConfigurationFolder, $"NLog.{builder.Environment.EnvironmentName}.config");
             var nLogConfiguration = LogManager.Setup()
-                .LoadConfigurationFromFile($"NLog.{builder.Environment.EnvironmentName}.config")
+                .LoadConfigurationFromFile(logConfigFile)
                 .LogFactory.Configuration;
             var nLogOptions = new NLogAspNetCoreOptions { AutoShutdown = true, IncludeScopes = true };
 
