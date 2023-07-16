@@ -30,12 +30,12 @@ namespace Axuno.Tools.FileSystem.Tests
                         Filter = "*.*"
                     };
                 case 2:
-                    var dfsw = new DelayedFileSystemWatcher(_directoryToWatch)
+                    var watcher = new DelayedFileSystemWatcher(_directoryToWatch)
                     {
                         IncludeSubdirectories = false, EnableRaisingEvents = true, ConsolidationInterval = 1,
                     };
-                    dfsw.Filters.Add("*.*");
-                    return dfsw;
+                    watcher.Filters.Add("*.*");
+                    return watcher;
                 case 3:
                     return new DelayedFileSystemWatcher(_directoryToWatch, "*.*")
                     {

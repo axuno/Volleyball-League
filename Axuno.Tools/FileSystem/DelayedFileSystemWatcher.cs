@@ -64,10 +64,10 @@ public class DelayedFileSystemWatcher : IDisposable
     /// Initializes a new instance of the <see cref="DelayedFileSystemWatcher"/> class, given the specified directory and type of files to monitor.
     /// </summary>
     /// <param name="path">The directory to monitor.</param>
-    /// <param name="filter">The type of files to monitor.</param>
-    public DelayedFileSystemWatcher(string path, string filter)
+    /// <param name="typeFilter">The type of files to monitor.</param>
+    public DelayedFileSystemWatcher(string path, string typeFilter)
     {
-        _fileSystemWatcher = new FileSystemWatcher(path, filter);
+        _fileSystemWatcher = new FileSystemWatcher(path, typeFilter);
         Initialize(out _timer);
     }
 
@@ -75,11 +75,11 @@ public class DelayedFileSystemWatcher : IDisposable
     /// Initializes a new instance of the <see cref="DelayedFileSystemWatcher"/> class, given the specified directory and type of files to monitor.
     /// </summary>
     /// <param name="path">The directory to monitor.</param>
-    /// <param name="filters">The types of files to monitor, e.g. new[] {"*.yml", "*.yaml"}</param>
-    public DelayedFileSystemWatcher(string path, IEnumerable<string> filters)
+    /// <param name="typeFilters">The types of files to monitor, e.g. new[] {"*.yml", "*.yaml"}</param>
+    public DelayedFileSystemWatcher(string path, IEnumerable<string> typeFilters)
     {
         _fileSystemWatcher = new FileSystemWatcher(path);
-        foreach (var filter in filters) _fileSystemWatcher.Filters.Add(filter);
+        foreach (var filter in typeFilters) _fileSystemWatcher.Filters.Add(filter);
         
         Initialize(out _timer);
     }

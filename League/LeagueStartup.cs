@@ -59,7 +59,7 @@ namespace League;
 public static class LeagueStartup
 {
     /// <summary>
-    /// The name of the configuration folder, which is relative to <see cref="IWebHostEnvironment.ContentRootPath"/>.
+    /// The name of the configuration folder, which is relative to <see ref="IWebHostEnvironment.ContentRootPath"/>.
     /// </summary>
     public const string ConfigurationFolder = "Configuration";
 
@@ -158,7 +158,7 @@ public static class LeagueStartup
 
         var configSearchPattern = $"Tenant.*.{environment.EnvironmentName}.config";
         var configDirectory = Path.Combine(environment.ContentRootPath, ConfigurationFolder);
-
+        
         var store = (TenantStore) new TenantStore(configuration)
         {
             GetTenantConfigurationFiles = () => Directory.GetFiles(
@@ -180,7 +180,9 @@ public static class LeagueStartup
         services.AddScoped<TenantResolver>();
         services.AddScoped<ITenantContext>(sp => sp.GetRequiredService<TenantResolver>().Resolve());
 
-        services.AddSingleton<TenantConfigWatcher>(new TenantConfigWatcher(store, configDirectory, configSearchPattern));
+        // Enable hot ITenant configuration changes 
+        services.AddSingleton<TenantConfigWatcher>(new TenantConfigWatcher(store, configDirectory,
+            configSearchPattern));
 
         #endregion
 

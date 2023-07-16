@@ -1,6 +1,9 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using Axuno.Tools.FileSystem;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Primitives;
 
 namespace TournamentManager.MultiTenancy;
 
@@ -20,10 +23,10 @@ public class TenantConfigWatcher
     /// </summary>
     /// <param name="tenantStore">The instance of the <see cref="ITenantStore{T}"/></param>
     /// <param name="configPath">The full path to the directory containing tenant configuration files.</param>
-    /// <param name="filter">The filter for file names that are watched.</param>
-    public TenantConfigWatcher(ITenantStore<ITenantContext> tenantStore, string configPath, string filter)
+    /// <param name="typeFilter">The filter for file names that are watched, e.g. "*.config"</param>
+    public TenantConfigWatcher(ITenantStore<ITenantContext> tenantStore, string configPath, string typeFilter)
     {
-        _tenantFileWatcher = new DelayedFileSystemWatcher(configPath, filter)
+        _tenantFileWatcher = new DelayedFileSystemWatcher(configPath, typeFilter)
             { ConsolidationInterval = 1000, EnableRaisingEvents = true };
         _tenantStore = tenantStore;
 
@@ -31,6 +34,27 @@ public class TenantConfigWatcher
         _tenantFileWatcher.Created += HandleCreatedOrChangedEvent;
         _tenantFileWatcher.Deleted += HandleDeletedEvent;
         _tenantFileWatcher.Renamed += HandleRenamedEvent;
+
+        // Watch and handle configuration file (i.e. appsettings.json, credentials.json) changes
+        ChangeToken.OnChange(() => tenantStore.Configuration.GetReloadToken(), OnSettingsChanged);
+    }
+
+    /// <summary>
+    /// Updates the connection string of each tenant after a configuration change.
+    /// </summary>
+    private void OnSettingsChanged()
+    {
+        foreach (var t in _tenantStore.GetTenants().Values) UpdateConnectionString(t);
+    }
+
+    private void UpdateConnectionString(ITenantContext tenant)
+    {
+        var cs = _tenantStore.Configuration.GetConnectionString(tenant.DbContext.ConnectionKey) ?? string.Empty;
+        if (cs != tenant.DbContext.ConnectionString)
+        {
+            tenant.DbContext.ConnectionString =
+                _tenantStore.Configuration.GetConnectionString(tenant.DbContext.ConnectionKey) ?? string.Empty;
+        }
     }
 
     /// <summary>

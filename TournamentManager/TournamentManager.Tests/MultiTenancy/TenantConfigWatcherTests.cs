@@ -5,7 +5,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging.Abstractions;
-using Moq;
 using NUnit.Framework;
 using TournamentManager.MultiTenancy;
 
@@ -103,6 +102,32 @@ public class TenantConfigWatcherTests
         Assert.That(_store.GetTenantByIdentifier(identifier), Is.Null);
     }
 
+    [Test]
+    public void ChangeOfConnectionStringAppSetting()
+    {
+        var tenantName = _tenantNames[0];
+        _store.LoadTenants();
+        
+        if (_store.GetTenantByIdentifier(tenantName) == null)
+        {
+            // the watcher will load the file automatically
+            CreateTenantContext(tenantName).SerializeToFile(Path.Combine(_directoryToWatch, $"Tenant.{tenantName}.config"));
+        }
+        
+        var initialConnString = _store.GetTenantByIdentifier(tenantName)!.DbContext.GetNewAdapter().ConnectionString;
+
+        // Change the connection string in the IConfiguration settings 
+        _store.Configuration.GetSection("ConnectionStrings")[ConnKeyPrefix + tenantName] = "TheNewConnectionString";
+        // Trigger ChangeToken.OnChange for the IConfiguration
+        // which should make the watcher update the connection strings of all tenants
+        ((IConfigurationRoot) _store.Configuration).Reload();
+
+        var newConnString = _store.GetTenantByIdentifier(tenantName)!.DbContext.ConnectionString;
+
+        Assert.That(newConnString, Is.Not.EqualTo(initialConnString));
+        Assert.That(newConnString, Is.EqualTo("TheNewConnectionString"));
+    }
+
     private TenantConfigWatcher GetTenantConfigWatcher()
     {
         var watcher = new TenantConfigWatcher(_store, _directoryToWatch, ConfigSearchPattern);
@@ -118,7 +143,7 @@ public class TenantConfigWatcherTests
         var cb = new ConfigurationBuilder();
         cb.AddInMemoryCollection(connStr);
         var config = cb.Build();
-
+        
         return config;
     }
 
