@@ -8,7 +8,7 @@
         <NoWarn>CA5362;CS1591</NoWarn>
     </PropertyGroup>
     <ItemGroup>
-        <PackageReference Include="NuGetizer" Version="1.0.4">
+        <PackageReference Include="NuGetizer" Version="1.0.5">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>

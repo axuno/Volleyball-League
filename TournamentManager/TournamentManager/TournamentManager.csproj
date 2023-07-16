@@ -14,7 +14,7 @@ Volleyball League is an open source sports platform that brings everything neces
 
     <ItemGroup>
         <PackageReference Include="EPPlus" Version="6.2.6" />
-        <PackageReference Include="NuGetizer" Version="1.0.4">
+        <PackageReference Include="NuGetizer" Version="1.0.5">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
