@@ -2,7 +2,8 @@
 @using League.ConfigurationPoco
 @inject IConfiguration Configuration
 @{
-    var googleConfig = Configuration.Get<GoogleConfiguration>() ?? new GoogleConfiguration();
+    var googleConfig = new GoogleConfiguration();
+    Configuration.Bind(nameof(GoogleConfiguration), googleConfig);
 }
 @*<!-- Global site tag (gtag.js) - Google Analytics -->*@
 <script async src="https://www.googletagmanager.com/gtag/js?id=@googleConfig.AnalyticsTrackingId"></script>

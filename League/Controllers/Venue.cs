@@ -52,7 +52,8 @@ public class Venue : AbstractController
         _regionInfo = regionInfo;
         _configuration = configuration;
         _logger = logger;
-        _googleConfig = _configuration.Get<GoogleConfiguration>() ?? new GoogleConfiguration();
+        _googleConfig = new GoogleConfiguration();
+        _configuration.Bind(nameof(GoogleConfiguration), _googleConfig);
     }
 
     [HttpGet("[action]/{id:long}")]

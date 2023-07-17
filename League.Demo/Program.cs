@@ -97,11 +97,11 @@ public class Program
             LeagueStartup.ConfigurationFolder);
 
         builder.Configuration.SetBasePath(absoluteConfigurationPath)
-            .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-            .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json",
+            .AddJsonFile("AppSettings.json", optional: false, reloadOnChange: true)
+            .AddJsonFile($"AppSettings.{builder.Environment.EnvironmentName}.json",
                 optional: true, reloadOnChange: true)
-            .AddJsonFile(@"credentials.json", optional: false, reloadOnChange: true)
-            .AddJsonFile($"credentials.{builder.Environment.EnvironmentName}.json",
+            .AddJsonFile(@"Credentials.json", optional: false, reloadOnChange: true)
+            .AddJsonFile($"Credentials.{builder.Environment.EnvironmentName}.json",
                 optional: false, reloadOnChange: true)
             .AddEnvironmentVariables()
             .AddCommandLine(args);
