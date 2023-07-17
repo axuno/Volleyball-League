@@ -2,7 +2,7 @@
 @model League.Models.MapViewModels.MapModel
 @inject IViewLocalizer Localizer
 @{ ViewData["Title"] = Localizer["Venues"].Value + " - " + Model.Tournament?.Name;}
-        @if (!Model.Venues.Any(v => v.Latitude != null && v.Longitude != null))
+        @if (!Model.Venues.Any(v => v is { Latitude: not null, Longitude: not null }))
         {
             <div class="row">
                 <div class="col-12 pb-2">
