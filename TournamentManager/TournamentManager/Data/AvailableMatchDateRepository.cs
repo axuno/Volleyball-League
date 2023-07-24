@@ -18,7 +18,7 @@ using TournamentManager.DAL.TypedViewClasses;
 namespace TournamentManager.Data;
 
 /// <summary>
-/// Class for ExcludedMatchDate related data selections
+/// Class for database operations for available match dates.
 /// </summary>
 public class AvailableMatchDateRepository
 {
@@ -46,8 +46,6 @@ public class AvailableMatchDateRepository
         };
         await da.FetchEntityCollectionAsync(qp, cancellationToken);
         da.CloseConnection();
-
-        _logger.LogDebug("{count} available match dates found", available.Count);
 
         return available;
     }

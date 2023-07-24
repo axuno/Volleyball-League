@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 
@@ -68,11 +67,11 @@ public sealed class GermanFederalStates : Collection<GermanFederalState>
         {
             try
             {
-                Contains(this[stateId]);
+                _ = Contains(this[stateId]);
             }
             catch
             {
-                throw new Exception(string.Format("GermanFederalStateId \"{0}\" wird in \"{1}\" nicht abgebildet.", stateId, GetType()));
+                throw new Exception($"GermanFederalStateId \"{stateId}\" is not included in \"{GetType()}\".");
             }
         }
 #endif
@@ -88,8 +87,8 @@ public sealed class GermanFederalStates : Collection<GermanFederalState>
     /// <summary>
     /// Get a GermanFederalState object.
     /// </summary>
-    /// <param name="nameOrAbbreviation">State abbriviation or state name.</param>
-    /// <returns>Returns the GermanFederalState for the state abbriviation or state name.</returns>
+    /// <param name="nameOrAbbreviation">State abbreviation or state name.</param>
+    /// <returns>Returns the GermanFederalState for the state abbreviation or state name.</returns>
     public GermanFederalState this[string nameOrAbbreviation]
     {
         get
