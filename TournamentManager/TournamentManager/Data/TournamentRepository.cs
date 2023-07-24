@@ -28,7 +28,7 @@ public class TournamentRepository
     public TournamentRepository(MultiTenancy.IDbContext dbContext)
     {
         _dbContext = dbContext;
-        _logger.LogDebug("{repository} created.", nameof(TournamentRepository));
+        _logger.LogDebug("Repository created. {Repository} {Identifier}", nameof(TournamentRepository), dbContext.Tenant?.Identifier);
     }
 
     [Obsolete("Use GetTournamentAsync instead", false)]

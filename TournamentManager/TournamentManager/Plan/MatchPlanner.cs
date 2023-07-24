@@ -190,7 +190,7 @@ public class MatchPlanner
                 // matchDates contains calculated dates in the same order as combinations,
                 // so the index can be used for both.
                 var availableDates = GetMatchDates(roundLeg, teamCombinationGroup, roundMatches);
-                _logger.LogDebug("Selected dates: {dates}", string.Join(", ", availableDates.OrderBy(bd => bd?.MatchStartTime).Select(bd => bd?.MatchStartTime.ToShortDateString())).TrimEnd(',', ' '));
+                _logger.LogDebug("Available dates for combination: {dates}", string.Join(", ", availableDates.OrderBy(bd => bd?.MatchStartTime).Select(bd => bd?.MatchStartTime.ToShortDateString())).TrimEnd(',', ' '));
 
                 for (var index = 0; index < teamCombinationGroup.Count; index++)
                 {
@@ -222,6 +222,9 @@ public class MatchPlanner
                         ChangeSerial = 0,
                         Remarks = string.Empty
                     };
+
+                    _logger.LogDebug("Fixture: {HomeTeam} - {GuestTeam}: {PlannedStart}", match.HomeTeamId, match.GuestTeamId, match.PlannedStart);
+
                     roundMatches.Add(match);
                 }
             }
@@ -268,7 +271,7 @@ public class MatchPlanner
                     new DateTimePeriod(roundLeg.StartDateTime, roundLeg.EndDateTime),
                     GetOccupiedMatchDates(combination, groupMatches));
             }
-
+            
             matchDates.Add(availableDates);
 
 #if DEBUG
@@ -286,7 +289,7 @@ public class MatchPlanner
 #endif
         }
 
-        // we can't proceed without and match dates found
+        // we can't proceed without any match dates found
         if (matchDates.Count == 0) return matchDatePerCombination;
 
         // only 1 match date found, so optimization is not possible

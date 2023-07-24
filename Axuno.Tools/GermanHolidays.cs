@@ -100,7 +100,7 @@ public class GermanHoliday
 
     public static bool operator ==(GermanHoliday? h1, GermanHoliday? h2)
     {
-        if (h1 == null || h2 == null) return false;
+        if (h1 is null || h2 is null) return false;
         return h1.Equals(h2);
     }
 
@@ -162,7 +162,7 @@ public class GermanHolidays : List<GermanHoliday>
     {
         // Plausibility check
         if (year < 1583 || year > 4099)
-            throw new Exception("Year must be between 1583 and 4099.");
+            throw new ArgumentException("Year must be between 1583 and 4099.", nameof(year));
 
         Year = year;
         _easterSunday = GetEasterSunday();

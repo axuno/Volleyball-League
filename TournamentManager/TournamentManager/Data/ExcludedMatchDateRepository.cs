@@ -27,6 +27,7 @@ public class ExcludedMatchDateRepository
     public ExcludedMatchDateRepository(MultiTenancy.IDbContext dbContext)
     {
         _dbContext = dbContext;
+        _logger.LogDebug("Repository created. {Repository} {Identifier}", nameof(TournamentRepository), dbContext.Tenant?.Identifier);
     }
 
     /// <summary>
@@ -46,8 +47,6 @@ public class ExcludedMatchDateRepository
         };
         await da.FetchEntityCollectionAsync(qp, cancellationToken);
         da.CloseConnection();
-
-        _logger.LogDebug("{count} excluded match dates found", excluded.Count);
 
         return excluded;
     }

@@ -38,17 +38,26 @@ public class AvailableMatchDates
         _logger = logger;
     }
 
+    /// <summary>
+    /// Clears and loads excluded match dates and available match dates
+    /// from storage.
+    /// </summary>
     private async Task Initialize(CancellationToken cancellationToken)
     {
+        _logger.LogDebug($"Initializing {nameof(AvailableMatchDates)}");
         _excludedMatchDateEntities.Clear();
         _excludedMatchDateEntities.AddRange(
             await _appDb.ExcludedMatchDateRepository.GetExcludedMatchDatesAsync(
                 _tenantContext.TournamentContext.MatchPlanTournamentId, cancellationToken));
 
+        _logger.LogDebug("{count} excluded match dates loaded from storage", _excludedMatchDateEntities.Count);
+
         _availableMatchDateEntities.Clear();
         _availableMatchDateEntities.AddRange(
             await _appDb.AvailableMatchDateRepository.GetAvailableMatchDatesAsync(
                 _tenantContext.TournamentContext.MatchPlanTournamentId, cancellationToken));
+
+        _logger.LogDebug("{count} available match dates loaded from storage", _availableMatchDateEntities.Count);
 
         _generatedAvailableMatchDateEntities.Clear();
     }
@@ -93,6 +102,32 @@ public class AvailableMatchDates
     }
 
     /// <summary>
+    /// Checks the <see cref="TeamEntity"/> for <see cref="TeamEntity.MatchDayOfWeek"/>,
+    /// <see cref="TeamEntity.MatchTime"/> and <see cref="TeamEntity.VenueId"/> for not <see langword="null"/>.
+    /// </summary>
+    private bool IsVenueAndDateDefined(TeamEntity team)
+    {
+        return team is { MatchDayOfWeek: not null, MatchTime: not null, VenueId: not null };
+    }
+
+    /// <summary>
+    /// Verifies, that the given <paramref name="matchDateTimeUtc"></paramref> is within the <see cref="RoundLegEntity"/> date
+    /// bounderies, <b>and</b> it is not excluded, <b>and</b> the venue is not occupied by another match.
+    /// </summary>
+    private async Task<bool> IsDateUsable(DateTime matchDateTimeUtc, RoundLegEntity roundLeg, TeamEntity team, CancellationToken cancellationToken)
+    {
+        var plannedDuration = _tenantContext.TournamentContext.FixtureRuleSet.PlannedDurationOfMatch;
+
+        // Todo: This code creates heavy load on the database
+        return IsDateWithinRoundLegDateTime(roundLeg, matchDateTimeUtc)
+            && !IsExcludedDate(matchDateTimeUtc, roundLeg.RoundId, team.Id)
+            && !await IsVenueOccupiedByMatchAsync(
+                new DateTimePeriod(matchDateTimeUtc, matchDateTimeUtc.Add(plannedDuration)),
+                team.VenueId!.Value, cancellationToken);
+    }
+
+
+    /// <summary>
     /// Generate available match dates for teams where 
     /// <see cref="TeamEntity.MatchDayOfWeek"/>, <see cref="TeamEntity.MatchTime"/>, <see cref="TeamEntity.VenueId"/>
     /// are not <see langword="null"/>.
@@ -103,23 +138,10 @@ public class AvailableMatchDates
     internal async Task GenerateNewAsync(RoundEntity round, CancellationToken cancellationToken)
     {
         await Initialize(cancellationToken);
-        var teamIdProcessed = new List<long>();
-        var listTeamsWithSameVenue = new List<EntityCollection<TeamEntity>>();
 
-        // Make a list of teams of the same round and with the same venue AND weekday AND match time
-        // Venues will later be assigned to these teams alternately
-        foreach (var team in round.TeamCollectionViaTeamInRound)
-        {
-            // the collection will contain at least one team
-            var teams = GetTeamsWithSameVenueAndMatchTime(team, round);
-            if (teamIdProcessed.Contains(teams[0].Id)) continue;
-
-            listTeamsWithSameVenue.Add(teams);
-            foreach (var t in teams)
-                if (!teamIdProcessed.Contains(t.Id))
-                    teamIdProcessed.Add(t.Id);
-        }
-
+        // Venues will later be assigned to these teams on a rotating basis
+        var listTeamsWithSameVenue = GetListOfTeamsWithSameVenue(round);
+        
         foreach (var roundLeg in round.RoundLegs)
         {
             var startDate = DateTime.SpecifyKind(roundLeg.StartDateTime, DateTimeKind.Utc);
@@ -127,54 +149,44 @@ public class AvailableMatchDates
 
             foreach (var teamsWithSameVenue in listTeamsWithSameVenue)
             {
-                var teamIndex = 0;
+                var team = teamsWithSameVenue[0];
 
-                // Make sure these values are not null
-                if (!teamsWithSameVenue[teamIndex].MatchDayOfWeek.HasValue ||
-                    !teamsWithSameVenue[teamIndex].MatchTime.HasValue ||
-                    !teamsWithSameVenue[teamIndex].VenueId.HasValue)
-                    continue;
-
-                // Create Tuple for non-nullable context
-#pragma warning disable IDE0042 // Deconstruct variable declaration
-                var team = (teamsWithSameVenue[teamIndex].Id,
-                    MatchDayOfWeek: (DayOfWeek) teamsWithSameVenue[teamIndex].MatchDayOfWeek!.Value,
-                    MatchTime: teamsWithSameVenue[teamIndex].MatchTime!.Value,
-                    VenueId: teamsWithSameVenue[teamIndex].VenueId!.Value);
-#pragma warning restore IDE0042 // Deconstruct variable declaration
-                    
                 // get the first possible match date equal or after the leg's starting date
-                var matchDate = IncrementDateUntilDayOfWeek(startDate, team.MatchDayOfWeek);
+                var matchDate = IncrementDateUntilDayOfWeek(startDate, (DayOfWeek) team.MatchDayOfWeek!);
 
                 // process the period of a leg
+                var teamIndex = 0;
                 while (matchDate <= endDate)
                 {
+                    team = teamsWithSameVenue[teamIndex];
+
                     // if there is more than one team per venue with same weekday and match time,
                     // match dates will be assigned alternately
-                    var matchDateAndTimeUtc = _timeZoneConverter.ToUtc(matchDate.Date.Add(team.MatchTime));
+                    var matchDateTimeUtc = _timeZoneConverter.ToUtc(matchDate.Date.Add(team.MatchTime!.Value));
 
                     // check whether the calculated date 
                     // is within the borders of round legs (if any) and is not marked as excluded
-                    if (IsDateWithinRoundLegDateTime(roundLeg, matchDateAndTimeUtc)
-                        && !IsExcludedDate(matchDateAndTimeUtc, round.Id, team.Id)
-                        && !await IsVenueOccupiedByMatchAsync(
-                            new DateTimePeriod(matchDateAndTimeUtc,
-                                matchDateAndTimeUtc.Add(_tenantContext.TournamentContext.FixtureRuleSet
-                                    .PlannedDurationOfMatch)), team.VenueId, cancellationToken))
+
+                    if (await IsDateUsable(matchDateTimeUtc, roundLeg, team, cancellationToken))
                     {
                         var av = new AvailableMatchDateEntity
                         {
                             TournamentId = _tenantContext.TournamentContext.MatchPlanTournamentId,
                             HomeTeamId = team.Id,
-                            VenueId = team.VenueId,
-                            MatchStartTime = matchDateAndTimeUtc,
+                            VenueId = team.VenueId!.Value,
+                            MatchStartTime = matchDateTimeUtc,
                             MatchEndTime =
-                                matchDateAndTimeUtc.Add(_tenantContext.TournamentContext.FixtureRuleSet.PlannedDurationOfMatch),
+                                matchDateTimeUtc.Add(_tenantContext.TournamentContext.FixtureRuleSet.PlannedDurationOfMatch),
                             IsGenerated = true
                         };
 
                         _generatedAvailableMatchDateEntities.Add(av);
-                        teamIndex = ++teamIndex >= teamsWithSameVenue.Count ? 0 : teamIndex;
+                    }
+
+                    if (teamsWithSameVenue.Count > 1)
+                    {
+                        teamIndex++;
+                        if (teamIndex >= teamsWithSameVenue.Count) teamIndex = 0;
                     }
 
                     matchDate = matchDate.Date.AddDays(7);
@@ -187,6 +199,29 @@ public class AvailableMatchDates
 
         // save to the persistent storage
         // await _appDb.GenericRepository.SaveEntitiesAsync(_generatedAvailableMatchDateEntities, true, false, cancellationToken);
+    }
+
+    /// <summary>
+    /// Make a list of teams of the same round and with the same venue AND weekday AND overlapping match time 
+    /// </summary>
+    private List<EntityCollection<TeamEntity>> GetListOfTeamsWithSameVenue(RoundEntity round)
+    {
+        var listTeamsWithSameVenue = new List<EntityCollection<TeamEntity>>();
+
+        var teamIdProcessed = new List<long>();
+        foreach (var team in round.TeamCollectionViaTeamInRound)
+        {
+            // the collection will contain at least one team
+            var teams = GetTeamsWithSameVenueAndMatchTime(team, round);
+            if (!IsVenueAndDateDefined(teams[0]) || teamIdProcessed.Contains(teams[0].Id)) continue;
+
+            listTeamsWithSameVenue.Add(teams);
+            foreach (var t in teams)
+                if (!teamIdProcessed.Contains(t.Id))
+                    teamIdProcessed.Add(t.Id);
+        }
+
+        return listTeamsWithSameVenue;
     }
 
     private async Task<bool> IsVenueOccupiedByMatchAsync(DateTimePeriod matchTime, long venueId,
@@ -277,6 +312,10 @@ public class AvailableMatchDates
         return result.ToList();
     }
 
+    /// <summary>
+    /// Gets the teams in a round with the same <see cref="TeamEntity.VenueId"/>, <see cref="TeamEntity.MatchDayOfWeek"/>
+    /// and overlapping <see cref="TeamEntity.MatchTime"/>.
+    /// </summary>
     private EntityCollection<TeamEntity> GetTeamsWithSameVenueAndMatchTime(TeamEntity team, RoundEntity round)
     {
         var resultTeams = new EntityCollection<TeamEntity>();
