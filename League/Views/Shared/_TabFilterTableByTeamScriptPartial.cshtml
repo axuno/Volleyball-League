@@ -28,8 +28,16 @@
                 });
                 
 				// Then hide rows not containing the selected team name
-                Array.from(this.closest('table').querySelectorAll('td.context-menu:not(:has([data-team-name="' + teamName + '"]))')).forEach(function(td) {
+                @* // The ":has()" pseudo-class is not supported in Firefox v115
+                    Array.from(this.closest('table').querySelectorAll('td.context-menu:not(:has([data-team-name="' + teamName + '"]))')).forEach(function(td) {
                     td.parentElement.style.display = 'none';
+                });*@
+                var cells = this.closest('table').querySelectorAll('td.context-menu');
+                cells = Array.from(cells).filter(function (cell) {
+                    return !cell.querySelector('[data-team-name="' + teamName + '"]');
+                });
+                cells.forEach(function (cell) {
+                    cell.parentNode.style.display = 'none';
                 });
             });
         });
