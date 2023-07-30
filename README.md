@@ -30,6 +30,7 @@ This is the 4th generation of the software developed over the last 20 years and 
 
  * Individual settings (e.g. number of records, number of rounds, etc.)
  * Individual pages, e.g. for the game rules
+ * Configuration changes are possible at runtime (even to add/remove a tenant)
  * Optimized for mobile devices: Comfortable operation on smartphones, tablets or desktop PCs
  * Localizable for language, region and time zone (currently with translations to English and German)
  
@@ -38,7 +39,8 @@ This is the 4th generation of the software developed over the last 20 years and 
   * ASP.NET 6.0 web-development framework
   * C# programming language
   * Microsoft SQL-Server 2016+ database is currently implemented. [See supported databases](https://www.llblgen.com/Pages/specifications.aspx)
-  * Bootstrap 4 and jQuery as the HTML, CSS, and JavaScript frameworks
+  * Integrates Bootstrap 5
+  * Using plain vanilla javascript (no dependency on jQuery)
 
 ## License
 
