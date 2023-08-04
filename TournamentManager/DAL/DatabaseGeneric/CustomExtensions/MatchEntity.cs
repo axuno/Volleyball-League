@@ -91,8 +91,7 @@ namespace TournamentManager.DAL.EntityClasses
 		{
 			if (venueId == VenueId) return;
 
-			if (!OrigVenueId.HasValue)
-				OrigVenueId = VenueId;
+			OrigVenueId ??= VenueId;
 
 			VenueId = venueId;
 

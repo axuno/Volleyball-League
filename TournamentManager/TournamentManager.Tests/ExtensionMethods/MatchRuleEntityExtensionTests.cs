@@ -1,7 +1,10 @@
-﻿using NUnit.Framework;
+﻿using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using NUnit.Framework;
 using TournamentManager.DAL.EntityClasses;
 
-namespace TournamentManager.Tests.DAL_CustomExtensions;
+namespace TournamentManager.Tests.ExtensionMethods;
 
 [TestFixture]
 public class MatchRuleEntityExtensionTests
@@ -11,7 +14,7 @@ public class MatchRuleEntityExtensionTests
     [TestCase(true, 2, 3)]
     public void Calculate_Max_Number_Of_Sets(bool isBestOf, int numOfSets, int expected)
     {
-        var rule = new MatchRuleEntity {BestOf = isBestOf, NumOfSets = numOfSets};
+        var rule = new MatchRuleEntity { BestOf = isBestOf, NumOfSets = numOfSets };
         Assert.AreEqual(expected, rule.MaxNumOfSets());
     }
 }

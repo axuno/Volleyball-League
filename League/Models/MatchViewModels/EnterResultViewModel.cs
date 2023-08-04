@@ -12,7 +12,6 @@ using TournamentManager;
 using TournamentManager.DAL;
 using TournamentManager.DAL.EntityClasses;
 using TournamentManager.ExtensionMethods;
-using TournamentManager.Match;
 using TournamentManager.ModelValidators;
 
 namespace League.Models.MatchViewModels;
@@ -71,12 +70,12 @@ public class EnterResultViewModel
         Match.Sets.Sort((int)SetFieldIndex.SequenceNo, ListSortDirection.Ascending);
         foreach (var set in Match.Sets)
         {
-            Sets.Add(new PointResultNullable(set.HomeBallPoints, set.GuestBallPoints));
+            Sets.Add(new PointResult(set.HomeBallPoints, set.GuestBallPoints));
         }
 
         while (Sets.Count < _maxNumberOfSets)
         {
-            Sets.Add(new PointResultNullable(null, null));
+            Sets.Add(new PointResult(default, default(int?)));
         }
 
         Id = Match.Id;
@@ -99,18 +98,11 @@ public class EnterResultViewModel
 
         // Add sets to entity
         Match.Sets.Clear(true);
-        for (var i = 0; i < Sets.Count; i++)
-        {
-            // sets where home and guest ball points are NULL, will be ignored
-            if (Sets[i].Home.HasValue || Sets[i].Guest.HasValue)
-            {
-                // home or guest NULL values are invalidated with -1
-                Match.Sets.Add(new SetEntity { MatchId = Match.Id, SequenceNo = i + 1, HomeBallPoints = Sets[i].Home ?? -1, GuestBallPoints = Sets[i].Guest ?? -1 });
-            }
-        }
+        // sets where home or guest ball points are NULL will be ignored
+        Match.Sets.Add(Match.Id, Sets);
 
         // point calculation must run before validation because of tie-break handling
-        Match.Sets.CalculateSetPoints(Round!.SetRule, Round.MatchRule);
+        _ = Match.Sets.CalculateSetPoints(Round!.SetRule, Round.MatchRule);
         Match.Remarks = Remarks;
         Match.ChangeSerial++;
         Match.IsComplete = true;
@@ -147,7 +139,7 @@ public class EnterResultViewModel
     [MaxLength(2000)]
     public string? Remarks { get; set; }
 
-    public List<PointResultNullable> Sets { get; set; } = new();
+    public List<PointResult> Sets { get; set; } = new();
 
     #endregion
 

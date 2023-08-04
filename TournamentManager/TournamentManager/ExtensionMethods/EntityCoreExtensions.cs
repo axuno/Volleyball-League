@@ -1,20 +1,15 @@
 ﻿using System.IO;
 using System.Runtime.Serialization;
-using System.Runtime.Serialization.Formatters.Binary;
 using SD.LLBLGen.Pro.ORMSupportClasses;
 
 namespace TournamentManager.ExtensionMethods;
 
 /// <summary>
-/// For cloning an Entity and all related entities, i.e. the whole graph
+/// Extension methods for types implementing <see cref="IEntityCore"/>.
 /// </summary>
-public static class CloneHelperExtensions
+public static class EntityCoreExtensions
 {
-    static CloneHelperExtensions()
-    {   
-    }
-
-    public static void CloneEntity<T>(T sourceObject, out T targetObject) where T : class, IEntityCore
+    public static void CloneEntity<T>(this IEntityCore sourceObject, out T targetObject) where T : class, IEntityCore
     {
         var ms = new MemoryStream();
         var bf = new DataContractSerializer(typeof(T));

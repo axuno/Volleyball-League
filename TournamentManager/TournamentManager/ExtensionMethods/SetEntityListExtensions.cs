@@ -17,7 +17,7 @@ public static class SetEntityListExtensions
     /// </summary>
     /// <param name="setList">The <see cref="IList{SetEntity}"/> for which the calculation takes place.</param>
     /// <returns>Returns a <see cref="IOpponent{T}"/> with the number of won sets for home and guest team.</returns>
-    public static IOpponent<int> GetSetsWon(this IList<SetEntity> setList)
+    public static IOpponent<int?> GetSetsWon(this IList<SetEntity> setList)
     {
         var setsWon = new PointResult(setList.Count(set => set.HomeBallPoints > set.GuestBallPoints), setList.Count(set => set.HomeBallPoints < set.GuestBallPoints));
         return setsWon;
@@ -28,7 +28,7 @@ public static class SetEntityListExtensions
     /// </summary>
     /// <param name="setList">The <see cref="IList{SetEntity}"/> for which the calculation takes place.</param>
     /// <returns>Returns the maximum of won sets by home or guest team</returns>
-    public static int MaxBestOf(this IList<SetEntity> setList)
+    public static int? MaxBestOf(this IList<SetEntity> setList)
     {
         var setsWon = setList.GetSetsWon();
         return setsWon.Home < setsWon.Guest ? setsWon.Guest : setsWon.Home;
@@ -48,21 +48,21 @@ public static class SetEntityListExtensions
         foreach (var set in setList)
         {
             set.CalculateSetPoints(setRule);
-            set.IsTieBreak = false || matchRule.BestOf && wonSets.Home == wonSets.Guest &&
+            set.IsTieBreak = matchRule.BestOf && wonSets.Home == wonSets.Guest &&
                 wonSets.Home + wonSets.Guest == matchRule.MaxNumOfSets() - 1;
             wonSets.Home += set.HomeBallPoints > set.GuestBallPoints ? 1 : 0;
-            wonSets.Guest += set.HomeBallPoints < set.GuestBallPoints ? 0 : 1;
+            wonSets.Guest += set.HomeBallPoints > set.GuestBallPoints ? 0 : 1;
         }
 
         return setList;
     }
 
     /// <summary>
-    /// Gets the sum of set points for home and guest team.
+    /// Gets the sum of set points for home and guest team stored in the list <see cref="SetEntity"/>s.
     /// </summary>
     /// <param name="setList"></param>
     /// <returns>Returns an <see cref="IOpponent{T}"/> with the sum of set points for home and guest team.</returns>
-    public static IOpponent<int> GetSetPoints(this IList<SetEntity> setList)
+    public static IOpponent<int?> GetSetPoints(this IList<SetEntity> setList)
     {
         return new PointResult(setList.Sum(s => s.HomeSetPoints), setList.Sum(s => s.GuestSetPoints));
     }
@@ -75,5 +75,43 @@ public static class SetEntityListExtensions
     public static int GetTotalBallPoints(this IList<SetEntity> setList)
     {
         return setList.Sum(s => s.HomeBallPoints) + setList.Sum(s => s.GuestBallPoints);
+    }
+
+    /// <summary>
+    /// Adds a delimited string with set results to the <see cref="IList{T}"/> of <see cref="SetEntity"/>.
+    /// </summary>
+    /// <param name="setList"></param>
+    /// <param name="matchId">The <see cref="MatchEntity.Id"/></param>
+    /// <param name="setResults">The set results, e.g. "25:23 25:18 12:25"</param>
+    /// <param name="setSeparator">The character to delimit sets. Default is blank.</param>
+    public static void Add(this IList<SetEntity> setList, long matchId, string setResults, char setSeparator = ' ')
+    {
+        var pointResults = setResults.Split(setSeparator, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+            .Select(set => new PointResult(set)).ToList();
+
+        setList.Add(matchId, pointResults);
+    }
+
+    /// <summary>
+    /// Adds a <see cref="IList{T}"/> of <see cref="PointResult"/>s to the <see cref="IList{T}"/> of <see cref="SetEntity"/>.
+    /// </summary>
+    /// <param name="setList"></param>
+    /// <param name="matchId">The <see cref="MatchEntity.Id"/></param>
+    /// <param name="pointResults">The <see cref="IList{T}"/> of <see cref="PointResult"/>.</param>
+    public static void Add(this IList<SetEntity> setList, long matchId, IList<PointResult> pointResults)
+    {
+        var sequenceNo = 0;
+        foreach (var pointResult in pointResults)
+        {
+            if(pointResult.Home is null || pointResult.Guest is null)
+                continue;
+
+            setList.Add(new SetEntity {
+                MatchId = matchId,
+                SequenceNo = ++sequenceNo,
+                HomeBallPoints = pointResult.Home.Value,
+                GuestBallPoints = pointResult.Guest.Value
+            });
+        }
     }
 }
