@@ -4,6 +4,8 @@
         <Product>League.Demo</Product>
         <TargetFramework>net6.0</TargetFramework>
         <NeutralLanguage>en</NeutralLanguage>
+        <!-- With dotnet, add parameter: -p:SatelliteResourceLanguages="""en;de""" -->
+        <SatelliteResourceLanguages>en;de</SatelliteResourceLanguages>
     </PropertyGroup>
 
     <ItemGroup>

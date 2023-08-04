@@ -4,8 +4,10 @@
         <Product>Tournament Manager</Product>
         <TargetFramework>net6.0</TargetFramework>
         <NeutralLanguage>en</NeutralLanguage>
-        <Version>6.1.0</Version>
-        <FileVersion>6.1.0</FileVersion>
+        <!-- With dotnet, add parameter: -p:SatelliteResourceLanguages="""en;de""" -->
+        <SatelliteResourceLanguages>en;de</SatelliteResourceLanguages>
+        <Version>6.2.0</Version>
+        <FileVersion>6.2.0</FileVersion>
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
         <NoWarn>1591</NoWarn>
         <Description>TournamentManager is the backend for Volleyball League.
