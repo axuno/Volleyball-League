@@ -1,6 +1,4 @@
-using System.Collections.Generic;
 using League.Identity;
-using Microsoft.AspNetCore.Identity;
 
 namespace League.Models.ManageViewModels;
 

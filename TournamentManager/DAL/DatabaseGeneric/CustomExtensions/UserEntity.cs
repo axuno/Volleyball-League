@@ -6,7 +6,6 @@ using System.Globalization;
 #endif
 using System.Xml.Serialization;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using TournamentManager.DAL.HelperClasses;
 
 namespace TournamentManager.DAL.EntityClasses;

@@ -1,12 +1,8 @@
-﻿using System;
-using System.Linq;
-using System.Threading.Tasks;
-using League.Components;
+﻿using League.Components;
 using League.MultiTenancy;
 using League.WebApp.Controllers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Localization;
-using Microsoft.Extensions.Logging;
 using TournamentManager.MultiTenancy;
 
 namespace League.WebApp.ViewComponents;

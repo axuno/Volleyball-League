@@ -1,8 +1,4 @@
-﻿using System;
-using System.Threading;
-using System.Threading.Tasks;
-
-namespace Axuno.BackgroundTask;
+﻿namespace Axuno.BackgroundTask;
 
 /// <summary>
 /// An <see cref="IBackgroundTask"/> that does nothing.

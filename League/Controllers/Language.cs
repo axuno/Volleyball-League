@@ -1,12 +1,4 @@
-﻿using System;
-using System.Linq;
-using System.Net;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Localization;
-using Microsoft.Extensions.Options;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.Extensions.Logging;
+﻿using System.Net;
 
 namespace League.Controllers;
 

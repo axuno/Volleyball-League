@@ -1,6 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using League.Resources;
-using Microsoft.AspNetCore.Mvc;
 
 namespace League.Models.RoleViewModels;
 

@@ -1,7 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
-using TournamentManager.DAL.EntityClasses;
+﻿using TournamentManager.DAL.EntityClasses;
 using TournamentManager.MultiTenancy;
 
 namespace TournamentManager.ModelValidators;

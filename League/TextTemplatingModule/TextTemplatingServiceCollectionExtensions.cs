@@ -1,14 +1,9 @@
-﻿using System;
-using System.Globalization;
-using Axuno.TextTemplating;
+﻿using Axuno.TextTemplating;
 using Axuno.TextTemplating.VirtualFiles;
 using Axuno.VirtualFileSystem;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.FileProviders;
-using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging.Abstractions;
-using Microsoft.Extensions.Options;
 
 namespace League.TextTemplatingModule;
 

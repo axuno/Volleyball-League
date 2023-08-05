@@ -1,8 +1,5 @@
-﻿using System;
-using League.MultiTenancy;
-using Microsoft.AspNetCore.Mvc;
+﻿using League.MultiTenancy;
 using Microsoft.AspNetCore.Mvc.Filters;
-using Microsoft.Extensions.DependencyInjection;
 using TournamentManager.MultiTenancy;
 
 namespace League.ControllerAttributes;

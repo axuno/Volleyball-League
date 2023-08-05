@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
-
-namespace League.Components;
+﻿namespace League.Components;
 
 public class VenueEditor : ViewComponent
 {

@@ -1,7 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using League.Models.VenueViewModels;
 using League.Resources;
-using Microsoft.AspNetCore.Mvc;
 using TournamentManager.DAL.EntityClasses;
 
 namespace League.Components;

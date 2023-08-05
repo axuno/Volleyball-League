@@ -1,5 +1,3 @@
-using System;
-
 namespace TournamentManager.Plan;
 
 [Flags]

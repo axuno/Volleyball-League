@@ -1,7 +1,6 @@
 ﻿using System;
 #if !CF
 #endif
-using System.Linq;
 using TournamentManager.DAL.HelperClasses;
 
 namespace TournamentManager.DAL.EntityClasses;

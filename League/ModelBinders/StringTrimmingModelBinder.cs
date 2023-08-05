@@ -1,8 +1,5 @@
-﻿using System.Linq;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
+﻿using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Binders;
-using Microsoft.Extensions.Logging;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Metadata;
 
 namespace League.ModelBinders;

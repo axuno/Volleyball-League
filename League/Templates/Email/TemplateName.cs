@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace League.Templates.Email;
+﻿namespace League.Templates.Email;
 
 public static class TemplateName
 {

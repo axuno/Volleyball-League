@@ -1,11 +1,4 @@
-﻿using System;
-using System.IO;
-using System.Threading;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Logging;
-using TournamentManager.MultiTenancy;
+﻿using TournamentManager.MultiTenancy;
 
 namespace League.Models.UploadViewModels;
 

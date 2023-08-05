@@ -1,9 +1,6 @@
-﻿using System;
-using System.Drawing;
+﻿using System.Drawing;
 using System.Globalization;
-using System.Linq;
 using System.Security.Cryptography;
-using System.Text;
 using System.Xml.Linq;
 
 namespace Axuno.Web;

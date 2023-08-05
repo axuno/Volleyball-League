@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace TournamentManager.MultiTenancy;
+﻿namespace TournamentManager.MultiTenancy;
 
 /// <summary>
 /// The class contains all configuration data for a tournament.

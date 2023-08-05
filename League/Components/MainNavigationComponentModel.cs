@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
-
-namespace League.Components;
+﻿namespace League.Components;
 
 /// <summary>
 /// The component model for the <see cref="MainNavigation"/> <see cref="Microsoft.AspNetCore.Mvc.ViewComponent"/>.

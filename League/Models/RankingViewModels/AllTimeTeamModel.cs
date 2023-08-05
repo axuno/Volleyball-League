@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using TournamentManager;
+﻿using TournamentManager;
 using TournamentManager.DAL.TypedViewClasses;
 
 namespace League.Models.RankingViewModels;

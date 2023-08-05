@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using League.Models.UploadViewModels;
+﻿using League.Models.UploadViewModels;
 using TournamentManager.DAL.EntityClasses;
 using TournamentManager.DAL.TypedViewClasses;
 

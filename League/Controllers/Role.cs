@@ -1,18 +1,10 @@
-﻿using System;
-using System.Security.Claims;
-using System.Threading;
-using System.Threading.Tasks;
+﻿using System.Security.Claims;
 using League.Helpers;
 using League.Models.RoleViewModels;
 using League.Models.TeamViewModels;
 using League.MultiTenancy;
 using League.Routing;
 using League.TagHelpers;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Localization;
-using Microsoft.Extensions.Logging;
 using TournamentManager.DAL.EntityClasses;
 using TournamentManager.MultiTenancy;
 

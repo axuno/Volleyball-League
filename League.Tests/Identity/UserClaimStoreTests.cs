@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Linq;
+﻿using System.Data;
 using System.Security.Claims;
-using System.Threading.Tasks;
-using System.Threading;
 using League.Identity;
 using NUnit.Framework;
 using SD.LLBLGen.Pro.ORMSupportClasses;

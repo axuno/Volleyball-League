@@ -1,9 +1,3 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using SD.LLBLGen.Pro.LinqSupportClasses;
 using SD.LLBLGen.Pro.ORMSupportClasses;
@@ -11,7 +5,6 @@ using SD.LLBLGen.Pro.QuerySpec;
 using SD.LLBLGen.Pro.QuerySpec.Adapter;
 using TournamentManager.DAL.EntityClasses;
 using TournamentManager.DAL.FactoryClasses;
-using TournamentManager.DAL.HelperClasses;
 using TournamentManager.DAL.Linq;
 
 namespace TournamentManager.Data;

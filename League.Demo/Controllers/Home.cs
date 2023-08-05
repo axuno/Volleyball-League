@@ -1,7 +1,5 @@
-﻿using System.Linq;
-using League.Views;
+﻿using League.Views;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using TournamentManager.MultiTenancy;
 
 namespace League.WebApp.Controllers;

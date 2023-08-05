@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-
-namespace League.Components;
+﻿namespace League.Components;
 
 /// <summary>
 /// Extensions for the <see cref="MainNavigationComponentModel"/> and <see cref="MainNavigationComponentModel.NavigationNode"/>.

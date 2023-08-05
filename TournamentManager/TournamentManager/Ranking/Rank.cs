@@ -1,6 +1,3 @@
-using TournamentManager.DAL.EntityClasses;
-using TournamentManager.Match;
-
 namespace TournamentManager.Ranking;
 
 /// <summary>

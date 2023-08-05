@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Options;
-
-namespace League.Identity;
+﻿namespace League.Identity;
 
 /// <summary>
 /// Settings to be used by <see cref="LeagueUserValidator{TUser}"/>

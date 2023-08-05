@@ -1,5 +1,4 @@
-﻿using System;
-using League.Templates.Email;
+﻿using League.Templates.Email;
 
 namespace League.Emailing.TemplateModels;
 

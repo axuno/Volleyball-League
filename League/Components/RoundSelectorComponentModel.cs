@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using League.Resources;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using TournamentManager.DAL.EntityClasses;

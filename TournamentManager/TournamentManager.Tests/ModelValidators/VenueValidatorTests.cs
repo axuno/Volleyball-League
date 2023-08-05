@@ -1,21 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Xml;
+﻿using System.Globalization;
 using Axuno.Tools.GeoSpatial;
 using NUnit.Framework;
 using TournamentManager.DAL.EntityClasses;
-using TournamentManager.Data;
 using TournamentManager.ModelValidators;
-using Moq;
-using SD.LLBLGen.Pro.ORMSupportClasses;
-using TournamentManager.DAL.HelperClasses;
 using TournamentManager.DAL.TypedViewClasses;
-using TournamentManager.ExtensionMethods;
-using TournamentManager.Tests.TestComponents;
 
 namespace TournamentManager.Tests.ModelValidators;
 

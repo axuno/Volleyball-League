@@ -1,8 +1,6 @@
 ﻿using League.Controllers;
 using League.Identity;
 using League.Routing;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
 
 namespace League.Areas.Admin.Controllers;
 

@@ -1,13 +1,6 @@
-﻿using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using League.ConfigurationPoco;
+﻿using League.ConfigurationPoco;
 using League.Models.MapViewModels;
 using League.Routing;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Localization;
-using Microsoft.Extensions.Logging;
 using SD.LLBLGen.Pro.ORMSupportClasses;
 using TournamentManager.DAL.HelperClasses;
 using TournamentManager.MultiTenancy;

@@ -1,14 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Runtime.CompilerServices;
-using System.Threading;
+﻿using System.Runtime.CompilerServices;
 using Axuno.TextTemplating;
 using Axuno.TextTemplating.Localization;
 using League.Templates.Email.Localization;
 using MailMergeLib;
 using MailMergeLib.AspNet;
-using Microsoft.Extensions.Localization;
 using TournamentManager.MultiTenancy;
 
 namespace League.Emailing.Creators;

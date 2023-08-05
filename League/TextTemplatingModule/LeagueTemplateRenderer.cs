@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using Axuno.TextTemplating;
-using Microsoft.Extensions.Localization;
-using Microsoft.Extensions.Options;
+﻿using Axuno.TextTemplating;
 using Scriban;
 using Scriban.Parsing;
 using Scriban.Syntax;

@@ -1,5 +1,4 @@
-﻿using Axuno.UnitTest.TestComponents;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 
 namespace Axuno.UnitTest.TestComponents;
 

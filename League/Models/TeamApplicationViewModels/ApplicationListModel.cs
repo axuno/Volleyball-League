@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using TournamentManager.DAL.EntityClasses;
+﻿using TournamentManager.DAL.EntityClasses;
 using TournamentManager.DAL.TypedViewClasses;
 
 namespace League.Models.TeamApplicationViewModels;

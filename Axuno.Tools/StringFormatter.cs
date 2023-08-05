@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-
-namespace Axuno.Tools;
+﻿namespace Axuno.Tools;
 
 public class StringFormatter
 {

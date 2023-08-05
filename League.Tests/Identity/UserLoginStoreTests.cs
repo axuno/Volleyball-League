@@ -1,9 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using System;
 using System.Data;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Threading;
 using League.Identity;
 using NUnit.Framework;
 using TournamentManager.DAL.DatabaseSpecific;

@@ -1,9 +1,5 @@
-﻿using System;
-using System.Drawing;
-using System.Threading.Tasks;
+﻿using System.Drawing;
 using Axuno.Web;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
 
 namespace League.Controllers;
 

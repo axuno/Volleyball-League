@@ -3,13 +3,6 @@
 // Licensed under the MIT license.
 //
 
-using System;
-using System.IO;
-using System.Threading;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
 using TournamentManager.DAL.TypedViewClasses;
 using TournamentManager.MultiTenancy;
 

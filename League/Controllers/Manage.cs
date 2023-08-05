@@ -1,8 +1,3 @@
-using System;
-using System.Globalization;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 using Axuno.Web;
 using League.BackgroundTasks;
 using League.Emailing.Creators;
@@ -11,18 +6,11 @@ using League.Helpers;
 using League.Models.ManageViewModels;
 using League.TagHelpers;
 using League.Views;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Localization;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using TournamentManager.DAL.EntityClasses;
 using TournamentManager.DI;
 using TournamentManager.MultiTenancy;
 using League.MultiTenancy;
 using League.Routing;
-using Microsoft.AspNetCore.Routing;
 
 namespace League.Controllers;
 

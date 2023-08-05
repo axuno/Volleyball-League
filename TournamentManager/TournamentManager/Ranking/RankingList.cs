@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-
 namespace TournamentManager.Ranking;
 
 public class RankingList : List<Rank>

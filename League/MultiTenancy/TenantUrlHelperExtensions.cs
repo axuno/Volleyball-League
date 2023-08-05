@@ -4,8 +4,6 @@
 //
 
 using League.Routing;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Routing;
 
 namespace League.MultiTenancy;
 

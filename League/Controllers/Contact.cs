@@ -1,17 +1,10 @@
-﻿using System.Globalization;
-using System.Linq;
-using System.Security.Claims;
+﻿using System.Security.Claims;
 using Axuno.Web;
 using League.BackgroundTasks;
 using League.Models.AccountViewModels;
 using League.Models.ContactViewModels;
 using League.Routing;
 using League.Views;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Routing;
-using Microsoft.Extensions.Localization;
-using Microsoft.Extensions.Logging;
 using TournamentManager.MultiTenancy;
 
 namespace League.Controllers;

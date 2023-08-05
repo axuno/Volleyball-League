@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Axuno.BackgroundTask;
-using NUnit.Framework;
+﻿using NUnit.Framework;
 
 namespace Axuno.BackgroundTask.Tests;
 

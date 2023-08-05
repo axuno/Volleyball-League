@@ -1,9 +1,3 @@
-using System;
-using System.Collections.Generic;
-using TournamentManager.DAL.EntityClasses;
-using TournamentManager.DAL.Linq;
-using TournamentManager.Data;
-
 namespace TournamentManager;
 
 public class DateTimePeriod

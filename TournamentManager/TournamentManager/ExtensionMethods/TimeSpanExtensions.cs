@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace TournamentManager.ExtensionMethods;
+﻿namespace TournamentManager.ExtensionMethods;
 
 public static class TimeSpanExtensions
 {

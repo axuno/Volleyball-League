@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Moq;
-using Moq.Language.Flow;
+﻿using Moq;
 using TournamentManager.MultiTenancy;
 
 namespace TournamentManager.Tests.TestComponents;

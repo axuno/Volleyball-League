@@ -1,6 +1,4 @@
-﻿using System;
-using System.Linq;
-using TournamentManager.DAL.EntityClasses;
+﻿using TournamentManager.DAL.EntityClasses;
 
 namespace TournamentManager.ExtensionMethods;
 

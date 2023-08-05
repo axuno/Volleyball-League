@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
-
-namespace League.Models.RoleViewModels;
+﻿namespace League.Models.RoleViewModels;
 
 public class RoleRemoveModel
 {

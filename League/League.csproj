@@ -22,6 +22,7 @@ Localizations for English and German are included. The library is in operation o
         <GenerateEmbeddedFilesManifest>true</GenerateEmbeddedFilesManifest>
         <!-- With dotnet, add parameter: -p:SatelliteResourceLanguages="""en;de""" -->
         <SatelliteResourceLanguages>en;de</SatelliteResourceLanguages>
+        <ImplicitUsings>enable</ImplicitUsings>
     </PropertyGroup>
 
     <PropertyGroup>
@@ -43,6 +44,26 @@ Localizations for English and German are included. The library is in operation o
         <DefineConstants>DEBUG;TRACE</DefineConstants>
         <NoWarn>1701;1702;1591</NoWarn>
     </PropertyGroup>
+
+    <ItemGroup>
+        <Using Include="System.Globalization" />
+        <Using Include="Microsoft.AspNetCore.Authorization" />
+        <Using Include="Microsoft.AspNetCore.Builder" />
+        <Using Include="Microsoft.AspNetCore.Hosting" />
+        <Using Include="Microsoft.AspNetCore.Hosting" />
+        <Using Include="Microsoft.AspNetCore.Http" />
+        <Using Include="Microsoft.AspNetCore.Identity" />
+        <Using Include="Microsoft.AspNetCore.Localization" />
+        <Using Include="Microsoft.AspNetCore.Mvc" />
+        <Using Include="Microsoft.AspNetCore.Mvc.Localization" />
+        <Using Include="Microsoft.AspNetCore.Routing" />
+        <Using Include="Microsoft.Extensions.Configuration" />
+        <Using Include="Microsoft.Extensions.DependencyInjection" />
+        <Using Include="Microsoft.Extensions.Hosting" />
+        <Using Include="Microsoft.Extensions.Localization" />
+        <Using Include="Microsoft.Extensions.Logging" />
+        <Using Include="Microsoft.Extensions.Options" />
+    </ItemGroup>
 
     <ItemGroup>
         <PackageReference Include="Axuno.TextTemplating" Version="2.0.1" />

@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using Axuno.Tools.FileSystem;
+﻿using Axuno.Tools.FileSystem;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Primitives;
 
