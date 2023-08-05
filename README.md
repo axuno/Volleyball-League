@@ -51,8 +51,18 @@ The platform software is Open Source under the [MIT license](LICENSE)
   There is a [live website](https://volleyball-liga.de/) running the platform software.
   
 ## Development demo website
-  
-  **Admin login** when using the demo databases:
+
+### Database installation
+
+Before running the `League.Demo` project for the first time, the MSSQL databases must be installed. 
+
+A backup of the two demo databases is located in `League.Demo/Seed/Demo-Db.zip`. Restore the databases to your local MSSQL Server (Express) instance. Then adjust the connection string for the server in `Credentials.Development.json`.
+
+The default database names are `TestOrg` and `OtherOrg`. You may change these names, but then update the `DbContest/Catalog` name in `Tenant.TestOrg.Development.config` and  `Tenant.OtherOrg.Development.config` accordingly.
+
+### Admin login
+
+  The **admin login** for the two demo tenants is:
   * Username: demo
   * Email: demo@axuno.net
   * Password: demodemo
