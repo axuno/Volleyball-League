@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace League.Models.TeamApplicationViewModels;
+﻿namespace League.Models.TeamApplicationViewModels;
 
 public struct TeamApplicationMessageModel
 {

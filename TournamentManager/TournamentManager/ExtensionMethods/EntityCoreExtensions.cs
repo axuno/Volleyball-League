@@ -1,5 +1,4 @@
-﻿using System.IO;
-using System.Runtime.Serialization;
+﻿using System.Runtime.Serialization;
 using SD.LLBLGen.Pro.ORMSupportClasses;
 
 namespace TournamentManager.ExtensionMethods;

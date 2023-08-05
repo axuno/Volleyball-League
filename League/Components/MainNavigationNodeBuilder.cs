@@ -1,15 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Security.Claims;
-using System.Threading.Tasks;
+﻿using System.Security.Claims;
 using League.Authorization;
 using League.Controllers;
 using League.MultiTenancy;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Localization;
-using Microsoft.Extensions.Logging;
 using TournamentManager.MultiTenancy;
 
 namespace League.Components;

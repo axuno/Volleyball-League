@@ -1,6 +1,4 @@
-﻿using System;
-using System.Security.Principal;
-using Microsoft.AspNetCore.Identity;
+﻿using System.Security.Principal;
 
 namespace League.Identity;
 

@@ -1,13 +1,8 @@
-﻿using System;
-using System.Threading;
-using System.Threading.Tasks;
-using Axuno.BackgroundTask;
+﻿using Axuno.BackgroundTask;
 using Axuno.TextTemplating;
 using League.Emailing.Creators;
 using League.Templates.Email.Localization;
 using MailMergeLib.AspNet;
-using Microsoft.Extensions.Localization;
-using Microsoft.Extensions.Logging;
 using TournamentManager.MultiTenancy;
 
 namespace League.BackgroundTasks;

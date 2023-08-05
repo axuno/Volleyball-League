@@ -1,6 +1,4 @@
 ﻿using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.DependencyInjection;
 using TournamentManager.MultiTenancy;
 
 namespace League.Identity;

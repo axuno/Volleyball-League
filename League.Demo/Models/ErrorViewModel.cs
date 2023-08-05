@@ -1,5 +1,3 @@
-using System;
-
 namespace League.WebApp.Models;
 
 public class ErrorViewModel

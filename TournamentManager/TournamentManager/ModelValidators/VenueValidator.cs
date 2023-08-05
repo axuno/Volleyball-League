@@ -1,13 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Axuno.Tools.GeoSpatial;
+﻿using Axuno.Tools.GeoSpatial;
 using TournamentManager.DAL.EntityClasses;
 using TournamentManager.DAL.TypedViewClasses;
-using TournamentManager.Data;
-using TournamentManager.ExtensionMethods;
 
 namespace TournamentManager.ModelValidators;
 

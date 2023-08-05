@@ -1,10 +1,5 @@
-﻿using System;
-using System.Threading;
-using System.Threading.Tasks;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Hosting;
 using Cronos;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace Axuno.BackgroundTask;
 

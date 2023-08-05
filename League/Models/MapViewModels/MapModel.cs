@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Text;
 using League.ConfigurationPoco;
 using TournamentManager.DAL.EntityClasses;
 using TournamentManager.DAL.TypedViewClasses;

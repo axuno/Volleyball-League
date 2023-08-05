@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using SD.LLBLGen.Pro.ORMSupportClasses;
+﻿using SD.LLBLGen.Pro.ORMSupportClasses;
 
 namespace TournamentManager.MultiTenancy;
 

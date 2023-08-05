@@ -1,15 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Abstractions;
-using Moq;
+﻿using Moq;
 using NUnit.Framework;
 using TournamentManager.DAL.EntityClasses;
 using TournamentManager.Data;
-using TournamentManager.ExtensionMethods;
 using TournamentManager.ModelValidators;
 using TournamentManager.MultiTenancy;
 using TournamentManager.Tests.TestComponents;

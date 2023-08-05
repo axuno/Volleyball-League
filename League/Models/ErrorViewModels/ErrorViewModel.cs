@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace League.Models.Error;
+﻿namespace League.Models.Error;
 
 public class ErrorViewModel
 {

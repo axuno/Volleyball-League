@@ -1,9 +1,5 @@
-﻿using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using League.Models.Error;
+﻿using League.Models.Error;
 using League.Routing;
-using Microsoft.Extensions.Localization;
 using TournamentManager.MultiTenancy;
 
 namespace League.Controllers;

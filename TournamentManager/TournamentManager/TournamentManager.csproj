@@ -13,6 +13,9 @@
         <Description>TournamentManager is the backend for Volleyball League.
 Volleyball League is an open source sports platform that brings everything necessary to organize and to run a league.
         </Description>
+        <!-- With dotnet, add parameter: -p:SatelliteResourceLanguages="""en;de""" -->
+        <SatelliteResourceLanguages>en;de</SatelliteResourceLanguages>
+        <ImplicitUsings>enable</ImplicitUsings>
     </PropertyGroup>
 
     <ItemGroup>

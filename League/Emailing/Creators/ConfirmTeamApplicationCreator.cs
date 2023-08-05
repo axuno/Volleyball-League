@@ -1,15 +1,10 @@
-﻿using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Threading;
+﻿using System.Runtime.CompilerServices;
 using Axuno.TextTemplating;
 using Axuno.TextTemplating.Localization;
 using League.Emailing.TemplateModels;
 using League.Templates.Email.Localization;
 using MailMergeLib;
 using MailMergeLib.AspNet;
-using Microsoft.Extensions.Localization;
 using SD.LLBLGen.Pro.ORMSupportClasses;
 using TournamentManager.DAL.HelperClasses;
 using TournamentManager.MultiTenancy;

@@ -1,9 +1,4 @@
-using System;
-using System.Globalization;
-using System.Linq;
 using System.Security.Claims;
-using System.Threading;
-using System.Threading.Tasks;
 using Axuno.Web;
 using League.BackgroundTasks;
 using League.Emailing.Creators;
@@ -13,13 +8,6 @@ using League.MultiTenancy;
 using League.Routing;
 using League.Templates.Email;
 using League.Views;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Localization;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using TournamentManager.ModelValidators;
 using TournamentManager.MultiTenancy;
 

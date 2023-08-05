@@ -58,7 +58,7 @@ Before running the `League.Demo` project for the first time, the MSSQL databases
 
 A backup of the two demo databases is located in `League.Demo/Seed/Demo-Db.zip`. Restore the databases to your local MSSQL Server (Express) instance. Then adjust the connection string for the server in `Credentials.Development.json`.
 
-The default database names are `TestOrg` and `OtherOrg`. You may change these names, but then update the `DbContest/Catalog` name in `Tenant.TestOrg.Development.config` and  `Tenant.OtherOrg.Development.config` accordingly.
+The default database names are `TestOrg` and `OtherOrg`. You may change these names, but then update the `DbContext/Catalog` name in `Tenant.TestOrg.Development.config` and  `Tenant.OtherOrg.Development.config` accordingly.
 
 ### Admin login
 

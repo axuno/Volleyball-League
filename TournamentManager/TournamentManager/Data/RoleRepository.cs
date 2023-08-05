@@ -1,15 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Xml;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using SD.LLBLGen.Pro.LinqSupportClasses;
-using SD.LLBLGen.Pro.ORMSupportClasses;
 using TournamentManager.DAL.EntityClasses;
-using TournamentManager.DAL.HelperClasses;
 using TournamentManager.DAL.Linq;
 
 namespace TournamentManager.Data;

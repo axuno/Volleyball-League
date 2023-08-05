@@ -1,7 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Localization;
-
-namespace League.Identity;
+﻿namespace League.Identity;
 
 public class MultiLanguageIdentityErrorDescriber : IdentityErrorDescriber
 {

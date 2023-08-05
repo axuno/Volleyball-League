@@ -1,9 +1,4 @@
-﻿using System;
-using System.Linq;
-using League.MultiTenancy;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Routing;
-using Microsoft.Extensions.DependencyInjection;
+﻿using League.MultiTenancy;
 using TournamentManager.MultiTenancy;
 
 namespace League.Routing;

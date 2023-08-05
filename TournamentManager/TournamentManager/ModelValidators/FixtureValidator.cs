@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
+﻿using System.ComponentModel;
 using SD.LLBLGen.Pro.ORMSupportClasses;
 using TournamentManager.DAL;
 using TournamentManager.DAL.EntityClasses;

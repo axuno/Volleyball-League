@@ -1,6 +1,4 @@
-﻿using System.IO;
-
-namespace Axuno.Tools.FileSystem;
+﻿namespace Axuno.Tools.FileSystem;
 
 /// <summary>
 /// The <see cref="DelayedEvent"/> class  wraps <see cref="FileSystemEventArgs"/> and <see cref="RenamedEventArgs"/> objects

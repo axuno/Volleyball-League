@@ -1,9 +1,4 @@
-﻿using System;
-using System.Linq;
-using League.MultiTenancy;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Routing;
-using Microsoft.Extensions.DependencyInjection;
+﻿using League.MultiTenancy;
 
 namespace League.Controllers;
 

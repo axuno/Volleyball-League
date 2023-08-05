@@ -1,8 +1,3 @@
-using System;
-using System.Collections.Generic;
-using TournamentManager.DAL.EntityClasses;
-
-
 namespace TournamentManager.Ranking;
 
 public class RankingHistory

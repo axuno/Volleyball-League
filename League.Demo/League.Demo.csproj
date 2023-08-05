@@ -6,6 +6,7 @@
         <NeutralLanguage>en</NeutralLanguage>
         <!-- With dotnet, add parameter: -p:SatelliteResourceLanguages="""en;de""" -->
         <SatelliteResourceLanguages>en;de</SatelliteResourceLanguages>
+        <ImplicitUsings>enable</ImplicitUsings>
     </PropertyGroup>
 
     <ItemGroup>

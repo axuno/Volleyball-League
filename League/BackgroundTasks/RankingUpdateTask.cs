@@ -1,12 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using Axuno.BackgroundTask;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Logging;
+﻿using Axuno.BackgroundTask;
 using SD.LLBLGen.Pro.ORMSupportClasses;
 using SD.LLBLGen.Pro.QuerySpec;
 using TournamentManager.DAL.EntityClasses;

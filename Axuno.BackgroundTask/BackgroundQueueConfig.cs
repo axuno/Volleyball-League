@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Axuno.BackgroundTask;
+﻿namespace Axuno.BackgroundTask;
 
 /// <summary>
 /// Contains the configuration for a <see cref="BackgroundQueue"/>.

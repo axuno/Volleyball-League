@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.SqlClient;
-using SD.LLBLGen.Pro.ORMSupportClasses;
+﻿using SD.LLBLGen.Pro.ORMSupportClasses;
 using TournamentManager.DAL.DatabaseSpecific;
 
 namespace TournamentManager.MultiTenancy;

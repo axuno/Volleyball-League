@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace TournamentManager.MultiTenancy;
+﻿namespace TournamentManager.MultiTenancy;
 
 /// <summary>
 /// Interface for tenant specific data.

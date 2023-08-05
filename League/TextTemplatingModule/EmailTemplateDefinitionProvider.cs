@@ -1,5 +1,4 @@
 ﻿using Axuno.TextTemplating;
-using System.Globalization;
 using League.Templates.Email;
 using League.Templates.Email.Localization;
 

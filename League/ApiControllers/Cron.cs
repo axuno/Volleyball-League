@@ -1,18 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Net.Http;
-using System.Threading.Tasks;
-using League.BackgroundTasks;
+﻿using League.BackgroundTasks;
 using League.Controllers;
 using League.Emailing.Creators;
 using League.MultiTenancy;
 using League.Routing;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Caching.Memory;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using TournamentManager.MultiTenancy;
 

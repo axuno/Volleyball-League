@@ -1,7 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-
-namespace League.Components;
+﻿namespace League.Components;
 
 /// <summary>
 /// <see cref="ViewComponent"/> to display the main navigation based on bootstrap 4

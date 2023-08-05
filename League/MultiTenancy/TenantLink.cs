@@ -3,10 +3,7 @@
 // Licensed under the MIT license.
 //
 
-using System.Collections.Generic;
 using System.ComponentModel;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Routing;
 using TournamentManager.MultiTenancy;
 
 namespace League.MultiTenancy;

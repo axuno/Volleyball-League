@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Axuno.BackgroundTask;
+﻿namespace Axuno.BackgroundTask;
 
 /// <summary>
 /// Contains the configuration for a <see cref="ConcurrentBackgroundQueueService"/>.

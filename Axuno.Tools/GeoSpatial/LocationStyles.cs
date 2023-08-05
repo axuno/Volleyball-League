@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Axuno.Tools.GeoSpatial;
+﻿namespace Axuno.Tools.GeoSpatial;
 
 /// <summary>
 /// Determines the styles permitted in string arguments that are passed

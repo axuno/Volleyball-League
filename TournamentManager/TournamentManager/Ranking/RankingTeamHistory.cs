@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-
 namespace TournamentManager.Ranking;
 
 public class RankingTeamHistory : Dictionary<DateTime, Rank>

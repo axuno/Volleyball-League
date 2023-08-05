@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using Microsoft.Extensions.Logging;
-using NodaTime;
+﻿using Microsoft.Extensions.Logging;
 using OfficeOpenXml;
 using TournamentManager.DAL.EntityClasses;
 

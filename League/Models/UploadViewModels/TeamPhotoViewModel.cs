@@ -1,5 +1,4 @@
-﻿using System;
-using TournamentManager.DAL.EntityClasses;
+﻿using TournamentManager.DAL.EntityClasses;
 
 namespace League.Models.UploadViewModels;
 

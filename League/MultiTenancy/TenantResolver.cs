@@ -1,6 +1,4 @@
-﻿using System;
-using League.Views;
-using Microsoft.AspNetCore.Http;
+﻿using League.Views;
 using Microsoft.AspNetCore.Http.Extensions;
 using TournamentManager.MultiTenancy;
 

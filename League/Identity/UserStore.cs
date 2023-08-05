@@ -1,17 +1,8 @@
-﻿using Microsoft.AspNetCore.Identity;
-using System;
-using System.Threading.Tasks;
-using System.Threading;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Security.Claims;
-using Microsoft.Extensions.Logging;
+﻿using System.Security.Claims;
 using SD.LLBLGen.Pro.ORMSupportClasses;
 using TournamentManager.DAL.EntityClasses;
 using TournamentManager.DAL.HelperClasses;
 using TournamentManager.MultiTenancy;
-using System.Timers;
 
 #pragma warning disable CA2254 // Template should be a static expression
 namespace League.Identity;
