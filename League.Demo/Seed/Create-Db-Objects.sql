@@ -1,4 +1,4 @@
-﻿/****** Object:  UserDefinedFunction [dbo].[GetSetsAsText]    Script Date: 11.02.2021 00:09:58 ******/
+/****** Object:  UserDefinedFunction [dbo].[GetSetsAsText]    Script Date: 06.08.2023 20:51:06 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -30,7 +30,7 @@ DEALLOCATE SetsOfMatch;
 RETURN RTRIM(@allsetresults);
 END
 GO
-/****** Object:  UserDefinedFunction [dbo].[SpatialBearingAngle]    Script Date: 11.02.2021 00:09:58 ******/
+/****** Object:  UserDefinedFunction [dbo].[SpatialBearingAngle]    Script Date: 06.08.2023 20:51:06 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -75,7 +75,7 @@ RETURN @Bearing
 
 END
 GO
-/****** Object:  UserDefinedFunction [dbo].[SpatialDistance]    Script Date: 11.02.2021 00:09:58 ******/
+/****** Object:  UserDefinedFunction [dbo].[SpatialDistance]    Script Date: 06.08.2023 20:51:06 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -90,7 +90,7 @@ BEGIN
   RETURN ROUND(@geo1.STDistance(@geo2)/1000, 3); /* result in kilometers */
 END
 GO
-/****** Object:  UserDefinedFunction [dbo].[Weekday]    Script Date: 11.02.2021 00:09:58 ******/
+/****** Object:  UserDefinedFunction [dbo].[Weekday]    Script Date: 06.08.2023 20:51:06 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -111,91 +111,7 @@ BEGIN
   Return ''
 END
 GO
-/****** Object:  Table [dbo].[Round]    Script Date: 11.02.2021 00:09:58 ******/
-SET ANSI_NULLS ON
-GO
-SET QUOTED_IDENTIFIER ON
-GO
-CREATE TABLE [dbo].[Round](
-	[Id] [bigint] IDENTITY(1,1) NOT NULL,
-	[TournamentId] [bigint] NULL,
-	[Name] [nvarchar](255) NOT NULL,
-	[Description] [nvarchar](255) NOT NULL,
-	[TypeId] [bigint] NOT NULL,
-	[NumOfLegs] [int] NOT NULL,
-	[MatchRuleId] [bigint] NOT NULL,
-	[SetRuleId] [bigint] NOT NULL,
-	[IsComplete] [bit] NOT NULL,
-	[NextRoundId] [bigint] NULL,
-	[CreatedOn] [datetime] NOT NULL,
-	[ModifiedOn] [datetime] NOT NULL,
- CONSTRAINT [PK_ff808a54bd291274117f80c10df] PRIMARY KEY CLUSTERED 
-(
-	[Id] ASC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
-) ON [PRIMARY]
-GO
-/****** Object:  Table [dbo].[Team]    Script Date: 11.02.2021 00:09:58 ******/
-SET ANSI_NULLS ON
-GO
-SET QUOTED_IDENTIFIER ON
-GO
-CREATE TABLE [dbo].[Team](
-	[Id] [bigint] IDENTITY(1,1) NOT NULL,
-	[VenueId] [bigint] NULL,
-	[Name] [nvarchar](255) NOT NULL,
-	[MatchDayOfWeek] [int] NULL,
-	[MatchTime] [time](7) NULL,
-	[ClubName] [nvarchar](255) NULL,
-	[CreatedOn] [datetime] NOT NULL,
-	[ModifiedOn] [datetime] NOT NULL,
- CONSTRAINT [PK_e4f33494c6d8484f20aabdbf101] PRIMARY KEY CLUSTERED 
-(
-	[Id] ASC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
-) ON [PRIMARY]
-GO
-/****** Object:  Table [dbo].[TeamInRound]    Script Date: 11.02.2021 00:09:58 ******/
-SET ANSI_NULLS ON
-GO
-SET QUOTED_IDENTIFIER ON
-GO
-CREATE TABLE [dbo].[TeamInRound](
-	[Id] [bigint] IDENTITY(1,1) NOT NULL,
-	[RoundId] [bigint] NOT NULL,
-	[TeamId] [bigint] NOT NULL,
-	[TeamNameForRound] [nvarchar](255) NULL,
-	[CreatedOn] [datetime] NOT NULL,
-	[ModifiedOn] [datetime] NOT NULL,
- CONSTRAINT [TeamRound_idx] PRIMARY KEY CLUSTERED 
-(
-	[RoundId] ASC,
-	[TeamId] ASC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = ON, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
-) ON [PRIMARY]
-GO
-/****** Object:  Table [dbo].[Tournament]    Script Date: 11.02.2021 00:09:58 ******/
-SET ANSI_NULLS ON
-GO
-SET QUOTED_IDENTIFIER ON
-GO
-CREATE TABLE [dbo].[Tournament](
-	[Id] [bigint] IDENTITY(1,1) NOT NULL,
-	[Name] [nvarchar](255) NOT NULL,
-	[Description] [nvarchar](255) NULL,
-	[TypeId] [bigint] NULL,
-	[IsComplete] [bit] NOT NULL,
-	[IsPlanningMode] [bit] NOT NULL,
-	[NextTournamentId] [bigint] NULL,
-	[CreatedOn] [datetime] NOT NULL,
-	[ModifiedOn] [datetime] NOT NULL,
- CONSTRAINT [PK_f407daf4107a2d31aa47471145c] PRIMARY KEY CLUSTERED 
-(
-	[Id] ASC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
-) ON [PRIMARY]
-GO
-/****** Object:  Table [dbo].[Match]    Script Date: 11.02.2021 00:09:58 ******/
+/****** Object:  Table [dbo].[Match]    Script Date: 06.08.2023 20:51:06 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -229,76 +145,31 @@ CREATE TABLE [dbo].[Match](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[SetRule]    Script Date: 11.02.2021 00:09:58 ******/
+/****** Object:  Table [dbo].[Round]    Script Date: 06.08.2023 20:51:06 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
-CREATE TABLE [dbo].[SetRule](
+CREATE TABLE [dbo].[Round](
 	[Id] [bigint] IDENTITY(1,1) NOT NULL,
+	[TournamentId] [bigint] NULL,
 	[Name] [nvarchar](255) NOT NULL,
-	[NumOfPointsToWinRegular] [int] NOT NULL,
-	[NumOfPointsToWinTiebreak] [int] NOT NULL,
-	[PointsDiffToWinRegular] [int] NOT NULL,
-	[PointsDiffToWinTiebreak] [int] NOT NULL,
-	[PointsSetLost] [int] NOT NULL,
-	[PointsSetTie] [int] NOT NULL,
-	[PointsSetWon] [int] NOT NULL,
-	[MaxTimeouts] [int] NOT NULL,
-	[MaxSubstitutions] [int] NOT NULL,
+	[Description] [nvarchar](255) NOT NULL,
+	[TypeId] [bigint] NOT NULL,
+	[NumOfLegs] [int] NOT NULL,
+	[MatchRuleId] [bigint] NOT NULL,
+	[SetRuleId] [bigint] NOT NULL,
+	[IsComplete] [bit] NOT NULL,
+	[NextRoundId] [bigint] NULL,
 	[CreatedOn] [datetime] NOT NULL,
 	[ModifiedOn] [datetime] NOT NULL,
- CONSTRAINT [PK_23e33af454a87a76a066050c891] PRIMARY KEY CLUSTERED 
+ CONSTRAINT [PK_ff808a54bd291274117f80c10df] PRIMARY KEY CLUSTERED 
 (
 	[Id] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[MatchRule]    Script Date: 11.02.2021 00:09:58 ******/
-SET ANSI_NULLS ON
-GO
-SET QUOTED_IDENTIFIER ON
-GO
-CREATE TABLE [dbo].[MatchRule](
-	[Id] [bigint] IDENTITY(1,1) NOT NULL,
-	[Name] [nvarchar](255) NOT NULL,
-	[NumOfSets] [int] NOT NULL,
-	[BestOf] [bit] NOT NULL,
-	[PointsMatchWon] [int] NOT NULL,
-	[PointsMatchLost] [int] NOT NULL,
-	[PointsMatchWonAfterTieBreak] [int] NOT NULL,
-	[PointsMatchLostAfterTieBreak] [int] NOT NULL,
-	[PointsMatchTie] [int] NOT NULL,
-	[RankComparer] [int] NOT NULL,
-	[CreatedOn] [datetime] NOT NULL,
-	[ModifiedOn] [datetime] NOT NULL,
- CONSTRAINT [PK_086d14b497db1fbf2242367f70b] PRIMARY KEY CLUSTERED 
-(
-	[Id] ASC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
-) ON [PRIMARY]
-GO
-/****** Object:  Table [dbo].[RoundLeg]    Script Date: 11.02.2021 00:09:58 ******/
-SET ANSI_NULLS ON
-GO
-SET QUOTED_IDENTIFIER ON
-GO
-CREATE TABLE [dbo].[RoundLeg](
-	[Id] [bigint] IDENTITY(1,1) NOT NULL,
-	[RoundId] [bigint] NOT NULL,
-	[SequenceNo] [int] NOT NULL,
-	[Description] [nvarchar](255) NULL,
-	[StartDateTime] [datetime] NOT NULL,
-	[EndDateTime] [datetime] NOT NULL,
-	[CreatedOn] [datetime] NOT NULL,
-	[ModifiedOn] [datetime] NOT NULL,
- CONSTRAINT [PK_a0718ea42c3be684e9e944c4033] PRIMARY KEY CLUSTERED 
-(
-	[Id] ASC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
-) ON [PRIMARY]
-GO
-/****** Object:  Table [dbo].[RoundType]    Script Date: 11.02.2021 00:09:58 ******/
+/****** Object:  Table [dbo].[RoundType]    Script Date: 06.08.2023 20:51:06 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -315,52 +186,67 @@ CREATE TABLE [dbo].[RoundType](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  View [dbo].[MatchReportSheet]    Script Date: 11.02.2021 00:09:58 ******/
+/****** Object:  Table [dbo].[Team]    Script Date: 06.08.2023 20:51:06 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
-CREATE VIEW [dbo].[MatchReportSheet]
-AS
-SELECT TOP 100 PERCENT
-  m.[Id] Id,
-  r.[TournamentId] TournamentId,
-  [Tournament].[Name] TournamentName,
-  r.[Name] RoundName,
-  r.[Description] RoundDescription,
-  rt.[Name] RoundTypeName,
-  rt.[Description] RoundTypeDescription,
-  rl.[SequenceNo] RoundLegSequenceNo,
-  rl.[Description] RoundLegDescription,
-  hteam.[Id] HomeTeamId,
-  htir.[TeamNameForRound] HomeTeamNameForRound,
-  gteam.[Id] GuestTeamId,
-  gtir.[TeamNameForRound] GuestTeamNameForRound,
-  m.[PlannedStart],
-  m.[OrigPlannedStart],
-  mrr.[NumOfSets] NumOfSets,
-  mrr.[BestOf] BestOf,
-  srr.[NumOfPointsToWinRegular] NumOfPointsToWinRegular,
-  srr.[NumOfPointsToWinTieBreak] NumOfPointsToWinTieBreak,
-  srr.[MaxTimeouts] MaxTimeouts,
-  srr.[MaxSubstitutions] MaxSubstitutions,
-  m.[ChangeSerial] ChangeSerial,
-  m.[Remarks] Remarks,
-  m.[ModifiedOn] ModifiedOn
-FROM
-  [Match] m
-  JOIN [Round] r ON (m.[RoundId] = r.Id)
-  JOIN [Team] hteam  ON (m.HomeTeamId = hteam.Id)
-  JOIN [Team] gteam ON (m.[GuestTeamId] = gteam.[Id])
-  JOIN [TeamInRound] htir ON (m.HomeTeamId = htir.[TeamId] AND htir.[RoundId] = r.[Id])
-  JOIN [TeamInRound] gtir ON (m.[GuestTeamId] = gtir.[TeamId] AND gtir.[RoundId] = r.[Id])
-  JOIN [RoundType] rt ON (r.[TypeId] = rt.[Id])
-  JOIN [RoundLeg] rl ON (r.[Id] = rl.[RoundId] AND  m.[LegSequenceNo] = rl.[SequenceNo])
-  JOIN [Tournament] ON (r.[TournamentId] = [Tournament].[Id])
-  JOIN [MatchRule] mrr ON (r.[MatchRuleId] = mrr.[Id])
-  JOIN [SetRule] srr ON (r.[SetRuleId] = srr.[Id])
+CREATE TABLE [dbo].[Team](
+	[Id] [bigint] IDENTITY(1,1) NOT NULL,
+	[VenueId] [bigint] NULL,
+	[Name] [nvarchar](255) NOT NULL,
+	[MatchDayOfWeek] [int] NULL,
+	[MatchTime] [time](7) NULL,
+	[ClubName] [nvarchar](255) NULL,
+	[CreatedOn] [datetime] NOT NULL,
+	[ModifiedOn] [datetime] NOT NULL,
+ CONSTRAINT [PK_e4f33494c6d8484f20aabdbf101] PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Venue]    Script Date: 11.02.2021 00:09:58 ******/
+/****** Object:  Table [dbo].[TeamInRound]    Script Date: 06.08.2023 20:51:06 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[TeamInRound](
+	[Id] [bigint] IDENTITY(1,1) NOT NULL,
+	[RoundId] [bigint] NOT NULL,
+	[TeamId] [bigint] NOT NULL,
+	[TeamNameForRound] [nvarchar](255) NULL,
+	[CreatedOn] [datetime] NOT NULL,
+	[ModifiedOn] [datetime] NOT NULL,
+ CONSTRAINT [TeamRound_idx] PRIMARY KEY CLUSTERED 
+(
+	[RoundId] ASC,
+	[TeamId] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = ON, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[Tournament]    Script Date: 06.08.2023 20:51:06 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Tournament](
+	[Id] [bigint] IDENTITY(1,1) NOT NULL,
+	[Name] [nvarchar](255) NOT NULL,
+	[Description] [nvarchar](255) NULL,
+	[TypeId] [bigint] NULL,
+	[IsComplete] [bit] NOT NULL,
+	[IsPlanningMode] [bit] NOT NULL,
+	[NextTournamentId] [bigint] NULL,
+	[CreatedOn] [datetime] NOT NULL,
+	[ModifiedOn] [datetime] NOT NULL,
+ CONSTRAINT [PK_f407daf4107a2d31aa47471145c] PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[Venue]    Script Date: 06.08.2023 20:51:06 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -384,444 +270,7 @@ CREATE TABLE [dbo].[Venue](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  View [dbo].[TeamVenueRound]    Script Date: 11.02.2021 00:09:58 ******/
-SET ANSI_NULLS ON
-GO
-SET QUOTED_IDENTIFIER ON
-GO
-CREATE VIEW [dbo].[TeamVenueRound]
-AS
-  /* Team with venue and round information */
-  SELECT 
-    t.[Id] TeamId,
-    t.[Name] TeamName,
-    tir.[TeamNameForRound] TeamNameForRound,
-    t.[ClubName] TeamClubName,
-    t.[MatchDayOfWeek] MatchDayOfWeek,
-    FORMAT(CAST('2019-01-20T12:00:00' AS datetime) + t.[MatchDayOfWeek], 'dddd', 'de-DE') MatchWeekday,
-    t.[MatchTime] MatchTime,
-    t.[ModifiedOn] TeamModifiedOn,
-    v.[Id] VenueId,
-    v.[Name] VenueName,
-    v.[Extension] VenueExtension,
-    v.[Street] VenueStreet,
-    v.[PostalCode] VenuePostalCode,
-    v.[City] VenueCity,
-    v.[Direction] VenueDirection,
-    v.[Longitude] VenueLongitude,
-    v.[Latitude] VenueLatitude,
-    v.[PrecisePosition] VenuePrecisePosition,
-    v.[ModifiedOn] VenueModifiedOn,
-    r.[Id] RoundId,
-    r.[Name] RoundName,
-    r.[Description] RoundDescription,
-    rt.[Name] RoundTypeName,
-    rt.[Description] RoundTypeDescription,
-    tour.[Id] TournamentId
-  FROM [TeamInRound] tir
-    JOIN [Team] t ON (tir.[TeamId] = t.[Id])
-    LEFT JOIN [Venue] v ON (t.[VenueId] = v.[Id])
-    JOIN [Round] r ON (tir.[RoundId] = r.[Id])
-    JOIN [RoundType] rt ON (rt.[Id] = r.[TypeId])
-	JOIN [Tournament] tour ON (r.[TournamentId] = tour.[Id])
-GO
-/****** Object:  Table [dbo].[Set]    Script Date: 11.02.2021 00:09:58 ******/
-SET ANSI_NULLS ON
-GO
-SET QUOTED_IDENTIFIER ON
-GO
-CREATE TABLE [dbo].[Set](
-	[Id] [bigint] IDENTITY(1,1) NOT NULL,
-	[MatchId] [bigint] NOT NULL,
-	[SequenceNo] [int] NOT NULL,
-	[HomeBallPoints] [int] NOT NULL,
-	[GuestBallPoints] [int] NOT NULL,
-	[HomeSetPoints] [int] NOT NULL,
-	[GuestSetPoints] [int] NOT NULL,
-	[HomeTimeout] [int] NOT NULL,
-	[GuestTimeout] [int] NOT NULL,
-	[IsOverruled] [bit] NOT NULL,
-	[IsTieBreak] [bit] NOT NULL,
-	[RealStart] [datetime] NULL,
-	[RealEnd] [datetime] NULL,
-	[Remarks] [nvarchar](max) NULL,
-	[CreatedOn] [datetime] NOT NULL,
-	[ModifiedOn] [datetime] NOT NULL,
- CONSTRAINT [PK_b4138ea4b60b7ab2bf5de64a148] PRIMARY KEY CLUSTERED 
-(
-	[Id] ASC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
-) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
-GO
-/****** Object:  View [dbo].[MatchCompleteRaw]    Script Date: 11.02.2021 00:09:58 ******/
-SET ANSI_NULLS ON
-GO
-SET QUOTED_IDENTIFIER ON
-GO
-CREATE VIEW [dbo].[MatchCompleteRaw]
-AS
-SELECT DISTINCT TOP 100 PERCENT
-  m.[Id] Id,
-  r.[TournamentId] TournamentId,
-  r.[Id] RoundId,
-  hteam.[Id] HomeTeamId,
-  gteam.[Id] GuestTeamId,
-  m.[VenueId],
-  IIF(m.[RealStart] IS NULL, m.[PlannedStart], m.[RealStart]) MatchDate,
-  m.[HomePoints] HomeMatchPoints,
-  m.[GuestPoints] GuestMatchPoints,
-  SetsOfMatch.HomeSetPoints HomeSetPoints,
-  SetsOfMatch.GuestSetPoints GuestSetPoints,
-  SetsOfMatch.HomeBallPoints HomeBallPoints,
-  SetsOfMatch.GuestBallPoints GuestBallPoints,
-  m.[IsOverruled],
-  m.[ModifiedOn]
-FROM
-  [Match] m
-  JOIN [Team] hteam  ON (m.[HomeTeamId] = hteam.[Id])
-  JOIN [Team] gteam ON (m.[GuestTeamId] = gteam.[Id])
-  JOIN [Round] r ON (m.[RoundId] = r.Id)
-  /* Exclude matches where a team is not (i.e. no more) part of a round */
-  JOIN [TeamInRound] htir ON (htir.[TeamId] = hteam.[Id] AND htir.[RoundId] = r.[Id])
-  JOIN [TeamInRound] gtir ON (gtir.[TeamId] = gteam.[Id] AND gtir.[RoundId] = r.[Id])
-  LEFT OUTER JOIN (
-    (SELECT 
-	   MAX([MatchId]) MatchId,
-       SUM([HomeBallPoints]) HomeBallPoints,
-       SUM([GuestBallPoints]) GuestBallPoints,
-       SUM([HomeSetPoints]) HomeSetPoints,
-       SUM([GuestSetPoints]) GuestSetPoints
-     FROM [Set]
-     GROUP BY [MatchId])
-    ) SetsOfMatch ON SetsOfMatch.[MatchId] = m.[Id]
-    WHERE m.[IsComplete] = 1
-ORDER BY r.[TournamentId], r.[Id], [MatchDate]
-GO
-/****** Object:  View [dbo].[RoundTeam]    Script Date: 11.02.2021 00:09:58 ******/
-SET ANSI_NULLS ON
-GO
-SET QUOTED_IDENTIFIER ON
-GO
-CREATE VIEW [dbo].[RoundTeam]
-AS
-  /* Round info with team info */
-  SELECT 
-    r.[Id] RoundId,
-    r.[Name] RoundName,
-    r.[Description] RoundDescription,
-    rt.[Name] RoundTypeName,
-    rt.[Description] RoundTypeDescription,
-    t.[Id] TeamId,
-    t.[Name] TeamName,
-    tir.[TeamNameForRound] TeamNameForRound,
-    t.[ClubName] TeamClubName,
-    t.[MatchDayOfWeek] TeamMatchDayOfWeek,
-    t.[MatchTime] TeamMatchTime,
-    t.[ModifiedOn] TeamModifiedOn,
-    tour.[Id] TournamentId
-  FROM [TeamInRound] tir
-    JOIN [Team] t ON (tir.[TeamId] = t.[Id])
-    JOIN [Round] r ON (tir.[RoundId] = r.[Id])
-    JOIN [RoundType] rt ON (rt.[Id] = r.[TypeId])
-	JOIN [Tournament] tour ON (r.[TournamentId] = tour.[Id])
-GO
-/****** Object:  View [dbo].[LatestTeamTournament]    Script Date: 11.02.2021 00:09:58 ******/
-SET ANSI_NULLS ON
-GO
-SET QUOTED_IDENTIFIER ON
-GO
-CREATE VIEW [dbo].[LatestTeamTournament]
-AS
-WITH cte AS
-(
-  /* Select teams, which did not participate in the next tournament */
-  SELECT
-	tour.[Id] TournamentId,
-    tour.[Name] TournamentName,
-    tour.[Description] TournamentDescription,
-    r.[Id] RoundId,
-    r.[Name] RoundName,
-    r.[Description] RoundDescription,
-    rt.[Name] RoundTypeName,
-    rt.[Description] RoundTypeDescription,
-    t.[Id] TeamId,
-    t.[Name] TeamName,
-    tir.[TeamNameForRound] TeamNameForRound,
-    t.[ClubName] TeamClubName,
-    t.[MatchDayOfWeek] TeamMatchDayOfWeek,
-    t.[MatchTime] TeamMatchTime,
-    /* The latest tournament is in the first row */
-    ROW_NUMBER() OVER (PARTITION BY t.[Id] ORDER BY tour.[Id] DESC) AS rowNo
-  FROM [TeamInRound] tir
-    JOIN [Team] t ON (tir.[TeamId] = t.[Id])
-    JOIN [Round] r ON (tir.[RoundId] = r.[Id])
-    JOIN [RoundType] rt ON (r.TypeId = rt.[Id])
-	JOIN [Tournament] tour ON (r.[TournamentId] = tour.[Id])
-  WHERE NOT EXISTS
-  (
-  	SELECT whereTir.[TeamId]
-    FROM [TeamInRound] whereTir
-    JOIN [Round] whereRound ON (whereTir.[RoundId] = whereRound.[Id])
-	JOIN [Tournament] stour ON (whereRound.[TournamentId] = tour.[NextTournamentId])
-    WHERE whereTir.[TeamId] = tir.[TeamId]
-  )
-)
-SELECT
-	[TournamentId], 
-    [TournamentName], 
-    [TournamentDescription], 
-    [RoundId], 
-    [RoundName],
-    [RoundDescription],
-    [RoundTypeName],
-    [RoundTypeDescription],
-    [TeamId],
-    [TeamName],
-    [TeamNameForRound],
-    [TeamClubName],
-    [TeamMatchDayOfWeek],
-    CAST([TeamMatchTime] AS time(0)) TeamMatchTime
-FROM cte
-WHERE rowNo = 1
-GO
-/****** Object:  Table [dbo].[Ranking]    Script Date: 11.02.2021 00:09:58 ******/
-SET ANSI_NULLS ON
-GO
-SET QUOTED_IDENTIFIER ON
-GO
-CREATE TABLE [dbo].[Ranking](
-	[Id] [bigint] IDENTITY(1,1) NOT NULL,
-	[TournamentId] [bigint] NOT NULL,
-	[RoundId] [bigint] NOT NULL,
-	[TeamId] [bigint] NOT NULL,
-	[ValuationDate] [datetime] NOT NULL,
-	[Rank] [int] NOT NULL,
-	[MatchPointsWon] [int] NULL,
-	[MatchPointsLost] [int] NULL,
-	[SetPointsWon] [int] NULL,
-	[SetPointsLost] [int] NULL,
-	[BallPointsWon] [int] NULL,
-	[BallPointsLost] [int] NULL,
-	[MatchesPlayed] [int] NOT NULL,
-	[MatchesToPlay] [int] NOT NULL,
-	[CreatedOn] [datetime] NOT NULL,
-	[ModifiedOn] [datetime] NOT NULL,
- CONSTRAINT [PK_d28bac344c795e61c21b8e6d9b9] PRIMARY KEY CLUSTERED 
-(
-	[Id] ASC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
-) ON [PRIMARY]
-GO
-/****** Object:  View [dbo].[RankingList]    Script Date: 11.02.2021 00:09:58 ******/
-SET ANSI_NULLS ON
-GO
-SET QUOTED_IDENTIFIER ON
-GO
-CREATE VIEW [dbo].[RankingList]
-AS
-SELECT
-  [Tournament].[Id] TournamentId,
-  [Tournament].[Name] TournamentName,
-  [Tournament].[Description] TournamentDescription,
-  [Tournament].[IsComplete] TournamentIsComplete,
-  [Round].[Id] RoundId,
-  [Round].[Name] RoundName,
-  [Round].[Description] RoundDescription,
-  [RoundType].[Name] RoundTypeName,
-  [RoundType].[Description] RoundTypeDescription,
-  [Team].[Id] TeamId,
-  [Team].[Name] TeamName,
-  [TeamInRound].[TeamNameForRound] TeamNameForRound,
-  [Team].[ClubName] ClubName,
-  [Ranking].[ValuationDate] ValuationDate,
-  [Ranking].[Rank] Rank,
-  [Ranking].[MatchPointsWon] MatchPointsWon,
-  [Ranking].[MatchPointsLost] MatchPointsLost,
-  [Ranking].[SetPointsWon] SetPointsWon,
-  [Ranking].[SetPointsLost] SetPointsLost,
-  [Ranking].[BallPointsWon] BallPointsWon,
-  [Ranking].[BallPointsLost] BallPointsLost,
-  [Ranking].[MatchesPlayed] MatchesPlayed,
-  [Ranking].[MatchesToPlay] MatchesToPlay,
-  [Ranking].[ModifiedOn] ModifiedOn
-FROM
-  [Ranking]
-  JOIN [Round] ON ([Ranking].[RoundId] = [Round].[Id])
-  JOIN [Tournament] ON ([Round].[TournamentId] = [Tournament].[Id])
-  JOIN [RoundType] ON ([RoundType].[Id] = [Round].[TypeId])
-  JOIN [Team] ON ([Ranking].[TeamId] = [Team].[Id])
-  JOIN [TeamInRound] ON ([TeamInRound].[RoundId] = [Round].[Id] AND [TeamInRound].[TeamId] = [Team].[Id])
-GO
-/****** Object:  View [dbo].[MatchToPlayRaw]    Script Date: 11.02.2021 00:09:58 ******/
-SET ANSI_NULLS ON
-GO
-SET QUOTED_IDENTIFIER ON
-GO
-CREATE VIEW [dbo].[MatchToPlayRaw]
-AS
-SELECT DISTINCT TOP 100 PERCENT
-  m.[Id] Id,
-  r.[TournamentId] TournamentId,
-  r.[Id] RoundId,
-  hteam.[Id] HomeTeamId,
-  gteam.[Id] GuestTeamId,
-  m.[VenueId],
-  m.[PlannedStart] MatchDate,
-  m.[ModifiedOn]
-FROM
-  [Match] m
-  JOIN [Team] hteam  ON (m.[HomeTeamId] = hteam.[Id])
-  JOIN [Team] gteam ON (m.[GuestTeamId] = gteam.[Id])
-  JOIN [Round] r ON (m.[RoundId] = r.Id)
-  /* Exclude matches where a team is not (i.e. no more) part of a round */
-  JOIN [TeamInRound] htir ON (htir.[TeamId] = hteam.[Id] AND htir.[RoundId] = r.[Id])
-  JOIN [TeamInRound] gtir ON (gtir.[TeamId] = gteam.[Id] AND gtir.[RoundId] = r.[Id])
-WHERE m.[IsComplete] = 0
-ORDER BY r.[TournamentId], r.[Id], [MatchDate]
-GO
-/****** Object:  Table [dbo].[ManagerOfTeam]    Script Date: 11.02.2021 00:09:58 ******/
-SET ANSI_NULLS ON
-GO
-SET QUOTED_IDENTIFIER ON
-GO
-CREATE TABLE [dbo].[ManagerOfTeam](
-	[Id] [bigint] IDENTITY(1,1) NOT NULL,
-	[UserId] [bigint] NOT NULL,
-	[TeamId] [bigint] NOT NULL,
-	[CreatedOn] [datetime] NOT NULL,
-	[ModifiedOn] [datetime] NOT NULL,
- CONSTRAINT [PK_61281d44c57bcda8f8ca6d2d85a] PRIMARY KEY CLUSTERED 
-(
-	[UserId] ASC,
-	[TeamId] ASC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
-) ON [PRIMARY]
-GO
-/****** Object:  Table [dbo].[User]    Script Date: 11.02.2021 00:09:58 ******/
-SET ANSI_NULLS ON
-GO
-SET QUOTED_IDENTIFIER ON
-GO
-CREATE TABLE [dbo].[User](
-	[Id] [bigint] IDENTITY(1,1) NOT NULL,
-	[Guid] [nvarchar](50) NOT NULL,
-	[UserName] [nvarchar](255) NOT NULL,
-	[PasswordHash] [nvarchar](max) NOT NULL,
-	[Email] [nvarchar](255) NOT NULL,
-	[EmailConfirmedOn] [datetime] NULL,
-	[PhoneNumber] [nvarchar](40) NOT NULL,
-	[PhoneNumberConfirmedOn] [datetime] NULL,
-	[LastLoginOn] [datetime] NULL,
-	[AccessFailedCount] [int] NOT NULL,
-	[LockoutEndDateUtc] [datetime] NULL,
-	[Gender] [nvarchar](1) NOT NULL,
-	[Title] [nvarchar](255) NOT NULL,
-	[FirstName] [nvarchar](255) NOT NULL,
-	[MiddleName] [nvarchar](255) NOT NULL,
-	[LastName] [nvarchar](255) NOT NULL,
-	[Nickname] [nvarchar](255) NOT NULL,
-	[PhoneNumber2] [nvarchar](40) NOT NULL,
-	[Email2] [nvarchar](100) NOT NULL,
-	[Birthday] [datetime] NULL,
-	[Remarks] [nvarchar](4000) NULL,
-	[CreatedOn] [datetime] NOT NULL,
-	[ModifiedOn] [datetime] NOT NULL,
- CONSTRAINT [PK_05646114ed0b268cc9236c4f656] PRIMARY KEY CLUSTERED 
-(
-	[Id] ASC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY],
- CONSTRAINT [UC_5ee8deb40f8bca844c8745f8722] UNIQUE NONCLUSTERED 
-(
-	[Email] ASC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY],
- CONSTRAINT [UC_9d0e7fb4df4865699f58d126a42] UNIQUE NONCLUSTERED 
-(
-	[UserName] ASC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
-) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
-GO
-/****** Object:  Table [dbo].[PlayerInTeam]    Script Date: 11.02.2021 00:09:58 ******/
-SET ANSI_NULLS ON
-GO
-SET QUOTED_IDENTIFIER ON
-GO
-CREATE TABLE [dbo].[PlayerInTeam](
-	[Id] [bigint] IDENTITY(1,1) NOT NULL,
-	[UserId] [bigint] NOT NULL,
-	[TeamId] [bigint] NOT NULL,
-	[CreatedOn] [datetime] NOT NULL,
-	[ModifiedOn] [datetime] NOT NULL,
- CONSTRAINT [PK_813c96e4d12bbb271cfd2e6f609] PRIMARY KEY CLUSTERED 
-(
-	[UserId] ASC,
-	[TeamId] ASC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
-) ON [PRIMARY]
-GO
-/****** Object:  View [dbo].[TeamUserRound]    Script Date: 11.02.2021 00:09:58 ******/
-SET ANSI_NULLS ON
-GO
-SET QUOTED_IDENTIFIER ON
-GO
-CREATE VIEW [dbo].[TeamUserRound]
-AS
-SELECT
-  t.[Id] TeamId,
-  t.[Name] TeamName,
-  tir.[TeamNameForRound] TeamNameForRound,
-  t.[MatchDayOfWeek],
-  FORMAT(CAST('2019-01-20T12:00:00' AS datetime) + t.[MatchDayOfWeek], 'dddd', 'de-DE') MatchWeekday,
-  t.[MatchTime] MatchTime,
-  t.[ClubName] ClubName,
-  t.[ModifiedOn] TeamModifiedOn,
-  u.[Id] UserId,
-  u.[Gender] Gender,
-  u.[Title] Title,
-  u.[FirstName] FirstName,
-  u.[MiddleName] MiddleName,
-  u.[LastName] LastName,
-  u.[Nickname] Nickname,
-  u.[PhoneNumber] PhoneNumber,
-  u.[PhoneNumber2] PhoneNumber2,
-  u.[Email] Email,
-  u.[Email2] Email2,
-  u.[ModifiedOn] UserModifiedOn,
-  motPit.IsManager,
-  motPit.IsPlayer,
-  r.[Id] RoundId,
-  r.[Name] RoundName,
-  r.[Description] RoundDescription,
-  r.TournamentId TournamentId
-FROM
-      /* Select users who are managers or players, returning one user per team  */
-      /* ISNULL test ensures the column is NOT NULL */
-      (SELECT p.UserId, p.TeamId, ISNULL(CAST(SUM(p.IsManager) AS bit),0) IsManager, ISNULL(CAST(SUM(p.IsPlayer) AS bit),0) IsPlayer
-        FROM
-        (SELECT mot.[UserId] UserId, mot.[TeamId] TeamId, 1 IsManager, 0 IsPlayer
-        	FROM [ManagerOfTeam] mot
-        	UNION ALL
-        SELECT pit.[UserId] UserId, pit.[TeamId] TeamId, 0 IsManager, 1 IsPlayer
-        	FROM [PlayerInTeam] pit) p
-      GROUP BY p.UserId, p.TeamId) motPit
-  JOIN [User] u ON (motPit.[UserId] = u.[Id])
-  JOIN [Team] t ON (motPit.[TeamId] = t.[Id])
-  JOIN [TeamInRound] tir ON (motPit.[TeamId] = tir.[TeamId]) /* only teams in a round */
-  JOIN [Round] r ON (tir.[RoundId] = r.[Id])
-GO
-/****** Object:  View [dbo].[RoundLegPeriod]    Script Date: 11.02.2021 00:09:58 ******/
-SET ANSI_NULLS ON
-GO
-SET QUOTED_IDENTIFIER ON
-GO
-CREATE VIEW [dbo].[RoundLegPeriod]
-AS
-  SELECT TOP 100 PERCENT
-   r.TournamentId, r.Id RoundId, leg.Id LegId, leg.SequenceNo, leg.StartDateTime, leg.EndDateTime
-  FROM [Round] r
-  	INNER JOIN [RoundLeg] leg ON (r.Id = leg.RoundId)
-  ORDER BY r.Id, leg.SequenceNo
-GO
-/****** Object:  View [dbo].[Calendar]    Script Date: 11.02.2021 00:09:58 ******/
+/****** Object:  View [dbo].[Calendar]    Script Date: 06.08.2023 20:51:06 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -868,7 +317,55 @@ FROM
   WHERE m.[IsComplete] = 0 AND NOT (m.[PlannedStart] IS NULL OR m.[PlannedEnd] IS NULL OR v.[Id] IS NULL)
 ORDER BY r.[TournamentId], m.[PlannedStart];
 GO
-/****** Object:  View [dbo].[CompletedMatch]    Script Date: 11.02.2021 00:09:58 ******/
+/****** Object:  Table [dbo].[RoundLeg]    Script Date: 06.08.2023 20:51:06 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[RoundLeg](
+	[Id] [bigint] IDENTITY(1,1) NOT NULL,
+	[RoundId] [bigint] NOT NULL,
+	[SequenceNo] [int] NOT NULL,
+	[Description] [nvarchar](255) NULL,
+	[StartDateTime] [datetime] NOT NULL,
+	[EndDateTime] [datetime] NOT NULL,
+	[CreatedOn] [datetime] NOT NULL,
+	[ModifiedOn] [datetime] NOT NULL,
+ CONSTRAINT [PK_a0718ea42c3be684e9e944c4033] PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[Set]    Script Date: 06.08.2023 20:51:06 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Set](
+	[Id] [bigint] IDENTITY(1,1) NOT NULL,
+	[MatchId] [bigint] NOT NULL,
+	[SequenceNo] [int] NOT NULL,
+	[HomeBallPoints] [int] NOT NULL,
+	[GuestBallPoints] [int] NOT NULL,
+	[HomeSetPoints] [int] NOT NULL,
+	[GuestSetPoints] [int] NOT NULL,
+	[HomeTimeout] [int] NOT NULL,
+	[GuestTimeout] [int] NOT NULL,
+	[IsOverruled] [bit] NOT NULL,
+	[IsTieBreak] [bit] NOT NULL,
+	[RealStart] [datetime] NULL,
+	[RealEnd] [datetime] NULL,
+	[Remarks] [nvarchar](max) NULL,
+	[CreatedOn] [datetime] NOT NULL,
+	[ModifiedOn] [datetime] NOT NULL,
+ CONSTRAINT [PK_b4138ea4b60b7ab2bf5de64a148] PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
+/****** Object:  View [dbo].[CompletedMatch]    Script Date: 06.08.2023 20:51:06 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -935,7 +432,404 @@ FROM
     WHERE m.[IsComplete] = 1
 ORDER BY r.[TournamentId], r.[Name], rl.[SequenceNo], [MatchDate]
 GO
-/****** Object:  View [dbo].[PlannedMatch]    Script Date: 11.02.2021 00:09:58 ******/
+/****** Object:  View [dbo].[LatestTeamTournament]    Script Date: 06.08.2023 20:51:06 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE VIEW [dbo].[LatestTeamTournament]
+AS
+WITH cte AS
+(
+  /* Select teams, which did not participate in the next tournament */
+  SELECT
+	tour.[Id] TournamentId,
+    tour.[Name] TournamentName,
+    tour.[Description] TournamentDescription,
+    r.[Id] RoundId,
+    r.[Name] RoundName,
+    r.[Description] RoundDescription,
+    rt.[Name] RoundTypeName,
+    rt.[Description] RoundTypeDescription,
+    t.[Id] TeamId,
+    t.[Name] TeamName,
+    tir.[TeamNameForRound] TeamNameForRound,
+    t.[ClubName] TeamClubName,
+    t.[MatchDayOfWeek] TeamMatchDayOfWeek,
+    t.[MatchTime] TeamMatchTime,
+    /* The latest tournament is in the first row */
+    ROW_NUMBER() OVER (PARTITION BY t.[Id] ORDER BY tour.[Id] DESC) AS rowNo
+  FROM [TeamInRound] tir
+    JOIN [Team] t ON (tir.[TeamId] = t.[Id])
+    JOIN [Round] r ON (tir.[RoundId] = r.[Id])
+    JOIN [RoundType] rt ON (r.TypeId = rt.[Id])
+	JOIN [Tournament] tour ON (r.[TournamentId] = tour.[Id])
+  WHERE NOT EXISTS
+  (
+  	SELECT whereTir.[TeamId]
+    FROM [TeamInRound] whereTir
+    JOIN [Round] whereRound ON (whereTir.[RoundId] = whereRound.[Id])
+	JOIN [Tournament] stour ON (whereRound.[TournamentId] = tour.[NextTournamentId])
+    WHERE whereTir.[TeamId] = tir.[TeamId]
+  )
+)
+SELECT
+	[TournamentId], 
+    [TournamentName], 
+    [TournamentDescription], 
+    [RoundId], 
+    [RoundName],
+    [RoundDescription],
+    [RoundTypeName],
+    [RoundTypeDescription],
+    [TeamId],
+    [TeamName],
+    [TeamNameForRound],
+    [TeamClubName],
+    [TeamMatchDayOfWeek],
+    CAST([TeamMatchTime] AS time(0)) TeamMatchTime
+FROM cte
+WHERE rowNo = 1
+GO
+/****** Object:  Table [dbo].[ManagerOfTeam]    Script Date: 06.08.2023 20:51:06 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[ManagerOfTeam](
+	[Id] [bigint] IDENTITY(1,1) NOT NULL,
+	[UserId] [bigint] NOT NULL,
+	[TeamId] [bigint] NOT NULL,
+	[CreatedOn] [datetime] NOT NULL,
+	[ModifiedOn] [datetime] NOT NULL,
+ CONSTRAINT [PK_61281d44c57bcda8f8ca6d2d85a] PRIMARY KEY CLUSTERED 
+(
+	[UserId] ASC,
+	[TeamId] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[User]    Script Date: 06.08.2023 20:51:06 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[User](
+	[Id] [bigint] IDENTITY(1,1) NOT NULL,
+	[Guid] [nvarchar](50) NOT NULL,
+	[UserName] [nvarchar](255) NOT NULL,
+	[PasswordHash] [nvarchar](max) NOT NULL,
+	[Email] [nvarchar](255) NOT NULL,
+	[EmailConfirmedOn] [datetime] NULL,
+	[PhoneNumber] [nvarchar](40) NOT NULL,
+	[PhoneNumberConfirmedOn] [datetime] NULL,
+	[LastLoginOn] [datetime] NULL,
+	[AccessFailedCount] [int] NOT NULL,
+	[LockoutEndDateUtc] [datetime] NULL,
+	[Gender] [nvarchar](1) NOT NULL,
+	[Title] [nvarchar](255) NOT NULL,
+	[FirstName] [nvarchar](255) NOT NULL,
+	[MiddleName] [nvarchar](255) NOT NULL,
+	[LastName] [nvarchar](255) NOT NULL,
+	[Nickname] [nvarchar](255) NOT NULL,
+	[PhoneNumber2] [nvarchar](40) NOT NULL,
+	[Email2] [nvarchar](100) NOT NULL,
+	[Birthday] [datetime] NULL,
+	[Remarks] [nvarchar](4000) NULL,
+	[CreatedOn] [datetime] NOT NULL,
+	[ModifiedOn] [datetime] NOT NULL,
+ CONSTRAINT [PK_05646114ed0b268cc9236c4f656] PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY],
+ CONSTRAINT [UC_5ee8deb40f8bca844c8745f8722] UNIQUE NONCLUSTERED 
+(
+	[Email] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY],
+ CONSTRAINT [UC_9d0e7fb4df4865699f58d126a42] UNIQUE NONCLUSTERED 
+(
+	[UserName] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
+/****** Object:  View [dbo].[m_AllTournamentData]    Script Date: 06.08.2023 20:51:06 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE VIEW [dbo].[m_AllTournamentData]
+AS
+SELECT DISTINCT TOP 10000 tournament.Id, round.Name AS RoundName, round.Description AS RoundDescription, Team.Id AS TeamId, Team.Name AS TeamName, tir.TeamNameForRound, dbo.Weekday(Team.MatchDayOfWeek) AS Weekday, Team.MatchTime, 
+                         Team.ClubName, [user].Id AS UserId, [user].Guid, [user].UserName, [user].Email, [user].EmailConfirmedOn, [user].PhoneNumber, [user].PhoneNumberConfirmedOn, 
+                         [user].LastLoginOn, [user].AccessFailedCount, [user].LockoutEndDateUtc, [user].Gender, [user].Title, [user].FirstName, [user].MiddleName, [user].LastName, [user].Nickname,
+                         [user].PhoneNumber2, [user].Email2, [user].Birthday, [user].Remarks, 
+                         tournament.Name AS TournamentName, tournament.Description AS TournamentDescription, 
+                         venue.Name AS VenueName, venue.Street AS VenueStreet, venue.PostalCode AS VenuePostalCode, venue.City AS VenueCity, venue.Extension AS VenueExtension, venue.Direction AS VenueDirection, 
+                         venue.Latitude AS VenueLatitude, venue.Longitude AS VenueLongitude
+FROM            Team INNER JOIN
+                         TeamInRound AS tir ON Team.Id = tir.TeamId INNER JOIN
+                         Round AS round ON tir.RoundId = round.Id INNER JOIN
+                         Tournament AS tournament ON round.TournamentId = tournament.Id INNER JOIN
+                         Venue AS venue ON Team.VenueId = venue.Id INNER JOIN
+                         ManagerOfTeam AS mot ON tir.TeamId = mot.TeamId INNER JOIN
+                         [User] AS [user] ON mot.UserId = [user].Id
+ORDER BY tournament.Id, RoundName, tir.TeamNameForRound, [user].LastName
+GO
+/****** Object:  View [dbo].[m_TeamMatchesByDate]    Script Date: 06.08.2023 20:51:06 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE VIEW [dbo].[m_TeamMatchesByDate]
+AS
+select
+  match.Id AS MatchId,
+  round.TournamentId AS TournamentId,
+  match.RoundId AS RoundId,
+  round.Description AS RoundDescription,
+  team.Id AS TeamId,
+  team.Name AS TeamName,
+  teamguest.Id AS OpponentId,
+  teamguest.Name AS OpponentName,
+  match.PlannedStart AS PlannedStart,
+  match.VenueId AS VenueId,
+  venue.Name AS Venue,
+  venue.City AS City,
+  match.IsComplete AS IsComplete,
+  'X'  AS HomeMatch
+from
+  ((((match
+  join team on ((match.HomeTeamId = team.Id)))
+  join team teamguest on ((match.GuestTeamId = teamguest.Id)))
+  join venue on ((match.VenueId = venue.Id)))
+  join round on ((match.RoundId = round.Id)))
+union
+select
+  match.Id AS MatchId,
+  round.TournamentId AS TournamentId,
+  match.RoundId AS RoundId,
+  round.Description AS RoundDescription,
+  teamguest.Id AS TeamId,
+  teamguest.Name AS TeamName,
+  team.Id AS OpponentId,
+  team.Name AS OpponentName,
+  match.PlannedStart AS PlannedStart,
+  match.VenueId AS VenueId,
+  venue.Name AS Venue,
+  venue.City AS City,
+  match.IsComplete AS IsComplete,
+  ''  AS HomeMatch
+from
+  ((((match
+  join team on ((match.HomeTeamId = team.Id)))
+  join team teamguest on ((match.GuestTeamId = teamguest.Id)))
+  join venue on ((match.VenueId = venue.Id)))
+  join round on ((match.RoundId = round.Id)))
+GO
+/****** Object:  View [dbo].[m_TeamsNotInLastRound]    Script Date: 06.08.2023 20:51:06 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE VIEW [dbo].[m_TeamsNotInLastRound]
+AS
+select distinct 
+  team.Name AS TeamName,
+  [user].Id AS UserId,
+  [user].Email AS Email,
+  [user].FirstName AS FirstName,
+  [user].Nickname AS Nickname,
+  [user].Gender AS Gender,
+  [user].LastName AS LastName,
+  [user].Title AS Title,
+  [user].PhoneNumber AS PhoneNumber,
+  [user].UserName AS UserName,
+  [user].Id AS Id
+from
+  ((((teaminround
+  join team on ((teaminround.TeamId = team.Id)))
+  join round on ((teaminround.RoundId = round.Id)))
+  join managerofteam on ((team.Id = managerofteam.TeamId)))
+  join [user] on ((managerofteam.UserId = [user].Id)))
+where
+  ((round.TournamentId <> 2) and
+  (not (team.Id in (
+                            select
+                              distinct t2.Id
+                            from
+                              ((teaminround tir2
+                              join team t2 on ((tir2.TeamId = t2.Id)))
+                              join round r2 on ((tir2.RoundId = r2.Id)))
+                            where
+                              (r2.TournamentId = 22)
+  ))));
+GO
+/****** Object:  View [dbo].[MatchCompleteRaw]    Script Date: 06.08.2023 20:51:06 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE VIEW [dbo].[MatchCompleteRaw]
+AS
+SELECT DISTINCT TOP 100 PERCENT
+  m.[Id] Id,
+  r.[TournamentId] TournamentId,
+  r.[Id] RoundId,
+  hteam.[Id] HomeTeamId,
+  gteam.[Id] GuestTeamId,
+  m.[VenueId],
+  IIF(m.[RealStart] IS NULL, m.[PlannedStart], m.[RealStart]) MatchDate,
+  m.[HomePoints] HomeMatchPoints,
+  m.[GuestPoints] GuestMatchPoints,
+  SetsOfMatch.HomeSetPoints HomeSetPoints,
+  SetsOfMatch.GuestSetPoints GuestSetPoints,
+  SetsOfMatch.HomeBallPoints HomeBallPoints,
+  SetsOfMatch.GuestBallPoints GuestBallPoints,
+  m.[IsOverruled],
+  m.[ModifiedOn]
+FROM
+  [Match] m
+  JOIN [Team] hteam  ON (m.[HomeTeamId] = hteam.[Id])
+  JOIN [Team] gteam ON (m.[GuestTeamId] = gteam.[Id])
+  JOIN [Round] r ON (m.[RoundId] = r.Id)
+  /* Exclude matches where a team is not (i.e. no more) part of a round */
+  JOIN [TeamInRound] htir ON (htir.[TeamId] = hteam.[Id] AND htir.[RoundId] = r.[Id])
+  JOIN [TeamInRound] gtir ON (gtir.[TeamId] = gteam.[Id] AND gtir.[RoundId] = r.[Id])
+  LEFT OUTER JOIN (
+    (SELECT 
+	   MAX([MatchId]) MatchId,
+       SUM([HomeBallPoints]) HomeBallPoints,
+       SUM([GuestBallPoints]) GuestBallPoints,
+       SUM([HomeSetPoints]) HomeSetPoints,
+       SUM([GuestSetPoints]) GuestSetPoints
+     FROM [Set]
+     GROUP BY [MatchId])
+    ) SetsOfMatch ON SetsOfMatch.[MatchId] = m.[Id]
+    WHERE m.[IsComplete] = 1
+ORDER BY r.[TournamentId], r.[Id], [MatchDate]
+GO
+/****** Object:  Table [dbo].[SetRule]    Script Date: 06.08.2023 20:51:06 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[SetRule](
+	[Id] [bigint] IDENTITY(1,1) NOT NULL,
+	[Name] [nvarchar](255) NOT NULL,
+	[NumOfPointsToWinRegular] [int] NOT NULL,
+	[NumOfPointsToWinTiebreak] [int] NOT NULL,
+	[PointsDiffToWinRegular] [int] NOT NULL,
+	[PointsDiffToWinTiebreak] [int] NOT NULL,
+	[PointsSetLost] [int] NOT NULL,
+	[PointsSetTie] [int] NOT NULL,
+	[PointsSetWon] [int] NOT NULL,
+	[MaxTimeouts] [int] NOT NULL,
+	[MaxSubstitutions] [int] NOT NULL,
+	[CreatedOn] [datetime] NOT NULL,
+	[ModifiedOn] [datetime] NOT NULL,
+ CONSTRAINT [PK_23e33af454a87a76a066050c891] PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[MatchRule]    Script Date: 06.08.2023 20:51:06 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[MatchRule](
+	[Id] [bigint] IDENTITY(1,1) NOT NULL,
+	[Name] [nvarchar](255) NOT NULL,
+	[NumOfSets] [int] NOT NULL,
+	[BestOf] [bit] NOT NULL,
+	[PointsMatchWon] [int] NOT NULL,
+	[PointsMatchLost] [int] NOT NULL,
+	[PointsMatchWonAfterTieBreak] [int] NOT NULL,
+	[PointsMatchLostAfterTieBreak] [int] NOT NULL,
+	[PointsMatchTie] [int] NOT NULL,
+	[RankComparer] [int] NOT NULL,
+	[CreatedOn] [datetime] NOT NULL,
+	[ModifiedOn] [datetime] NOT NULL,
+ CONSTRAINT [PK_086d14b497db1fbf2242367f70b] PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  View [dbo].[MatchReportSheet]    Script Date: 06.08.2023 20:51:06 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE VIEW [dbo].[MatchReportSheet]
+AS
+SELECT TOP 100 PERCENT
+  m.[Id] Id,
+  r.[TournamentId] TournamentId,
+  [Tournament].[Name] TournamentName,
+  r.[Name] RoundName,
+  r.[Description] RoundDescription,
+  rt.[Name] RoundTypeName,
+  rt.[Description] RoundTypeDescription,
+  rl.[SequenceNo] RoundLegSequenceNo,
+  rl.[Description] RoundLegDescription,
+  hteam.[Id] HomeTeamId,
+  htir.[TeamNameForRound] HomeTeamNameForRound,
+  gteam.[Id] GuestTeamId,
+  gtir.[TeamNameForRound] GuestTeamNameForRound,
+  m.[PlannedStart],
+  m.[OrigPlannedStart],
+  mrr.[NumOfSets] NumOfSets,
+  mrr.[BestOf] BestOf,
+  srr.[NumOfPointsToWinRegular] NumOfPointsToWinRegular,
+  srr.[NumOfPointsToWinTieBreak] NumOfPointsToWinTieBreak,
+  srr.[MaxTimeouts] MaxTimeouts,
+  srr.[MaxSubstitutions] MaxSubstitutions,
+  m.[ChangeSerial] ChangeSerial,
+  m.[Remarks] Remarks,
+  m.[ModifiedOn] ModifiedOn
+FROM
+  [Match] m
+  JOIN [Round] r ON (m.[RoundId] = r.Id)
+  JOIN [Team] hteam  ON (m.HomeTeamId = hteam.Id)
+  JOIN [Team] gteam ON (m.[GuestTeamId] = gteam.[Id])
+  JOIN [TeamInRound] htir ON (m.HomeTeamId = htir.[TeamId] AND htir.[RoundId] = r.[Id])
+  JOIN [TeamInRound] gtir ON (m.[GuestTeamId] = gtir.[TeamId] AND gtir.[RoundId] = r.[Id])
+  JOIN [RoundType] rt ON (r.[TypeId] = rt.[Id])
+  JOIN [RoundLeg] rl ON (r.[Id] = rl.[RoundId] AND  m.[LegSequenceNo] = rl.[SequenceNo])
+  JOIN [Tournament] ON (r.[TournamentId] = [Tournament].[Id])
+  JOIN [MatchRule] mrr ON (r.[MatchRuleId] = mrr.[Id])
+  JOIN [SetRule] srr ON (r.[SetRuleId] = srr.[Id])
+GO
+/****** Object:  View [dbo].[MatchToPlayRaw]    Script Date: 06.08.2023 20:51:06 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE VIEW [dbo].[MatchToPlayRaw]
+AS
+SELECT DISTINCT TOP 100 PERCENT
+  m.[Id] Id,
+  r.[TournamentId] TournamentId,
+  r.[Id] RoundId,
+  hteam.[Id] HomeTeamId,
+  gteam.[Id] GuestTeamId,
+  m.[VenueId],
+  m.[PlannedStart] MatchDate,
+  m.[ModifiedOn]
+FROM
+  [Match] m
+  JOIN [Team] hteam  ON (m.[HomeTeamId] = hteam.[Id])
+  JOIN [Team] gteam ON (m.[GuestTeamId] = gteam.[Id])
+  JOIN [Round] r ON (m.[RoundId] = r.Id)
+  /* Exclude matches where a team is not (i.e. no more) part of a round */
+  JOIN [TeamInRound] htir ON (htir.[TeamId] = hteam.[Id] AND htir.[RoundId] = r.[Id])
+  JOIN [TeamInRound] gtir ON (gtir.[TeamId] = gteam.[Id] AND gtir.[RoundId] = r.[Id])
+WHERE m.[IsComplete] = 0
+ORDER BY r.[TournamentId], r.[Id], [MatchDate]
+GO
+/****** Object:  View [dbo].[PlannedMatch]    Script Date: 06.08.2023 20:51:06 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -986,7 +880,225 @@ FROM
   WHERE m.[IsComplete] = 0
 ORDER BY r.[TournamentId], r.[Name], rl.[SequenceNo], [PlannedStart]
 GO
-/****** Object:  View [dbo].[VenueTeam]    Script Date: 11.02.2021 00:09:58 ******/
+/****** Object:  Table [dbo].[Ranking]    Script Date: 06.08.2023 20:51:06 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Ranking](
+	[Id] [bigint] IDENTITY(1,1) NOT NULL,
+	[TournamentId] [bigint] NOT NULL,
+	[RoundId] [bigint] NOT NULL,
+	[TeamId] [bigint] NOT NULL,
+	[ValuationDate] [datetime] NOT NULL,
+	[Rank] [int] NOT NULL,
+	[MatchPointsWon] [int] NULL,
+	[MatchPointsLost] [int] NULL,
+	[SetPointsWon] [int] NULL,
+	[SetPointsLost] [int] NULL,
+	[BallPointsWon] [int] NULL,
+	[BallPointsLost] [int] NULL,
+	[MatchesPlayed] [int] NOT NULL,
+	[MatchesToPlay] [int] NOT NULL,
+	[CreatedOn] [datetime] NOT NULL,
+	[ModifiedOn] [datetime] NOT NULL,
+ CONSTRAINT [PK_d28bac344c795e61c21b8e6d9b9] PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  View [dbo].[RankingList]    Script Date: 06.08.2023 20:51:06 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE VIEW [dbo].[RankingList]
+AS
+SELECT
+  [Tournament].[Id] TournamentId,
+  [Tournament].[Name] TournamentName,
+  [Tournament].[Description] TournamentDescription,
+  [Tournament].[IsComplete] TournamentIsComplete,
+  [Round].[Id] RoundId,
+  [Round].[Name] RoundName,
+  [Round].[Description] RoundDescription,
+  [RoundType].[Name] RoundTypeName,
+  [RoundType].[Description] RoundTypeDescription,
+  [Team].[Id] TeamId,
+  [Team].[Name] TeamName,
+  [TeamInRound].[TeamNameForRound] TeamNameForRound,
+  [Team].[ClubName] ClubName,
+  [Ranking].[ValuationDate] ValuationDate,
+  [Ranking].[Rank] Rank,
+  [Ranking].[MatchPointsWon] MatchPointsWon,
+  [Ranking].[MatchPointsLost] MatchPointsLost,
+  [Ranking].[SetPointsWon] SetPointsWon,
+  [Ranking].[SetPointsLost] SetPointsLost,
+  [Ranking].[BallPointsWon] BallPointsWon,
+  [Ranking].[BallPointsLost] BallPointsLost,
+  [Ranking].[MatchesPlayed] MatchesPlayed,
+  [Ranking].[MatchesToPlay] MatchesToPlay,
+  [Ranking].[ModifiedOn] ModifiedOn
+FROM
+  [Ranking]
+  JOIN [Round] ON ([Ranking].[RoundId] = [Round].[Id])
+  JOIN [Tournament] ON ([Round].[TournamentId] = [Tournament].[Id])
+  JOIN [RoundType] ON ([RoundType].[Id] = [Round].[TypeId])
+  JOIN [Team] ON ([Ranking].[TeamId] = [Team].[Id])
+  JOIN [TeamInRound] ON ([TeamInRound].[RoundId] = [Round].[Id] AND [TeamInRound].[TeamId] = [Team].[Id])
+GO
+/****** Object:  View [dbo].[RoundLegPeriod]    Script Date: 06.08.2023 20:51:06 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE VIEW [dbo].[RoundLegPeriod]
+AS
+  SELECT TOP 100 PERCENT
+   r.TournamentId, r.Id RoundId, leg.Id LegId, leg.SequenceNo, leg.StartDateTime, leg.EndDateTime
+  FROM [Round] r
+  	INNER JOIN [RoundLeg] leg ON (r.Id = leg.RoundId)
+  ORDER BY r.Id, leg.SequenceNo
+GO
+/****** Object:  View [dbo].[RoundTeam]    Script Date: 06.08.2023 20:51:06 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE VIEW [dbo].[RoundTeam]
+AS
+  /* Round info with team info */
+  SELECT 
+    r.[Id] RoundId,
+    r.[Name] RoundName,
+    r.[Description] RoundDescription,
+    rt.[Name] RoundTypeName,
+    rt.[Description] RoundTypeDescription,
+    t.[Id] TeamId,
+    t.[Name] TeamName,
+    tir.[TeamNameForRound] TeamNameForRound,
+    t.[ClubName] TeamClubName,
+    t.[MatchDayOfWeek] TeamMatchDayOfWeek,
+    t.[MatchTime] TeamMatchTime,
+    t.[ModifiedOn] TeamModifiedOn,
+    tour.[Id] TournamentId
+  FROM [TeamInRound] tir
+    JOIN [Team] t ON (tir.[TeamId] = t.[Id])
+    JOIN [Round] r ON (tir.[RoundId] = r.[Id])
+    JOIN [RoundType] rt ON (rt.[Id] = r.[TypeId])
+	JOIN [Tournament] tour ON (r.[TournamentId] = tour.[Id])
+GO
+/****** Object:  Table [dbo].[PlayerInTeam]    Script Date: 06.08.2023 20:51:06 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[PlayerInTeam](
+	[Id] [bigint] IDENTITY(1,1) NOT NULL,
+	[UserId] [bigint] NOT NULL,
+	[TeamId] [bigint] NOT NULL,
+	[CreatedOn] [datetime] NOT NULL,
+	[ModifiedOn] [datetime] NOT NULL,
+ CONSTRAINT [PK_813c96e4d12bbb271cfd2e6f609] PRIMARY KEY CLUSTERED 
+(
+	[UserId] ASC,
+	[TeamId] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  View [dbo].[TeamUserRound]    Script Date: 06.08.2023 20:51:06 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE VIEW [dbo].[TeamUserRound]
+AS
+SELECT
+  t.[Id] TeamId,
+  t.[Name] TeamName,
+  tir.[TeamNameForRound] TeamNameForRound,
+  t.[MatchDayOfWeek],
+  FORMAT(CAST('2019-01-20T12:00:00' AS datetime) + t.[MatchDayOfWeek], 'dddd', 'de-DE') MatchWeekday,
+  t.[MatchTime] MatchTime,
+  t.[ClubName] ClubName,
+  t.[ModifiedOn] TeamModifiedOn,
+  u.[Id] UserId,
+  u.[Gender] Gender,
+  u.[Title] Title,
+  u.[FirstName] FirstName,
+  u.[MiddleName] MiddleName,
+  u.[LastName] LastName,
+  u.[Nickname] Nickname,
+  u.[PhoneNumber] PhoneNumber,
+  u.[PhoneNumber2] PhoneNumber2,
+  u.[Email] Email,
+  u.[Email2] Email2,
+  u.[ModifiedOn] UserModifiedOn,
+  motPit.IsManager,
+  motPit.IsPlayer,
+  r.[Id] RoundId,
+  r.[Name] RoundName,
+  r.[Description] RoundDescription,
+  r.TournamentId TournamentId
+FROM
+      /* Select users who are managers or players, returning one user per team  */
+      /* ISNULL test ensures the column is NOT NULL */
+      (SELECT p.UserId, p.TeamId, ISNULL(CAST(SUM(p.IsManager) AS bit),0) IsManager, ISNULL(CAST(SUM(p.IsPlayer) AS bit),0) IsPlayer
+        FROM
+        (SELECT mot.[UserId] UserId, mot.[TeamId] TeamId, 1 IsManager, 0 IsPlayer
+        	FROM [ManagerOfTeam] mot
+        	UNION ALL
+        SELECT pit.[UserId] UserId, pit.[TeamId] TeamId, 0 IsManager, 1 IsPlayer
+        	FROM [PlayerInTeam] pit) p
+      GROUP BY p.UserId, p.TeamId) motPit
+  JOIN [User] u ON (motPit.[UserId] = u.[Id])
+  JOIN [Team] t ON (motPit.[TeamId] = t.[Id])
+  JOIN [TeamInRound] tir ON (motPit.[TeamId] = tir.[TeamId]) /* only teams in a round */
+  JOIN [Round] r ON (tir.[RoundId] = r.[Id])
+GO
+/****** Object:  View [dbo].[TeamVenueRound]    Script Date: 06.08.2023 20:51:06 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE VIEW [dbo].[TeamVenueRound]
+AS
+  /* Team with venue and round information */
+  SELECT 
+    t.[Id] TeamId,
+    t.[Name] TeamName,
+    tir.[TeamNameForRound] TeamNameForRound,
+    t.[ClubName] TeamClubName,
+    t.[MatchDayOfWeek] MatchDayOfWeek,
+    FORMAT(CAST('2019-01-20T12:00:00' AS datetime) + t.[MatchDayOfWeek], 'dddd', 'de-DE') MatchWeekday,
+    t.[MatchTime] MatchTime,
+    t.[ModifiedOn] TeamModifiedOn,
+    v.[Id] VenueId,
+    v.[Name] VenueName,
+    v.[Extension] VenueExtension,
+    v.[Street] VenueStreet,
+    v.[PostalCode] VenuePostalCode,
+    v.[City] VenueCity,
+    v.[Direction] VenueDirection,
+    v.[Longitude] VenueLongitude,
+    v.[Latitude] VenueLatitude,
+    v.[PrecisePosition] VenuePrecisePosition,
+    v.[ModifiedOn] VenueModifiedOn,
+    r.[Id] RoundId,
+    r.[Name] RoundName,
+    r.[Description] RoundDescription,
+    rt.[Name] RoundTypeName,
+    rt.[Description] RoundTypeDescription,
+    tour.[Id] TournamentId
+  FROM [TeamInRound] tir
+    JOIN [Team] t ON (tir.[TeamId] = t.[Id])
+    LEFT JOIN [Venue] v ON (t.[VenueId] = v.[Id])
+    JOIN [Round] r ON (tir.[RoundId] = r.[Id])
+    JOIN [RoundType] rt ON (rt.[Id] = r.[TypeId])
+	JOIN [Tournament] tour ON (r.[TournamentId] = tour.[Id])
+GO
+/****** Object:  View [dbo].[VenueTeam]    Script Date: 06.08.2023 20:51:06 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -1017,7 +1129,7 @@ AS
     JOIN [Round] r ON (tir.[RoundId] = r.[Id])
     JOIN [Tournament] tour ON (r.[TournamentId] = tour.[Id])
 GO
-/****** Object:  Table [dbo].[AvailableMatchDate]    Script Date: 11.02.2021 00:09:58 ******/
+/****** Object:  Table [dbo].[AvailableMatchDate]    Script Date: 06.08.2023 20:51:06 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -1038,7 +1150,7 @@ CREATE TABLE [dbo].[AvailableMatchDate](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[ExcludeMatchDate]    Script Date: 11.02.2021 00:09:58 ******/
+/****** Object:  Table [dbo].[ExcludeMatchDate]    Script Date: 06.08.2023 20:51:06 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -1059,7 +1171,7 @@ CREATE TABLE [dbo].[ExcludeMatchDate](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[IdentityRole]    Script Date: 11.02.2021 00:09:58 ******/
+/****** Object:  Table [dbo].[IdentityRole]    Script Date: 06.08.2023 20:51:06 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -1077,7 +1189,7 @@ PRIMARY KEY CLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[IdentityRoleClaim]    Script Date: 11.02.2021 00:09:58 ******/
+/****** Object:  Table [dbo].[IdentityRoleClaim]    Script Date: 06.08.2023 20:51:06 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -1095,7 +1207,7 @@ PRIMARY KEY CLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[IdentityUserClaim]    Script Date: 11.02.2021 00:09:58 ******/
+/****** Object:  Table [dbo].[IdentityUserClaim]    Script Date: 06.08.2023 20:51:06 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -1113,7 +1225,7 @@ PRIMARY KEY CLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[IdentityUserLogin]    Script Date: 11.02.2021 00:09:58 ******/
+/****** Object:  Table [dbo].[IdentityUserLogin]    Script Date: 06.08.2023 20:51:06 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -1136,7 +1248,7 @@ CREATE TABLE [dbo].[IdentityUserLogin](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[IdentityUserRole]    Script Date: 11.02.2021 00:09:58 ******/
+/****** Object:  Table [dbo].[IdentityUserRole]    Script Date: 06.08.2023 20:51:06 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -1152,7 +1264,7 @@ PRIMARY KEY CLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[IdentityUserToken]    Script Date: 11.02.2021 00:09:58 ******/
+/****** Object:  Table [dbo].[IdentityUserToken]    Script Date: 06.08.2023 20:51:06 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -1175,7 +1287,7 @@ CREATE TABLE [dbo].[IdentityUserToken](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Registration]    Script Date: 11.02.2021 00:09:58 ******/
+/****** Object:  Table [dbo].[Registration]    Script Date: 06.08.2023 20:51:06 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -1194,7 +1306,7 @@ CREATE TABLE [dbo].[Registration](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[TournamentType]    Script Date: 11.02.2021 00:09:58 ******/
+/****** Object:  Table [dbo].[TournamentType]    Script Date: 06.08.2023 20:51:06 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -1213,27 +1325,27 @@ CREATE TABLE [dbo].[TournamentType](
 GO
 SET ANSI_PADDING ON
 GO
-/****** Object:  Index [IdentityUserClaim_idx]    Script Date: 11.02.2021 00:09:58 ******/
+/****** Object:  Index [IdentityUserClaim_idx]    Script Date: 06.08.2023 20:51:06 ******/
 CREATE NONCLUSTERED INDEX [IdentityUserClaim_idx] ON [dbo].[IdentityUserClaim]
 (
 	[ClaimType] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = OFF, ALLOW_PAGE_LOCKS = OFF) ON [PRIMARY]
 GO
-/****** Object:  Index [UserRole_idx]    Script Date: 11.02.2021 00:09:58 ******/
+/****** Object:  Index [UserRole_idx]    Script Date: 06.08.2023 20:51:06 ******/
 CREATE UNIQUE NONCLUSTERED INDEX [UserRole_idx] ON [dbo].[IdentityUserRole]
 (
 	[UserId] ASC,
 	[RoleId] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = ON, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 GO
-/****** Object:  Index [UserTeam_idx]    Script Date: 11.02.2021 00:09:58 ******/
+/****** Object:  Index [UserTeam_idx]    Script Date: 06.08.2023 20:51:06 ******/
 CREATE UNIQUE NONCLUSTERED INDEX [UserTeam_idx] ON [dbo].[ManagerOfTeam]
 (
 	[UserId] ASC,
 	[TeamId] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = ON, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 GO
-/****** Object:  Index [PlayerTeam_idx]    Script Date: 11.02.2021 00:09:58 ******/
+/****** Object:  Index [PlayerTeam_idx]    Script Date: 06.08.2023 20:51:06 ******/
 CREATE UNIQUE NONCLUSTERED INDEX [PlayerTeam_idx] ON [dbo].[PlayerInTeam]
 (
 	[UserId] ASC,
@@ -1484,260 +1596,260 @@ ALTER TABLE [dbo].[Venue] ADD  CONSTRAINT [DF_Venue_CreatedOn]  DEFAULT (getdate
 GO
 ALTER TABLE [dbo].[Venue] ADD  CONSTRAINT [DF_Venue_ModifiedOn]  DEFAULT (getdate()) FOR [ModifiedOn]
 GO
-ALTER TABLE [dbo].[AvailableMatchDate]  WITH CHECK ADD  CONSTRAINT [FK_4d472ac4c12adb65ea0b4d3ff01] FOREIGN KEY([HomeTeamId])
+ALTER TABLE [dbo].[AvailableMatchDate]  WITH NOCHECK ADD  CONSTRAINT [FK_4d472ac4c12adb65ea0b4d3ff01] FOREIGN KEY([HomeTeamId])
 REFERENCES [dbo].[Team] ([Id])
 ON UPDATE CASCADE
 ON DELETE CASCADE
 GO
 ALTER TABLE [dbo].[AvailableMatchDate] CHECK CONSTRAINT [FK_4d472ac4c12adb65ea0b4d3ff01]
 GO
-ALTER TABLE [dbo].[AvailableMatchDate]  WITH CHECK ADD  CONSTRAINT [FK_74cccb8440e8cf75d4dd871747b] FOREIGN KEY([VenueId])
+ALTER TABLE [dbo].[AvailableMatchDate]  WITH NOCHECK ADD  CONSTRAINT [FK_74cccb8440e8cf75d4dd871747b] FOREIGN KEY([VenueId])
 REFERENCES [dbo].[Venue] ([Id])
 GO
 ALTER TABLE [dbo].[AvailableMatchDate] CHECK CONSTRAINT [FK_74cccb8440e8cf75d4dd871747b]
 GO
-ALTER TABLE [dbo].[ExcludeMatchDate]  WITH CHECK ADD  CONSTRAINT [ExcludeMatchDate_TournamentId_fk] FOREIGN KEY([TournamentId])
+ALTER TABLE [dbo].[ExcludeMatchDate]  WITH NOCHECK ADD  CONSTRAINT [ExcludeMatchDate_TournamentId_fk] FOREIGN KEY([TournamentId])
 REFERENCES [dbo].[Tournament] ([Id])
 ON UPDATE CASCADE
 ON DELETE CASCADE
 GO
 ALTER TABLE [dbo].[ExcludeMatchDate] CHECK CONSTRAINT [ExcludeMatchDate_TournamentId_fk]
 GO
-ALTER TABLE [dbo].[ExcludeMatchDate]  WITH CHECK ADD  CONSTRAINT [FK_839b5ab411ba7bce29b0d4782c7] FOREIGN KEY([RoundId])
+ALTER TABLE [dbo].[ExcludeMatchDate]  WITH NOCHECK ADD  CONSTRAINT [FK_839b5ab411ba7bce29b0d4782c7] FOREIGN KEY([RoundId])
 REFERENCES [dbo].[Round] ([Id])
 ON UPDATE CASCADE
 ON DELETE SET NULL
 GO
 ALTER TABLE [dbo].[ExcludeMatchDate] CHECK CONSTRAINT [FK_839b5ab411ba7bce29b0d4782c7]
 GO
-ALTER TABLE [dbo].[ExcludeMatchDate]  WITH CHECK ADD  CONSTRAINT [FK_e059c2f4a6fbdd3147184f47ed1] FOREIGN KEY([TeamId])
+ALTER TABLE [dbo].[ExcludeMatchDate]  WITH NOCHECK ADD  CONSTRAINT [FK_e059c2f4a6fbdd3147184f47ed1] FOREIGN KEY([TeamId])
 REFERENCES [dbo].[Team] ([Id])
 ON UPDATE CASCADE
 ON DELETE SET NULL
 GO
 ALTER TABLE [dbo].[ExcludeMatchDate] CHECK CONSTRAINT [FK_e059c2f4a6fbdd3147184f47ed1]
 GO
-ALTER TABLE [dbo].[IdentityRoleClaim]  WITH CHECK ADD  CONSTRAINT [IdentityRoleClaim_Role_fk] FOREIGN KEY([RoleId])
+ALTER TABLE [dbo].[IdentityRoleClaim]  WITH NOCHECK ADD  CONSTRAINT [IdentityRoleClaim_Role_fk] FOREIGN KEY([RoleId])
 REFERENCES [dbo].[IdentityRole] ([Id])
 ON UPDATE CASCADE
 ON DELETE CASCADE
 GO
 ALTER TABLE [dbo].[IdentityRoleClaim] CHECK CONSTRAINT [IdentityRoleClaim_Role_fk]
 GO
-ALTER TABLE [dbo].[IdentityUserClaim]  WITH CHECK ADD  CONSTRAINT [IdentityUserClaim_User_fk] FOREIGN KEY([UserId])
+ALTER TABLE [dbo].[IdentityUserClaim]  WITH NOCHECK ADD  CONSTRAINT [IdentityUserClaim_User_fk] FOREIGN KEY([UserId])
 REFERENCES [dbo].[User] ([Id])
 ON UPDATE CASCADE
 ON DELETE CASCADE
 GO
 ALTER TABLE [dbo].[IdentityUserClaim] CHECK CONSTRAINT [IdentityUserClaim_User_fk]
 GO
-ALTER TABLE [dbo].[IdentityUserLogin]  WITH CHECK ADD  CONSTRAINT [Fk_UserLogin_User] FOREIGN KEY([UserId])
+ALTER TABLE [dbo].[IdentityUserLogin]  WITH NOCHECK ADD  CONSTRAINT [Fk_UserLogin_User] FOREIGN KEY([UserId])
 REFERENCES [dbo].[User] ([Id])
 ON UPDATE CASCADE
 ON DELETE CASCADE
 GO
 ALTER TABLE [dbo].[IdentityUserLogin] CHECK CONSTRAINT [Fk_UserLogin_User]
 GO
-ALTER TABLE [dbo].[IdentityUserRole]  WITH CHECK ADD  CONSTRAINT [Fk_UserRole_Role] FOREIGN KEY([RoleId])
+ALTER TABLE [dbo].[IdentityUserRole]  WITH NOCHECK ADD  CONSTRAINT [Fk_UserRole_Role] FOREIGN KEY([RoleId])
 REFERENCES [dbo].[IdentityRole] ([Id])
 ON UPDATE CASCADE
 ON DELETE CASCADE
 GO
 ALTER TABLE [dbo].[IdentityUserRole] CHECK CONSTRAINT [Fk_UserRole_Role]
 GO
-ALTER TABLE [dbo].[IdentityUserRole]  WITH CHECK ADD  CONSTRAINT [Fk_UserRole_User] FOREIGN KEY([UserId])
+ALTER TABLE [dbo].[IdentityUserRole]  WITH NOCHECK ADD  CONSTRAINT [Fk_UserRole_User] FOREIGN KEY([UserId])
 REFERENCES [dbo].[User] ([Id])
 ON UPDATE CASCADE
 ON DELETE CASCADE
 GO
 ALTER TABLE [dbo].[IdentityUserRole] CHECK CONSTRAINT [Fk_UserRole_User]
 GO
-ALTER TABLE [dbo].[IdentityUserToken]  WITH CHECK ADD  CONSTRAINT [UserTokens_fk] FOREIGN KEY([UserId])
+ALTER TABLE [dbo].[IdentityUserToken]  WITH NOCHECK ADD  CONSTRAINT [UserTokens_fk] FOREIGN KEY([UserId])
 REFERENCES [dbo].[User] ([Id])
 ON UPDATE CASCADE
 ON DELETE CASCADE
 GO
 ALTER TABLE [dbo].[IdentityUserToken] CHECK CONSTRAINT [UserTokens_fk]
 GO
-ALTER TABLE [dbo].[ManagerOfTeam]  WITH CHECK ADD  CONSTRAINT [FK_0e7569e46d2be7d0a9142edbb25] FOREIGN KEY([TeamId])
+ALTER TABLE [dbo].[ManagerOfTeam]  WITH NOCHECK ADD  CONSTRAINT [FK_0e7569e46d2be7d0a9142edbb25] FOREIGN KEY([TeamId])
 REFERENCES [dbo].[Team] ([Id])
 ON UPDATE CASCADE
 ON DELETE CASCADE
 GO
 ALTER TABLE [dbo].[ManagerOfTeam] CHECK CONSTRAINT [FK_0e7569e46d2be7d0a9142edbb25]
 GO
-ALTER TABLE [dbo].[ManagerOfTeam]  WITH CHECK ADD  CONSTRAINT [FK_d308f7c4770bee43783a0e53d8f] FOREIGN KEY([UserId])
+ALTER TABLE [dbo].[ManagerOfTeam]  WITH NOCHECK ADD  CONSTRAINT [FK_d308f7c4770bee43783a0e53d8f] FOREIGN KEY([UserId])
 REFERENCES [dbo].[User] ([Id])
 ON UPDATE CASCADE
 ON DELETE CASCADE
 GO
 ALTER TABLE [dbo].[ManagerOfTeam] CHECK CONSTRAINT [FK_d308f7c4770bee43783a0e53d8f]
 GO
-ALTER TABLE [dbo].[Match]  WITH CHECK ADD  CONSTRAINT [FK_5c03c0c403195643ad89303cc4b] FOREIGN KEY([RoundId])
+ALTER TABLE [dbo].[Match]  WITH NOCHECK ADD  CONSTRAINT [FK_5c03c0c403195643ad89303cc4b] FOREIGN KEY([RoundId])
 REFERENCES [dbo].[Round] ([Id])
 ON UPDATE CASCADE
 ON DELETE CASCADE
 GO
 ALTER TABLE [dbo].[Match] CHECK CONSTRAINT [FK_5c03c0c403195643ad89303cc4b]
 GO
-ALTER TABLE [dbo].[Match]  WITH CHECK ADD  CONSTRAINT [FK_cb028e742dbbcefcdc18bc33d8c] FOREIGN KEY([VenueId])
+ALTER TABLE [dbo].[Match]  WITH NOCHECK ADD  CONSTRAINT [FK_cb028e742dbbcefcdc18bc33d8c] FOREIGN KEY([VenueId])
 REFERENCES [dbo].[Venue] ([Id])
 GO
 ALTER TABLE [dbo].[Match] CHECK CONSTRAINT [FK_cb028e742dbbcefcdc18bc33d8c]
 GO
-ALTER TABLE [dbo].[Match]  WITH CHECK ADD  CONSTRAINT [FK_ce641dd44a79b6a0536029e5095] FOREIGN KEY([GuestTeamId])
+ALTER TABLE [dbo].[Match]  WITH NOCHECK ADD  CONSTRAINT [FK_ce641dd44a79b6a0536029e5095] FOREIGN KEY([GuestTeamId])
 REFERENCES [dbo].[Team] ([Id])
 GO
 ALTER TABLE [dbo].[Match] CHECK CONSTRAINT [FK_ce641dd44a79b6a0536029e5095]
 GO
-ALTER TABLE [dbo].[Match]  WITH CHECK ADD  CONSTRAINT [FK_ef1387a4716a86685ca94abfe03] FOREIGN KEY([HomeTeamId])
+ALTER TABLE [dbo].[Match]  WITH NOCHECK ADD  CONSTRAINT [FK_ef1387a4716a86685ca94abfe03] FOREIGN KEY([HomeTeamId])
 REFERENCES [dbo].[Team] ([Id])
 GO
 ALTER TABLE [dbo].[Match] CHECK CONSTRAINT [FK_ef1387a4716a86685ca94abfe03]
 GO
-ALTER TABLE [dbo].[Match]  WITH CHECK ADD  CONSTRAINT [FK_f7bed0a4ecbbddad75d0016be12] FOREIGN KEY([OrigVenueId])
+ALTER TABLE [dbo].[Match]  WITH NOCHECK ADD  CONSTRAINT [FK_f7bed0a4ecbbddad75d0016be12] FOREIGN KEY([OrigVenueId])
 REFERENCES [dbo].[Venue] ([Id])
 GO
 ALTER TABLE [dbo].[Match] CHECK CONSTRAINT [FK_f7bed0a4ecbbddad75d0016be12]
 GO
-ALTER TABLE [dbo].[Match]  WITH CHECK ADD  CONSTRAINT [FK_fc8dfc04f2d86db9b7c1f85ab55] FOREIGN KEY([RefereeId])
+ALTER TABLE [dbo].[Match]  WITH NOCHECK ADD  CONSTRAINT [FK_fc8dfc04f2d86db9b7c1f85ab55] FOREIGN KEY([RefereeId])
 REFERENCES [dbo].[Team] ([Id])
 GO
 ALTER TABLE [dbo].[Match] CHECK CONSTRAINT [FK_fc8dfc04f2d86db9b7c1f85ab55]
 GO
-ALTER TABLE [dbo].[PlayerInTeam]  WITH CHECK ADD  CONSTRAINT [FK_1f583a545568a2d84dc9b3c3e85] FOREIGN KEY([UserId])
+ALTER TABLE [dbo].[PlayerInTeam]  WITH NOCHECK ADD  CONSTRAINT [FK_1f583a545568a2d84dc9b3c3e85] FOREIGN KEY([UserId])
 REFERENCES [dbo].[User] ([Id])
 ON UPDATE CASCADE
 ON DELETE CASCADE
 GO
 ALTER TABLE [dbo].[PlayerInTeam] CHECK CONSTRAINT [FK_1f583a545568a2d84dc9b3c3e85]
 GO
-ALTER TABLE [dbo].[PlayerInTeam]  WITH CHECK ADD  CONSTRAINT [FK_5de6c0349c79218e00c605092ae] FOREIGN KEY([TeamId])
+ALTER TABLE [dbo].[PlayerInTeam]  WITH NOCHECK ADD  CONSTRAINT [FK_5de6c0349c79218e00c605092ae] FOREIGN KEY([TeamId])
 REFERENCES [dbo].[Team] ([Id])
 ON UPDATE CASCADE
 ON DELETE CASCADE
 GO
 ALTER TABLE [dbo].[PlayerInTeam] CHECK CONSTRAINT [FK_5de6c0349c79218e00c605092ae]
 GO
-ALTER TABLE [dbo].[Ranking]  WITH CHECK ADD  CONSTRAINT [FK_2074dbd428a8d48582fdeaa4b8c] FOREIGN KEY([TeamId])
+ALTER TABLE [dbo].[Ranking]  WITH NOCHECK ADD  CONSTRAINT [FK_2074dbd428a8d48582fdeaa4b8c] FOREIGN KEY([TeamId])
 REFERENCES [dbo].[Team] ([Id])
 ON UPDATE CASCADE
 ON DELETE CASCADE
 GO
 ALTER TABLE [dbo].[Ranking] CHECK CONSTRAINT [FK_2074dbd428a8d48582fdeaa4b8c]
 GO
-ALTER TABLE [dbo].[Ranking]  WITH CHECK ADD  CONSTRAINT [FK_ba19e0b4cd4a24b99b094d481f7] FOREIGN KEY([RoundId])
+ALTER TABLE [dbo].[Ranking]  WITH NOCHECK ADD  CONSTRAINT [FK_ba19e0b4cd4a24b99b094d481f7] FOREIGN KEY([RoundId])
 REFERENCES [dbo].[Round] ([Id])
 ON UPDATE CASCADE
 ON DELETE CASCADE
 GO
 ALTER TABLE [dbo].[Ranking] CHECK CONSTRAINT [FK_ba19e0b4cd4a24b99b094d481f7]
 GO
-ALTER TABLE [dbo].[Ranking]  WITH CHECK ADD  CONSTRAINT [FK_c8e677848abac5f1b8bf13ea775] FOREIGN KEY([TournamentId])
+ALTER TABLE [dbo].[Ranking]  WITH NOCHECK ADD  CONSTRAINT [FK_c8e677848abac5f1b8bf13ea775] FOREIGN KEY([TournamentId])
 REFERENCES [dbo].[Tournament] ([Id])
 ON UPDATE CASCADE
 ON DELETE CASCADE
 GO
 ALTER TABLE [dbo].[Ranking] CHECK CONSTRAINT [FK_c8e677848abac5f1b8bf13ea775]
 GO
-ALTER TABLE [dbo].[Registration]  WITH CHECK ADD  CONSTRAINT [FK_4462bad40269915324df04e014d] FOREIGN KEY([ManagerId])
+ALTER TABLE [dbo].[Registration]  WITH NOCHECK ADD  CONSTRAINT [FK_4462bad40269915324df04e014d] FOREIGN KEY([ManagerId])
 REFERENCES [dbo].[User] ([Id])
 ON UPDATE CASCADE
 ON DELETE CASCADE
 GO
 ALTER TABLE [dbo].[Registration] CHECK CONSTRAINT [FK_4462bad40269915324df04e014d]
 GO
-ALTER TABLE [dbo].[Registration]  WITH CHECK ADD  CONSTRAINT [FK_7bab7f542cbbe91cec71043643e] FOREIGN KEY([TeamId])
+ALTER TABLE [dbo].[Registration]  WITH NOCHECK ADD  CONSTRAINT [FK_7bab7f542cbbe91cec71043643e] FOREIGN KEY([TeamId])
 REFERENCES [dbo].[Team] ([Id])
 ON UPDATE CASCADE
 ON DELETE CASCADE
 GO
 ALTER TABLE [dbo].[Registration] CHECK CONSTRAINT [FK_7bab7f542cbbe91cec71043643e]
 GO
-ALTER TABLE [dbo].[Registration]  WITH CHECK ADD  CONSTRAINT [FK_b3d49004f0692a3e027b9b68624] FOREIGN KEY([TournamentId])
+ALTER TABLE [dbo].[Registration]  WITH NOCHECK ADD  CONSTRAINT [FK_b3d49004f0692a3e027b9b68624] FOREIGN KEY([TournamentId])
 REFERENCES [dbo].[Tournament] ([Id])
 ON UPDATE CASCADE
 ON DELETE CASCADE
 GO
 ALTER TABLE [dbo].[Registration] CHECK CONSTRAINT [FK_b3d49004f0692a3e027b9b68624]
 GO
-ALTER TABLE [dbo].[Round]  WITH CHECK ADD  CONSTRAINT [Round_MatchRule] FOREIGN KEY([MatchRuleId])
+ALTER TABLE [dbo].[Round]  WITH NOCHECK ADD  CONSTRAINT [Round_MatchRule] FOREIGN KEY([MatchRuleId])
 REFERENCES [dbo].[MatchRule] ([Id])
 ON UPDATE CASCADE
 GO
 ALTER TABLE [dbo].[Round] CHECK CONSTRAINT [Round_MatchRule]
 GO
-ALTER TABLE [dbo].[Round]  WITH CHECK ADD  CONSTRAINT [Round_NextRound] FOREIGN KEY([NextRoundId])
+ALTER TABLE [dbo].[Round]  WITH NOCHECK ADD  CONSTRAINT [Round_NextRound] FOREIGN KEY([NextRoundId])
 REFERENCES [dbo].[Round] ([Id])
 GO
 ALTER TABLE [dbo].[Round] CHECK CONSTRAINT [Round_NextRound]
 GO
-ALTER TABLE [dbo].[Round]  WITH CHECK ADD  CONSTRAINT [Round_RoundType] FOREIGN KEY([TypeId])
+ALTER TABLE [dbo].[Round]  WITH NOCHECK ADD  CONSTRAINT [Round_RoundType] FOREIGN KEY([TypeId])
 REFERENCES [dbo].[RoundType] ([Id])
 ON UPDATE CASCADE
 GO
 ALTER TABLE [dbo].[Round] CHECK CONSTRAINT [Round_RoundType]
 GO
-ALTER TABLE [dbo].[Round]  WITH CHECK ADD  CONSTRAINT [Round_SetRule] FOREIGN KEY([SetRuleId])
+ALTER TABLE [dbo].[Round]  WITH NOCHECK ADD  CONSTRAINT [Round_SetRule] FOREIGN KEY([SetRuleId])
 REFERENCES [dbo].[SetRule] ([Id])
 ON UPDATE CASCADE
 GO
 ALTER TABLE [dbo].[Round] CHECK CONSTRAINT [Round_SetRule]
 GO
-ALTER TABLE [dbo].[Round]  WITH CHECK ADD  CONSTRAINT [Round_Tournament] FOREIGN KEY([TournamentId])
+ALTER TABLE [dbo].[Round]  WITH NOCHECK ADD  CONSTRAINT [Round_Tournament] FOREIGN KEY([TournamentId])
 REFERENCES [dbo].[Tournament] ([Id])
 GO
 ALTER TABLE [dbo].[Round] CHECK CONSTRAINT [Round_Tournament]
 GO
-ALTER TABLE [dbo].[RoundLeg]  WITH CHECK ADD  CONSTRAINT [FK_b06fad141949b946948a4b7b238] FOREIGN KEY([RoundId])
+ALTER TABLE [dbo].[RoundLeg]  WITH NOCHECK ADD  CONSTRAINT [FK_b06fad141949b946948a4b7b238] FOREIGN KEY([RoundId])
 REFERENCES [dbo].[Round] ([Id])
 ON UPDATE CASCADE
 ON DELETE CASCADE
 GO
 ALTER TABLE [dbo].[RoundLeg] CHECK CONSTRAINT [FK_b06fad141949b946948a4b7b238]
 GO
-ALTER TABLE [dbo].[Set]  WITH CHECK ADD  CONSTRAINT [FK_a5d0fa848aab17137435c5e2c47] FOREIGN KEY([MatchId])
+ALTER TABLE [dbo].[Set]  WITH NOCHECK ADD  CONSTRAINT [FK_a5d0fa848aab17137435c5e2c47] FOREIGN KEY([MatchId])
 REFERENCES [dbo].[Match] ([Id])
 ON UPDATE CASCADE
 ON DELETE CASCADE
 GO
 ALTER TABLE [dbo].[Set] CHECK CONSTRAINT [FK_a5d0fa848aab17137435c5e2c47]
 GO
-ALTER TABLE [dbo].[Team]  WITH CHECK ADD  CONSTRAINT [FK_e13a4a24741b2e5a717f9c696a8] FOREIGN KEY([VenueId])
+ALTER TABLE [dbo].[Team]  WITH NOCHECK ADD  CONSTRAINT [FK_e13a4a24741b2e5a717f9c696a8] FOREIGN KEY([VenueId])
 REFERENCES [dbo].[Venue] ([Id])
 GO
 ALTER TABLE [dbo].[Team] CHECK CONSTRAINT [FK_e13a4a24741b2e5a717f9c696a8]
 GO
-ALTER TABLE [dbo].[TeamInRound]  WITH CHECK ADD  CONSTRAINT [FK_144927a424e8f34c15e8854f3c9] FOREIGN KEY([RoundId])
+ALTER TABLE [dbo].[TeamInRound]  WITH NOCHECK ADD  CONSTRAINT [FK_144927a424e8f34c15e8854f3c9] FOREIGN KEY([RoundId])
 REFERENCES [dbo].[Round] ([Id])
 ON UPDATE CASCADE
 GO
 ALTER TABLE [dbo].[TeamInRound] CHECK CONSTRAINT [FK_144927a424e8f34c15e8854f3c9]
 GO
-ALTER TABLE [dbo].[TeamInRound]  WITH CHECK ADD  CONSTRAINT [FK_b5d92d5411191fa54e97410ad0f] FOREIGN KEY([TeamId])
+ALTER TABLE [dbo].[TeamInRound]  WITH NOCHECK ADD  CONSTRAINT [FK_b5d92d5411191fa54e97410ad0f] FOREIGN KEY([TeamId])
 REFERENCES [dbo].[Team] ([Id])
 ON UPDATE CASCADE
 ON DELETE CASCADE
 GO
 ALTER TABLE [dbo].[TeamInRound] CHECK CONSTRAINT [FK_b5d92d5411191fa54e97410ad0f]
 GO
-ALTER TABLE [dbo].[Tournament]  WITH CHECK ADD  CONSTRAINT [FK_7fdd8614f9d8df5c5df69e60586] FOREIGN KEY([NextTournamentId])
+ALTER TABLE [dbo].[Tournament]  WITH NOCHECK ADD  CONSTRAINT [FK_7fdd8614f9d8df5c5df69e60586] FOREIGN KEY([NextTournamentId])
 REFERENCES [dbo].[Tournament] ([Id])
 GO
 ALTER TABLE [dbo].[Tournament] CHECK CONSTRAINT [FK_7fdd8614f9d8df5c5df69e60586]
 GO
-ALTER TABLE [dbo].[Tournament]  WITH CHECK ADD  CONSTRAINT [FK_b1c85dc49a0ad94cf65182015cb] FOREIGN KEY([TypeId])
+ALTER TABLE [dbo].[Tournament]  WITH NOCHECK ADD  CONSTRAINT [FK_b1c85dc49a0ad94cf65182015cb] FOREIGN KEY([TypeId])
 REFERENCES [dbo].[TournamentType] ([Id])
 ON UPDATE CASCADE
 ON DELETE SET NULL
 GO
 ALTER TABLE [dbo].[Tournament] CHECK CONSTRAINT [FK_b1c85dc49a0ad94cf65182015cb]
 GO
-ALTER TABLE [dbo].[User]  WITH CHECK ADD  CONSTRAINT [User_ck_Gender] CHECK  (([Gender]='m' OR [Gender]='f' OR [Gender]='u'))
+ALTER TABLE [dbo].[User]  WITH NOCHECK ADD  CONSTRAINT [User_ck_Gender] CHECK  (([Gender]='m' OR [Gender]='f' OR [Gender]='u'))
 GO
 ALTER TABLE [dbo].[User] CHECK CONSTRAINT [User_ck_Gender]
 GO
-/****** Object:  StoredProcedure [dbo].[VenueDistance]    Script Date: 11.02.2021 00:09:58 ******/
+/****** Object:  StoredProcedure [dbo].[VenueDistance]    Script Date: 06.08.2023 20:51:06 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -1754,7 +1866,7 @@ BEGIN
   WHERE dbo.[SpatialDistance](@Lat, @Lng, [Latitude], [Longitude]) <= @MaxDistance
 END
 GO
-/****** Object:  Trigger [dbo].[Team_InsteadOf_Delete_tr]    Script Date: 11.02.2021 00:09:58 ******/
+/****** Object:  Trigger [dbo].[Team_InsteadOf_Delete_tr]    Script Date: 06.08.2023 20:51:06 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -1801,7 +1913,7 @@ END
 GO
 ALTER TABLE [dbo].[Team] ENABLE TRIGGER [Team_InsteadOf_Delete_tr]
 GO
-/****** Object:  Trigger [dbo].[Venue_InsteadOf_Delete_tr]    Script Date: 11.02.2021 00:09:58 ******/
+/****** Object:  Trigger [dbo].[Venue_InsteadOf_Delete_tr]    Script Date: 06.08.2023 20:51:07 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
