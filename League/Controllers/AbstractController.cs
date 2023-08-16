@@ -33,9 +33,10 @@ public abstract class AbstractController : Controller
     /// <returns>Gets the <see cref="System.Security.Claims.ClaimTypes.NameIdentifier"/> of the current user
     /// as <see langword="long"/> integer.</returns>
     [NonAction]
-    protected long GetCurrentUserId()
+    protected long? GetCurrentUserId()
     {
-        return long.Parse(User.Claims.First(c => c.Type == System.Security.Claims.ClaimTypes.NameIdentifier).Value);
+        var userId = User.Claims.FirstOrDefault(c => c.Type == System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+        return long.TryParse(userId, out var id) ? id : null;
     }
 
     /// <summary>

@@ -84,9 +84,12 @@ public class Match : AbstractController
     [HttpGet("[action]")]
     public async Task<IActionResult> Fixtures(CancellationToken cancellationToken)
     {
+        var tournament = await GetPlanTournament(cancellationToken);
+        if (tournament == null) return NotFound();
+
         var model = new FixturesViewModel(_timeZoneConverter)
         {
-            Tournament = await GetPlanTournament(cancellationToken),
+            Tournament = tournament,
             PlannedMatches = await _appDb.MatchRepository.GetPlannedMatchesAsync(
                 new PredicateExpression(PlannedMatchFields.TournamentId == _tenantContext.TournamentContext.MatchPlanTournamentId), cancellationToken),
             // try to use the browser cookie
@@ -203,11 +206,12 @@ public class Match : AbstractController
     [HttpGet("[action]")]
     public async Task<IActionResult> Results(CancellationToken cancellationToken)
     {
+        var tournament = await GetResultTournament(cancellationToken);
+        if (tournament == null) return NotFound();
+
         var model = new ResultsViewModel(_timeZoneConverter)
         {
-            Tournament =
-                await _appDb.TournamentRepository.GetTournamentAsync(new PredicateExpression(TournamentFields.Id == _tenantContext.TournamentContext.MatchResultTournamentId),
-                    cancellationToken),
+            Tournament = tournament,
             CompletedMatches = await _appDb.MatchRepository.GetCompletedMatchesAsync(
                 new PredicateExpression(CompletedMatchFields.TournamentId == _tenantContext.TournamentContext.MatchResultTournamentId), cancellationToken),
             // try to use the browser cookie
@@ -565,6 +569,17 @@ public class Match : AbstractController
         return null;
     }
 
+    private async Task<TournamentEntity?> GetResultTournament(CancellationToken cancellationToken)
+    {
+        var tournament =
+            await _appDb.TournamentRepository.GetTournamentAsync(new PredicateExpression(TournamentFields.Id == _tenantContext.TournamentContext.MatchResultTournamentId), cancellationToken);
+
+        if (tournament != null) return tournament;
+
+        _logger.LogCritical("{name} '{id}' does not exist. User ID '{currentUser}'.", nameof(_tenantContext.TournamentContext.MatchResultTournamentId), _tenantContext.TournamentContext.MatchPlanTournamentId, GetCurrentUserId());
+        return null;
+    }
+
     private async Task<EnterResultViewModel> GetEnterResultViewModel(MatchEntity match, CancellationToken cancellationToken)
     {
         match.Sets.RemovedEntitiesTracker = new EntityCollection<SetEntity>();
@@ -646,7 +661,7 @@ public class Match : AbstractController
             Parameters =
             {
                 CultureInfo = CultureInfo.DefaultThreadCurrentUICulture ?? CultureInfo.CurrentCulture,
-                ChangedByUserId = GetCurrentUserId(),
+                ChangedByUserId = GetCurrentUserId() ?? throw new InvalidOperationException("Current user ID must not be null"),
                 MatchId = matchId,
             }
         });
@@ -663,7 +678,7 @@ public class Match : AbstractController
             Parameters =
             {
                 CultureInfo = CultureInfo.DefaultThreadCurrentUICulture ?? CultureInfo.CurrentCulture,
-                ChangedByUserId = GetCurrentUserId(),
+                ChangedByUserId = GetCurrentUserId() ?? throw new InvalidOperationException("Current user ID must not be null"),
                 Match = match,
             }
         });

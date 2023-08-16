@@ -63,7 +63,8 @@ public class Ranking : AbstractController
 
             if (model.Tournament == null)
             {
-                throw new Exception($"{nameof(_tenantContext.TournamentContext.MatchResultTournamentId)} '{_tenantContext.TournamentContext.MatchResultTournamentId}' does not exist");
+                _logger.LogCritical("{name} '{id}' does not exist. User ID '{currentUser}'.", nameof(_tenantContext.TournamentContext.MatchPlanTournamentId), _tenantContext.TournamentContext.MatchResultTournamentId, GetCurrentUserId());
+                return NotFound();
             }
 
             return View(Views.ViewNames.Ranking.Table, model);
@@ -71,7 +72,7 @@ public class Ranking : AbstractController
         catch (Exception e)
         {
             _logger.LogCritical(e, "Error when creating the ranking table");
-            throw;
+            return NotFound();
         }
     }
 

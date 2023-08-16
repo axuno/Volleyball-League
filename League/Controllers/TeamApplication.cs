@@ -525,7 +525,7 @@ public class TeamApplication : AbstractController
                         TeamId = teamInRoundEntity.TeamId,
                         IsNewApplication = isNewApplication,
                         RoundId = teamInRoundEntity.RoundId,
-                        RegisteredByUserId = GetCurrentUserId(),
+                        RegisteredByUserId = GetCurrentUserId() ?? throw new InvalidOperationException("Current user ID must not be null"),
                         UrlToEditApplication = TenantLink.ActionLink(nameof(EditTeam), nameof(TeamApplication), new { teamId = teamInRoundEntity.TeamId }, scheme: Request.Scheme, host: Request.Host) ?? string.Empty
                     }
                 });
@@ -697,11 +697,6 @@ public class TeamApplication : AbstractController
         var previousTournament = await _appDb.TournamentRepository.GetTournamentAsync(
             new PredicateExpression(TournamentFields.NextTournamentId == _tenantContext.TournamentContext.ApplicationTournamentId),
             cancellationToken);
-        if (previousTournament == null)
-        {
-            _logger.LogCritical("No tournament found for ID '{ApplicationTournamentId}'", _tenantContext.TournamentContext.ApplicationTournamentId);
-            throw new InvalidOperationException($"No tournament found for ID '{_tenantContext.TournamentContext.ApplicationTournamentId}'");
-        }
         
         return new ApplicationSessionModel
         {
@@ -709,7 +704,7 @@ public class TeamApplication : AbstractController
             Team = new TeamEditorComponentModel {HtmlFieldPrefix = nameof(ApplicationSessionModel.Team), IsNew = true},
             Venue = new VenueEditorComponentModel {HtmlFieldPrefix = nameof(ApplicationSessionModel.Venue), IsNew = true},
             TournamentName = teamApplicationTournament.Name,
-            PreviousTournamentId = previousTournament.Id
+            PreviousTournamentId = previousTournament?.Id
         };
     }
 
@@ -741,7 +736,7 @@ public class TeamApplication : AbstractController
         {
             var mot = teamEntity.ManagerOfTeams.AddNew();
             mot.Team = teamEntity;
-            mot.UserId = GetCurrentUserId();
+            mot.UserId = GetCurrentUserId() ?? throw new InvalidOperationException("Current user ID must not be null");
         }
         else
         {
@@ -752,7 +747,7 @@ public class TeamApplication : AbstractController
             {
                 mot = teamEntity.ManagerOfTeams.AddNew();
                 mot.TeamId = teamEntity.Id;
-                mot.UserId = GetCurrentUserId();
+                mot.UserId = GetCurrentUserId() ?? throw new InvalidOperationException("Current user ID must not be null");
             }
         }
     }
