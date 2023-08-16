@@ -103,7 +103,7 @@ public class UserAuthenticationTokenStoreTests
             // Trying to update will fail because the table is locked
             _appDb.DbContext.CommandTimeOut = 2;
             Assert.ThrowsAsync<ORMQueryExecutionException>(async () => await _store.SetTokenAsync(GetNewUser(), "Provider", "TokenName", "TheValue", CancellationToken.None));
-            Assert.ThrowsAsync<Exception>(async () => await _store.RemoveTokenAsync(GetNewUser(), "Provider", "TokenName", CancellationToken.None));
+            Assert.ThrowsAsync<InvalidOperationException>(async () => await _store.RemoveTokenAsync(GetNewUser(), "Provider", "TokenName", CancellationToken.None));
             da.Rollback("transaction1");
         }
         _appDb.DbContext.CommandTimeOut = currentTimeOut;

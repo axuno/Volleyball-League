@@ -148,11 +148,11 @@ public static class LeagueStartup
         }.LoadTenants();
 
         var tenants = store.GetTenants().Values.ToList();
-        if (!tenants.Any(t => t.IsDefault)) throw new Exception("No default tenant configuration found.");
+        if (!tenants.Any(t => t.IsDefault)) throw new InvalidOperationException("No default tenant configuration found.");
         tenants.ForEach(t =>
         {
             if (string.IsNullOrWhiteSpace(t.DbContext.ConnectionString))
-                throw new Exception($"Tenant '{t.Identifier}': Connection string for key '{t.DbContext.ConnectionKey}' not found.");
+                throw new InvalidOperationException($"Tenant '{t.Identifier}': Connection string for key '{t.DbContext.ConnectionKey}' not found.");
         });
 
         ConfigureLLblGenPro(store, environment, configuration);

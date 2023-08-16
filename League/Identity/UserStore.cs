@@ -417,7 +417,7 @@ public class UserStore : IUserStore<ApplicationUser>, IUserEmailStore<Applicatio
             var msg = $"The role name '{roleName}' cannot be added explicitly.";
 
             _logger.LogError(msg);
-            throw new Exception(msg);
+            throw new InvalidOperationException(msg);
         }
 
         bool success;
@@ -435,7 +435,7 @@ public class UserStore : IUserStore<ApplicationUser>, IUserEmailStore<Applicatio
         if (!success)
         {
             _logger.LogError(exceptionMsg);
-            throw new Exception(exceptionMsg);
+            throw new InvalidOperationException(exceptionMsg);
         }
     }
 
@@ -451,7 +451,7 @@ public class UserStore : IUserStore<ApplicationUser>, IUserEmailStore<Applicatio
         {
             var msg = $"The role name '{roleName}' cannot be removed explicitly.";
             _logger.LogError(msg);
-            throw new Exception(msg);
+            throw new InvalidOperationException(msg);
         }
 
         bool success;
@@ -469,7 +469,7 @@ public class UserStore : IUserStore<ApplicationUser>, IUserEmailStore<Applicatio
         if (!success)
         {
             _logger.LogError(exceptionMsg);
-            throw new Exception(exceptionMsg);
+            throw new InvalidOperationException(exceptionMsg);
         }
     }
 
@@ -982,7 +982,7 @@ public class UserStore : IUserStore<ApplicationUser>, IUserEmailStore<Applicatio
             if (!await _appDb.GenericRepository.DeleteEntityAsync(userTokenEntity, cancellationToken))
             {
                 _logger.LogError(msg);
-                throw new Exception(msg);
+                throw new InvalidOperationException(msg);
             }
         }
         catch (Exception e)

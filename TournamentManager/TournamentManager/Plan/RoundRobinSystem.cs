@@ -60,10 +60,10 @@ public class RoundRobinSystem<T>
           +- +- +-   E    -+
         */
         if (Teams.Count < 2)
-            throw new Exception("Round Robin system requires at least 2 teams.");
+            throw new InvalidOperationException("Round Robin system requires at least 2 teams.");
 
         if (Teams.Count < 3 && RefereeType == RefereeType.OtherTeamOfGroup)
-            throw new Exception("Round Robin system with separate referee requires at least 3 teams.");
+            throw new InvalidOperationException("Round Robin system with separate referee requires at least 3 teams.");
 
         _combinationGroup.Clear();
         _maxNumOfCombinations = Teams.Count * (Teams.Count - 1) / 2;

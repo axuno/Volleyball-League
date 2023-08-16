@@ -220,7 +220,7 @@ public class GermanHolidays : List<GermanHoliday>
             }
             catch
             {
-                throw new Exception(string.Format("HolidayId \"{0}\" wird in \"{1}\" nicht abgebildet.", holidayId,
+                throw new InvalidOperationException(string.Format("HolidayId \"{0}\" wird in \"{1}\" nicht abgebildet.", holidayId,
                     GetType()));
             }
 #endif
@@ -345,7 +345,7 @@ public class GermanHolidays : List<GermanHoliday>
     private DateTime GetAdventDate(int num)
     {
         if (num < 1 || num > 4)
-            throw new Exception("Only Advents 1 to 4 are allowed.");
+            throw new InvalidOperationException("Only Advents 1 to 4 are allowed.");
 
         // 4th Advent is the latest Sunday before 25th December
         var firstChristmasDay = new DateTime(Year, 12, 25);
@@ -594,7 +594,7 @@ public class GermanHolidays : List<GermanHoliday>
 
             // Only with Replace action the dates may be missing
             if (action != ActionType.Replace && (dateFrom == DateTime.MinValue || dateTo == DateTime.MinValue))
-                throw new Exception("Missing 'date from' and/or 'date to' in XML data.");
+                throw new InvalidOperationException("Missing 'date from' and/or 'date to' in XML data.");
 
             while (dateFrom <= dateTo)
             {

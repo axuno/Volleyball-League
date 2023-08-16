@@ -609,7 +609,7 @@ public class Match : AbstractController
             ? new EnterResultViewModel(tournament, roundWithRules, match, roundWithRules.MatchRule, teamInRound,
                     _timeZoneConverter)
                 { ReturnUrl = GetReturnUrl()}
-            : throw new Exception($"{nameof(EnterResultViewModel)} could not be initiated");
+            : throw new InvalidOperationException($"{nameof(EnterResultViewModel)} could not be initiated");
     }
 
     /// <summary>

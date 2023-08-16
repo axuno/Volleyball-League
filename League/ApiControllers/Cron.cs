@@ -249,7 +249,7 @@ public class Cron : AbstractController
                 QueuingResult = new QueuingResult
                     {Success = false, ReferenceDate = new DateTime(now.Year, now.Month, now.Day), Message = message},
                 // depth of inner exceptions could lead to JSON serialization exception, so create a new one
-                Exception = new Exception(e.Message){Source = e.Source} 
+                Exception = new InvalidOperationException(e.Message){Source = e.Source} 
             };
         }
     }

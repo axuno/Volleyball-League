@@ -107,7 +107,7 @@ public class EditFixtureViewModel
         {
             if (fact.Exception != null)
             {
-                throw new Exception(null, fact.Exception);
+                throw new InvalidOperationException(null, fact.Exception);
             }
 
             if (fact.Type == FactType.Critical || fact.Type == FactType.Error)

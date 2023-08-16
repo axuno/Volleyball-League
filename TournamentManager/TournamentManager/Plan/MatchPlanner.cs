@@ -102,7 +102,7 @@ public class MatchPlanner
         if (!AreEntitiesLoaded) await LoadEntitiesAsync(cancellationToken);
 
         if (_appDb.MatchRepository.AnyCompleteMatchesExist(_tenantContext.TournamentContext.MatchPlanTournamentId))
-            throw new Exception("Completed matches exist for this tournament. Generating fixtures aborted.");
+            throw new InvalidOperationException("Completed matches exist for this tournament. Generating fixtures aborted.");
 
         foreach (var round in _tournament.Rounds)
             await GenerateFixturesForRound(round, keepExisting, cancellationToken);
@@ -121,7 +121,7 @@ public class MatchPlanner
         round = _tournament.Rounds.First(r => r.Id == round.Id);
 
         if (_appDb.MatchRepository.AnyCompleteMatchesExist(round))
-            throw new Exception($"Completed matches exist for round '{round.Id}'. Generating fixtures aborted.");
+            throw new InvalidOperationException($"Completed matches exist for round '{round.Id}'. Generating fixtures aborted.");
 
         // generated matches will be stored here
         var roundMatches = new EntityCollection<MatchEntity>();
@@ -173,7 +173,7 @@ public class MatchPlanner
             AssignRoundDatePeriods(roundLeg, bundledGroups);
 
             if (bundledGroups.Any(g => !g.DateTimePeriod.Start.HasValue))
-                throw new Exception(
+                throw new InvalidOperationException(
                     "Not all bundled groups got a date period assigned. Probably not enough dates available for assignment.");
 
             // process each team combination (match) that shall take place in the same week (if possible)

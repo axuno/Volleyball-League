@@ -79,7 +79,7 @@ public class LeagueTemplateRenderer : TemplateRenderer
                     value = string.Empty;
                     return false;
                 case RenderErrorAction.ThrowError:
-                    throw new Exception($"Member '{member}' not found.");
+                    throw new InvalidOperationException($"Member '{member}' not found.");
                 default:
                     throw new InvalidOperationException($"Unexpected value {MemberNotFoundAction} for {nameof(MemberNotFoundAction)}");
             }

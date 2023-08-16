@@ -129,7 +129,7 @@ public class Upload : AbstractController
                 await photoFile.SaveFileAsync(file, extension, teamId, true, cancellationToken);
             if (photoFile.GetFileInfo(teamId).Filename != savedFilename)
             {
-                throw new Exception("Saved filename could not be found");
+                throw new InvalidOperationException("Saved filename could not be found");
             }
         }
         catch (Exception e)
