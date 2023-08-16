@@ -203,7 +203,7 @@ public class RoleStore : IRoleStore<ApplicationRole>, IRoleClaimStore<Applicatio
             {
                 var msg = $"Role Id {role.Id} does not exist";
                 _logger.LogError(msg);
-                throw new Exception(msg);
+                throw new InvalidOperationException(msg);
             }
 
             var existingClaims = await _appDb.RoleRepository.GetRoleClaimsAsync(role.Id, cancellationToken);
@@ -234,11 +234,11 @@ public class RoleStore : IRoleStore<ApplicationRole>, IRoleClaimStore<Applicatio
         {
             var claimEntities = await _appDb.RoleRepository.GetRoleClaimsAsync(role.Id, cancellationToken);
             var claimToDelete = claimEntities.FirstOrDefault(ce => ce.ClaimType == claim.Type && ce.ClaimValue == claim.Value);
-            if (claimToDelete == null) throw new Exception(msg);
+            if (claimToDelete == null) throw new InvalidOperationException(msg);
 
             if (!await _appDb.GenericRepository.DeleteEntityAsync(claimToDelete, cancellationToken))
             {
-                throw new Exception(msg);
+                throw new InvalidOperationException(msg);
             }
         }
         catch (Exception e)

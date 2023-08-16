@@ -92,7 +92,7 @@ public class Role : AbstractController
             try
             {
                 var result = await _signInManager.UserManager.UpdateAsync(removeTeamMember);
-                if (result != IdentityResult.Success) throw new Exception($"Updating user id '{removeTeamMember.Id}'");
+                if (result != IdentityResult.Success) throw new InvalidOperationException($"Updating user id '{removeTeamMember.Id}'");
             }
             catch (Exception e)
             {
@@ -154,7 +154,7 @@ public class Role : AbstractController
             try
             {
                 var result = await _signInManager.UserManager.UpdateAsync(newTeamMember);
-                if(result != IdentityResult.Success) throw new Exception($"Updating user id '{newTeamMember.Id}'");
+                if(result != IdentityResult.Success) throw new InvalidOperationException($"Updating user id '{newTeamMember.Id}'");
             }
             catch (Exception e)
             {

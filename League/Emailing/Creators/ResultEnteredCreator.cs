@@ -34,7 +34,7 @@ public class ResultEnteredCreator : IMailMessageCreator
     /// <returns>An <see cref="IEnumerable{T}"/> of <see cref="MailMergeMessage"/></returns>
     public async IAsyncEnumerable<MailMergeMessage> GetMailMergeMessages(ITenantContext tenantContext, ITemplateRenderer renderer, IMailMergeService mailMergeService, IStringLocalizer<EmailResource> localizer, [EnumeratorCancellation] CancellationToken cancellationToken)
     {
-        if (Parameters.Match is null) throw new Exception($"Input parameter {nameof(ResultEnteredModel.Match)} must not be null");;
+        if (Parameters.Match is null) throw new InvalidOperationException($"Input parameter {nameof(ResultEnteredModel.Match)} must not be null");;
 
         var teamUserRoundInfos = await tenantContext.DbContext.AppDb.TeamRepository.GetTeamUserRoundInfosAsync(
             new PredicateExpression((TeamUserRoundFields.TeamId == Parameters.Match.HomeTeamId |

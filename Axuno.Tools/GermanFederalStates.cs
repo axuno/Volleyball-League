@@ -69,7 +69,7 @@ public sealed class GermanFederalStates : Collection<GermanFederalState>
             }
             catch
             {
-                throw new Exception($"GermanFederalStateId \"{stateId}\" is not included in \"{GetType()}\".");
+                throw new InvalidOperationException($"GermanFederalStateId \"{stateId}\" is not included in \"{GetType()}\".");
             }
         }
 #endif

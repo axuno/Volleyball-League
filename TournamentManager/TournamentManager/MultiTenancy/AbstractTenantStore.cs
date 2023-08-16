@@ -121,11 +121,11 @@ public class AbstractTenantStore<T> : ITenantStore<T> where T: class, ITenantCon
         foreach (var configFile in configFiles)
         {
             var tc = BuildTenantContext(configFile)
-                     ?? throw new Exception($"{nameof(ITenantContext)} could not be built from file '{configFile}'.");
+                     ?? throw new InvalidOperationException($"{nameof(ITenantContext)} could not be built from file '{configFile}'.");
 
             if (!Tenants.TryAdd(tc.Identifier, (T) tc))
             {
-                throw new Exception($"Identifier '{tc.Identifier}' is already taken for another tenant");
+                throw new InvalidOperationException($"Identifier '{tc.Identifier}' is already taken for another tenant");
             }
         }
 

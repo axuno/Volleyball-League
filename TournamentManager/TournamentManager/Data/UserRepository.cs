@@ -206,7 +206,7 @@ public class UserRepository
         {
             var lastNameTried = userNameToTry;
             userNameToTry = ReplaceDisallowedCharacters(userNameToTry + (i += 3), allowedCharacters);
-            if (lastNameTried.Equals(userNameToTry)) throw new Exception("Infinite loop: Allowed characters prevent generating a unique username");
+            if (lastNameTried.Equals(userNameToTry)) throw new InvalidOperationException("Infinite loop: Allowed characters prevent generating a unique username");
         } while (await UsernameExistsAsync(userNameToTry));
 
         return userNameToTry;

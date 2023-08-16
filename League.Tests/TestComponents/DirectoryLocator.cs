@@ -14,7 +14,7 @@ public class DirectoryLocator
         var targetAssembly = classFromTargetAssembly.GetTypeInfo().Assembly;
 
         // Get name of the target project which we want to test
-        var projectName = targetAssembly.GetName().Name ?? throw new Exception("Assembly name is null");
+        var projectName = targetAssembly.GetName().Name ?? throw new InvalidOperationException("Assembly name is null");
 
         // Get currently executing test project path
         var applicationBasePath = System.AppContext.BaseDirectory;
@@ -38,7 +38,7 @@ public class DirectoryLocator
         }
         while (directoryInfo.Parent != null);
 
-        throw new Exception($"Project root could not be located using the application root {applicationBasePath}.");
+        throw new InvalidOperationException($"Project root could not be located using the application root {applicationBasePath}.");
     }
 
     /// <summary>

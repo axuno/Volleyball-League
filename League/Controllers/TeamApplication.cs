@@ -535,7 +535,7 @@ public class TeamApplication : AbstractController
                 return Redirect(TenantLink.Action(nameof(List))!);
             }
 
-            throw new Exception($"Saving the {nameof(TeamInRoundEntity)} failed.");
+            throw new InvalidOperationException($"Saving the {nameof(TeamInRoundEntity)} failed.");
         }
         catch (Exception e)
         {

@@ -335,7 +335,7 @@ public class Team : AbstractController
             }
             else
             {
-                throw new Exception("Failed to save team entity");
+                throw new InvalidOperationException("Failed to save team entity");
             }
         }
         catch (Exception e)

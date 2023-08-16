@@ -228,7 +228,7 @@ public class RoleStoreTests
         Assert.AreEqual(IdentityResult.Success, await _roleStore.CreateAsync(role, CancellationToken.None));
 
         // add claim to non existing role should throw
-        Assert.ThrowsAsync<Exception>(() => _roleStore.AddClaimAsync(new ApplicationRole(), new Claim(Constants.ClaimType.ManagesTeam, "y", "z"), CancellationToken.None));
+        Assert.ThrowsAsync<InvalidOperationException>(() => _roleStore.AddClaimAsync(new ApplicationRole(), new Claim(Constants.ClaimType.ManagesTeam, "y", "z"), CancellationToken.None));
 
         // add claim to role
         var guid = Guid.NewGuid().ToString("N");
@@ -248,7 +248,7 @@ public class RoleStoreTests
         await _roleStore.RemoveClaimAsync(role, createdClaim, CancellationToken.None);
         Assert.AreEqual(0, (await _roleStore.GetClaimsAsync(role, CancellationToken.None)).Count);
         // remove non-existing claim should throw
-        Assert.ThrowsAsync<Exception>(() => _roleStore.RemoveClaimAsync(role, new Claim(Constants.ClaimType.ManagesTeam, "x"), CancellationToken.None));
+        Assert.ThrowsAsync<InvalidOperationException>(() => _roleStore.RemoveClaimAsync(role, new Claim(Constants.ClaimType.ManagesTeam, "x"), CancellationToken.None));
     }
         
     [Test]
