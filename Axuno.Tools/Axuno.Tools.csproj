@@ -12,7 +12,7 @@
 
     <ItemGroup>
         <PackageReference Include="NodaTime" Version="3.1.9" />
-        <PackageReference Include="NuGetizer" Version="1.0.5">
+        <PackageReference Include="NuGetizer" Version="1.1.0">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
