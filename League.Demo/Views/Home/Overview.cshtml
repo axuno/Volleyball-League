@@ -8,6 +8,7 @@
     ViewData.Description(Localizer["Leagues using volleyball-league.demo"].Value);
     var tenants = TenantStore.GetTenants().Values
         .Where(tc => !string.IsNullOrEmpty(tc.Identifier) && !tc.SiteContext.HideInMenu && !tc.IsDefault)
+        .OrderBy(tc => tc.SiteContext.Position)
         .ToList();
 }
 <div>

@@ -1,6 +1,4 @@
-﻿#nullable enable
-
-namespace TournamentManager.MultiTenancy;
+﻿namespace TournamentManager.MultiTenancy;
 
 public interface ISiteContext
 {
@@ -8,6 +6,11 @@ public interface ISiteContext
     /// The <see cref="TournamentManager.MultiTenancy.ITenant"/> corresponding to this context.
     /// </summary>
     ITenant? Tenant { get; set; }
+
+    /// <summary>
+    /// Determines the position, for the <see cref="ITenant"/> within tenant lists (e.g. navigation).
+    /// </summary>
+    int Position { get; set; }
 
     /// <summary>
     /// The value of the Url segment used to identify the site. May be NULL or empty string.

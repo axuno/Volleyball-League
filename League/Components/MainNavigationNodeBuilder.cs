@@ -130,8 +130,14 @@ public class MainNavigationNodeBuilder : IMainNavigationNodeBuilder
 
         leagues.ChildNodes.Add(new MainNavigationComponentModel.NavigationNode
             {Text = Localizer["Home"], Url = "/welcome", Key = "League_Welcome"});
-            
-        foreach (var tenant in TenantStore.GetTenants().Values)
+
+        leagues.ChildNodes.Add(new MainNavigationComponentModel.NavigationNode
+            { Text = Localizer["League Overview"], Url = "/overview", Key = "League_Overview" });
+
+        leagues.ChildNodes.Add(new MainNavigationComponentModel.NavigationNode
+            { Text = "Separator", Key = "League_Separator" });
+
+        foreach (var tenant in TenantStore.GetTenants().Values.OrderBy(t => t.SiteContext.Position))
         {
             if (!string.IsNullOrEmpty(tenant.Identifier) && !tenant.SiteContext.HideInMenu)
             {
@@ -145,7 +151,7 @@ public class MainNavigationNodeBuilder : IMainNavigationNodeBuilder
                     });
             }
         }
-        leagues.ChildNodes.Add(new MainNavigationComponentModel.NavigationNode { Text = Localizer["League Overview"], Url = "/overview", Key = "LeagueOverview" });
+        
         #endregion
             
         #region ** Team Infos **

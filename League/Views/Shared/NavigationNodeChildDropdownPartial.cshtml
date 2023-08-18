@@ -1,22 +1,23 @@
 ﻿@using League.Components
 @model (League.Components.MainNavigationComponentModel MainNav, League.Components.MainNavigationComponentModel.NavigationNode Node)
-@if (Model.MainNav != null && Model.Node.HasVisibleChildNodes())
+@if (Model.Node.HasVisibleChildNodes())
 {
     <ul class="dropdown-menu shadow@(ViewData["dropdown-menu-end"])" style="margin-top: -0.3rem">
         @foreach (var childNode in Model.Node.ChildNodes)
         {
+            if (childNode.Text == "Separator")
+            {
+                <li>
+                    <hr class="dropdown-divider">
+                </li>
+                continue;
+            }
+
             if (!childNode.ShouldShow())
             {
                 continue;
             }
 
-            if (childNode.Text == "Separator")
-            {
-                <li>
-                    <span class="dropdown-divider"></span>
-                </li>
-                continue;
-            }
             if (childNode.HasVisibleChildNodes())
             {
                 <li>
