@@ -1,5 +1,4 @@
-﻿#nullable enable
-namespace TournamentManager.MultiTenancy;
+﻿namespace TournamentManager.MultiTenancy;
 
 /// <summary>
 /// Provides site-specific data.
@@ -11,6 +10,12 @@ public class SiteContext : ISiteContext
     /// </summary>
     [YAXLib.Attributes.YAXDontSerialize]
     public ITenant? Tenant { get; set; }
+
+    /// <summary>
+    /// Determines the position, for the <see cref="ITenant"/> within tenant lists (e.g. navigation).
+    /// </summary>
+    [YAXLib.Attributes.YAXComment("The position of the tenant within tenant lists (e.g. navigation).")]
+    public int Position { get; set; }
 
     /// <summary>
     /// The value of the Url segment used to identify the site. May be empty for the default tenant.
@@ -60,12 +65,12 @@ public class Email
     /// <summary>
     /// "From" mailbox address for the contact form
     /// </summary>
-    [YAXLib.Attributes.YAXComment("")]
+    [YAXLib.Attributes.YAXComment("\"From\" mailbox address for the contact form\"")]
     public MailAddress ContactFrom { get; set; } = new();
     /// <summary>
     /// "To" mailbox address for the contact form
     /// </summary>
-    [YAXLib.Attributes.YAXComment("\"From\" mailbox address for the contact form")]
+    [YAXLib.Attributes.YAXComment("\"To\" mailbox address for the contact form")]
     public MailAddress ContactTo { get; set; } = new();
     /// <summary>
     /// General "To" mailbox address for emails generated programmatically
@@ -111,7 +116,7 @@ public class MatchNotifications
     /// Number of days before the next match will be announced. 0 for none, negative number days.
     /// </summary>
     [YAXLib.Attributes.YAXComment("Number of days before the next match will be announced. 0 for none, negative number days.")]
-    public int DaysBeforeNextmatch { get; set; } = 0;
+    public int DaysBeforeNextMatch { get; set; } = 0;
         
     /// <summary>
     /// Number of days to remind 1st time for missing match results. 0 for none, positive number of days.

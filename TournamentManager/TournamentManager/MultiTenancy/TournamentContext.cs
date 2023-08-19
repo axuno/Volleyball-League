@@ -149,7 +149,14 @@ public class TeamRules
     /// <summary>
     /// Rules for teams' home match time
     /// </summary>
+    [YAXLib.Attributes.YAXComment("Rules for the HomeMatchTime of a team")]
     public HomeMatchTime HomeMatchTime { get; set; } = new();
+
+    /// <summary>
+    /// Rules for the <see cref="HomeVenue"/> of a team.
+    /// </summary>
+    [YAXLib.Attributes.YAXComment("Rules for the HomeVenue of a team.")]
+    public HomeVenue HomeVenue { get; set; } = new();
 }
 
 /// <summary>
@@ -183,4 +190,21 @@ public class HomeMatchTime
     /// </summary>
     [YAXLib.Attributes.YAXComment("If true, entries not in 'DaysOfWeekRange' are errors (else: warning)")]
     public bool ErrorIfNotInDaysOfWeekRange { get; set; } = false;
+}
+
+/// <summary>
+/// Rules for the <see cref="HomeVenue"/> of a team.
+/// </summary>
+[YAXLib.Attributes.YAXComment("Rules for the HomeVenue of a team.")]
+public class HomeVenue
+{
+    /// <summary>
+    /// If <see langword="true"/>, the <see cref="HomeVenue"/> must be set, i.e. cannot be null/unspecified.
+    /// If <see langword="false"/>, when auto-creating fixtures the team will only have away-matches (is always the guest team).
+    /// </summary>
+    [YAXLib.Attributes.YAXComment("""
+                                  If true, the HomeVenue must be set, i.e. cannot be null/unspecified.
+                                  If false, when auto-creating fixtures the team will only have away-matches (i.e. is always the guest team).
+                                  """)]
+    public bool MustBeSet { get; set; } = true;
 }

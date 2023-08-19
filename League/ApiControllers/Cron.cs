@@ -167,7 +167,7 @@ public class Cron : AbstractController
     {
         var smt = _sendMailTask.CreateNewInstance();
 
-        if (_tenantContext.SiteContext.MatchNotifications.DaysBeforeNextmatch != DoNotExecute)
+        if (_tenantContext.SiteContext.MatchNotifications.DaysBeforeNextMatch != DoNotExecute)
         {
             smt.SetMessageCreator(new AnnounceNextMatchCreator
             {
@@ -175,7 +175,7 @@ public class Cron : AbstractController
                 {
                     CultureInfo = CultureInfo.DefaultThreadCurrentUICulture ?? CultureInfo.CurrentCulture,
                     ReferenceDateUtc =
-                        referenceDateUtc.AddDays(_tenantContext.SiteContext.MatchNotifications.DaysBeforeNextmatch * -1),
+                        referenceDateUtc.AddDays(_tenantContext.SiteContext.MatchNotifications.DaysBeforeNextMatch * -1),
                     IcsCalendarBaseUrl = TenantLink.ActionLink(nameof(Calendar), nameof(Match), null,
                         scheme: TenantLink.HttpContext.Request.Scheme) ?? string.Empty
                 }

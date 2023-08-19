@@ -39,7 +39,7 @@ public class MainNavigationComponentModel
         /// </summary>
         public string IconCssClass { get; set; } = string.Empty;
         /// <summary>
-        /// The css class to use the menu entry.
+        /// The css class to use for the menu entry.
         /// </summary>
         public string CssClass { get; set; } = string.Empty;
         /// <summary>
