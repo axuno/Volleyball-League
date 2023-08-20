@@ -132,9 +132,6 @@
   <data name="No venues found at this time" xml:space="preserve">
     <value>Keine Spielorte gefunden</value>
   </data>
-  <data name="Not specified" xml:space="preserve">
-    <value>Nicht festgelegt</value>
-  </data>
   <data name="Other venues" xml:space="preserve">
     <value>Andere Spielorte</value>
   </data>
@@ -143,5 +140,8 @@
   </data>
   <data name="Team venues" xml:space="preserve">
     <value>Team Spielorte</value>
+  </data>
+  <data name="There is no venue assigned" xml:space="preserve">
+    <value>Kein Spielort zugeordnet</value>
   </data>
 </root>

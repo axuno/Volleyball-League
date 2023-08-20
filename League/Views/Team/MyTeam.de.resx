@@ -144,6 +144,9 @@
   <data name="No team photo has been uploaded" xml:space="preserve">
     <value>Es wurde kein Foto hochgeladen</value>
   </data>
+  <data name="Not specified" xml:space="preserve">
+    <value>Nicht festgelegt</value>
+  </data>
   <data name="Photo of {0}" xml:space="preserve">
     <value>Foto vom {0}</value>
   </data>

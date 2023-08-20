@@ -32,22 +32,49 @@
             <div class="text-success col-md-3">@Localizer["Club"]</div>
             <div class="col-md-9">@Model.TeamVenueRoundInfo.TeamClubName</div>
         }
-        @if (Model.TeamVenueRoundInfo.MatchDayOfWeek.HasValue && Model.TeamVenueRoundInfo.MatchTime.HasValue)
-        {
-            // MatchTime is defined as a zoned time, NOT UTC. It is always the same, never mind DST
-            <div class="text-success col-md-3">@Localizer["Home match day"]</div>
-            <div class="col-md-9 mb-2"><i class="far fa-calendar-alt"></i><span class="d-inline-block me-2"></span>@DateTimeFormatInfo.CurrentInfo.GetDayName((DayOfWeek)Model.TeamVenueRoundInfo.MatchDayOfWeek), @(DateTime.UtcNow.Date.Add(Model.TeamVenueRoundInfo.MatchTime.Value).ToShortTimeString()) @(Model.TimeZoneConverter.ToZonedTime(DateTime.UtcNow)!.Abbreviation)</div>
-        }
-        @if (Model.TeamVenueRoundInfo.VenueId.HasValue)
-        {
-            <div class="text-success col-md-3">@Localizer["Venue"]</div>
-            <div class="col-md-7 mb-2">
-                <div><i class="fas fa-map-marker-alt"></i><span class="d-inline-block me-2"></span><span class="fw-bold">@Model.TeamVenueRoundInfo.VenueName</span> <span>@{if (!string.IsNullOrWhiteSpace(Model.TeamVenueRoundInfo.VenueExtension))
-                    {<text>(@Model.TeamVenueRoundInfo.VenueExtension)</text>}}</span></div>
-                <div>@(string.Join(", ", Model.TeamVenueRoundInfo.VenuePostalCode, Model.TeamVenueRoundInfo.VenueCity, Model.TeamVenueRoundInfo.VenueStreet))</div>
-                <div><a class="link" asp-action="@nameof(League.Controllers.Map.Venue)" asp-controller="@nameof(League.Controllers.Map)" asp-route-tenant="@tenantUrlSegment" asp-route-id="@Model.TeamVenueRoundInfo.VenueId.Value">@Localizer["Direction"]</a></div>
-            </div>
-        }
+        
+        <div class="text-success col-md-3">@Localizer["Home match day"]</div>
+        <div class="col-md-9 mb-2">
+            @if (Model.TeamVenueRoundInfo.MatchDayOfWeek.HasValue && Model.TeamVenueRoundInfo.MatchTime.HasValue)
+            {
+                @* MatchTime is defined as a zoned time, NOT UTC. It is always the same, never mind DST*@
+                <i class="far fa-calendar-alt"></i><span class="d-inline-block me-2"></span>@DateTimeFormatInfo.CurrentInfo.GetDayName((DayOfWeek)Model.TeamVenueRoundInfo.MatchDayOfWeek)<text>, </text> 
+                @(DateTime.UtcNow.Date.Add(Model.TeamVenueRoundInfo.MatchTime.Value).ToShortTimeString())<text> </text>@(Model.TimeZoneConverter.ToZonedTime(DateTime.UtcNow)!.Abbreviation)
+            }
+            else
+            {
+                <span>[@(Localizer["Not specified"])]</span>
+            }
+        </div>
+
+        <div class="text-success col-md-3">@Localizer["Venue"]</div>
+        <div class="col-md-7 mb-2">
+            @if (Model.TeamVenueRoundInfo.VenueId.HasValue)
+            {
+                <div>
+                    <i class="fas fa-map-marker-alt"></i><span class="d-inline-block me-2"></span><span class="fw-bold">@Model.TeamVenueRoundInfo.VenueName</span>
+                    <span>
+                        @{
+                            if (!string.IsNullOrWhiteSpace(Model.TeamVenueRoundInfo.VenueExtension))
+                            {
+                                <text>(@Model.TeamVenueRoundInfo.VenueExtension)</text>
+                            }
+                        }
+                    </span>
+                </div>
+                <div>
+                    @(string.Join(", ", Model.TeamVenueRoundInfo.VenuePostalCode, Model.TeamVenueRoundInfo.VenueCity, Model.TeamVenueRoundInfo.VenueStreet))
+                </div>
+                <div>
+                    <a class="link" asp-action="@nameof(League.Controllers.Map.Venue)" asp-controller="@nameof(League.Controllers.Map)" asp-route-tenant="@tenantUrlSegment" asp-route-id="@Model.TeamVenueRoundInfo.VenueId.Value">@Localizer["Direction"]</a>
+                </div>
+            }
+            else
+            {
+                <span>[@(Localizer["There is no venue assigned to the team"])]</span>
+            }
+        </div>
+        
         @if (Model.TeamUserRoundInfos.Count > 0)
         {
             @if (Model.ShowContactInfos)

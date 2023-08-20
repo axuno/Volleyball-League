@@ -221,7 +221,7 @@ public abstract class AbstractValidator<TModel, TData, TFactId>
             await CheckAsync(fact.Id, cancellationToken);
         }
         // stop after any not successful critical facts
-        if (facts.Any(f => f.IsChecked && !f.Success)) return facts;
+        if (facts.Any(f => f is { IsChecked: true, Success: false })) return facts;
 
         // next process error facts
         facts = GetFactsOfType(FactType.Error).ToList();

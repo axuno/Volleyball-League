@@ -22,24 +22,24 @@ namespace TournamentManager.ModelValidators {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    public class TeamValidatorResource {
+    internal class TeamVenueValidatorResource {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        internal TeamValidatorResource() {
+        internal TeamVenueValidatorResource() {
         }
         
         /// <summary>
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        public static global::System.Resources.ResourceManager ResourceManager {
+        internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("TournamentManager.ModelValidators.TeamValidatorResource", typeof(TeamValidatorResource).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("TournamentManager.ModelValidators.TeamVenueValidatorResource", typeof(TeamVenueValidatorResource).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -51,7 +51,7 @@ namespace TournamentManager.ModelValidators {
         ///   resource lookups using this strongly typed resource class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        public static global::System.Globalization.CultureInfo Culture {
+        internal static global::System.Globalization.CultureInfo Culture {
             get {
                 return resourceCulture;
             }
@@ -61,65 +61,20 @@ namespace TournamentManager.ModelValidators {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Day of week is outside {0} range.
+        ///   Looks up a localized string similar to The team is not assigned a venue.
         /// </summary>
-        public static string DayOfWeekWithinRange {
+        internal static string VenueIsSetIfRequired {
             get {
-                return ResourceManager.GetString("DayOfWeekWithinRange", resourceCulture);
+                return ResourceManager.GetString("VenueIsSetIfRequired", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Day of week and time for home matches must be set.
+        ///   Looks up a localized string similar to The venue does not exist or is invalid.
         /// </summary>
-        public static string MatchDayOfWeekAndTimeIsSet {
+        internal static string VenueIsValid {
             get {
-                return ResourceManager.GetString("MatchDayOfWeekAndTimeIsSet", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Start time is outside the range from {0} to {1}.
-        /// </summary>
-        public static string MatchTimeWithinRange {
-            get {
-                return ResourceManager.GetString("MatchTimeWithinRange", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to recommended.
-        /// </summary>
-        public static string recommended {
-            get {
-                return ResourceManager.GetString("recommended", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to required.
-        /// </summary>
-        public static string required {
-            get {
-                return ResourceManager.GetString("required", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Team name must not be empty.
-        /// </summary>
-        public static string TeamNameIsSet {
-            get {
-                return ResourceManager.GetString("TeamNameIsSet", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The team name &apos;{0}&apos; is already assigned.
-        /// </summary>
-        public static string TeamNameIsUnique {
-            get {
-                return ResourceManager.GetString("TeamNameIsUnique", resourceCulture);
+                return ResourceManager.GetString("VenueIsValid", resourceCulture);
             }
         }
     }

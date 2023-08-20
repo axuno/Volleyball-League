@@ -67,15 +67,18 @@ ViewContext.ViewData.TemplateInfo.HtmlFieldPrefix = Model.HtmlFieldPrefix;
 <script type="text/javascript" site-on-modal-shown="true" site-on-content-loaded="true">
     const onMatchDayOfWeekChangeFunction = function() {
         const matchTimeEle = document.getElementById('@Html.IdFor(m => m.MatchTime)');
+        const matchTimeSpanEle = document.querySelector('span[data-td-target="@nameof(Model.MatchTime)-c"]');
         if (this.value === '') {
-            matchTimeEle.setAttribute('disabled', 'disabled');
-            matchTimeEle.style.cursor = 'not-allowed';
             matchTimeEle.value = '';
-            document.querySelector('span[data-td-target="@nameof(Model.MatchTime)-c"]').style.cursor = 'not-allowed';
+            matchTimeEle.setAttribute('readonly', '');
+            matchTimeEle.style.cursor = 'not-allowed';
+            matchTimeEle.style.backgroundColor = 'var(--bs-gray-100)';
+            matchTimeSpanEle.style.display = 'none';
         } else {
-            matchTimeEle.removeAttribute('disabled');
+            matchTimeEle.removeAttribute('readonly');
             matchTimeEle.style.cursor = 'auto';
-            document.querySelector('span[data-td-target="@nameof(Model.MatchTime)-c"]').style.cursor = 'pointer';
+            matchTimeEle.style.backgroundColor = '';
+            matchTimeSpanEle.style.display = 'block';
         }
     };
     const matchDayOfWeek = document.getElementById('@Html.IdFor(m => m.MatchDayOfWeek)');

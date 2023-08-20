@@ -4,6 +4,14 @@ namespace League.Models.TeamApplicationViewModels;
 
 public class ApplicationSessionModel
 {
+    public enum TeamVenueSetKind
+    {
+        NotSet = 0,
+        NoVenue,
+        ExistingVenue,
+        NewVenue
+    }
+
     /// <summary>
     /// The state of the model will be set to <see langword="true"/> whenever it is restored from a session.
     /// </summary>
@@ -15,7 +23,7 @@ public class ApplicationSessionModel
     public bool TeamIsSet { get; set; } = false;
     public TeamEditorComponentModel? Team { get; set; }
 
-    public bool VenueIsSet { get; set; } = false;
+    public TeamVenueSetKind VenueIsSet { get; set; } = TeamVenueSetKind.NotSet;
     public VenueEditorComponentModel? Venue { get; set; }
 
     /// <summary>

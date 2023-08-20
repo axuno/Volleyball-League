@@ -117,43 +117,10 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="MemberAddFailure" xml:space="preserve">
-    <value>Adding the team member failed</value>
+  <data name="VenueIsSetIfRequired" xml:space="preserve">
+    <value>The team is not assigned a venue</value>
   </data>
-  <data name="MemberAddSuccess" xml:space="preserve">
-    <value>Team member has been added</value>
-  </data>
-  <data name="MemberCannotRemoveLastTeamManager" xml:space="preserve">
-    <value>The last team contact cannot be removed. Please assign another team contact before.</value>
-  </data>
-  <data name="MemberRemoveFailure" xml:space="preserve">
-    <value>Removing the team member failed</value>
-  </data>
-  <data name="MemberRemoveSuccess" xml:space="preserve">
-    <value>Team member has been removed</value>
-  </data>
-  <data name="TeamDataFailure" xml:space="preserve">
-    <value>Update of team data has failed</value>
-  </data>
-  <data name="TeamDataSuccess" xml:space="preserve">
-    <value>Team data have been updated successfully</value>
-  </data>
-  <data name="VenueCreateFailure" xml:space="preserve">
-    <value>Creating a new venue for the team failed</value>
-  </data>
-  <data name="VenueCreateSuccess" xml:space="preserve">
-    <value>A new venue has been created for the team</value>
-  </data>
-  <data name="VenueEditFailure" xml:space="preserve">
-    <value>Update of team venue data has failed</value>
-  </data>
-  <data name="VenueEditSuccess" xml:space="preserve">
-    <value>Team venue data have been updated sucessfully</value>
-  </data>
-  <data name="VenueSelectFailure" xml:space="preserve">
-    <value>Changing the selected team venue has failed</value>
-  </data>
-  <data name="VenueSelectSuccess" xml:space="preserve">
-    <value>The selected team venue has been changed successfully</value>
+  <data name="VenueIsValid" xml:space="preserve">
+    <value>The venue does not exist or is invalid</value>
   </data>
 </root>

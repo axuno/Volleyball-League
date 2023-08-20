@@ -1,22 +1,24 @@
 @using League.Controllers
 @using Microsoft.AspNetCore.Mvc.Localization
 @using TournamentManager.MultiTenancy
+@using League.Components
 @inject IViewLocalizer Localizer
 @inject ITenantContext TenantContext
 @model League.Models.TeamViewModels.TeamVenueSelectModel
-@{ ValueTuple<long, IList<long>, League.Components.VenueSelectorComponentModel.Criteria, League.Components.VenueSelectorComponentModel.Criteria, long?> componentModel =
+@{ ValueTuple<long, IList<long>, VenueSelectorComponentModel.Criteria, VenueSelectorComponentModel.Criteria, long?> componentModel =
           (Model.TournamentId,
               new List<long>(new[] { Model.TeamId }),
-              League.Components.VenueSelectorComponentModel.Criteria.VenuesOfTeams | League.Components.VenueSelectorComponentModel.Criteria.Active | League.Components.VenueSelectorComponentModel.Criteria.Unused,
-              League.Components.VenueSelectorComponentModel.Criteria.VenuesOfTeams | League.Components.VenueSelectorComponentModel.Criteria.Active | League.Components.VenueSelectorComponentModel.Criteria.Unused,
-              default(long?));
+              (!TenantContext.TournamentContext.TeamRuleSet.HomeVenue.MustBeSet ? VenueSelectorComponentModel.Criteria.NotSpecified : 0) |
+              VenueSelectorComponentModel.Criteria.VenuesOfTeams | VenueSelectorComponentModel.Criteria.Active | VenueSelectorComponentModel.Criteria.Unused,
+              VenueSelectorComponentModel.Criteria.VenuesOfTeams | VenueSelectorComponentModel.Criteria.Active | VenueSelectorComponentModel.Criteria.Unused,
+              default);
     ViewData["Title"] = Localizer["Team Registration"].Value + " - " + ViewData["TournamentName"];
     var tenantUrlSegment = TenantContext.SiteContext.UrlSegmentValue;
 }
 <div class="mb-0 pb-2">
     <h2 class="h2">@ViewData["Title"]</h2>
     <hr class="mb-3" />
-    @(await Component.InvokeAsync<League.Components.VenueSelector>(componentModel))
+    @(await Component.InvokeAsync<VenueSelector>(componentModel))
     <form asp-controller="@nameof(TeamApplication)" asp-action="@nameof(TeamApplication.SelectVenue)" asp-route-tenant="@tenantUrlSegment" method="post" novalidate>
         <input asp-for="TeamId" type="hidden" />
         <input asp-for="VenueId" type="hidden" />

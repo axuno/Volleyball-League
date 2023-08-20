@@ -305,10 +305,10 @@ public class Team : AbstractController
             _appDb.TeamRepository.GetTeamEntityAsync(new PredicateExpression(TeamFields.Id == model.TeamId),
                 cancellationToken);
 
-        if (teamEntity == null || !model.VenueId.HasValue ||
-            !await _appDb.VenueRepository.IsValidVenueIdAsync(model.VenueId, cancellationToken))
+        if (teamEntity == null)
         {
-            return NotFound();
+            TempData.Put<MyTeamMessageModel.MyTeamMessage>(nameof(MyTeamMessageModel.MyTeamMessage), new MyTeamMessageModel.MyTeamMessage { AlertType = SiteAlertTagHelper.AlertType.Danger, MessageId = MyTeamMessageModel.MessageId.TeamDataFailure});
+            return JsonResponseRedirect(TenantLink.Action(nameof(MyTeam), nameof(Team), new { model.TeamId }));
         }
 
         if (!(await _authorizationService.AuthorizeAsync(User, new TeamEntity(teamEntity.Id),
@@ -319,19 +319,21 @@ public class Team : AbstractController
         }
 
         model.TournamentId = _tenantContext.TournamentContext.TeamTournamentId;
+        teamEntity.VenueId = model.VenueId;
+        var teamVenueValidator = new TeamVenueValidator(teamEntity, _tenantContext);
 
-        if (!ModelState.IsValid)
+        if (!await model.ValidateAsync(teamVenueValidator, ModelState, cancellationToken))
         {
             return PartialView(Views.ViewNames.Team._SelectVenueModalPartial, model);
         }
             
-        TempData.Put<MyTeamMessageModel.MyTeamMessage>(nameof(MyTeamMessageModel.MyTeamMessage), new MyTeamMessageModel.MyTeamMessage { AlertType = SiteAlertTagHelper.AlertType.Danger, MessageId = MyTeamMessageModel.MessageId.TeamDataFailure});
+        TempData.Put<MyTeamMessageModel.MyTeamMessage>(nameof(MyTeamMessageModel.MyTeamMessage), new MyTeamMessageModel.MyTeamMessage { AlertType = SiteAlertTagHelper.AlertType.Danger, MessageId = MyTeamMessageModel.MessageId.VenueSelectFailure });
         try
         {
             teamEntity.VenueId = model.VenueId;
             if(await _appDb.GenericRepository.SaveEntityAsync(teamEntity, false, false, cancellationToken))
             {
-                TempData.Put<MyTeamMessageModel.MyTeamMessage>(nameof(MyTeamMessageModel.MyTeamMessage), new MyTeamMessageModel.MyTeamMessage { AlertType = SiteAlertTagHelper.AlertType.Success, MessageId = MyTeamMessageModel.MessageId.VenueCreateSuccess});
+                TempData.Put<MyTeamMessageModel.MyTeamMessage>(nameof(MyTeamMessageModel.MyTeamMessage), new MyTeamMessageModel.MyTeamMessage { AlertType = SiteAlertTagHelper.AlertType.Success, MessageId = MyTeamMessageModel.MessageId.VenueSelectSuccess});
             }
             else
             {

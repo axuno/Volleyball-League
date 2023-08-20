@@ -1,5 +1,6 @@
 ﻿@using League.Components
 @using Microsoft.AspNetCore.Mvc.Localization
+@using TournamentManager.MultiTenancy
 @inject IViewLocalizer Localizer
 @model VenueSelectorComponentModel
 @{
@@ -22,9 +23,9 @@
         </tr>
         </thead>
         <tbody>
-        @if ((Model.Filter & VenueSelectorComponentModel.Criteria.NotSpecified) == VenueSelectorComponentModel.Criteria.NotSpecified && Model.VenueNotSpecifiedKey.HasValue)
+        @if ((Model.Filter & VenueSelectorComponentModel.Criteria.NotSpecified) == VenueSelectorComponentModel.Criteria.NotSpecified)
         {
-            <tr data-venue-id="@Model.VenueNotSpecifiedKey"><td></td><td colspan="2">@Localizer["Not specified"]</td></tr>
+                <tr data-venue-id="@Model.VenueNotSpecifiedKey"><td></td><td colspan="2">@Localizer["There is no venue assigned"]</td></tr>
         }
         @if (Model.Filter == VenueSelectorComponentModel.Criteria.AllVenues)
         {
