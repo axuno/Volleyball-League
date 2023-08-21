@@ -19,7 +19,7 @@ namespace League.Views.Team {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class _MyTeamMessagesPartial {
@@ -160,7 +160,7 @@ namespace League.Views.Team {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Saving the selected team venue has failed.
+        ///   Looks up a localized string similar to Changing the selected team venue has failed.
         /// </summary>
         public static string VenueSelectFailure {
             get {
@@ -169,7 +169,7 @@ namespace League.Views.Team {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The selected team venue has been saved successfully.
+        ///   Looks up a localized string similar to The selected team venue has been changed successfully.
         /// </summary>
         public static string VenueSelectSuccess {
             get {

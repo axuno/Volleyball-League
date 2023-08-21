@@ -1,4 +1,5 @@
-﻿using Axuno.Tools.GeoSpatial;
+﻿using System.Security.Claims;
+using Axuno.Tools.GeoSpatial;
 using League.BackgroundTasks;
 using League.Components;
 using League.ConfigurationPoco;
@@ -18,6 +19,7 @@ using TournamentManager.DAL.HelperClasses;
 using TournamentManager.DAL.TypedViewClasses;
 using TournamentManager.ModelValidators;
 using TournamentManager.MultiTenancy;
+using TeamVenueSetKind = League.Models.TeamApplicationViewModels.ApplicationSessionModel.TeamVenueSetKind;
 
 namespace League.Controllers;
 
@@ -35,6 +37,7 @@ public class TeamApplication : AbstractController
     private readonly GoogleConfiguration _googleConfig;
     private readonly Axuno.BackgroundTask.IBackgroundQueue _queue;
     private readonly SendEmailTask _sendEmailTask;
+    private readonly SignInManager<Identity.ApplicationUser> _signInManager;
     private const string TeamApplicationSessionName = "TeamApplicationSession";
 
     public TeamApplication(ITenantContext tenantContext,
@@ -42,7 +45,8 @@ public class TeamApplication : AbstractController
         IStringLocalizer<TeamApplication> localizer, IAuthorizationService authorizationService,
         RegionInfo regionInfo,
         IConfiguration configuration, Axuno.BackgroundTask.IBackgroundQueue queue,
-        SendEmailTask sendEmailTask, ILogger<TeamApplication> logger)
+        SendEmailTask sendEmailTask, SignInManager<Identity.ApplicationUser> signInManger,
+        ILogger<TeamApplication> logger)
     {
         _tenantContext = tenantContext;
         _timeZoneConverter = timeZoneConverter;
@@ -53,6 +57,7 @@ public class TeamApplication : AbstractController
         _sendEmailTask = sendEmailTask;
         _appDb = tenantContext.DbContext.AppDb;
         _authorizationService = authorizationService;
+        _signInManager = signInManger;
         _logger = logger;
     }
 
@@ -133,7 +138,7 @@ public class TeamApplication : AbstractController
         System.Diagnostics.Debug.Assert(selectTeamModel.SelectedTeamId != null, "selectTeamModel.SelectedTeamId != null");
 
         var sessionModel = await GetModelFromSession(cancellationToken);
-        if (sessionModel.TeamInRoundIsSet && sessionModel.TeamIsSet &&
+        if (sessionModel is { TeamInRoundIsSet: true, TeamIsSet: true } &&
             sessionModel.Team!.Id != selectTeamModel.SelectedTeamId)
         {
             sessionModel.TeamInRoundIsSet = false;
@@ -204,7 +209,7 @@ public class TeamApplication : AbstractController
             Team = GetTeamEditorComponentModel(teamEntity)
         };
 
-        if(sessionModel.TeamInRoundIsSet) teamEditModel.Round.SelectedRoundId = sessionModel.TeamInRound!.RoundId;
+        if (sessionModel.TeamInRoundIsSet) teamEditModel.Round.SelectedRoundId = sessionModel.TeamInRound!.RoundId;
         if (sessionModel.TeamIsSet) teamEditModel.Team = sessionModel.Team;
             
         return View(Views.ViewNames.TeamApplication.EditTeam, teamEditModel);
@@ -219,7 +224,7 @@ public class TeamApplication : AbstractController
         ViewData["TournamentName"] = sessionModel.TournamentName;
 
         TeamEntity? teamEntity = null;
-        if (teamEditModel.Team != null && !teamEditModel.Team.IsNew)
+        if (teamEditModel.Team is { IsNew: false })
         {
             teamEntity = await _appDb.TeamRepository.GetTeamEntityAsync(new PredicateExpression(TeamFields.Id == teamEditModel.Team.Id), cancellationToken);
             if (teamEntity == null)
@@ -284,6 +289,7 @@ public class TeamApplication : AbstractController
         ViewData["TournamentName"] = sessionModel.TournamentName;
 
         sessionModel.Venue!.IsNew = true;
+        sessionModel.VenueIsSet = TeamVenueSetKind.NotSet;
         SaveModelToSession(sessionModel);
 
         var teamEntity = new TeamEntity();
@@ -299,7 +305,7 @@ public class TeamApplication : AbstractController
             {
                 TournamentId = sessionModel.PreviousTournamentId ?? _tenantContext.TournamentContext.ApplicationTournamentId,
                 TeamId = teamEntity.Id,
-                VenueId = (sessionModel.VenueIsSet && !sessionModel.Venue.IsNew)
+                VenueId = (sessionModel.VenueIsSet == TeamVenueSetKind.ExistingVenue && !sessionModel.Venue.IsNew)
                     ? sessionModel.Venue.Id
                     : teamEntity.VenueId
             }
@@ -325,24 +331,24 @@ public class TeamApplication : AbstractController
             if (teamEntity == null) return Redirect(TenantLink.Action(nameof(SelectTeam))!);
         }
 
-        if (selectVenueModel.VenueId.HasValue && !await _appDb.VenueRepository.IsValidVenueIdAsync(selectVenueModel.VenueId, cancellationToken))
-        {
-            return Redirect(TenantLink.Action(nameof(SelectVenue))!);
-        }
-
         selectVenueModel.TournamentId = sessionModel.PreviousTournamentId ?? _tenantContext.TournamentContext.ApplicationTournamentId;
+        var teamValidator = new TeamVenueValidator(new TeamEntity { VenueId = selectVenueModel.VenueId }, _tenantContext);
 
-        if (!ModelState.IsValid)
+        if (!await selectVenueModel.ValidateAsync(teamValidator, ModelState, cancellationToken))
         {
             return View(Views.ViewNames.TeamApplication.SelectVenue, selectVenueModel);
         }
 
-        sessionModel.Venue!.IsNew = !selectVenueModel.VenueId.HasValue;
-        sessionModel.Venue.Id = selectVenueModel.VenueId ?? 0;
+        sessionModel.VenueIsSet =
+            selectVenueModel.VenueId == null ? TeamVenueSetKind.NoVenue : TeamVenueSetKind.ExistingVenue;
+        sessionModel.Venue!.IsNew = false;
+        sessionModel.Venue.Id = selectVenueModel.VenueId;
             
         SaveModelToSession(sessionModel);
 
-        return Redirect(TenantLink.Action(nameof(EditVenue))!);
+        return Redirect(sessionModel.VenueIsSet == TeamVenueSetKind.NoVenue
+            ? TenantLink.Action(nameof(Confirm))!
+            : TenantLink.Action(nameof(EditVenue))!);
     }
 
     [HttpGet("edit-venue")]
@@ -350,15 +356,20 @@ public class TeamApplication : AbstractController
     {
         var sessionModel = await GetModelFromSession(cancellationToken);
         if (!sessionModel.IsFromSession) return Redirect(TenantLink.Action(nameof(SelectTeam))!);
+
+        if (sessionModel.VenueIsSet == TeamVenueSetKind.NoVenue)
+            return Redirect(TenantLink.Action(nameof(Confirm))!);
+
         ViewData["TournamentName"] = sessionModel.TournamentName;
 
         if (isNew.HasValue && isNew.Value)
         {
             sessionModel.Venue = GetVenueEditorComponentModel(new VenueEntity());
-            sessionModel.VenueIsSet = false;
+            sessionModel.VenueIsSet = TeamVenueSetKind.NewVenue;
         }
 
         var venueEntity = new VenueEntity();
+        sessionModel.Venue?.MapFormFieldsToEntity(venueEntity);
         var venueTeams = new List<VenueTeamRow>();
         if (!sessionModel.Venue!.IsNew)
         {
@@ -371,6 +382,7 @@ public class TeamApplication : AbstractController
                 return Redirect(TenantLink.Action(nameof(SelectVenue))!);
             }
 
+            sessionModel.VenueIsSet = TeamVenueSetKind.ExistingVenue;
             venueTeams = await _appDb.VenueRepository.GetVenueTeamRowsAsync(new PredicateExpression(VenueTeamFields.VenueId == venueEntity.Id), cancellationToken);
         }
 
@@ -378,7 +390,6 @@ public class TeamApplication : AbstractController
             venueTeams.Select(vt => vt.TeamName).Distinct().OrderBy(n => n).ToList());
 
         venueEditModel.Venue.MapEntityToFormFields(venueEditModel.VenueEntity!);
-        if (sessionModel.VenueIsSet) venueEditModel.Venue = sessionModel.Venue!;
             
         return View(Views.ViewNames.TeamApplication.EditVenue, venueEditModel);
     }
@@ -395,7 +406,7 @@ public class TeamApplication : AbstractController
         if (!venueEditModel.Venue.IsNew)
         {
             venueEntity = (await _appDb.VenueRepository.GetVenuesAsync(
-                new PredicateExpression(VenueFields.Id == venueEditModel.Venue?.Id),
+                new PredicateExpression(VenueFields.Id == venueEditModel.Venue.Id),
                 cancellationToken)).FirstOrDefault();
 
             if (venueEntity == null)
@@ -434,7 +445,7 @@ public class TeamApplication : AbstractController
         }
 
         sessionModel.Venue!.MapEntityToFormFields(venueEditModel.VenueEntity!);
-        sessionModel.VenueIsSet = true;
+        sessionModel.VenueIsSet = venueEditModel.Venue.IsNew ? TeamVenueSetKind.NewVenue : TeamVenueSetKind.ExistingVenue;
         SaveModelToSession(sessionModel);
             
         return Redirect(TenantLink.Action(nameof(Confirm))!);
@@ -496,9 +507,13 @@ public class TeamApplication : AbstractController
             sessionModel.Team!.MapFormFieldsToEntity(teamInRoundEntity.Team);
             // An EXISTING venue MUST be set by its ID, otherwise no venue will be stored for the Team
             if(!sessionModel.Venue!.IsNew) teamInRoundEntity.Team.VenueId = sessionModel.Venue.Id;
-            // Add a new venue, or take over changes to an existing venue
-            teamInRoundEntity.Team.Venue = new VenueEntity();
-            sessionModel.Venue.MapFormFieldsToEntity(teamInRoundEntity.Team.Venue);
+
+            if (sessionModel.VenueIsSet is TeamVenueSetKind.NewVenue or TeamVenueSetKind.ExistingVenue)
+            {
+                // Add a new venue, or take over changes to an existing venue
+                teamInRoundEntity.Team.Venue = new VenueEntity();
+                sessionModel.Venue.MapFormFieldsToEntity(teamInRoundEntity.Team.Venue);
+            }
 
             // Adds the current user as team manager, unless she already is team manager
             await AddManagerToTeamEntity(teamInRoundEntity.Team, cancellationToken);
@@ -700,7 +715,7 @@ public class TeamApplication : AbstractController
         
         return new ApplicationSessionModel
         {
-            TeamInRound = new League.Models.TeamViewModels.TeamInRoundModel {IsNew = true},
+            TeamInRound = new TeamInRoundModel {IsNew = true},
             Team = new TeamEditorComponentModel {HtmlFieldPrefix = nameof(ApplicationSessionModel.Team), IsNew = true},
             Venue = new VenueEditorComponentModel {HtmlFieldPrefix = nameof(ApplicationSessionModel.Venue), IsNew = true},
             TournamentName = teamApplicationTournament.Name,
@@ -750,5 +765,8 @@ public class TeamApplication : AbstractController
                 mot.UserId = GetCurrentUserId() ?? throw new InvalidOperationException("Current user ID must not be null");
             }
         }
+
+        // make sure that any changes are immediately reflected in the user's application cookie
+        await _signInManager.RefreshSignInAsync(await _signInManager.UserManager.FindByIdAsync(User.FindFirstValue(ClaimTypes.NameIdentifier)));
     }
 }

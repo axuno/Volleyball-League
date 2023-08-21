@@ -35,7 +35,17 @@ public class TeamValidatorTests
             {
                 return Task.FromResult(teamEntity.Id < 10 ? teamEntity.Name : null);
             });
+
+        var venueRepoMock = TestMocks.GetRepo<VenueRepository>();
+        venueRepoMock
+            .Setup(rep => rep.IsValidVenueIdAsync(It.IsAny<long>(), It.IsAny<CancellationToken>()))
+            .Callback(() => { }).Returns((long? theValue, CancellationToken cancellationToken) =>
+            {
+                return Task.FromResult(theValue is < 10);
+            });
+
         appDbMock.Setup(a => a.TeamRepository).Returns(teamRepoMock.Object);
+        appDbMock.Setup(a => a.VenueRepository).Returns(venueRepoMock.Object);
 
         var dbContextMock = TestMocks.GetDbContextMock();
         dbContextMock.SetupAppDb(appDbMock);
@@ -88,16 +98,19 @@ public class TeamValidatorTests
         });
     }
 
-    [TestCase(null, false, false)]
-    [TestCase("20:00:00", false, false)]
-    [TestCase(null, true, false)]
-    [TestCase(null, true, true)]
-    [TestCase("20:00:00", true, false)]
-    [TestCase("20:00:00", true, true)]
-
-    public async Task MatchTime_Must_Be_Set(TimeSpan? matchTime, bool isEditable, bool mustBeSet)
+    // DOW always set
+    [TestCase(null, 1, false, false, false)]
+    [TestCase("20:00:00",1, false, false, false)]
+    [TestCase(null, 1, true, false, false)]
+    [TestCase(null, 1, true, true, false)]
+    [TestCase("20:00:00", 1,true, false, true)]
+    [TestCase("20:00:00", 1, true, true, true)]
+    // DOW missing
+    [TestCase(null, null, true, false, true)]
+    [TestCase("20:00:00", null, true, false, false)]
+    public async Task MatchTime_Must_Be_Set(TimeSpan? matchTime, int? dow, bool isEditable, bool mustBeSet, bool expected)
     {
-        var team = new TeamEntity { MatchTime = matchTime, MatchDayOfWeek = 1};
+        var team = new TeamEntity { MatchTime = matchTime, MatchDayOfWeek = dow};
 
         _tenantContext.TournamentContext.TeamRuleSet = new TeamRules { HomeMatchTime = new HomeMatchTime { IsEditable = isEditable, MustBeSet = mustBeSet} };
         var tv = new TeamValidator(team, _tenantContext);
@@ -105,11 +118,8 @@ public class TeamValidatorTests
         var factResult = await tv.CheckAsync(TeamValidator.FactId.MatchDayOfWeekAndTimeIsSet, CancellationToken.None);
         Assert.Multiple(() =>
         {
-            Assert.AreEqual(factResult.Enabled, isEditable && mustBeSet);
-            if (factResult.Enabled)
-            {
-                Assert.AreEqual(matchTime.HasValue, factResult.Success);
-            }
+            Assert.That(factResult.Enabled, Is.EqualTo(isEditable));
+            Assert.That(factResult.Success, Is.EqualTo(expected));
             Assert.IsNull(factResult.Exception);
         });
     }

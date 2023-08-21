@@ -129,6 +129,9 @@
   <data name="Home match day" xml:space="preserve">
     <value>Heimspieltag</value>
   </data>
+  <data name="Not specified" xml:space="preserve">
+    <value>Nicht festgelegt</value>
+  </data>
   <data name="Photo of" xml:space="preserve">
     <value>Foto vom</value>
   </data>
@@ -143,6 +146,9 @@
   </data>
   <data name="Team Photo" xml:space="preserve">
     <value>Teamfoto</value>
+  </data>
+  <data name="There is no venue assigned to the team" xml:space="preserve">
+    <value>Dem Team ist kein Spielort zugeordnet</value>
   </data>
   <data name="Venue" xml:space="preserve">
     <value>Spielort</value>

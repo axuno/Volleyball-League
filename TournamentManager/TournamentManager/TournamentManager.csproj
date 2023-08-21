@@ -95,6 +95,11 @@ Volleyball League is an open source sports platform that brings everything neces
             <AutoGen>True</AutoGen>
             <DependentUpon>TeamValidatorResource.resx</DependentUpon>
         </Compile>
+        <Compile Update="ModelValidators\TeamVenueValidatorResource.Designer.cs">
+          <DesignTime>True</DesignTime>
+          <AutoGen>True</AutoGen>
+          <DependentUpon>TeamVenueValidatorResource.resx</DependentUpon>
+        </Compile>
         <Compile Update="ModelValidators\VenueValidatorResource.Designer.cs">
             <DesignTime>True</DesignTime>
             <AutoGen>True</AutoGen>
@@ -134,6 +139,10 @@ Volleyball League is an open source sports platform that brings everything neces
         <EmbeddedResource Update="ModelValidators\TeamInRoundValidatorResource.resx">
             <LastGenOutput>TeamInRoundValidatorResource.Designer.cs</LastGenOutput>
             <Generator>ResXFileCodeGenerator</Generator>
+        </EmbeddedResource>
+        <EmbeddedResource Update="ModelValidators\TeamVenueValidatorResource.resx">
+          <Generator>ResXFileCodeGenerator</Generator>
+          <LastGenOutput>TeamVenueValidatorResource.Designer.cs</LastGenOutput>
         </EmbeddedResource>
         <EmbeddedResource Update="ModelValidators\VenueValidatorResource.resx">
             <LastGenOutput>VenueValidatorResource.Designer.cs</LastGenOutput>

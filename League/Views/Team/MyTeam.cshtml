@@ -69,11 +69,16 @@
                             <div class="text-success col-12">@Localizer["Club"]</div>
                             <div class="col-12">@teamVenueInfo.TeamClubName</div>
                         }
-                        @if (teamVenueInfo.MatchDayOfWeek.HasValue && teamVenueInfo.MatchTime.HasValue)
+                        @if (teamVenueInfo is { MatchDayOfWeek: not null, MatchTime: not null })
                         {
                             // MatchTime is defined as a zoned time, NOT UTC. It is always the same, never mind DST
                             <div class="text-success col-12">@Localizer["Home match day"]</div>
                             <div class="col-12 mb-2"><i class="far fa-calendar-alt"></i><span class="d-inline-block me-2"></span>@DateTimeFormatInfo.CurrentInfo?.GetDayName((DayOfWeek)teamVenueInfo.MatchDayOfWeek), @(DateTime.UtcNow.Date.Add(teamVenueInfo.MatchTime.Value).ToShortTimeString()) @(Model.TimeZoneConverter.ToZonedTime(DateTime.UtcNow)?.Abbreviation)</div>
+                        }
+                        else
+                        {
+                            <div class="text-success col-12">@Localizer["Home match day"]</div>
+                            <div class="col-12 mb-2">[@(Localizer["Not specified"])]</div>
                         }
                         <div class="text-muted small col-12">
                             @{ var zonedTime = Model.TimeZoneConverter.ToZonedTime(teamVenueInfo.TeamModifiedOn)!;}
@@ -149,7 +154,7 @@
                                 {
                                     <div>
                                         <i class="fas fa-map-marker-alt"></i><span class="d-inline-block me-2"></span>
-                                        @Localizer["There is no venue assigned to the team"].
+                                        [@(Localizer["There is no venue assigned to the team"])]
                                     </div>
                                 }
                             </div>

@@ -8,7 +8,7 @@ namespace League.Components;
 public class VenueEditorComponentModel
 {
     [HiddenInput]
-    public long Id { get; set; }
+    public long? Id { get; set; }
 
     [HiddenInput]
     public bool IsNew { get; set; }
@@ -81,7 +81,7 @@ public class VenueEditorComponentModel
     {
         // The entity is populated from the database,
         // so we can track all eventual changes to fields
-        venueEntity.Id = IsNew ? default : Id;
+        venueEntity.Id = IsNew ? default : Id ?? default;
         venueEntity.IsNew = IsNew;
         venueEntity.Name = Name;
         venueEntity.Extension = Extension;
@@ -89,7 +89,7 @@ public class VenueEditorComponentModel
         venueEntity.City = City;
         venueEntity.Street = Street;
         venueEntity.Direction = Direction;
-        if (venueEntity.Longitude.HasValue && venueEntity.Latitude.HasValue)
+        if (venueEntity is { Longitude: null, Latitude: null })
         {
             venueEntity.Longitude = Longitude;
             venueEntity.Latitude = Latitude;

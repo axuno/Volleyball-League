@@ -151,7 +151,7 @@
     <value>Geänderte Spielortdaten wurden gespeichert</value>
   </data>
   <data name="VenueSelectFailure" xml:space="preserve">
-    <value>Speichern des gewählten Spielort des Teams ist fehlgeschlagen</value>
+    <value>Ändern des Spielorts für das Teams ist fehlgeschlagen</value>
   </data>
   <data name="VenueSelectSuccess" xml:space="preserve">
     <value>Der gewählte Spielort des Teams wurde gespeichert</value>

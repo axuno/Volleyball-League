@@ -6,13 +6,11 @@ namespace League.Components;
 
 public class VenueSelector : ViewComponent
 {
-    private readonly ITenantContext _tenantContext;
-    private readonly TournamentManager.MultiTenancy.AppDb _appDb;
+    private readonly AppDb _appDb;
     private readonly ILogger<VenueSelector> _logger;
 
     public VenueSelector(ITenantContext tenantContext, ILogger<VenueSelector> logger)
     {
-        _tenantContext = tenantContext;
         _appDb = tenantContext.DbContext.AppDb;
         _logger = logger;
     }

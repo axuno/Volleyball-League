@@ -150,4 +150,13 @@
   <data name="Round" xml:space="preserve">
     <value>Runde</value>
   </data>
+  <data name="There is no venue assigned to the team" xml:space="preserve">
+    <value>Dem Team ist kein Spielort zugeordnet</value>
+  </data>
+  <data name="Venue" xml:space="preserve">
+    <value>Spielort</value>
+  </data>
+  <data name="Not specified" xml:space="preserve">
+    <value>Nicht festgelegt</value>
+  </data>
 </root>
