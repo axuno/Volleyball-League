@@ -8,7 +8,8 @@ using TournamentManager.MultiTenancy;
 namespace TournamentManager.Plan;
 
 /// <summary>
-/// Generates matches for a tournament or round.
+/// Generates fixtures for all teams of a tournament or round.
+/// If the home team has no venue or home match time defined, it will only have away matches.
 /// </summary>
 public class MatchPlanner
 {
@@ -46,8 +47,6 @@ public class MatchPlanner
         AreEntitiesLoaded = true;
     }
 
-    public List<long> TeamsWithoutHomeMatches { get; } = new();
-
     /// <summary>
     /// Generates dates which are excluded for the tournament with <see cref="TournamentContext.MatchPlanTournamentId"/>
     /// and saves them to persistent storage. Existing entries for the tournament are removed.
@@ -57,14 +56,12 @@ public class MatchPlanner
     /// <returns></returns>
     public async Task GenerateExcludedDates(string excelImportFile, CancellationToken cancellationToken)
     {
-        if (!AreEntitiesLoaded) await LoadEntitiesAsync(cancellationToken);
+        var roundLegPeriods = await _appDb.RoundRepository.GetRoundLegPeriodAsync(new PredicateExpression(
+            RoundLegPeriodFields.TournamentId == _tenantContext.TournamentContext.MatchPlanTournamentId),
+            cancellationToken);
 
-        var allRoundLegs = await _appDb.RoundRepository.GetRoundLegPeriodAsync(
-            new PredicateExpression(RoundLegPeriodFields.TournamentId ==
-                                    _tenantContext.TournamentContext.MatchPlanTournamentId), cancellationToken);
-
-        var minDate = allRoundLegs.Min(leg => leg.StartDateTime);
-        var maxDate = allRoundLegs.Max(leg => leg.EndDateTime);
+        var minDate = roundLegPeriods.Min(leg => leg.StartDateTime);
+        var maxDate = roundLegPeriods.Max(leg => leg.EndDateTime);
 
         // remove all existing excluded dates for the tournament
         var filter = new RelationPredicateBucket(ExcludeMatchDateFields.TournamentId ==
@@ -118,8 +115,6 @@ public class MatchPlanner
     {
         if (!AreEntitiesLoaded) await LoadEntitiesAsync(cancellationToken);
 
-        round = _tournament.Rounds.First(r => r.Id == round.Id);
-
         if (_appDb.MatchRepository.AnyCompleteMatchesExist(round))
             throw new InvalidOperationException($"Completed matches exist for round '{round.Id}'. Generating fixtures aborted.");
 
@@ -157,10 +152,14 @@ public class MatchPlanner
             /*
              * Special treatment for teams which do not have home matches
              */
+            var teamsWithoutHomeMatches = GetTeamsWithoutHomeMatches(round).ToList();
+
             foreach (var teamCombinationGroup in bundledGroups)
             foreach (var combination in teamCombinationGroup)
             {
-                if (!TeamsWithoutHomeMatches.Contains(combination.HomeTeam)) continue;
+                if (!teamsWithoutHomeMatches.Contains(combination.HomeTeam)) continue;
+
+                _logger.LogDebug("Team cannot have home matches - {TeamId}", combination.HomeTeam);
 
                 // swap home and guest team, keep referee unchanged
                 (combination.HomeTeam, combination.GuestTeam) = (combination.GuestTeam, combination.HomeTeam);
@@ -334,7 +333,7 @@ public class MatchPlanner
             if (i + 1 >= matchDates.Count - 1)
             {
                 bestDate = matchDates[^1].Where(md => md.MinTimeDiff == matchDates[^1].Min(d => d.MinTimeDiff))
-                    .OrderBy(md => md.MinTimeDiff).FirstOrDefault();
+                    .MinBy(md => md.MinTimeDiff);
                 // the last "j-increment" is always the same as "matchDates[^1]" (loop condition)
                 matchDatePerCombination.Add(bestDate);
             }
@@ -380,6 +379,20 @@ public class MatchPlanner
 
             start = end + 1;
             index++;
+        }
+    }
+
+    /// <summary>
+    /// Gets teams IDs for the <param name="round"></param> where no home venue or no home match time set for a team.
+    /// </summary>
+    private static IEnumerable<long> GetTeamsWithoutHomeMatches(RoundEntity round)
+    {
+        foreach (var team in round.TeamCollectionViaTeamInRound)
+        {
+            if (team.VenueId == null || team.MatchTime == null || team.MatchDayOfWeek == null)
+            {
+                yield return team.Id;
+            }
         }
     }
 }
