@@ -27,13 +27,11 @@ module.exports = function (grunt) {
                 outputStyle: 'nested' // Minify output with "compressed"
             },
             dist: {
-                files: [
-                    {
-                        'wwwroot/lib/bootstrap/bootstrap.css': ['Styles/bootstrap/_custom.scss', 'node_modules/bootstrap/scss/bootstrap.scss'],  // "destination": "source"
-                        'wwwroot/lib/fontawesome/fontawesome.css': 'Styles/fontawesome/fontawesome.scss',
-                        'wwwroot/css/site.css': 'Styles/site/site.scss'
-                    }
-                ]
+                files: {
+                    'wwwroot/lib/bootstrap/bootstrap.css': 'Styles/bootstrap/custom_bootstrap.scss',  // "destination": "source" (no arrays!)
+                    'wwwroot/lib/fontawesome/fontawesome.css': 'Styles/fontawesome/fontawesome.scss',
+                    'wwwroot/css/site.css': 'Styles/site/site.scss'
+                }
             }
         },
 

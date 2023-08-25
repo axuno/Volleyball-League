@@ -1,9 +1,9 @@
-// Bootstrap dependencies - javascript and fonts must be copied separately
-// font-awesome is included by site.scss
+// This is the import file for site scss files
+// which are using variables and Bootstrap functions / mixins
 
-@import "node_modules/bootstrap/scss/functions";
+@import 'node_modules/bootstrap/scss/functions';
 
 @import './custom_variables';
 
-@import "node_modules/bootstrap/scss/variables";
-@import "node_modules/bootstrap/scss/mixins";
+@import 'node_modules/bootstrap/scss/variables';
+@import 'node_modules/bootstrap/scss/mixins';
