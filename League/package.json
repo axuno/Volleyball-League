@@ -8,14 +8,14 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
     "devDependencies": {
-        "@fortawesome/fontawesome-free": "5.13.0",
+        "@fortawesome/fontawesome-free": "5.13.1",
         "autoprefixer": "9.8.8",
-        "bootstrap": "5.3.0",
+        "bootstrap": "5.3.1",
         "cssnano": "4.1.11",
         "dropzone": "5.7.1",
         "grunt": "1.6.1",
         "grunt-cli": "1.4.3",
-        "grunt-contrib-concat": "1.0.1",
+        "grunt-contrib-concat": "2.1.0",
         "grunt-contrib-copy": "1.0.0",
         "grunt-contrib-uglify": "5.2.2",
         "grunt-contrib-watch": "1.1.0",
@@ -23,11 +23,11 @@
         "grunt-sass": "3.1.0",
         "js-cookie": "2.2.1",
         "jsnlog": "2.30.0",
-        "node-sass": "8.0.0",
+        "node-sass": "9.0.0",
         "pixrem": "5.0.0",
-        "@popperjs/core": "2.11.7",
-        "@eonasdan/tempus-dominus": "6.7.11",
-        "set-value": ">=4.0.1"
+        "@popperjs/core": "2.11.8",
+        "@eonasdan/tempus-dominus": "6.7.13",
+        "set-value": ">=4.1.0"
     },
     "dependencies": {
         "uglify-js": "3.17.4"
