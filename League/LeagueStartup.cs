@@ -556,7 +556,7 @@ public static class LeagueStartup
             .AddControllersAsServices(); // will add controllers with ServiceLifetime.Transient
 
         #region *** Text Templating ***
-
+        
         services.AddTextTemplatingModule(vfs =>
             {
                 // The complete Templates folder is embedded in the project file
@@ -576,7 +576,7 @@ public static class LeagueStartup
                 renderOptions.VariableNotFoundAction = RenderErrorAction.MaintainToken;
 #endif
             });
-
+        
         #endregion
 
         #region *** HostedServices related ***

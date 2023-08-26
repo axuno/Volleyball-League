@@ -27,6 +27,7 @@ Localizations for English and German are included. The library is in operation o
 
     <PropertyGroup>
         <AddRazorSupportForMvc>true</AddRazorSupportForMvc>
+        <!-- Use path "/" instead of "_content/League" for embedded assets of the RCL -->
         <StaticWebAssetBasePath Condition="$(StaticWebAssetBasePath) == ''">/</StaticWebAssetBasePath>
     </PropertyGroup>
 
@@ -84,6 +85,7 @@ Localizations for English and German are included. The library is in operation o
         <PackageReference Include="NLog.Web.AspNetCore" Version="5.3.3" />
         <PackageReference Include="NuGetizer" Version="1.1.0">
             <PrivateAssets>all</PrivateAssets>
+            <PackEmbeddedResource>true</PackEmbeddedResource>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
         <PackageReference Include="PuppeteerSharp" Version="9.1.0" />
