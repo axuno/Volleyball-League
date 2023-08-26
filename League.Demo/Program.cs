@@ -78,12 +78,17 @@ public class Program
         {
             Args = args,
             ApplicationName = typeof(Program).Assembly.GetName().Name, // don't use Assembly.Fullname
-            WebRootPath = "wwwroot"
             // Note: ContentRootPath is detected by the framework.
             // If set explicitly as WebApplicationOptions, WebApplicationFactory in unit tests does not override it.
-            // Set WebRootPath as folder relative to ContentRootPath.
         });
-        
+
+        builder.WebHost
+            // Set WebRootPath as folder relative to ContentRootPath.
+            .UseWebRoot("wwwroot")
+            // Use static web assets from League (and other referenced projects or packages)
+            // Note: When the app is published, the static asset files get copied up into the wwwroot folder.
+            .UseStaticWebAssets();
+
         var absoluteConfigurationPath = Path.Combine(builder.Environment.ContentRootPath,
             LeagueStartup.ConfigurationFolder);
 
@@ -96,10 +101,7 @@ public class Program
                 optional: false, reloadOnChange: true)
             .AddEnvironmentVariables()
             .AddCommandLine(args);
-
-        // Use static web assets from League (and other referenced projects or packages)
-        builder.WebHost.UseStaticWebAssets();
-
+        
         return builder;
     }
 }
