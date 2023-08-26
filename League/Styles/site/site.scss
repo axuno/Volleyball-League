@@ -5,7 +5,7 @@
 $body-width: 60rem;
 
 body {
-    background-color: $gray-500; /* override $body-bg for just this element */
+    background-color: $gray-500; // override $body-bg for just this element
 }
 
 .form-select:focus {
