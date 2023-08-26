@@ -229,16 +229,8 @@ Localizations for English and German are included. The library is in operation o
     </ItemGroup>
 
     <ItemGroup>
-        <EmbeddedResource Include="Templates\Email\*.tpl" />
-    </ItemGroup>
-
-    <ItemGroup>
-        <EmbeddedResource Include="Templates\Email\AnnounceNextMatchTxt\en.tpl" />
-        <EmbeddedResource Include="Templates\Email\AnnounceNextMatchTxt\de.tpl" />
-        <EmbeddedResource Include="Templates\Email\RemindMatchResultTxt\en.tpl" />
-        <EmbeddedResource Include="Templates\Email\RemindMatchResultTxt\de.tpl" />
-        <EmbeddedResource Include="Templates\Email\UrgeMatchResultTxt\en.tpl" />
-        <EmbeddedResource Include="Templates\Email\UrgeMatchResultTxt\de.tpl" />
+        <EmbeddedResource Include="wwwroot\**\*" />
+        <EmbeddedResource Include="Templates\Email\**\*.tpl" />
     </ItemGroup>
 
     <ItemGroup>
