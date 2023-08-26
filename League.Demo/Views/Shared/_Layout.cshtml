@@ -6,7 +6,7 @@
 @inject ITenantContext TenantContext
 @inject IViewLocalizer Localizer
 <!DOCTYPE html>
-<html lang="@System.Threading.Thread.CurrentThread.CurrentUICulture.TwoLetterISOLanguageName">
+<html lang="@Thread.CurrentThread.CurrentUICulture.TwoLetterISOLanguageName">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=0" />
@@ -17,8 +17,8 @@
         <meta name="description" content="@ViewData.Description()" />
     }
     <partial name="@League.Views.ViewNames.Shared._FavIcons" />
-    <link rel="stylesheet" href="~/lib/bootstrap/bootstrap.min.css" asp-append-version="true"> @* embedded resource *@
-    <link rel="stylesheet" href="~/css/site.min.css" asp-append-version="true"/> @* embedded resource *@
+    <link rel="stylesheet" href="~/lib/bootstrap/bootstrap.min.css" asp-append-version="true"> @* static web asset from League *@
+    <link rel="stylesheet" href="~/css/site.min.css" asp-append-version="true" /> @* static web asset from League *@
     <style type="text/css">
         .site-sticky-top {
             position: -webkit-sticky;
@@ -79,9 +79,9 @@
         </div>
     </footer>
     <jl-javascript-logger-definitions request-id="@ViewContext.HttpContext.TraceIdentifier" />
-    <script src="~/lib/jsnlog/jsnlog.min.js" asp-append-version="true"></script> @* embedded resource *@
-    <script src="~/lib/bootstrap/bootstrap-all.min.js" asp-append-version="true"></script> @* embedded resource *@
-    <script src="~/js/site.min.js" asp-append-version="true"></script> @* embedded resource *@
+    <script src="~/lib/jsnlog/jsnlog.min.js" asp-append-version="true"></script> @* static web asset from League *@
+    <script src="~/lib/bootstrap/bootstrap-all.min.js" asp-append-version="true"></script> @* static web asset from League *@
+    <script src="~/js/site.min.js" asp-append-version="true"></script> @* static web asset from League *@
     <environment include="Production"><partial name="@League.Views.ViewNames.Shared._GoogleAnalyticsScriptsPartial" /></environment>
     @await RenderSectionAsync("scripts", required: false)
 </body>
