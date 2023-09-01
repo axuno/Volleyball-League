@@ -446,7 +446,7 @@ public class Match : AbstractController
             
         // create a new MatchEntity for validation
         var match = FillMatchEntity(model.PlannedMatch);
-        match.SetPlannedStart(model.MatchDate.HasValue && model.MatchTime.HasValue
+        match.SetPlannedStart(model is { MatchDate: not null, MatchTime: not null }
             ? _timeZoneConverter.ToUtc(model.MatchDate.Value.Add(model.MatchTime.Value.ToTimeSpan()))
             : default(DateTime?), _tenantContext.TournamentContext.FixtureRuleSet.PlannedDurationOfMatch);
         match.SetVenueId(model.VenueId);
@@ -455,7 +455,7 @@ public class Match : AbstractController
         ModelState.Clear();
 
         // Todo: This business logic should rather go into settings
-        _tenantContext.TournamentContext.FixtureRuleSet.PlannedMatchTimeMustStayInCurrentLegBoundaries = model.Tournament.IsPlanningMode;
+        //_tenantContext.TournamentContext.FixtureRuleSet.PlannedMatchTimeMustStayInCurrentLegBoundaries = model.Tournament.IsPlanningMode;
 
         if (!await model.ValidateAsync(
                 new FixtureValidator(match, (_tenantContext, _timeZoneConverter, model.PlannedMatch), DateTime.UtcNow),
@@ -472,7 +472,7 @@ public class Match : AbstractController
         {
             fixtureMessage.ChangeSuccess = await _appDb.GenericRepository.SaveEntityAsync(match, false, false, cancellationToken);
             _logger.LogInformation("Fixture for match id {matchId} updated successfully for user ID '{currentUser}'", match.Id, GetCurrentUserId());
-            if (fixtureIsChanged) SendFixtureNotification(match.Id);
+            if (fixtureIsChanged && !model.Tournament.IsPlanningMode) SendFixtureNotification(match.Id);
         }
         catch (Exception e)
         {

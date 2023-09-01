@@ -10,7 +10,7 @@ public class SetsValidator : AbstractValidator<IList<SetEntity>, (ITenantContext
     {
         AllSetsAreValid,
         MixAndMaxOfSetsPlayed,
-        BestOfMixAndMaxOfSetsPlayed,
+        BestOfMinAndMaxOfSetsPlayed,
         BestOfRequiredTieBreakPlayed,
         BestOfNoMatchAfterBestOfReached
     }
@@ -45,7 +45,7 @@ public class SetsValidator : AbstractValidator<IList<SetEntity>, (ITenantContext
         Facts.Add(
             new Fact<FactId>
             {
-                Id = FactId.BestOfMixAndMaxOfSetsPlayed,
+                Id = FactId.BestOfMinAndMaxOfSetsPlayed,
                 FieldNames = new[] { nameof(MatchEntity.Sets) },
                 Enabled = true,
                 Type = FactType.Critical,
@@ -54,7 +54,7 @@ public class SetsValidator : AbstractValidator<IList<SetEntity>, (ITenantContext
                     {
                         Message = string.Format(
                             SetsValidatorResource.ResourceManager.GetString(
-                                nameof(FactId.BestOfMixAndMaxOfSetsPlayed)) ?? string.Empty, Data.Rules.MatchRule.NumOfSets, Data.Rules.MatchRule.MaxNumOfSets()),
+                                nameof(FactId.BestOfMinAndMaxOfSetsPlayed)) ?? string.Empty, Data.Rules.MatchRule.NumOfSets, Data.Rules.MatchRule.MaxNumOfSets()),
                         Success = !Data.Rules.MatchRule.BestOf || Model.Count >= Data.Rules.MatchRule.NumOfSets && Model.Count <= Data.Rules.MatchRule.MaxNumOfSets()
                     })
             });

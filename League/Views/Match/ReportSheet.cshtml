@@ -1,16 +1,18 @@
 ﻿@using TournamentManager.MultiTenancy
+@using TournamentManager.DAL.EntityClasses
 @inject ITenantContext TenantContext
 @inject Axuno.Tools.DateAndTime.TimeZoneConverter TimeZoneConverter
 @inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer localizer
 @model TournamentManager.DAL.TypedViewClasses.MatchReportSheetRow
 @{
     Layout = null;
+    var numberOfSets = Model.BestOf ? Model.NumOfSets * 2 - 1 : Model.NumOfSets;
 
     ViewData["Title"] = localizer["Match Report Sheet"].Value;
     var ballPointsToWin = new List<int>();
     if (Model.BestOf)
     {
-        for (var i = 0; i < Model.NumOfSets - 1; i++)
+        for (var i = 0; i < numberOfSets - 1; i++)
         {
             ballPointsToWin.Add(Model.NumOfPointsToWinRegular);
         }
@@ -18,13 +20,12 @@
     }
     else
     {
-        for (var i = 0; i < Model.NumOfSets; i++)
+        for (var i = 0; i < numberOfSets; i++)
         {
             ballPointsToWin.Add(Model.NumOfPointsToWinRegular);
         }
     }
 
-    var numberOfSets = ballPointsToWin.Count;
     var numOfSubstitutions = Model.MaxSubstitutions;
     var numOfTimeOuts = Model.MaxTimeouts;
     var bsRowCol = string.Empty;
@@ -168,10 +169,24 @@
         .team-circle {
             background: #ffffff;
             color: #000;
-            padding: 5px 20px;
+            /*padding: 5px 20px;*/
             border-radius: 50%;
             border: 1px solid black;
-            font-size: 35px;
+            /*font-size: 35px;*/
+            width: 30px;
+            height: 30px;
+            display: inline-block;
+        }
+
+        .team-circle-small {
+            background: #ffffff;
+            color: #000;
+            padding: 0px 5px;
+            border-radius: 50%;
+            border: 1px solid black;
+            font-size: 12pt;
+            margin-left: 5px;
+            margin-right: 5px;
         }
 
         .border {
@@ -208,17 +223,6 @@
 
         .border-left-0 {
             border-left: 0 !important
-        }
-
-        .team-circle-small {
-            background: #ffffff;
-            color: #000;
-            padding: 0px 5px;
-            border-radius: 50%;
-            border: 1px solid black;
-            font-size: 12pt;
-            margin-left: 5px;
-            margin-right: 5px;
         }
 
         .dotted-line {
@@ -315,10 +319,10 @@
                         <div class="text-start">@localizer["Results"]</div><div class="text-end">@localizer["Team"]</div>
                     </div>
                     <div class="col-4 text-center border pt-1 pb-1">
-                        <span class="team-circle">&nbsp;</span>
+                        <div class="team-circle">&nbsp;</div>
                     </div>
                     <div class="col-4 text-center border pt-1 pb-1">
-                        <span class="team-circle">&nbsp;</span>
+                        <div class="team-circle">&nbsp;</div>
                     </div>
 
                     @{
@@ -326,7 +330,7 @@
                         {
                             for (var i = 1; i <= numberOfSets; i++)
                             {
-                                <div class="col-4 border" style="line-height: 2rem">
+                                <div class="col-4 border" style="line-height: 1.75rem">
                                     @localizer["Set #{0}", i]
                                 </div>
                                 <div class="col-4 text-center border">
@@ -339,7 +343,7 @@
                         }
                     }
 
-                    <div class="col-4 border" style="line-height: 2rem">
+                    <div class="col-4 border" style="line-height: 1.75rem">
                         @localizer["Ball points"]
                     </div>
                     <div class="col-4 text-center border">
@@ -348,7 +352,7 @@
                     <div class="col-4 text-center border">
 
                     </div>
-                    <div class="col-4 border" style="line-height: 2rem">
+                    <div class="col-4 border" style="line-height: 1.75rem">
                         @localizer["Set points"]
                     </div>
                     <div class="col-4 text-center border">
@@ -357,7 +361,7 @@
                     <div class="col-4 text-center border">
 
                     </div>
-                    <div class="col-4 border" style="line-height: 2rem">
+                    <div class="col-4 border" style="line-height: 1.75rem">
                         @localizer["Match points"]
                     </div>
                     <div class="col-4 text-center border">

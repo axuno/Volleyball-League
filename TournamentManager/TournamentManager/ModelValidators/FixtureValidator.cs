@@ -133,12 +133,9 @@ public class FixtureValidator : AbstractValidator<MatchEntity, (ITenantContext T
                     var currentLeg = round.RoundLegs.First(rl => rl.SequenceNo == Model.LegSequenceNo);
 
                     // Note: EndDateTime includes the full day
-                    if ((stayWithinLegDates &&
-                         new DateTimePeriod(currentLeg.StartDateTime, currentLeg.EndDateTime.AddDays(1).AddSeconds(-1)).Contains(
-                             Model.PlannedStart))
+                    if ((stayWithinLegDates && currentLeg.ContainsDate(Model.PlannedStart))
                         ||
-                        (!stayWithinLegDates && round.RoundLegs.Any(rl =>
-                            new DateTimePeriod(rl.StartDateTime, rl.EndDateTime.AddDays(1).AddSeconds(-1)).Contains(Model.PlannedStart))))
+                        (!stayWithinLegDates && round.RoundLegs.GetRoundLegForDate(Model.PlannedStart) != null))
                     {
                         return _successResult;
                     }
@@ -147,7 +144,7 @@ public class FixtureValidator : AbstractValidator<MatchEntity, (ITenantContext T
                     if (stayWithinLegDates)
                     {
                         displayPeriods =
-                            $"{currentLeg.StartDateTime.ToShortDateString()} - {currentLeg.StartDateTime.ToShortDateString()}";
+                            $"{currentLeg.StartDateTime.ToShortDateString()} - {currentLeg.EndDateTime.ToShortDateString()}";
                     }
                     else
                     {
