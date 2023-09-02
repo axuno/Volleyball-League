@@ -1,18 +1,16 @@
 ﻿@using TournamentManager.MultiTenancy
-@using TournamentManager.DAL.EntityClasses
 @inject ITenantContext TenantContext
 @inject Axuno.Tools.DateAndTime.TimeZoneConverter TimeZoneConverter
 @inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer localizer
 @model TournamentManager.DAL.TypedViewClasses.MatchReportSheetRow
 @{
     Layout = null;
-    var numberOfSets = Model.BestOf ? Model.NumOfSets * 2 - 1 : Model.NumOfSets;
 
     ViewData["Title"] = localizer["Match Report Sheet"].Value;
     var ballPointsToWin = new List<int>();
     if (Model.BestOf)
     {
-        for (var i = 0; i < numberOfSets - 1; i++)
+        for (var i = 0; i < Model.NumOfSets - 1; i++)
         {
             ballPointsToWin.Add(Model.NumOfPointsToWinRegular);
         }
@@ -20,23 +18,36 @@
     }
     else
     {
-        for (var i = 0; i < numberOfSets; i++)
+        for (var i = 0; i < Model.NumOfSets; i++)
         {
             ballPointsToWin.Add(Model.NumOfPointsToWinRegular);
         }
     }
 
+    var numberOfSets = ballPointsToWin.Count;
     var numOfSubstitutions = Model.MaxSubstitutions;
     var numOfTimeOuts = Model.MaxTimeouts;
-    var bsRowCol = numberOfSets switch
+    var bsRowCol = string.Empty;
+    if (numberOfSets == 1)
     {
-        1 => "row-cols-1",
-        2 => "row-cols-2",
-        3 => "row-cols-3",
-        4 => "row-cols-4",
-        5 => "row-cols-5",
-        _ => string.Empty
-    };
+        bsRowCol = "row-cols-1";
+    }
+    else if (numberOfSets == 2)
+    {
+        bsRowCol = "row-cols-2";
+    }
+    else if (numberOfSets == 3)
+    {
+        bsRowCol = "row-cols-3";
+    }
+    else if (numberOfSets == 4)
+    {
+        bsRowCol = "row-cols-4";
+    }
+    else if (numberOfSets == 5)
+    {
+        bsRowCol = "row-cols-5";
+    }
 
     string Repeat(string s, int n)
     {
@@ -157,23 +168,10 @@
         .team-circle {
             background: #ffffff;
             color: #000;
+            padding: 5px 20px;
             border-radius: 50%;
             border: 1px solid black;
-            min-width: 5px;
-            min-height: 5px;
-            display: inline-block;
-        }
-
-        .team-circle-text {
-            background: #ffffff;
-            color: #000;
-            padding: 0px 5px;
-            border-radius: 50%;
-            border: 1px solid black;
-            margin-left: 5px;
-            margin-right: 5px;
-            width: 12px;
-            height: 12px;
+            font-size: 35px;
         }
 
         .border {
@@ -212,46 +210,33 @@
             border-left: 0 !important
         }
 
+        .team-circle-small {
+            background: #ffffff;
+            color: #000;
+            padding: 0px 5px;
+            border-radius: 50%;
+            border: 1px solid black;
+            font-size: 12pt;
+            margin-left: 5px;
+            margin-right: 5px;
+        }
+
         .dotted-line {
             border-bottom: 1px dashed black;
         }
     </style>
-    @if(numberOfSets <= 3)
-    {
-        <style type="text/css">
-            .team-circle-size  {
-                width: 35px !important;
-                height: 35px !important;
-            }
-            .result-line-height  {
-                line-height: 2rem !important;
-            }
-        </style>
-    }
-    else
-    {
-        <style type="text/css">
-            .team-circle-size  {
-                width: 35px !important;
-                height: 35px !important;
-            }
-            .result-line-height  {
-                line-height: 1.75rem !important;
-            }
-        </style>
-    }
 </head>
 <body>
     <div class="container">
         <div class="row">
-            <div class="col-12 text-center m-0 p-0">
-                <div class="float-start fw-bold">@TenantContext.OrganizationContext.Name - @Model.TournamentName</div>
-                <div class="float-end fw-bold">@ViewData["Title"] - @Model.RoundDescription</div>
+            <div class="col-12 text-center">
+                <div>@TenantContext.OrganizationContext.Name - @Model.TournamentName</div>
+                <div style="font-size: 14pt; font-weight: bold">@ViewData["Title"] - @Model.RoundDescription</div>
             </div>
             <div class="col-6 text-start" style="padding: 0">
                 <div>&nbsp;</div>
-                <div>@localizer["Team"] <span class="team-circle-text">A</span><strong> @Model.HomeTeamNameForRound</strong></div>
-                <div>@localizer["Team"] <span class="team-circle-text">B</span><strong> @Model.GuestTeamNameForRound</strong></div>
+                <div>@localizer["Team"] <span class="team-circle-small">A</span><strong> @Model.HomeTeamNameForRound</strong></div>
+                <div>@localizer["Team"] <span class="team-circle-small">B</span><strong> @Model.GuestTeamNameForRound</strong></div>
             </div>
             <div class="col-6" style="padding: 0">
                 <div class="text-end">
@@ -281,8 +266,8 @@
             {
                 <div class="col text-center border border-top-0 border-right-0">
                     <div class="row">
-                        <div class="col-6 border border-left-0 pt-1 pb-1"><span class="team-circle team-circle-size">&nbsp;</span></div>
-                        <div class="col-6 border border-left-0 pt-1 pb-1"><span class="team-circle team-circle-size">&nbsp;</span></div>
+                        <div class="col-6 border border-left-0 pt-1 pb-1"><span class="team-circle">&nbsp;</span></div>
+                        <div class="col-6 border border-left-0 pt-1 pb-1"><span class="team-circle">&nbsp;</span></div>
                     </div>
                     @for (var points = 1; points < 31; points++)
                     {
@@ -329,11 +314,11 @@
                     <div class="col-4 border">
                         <div class="text-start">@localizer["Results"]</div><div class="text-end">@localizer["Team"]</div>
                     </div>
-                    <div class="col-4 text-center border">
-                        <div class="team-circle team-circle-size mt-1">&nbsp;</div>
+                    <div class="col-4 text-center border pt-1 pb-1">
+                        <span class="team-circle">&nbsp;</span>
                     </div>
-                    <div class="col-4 text-center border">
-                        <div class="team-circle team-circle-size mt-1">&nbsp;</div>
+                    <div class="col-4 text-center border pt-1 pb-1">
+                        <span class="team-circle">&nbsp;</span>
                     </div>
 
                     @{
@@ -341,7 +326,7 @@
                         {
                             for (var i = 1; i <= numberOfSets; i++)
                             {
-                                <div class="col-4 border result-line-height">
+                                <div class="col-4 border" style="line-height: 2rem">
                                     @localizer["Set #{0}", i]
                                 </div>
                                 <div class="col-4 text-center border">
@@ -354,7 +339,7 @@
                         }
                     }
 
-                    <div class="col-4 border result-line-height">
+                    <div class="col-4 border" style="line-height: 2rem">
                         @localizer["Ball points"]
                     </div>
                     <div class="col-4 text-center border">
@@ -363,7 +348,7 @@
                     <div class="col-4 text-center border">
 
                     </div>
-                    <div class="col-4 border result-line-height">
+                    <div class="col-4 border" style="line-height: 2rem">
                         @localizer["Set points"]
                     </div>
                     <div class="col-4 text-center border">
@@ -372,7 +357,7 @@
                     <div class="col-4 text-center border">
 
                     </div>
-                    <div class="col-4 border result-line-height">
+                    <div class="col-4 border" style="line-height: 2rem">
                         @localizer["Match points"]
                     </div>
                     <div class="col-4 text-center border">
@@ -390,13 +375,13 @@
                 <div class="row h-100">
                     <div class="col-12" style="border: 3px solid black">@localizer["Winner"]:<br />&nbsp;</div>
                     <div class="col-12">&nbsp;<br />&nbsp;<br />&nbsp;</div>
-                    <div class="col-12 border border-left-0 border-right-0 text-center">&uarr; @localizer["Signature"] @localizer["Team"] <span class="team-circle-text">A</span> &uarr;</div>
+                    <div class="col-12 border border-left-0 border-right-0 text-center">&uarr; @localizer["Signature"] @localizer["Team"] <span class="team-circle-small">A</span> &uarr;</div>
                     <div class="col-12">&nbsp;<br />&nbsp;<br />&nbsp;</div>
-                    <div class="col-12 border border-left-0 border-right-0 text-center">&uarr; @localizer["Signature"] @localizer["Team"] <span class="team-circle-text">B</span> &uarr;</div>
+                    <div class="col-12 border border-left-0 border-right-0 text-center">&uarr; @localizer["Signature"] @localizer["Team"] <span class="team-circle-small">B</span> &uarr;</div>
                 </div>
             </div>
             <div class="col-12 text-center">
-                https://volleyball-liga.de/@TenantContext.SiteContext.UrlSegmentValue
+                https://www.volleyball-liga.de/@TenantContext.SiteContext.UrlSegmentValue
             </div>
         </div>
     </div>
