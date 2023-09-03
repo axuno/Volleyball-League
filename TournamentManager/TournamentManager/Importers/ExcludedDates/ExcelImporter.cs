@@ -65,7 +65,13 @@ public class ExcelImporter
                 _logger.LogDebug("Import finished with worksheet row {rowNo}", row - 1);
                 yield break;
             }
-                    
+
+            // No time part means, the whole day should be excluded
+            if (from.TimeOfDay.TotalMilliseconds == 0 && to.TimeOfDay.TotalMilliseconds == 0)
+            {
+                // Add the time span until the end of the day
+                to = to.AddDays(1).AddSeconds(-1);
+            }
 
             from = _timeZoneConverter.ToUtc(from.Date);
             to = _timeZoneConverter.ToUtc(to.Date);
