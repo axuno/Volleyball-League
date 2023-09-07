@@ -8,13 +8,13 @@ namespace TournamentManager.ExtensionMethods;
 public static class RoundLegEntityExtensions
 {
     /// <summary>
-    /// Checks whether the <param name="dateTime"></param> is between
+    /// Checks whether the <paramref name="dateTime"></paramref> is between
     /// <see cref="RoundLegEntity.StartDateTime"/> and <see cref="RoundLegEntity.EndDateTime"/>.
     /// If one of the date values is <see langword="null"/>, <see langword="false"/> is returned.
     /// </summary>
     /// <param name="roundLeg"></param>
     /// <param name="dateTime"></param>
-    /// <returns>Returns <see langword="true"/>, if the <param name="dateTime"></param> is between
+    /// <returns>Returns <see langword="true"/>, if the <paramref name="dateTime"></paramref> is between
     /// <see cref="RoundLegEntity.StartDateTime"/> and <see cref="RoundLegEntity.EndDateTime"/>.
     /// If one of the date values is <see langword="null"/>, <see langword="false"/> is returned.
     /// </returns>

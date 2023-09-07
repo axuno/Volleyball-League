@@ -10,7 +10,7 @@ namespace TournamentManager.Data;
 /// </summary>
 public class AvailableMatchDateRepository
 {
-    private static readonly ILogger _logger = AppLogging.CreateLogger<AvailableMatchDateRepository>();
+    private static readonly ILogger<AvailableMatchDateRepository> _logger = AppLogging.CreateLogger<AvailableMatchDateRepository>();
     private readonly MultiTenancy.IDbContext _dbContext;
     public AvailableMatchDateRepository(MultiTenancy.IDbContext dbContext)
     {

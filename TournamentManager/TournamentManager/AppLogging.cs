@@ -78,7 +78,7 @@ public static class AppLogging
     /// </summary>
     /// <typeparam name="T"></typeparam>
     /// <returns>Returns an <see cref="ILogger"/> instance for type <typeparamref name="T"/>.</returns>
-    public static ILogger CreateLogger<T>()
+    public static ILogger<T> CreateLogger<T>()
     {
         return LoggerFactory.CreateLogger<T>();
     }

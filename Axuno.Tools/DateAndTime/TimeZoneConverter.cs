@@ -1,5 +1,4 @@
-﻿#nullable enable
-using System.Globalization;
+﻿using System.Globalization;
 using NodaTime;
 using NodaTime.TimeZones;
 using TzConverter = TimeZoneConverter;
@@ -9,8 +8,8 @@ namespace Axuno.Tools.DateAndTime;
 /// Converts from <see cref="DateTime"/> or <see cref="DateTimeOffset"/> and zone specific <see cref="ZonedTime"/>.
 /// </summary>
 /// <remarks>
-/// Credits to Joe Audette's blog at
-/// https://www.joeaudette.com/blog/2016/06/23/cross-platform-timezone-handling-for-aspnet-core
+/// There is a NuGet package "TimeZoneConverter", version=6.1.0+ which might be able to replace this class.
+/// Credits to Joe Audette's blog who introduced a similar solution. Unfortunately Joe passed away in 2020.
 /// </remarks>
 public class TimeZoneConverter
 {
