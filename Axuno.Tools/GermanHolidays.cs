@@ -2,157 +2,12 @@ using System.Xml.Linq;
 
 namespace Axuno.Tools;
 
-/// <summary>
-/// This class represents a German holiday.
-/// </summary>
-public class GermanHoliday
-{
-    /// <summary>
-    /// Delegate to use for the calculation of the holiday.
-    /// </summary>
-    /// <returns>Date of the holiday.</returns>
-    public delegate DateTime CalcDateCallback();
-
-    /// <summary>
-    /// Constructor for internal use.
-    /// </summary>
-    /// <param name="id">Nullable HolidayId</param>
-    /// <param name="type">HolidayType</param>
-    /// <param name="name">Holiday name</param>
-    /// <param name="calcDateCallback">Delegate for date calculation</param>
-    internal GermanHoliday(GermanHolidays.Id? id, GermanHolidays.Type type, string name,
-        CalcDateCallback calcDateCallback)
-    {
-        Id = id;
-        Type = type;
-        Name = name;
-        DoCalcDate = calcDateCallback;
-
-        PublicHolidayStateIds = id.HasValue
-            ? GermanHolidays.GetPublicHolidayStates(id.Value)
-            : new List<GermanFederalStates.Id>();
-    }
-
-    /// <summary>
-    /// Constructor for usage from inside of class GermanHolidays.
-    /// </summary>
-    /// <param name="id">HolidayId</param>
-    /// <param name="type">HolidayType</param>
-    /// <param name="name">Holiday name</param>
-    /// <param name="getDate">Delegate for date calculation</param>
-    internal GermanHoliday(GermanHolidays.Id id, GermanHolidays.Type type, string name, CalcDateCallback getDate)
-        : this((GermanHolidays.Id?) id, type, name, getDate)
-    {
-    }
-
-    /// <summary>
-    /// Constructor for creating custom holidays.
-    /// </summary>
-    /// <param name="name">Holiday name</param>
-    /// <param name="getDate">Delegate for date calculation</param>
-    public GermanHoliday(string name, CalcDateCallback getDate)
-        : this(null, GermanHolidays.Type.Custom, name, getDate)
-    {
-    }
-
-    /// <summary>
-    /// Holiday id.
-    /// </summary>
-    public GermanHolidays.Id? Id { get; }
-
-    /// <summary>
-    /// Holiday type.
-    /// </summary>
-    public GermanHolidays.Type Type { get; set; }
-
-    /// <summary>
-    /// Holiday name.
-    /// </summary>
-    public string Name { get; set; }
-
-    /// <summary>
-    /// Holiday date.
-    /// </summary>
-    public DateTime Date => DoCalcDate();
-
-    /// <summary>
-    /// List of federal states where this is a holiday.
-    /// </summary>
-    public List<GermanFederalStates.Id> PublicHolidayStateIds { get; set; }
-
-    /// <summary>
-    /// Calls the function which does the calculation of the holiday.
-    /// </summary>
-    public CalcDateCallback DoCalcDate { get; set; }
-
-    /// <summary>
-    /// Checks whether this is a holiday specific to a federal state.
-    /// </summary>
-    /// <param name="stateId">The federal state id to check.</param>
-    /// <returns>Return true, if this is a holiday of this federal state, else false.</returns>
-    public bool IsPublicHoliday(GermanFederalStates.Id stateId)
-    {
-        return PublicHolidayStateIds.Exists(s => s == stateId);
-    }
-
-    public static bool operator ==(GermanHoliday? h1, GermanHoliday? h2)
-    {
-        if (h1 is null || h2 is null) return false;
-        return h1.Equals(h2);
-    }
-
-    public static bool operator !=(GermanHoliday? h1, GermanHoliday? h2)
-    {
-        if (h1 == null || h2 == null) return true;
-        return !h1.Equals(h2);
-    }
-
-    public static bool operator <(GermanHoliday? h1, GermanHoliday? h2)
-    {
-        if (h1 == null || h2 == null) return false;
-        return h1.Date < h2.Date && string.Compare(h1.Name, h2.Name, StringComparison.Ordinal) < 0;
-    }
-
-    public static bool operator >(GermanHoliday? h1, GermanHoliday? h2)
-    {
-        if (h1 == null || h2 == null) return false;
-        return h1.Date > h2.Date && string.Compare(h1.Name, h2.Name, StringComparison.Ordinal) > 0;
-    }
-
-    protected bool Equals(GermanHoliday other)
-    {
-        return Id == other.Id && Type == other.Type && Name == other.Name &&
-               Equals(PublicHolidayStateIds, other.PublicHolidayStateIds) && Equals(DoCalcDate, other.DoCalcDate);
-    }
-
-    public override bool Equals(object? obj)
-    {
-        if (obj is null) return false;
-        if (ReferenceEquals(this, obj)) return true;
-        return obj.GetType() == GetType() && Equals((GermanHoliday) obj);
-    }
-
-    public override int GetHashCode()
-    {
-        // ReSharper disable NonReadonlyMemberInGetHashCode
-        return HashCode.Combine(Id, (int) Type, Name, PublicHolidayStateIds, DoCalcDate);
-    }
-}
-
-
 public class GermanHolidays : List<GermanHoliday>
 {
-    private readonly DateTime _easterSunday;
+    private DateTime _easterSunday;
 
     /// <summary>
-    /// CTOR.
-    /// </summary>
-    private GermanHolidays()
-    {
-    }
-
-    /// <summary>
-    /// Constructor. Creates a collection of German public holidays and commemoration days.
+    /// CTOR. Creates an empty list of <see cref="GermanHoliday"/>.
     /// </summary>
     /// <param name="year">Year to use for holiday calculations (1583 - 4099).</param>
     public GermanHolidays(int year)
@@ -162,6 +17,14 @@ public class GermanHolidays : List<GermanHoliday>
             throw new ArgumentException("Year must be between 1583 and 4099.", nameof(year));
 
         Year = year;
+    }
+
+    /// <summary>
+    /// Adds a collection of German public holidays and commemoration days to the list of <see cref="GermanHoliday"/>.
+    /// </summary>
+    /// <exception cref="InvalidOperationException"></exception>
+    public void GenerateGermanHolidays()
+    {
         _easterSunday = GetEasterSunday();
 
         Add(new GermanHoliday(Id.Neujahr, Type.Public, "Neujahr", () => new DateTime(Year, 1, 1)));
@@ -220,12 +83,10 @@ public class GermanHolidays : List<GermanHoliday>
             }
             catch
             {
-                throw new InvalidOperationException(string.Format("HolidayId \"{0}\" wird in \"{1}\" nicht abgebildet.", holidayId,
-                    GetType()));
+                throw new InvalidOperationException($"HolidayId \"{holidayId}\" was not processed in \"{GetType()}\".");
             }
 #endif
     }
-
 
     /// <summary>
     /// Return the year German holidays were calculated for.
@@ -369,7 +230,7 @@ public class GermanHolidays : List<GermanHoliday>
     /// <param name="germanHoliday">GermanHoliday</param>
     public new void Add(GermanHoliday germanHoliday)
     {
-        if (germanHoliday.DoCalcDate().Year == Year)
+        if (germanHoliday.CalcDateFunc().Year == Year)
             base.Add(germanHoliday);
     }
 
@@ -420,7 +281,6 @@ public class GermanHolidays : List<GermanHoliday>
         return muttertag.AddDays(-7);
     }
 
-
     /// <summary>
     /// Get a list of German federal states for the specified holiday.
     /// </summary>
@@ -433,7 +293,7 @@ public class GermanHolidays : List<GermanHoliday>
 
         switch (holidayId)
         {
-            // general public holidays:
+            // general public holidays, are those where all federal states have the same public holidays defined
             case Id.Neujahr:
             case Id.KarFreitag:
             case Id.OsterSonntag:
@@ -464,10 +324,14 @@ public class GermanHolidays : List<GermanHoliday>
             case Id.Reformationstag:
                 publicHolidayStates.Add(GermanFederalStates.Id.Brandenburg);
                 publicHolidayStates.Add(GermanFederalStates.Id.MecklenburgVorpommern);
-                publicHolidayStates.Add(GermanFederalStates.Id.Saarland);
-                publicHolidayStates.Add(GermanFederalStates.Id.Sachsen);
                 publicHolidayStates.Add(GermanFederalStates.Id.SachsenAnhalt);
+                publicHolidayStates.Add(GermanFederalStates.Id.Sachsen);
                 publicHolidayStates.Add(GermanFederalStates.Id.Thueringen);
+                // since 2018:
+                publicHolidayStates.Add(GermanFederalStates.Id.Bremen);
+                publicHolidayStates.Add(GermanFederalStates.Id.Hamburg);
+                publicHolidayStates.Add(GermanFederalStates.Id.Niedersachsen);
+                publicHolidayStates.Add(GermanFederalStates.Id.SchleswigHolstein);
                 break;
             case Id.Allerheiligen:
                 publicHolidayStates.Add(GermanFederalStates.Id.BadenWuerttemberg);
@@ -612,11 +476,12 @@ public class GermanHolidays : List<GermanHoliday>
                         Add(germanHoliday);
                         break;
                     case ActionType.Replace:
-                        if (holidayId.HasValue)
+                        // The holiday must exist in the list
+                        if (holidayId.HasValue && this[holidayId.Value] is not null)
                         {
                             // replace the existing standard date only if a new date was given
                             if (tmpDateFrom != DateTime.MinValue)
-                                this[holidayId.Value]!.DoCalcDate = () => tmpDateFrom;
+                                this[holidayId.Value]!.CalcDateFunc = () => tmpDateFrom;
                             this[holidayId.Value]!.Type = holidayType;
                             this[holidayId.Value]!.Name = name;
                             // replace state ids, if any were supplied

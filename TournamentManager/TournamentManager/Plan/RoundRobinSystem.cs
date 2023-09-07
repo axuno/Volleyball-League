@@ -7,7 +7,7 @@ namespace TournamentManager.Plan;
 /// </summary>
 public enum RefereeType
 {
-    HomeTeam,
+    HomeTeam = 1,
     GuestTeam,
     OtherTeamOfGroup
 }
@@ -17,7 +17,7 @@ public enum RefereeType
 /// </summary>
 public enum LegType
 {
-    First,
+    First = 1,
     Return
 }
 

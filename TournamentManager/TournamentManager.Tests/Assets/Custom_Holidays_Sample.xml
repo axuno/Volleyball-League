@@ -1,0 +1,158 @@
+﻿<?xml version='1.0' encoding="UTF-8" standalone='yes'?>
+<!-- element names are not case sensitive -->
+<!-- Do NOT supply PublicHolidayStateIds for federal public holidays -->
+<!-- Name and Type are required elements except for Remove action -->
+<Holidays>
+	<!-- Permanent Holidays in Augsburg and Volleyball League Augsburg -->
+    <Holiday action="replace" id="AugsburgerFriedensfest">
+    	<Type>Public</Type>
+        <Name>Augsburger Friedensfest</Name>´
+		<PublicHolidayStateIds>
+        	<StateId>Bayern</StateId>
+        </PublicHolidayStateIds>
+    </Holiday>
+    <Holiday action="replace" id="HeiligerAbend">
+    	<Type>Custom</Type>
+        <Name>Heiliger Abend</Name>
+    </Holiday>
+    <Holiday action="replace" id="RosenMontag">
+    	<Type>Custom</Type>
+        <Name>Rosenmontag</Name>
+    </Holiday>
+    <Holiday action="replace" id="FaschingsDienstag">
+    	<Type>Custom</Type>
+        <Name>Faschingsdienstag</Name>
+    </Holiday>
+    <Holiday action="replace" id="Silvester">
+    	<Type>Custom</Type>
+        <Name>Silvester</Name>
+    </Holiday>
+	<!-- School Holiday in Bavaria For School Year 2019/20 -->
+	<Holiday action="merge">
+		<Type>School</Type>
+		<DateFrom>2019-10-28</DateFrom>
+		<DateTo>2019-10-31</DateTo>
+		<Name>Herbstferien</Name>
+		<PublicHolidayStateIds>
+			<StateId>Bayern</StateId>
+		</PublicHolidayStateIds>
+	</Holiday>
+	<Holiday action="merge">
+		<Type>School</Type>
+		<DateFrom>2019-11-20</DateFrom>
+		<DateTo>2019-11-20</DateTo>
+		<Name>Herbstferien</Name>
+		<PublicHolidayStateIds>
+			<StateId>Bayern</StateId>
+		</PublicHolidayStateIds>
+	</Holiday>
+	<Holiday action="merge">
+		<Type>School</Type>
+		<DateFrom>2019-12-23</DateFrom>
+		<DateTo>2020-01-04</DateTo>
+		<Name>Weihnachtsferien</Name>
+		<PublicHolidayStateIds>
+			<StateId>Bayern</StateId>
+		</PublicHolidayStateIds>
+	</Holiday>
+	<Holiday action="merge">
+		<Type>School</Type>
+		<DateFrom>2020-02-24</DateFrom>
+		<DateTo>2020-02-28</DateTo>
+		<Name>Winterferien</Name>
+		<PublicHolidayStateIds>
+			<StateId>Bayern</StateId>
+		</PublicHolidayStateIds>
+	</Holiday>
+	<Holiday action="merge">
+		<Type>School</Type>
+		<DateFrom>2020-04-06</DateFrom>
+		<DateTo>2020-04-18</DateTo>
+		<Name>Osterferien</Name>
+		<PublicHolidayStateIds>
+			<StateId>Bayern</StateId>
+		</PublicHolidayStateIds>
+	</Holiday>
+	<Holiday action="merge">
+		<Type>School</Type>
+		<DateFrom>2020-06-02</DateFrom>
+		<DateTo>2020-06-13</DateTo>
+		<Name>Pfingstferien</Name>
+		<PublicHolidayStateIds>
+			<StateId>Bayern</StateId>
+		</PublicHolidayStateIds>
+	</Holiday>
+	<Holiday action="merge">
+		<Type>School</Type>
+		<DateFrom>2020-07-27</DateFrom>
+		<DateTo>2020-09-07</DateTo>
+		<Name>Sommerferien</Name>
+		<PublicHolidayStateIds>
+			<StateId>Bayern</StateId>
+		</PublicHolidayStateIds>
+	</Holiday>
+	<!-- School Holiday in Bavaria For School Year 2020/21 -->
+	<Holiday action="merge">
+		<Type>School</Type>
+		<DateFrom>2020-10-31</DateFrom>
+		<DateTo>2020-11-06</DateTo>
+		<Name>Herbstferien</Name>
+		<PublicHolidayStateIds>
+			<StateId>Bayern</StateId>
+		</PublicHolidayStateIds>
+	</Holiday>
+	<Holiday action="merge">
+		<Type>School</Type>
+		<DateFrom>2020-11-18</DateFrom>
+		<DateTo>2020-11-18</DateTo>
+		<Name>Herbstferien</Name>
+		<PublicHolidayStateIds>
+			<StateId>Bayern</StateId>
+		</PublicHolidayStateIds>
+	</Holiday>
+	<Holiday action="merge">
+		<Type>School</Type>
+		<DateFrom>2020-12-23</DateFrom>
+		<DateTo>2021-01-09</DateTo>
+		<Name>Weihnachtsferien</Name>
+		<PublicHolidayStateIds>
+			<StateId>Bayern</StateId>
+		</PublicHolidayStateIds>
+	</Holiday>
+	<Holiday action="merge">
+		<Type>School</Type>
+		<DateFrom>2021-02-15</DateFrom>
+		<DateTo>2021-02-19</DateTo>
+		<Name>Winterferien</Name>
+		<PublicHolidayStateIds>
+			<StateId>Bayern</StateId>
+		</PublicHolidayStateIds>
+	</Holiday>
+	<Holiday action="merge">
+		<Type>School</Type>
+		<DateFrom>2021-03-29</DateFrom>
+		<DateTo>2021-04-10</DateTo>
+		<Name>Osterferien</Name>
+		<PublicHolidayStateIds>
+			<StateId>Bayern</StateId>
+		</PublicHolidayStateIds>
+	</Holiday>
+	<Holiday action="merge">
+		<Type>School</Type>
+		<DateFrom>2021-05-25</DateFrom>
+		<DateTo>2021-06-04</DateTo>
+		<Name>Pfingstferien</Name>
+		<PublicHolidayStateIds>
+			<StateId>Bayern</StateId>
+		</PublicHolidayStateIds>
+	</Holiday>
+	<Holiday action="merge">
+		<Type>School</Type>
+		<DateFrom>2021-07-30</DateFrom>
+		<DateTo>2021-09-13</DateTo>
+		<Name>Sommerferien</Name>
+		<PublicHolidayStateIds>
+			<StateId>Bayern</StateId>
+		</PublicHolidayStateIds>
+	</Holiday>
+</Holidays>

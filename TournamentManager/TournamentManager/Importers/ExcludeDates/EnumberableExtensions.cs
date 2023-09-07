@@ -1,6 +1,6 @@
-﻿namespace TournamentManager.Importers.ExcludedDates;
+﻿namespace TournamentManager.Importers.ExcludeDates;
 
-public static class EnumerableExtensions
+public static class EnumerableValueTupleExtensions
 {
     public static IEnumerable<(int First, int Last)> ConsecutiveRanges(this IEnumerable<int> source)
     {
@@ -39,12 +39,12 @@ public static class EnumerableExtensions
 
         for (var more = e.MoveNext(); more;)
         {
-            if(e.Current is null) continue;
+            if (e.Current is null) continue;
 
             var days = 1;
             Axuno.Tools.GermanHoliday first = e.Current, last = first, next;
-            while ((more = e.MoveNext() && e.Current is not null) && 
-                   (next = e.Current!).Date > last.Date && 
+            while ((more = e.MoveNext() && e.Current is not null) &&
+                   (next = e.Current!).Date > last.Date &&
                    (ReferenceEquals(first, next) || (next.Date - first.Date).Days == days++ && next.Name == first.Name))
                 last = next;
             yield return (first.Date, last.Date, first.Name);

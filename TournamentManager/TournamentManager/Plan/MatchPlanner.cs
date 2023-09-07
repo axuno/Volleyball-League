@@ -16,7 +16,6 @@ public class MatchPlanner
     private readonly ITenantContext _tenantContext;
     private readonly AppDb _appDb;
     private static TournamentEntity _tournament = new();
-    private readonly ILoggerFactory _loggerFactory;
     private readonly ILogger<MatchPlanner> _logger;
     private readonly AvailableMatchDates _availableMatchDates;
     private readonly Axuno.Tools.DateAndTime.TimeZoneConverter _timeZoneConverter;
@@ -36,7 +35,6 @@ public class MatchPlanner
         _appDb = tenantContext.DbContext.AppDb;
         _timeZoneConverter = timeZoneConverter;
         _availableMatchDates = new AvailableMatchDates(tenantContext, timeZoneConverter, loggerFactory.CreateLogger<AvailableMatchDates>());
-        _loggerFactory = loggerFactory;
         _logger = loggerFactory.CreateLogger<MatchPlanner>();
     }
 
@@ -47,39 +45,7 @@ public class MatchPlanner
         AreEntitiesLoaded = true;
     }
 
-    /// <summary>
-    /// Generates dates which are excluded for the tournament with <see cref="TournamentContext.MatchPlanTournamentId"/>
-    /// and saves them to persistent storage. Existing entries for the tournament are removed.
-    /// </summary>
-    /// <param name="excelImportFile"></param>
-    /// <param name="cancellationToken"></param>
-    /// <returns></returns>
-    public async Task GenerateExcludedDates(string excelImportFile, CancellationToken cancellationToken)
-    {
-        var roundLegPeriods = await _appDb.RoundRepository.GetRoundLegPeriodAsync(new PredicateExpression(
-            RoundLegPeriodFields.TournamentId == _tenantContext.TournamentContext.MatchPlanTournamentId),
-            cancellationToken);
 
-        var minDate = roundLegPeriods.Min(leg => leg.StartDateTime);
-        var maxDate = roundLegPeriods.Max(leg => leg.EndDateTime);
-
-        // remove all existing excluded dates for the tournament
-        var filter = new RelationPredicateBucket(ExcludeMatchDateFields.TournamentId ==
-                                                 _tenantContext.TournamentContext.MatchPlanTournamentId);
-        await _appDb.GenericRepository.DeleteEntitiesDirectlyAsync(typeof(ExcludeMatchDateEntity), filter,
-            cancellationToken);
-
-        var excludedDates = new EntityCollection<ExcludeMatchDateEntity>(
-            new TournamentManager.Importers.ExcludedDates.ExcelImporter(
-                    _timeZoneConverter,
-                    _loggerFactory.CreateLogger<Importers.ExcludedDates.ExcelImporter>())
-                .Import(excelImportFile, new DateTimePeriod(minDate, maxDate)));
-
-        foreach (var excludeMatchDateEntity in excludedDates)
-            excludeMatchDateEntity.TournamentId = _tenantContext.TournamentContext.MatchPlanTournamentId;
-            
-        await _appDb.GenericRepository.SaveEntitiesAsync(excludedDates, false, false, cancellationToken);
-    }
 
     public async Task GenerateAvailableMatchDatesAsync(ClearMatchDates clearMatchDates, RoundEntity round,
         CancellationToken cancellationToken)

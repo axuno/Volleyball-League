@@ -1,6 +1,6 @@
 namespace TournamentManager;
 
-public class DateTimePeriod
+public record struct DateTimePeriod
 {
     private DateTime? _start;
     private DateTime? _end;
