@@ -144,7 +144,7 @@ public class RankingUpdateTask : IBackgroundTask
                     await TenantContext.DbContext.AppDb.RoundRepository.GetMatchRuleAsync(roundId, cancellationToken);
                 // filter matches to only contain a single round
                 var newRanking = new Ranking(matchesPlayed.Where(mp => mp.RoundId == roundId),
-                    matchesToPlay.Where(mtp => mtp.RoundId == roundId), (RankComparerEnum) matchRule.RankComparer);
+                    matchesToPlay.Where(mtp => mtp.RoundId == roundId), (RankComparison) matchRule.RankComparer);
                 // Save the current last update
                 var currentLastUpdated = currentRanking.Any() ? currentRanking.Where(l => l.RoundId == roundId).Max(l => l.ModifiedOn) : DateTime.MinValue;
                 var newRankingList = newRanking.GetList(out var newLastUpdated);

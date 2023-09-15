@@ -5,25 +5,15 @@ namespace TournamentManager.Ranking;
 /// </summary>
 public class Rank
 {
-    public Rank()
-    {
-        Number = -1;
-        TeamId = -1;
-        MatchesWonAndLost = new PointResult(0,0);
-        MatchPoints = new PointResult(0, 0);
-        SetPoints = new PointResult(0, 0);
-        BallPoints = new PointResult(0, 0);
-    }
-
     /// <summary>
     /// The number of the rank.
     /// </summary>
-    public int Number { get; internal set; }
+    public int Number { get; internal set; } = -1;
 
     /// <summary>
     /// The team ID.
     /// </summary>
-    public long TeamId { get; internal set; }
+    public long TeamId { get; internal set; } = -1;
 
     /// <summary>
     /// The number of matches played.
@@ -38,25 +28,30 @@ public class Rank
     /// <summary>
     /// The number of matches the team won and lost.
     /// </summary>
-    public PointResult MatchesWonAndLost { get; internal set; }
+    public PointResult MatchesWon { get; internal set; } = new(0,0);
 
     /// <summary>
     /// The number of match points won and lost.
     /// </summary>
-    public PointResult MatchPoints { get; internal set; }
+    public PointResult MatchPoints { get; internal set; } = new(0, 0);
+
+    /// <summary>
+    /// The number of sets won and lost.
+    /// </summary>
+    public PointResult SetsWon { get; internal set; } = new(0, 0);
 
     /// <summary>
     /// The number of set points won and lost.
     /// </summary>
-    public PointResult SetPoints { get; internal set; }
+    public PointResult SetPoints { get; internal set; } = new(0, 0);
 
     /// <summary>
     /// The number of ball points won and lost.
     /// </summary>
-    public PointResult BallPoints { get; internal set; }
+    public PointResult BallPoints { get; internal set; } = new(0, 0);
 
     /// <summary>
-    /// Gets the rank a string.
+    /// Gets the rank as a string.
     /// </summary>
     /// <returns>Returns the rank as a string.</returns>
     public override string ToString()
