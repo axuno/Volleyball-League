@@ -28,27 +28,27 @@ public class Rank
     /// <summary>
     /// The number of matches the team won and lost.
     /// </summary>
-    public PointResult MatchesWon { get; internal set; } = new(0,0);
+    public PointResult MatchesWon { get; } = new(0,0);
 
     /// <summary>
     /// The number of match points won and lost.
     /// </summary>
-    public PointResult MatchPoints { get; internal set; } = new(0, 0);
+    public PointResult MatchPoints { get; } = new(0, 0);
 
     /// <summary>
     /// The number of sets won and lost.
     /// </summary>
-    public PointResult SetsWon { get; internal set; } = new(0, 0);
+    public PointResult SetsWon { get; } = new(0, 0);
 
     /// <summary>
     /// The number of set points won and lost.
     /// </summary>
-    public PointResult SetPoints { get; internal set; } = new(0, 0);
+    public PointResult SetPoints { get; } = new(0, 0);
 
     /// <summary>
     /// The number of ball points won and lost.
     /// </summary>
-    public PointResult BallPoints { get; internal set; } = new(0, 0);
+    public PointResult BallPoints { get; } = new(0, 0);
 
     /// <summary>
     /// Gets the rank as a string.

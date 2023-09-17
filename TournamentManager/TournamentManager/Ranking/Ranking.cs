@@ -7,7 +7,7 @@ namespace TournamentManager.Ranking;
 /// </summary>
 public class Ranking
 {
-    private readonly IRankComparer _rankComparer;
+    internal readonly IRankComparer RankComparer;
 
     /// <summary>
     /// Ctor.
@@ -19,7 +19,7 @@ public class Ranking
     {
         MatchesPlayed = matchesComplete.ToList().AsReadOnly();
         MatchesToPlay = matchesToPlay.ToList().AsReadOnly();
-        _rankComparer = new RankComparer(rankComparison) {
+        RankComparer = new RankComparer(rankComparison) {
             UpperDateLimit = DateTime.MaxValue,
             Ranking = this
         };
@@ -57,7 +57,7 @@ public class Ranking
     /// <returns>Returns the <see cref="RankingList"/> for the given upper date limit.</returns>
     public RankingList GetList(DateTime upperDateLimit, out DateTime lastUpdatedOn)
     {
-        _rankComparer.UpperDateLimit = upperDateLimit;
+        RankComparer.UpperDateLimit = upperDateLimit;
         var rankingList = GetSortedList(GetUnsortedList(upperDateLimit, out lastUpdatedOn));
         rankingList.LastUpdatedOn = lastUpdatedOn;
         rankingList.UpperDateLimit = upperDateLimit;
@@ -66,7 +66,7 @@ public class Ranking
 
     private RankingList GetSortedList(RankingList rankingList)
     {
-        rankingList.Sort(_rankComparer);
+        rankingList.Sort(RankComparer);
 
         for (var i = 0; i < rankingList.Count; i++)
         {

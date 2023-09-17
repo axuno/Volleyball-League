@@ -1,6 +1,5 @@
 ﻿using NUnit.Framework;
 using TournamentManager.DAL.EntityClasses;
-using TournamentManager.ExtensionMethods;
 using TournamentManager.DAL.TypedViewClasses;
 using TournamentManager.Ranking;
 
@@ -14,11 +13,11 @@ public class HroThreeWinningSetsRankComparisonTests
     {
         var matchId = 1;
         var matches = new List<MatchEntity> {
-            GetMatch(matchId++, 1, 2, "25:0 25:0 25:0"),
-            GetMatch(matchId, 2, 1, "25:0 25:0 25:0")
+            RankingTestUtilities.GetMatch(matchId++, 1, 2, "25:0 25:0 25:0"),
+            RankingTestUtilities.GetMatch(matchId, 2, 1, "25:0 25:0 25:0")
         };
 
-        var ranking = new TournamentManager.Ranking.Ranking(CreateMatchCompleteRows(matches),
+        var ranking = new TournamentManager.Ranking.Ranking(RankingTestUtilities.CreateMatchCompleteRows(matches),
             new List<MatchToPlayRawRow>(), RankComparison.HroThreeWinningSetsRankComparison);
 
         var rl= ranking.GetList(out var updatedOn);
@@ -30,67 +29,220 @@ public class HroThreeWinningSetsRankComparisonTests
         Assert.That(rl[0].TeamId, Is.EqualTo(2));
     }
 
-    //[TestCase("25:0 25:0 25:0", "0:25 0:25 0:25", 1, 2)]
-    [TestCase("0:25 0:25 0:25", "25:0 25:0 25:0", 2, 1)]
-    public void Ranking_Based_On_MatchPoints_Won(string xResult, string yResult, long expected1,long expected2)
+    [Test]
+    public void MatchPointsWonDecideTest()
     {
-        var matchId = 1;
-        var matches = new List<MatchEntity> {
-            GetMatch(matchId++, 1, 2, xResult),
-            GetMatch(matchId, 2, 1, yResult)
+        var comparer = new RankComparer(RankComparison.HroThreeWinningSetsRankComparison);
+        var ranks = new List<Rank> {
+            new() {
+                TeamId = 1,
+                MatchPoints = { Home = 3, Guest = 0 }, // one match won
+                MatchesWon = { Home = 1, Guest = 0 }, 
+                SetPoints = { Home = 3, Guest = 1 },
+                SetsWon = { Home = 3, Guest = 1 },
+                BallPoints = { Home = 75, Guest = 0 },
+                MatchesPlayed = 1
+            },
+            new() {
+                TeamId = 2,
+                MatchPoints = { Home = 0, Guest = 3 }, // no match won
+                MatchesWon = { Home = 0, Guest = 1 },
+                SetPoints = { Home = 0, Guest = 3 },
+                SetsWon = { Home = 0, Guest = 3 },
+                BallPoints = { Home = 0, Guest = 25 },
+                MatchesPlayed = 1
+            }
         };
 
-        var ranking = new TournamentManager.Ranking.Ranking(CreateMatchCompleteRows(matches),
-            new List<MatchToPlayRawRow>(), RankComparison.HroThreeWinningSetsRankComparison);
+        ranks.Sort(comparer);
+        var teamId1 = ranks[0].TeamId;
+        // swap x and y of sorted list for the comparer
+        ranks = new List<Rank> { ranks[1], ranks[0] };
+        ranks.Sort(comparer);
+        var teamId2 = ranks[0].TeamId;
 
-        var rl= ranking.GetList(out var updatedOn);
-
-        Assert.That(rl.Count, Is.EqualTo(2));
-        Assert.That(rl[0].TeamId, Is.EqualTo(expected1));
-        Assert.That(rl[1].TeamId, Is.EqualTo(expected2));
+        Assert.That(teamId1, Is.EqualTo(1));
+        Assert.That(teamId2, Is.EqualTo(1));
     }
 
-
-    private IList<MatchCompleteRawRow> CreateMatchCompleteRows(List<MatchEntity> matches)
+    [Test]
+    public void MatchesWonDecideTest()
     {
-        var completeMatches = new List<MatchCompleteRawRow>();
-        foreach (var match in matches)
-        {
-            completeMatches.Add(new MatchCompleteRawRow {
-                Id = match.Id,
-                HomeTeamId = match.HomeTeamId,
-                GuestTeamId = match.GuestTeamId,
-                HomeMatchPoints = match.HomePoints,
-                GuestMatchPoints = match.GuestPoints,
-                HomeSetPoints = match.Sets.Sum(s => s.HomeSetPoints),
-                GuestSetPoints = match.Sets.Sum(s => s.GuestSetPoints),
-                HomeBallPoints = match.Sets.Sum(s => s.HomeBallPoints),
-                GuestBallPoints= match.Sets.Sum(s => s.GuestBallPoints),
-                MatchDate = match.RealStart
-            });
-        }
-
-        return completeMatches;
-    }
-
-    private MatchEntity GetMatch(long matchId, long home, long guest, string setResults)
-    {
-        var matchRule = GetMatchRule_TieBreakRule();
-        var setRule = GetSetRule();
-        var dateTime = DateTime.UtcNow.Date.AddHours(-4);
-        var match = new MatchEntity(matchId) {
-            HomeTeamId = home,
-            GuestTeamId = guest,
-            RealStart = dateTime,
-            RealEnd = dateTime.AddHours(2),
-            CreatedOn = dateTime,
-            ModifiedOn = dateTime
+        var comparer = new RankComparer(RankComparison.HroThreeWinningSetsRankComparison);
+        var ranks = new List<Rank> {
+            new() {
+                TeamId = 1,
+                MatchPoints = { Home = 0, Guest = 0 }, 
+                MatchesWon = { Home = 1, Guest = 0 }, // one match won
+                SetPoints = { Home = 3, Guest = 1 },
+                SetsWon = { Home = 3, Guest = 1 },
+                BallPoints = { Home = 75, Guest = 0 },
+                MatchesPlayed = 1
+            },
+            new() {
+                TeamId = 2,
+                MatchPoints = { Home = 0, Guest = 0 }, 
+                MatchesWon = { Home = 0, Guest = 0 },// no match won
+                SetPoints = { Home = 0, Guest = 3 },
+                SetsWon = { Home = 0, Guest = 3 },
+                BallPoints = { Home = 0, Guest = 25 },
+                MatchesPlayed = 1
+            }
         };
-        match.Sets.Add(match.Id, setResults);
-        _ = match.Sets.CalculateSetPoints(setRule, matchRule);
-        _ = match.CalculateMatchPoints(matchRule);
 
-        return match;
+        ranks.Sort(comparer);
+        var teamId1 = ranks[0].TeamId;
+        // swap x and y of sorted list for the comparer
+        ranks = new List<Rank> { ranks[0], ranks[1] };
+        ranks.Sort(comparer);
+        var teamId2 = ranks[0].TeamId;
+
+        Assert.That(teamId1, Is.EqualTo(1));
+        Assert.That(teamId2, Is.EqualTo(1));
+    }
+
+    [Test]
+    public void SetPointsDifferenceDecidesTest()
+    {
+        var comparer = new RankComparer(RankComparison.HroThreeWinningSetsRankComparison);
+        var ranks = new List<Rank> {
+            new() {
+                TeamId = 1,
+                MatchPoints = { Home = 3, Guest = 0 },
+                MatchesWon = { Home = 1, Guest = 0 },
+                SetPoints = { Home = 3, Guest = 1 }, // one set lost
+                SetsWon = { Home = 3, Guest = 1 },
+                BallPoints = { Home = 50, Guest = 25 },
+                MatchesPlayed = 1
+            },
+            new() {
+                TeamId = 2,
+                MatchPoints = { Home = 3, Guest = 0 },
+                MatchesWon = { Home = 1, Guest = 0 },
+                SetPoints = { Home = 3, Guest = 0 }, // no set lost
+                SetsWon = { Home = 3, Guest = 0 },
+                BallPoints = { Home = 75, Guest = 0 },
+                MatchesPlayed = 1
+            }
+        };
+
+        ranks.Sort(comparer);
+        var teamId1 = ranks[0].TeamId;
+        // swap x and y of sorted list for the comparer
+        ranks = new List<Rank> { ranks[0], ranks[1] };
+        ranks.Sort(comparer);
+        var teamId2 = ranks[0].TeamId;
+
+        Assert.That(teamId1, Is.EqualTo(2));
+        Assert.That(teamId2, Is.EqualTo(2));
+    }
+
+    [Test]
+    public void SetsWonDecideTest()
+    {
+        var comparer = new RankComparer(RankComparison.HroThreeWinningSetsRankComparison);
+        var ranks = new List<Rank> {
+            new() {
+                TeamId = 1,
+                MatchPoints = { Home = 3, Guest = 0 },
+                MatchesWon = { Home = 1, Guest = 0 },
+                SetPoints = { Home = 3, Guest = 0 },
+                SetsWon = { Home = 4, Guest = 0 }, // 4 sets won
+                BallPoints = { Home = 75, Guest = 0 },
+                MatchesPlayed = 1
+            },
+            new() {
+                TeamId = 2,
+                MatchPoints = { Home = 3, Guest = 0 },
+                MatchesWon = { Home = 1, Guest = 0 },
+                SetPoints = { Home = 3, Guest = 0 },
+                SetsWon = { Home = 3, Guest = 0 }, // 3 sets won
+                BallPoints = { Home = 75, Guest = 0 },
+                MatchesPlayed = 1
+            }
+        };
+
+        ranks.Sort(comparer);
+        var teamId1 = ranks[0].TeamId;
+        // swap x and y of sorted list for the comparer
+        ranks = new List<Rank> { ranks[1], ranks[0] };
+        ranks.Sort(comparer);
+        var teamId2 = ranks[0].TeamId;
+
+        Assert.That(teamId1, Is.EqualTo(1));
+        Assert.That(teamId2, Is.EqualTo(1));
+    }
+
+    [Test]
+    public void BallPointsDifferenceDecidesTest()
+    {
+        var comparer = new RankComparer(RankComparison.HroThreeWinningSetsRankComparison);
+        var ranks = new List<Rank> {
+            new() {
+                TeamId = 1,
+                MatchPoints = { Home = 3, Guest = 0 },
+                MatchesWon = { Home = 1, Guest = 0 },
+                SetPoints = { Home = 3, Guest = 0 },
+                SetsWon = { Home = 3, Guest = 0 },
+                BallPoints = { Home = 75, Guest = 1 }, // one ball point lost
+                MatchesPlayed = 1
+            },
+            new() {
+                TeamId = 2,
+                MatchPoints = { Home = 3, Guest = 0 },
+                MatchesWon = { Home = 1, Guest = 0 },
+                SetPoints = { Home = 3, Guest = 0 },
+                SetsWon = { Home = 3, Guest = 0 },
+                BallPoints = { Home = 75, Guest = 0 }, // no ball point lost
+                MatchesPlayed = 1
+            }
+        };
+
+        ranks.Sort(comparer);
+        var teamId1 = ranks[0].TeamId;
+        // swap x and y of sorted list for the comparer
+        ranks = new List<Rank> { ranks[0], ranks[1] };
+        ranks.Sort(comparer);
+        var teamId2 = ranks[0].TeamId;
+
+        Assert.That(teamId1, Is.EqualTo(2));
+        Assert.That(teamId2, Is.EqualTo(2));
+    }
+
+    [Test]
+    public void BallPointsWonDecideTest()
+    {
+        var comparer = new RankComparer(RankComparison.HroThreeWinningSetsRankComparison);
+        var ranks = new List<Rank> {
+            new() {
+                TeamId = 1,
+                MatchPoints = { Home = 3, Guest = 0 },
+                MatchesWon = { Home = 1, Guest = 0 },
+                SetPoints = { Home = 3, Guest = 0 },
+                SetsWon = { Home = 3, Guest = 0 },
+                BallPoints = { Home = 76, Guest = 1 }, // same ball point difference, but 1 more won
+                MatchesPlayed = 1
+            },
+            new() {
+                TeamId = 2,
+                MatchPoints = { Home = 3, Guest = 0 },
+                MatchesWon = { Home = 1, Guest = 0 },
+                SetPoints = { Home = 3, Guest = 0 },
+                SetsWon = { Home = 3, Guest = 0 },
+                BallPoints = { Home = 75, Guest = 0 },
+                MatchesPlayed = 1
+            }
+        };
+
+        ranks.Sort(comparer);
+        var teamId1 = ranks[0].TeamId;
+        // swap x and y of sorted list for the comparer
+        ranks = new List<Rank> { ranks[1], ranks[0] };
+        ranks.Sort(comparer);
+        var teamId2 = ranks[0].TeamId;
+
+        Assert.That(teamId1, Is.EqualTo(1));
+        Assert.That(teamId2, Is.EqualTo(1));
     }
 
     /*
@@ -443,43 +595,6 @@ public class HroThreeWinningSetsRankComparisonTests
         //return new List<MatchCompleteRawRow>();
     }
     */
-    private static MatchRuleEntity GetMatchRule_NoTieBreakRule()
-    {
-        return new MatchRuleEntity {
-            BestOf = true,
-            NumOfSets = 3,
-            PointsMatchWon = 3,
-            PointsMatchLost = 0,
-            PointsMatchTie = 1,
-            RankComparer = (int) RankComparison.HroThreeWinningSetsRankComparison
-        };
-    }
 
-    private static MatchRuleEntity GetMatchRule_TieBreakRule()
-    {
-        return new MatchRuleEntity {
-            BestOf = true,
-            NumOfSets = 3,
-            PointsMatchWon = 3,
-            PointsMatchLost = 0,
-            PointsMatchWonAfterTieBreak = 2,
-            PointsMatchLostAfterTieBreak = 1,
-            PointsMatchTie = 1,
-            RankComparer = (int) RankComparison.HroThreeWinningSetsRankComparison
-        };
-    }
-
-    private static SetRuleEntity GetSetRule()
-    {
-        return new SetRuleEntity {
-            NumOfPointsToWinRegular = 25,
-            NumOfPointsToWinTiebreak = 15,
-            PointsDiffToWinRegular = 2,
-            PointsDiffToWinTiebreak = 2,
-            PointsSetWon = 1,
-            PointsSetLost = 0,
-            PointsSetTie = 0
-        };
-    }
     
 }

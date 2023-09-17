@@ -1,16 +1,27 @@
 ﻿namespace TournamentManager.Ranking;
+
+/// <summary>
+/// The <see cref="IComparer{T}"/> used to sort a list of <see cref="Rank"/>s.
+/// </summary>
 internal partial class RankComparer : IRankComparer
 {
     // if true, a recursive call has started
     private bool _directCompareRankingInProgress = false;
 
     /// <summary>
-    /// Required CTOR for <see cref="Activator.CreateInstance(Type)"/> used by <see cref="Ranking"/>.
+    /// CTOR.
     /// </summary>
+    /// <param name="rankComparison"></param>
     public RankComparer(RankComparison rankComparison)
     {
         SetDefinitions(rankComparison);
+        RankComparison = rankComparison;
     }
+
+    /// <summary>
+    /// Gets the <see cref="TournamentManager.Ranking.RankComparison"/> used by the comparer.
+    /// </summary>
+    public RankComparison RankComparison { get; }
 
     public delegate bool ComparisonDelegate<in TR1, in TR2, out TO>(Rank x, Rank y, out int result);
 
@@ -20,7 +31,6 @@ internal partial class RankComparer : IRankComparer
     /// <exception cref="NullReferenceException"></exception>
     public int Compare(Rank? x, Rank? y)
     {
-        CheckForNull();
         System.Diagnostics.Debug.Assert(x != null && y != null, @"Rank arguments must not be null");
 
         foreach (var comparisonDelegate in Comparisons)
@@ -38,12 +48,7 @@ internal partial class RankComparer : IRankComparer
     public DateTime UpperDateLimit { get; set; } = DateTime.MaxValue;
 
     /// <inheritdoc/>
-    public Ranking? Ranking { get; set; }
-
-    private void CheckForNull()
-    {
-        if (Ranking is null) throw new InvalidOperationException("Ranking property must not be null");
-    }
+    public Ranking Ranking { get; set; } = null!;
 
     /// <summary>
     /// Teams which have no matches played (yet) go to the end of the ranking table.
@@ -298,7 +303,7 @@ internal partial class RankComparer : IRankComparer
         if (!_directCompareRankingInProgress && x.MatchesPlayed > 0 && y.MatchesPlayed > 0)
         {
             _directCompareRankingInProgress = true;
-            var directCompareRanking = Ranking!.GetList(new[] { x.TeamId, y.TeamId }, UpperDateLimit);
+            var directCompareRanking = Ranking.GetList(new[] { x.TeamId, y.TeamId }, UpperDateLimit);
             _directCompareRankingInProgress = false;
 
             if (directCompareRanking[0].TeamId == x.TeamId)

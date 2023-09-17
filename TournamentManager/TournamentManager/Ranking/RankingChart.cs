@@ -7,7 +7,7 @@ using OxyPlot.Series;
 namespace TournamentManager.Ranking;
 
 /// <summary>
-/// Class for creating a <see cref="RankingChart"/> image from a <see cref="Ranking"/> instance.
+/// Class for creating a <see cref="RankingChart"/> image from a <see cref="TournamentManager.Ranking.Ranking"/> instance.
 /// </summary>
 public class RankingChart
 {
@@ -16,10 +16,6 @@ public class RankingChart
 
     public class ChartSettings
     {
-        public ChartSettings()
-        {
-            GraphBackgroundColorArgb = OxyColor.FromRgb(0xEF, 0xFF, 0xEF).ToByteString();
-        }
         /// <summary>
         /// Gets or sets the width of the graph.
         /// </summary>
@@ -36,12 +32,12 @@ public class RankingChart
         /// <summary>
         /// Gets or sets the graph background color as a decimal byte string with decimal format &quot;{A},{R},{G},{B}&quot; or &quot;#AARRGGBB&quot; in hex format.
         /// </summary>
-        public string GraphBackgroundColorArgb { get; set; }
+        public string GraphBackgroundColorArgb { get; set; } = OxyColor.FromRgb(0xEF, 0xFF, 0xEF).ToByteString();
 
         /// <summary>
         /// Gets or sets the plot area background color as a decimal byte string with decimal format &quot;{A},{R},{G},{B}&quot; or &quot;#AARRGGBB&quot; in hex format.
         /// </summary>
-        public string PlotAreaBackgroundColorArgb { get; set; } = string.Empty;
+        public string PlotAreaBackgroundColorArgb { get; set; } = OxyColor.FromRgb(0xFF, 0xFF, 0xFF).ToByteString();
 
         /// <summary>
         /// Gets or sets whether the legend will be rendered.
@@ -75,7 +71,7 @@ public class RankingChart
         Ranking = ranking;
         Settings = settings;
         _rankingHistory = ranking.GetRankingHistory();
-        _teams = teams ?? throw new ArgumentNullException(nameof(teams));
+        _teams = teams;
     }
 
     /// <summary>
