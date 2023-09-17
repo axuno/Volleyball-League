@@ -106,7 +106,7 @@ internal partial class RankComparer
     }
 
     /// <summary>
-    /// The <see cref="IRankComparer"/> for the rules of the Volleyball-Stadtliga Rostock, starting with season 2023/24
+    /// The rules of the Volleyball-Stadtliga Rostock, starting with season 2023/24
     /// for 3 winning set matches, and applying the 3-point rule.
     /// </summary>
     private void SetHroThreeWinningSetsRankComparer()
