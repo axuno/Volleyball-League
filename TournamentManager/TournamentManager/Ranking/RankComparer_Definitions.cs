@@ -22,6 +22,10 @@ internal partial class RankComparer
         }
     }
 
+    /// <summary>
+    /// The rules Augsburg volleyball leagues until August 2023
+    /// for 2 or 3 winning set matches (depending on season)
+    /// </summary>
     private void SetLegacyRankComparer()
     {
         Description =
