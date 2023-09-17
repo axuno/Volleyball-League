@@ -1,4 +1,3 @@
-using System.Collections.ObjectModel;
 using TournamentManager.DAL.TypedViewClasses;
 
 namespace TournamentManager.Ranking;
@@ -8,53 +7,33 @@ namespace TournamentManager.Ranking;
 /// </summary>
 public class Ranking
 {
-    /// <summary>
-    /// The list of available rank comparers
-    /// </summary>
-    private readonly Dictionary<RankComparerEnum, Type> _rankComparers = new()
-    {
-        {RankComparerEnum.StandardRankComparer, typeof(StandardRankComparer)},
-        {RankComparerEnum.AlternateRankComparer1, typeof(AlternateRankComparer1) },
-        {RankComparerEnum.AlternateRankComparer2, typeof(AlternateRankComparer2) }
-    };
-
-    /// <summary>
-    /// The rank comparer currently selected
-    /// </summary>
-    private readonly IRankComparer _rankComparer;
+    internal readonly IRankComparer RankComparer;
 
     /// <summary>
     /// Ctor.
     /// </summary>
     /// <param name="matchesComplete">The list of completed matches.</param>
     /// <param name="matchesToPlay">The list of matches still to be played.</param>
-    /// <param name="rankComparerKey">The key for the comparer to calculate the ranking table.</param>
-    public Ranking(IEnumerable<MatchCompleteRawRow> matchesComplete, IEnumerable<MatchToPlayRawRow> matchesToPlay, RankComparerEnum rankComparerKey)
+    /// <param name="rankComparison">The key for the comparer to calculate the ranking table.</param>
+    public Ranking(IEnumerable<MatchCompleteRawRow> matchesComplete, IEnumerable<MatchToPlayRawRow> matchesToPlay, RankComparison rankComparison)
     {
         MatchesPlayed = matchesComplete.ToList().AsReadOnly();
         MatchesToPlay = matchesToPlay.ToList().AsReadOnly();
-        _rankComparer = (IRankComparer?) Activator.CreateInstance(_rankComparers[rankComparerKey], true) ?? throw new InvalidOperationException();
-        _rankComparer.Ranking = this;
-    }
-
-    /// <summary>
-    /// Gets the list of available <see cref="IRankComparer"/>s.
-    /// </summary>
-    /// <returns>Gets the list of available <see cref="IRankComparer"/>s with their <see cref="RankComparerEnum"/> keys.</returns>
-    public ReadOnlyDictionary<RankComparerEnum, Type> GetRankComparers()
-    {
-        return new ReadOnlyDictionary<RankComparerEnum, Type>(_rankComparers);
+        RankComparer = new RankComparer(rankComparison) {
+            UpperDateLimit = DateTime.MaxValue,
+            Ranking = this
+        };
     }
 
     /// <summary>
     /// The read-only list of completed matches.
     /// </summary>
-    public IList<MatchCompleteRawRow> MatchesPlayed { get; private set; }
+    public IList<MatchCompleteRawRow> MatchesPlayed { get; }
 
     /// <summary>
     /// The read-only list of matches still to be played.
     /// </summary>
-    public IList<MatchToPlayRawRow> MatchesToPlay { get; private set; }
+    public IList<MatchToPlayRawRow> MatchesToPlay { get; }
 
     /// <summary>
     /// Get the <see cref="RankingList"/> for the default upper date limit, which
@@ -66,7 +45,7 @@ public class Ranking
     {
         var upperDateLimit = MatchesPlayed.Count > 0
             ? MatchesPlayed.Max(m => m.MatchDate ?? DateTime.MinValue)
-            : MatchesToPlay.Max(m => m.MatchDate ?? DateTime.UtcNow);
+            : MatchesToPlay.Max(m => m.MatchDate ?? DateTime.MaxValue);
         return GetList(upperDateLimit, out lastUpdatedOn);
     }
 
@@ -78,7 +57,7 @@ public class Ranking
     /// <returns>Returns the <see cref="RankingList"/> for the given upper date limit.</returns>
     public RankingList GetList(DateTime upperDateLimit, out DateTime lastUpdatedOn)
     {
-        _rankComparer.UpperDateLimit = upperDateLimit;
+        RankComparer.UpperDateLimit = upperDateLimit;
         var rankingList = GetSortedList(GetUnsortedList(upperDateLimit, out lastUpdatedOn));
         rankingList.LastUpdatedOn = lastUpdatedOn;
         rankingList.UpperDateLimit = upperDateLimit;
@@ -87,7 +66,7 @@ public class Ranking
 
     private RankingList GetSortedList(RankingList rankingList)
     {
-        rankingList.Sort(_rankComparer);
+        rankingList.Sort(RankComparer);
 
         for (var i = 0; i < rankingList.Count; i++)
         {
@@ -118,19 +97,20 @@ public class Ranking
 
     private RankingList GetUnsortedList(IEnumerable<long> teamIds, DateTime upperDateLimit, out DateTime lastUpdatedOn)
     {
+        var teamIdList = teamIds.ToList(); // no multiple enumerations
         lastUpdatedOn = DateTime.UtcNow;
         if (MatchesPlayed.Any())
             lastUpdatedOn = MatchesPlayed
-                .Where(m => teamIds.Contains(m.HomeTeamId) || teamIds.Contains(m.GuestTeamId))
+                .Where(m => teamIdList.Contains(m.HomeTeamId) || teamIdList.Contains(m.GuestTeamId))
                 .Max(m => m.ModifiedOn);
         else if (MatchesToPlay.Any())
             lastUpdatedOn = MatchesToPlay
-                .Where(m => teamIds.Contains(m.HomeTeamId) || teamIds.Contains(m.GuestTeamId))
+                .Where(m => teamIdList.Contains(m.HomeTeamId) || teamIdList.Contains(m.GuestTeamId))
                 .Max(m => m.ModifiedOn);
 
         var rankingList = new RankingList {UpperDateLimit = upperDateLimit, LastUpdatedOn = lastUpdatedOn};
 
-        foreach (var teamId in teamIds)
+        foreach (var teamId in teamIdList)
         {
             var rank = new Rank {Number = -1, TeamId = teamId, MatchesPlayed = MatchesPlayed.Count(m => m.HomeTeamId == teamId || m.GuestTeamId == teamId), MatchesToPlay = MatchesToPlay.Count(m => m.HomeTeamId == teamId || m.GuestTeamId == teamId)};
 
@@ -148,8 +128,11 @@ public class Ranking
                     rank.BallPoints.Home += match.HomeBallPoints ?? 0;
                     rank.BallPoints.Guest += match.GuestBallPoints ?? 0;
 
-                    rank.MatchesWonAndLost.Home += match.HomeMatchPoints > match.GuestMatchPoints ? 1 : 0;
-                    rank.MatchesWonAndLost.Guest += match.HomeMatchPoints < match.GuestMatchPoints ? 1 : 0;
+                    rank.MatchesWon.Home += match.HomeMatchPoints > match.GuestMatchPoints ? 1 : 0;
+                    rank.MatchesWon.Guest += match.HomeMatchPoints < match.GuestMatchPoints ? 1 : 0;
+
+                    rank.SetsWon.Home += match.HomeSetPoints;
+                    rank.SetsWon.Guest += match.GuestSetPoints;
                 }
                 else
                 {
@@ -162,8 +145,12 @@ public class Ranking
                     rank.BallPoints.Home += match.GuestBallPoints ?? 0;
                     rank.BallPoints.Guest += match.HomeBallPoints ?? 0;
 
-                    rank.MatchesWonAndLost.Home += match.HomeMatchPoints < match.GuestMatchPoints ? 1 : 0;
-                    rank.MatchesWonAndLost.Guest += match.HomeMatchPoints > match.GuestMatchPoints ? 1 : 0;
+                    rank.MatchesWon.Home += match.HomeMatchPoints < match.GuestMatchPoints ? 1 : 0;
+                    rank.MatchesWon.Guest += match.HomeMatchPoints > match.GuestMatchPoints ? 1 : 0;
+
+                    // Todo: This only correct if SetRule.PointsSetWon = 1 and SetRule.PointsSetLost = 0 and SetRule.PointSetTie = 0
+                    rank.SetsWon.Home += match.GuestSetPoints;
+                    rank.SetsWon.Guest += match.HomeSetPoints;
                 }
             }
             rankingList.Add(rank);
