@@ -24,6 +24,7 @@
         "js-cookie": "2.2.1",
         "jsnlog": "2.30.0",
         "node-sass": "9.0.0",
+        "postcss": "^8.4.31",
         "pixrem": "5.0.0",
         "@popperjs/core": "2.11.8",
         "@eonasdan/tempus-dominus": "6.7.13",

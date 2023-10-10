@@ -84,7 +84,7 @@ public class RankingRepository
             // Save the new ranking entities
             await da.SaveEntityCollectionAsync(rankingColl, false, false, cancellationToken);
 
-            da.Commit();
+            await da.CommitAsync(cancellationToken);
         }
         catch (Exception e)
         {
