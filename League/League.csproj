@@ -43,7 +43,6 @@ Localizations for English and German are included. The library is in operation o
         <DebugType>portable</DebugType>
         <IncludeSymbols>true</IncludeSymbols>
         <DefineConstants>DEBUG;TRACE</DefineConstants>
-        <NoWarn>1701;1702;1591</NoWarn>
     </PropertyGroup>
 
     <ItemGroup>
@@ -264,10 +263,8 @@ Localizations for English and German are included. The library is in operation o
     <!-- Custom PropertyGroup to add the Environment name during publish. The EnvironmentName property is used for the 'Environment' variable in web.config when publishing. -->
     <PropertyGroup Condition=" '$(Configuration)' == '' Or '$(Configuration)' == 'Debug'">
         <EnvironmentName>Development</EnvironmentName>
-        <NoWarn>$(NoWarn);1591</NoWarn>
     </PropertyGroup>
     <PropertyGroup Condition=" '$(Configuration)' != '' AND '$(Configuration)' != 'Debug' ">
         <EnvironmentName>Production</EnvironmentName>
-        <NoWarn>$(NoWarn);1591</NoWarn>
     </PropertyGroup>
 </Project>
