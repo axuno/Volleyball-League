@@ -180,9 +180,10 @@ Localizations for English and German are included. The library is in operation o
     </ItemGroup>
 
     <ItemGroup>
-        <Content Update="Views\Account\ConfirmRegistration.cshtml">
-            <Pack>$(IncludeRazorContentInPack)</Pack>
-        </Content>
+        <None Update="Views\ViewNames.tt">
+            <Generator>TextTemplatingFileGenerator</Generator>
+            <LastGenOutput>ViewNames.cs</LastGenOutput>
+        </None>
     </ItemGroup>
 
     <ItemGroup>
@@ -231,15 +232,7 @@ Localizations for English and German are included. The library is in operation o
     </ItemGroup>
 
     <ItemGroup>
-        <EmbeddedResource Include="wwwroot\**\*" />
         <EmbeddedResource Include="Templates\Email\**\*.tpl" />
-    </ItemGroup>
-
-    <ItemGroup>
-        <None Update="Views\ViewNames.tt">
-            <Generator>TextTemplatingFileGenerator</Generator>
-            <LastGenOutput>ViewNames.cs</LastGenOutput>
-        </None>
     </ItemGroup>
 
     <ItemGroup>
@@ -247,8 +240,9 @@ Localizations for English and German are included. The library is in operation o
     </ItemGroup>
 
     <ItemGroup>
-        <Folder Include="logs\" />
-        <Folder Include="wwwroot\images\" />
+        <!-- Exclude resource from package as content files -->
+        <Content Remove="Properties\launchSettings.json" />
+        <None Include="Properties\launchSettings.json" />
     </ItemGroup>
 
     <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
@@ -270,11 +264,10 @@ Localizations for English and German are included. The library is in operation o
     <!-- Custom PropertyGroup to add the Environment name during publish. The EnvironmentName property is used for the 'Environment' variable in web.config when publishing. -->
     <PropertyGroup Condition=" '$(Configuration)' == '' Or '$(Configuration)' == 'Debug'">
         <EnvironmentName>Development</EnvironmentName>
+        <NoWarn>$(NoWarn);1591</NoWarn>
     </PropertyGroup>
     <PropertyGroup Condition=" '$(Configuration)' != '' AND '$(Configuration)' != 'Debug' ">
         <EnvironmentName>Production</EnvironmentName>
-    </PropertyGroup>
-    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-        <NoWarn>1701;1702;0436;1591</NoWarn>
+        <NoWarn>$(NoWarn);1591</NoWarn>
     </PropertyGroup>
 </Project>
