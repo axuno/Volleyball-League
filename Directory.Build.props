@@ -7,8 +7,8 @@
         <Copyright>Copyright 2011-$(CurrentYear) axuno gGmbH</Copyright>
         <RepositoryUrl>https://github.com/axuno/Volleyball-League</RepositoryUrl>
         <PublishRepositoryUrl>true</PublishRepositoryUrl>
-        <Version>6.6.0</Version>
-        <FileVersion>6.6.0</FileVersion>
+        <Version>6.6.1</Version>
+        <FileVersion>6.6.1</FileVersion>
         <AssemblyVersion>6.0.0.0</AssemblyVersion> <!--only update AssemblyVersion with major releases -->
         <LangVersion>latest</LangVersion>
         <Nullable>enable</Nullable>
@@ -17,6 +17,7 @@
         <AnalysisModeSecurity>All</AnalysisModeSecurity>
         <AnalysisLevel>latest</AnalysisLevel>
         <Features>strict</Features>
+        <NoWarn>$(NoWarn);1591</NoWarn>
     </PropertyGroup>
 
 </Project>
