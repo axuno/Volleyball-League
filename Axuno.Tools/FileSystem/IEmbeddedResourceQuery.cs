@@ -16,7 +16,7 @@ public interface IEmbeddedResourceQuery
     Stream? Read<T>(string resource);
 
     /// <summary>
-    /// Reads an embedded resource from the assembly of <paramref name="assemblyName"/>.
+    /// Reads an embedded resource from the assembly of <paramref name="assembly"/>.
     /// </summary>
     /// <param name="assembly"></param>
     /// <param name="resource"></param>
@@ -32,7 +32,7 @@ public interface IEmbeddedResourceQuery
     Stream? Read(string assemblyName, string resource);
 
     /// <summary>
-    /// Gets all resource names from the assembly of <typeparamref name="T"/>.
+    /// Gets all resource names from the assembly of <paramref name="assembly"/>.
     /// </summary>
     /// <param name="assembly"></param>
     /// <returns></returns>
