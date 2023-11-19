@@ -232,27 +232,35 @@ Site.ModalForm = function () {
         }
     });
 
-    document.addEventListener('click', function(event) {
+    document.addEventListener('click', function (event) {
+        if (event == null) return;
+        submittingElement = event.target;
+
         if (event.target.matches('[site-data="submit"]')) {
             event.preventDefault();
-            handleSiteDataSubmit(event);
+                handleSiteDataSubmit();
         }
     });
 
     // A TagHelper creates a button <button type="submit" site-data="submit">Save</button>
     //modalContainer.querySelector('[site-data="submit"]').addEventListener('click', function(event) {
-    async function handleSiteDataSubmit(event) {
-        submittingElement = event.target;
+    async function handleSiteDataSubmit() {
+                
         // first search the form where the submitting element is in.
         let form = submittingElement.closest('form');
         // If not found, take the first form inside the modal
-        if (form === null) {
-            form = event.target.closest('.modal').querySelector('form');
+        if (!(form instanceof HTMLFormElement)) {
+            form = submittingElement.closest('.modal').querySelector('form');
         }
-        if (form === null) {
+        if (!(form instanceof HTMLFormElement)) {
+            // Try to access the first form in the document
+            form = document.forms[0];
+        }
+        if (!(form instanceof HTMLFormElement)) {
             JL(loggerName).error({
                 'msg': 'No form found'
             });
+            return;
         }
 
         const elements = document.querySelectorAll('.modal-footer button, .modal-footer input[type="button"], .modal-footer input[type="submit"]');
