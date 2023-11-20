@@ -2,6 +2,7 @@
 if (Site === undefined) {
     var Site = {};
 }
+if (tempusDominus === undefined) { tempusDominus = window.tempusDominus; }
 
 Site.TempusDominusFactory = class {
     'use strict';
@@ -82,10 +83,10 @@ Site.TempusDominusFactory = class {
                 // Destroy any existing widget
                 if (element._tempusDominus) element._tempusDominus.dispose();
             }
-            catch {}
+            catch (e) {}
             
             element._tempusDominus = this._tryCreateCalendarPicker(element, format);
-        } catch {
+        } catch (e) {
             element.querySelector('input').value = '';
             element._tempusDominus = this._tryCreateCalendarPicker(element, format);
         }
@@ -108,10 +109,10 @@ Site.TempusDominusFactory = class {
                 // Destroy any existing widget
                 if (element._tempusDominus) element._tempusDominus.dispose();
             }
-            catch {}
+            catch (e) {}
             
             element._tempusDominus = this._tryCreateTimePicker(element, format);
-        } catch {
+        } catch (e) {
             element.querySelector('input').value = '';
             element._tempusDominus = this._tryCreateTimePicker(element, format);
         }
@@ -220,6 +221,7 @@ Site.TempusDominusFactory = class {
             catch (err) {
                 widget.dates.clear();
             }
+            return null;
         };
     }
 }

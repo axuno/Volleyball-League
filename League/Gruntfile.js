@@ -79,7 +79,7 @@ module.exports = function (grunt) {
             },
             build: {
                 files: {
-                    'wwwroot/js/site.min.js': ['Scripts/Polyfill.js', 'Scripts/Site.ModalForm.js', 'Scripts/Site.ShowPassword.js', 'node_modules/js-cookie/src/js.cookie.js'],
+                    'wwwroot/js/site.min.js': ['Scripts/Site.ModalForm.js', 'Scripts/Site.ShowPassword.js', 'node_modules/js-cookie/src/js.cookie.js']
                 }
             }
         },
