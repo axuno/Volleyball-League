@@ -27,7 +27,7 @@
         "postcss": "^8.4.31",
         "pixrem": "5.0.0",
         "@popperjs/core": "2.11.8",
-        "@eonasdan/tempus-dominus": "6.7.13",
+        "@eonasdan/tempus-dominus": "6.7.19",
         "set-value": ">=4.1.0"
     },
     "dependencies": {
