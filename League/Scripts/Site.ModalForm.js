@@ -1,7 +1,13 @@
 ﻿// All scripts go into the same namespace
+'use strict';
 if (Site === undefined) {
     var Site = {};
 }
+// Define all undefined variables as empty objects
+if (bootstrap === undefined) bootstrap = {};
+if (JL === undefined) JL = {};
+if (URLSearchParams === undefined) URLSearchParams = {};
+if (AbortController === undefined) AbortController = {};
 
 /* Handling of forms inside Bootstrap 5 modals */
 Site.ModalForm = function () {
@@ -16,25 +22,14 @@ Site.ModalForm = function () {
             'modal-form-error-occurred': 'Ups... ein Fehler ist aufgetreten. Bitte nochmals versuchen.'
         }
     };
-    function getLocalized(key) {
-        const locale = document.documentElement.lang;
-        const fbLocale = locale.split('-')[0];
-        if (translations[locale]) {
-            return translations[locale][key];
-        } else if (translations[fbLocale]) {
-            return translations[fbLocale][key];
-        } else if (translations['en']) {
-            return translations['en'][key];
-        }
-    }
 
     let submittingElement;
 
     // create a dynamic DIV element and insert it as first child of BODY
     const modalContainer = document.createElement('div');
-    modalContainer.id = 'modal-container-' + Math.random().toString(36).substring(2, 16);
+    modalContainer.id = `modal-container-${Math.random().toString(36).substring(2, 16)}`;
     document.body.insertAdjacentElement('afterbegin', modalContainer);
-
+    
     // see also: modalFullTemplate
     const modalDialogTemplate = `<div class="modal-dialog">
 	<div class="modal-content">
@@ -49,18 +44,59 @@ Site.ModalForm = function () {
 </div>`;
 
     // see also: modalDialogTemplate
-    //data-keyboard=true allows to close the modal with ESC key
+    // data-keyboard=true allows to close the modal with ESC key
     const modalFullTemplate = `<div class="modal" data-bs-keyboard="true" tabindex="-1">
     ${modalDialogTemplate}
 </div>`;
 
-    const fillErrorTemplate = function (template, errorText, errorNo) {
-        return template.replace('$0', errorText).replace('$1', errorNo);
-    };
+    // requires an element like <button> or <a>, containing data-toggle="site-ajax-modal"
+    // e.g. <button type="button" data-toggle="site-ajax-modal" data-target="#id-in-partial-view" data-url="url-to-partial-view">do sth.</button >
+    // load the partial view into the placeholder and show the modal
+    document.querySelectorAll('[data-toggle="site-ajax-modal"]').forEach(item => {
+        item.addEventListener('click', async event => {
+            event.preventDefault();
+            submittingElement = event.target;
+            submittingElement.setAttribute('disabled', 'disabled');
+            submittingElement.style.cursor = 'not-allowed';
+            showLoading(submittingElement, true);
+            // The HTMLElement.dataset property allows access, both in reading and writing mode, 
+            // to all the custom data attributes (data-*) set on the element.
+            await fetchModalData(item.dataset.url);
+        });
+    });
 
-    const showLoading = function(btnElement, isOn) {
+
+    // Enter key in forms with more than one input field will also trigger 'submit'
+    modalContainer.addEventListener('keypress', function (e) {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            modalContainer.querySelector('[type="submit"]').click();
+        }
+    });
+
+    document.addEventListener('click', function (event) {
+        if (event == null) return; // Safari: event may be null
+        submittingElement = event.target;
+
+        if (event.target.matches('[site-data="submit"]')) {
+            event.preventDefault();
+            handleSiteDataSubmit();
+        }
+    });
+
+    /***************************************************************************** 
+     * ********************** All functions below this line **********************
+     *****************************************************************************/
+
+    /**
+     * Shows or hides the loading icon inside a button
+     * @param {HTMLElement} btnElement
+     * @param {boolean} isOn
+     * @returns
+     */
+    function showLoading(btnElement, isOn) {
         if (!btnElement.classList.contains('btn')) {
-            // It's not a bootstrap 4 element displayed as a button
+            // It's not a bootstrap 5 element displayed as a button
             return;
         }
         if (isOn === true) {
@@ -68,7 +104,25 @@ Site.ModalForm = function () {
         } else {
             btnElement.querySelector('#site-loading-icon').remove();
         }
-    };
+    }
+
+    function fillErrorTemplate(template, errorText, errorNo) {
+        return template.replace('$0', errorText).replace('$1', errorNo);
+    }
+
+    function getLocalized(key) {
+        const locale = document.documentElement.lang;
+        const fbLocale = locale.split('-')[0];
+        if (translations[locale]) {
+            return translations[locale][key];
+        } else if (translations[fbLocale]) {
+            return translations[fbLocale][key];
+        } else if (translations['en']) {
+            return translations['en'][key];
+        }
+
+        return translations['en'][key];
+    }
 
     /**
      * Fetches a url using a timeout
@@ -93,11 +147,11 @@ Site.ModalForm = function () {
         if (response.status >= 200 && response.status < 300) {
             return response;
         } else {
-            throw new Error(response.statusText)
+            throw new Error(response.statusText);
         }
     }
     /**
-     * 
+     * Post data to the server using a timeout
      * @param {any} url - The RequestInfo | Url for the Post
      * @param {any} data - The form data to post
      * @param {any} options - The RequestInit options
@@ -106,7 +160,7 @@ Site.ModalForm = function () {
      */
     async function postWithTimeout(url = '', data = {}, options = {}) {
         const timeout = options.timeout || 5000;
-        
+
         const controller = new AbortController();
         const timeoutId = setTimeout(() => controller.abort(), timeout);
 
@@ -121,8 +175,8 @@ Site.ModalForm = function () {
             redirect: 'follow',
             referrerPolicy: 'no-referrer',
             // For form submit, this works:
-            //body: data, // Object.keys(data).length !== 0 ? data : undefined,
-            body: options.method && (options.method.toLowerCase() === "post") ? data : undefined,
+            // body: data, // Object.keys(data).length !== 0 ? data : undefined,
+            body: options.method && (options.method.toLowerCase() === 'post') ? data : undefined,
             signal: controller.signal
         });
 
@@ -131,26 +185,15 @@ Site.ModalForm = function () {
         if (response.status >= 200 && response.status < 300) {
             return response;
         } else {
-            throw new Error(response.statusText)
+            throw new Error(response.statusText);
         }
     }
 
-    // requires an element like <button> or <a>, containing data-toggle="site-ajax-modal"
-    // e.g. <button type="button" data-toggle="site-ajax-modal" data-target="#id-in-partial-view" data-url="url-to-partial-view">do sth.</button >
-    // load the partial view into the placeholder and show the modal
-    document.querySelectorAll('[data-toggle="site-ajax-modal"]').forEach(item => {
-        item.addEventListener('click', async event => {
-            event.preventDefault();
-            submittingElement = event.target;
-            submittingElement.setAttribute('disabled', 'disabled');
-            submittingElement.style.cursor = 'not-allowed';
-            showLoading(submittingElement, true);
-            // The HTMLElement.dataset property allows access, both in reading and writing mode, 
-            // to all the custom data attributes (data-*) set on the element.
-            await fetchModalData(item.dataset.url);
-        });
-    });
-
+    /**
+     * Checks if the response is JSON and redirects to the redirectUrl if it is set
+     * @param {any} data
+     * @returns
+     */
     function tryHandleJson(data) {
         if (isJson(data)) {
             if (Object.keys(data).length === 0) {
@@ -164,12 +207,17 @@ Site.ModalForm = function () {
                 }
                 return true;
             }
-
-            return false;
         }
+        return false;
     }
 
-    function ensurePartialView(data) {
+    /**
+     * Ensure that data is a partial view, i.e. not containing a BODY element
+     * @param {any} data
+     * @param {any} actionUrl
+     * @returns
+     */
+    function ensurePartialView(data, actionUrl) {
         // Server should return a PARTIAL view with the form after server side validation.
         // A full page view (identified by BODY element, e.g. caused by a bad action url) would mess up the browser
         if (typeof data === 'string' && !data.match(/<body[^>]*>/gi)) {
@@ -198,7 +246,7 @@ Site.ModalForm = function () {
             const data = await handleResponseContentType(response);
             
             if (tryHandleJson(data)) return;
-            if (!ensurePartialView(data)) return;
+            if (!ensurePartialView(data, actionUrl)) return;
             setInnerHtmlWithScripts(modalContainer, data);
             modalContainer.addEventListener('shown.bs.modal', function () {
                 const autofocus = document.querySelector('input[autofocus]');
@@ -224,39 +272,25 @@ Site.ModalForm = function () {
         }
     }
 
-    // Enter key in forms with more than one input field will also trigger 'submit'
-    modalContainer.addEventListener('keypress', function (e) {
-        if (e.key === 'Enter') {
-            e.preventDefault();
-            modalContainer.querySelector('[type="submit"]').click();
-        }
-    });
-
-    document.addEventListener('click', function (event) {
-        if (event == null) return;
-        submittingElement = event.target;
-
-        if (event.target.matches('[site-data="submit"]')) {
-            event.preventDefault();
-                handleSiteDataSubmit();
-        }
-    });
-
-    // A TagHelper creates a button <button type="submit" site-data="submit">Save</button>
-    //modalContainer.querySelector('[site-data="submit"]').addEventListener('click', function(event) {
+    /**
+     * Collects the data from the FORM and posts it to the server.
+     * A TagHelper creates a button <button type="submit" site-data="submit">Save</button>
+     * modalContainer.querySelector('[site-data="submit"]').addEventListener('click', function(event) {}
+     * @returns
+     */
     async function handleSiteDataSubmit() {
                 
         // first search the form where the submitting element is in.
         let form = submittingElement.closest('form');
         // If not found, take the first form inside the modal
-        if (!(form instanceof HTMLFormElement)) {
+        if (!isFormElement(form)) {
             form = submittingElement.closest('.modal').querySelector('form');
         }
-        if (!(form instanceof HTMLFormElement)) {
+        if (!isFormElement(form)) {
             // Try to access the first form in the document
             form = document.forms[0];
         }
-        if (!(form instanceof HTMLFormElement)) {
+        if (!isFormElement(form)) {
             JL(loggerName).error({
                 'msg': 'No form found'
             });
@@ -279,14 +313,21 @@ Site.ModalForm = function () {
         await postModalFormData(actionUrl, dataToSend, method);
     }
 
+    /**
+     * Post the data to the server
+     * @param {any} actionUrl - The Url to use
+     * @param {any} postData - The data to post
+     * @param {any} method - The method to use
+     * @returns
+     */
     async function postModalFormData(actionUrl, postData, method) {
         try {
             const options = { method: method };
-            const response = await postWithTimeout(actionUrl, postData, options)
+            const response = await postWithTimeout(actionUrl, postData, options);
             const data = await handleResponseContentType(response);
             
             if (tryHandleJson(data)) return;
-            if (!ensurePartialView(data)) return;
+            if (!ensurePartialView(data, actionUrl)) return;
             
             // extract the div containing the form
             const tempElement = document.createElement('div'); // this is not added to the DOM
@@ -323,12 +364,18 @@ Site.ModalForm = function () {
             showLoading(submittingElement, false);
         }
     }
-    
+
+    /**
+     * Return the server response as text or json, depending on ContentType
+     * @param {any} response
+     * @throws {Error} if there is no supported content type
+     * @returns text or json
+     */
     async function handleResponseContentType(response) {
         
         const contentType = response.headers.get('content-type');
 
-        if (contentType === null || contentType.startsWith('text/')) return await response.text();
+        if (contentType == null || contentType.startsWith('text/')) return await response.text();
         else if (contentType.startsWith('application/json;')) return await response.json();
         else throw new Error(`Unsupported response content-type: ${contentType}`);
     }
@@ -358,15 +405,26 @@ Site.ModalForm = function () {
         });
     }
 
+    /**
+     * Tests whether the parameter is JSON
+     * @param {any} m
+     * @returns {boolean} true or false
+     */
     function isJson(m) {
         try {
             return (typeof m === 'object' && typeof JSON.stringify(m) === 'string');
-        }
-        catch {
+        } catch (e) {
             return false;
         }
+    }
 
-        return true;
+    /**
+     * Test whether the element is a HTML FORM element.
+     * @param {any} element
+     * @returns {boolean} true or false
+     */
+    function isFormElement(element) {
+        return (element instanceof HTMLFormElement);
     }
 
 };

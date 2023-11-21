@@ -260,5 +260,8 @@ dotnet_style_qualification_for_property = false:suggestion
 dotnet_style_qualification_for_method = false:suggestion
 dotnet_style_qualification_for_event = false:suggestion
 
+[*.js]
+quote_style = singlequoted
+
 # Copyright file header
 file_header_template = \nCopyright Volleyball League Project maintainers and contributors.\nLicensed under the MIT license.\n
