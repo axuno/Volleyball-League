@@ -13,7 +13,7 @@ namespace League.TagHelpers;
 /// Show an "edit" link only if the policy for editing documents is fulfilled:
 /// <code>&lt;a href="/edit" site-resource="document" site-policy="EditDocument"&gt;&lt;/a&gt;</code>
 /// </example>
-[HtmlTargetElement(Attributes = TagHelperAttributeName)]
+[HtmlTargetElement("*", Attributes = TagHelperAttributeName)]
 public class SiteAuthorizeResourceTagHelper : TagHelper
 {
     public const string TagHelperAttributeName = "site-authorize-resource";
@@ -47,6 +47,9 @@ public class SiteAuthorizeResourceTagHelper : TagHelper
 
     public override async Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
     {
+        // Remove the attribute "site-authorize-resource" from the output
+        output.Attributes.RemoveAll(TagHelperAttributeName);
+
         if (Resource == null)
         {
             throw new ArgumentException("Resource cannot be null");
