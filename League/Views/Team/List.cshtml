@@ -33,16 +33,16 @@
         @foreach (var r in rounds)
         {
             <li class="nav-item">
-                <a class="nav-link py-1@{if (r.RoundId == activeRoundId){<text> active</text>}}" id="tab-link-@(r.RoundId)" data-bs-toggle="tab" href="#tab-@(r.RoundId)" role="tab" aria-controls="@r.RoundDescription" aria-selected="@(r.RoundId == activeRoundId ? "true" : "false")">@r.RoundDescription</a>
+                <a class="nav-link py-1@{if (r.RoundId == activeRoundId){<text> active</text>}}" id="tab-link-@(r.RoundId)" data-bs-toggle="tab" href="#tab-@(r.RoundId)" role="tab" aria-selected="@(r.RoundId == activeRoundId ? "true" : "false")">@r.RoundDescription</a>
             </li>
         }
     </ul>
-    <div class="tab-content" id="round-list">
+    <div class="tab-content" id="team-list">
         @foreach (var r in rounds)
         {
-            <div class="tab-pane@{if (r.RoundId == activeRoundId){<text> show active</text>}}" id="tab-@(r.RoundId)" role="tabpanel" aria-labelledby="@r.RoundDescription-tab">
+            <div class="tab-pane@{if (r.RoundId == activeRoundId){<text> show active</text>}}" id="tab-@(r.RoundId)" role="tabpanel">
                 <div class="text-success">@r.RoundTypeDescription</div>
-                <div id="team-list" class="rounded table-responsive">
+                <div class="rounded table-responsive">
                     <table class="table table-sm">
                         <thead class="rounded">
                             <tr>

@@ -41,14 +41,14 @@
         @foreach (var r in rounds)
         {
             <li class="nav-item">
-                <a class="nav-link py-1@{if (r.RoundId == activeRoundId){<text> active</text>}}" id="tab-link-@(r.RoundId)" data-bs-toggle="tab" href="#tab-@(r.RoundId)" role="tab" aria-controls="@r.RoundDescription" aria-selected="@(r.RoundId == activeRoundId ? "true" : "false")">@r.RoundDescription</a>
+                <a class="nav-link py-1@{if (r.RoundId == activeRoundId){<text> active</text>}}" id="tab-link-@(r.RoundId)" data-bs-toggle="tab" href="#tab-@(r.RoundId)" role="tab" aria-selected="@(r.RoundId == activeRoundId ? "true" : "false")">@r.RoundDescription</a>
             </li>
         }
     </ul>
     <div class="tab-content mt-1" id="match-results">
         @foreach (var r in rounds)
         {
-            <div class="tab-pane@{if (r.RoundId == activeRoundId) {<text> show active</text>}}" id="tab-@(r.RoundId)" role="tabpanel" aria-labelledby="@r.RoundDescription-tab">
+            <div class="tab-pane@{if (r.RoundId == activeRoundId) {<text> show active</text>}}" id="tab-@(r.RoundId)" role="tabpanel">
                 <div class="text-success">@r.RoundTypeDescription</div>
                 <div id="team-filter-@r.RoundId" class="team-filter my-2 d-none" data-bs-toggle="tooltip" title="@Localizer["Remove filter for team"]" tabindex="0">
                     <i class="fas fa-1x fa-times-circle me-2"></i>
@@ -151,7 +151,7 @@
                                                 <a href="#" class="stretched-link" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                                     <i class="fas fa-ellipsis-v" style="font-size: .8rem"></i>
                                                 </a>
-                                                <div class="dropdown-menu shadow" role="menu" aria-labelledby="dropdownMenuLink">
+                                                <div class="dropdown-menu shadow" role="menu">
                                                     <a href="#" tabindex="0" data-round-id="@match.RoundId" data-team-name="@match.GuestTeamNameForRound" class="dropdown-item filter-link">@Localizer["Filter matches for this team"]</a>
                                                     <a asp-action=@nameof(League.Controllers.Match.EnterResult) asp-controller=@nameof(League.Controllers.Match) asp-route-tenant="@tenantUrlSegment" asp-route-id=@(match.Id)
                                                        tabindex="0" class="dropdown-item"
@@ -185,7 +185,7 @@
         var resultCssClass = $".result {{ text-align: center; width: {resultColWidth}%;}}";
         var contextMenuCssClass = $".context-menu {{ text-align: center; width: {contextMenuColWidth}%;}}";
         var dateCssClass = $".date {{ width: {dateColWidth}%;}}";
-        var opponentsCssClass = $".opponents {{width: {opponentColWidth}%);}}";
+        var opponentsCssClass = $".opponents {{width: {opponentColWidth}%;}}";
     }
     <style type="text/css">
         #round-tabs .nav-link:not(.active) {border:solid 1px var(--bs-gray-500)}
