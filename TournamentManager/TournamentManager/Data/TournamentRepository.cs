@@ -64,7 +64,7 @@ public class TournamentRepository
         return result;
     }
 
-    public virtual async Task<TournamentEntity?> GetTournamentEntityForMatchPlannerAsync(long tournamentId, CancellationToken cancellationToken)
+    public virtual async Task<TournamentEntity?> GetTournamentEntityForMatchSchedulerAsync(long tournamentId, CancellationToken cancellationToken)
     {
         var bucket = new RelationPredicateBucket(TournamentFields.Id == tournamentId);
         bucket.Relations.Add(TournamentEntity.Relations.RoundEntityUsingTournamentId);
