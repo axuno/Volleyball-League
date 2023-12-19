@@ -7,8 +7,8 @@ namespace TournamentManager.RoundRobin;
 /// The round robin system is applied, i.e. all participants in the group play each other.
 /// Then the number of home/guest matches is analyzed and optimized.
 /// </summary>
-/// <typeparam name="TP">The type of the participant objects. Objects must have <see cref="IEquatable{T}"/> implemented.</typeparam>
-internal class RoundRobinSystem<TP> : IRoundRobinSystem<TP> where TP : IEquatable<TP>
+/// <typeparam name="TP">The <see langword="struct"/> participant type.</typeparam>
+internal class RoundRobinSystem<TP> : IRoundRobinSystem<TP> where TP : struct, IEquatable<TP>
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="RoundRobinSystem{TP}"/> class.
@@ -44,7 +44,8 @@ internal class RoundRobinSystem<TP> : IRoundRobinSystem<TP> where TP : IEquatabl
         */
 
         // Create a new list of participants that we can modify.
-        var participants = new List<TP?>(Participants);
+        var participants = new List<TP?>();
+        Participants.ToList().ForEach(p => participants.Add(p));
 
         // If the number of participants is odd, add a default value to make it even.
         if (participants.Count % 2 != 0)
@@ -76,12 +77,12 @@ internal class RoundRobinSystem<TP> : IRoundRobinSystem<TP> where TP : IEquatabl
         {
             // Add the match between the first participant and the participant for the turn.
             var secondParticipant = pList[turn % pListSize];
-            if (secondParticipant?.Equals(default) == false)
+            if (!secondParticipant.Equals(default))
             {
                 // Alternate home/guest matches.
                 matches.Add(turn % 2 == 0
-                    ? (turn, participants[0]!, secondParticipant)
-                    : (turn, secondParticipant, participants[0]!));
+                    ? (turn + 1, (TP) participants[0]!, (TP) secondParticipant)
+                    : (turn + 1, (TP) secondParticipant, (TP) participants[0]!));
             }
 
             // Add the matches between the other participants.
@@ -89,15 +90,15 @@ internal class RoundRobinSystem<TP> : IRoundRobinSystem<TP> where TP : IEquatabl
             {
                 var firstParticipant = pList[(turn + idx) % pListSize];
                 secondParticipant = pList[(turn + pListSize - idx) % pListSize];
-                if (firstParticipant?.Equals(default) == false && secondParticipant?.Equals(default) == false)
+                if (!firstParticipant.Equals(default) && !secondParticipant.Equals(default))
                     // Alternate home/guest matches.
                     matches.Add(idx % 2 == 0
-                        ? (turn, firstParticipant, secondParticipant)
-                        : (turn, secondParticipant, firstParticipant));
+                        ? (turn + 1, (TP) firstParticipant, (TP) secondParticipant)
+                        : (turn + 1, (TP) secondParticipant, (TP) firstParticipant));
             }
         }
 
-        FixUnbalancedHomeGuestCountsInLastTurn(matches, numTurns - 1, Participants);
+        FixUnbalancedHomeGuestCountsInLastTurn(matches, numTurns, Participants);
 
         return matches;
     }

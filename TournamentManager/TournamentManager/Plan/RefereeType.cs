@@ -18,7 +18,7 @@ public enum RefereeType
     /// </summary>
     Guest,
     /// <summary>
-    /// 
+    /// The referee is another participant of the round.
     /// </summary>
-    OtherOfGroup
+    OtherFromRound
 }

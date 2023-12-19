@@ -1,6 +1,6 @@
 ﻿namespace TournamentManager.RoundRobin;
 
-internal interface IRoundRobinSystem<TP> where TP : IEquatable<TP>
+internal interface IRoundRobinSystem<TP> where TP : struct, IEquatable<TP>
 {
     /// <summary>
     /// Gets the list of participants.

@@ -3,8 +3,9 @@ namespace TournamentManager.Plan;
 /// <summary>
 /// Class for the combination of two participants and an optional referee for a match.
 /// </summary>
-/// <typeparam name="T">The type of the participant objects.</typeparam>
-internal class ParticipantCombination<T>
+/// <typeparam name="TP">The type of the participant objects.</typeparam>
+/// <typeparam name="TR">The type of the referee objects</typeparam>
+internal class ParticipantCombination<TP, TR> where TP : struct where TR : struct
 {
     /// <summary>
     /// A participant combination of home/guest participants and an optional referee.
@@ -13,7 +14,7 @@ internal class ParticipantCombination<T>
     /// <param name="home">The home participant object.</param>
     /// <param name="guest">The guest participant object.</param>
     /// <param name="referee">The referee object.</param>
-    public ParticipantCombination(int turn, T home, T guest, T? referee)
+    public ParticipantCombination(int turn, TP home, TP guest, TR? referee)
     {
         Turn = turn;
         Home = home;
@@ -29,17 +30,17 @@ internal class ParticipantCombination<T>
     /// <summary>
     /// Gets or sets the home participant of this combination.
     /// </summary>
-    public T Home { get; set; }
+    public TP Home { get; set; }
 
     /// <summary>
     /// Gets or sets the guest participant of this combination.
     /// </summary>
-    public T Guest { get; set; }
+    public TP Guest { get; set; }
 
     /// <summary>
     /// Gets or sets the referee of this combination.
     /// </summary>
-    public T? Referee { get; set; }
+    public TR? Referee { get; set; }
 
     /// <summary>
     /// Swaps the home and guest participants.
@@ -55,6 +56,6 @@ internal class ParticipantCombination<T>
     /// <returns>Returns the string representation of the participants combination.</returns>
     public override string ToString()
     {
-        return string.Concat(Home?.ToString() ?? nameof(Home), " : ", Guest?.ToString() ?? nameof(Guest), " / ", Referee?.ToString() ?? "-");
+        return string.Concat(Home.ToString(), " : ", Guest.ToString(), " / ", Referee?.ToString() ?? "-");
     }
 }

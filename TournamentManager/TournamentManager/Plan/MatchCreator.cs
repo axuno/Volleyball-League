@@ -9,27 +9,36 @@ namespace TournamentManager.Plan;
 /// Class to create matches for a group of participants.
 /// The round robin system is applied, i.e. all participants in the group play each other.
 /// </summary>
-/// <typeparam name="T">The type of the participant objects. Objects must have <see cref="IEquatable{T}"/> implemented.</typeparam>
-internal class MatchCreator<T> where T : IEquatable<T>
+/// <typeparam name="TP">The <see langword="struct"/> participant type.</typeparam>
+/// <typeparam name="TR">The <see langword="struct"/> referee type.</typeparam>
+internal class MatchCreator<TP, TR> where TP : struct, IEquatable<TP> where TR : struct, IEquatable<TR>
 {
     private readonly ITenantContext _tenantContext;
-    private readonly ILogger<MatchCreator<T>> _logger;
+    private readonly ILogger<MatchCreator<TP, TR>> _logger;
     private int _maxNumOfCombinations;
-    private readonly ParticipantCombinations<T> _participantCombinationsFirstLeg = new();
-    private readonly ParticipantCombinations<T> _participantCombinationsReturnLeg = new();
+    private readonly ParticipantCombinations<TP, TR> _participantCombinationsFirstLeg = new();
+    private readonly ParticipantCombinations<TP, TR> _participantCombinationsReturnLeg = new();
 
     /// <summary>
     /// Constructor.
     /// </summary>
     /// <param name="tenantContext">The <see cref="ITenantContext"/>.</param>
     /// <param name="logger">The logger.</param>
-    public MatchCreator(ITenantContext tenantContext, ILogger<MatchCreator<T>> logger)
+    public MatchCreator(ITenantContext tenantContext, ILogger<MatchCreator<TP, TR>> logger)
     {
+        if (!typeof(TR).IsAssignableFrom(typeof(TP)))
+            throw new ArgumentException($"Type {typeof(TR).Name} must be assignable from {typeof(TP).Name}.");
+
         _tenantContext = tenantContext;
         _logger = logger;
     }
 
-    public MatchCreator<T> WithParticipants(Collection<T> participants)
+    /// <summary>
+    /// Sets the participants.
+    /// </summary>
+    /// <param name="participants"></param>
+    /// <returns>The current instance of the <see cref="MatchCreator{TP,TR}"/>.</returns>
+    public MatchCreator<TP, TR> SetParticipants(Collection<TP> participants)
     {
         Participants = participants;
         return this;
@@ -43,7 +52,7 @@ internal class MatchCreator<T> where T : IEquatable<T>
         if (Participants.Count < 2)
             throw new InvalidOperationException("Round-robin system requires at least 2 participants.");
 
-        if (Participants.Count < 3 && refereeType == RefereeType.OtherOfGroup)
+        if (Participants.Count < 3 && refereeType == RefereeType.OtherFromRound)
             throw new ArgumentOutOfRangeException(nameof(refereeType), refereeType,@"Round-robin system with referee from round requires at least 3 participants.");
 
         _logger.LogDebug("Creating combinations for {participantCount} participants.", Participants.Count);
@@ -56,29 +65,28 @@ internal class MatchCreator<T> where T : IEquatable<T>
         var roundRobinMatches = GetRoundRobinSystem().GenerateMatches();
         _maxNumOfCombinations = roundRobinMatches.Count;
 
+        // re-assign referee according to settings:
+        var referees = new List<TR>();
+        referees.AddRange((IEnumerable<TR>) Participants);
+        var refereeAssigner = RefereeAssigners<TP, TR>.GetRefereeAssigner(refereeType, referees);
+
         for (var count = 0; count < _maxNumOfCombinations; count++)
         {
             var match = roundRobinMatches[count];
-            _participantCombinationsFirstLeg.Add(new ParticipantCombination<T>(match.Turn, match.Home, match.Guest, default));
+            var combination = new ParticipantCombination<TP, TR>(match.Turn, match.Home, match.Guest, default);
+            combination.Referee = (TR?) (object?) refereeAssigner.GetReferee((combination.Turn, combination.Home, combination.Guest));
 
-            // re-assign referee according to settings
-            _participantCombinationsFirstLeg[count].Referee = refereeType switch {
-                RefereeType.None => default,
-                RefereeType.Home => match.Home,
-                RefereeType.Guest => match.Guest,
-                RefereeType.OtherOfGroup => GetReferee(match.Home, match.Guest),
-                _ => throw new ArgumentOutOfRangeException(nameof(refereeType), refereeType, null)
-            };
+            _participantCombinationsFirstLeg.Add(combination);
         }
 
         CreateCombinationsReturnLeg(refereeType);
     }
 
-    private IRoundRobinSystem<T> GetRoundRobinSystem()
+    private IRoundRobinSystem<TP> GetRoundRobinSystem()
     {
         return Participants.Count is >= 5 and <= 14 
-            ? new IdealRoundRobinSystem<T>(Participants)
-            : new RoundRobinSystem<T>(Participants);
+            ? new IdealRoundRobinSystem<TP>(Participants)
+            : new RoundRobinSystem<TP>(Participants);
     }
 
     /// <summary>
@@ -89,64 +97,15 @@ internal class MatchCreator<T> where T : IEquatable<T>
     {
         _participantCombinationsReturnLeg.Clear();
 
+        // re-assign referee according to settings:
+        var referees = new List<TR>();
+        referees.AddRange((IEnumerable<TR>) Participants);
+        var refereeAssigner = RefereeAssigners<TP, TR>.GetRefereeAssigner(refereeType, referees);
+
         foreach (var match in _participantCombinationsFirstLeg)
         {
-            // re-assign referee according to settings:
-            var referee = refereeType switch {
-                RefereeType.None => default,
-                RefereeType.Home => match.Guest,
-                RefereeType.Guest => match.Home,
-                RefereeType.OtherOfGroup => match.Referee,
-                _ => throw new ArgumentOutOfRangeException(nameof(refereeType), refereeType, null)
-            };
-            _participantCombinationsReturnLeg.Add(new ParticipantCombination<T>(match.Turn, match.Guest, match.Home, referee));
+            _participantCombinationsReturnLeg.Add(new ParticipantCombination<TP, TR>(match.Turn, match.Guest, match.Home, (TR?) (object?) refereeAssigner.GetReferee((match.Turn, match.Guest, match.Home))));
         }
-    }
-
-    /// <summary>
-    /// Determines the referee for a match.
-    /// </summary>
-    /// <param name="home">The home participant of the match.</param>
-    /// <param name="guest">The guest participant of the match.</param>
-    /// <returns></returns>
-    private T GetReferee(T home, T guest)
-    {
-        var lastMaxRefereeCount = int.MaxValue;
-        var lastMaxReferee = Participants[0];
-
-        foreach (var participant in Participants)
-        {
-            var currentRefereeCount = GetNumOfRefereeCombinations(participant);
-            if (currentRefereeCount >= lastMaxRefereeCount ||
-                participant.Equals(home) || participant.Equals(guest) ||
-                IsLastReferee(participant)) continue;
-
-            lastMaxRefereeCount = currentRefereeCount;
-            lastMaxReferee = participant;
-        }
-
-        return lastMaxReferee;
-    }
-
-    /// <summary>
-    /// Checks whether the <paramref name="participant"/> was referee in the last match.
-    /// Always returns false if the match collection is empty.
-    /// </summary>
-    /// <param name="participant">The participant to check whether it was referee in the last match.</param>
-    /// <returns>Return true, if the participant was referee in the last match, false otherwise.</returns>
-    private bool IsLastReferee(T participant)
-    {
-        return _participantCombinationsFirstLeg.Count != 0 && participant.Equals(_participantCombinationsFirstLeg[^1].Referee);
-    }
-
-    /// <summary>
-    /// Calculates the number of matches a participant was assigned referee.
-    /// </summary>
-    /// <param name="participant">The participant to calculate the number of referee matches.</param>
-    /// <returns>The number of referee matches for the participant.</returns>
-    private int GetNumOfRefereeCombinations(T participant)
-    {
-        return _participantCombinationsFirstLeg.Count(match => match.Referee != null && match.Referee.Equals(participant));
     }
 
     /// <summary>
@@ -155,11 +114,11 @@ internal class MatchCreator<T> where T : IEquatable<T>
     /// <param name="refereeType">Determines how referees will be assigned for the matches.</param>
     /// <param name="legType">First leg or return leg.</param>
     /// <returns>Return a collection of participant combinations.</returns>
-    public ParticipantCombinations<T> GetParticipantCombinations(RefereeType refereeType, LegType legType)
+    public ParticipantCombinations<TP, TR> GetCombinations(RefereeType refereeType, LegType legType)
     {
         CreateCombinations(refereeType);
 
-        return (legType == LegType.First) ? _participantCombinationsFirstLeg : _participantCombinationsReturnLeg;
+        return ((legType == LegType.First) ? _participantCombinationsFirstLeg : _participantCombinationsReturnLeg);
     }
 
     /// <summary>
@@ -170,5 +129,5 @@ internal class MatchCreator<T> where T : IEquatable<T>
     /// <summary>
     /// Gets the participants.
     /// </summary>
-    public Collection<T> Participants { get; private set; } = new();
+    public Collection<TP> Participants { get; private set; } = new();
 }

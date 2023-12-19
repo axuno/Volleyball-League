@@ -103,14 +103,14 @@ internal class AvailableMatchDates
     /// Checks the <see cref="TeamEntity"/> for <see cref="TeamEntity.MatchDayOfWeek"/>,
     /// <see cref="TeamEntity.MatchTime"/> and <see cref="TeamEntity.VenueId"/> for not <see langword="null"/>.
     /// </summary>
-    private bool IsVenueAndDateDefined(TeamEntity team)
+    private static bool IsVenueAndDateDefined(TeamEntity team)
     {
         return team is { MatchDayOfWeek: not null, MatchTime: not null, VenueId: not null };
     }
 
     /// <summary>
     /// Verifies, that the given <paramref name="matchDateTimeUtc"></paramref> is within the <see cref="RoundLegEntity"/> date
-    /// bounderies, <b>and</b> it is not excluded, <b>and</b> the venue is not occupied by another match.
+    /// boundaries, <b>and</b> it is not excluded, <b>and</b> the venue is not occupied by another match.
     /// </summary>
     private async Task<bool> IsDateUsable(DateTime matchDateTimeUtc, RoundLegEntity roundLeg, TeamEntity team, CancellationToken cancellationToken)
     {
@@ -226,7 +226,7 @@ internal class AvailableMatchDates
         CancellationToken cancellationToken)
     {
         return (await _appDb.VenueRepository.GetOccupyingMatchesAsync(venueId, matchTime,
-            _tenantContext.TournamentContext.MatchPlanTournamentId, cancellationToken)).Any();
+            _tenantContext.TournamentContext.MatchPlanTournamentId, cancellationToken)).Count == 0;
     }
 
     private static bool IsDateWithinRoundLegDateTime(RoundLegEntity leg, DateTime queryDate)

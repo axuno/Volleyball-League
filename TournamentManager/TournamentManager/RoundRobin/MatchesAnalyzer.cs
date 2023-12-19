@@ -1,6 +1,6 @@
 ﻿namespace TournamentManager.RoundRobin;
 
-internal class MatchesAnalyzer<TP>  where TP : IEquatable<TP>
+internal class MatchesAnalyzer<TP>  where TP : struct, IEquatable<TP>
 {
     /// <summary>
     /// Gets the total number of home/guest matches for each participant.

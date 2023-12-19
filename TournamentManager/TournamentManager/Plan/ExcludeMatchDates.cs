@@ -41,12 +41,15 @@ internal class ExcludeMatchDates
                 RoundLegPeriodFields.TournamentId == tournamentId),
             cancellationToken);
 
+        _logger.LogDebug("Generating excluded dates for tournament {tournamentId} with {roundLegPeriods} round leg periods.", tournamentId, roundLegPeriods.Count);
+
         var minDate = roundLegPeriods.Min(leg => leg.StartDateTime);
         var maxDate = roundLegPeriods.Max(leg => leg.EndDateTime);
 
         // remove all existing excluded dates for the tournament
         if (removeExisting)
         {
+            _logger.LogDebug("Removing existing excluded dates for tournament {tournamentId}.", tournamentId);
             var filter = new RelationPredicateBucket(ExcludeMatchDateFields.TournamentId == tournamentId);
             await _appDb.GenericRepository.DeleteEntitiesDirectlyAsync(typeof(ExcludeMatchDateEntity), filter,
                 cancellationToken);
@@ -54,6 +57,7 @@ internal class ExcludeMatchDates
 
         var excludedDates = new EntityCollection<ExcludeMatchDateEntity>();
 
+        _logger.LogDebug("Importing excluded dates from {minDate} to {maxDate} for tournament {tournamentId}.", tournamentId, minDate, maxDate);
         foreach (var record in importer.Import(new DateTimePeriod(minDate, maxDate)))
         {
             var entity = record.ToExcludeMatchDateEntity();
@@ -61,6 +65,7 @@ internal class ExcludeMatchDates
             excludedDates.Add(entity);
         }
 
+        _logger.LogDebug("Saving {excludedDates} excluded dates for tournament {tournamentId}.", excludedDates.Count, tournamentId);
         await _appDb.GenericRepository.SaveEntitiesAsync(excludedDates, false, false, cancellationToken);
     }
 }
