@@ -68,6 +68,7 @@ internal class MatchCreator<TP, TR> where TP : struct, IEquatable<TP> where TR :
         // re-assign referee according to settings:
         var referees = new List<TR>();
         referees.AddRange((IEnumerable<TR>) Participants);
+
         var refereeAssigner = RefereeAssigners<TP, TR>.GetRefereeAssigner(refereeType, referees);
 
         for (var count = 0; count < _maxNumOfCombinations; count++)
@@ -111,12 +112,11 @@ internal class MatchCreator<TP, TR> where TP : struct, IEquatable<TP> where TR :
     /// <summary>
     /// Gets all combinations for the given participants, using the round-robin system.
     /// </summary>
-    /// <param name="refereeType">Determines how referees will be assigned for the matches.</param>
     /// <param name="legType">First leg or return leg.</param>
     /// <returns>Return a collection of participant combinations.</returns>
-    public ParticipantCombinations<TP, TR> GetCombinations(RefereeType refereeType, LegType legType)
+    public ParticipantCombinations<TP, TR> GetCombinations(LegType legType)
     {
-        CreateCombinations(refereeType);
+        CreateCombinations(_tenantContext.TournamentContext.RefereeRuleSet.RefereeType);
 
         return ((legType == LegType.First) ? _participantCombinationsFirstLeg : _participantCombinationsReturnLeg);
     }

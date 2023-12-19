@@ -30,11 +30,13 @@ internal class MatchCreatorTests
     {
         var participants = GetParticipants(6);
         var tenantContext = new TenantContext();
+        tenantContext.TournamentContext.RefereeRuleSet.RefereeType = refereeType;
+
         var matchCreator = new MatchCreator<long, long>(tenantContext, NullLogger<MatchCreator<long, long>>.Instance);
         var combinationsFirstLeg =
-            matchCreator.SetParticipants(participants).GetCombinations(refereeType, LegType.First);
+            matchCreator.SetParticipants(participants).GetCombinations(LegType.First);
         var combinationsReturnLeg =
-            matchCreator.SetParticipants(participants).GetCombinations(refereeType, LegType.Return);
+            matchCreator.SetParticipants(participants).GetCombinations(LegType.Return);
 
         Assert.That(combinationsFirstLeg.Count, Is.EqualTo(combinationsReturnLeg.Count));
     }
@@ -48,13 +50,14 @@ internal class MatchCreatorTests
     {
         var participants = GetParticipants(5);
 
-        // TODO: RefereeType should be configurable via ITenantContext
         var tenantContext = new TenantContext();
+        tenantContext.TournamentContext.RefereeRuleSet.RefereeType = refereeType;
+
         // build up match combinations for the teams of round
         var matchCreator = new MatchCreator<long, long>(tenantContext, NullLogger<MatchCreator<long, long>>.Instance);
 
         var combinations =
-            matchCreator.SetParticipants(participants).GetCombinations(refereeType, LegType.First);
+            matchCreator.SetParticipants(participants).GetCombinations(LegType.First);
 
         var firstCombination = combinations.First();
         var expectedReferee = refereeType switch
@@ -76,10 +79,12 @@ internal class MatchCreatorTests
     {
         var participants = GetParticipants(5);
         var tenantContext = new TenantContext();
+        tenantContext.TournamentContext.RefereeRuleSet.RefereeType = RefereeType.OtherFromRound;
+
         var matchCreator = new MatchCreator<long, long>(tenantContext, NullLogger<MatchCreator<long, long>>.Instance);
         var combinations =
-            matchCreator.SetParticipants(participants).GetCombinations(RefereeType.OtherFromRound, LegType.First)
-                .Union(matchCreator.SetParticipants(participants).GetCombinations(RefereeType.OtherFromRound, LegType.Return));
+            matchCreator.SetParticipants(participants).GetCombinations(LegType.First)
+                .Union(matchCreator.SetParticipants(participants).GetCombinations(LegType.Return));
 
         Assert.That(combinations.All(c => c.Home != c.Referee && c.Guest != c.Referee), Is.True, "Referee is never home or guest");
     }
@@ -89,11 +94,13 @@ internal class MatchCreatorTests
     {
         var participants = GetParticipants(5);
         var tenantContext = new TenantContext();
+        tenantContext.TournamentContext.RefereeRuleSet.RefereeType = (RefereeType) 12345;
+
         var matchCreator = new MatchCreator<long, long>(tenantContext, NullLogger<MatchCreator<long, long>>.Instance);
 
         Assert.Throws<ArgumentOutOfRangeException>(() =>
         {
-            _ = matchCreator.SetParticipants(participants).GetCombinations((RefereeType) 12345, LegType.First);
+            _ = matchCreator.SetParticipants(participants).GetCombinations(LegType.First);
         });
     }
 

@@ -73,6 +73,12 @@ public class TournamentContext : ITournamentContext
     /// </summary>
     [YAXLib.Attributes.YAXComment("The rules which apply for creating and editing team data")]
     public TeamRules TeamRuleSet { get; set; } = new();
+
+    /// <summary>
+    /// Rules for organizing referees.
+    /// </summary>
+    [YAXLib.Attributes.YAXComment("Rules for organizing referees")]
+    public RefereeRules RefereeRuleSet { get; set; } = new();
 }
 
 public class FixtureRuleSet
@@ -157,6 +163,18 @@ public class TeamRules
     /// </summary>
     [YAXLib.Attributes.YAXComment("Rules for the HomeVenue of a team.")]
     public HomeVenue HomeVenue { get; set; } = new();
+}
+
+/// <summary>
+/// Rules for organizing referees.
+/// </summary>
+public class RefereeRules
+{
+    /// <summary>
+    /// Rules for teams' home match time
+    /// </summary>
+    [YAXLib.Attributes.YAXComment("Rules for organizing referees")]
+    public Plan.RefereeType RefereeType { get; set; } = Plan.RefereeType.None;
 }
 
 /// <summary>

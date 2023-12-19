@@ -191,7 +191,7 @@ internal class MatchScheduler
         var matchCreator = new MatchCreator<long, long>(_tenantContext, _loggerFactory.CreateLogger<MatchCreator<long, long>>());
         // TODO: RefereeType should be configurable via ITenantContext
         var combinations =
-            matchCreator.SetParticipants(teams).GetCombinations(RefereeType.Home,
+            matchCreator.SetParticipants(teams).GetCombinations(
                 roundLeg.SequenceNo % 2 == 1 ? LegType.First : LegType.Return);
         return combinations;
     }
