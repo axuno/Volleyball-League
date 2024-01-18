@@ -80,12 +80,12 @@ public class UnitTestHelpers
 
     public UserStore GetUserStore()
     {
-        return new UserStore(_tenantContext, new NullLogger<UserStore>(), new UpperInvariantLookupNormalizer(), new Mock<MultiLanguageIdentityErrorDescriber>(null).Object);
+        return new UserStore(_tenantContext, new NullLogger<UserStore>(), new UpperInvariantLookupNormalizer(), new Mock<MultiLanguageIdentityErrorDescriber>(null!).Object);
     }
 
     public RoleStore GetRoleStore()
     {
-        return new RoleStore(_tenantContext, new NullLogger<UserStore>(), new UpperInvariantLookupNormalizer(), new Mock<MultiLanguageIdentityErrorDescriber>(null).Object);
+        return new RoleStore(_tenantContext, new NullLogger<UserStore>(), new UpperInvariantLookupNormalizer(), new Mock<MultiLanguageIdentityErrorDescriber>(null!).Object);
     }
 
     public ServiceProvider GetStandardServiceProvider()

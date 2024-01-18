@@ -69,10 +69,10 @@ Localizations for English and German are included. The library is in operation o
         <PackageReference Include="Axuno.TextTemplating" Version="2.0.1" />
         <PackageReference Include="JSNLog" Version="3.0.2" />
         <PackageReference Include="MailMergeLib" Version="5.11.1" />
-        <PackageReference Include="Microsoft.AspNetCore.Authentication.Facebook" Version="6.0.21" />
-        <PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="6.0.21" />
-        <PackageReference Include="Microsoft.AspNetCore.Authentication.MicrosoftAccount" Version="6.0.21" />
-        <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="6.0.21" />
+        <PackageReference Include="Microsoft.AspNetCore.Authentication.Facebook" Version="6.0.26" />
+        <PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="6.0.26" />
+        <PackageReference Include="Microsoft.AspNetCore.Authentication.MicrosoftAccount" Version="6.0.26" />
+        <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="6.0.26" />
         <PackageReference Include="Microsoft.DotNet.PlatformAbstractions" Version="3.1.6" />
         <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1">
             <PrivateAssets>all</PrivateAssets>
@@ -80,15 +80,18 @@ Localizations for English and German are included. The library is in operation o
         </PackageReference>
         <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="6.0.16" />
         <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-        <PackageReference Include="NLog" Version="5.2.3" />
-        <PackageReference Include="NLog.Web.AspNetCore" Version="5.3.3" />
-        <PackageReference Include="NuGetizer" Version="1.1.0">
+        <PackageReference Include="NLog" Version="5.2.8" />
+        <PackageReference Include="NLog.Web.AspNetCore" Version="5.3.8" />
+        <PackageReference Include="NuGetizer" Version="1.2.1">
             <PrivateAssets>all</PrivateAssets>
             <PackEmbeddedResource>true</PackEmbeddedResource>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
         <PackageReference Include="PuppeteerSharp" Version="9.1.0" />
-        <PackageReference Include="StackifyMiddleware" Version="3.0.5.2" />
+        <PackageReference Include="StackifyMiddleware" Version="3.3.3.4767" />
+        <PackageReference Include="System.Net.Http" Version="4.3.4" />
+        <PackageReference Include="System.Security.Cryptography.Xml" Version="6.0.1" />
+        <PackageReference Include="System.Text.RegularExpressions" Version="4.3.1" />
     </ItemGroup>
 
     <ItemGroup>
