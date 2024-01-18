@@ -88,7 +88,7 @@ public class Cron : AbstractController
         }
         catch (AggregateException e)
         {
-            _logger.LogCritical("Failure invoking automail urls", e);
+            _logger.LogCritical("Failure invoking automail urls. {exception}", e);
         }
             
         return Ok(results);
@@ -106,7 +106,7 @@ public class Cron : AbstractController
     {
         if(!IsAuthorized(key)) return Unauthorized("Incorrect authorization key");
             
-        var forceDate = referenceDate?.EndsWith("!") ?? false;
+        var forceDate = referenceDate?.EndsWith('!') ?? false;
 
         if (referenceDate == null || !DateTime.TryParse(referenceDate.TrimEnd('!'), out var cronDateTime))
         {

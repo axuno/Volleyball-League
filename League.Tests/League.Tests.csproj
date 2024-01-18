@@ -6,18 +6,19 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="6.0.14" />
-        <PackageReference Include="Microsoft.Data.SqlClient" Version="5.1.3" />
-        <PackageReference Include="FluentAssertions" Version="6.11.0" />
-        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.6.3" />
-        <PackageReference Include="NUnit" Version="3.13.3" />
+        <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="6.0.26" />
+        <PackageReference Include="Microsoft.Data.SqlClient" Version="5.1.4" />
+        <PackageReference Include="FluentAssertions" Version="6.12.0" />
+        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.8.0" />
+        <PackageReference Include="NUnit" Version="3.14.0" />
         <PackageReference Include="NUnit3TestAdapter" Version="4.5.0">
           <PrivateAssets>all</PrivateAssets>
           <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="Microsoft.AspNetCore.TestHost" Version="6.0.19" />
-        <PackageReference Include="Moq" Version="4.18.4" />
+        <PackageReference Include="Microsoft.AspNetCore.TestHost" Version="6.0.26" />
+        <PackageReference Include="Moq" Version="4.20.70" />
         <PackageReference Include="ObjectsComparer" Version="1.4.1" />
+        <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.35.0" />
     </ItemGroup>
 
     <ItemGroup>
