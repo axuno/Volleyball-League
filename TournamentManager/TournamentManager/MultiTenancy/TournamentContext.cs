@@ -75,9 +75,9 @@ public class TournamentContext : ITournamentContext
     public TeamRules TeamRuleSet { get; set; } = new();
 
     /// <summary>
-    /// Rules for organizing referees.
+    /// Rules for referee master data.
     /// </summary>
-    [YAXLib.Attributes.YAXComment("Rules for organizing referees")]
+    [YAXLib.Attributes.YAXComment("Rules for referee master data")]
     public RefereeRules RefereeRuleSet { get; set; } = new();
 }
 
@@ -166,14 +166,14 @@ public class TeamRules
 }
 
 /// <summary>
-/// Rules for organizing referees.
+/// Rules for referee master data.
 /// </summary>
 public class RefereeRules
 {
     /// <summary>
     /// Rules for teams' home match time
     /// </summary>
-    [YAXLib.Attributes.YAXComment("Rules for organizing referees")]
+    [YAXLib.Attributes.YAXComment("Rule for organizing referees")]
     public Plan.RefereeType RefereeType { get; set; } = Plan.RefereeType.None;
 }
 

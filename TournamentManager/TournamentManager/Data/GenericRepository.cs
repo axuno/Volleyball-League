@@ -77,7 +77,7 @@ public class GenericRepository
         var count = await da.DeleteEntityCollectionAsync(entitiesToDelete, cancellationToken);
     }
 
-    public virtual async Task<int> DeleteEntitiesDirectlyAsync(Type entityType, IRelationPredicateBucket filterBucket, CancellationToken cancellationToken)
+    public virtual async Task<int> DeleteEntitiesDirectlyAsync(Type entityType, IRelationPredicateBucket? filterBucket, CancellationToken cancellationToken)
     {
         using var da = _dbContext.GetNewAdapter();
         return await da.DeleteEntitiesDirectlyAsync(entityType, filterBucket, cancellationToken);

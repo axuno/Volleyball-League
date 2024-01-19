@@ -7,7 +7,7 @@ namespace TournamentManager.Plan;
 
 /// <summary>
 /// Class to create matches for a group of participants.
-/// The round robin system is applied, i.e. all participants in the group play each other.
+/// The round-robin system is applied, i.e. all participants in the group play each other.
 /// </summary>
 /// <typeparam name="TP">The <see langword="struct"/> participant type.</typeparam>
 /// <typeparam name="TR">The <see langword="struct"/> referee type.</typeparam>
@@ -118,7 +118,7 @@ internal class MatchCreator<TP, TR> where TP : struct, IEquatable<TP> where TR :
     {
         CreateCombinations(_tenantContext.TournamentContext.RefereeRuleSet.RefereeType);
 
-        return ((legType == LegType.First) ? _participantCombinationsFirstLeg : _participantCombinationsReturnLeg);
+        return (legType == LegType.First) ? _participantCombinationsFirstLeg : _participantCombinationsReturnLeg;
     }
 
     /// <summary>

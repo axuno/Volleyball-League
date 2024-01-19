@@ -49,7 +49,8 @@ public class ExcludedMatchDateRepository
     /// but only for the team or round.
     /// </summary>
     /// <remarks>
-    /// Same behavior as with <see cref="TournamentManager.Plan.AvailableMatchDates.IsExcludedDate"/>.
+    /// Same conditions as with <see cref="TournamentManager.Plan.AvailableMatchDates.IsExcludedDate"/>
+    /// which uses a cached list of <see cref="ExcludeMatchDateEntity"/>s.
     /// </remarks>
     /// <param name="match">The <see cref="MatchEntity"/> where RoundId and TeamId are taken.</param>
     /// <param name="tournamentId">The TournamentId to filter the result.</param>
@@ -58,7 +59,7 @@ public class ExcludedMatchDateRepository
     public virtual async Task<ExcludeMatchDateEntity?> GetExcludedMatchDateAsync(MatchEntity match,
         long tournamentId, CancellationToken cancellationToken)
     {
-        if (!(match.PlannedStart.HasValue && match.PlannedEnd.HasValue)) return null;
+        if (match is not { PlannedStart: not null, PlannedEnd: not null }) return null;
 
         using var da = _dbContext.GetNewAdapter();
         var tournamentFilter = new PredicateExpression(
