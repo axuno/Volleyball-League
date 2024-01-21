@@ -423,7 +423,6 @@ internal class MatchScheduler
         var index = 0;
         while (start < allMatchDaysOfRound.Count && index < combinations.TurnDateTimePeriods.Count)
         {
-            //TODO: There could be a remainder of days because of integer division!
             var end = start + periodDaysCount < allMatchDaysOfRound.Count
                 ? start + periodDaysCount
                 : allMatchDaysOfRound.Count - 1;
@@ -432,6 +431,18 @@ internal class MatchScheduler
             var key = combinations.TurnDateTimePeriods.Keys.ElementAt(index);
             combinations.TurnDateTimePeriods[key] =
                 new DateTimePeriod(allMatchDaysOfRound[start].Date, allMatchDaysOfRound[end].Date);
+
+            // There could be a remainder of days because of integer division.
+            // If there is a gap between the end of the previous turn and the start of the current turn,
+            // we adjust the start date of the current turn to the end date of the previous turn + 1 day.
+            // Note: The keys (turn numbers) are one-based.
+            if (key > 1 && combinations.TurnDateTimePeriods[key]?.Start !=
+                combinations.TurnDateTimePeriods[key - 1]?.End?.AddDays(1))
+            {
+                combinations.TurnDateTimePeriods[key] =
+                    new DateTimePeriod(combinations.TurnDateTimePeriods[key - 1]?.End?.AddDays(1),
+                                               combinations.TurnDateTimePeriods[key]?.End);
+            }
 
             _logger.LogDebug("Turn #{turn} date period: From={from}, To={to}, {days} days",
                 key, combinations.TurnDateTimePeriods[key]?.Start?.ToShortDateString(),

@@ -1,5 +1,5 @@
 ﻿using NUnit.Framework;
-
+using FluentAssertions;
 using TournamentManager.DAL.EntityClasses;
 using TournamentManager.ExtensionMethods;
 
@@ -57,8 +57,6 @@ public class MatchEntityListExtensionTests
     {
         var teamIds = new[] { team1, team2 };
         var matches = _matches.GetNextMatches(startIndex, teamIds, includeUndefined).ToList();
-
-        var x = matches.Any() ? matches.First() : -1;
 
         Assert.That(matches.Count, Is.EqualTo(expected));
     }
