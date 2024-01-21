@@ -12,7 +12,7 @@ namespace TournamentManager.Plan;
 internal class AvailableMatchDates
 {
     private readonly ITenantContext _tenantContext;
-    private readonly AppDb _appDb;
+    private readonly IAppDb _appDb;
     private readonly Axuno.Tools.DateAndTime.TimeZoneConverter _timeZoneConverter;
 
     private readonly ILogger<AvailableMatchDates> _logger;

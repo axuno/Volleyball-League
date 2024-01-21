@@ -13,7 +13,7 @@ public class Map : AbstractController
     private readonly IConfiguration _configuration;
     private readonly ILogger<Map> _logger;
     private readonly ITenantContext _tenantContext;
-    private readonly AppDb _appDb;
+    private readonly IAppDb _appDb;
     private readonly IStringLocalizer<Map> _localizer;
     private readonly GoogleConfiguration _googleConfig;
 

@@ -1,6 +1,4 @@
-﻿#nullable enable
-
-namespace TournamentManager.MultiTenancy;
+﻿namespace TournamentManager.MultiTenancy;
 
 [YAXLib.Attributes.YAXSerializeAs(nameof(TenantContext))]
 public class TenantContext : ITenantContext

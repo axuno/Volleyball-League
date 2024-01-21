@@ -7,7 +7,7 @@ namespace League.Components;
 public class RoundSelector : ViewComponent
 {
     private readonly ITenantContext _tenantContext;
-    private readonly AppDb _appDb;
+    private readonly IAppDb _appDb;
     private readonly ILogger<RoundSelector> _logger;
 
     public RoundSelector(ITenantContext tenantContext, ILogger<RoundSelector> logger)

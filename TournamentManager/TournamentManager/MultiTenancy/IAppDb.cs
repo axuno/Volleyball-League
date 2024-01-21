@@ -1,12 +1,30 @@
-﻿namespace TournamentManager.MultiTenancy;
+﻿using TournamentManager.Data;
 
-/// <summary>
-/// Interface for accessing the repositories.
-/// </summary>
+namespace TournamentManager.MultiTenancy;
+
 public interface IAppDb
 {
     /// <summary>
-    /// The <see cref="MultiTenancy.IDbContext"/> instance to be used to access the repositories.
+    /// Provides database-specific settings.
     /// </summary>
-    MultiTenancy.IDbContext DbContext { get; }
+    IDbContext DbContext { get; }
+
+    GenericRepository GenericRepository { get; }
+    ManagerOfTeamRepository ManagerOfTeamRepository { get; }
+    MatchRepository MatchRepository { get; }
+    PlayerInTeamRepository PlayerInTeamRepository { get; }
+    RoundRepository RoundRepository { get; }
+    TeamInRoundRepository TeamInRoundRepository { get; }
+    TeamRepository TeamRepository { get; }
+    TournamentRepository TournamentRepository { get; }
+    RankingRepository RankingRepository { get; }
+    RoleRepository RoleRepository { get; }
+    UserRepository UserRepository { get; }
+    UserRoleRepository UserRoleRepository { get; }
+    UserClaimRepository UserClaimRepository { get; }
+    UserLoginRepository UserLoginRepository { get; }
+    UserTokenRepository UserTokenRepository { get; }
+    VenueRepository VenueRepository { get; }
+    ExcludedMatchDateRepository ExcludedMatchDateRepository { get; }
+    AvailableMatchDateRepository AvailableMatchDateRepository { get; }
 }

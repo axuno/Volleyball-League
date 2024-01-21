@@ -20,7 +20,7 @@ namespace League.Controllers;
 public class Team : AbstractController
 {
     private readonly ITenantContext _tenantContext;
-    private readonly AppDb _appDb;
+    private readonly IAppDb _appDb;
     private readonly IStringLocalizer<Team> _localizer;
     private readonly IAuthorizationService _authorizationService;
     private readonly ILogger<Team> _logger;

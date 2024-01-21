@@ -1,10 +1,8 @@
 ﻿using System.Collections.ObjectModel;
-using System.Diagnostics;
 using Microsoft.Extensions.Logging.Abstractions;
 using NUnit.Framework;
 using TournamentManager.MultiTenancy;
 using TournamentManager.Plan;
-using TournamentManager.RoundRobin;
 
 namespace TournamentManager.Tests.Plan;
 
@@ -104,6 +102,46 @@ internal class MatchCreatorTests
         });
     }
 
+    [Test]
+    public void SwappingHomeAndGuestInParticipantCombinationShouldSucceed()
+    {
+        var matchCreator = GetMatchCreator(5, RefereeType.Home);
+        var combination = matchCreator.GetCombinations(LegType.First).First();
+
+        var (home, guest) = (combination.Home, combination.Guest);
+        var stringBeforeSwap = combination.ToString();
+        combination.SwapHomeGuest();
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(combination.Home, Is.EqualTo(guest));
+            Assert.That(combination.Guest, Is.EqualTo(home));
+            Assert.That(combination.ToString(), Is.Not.EqualTo(stringBeforeSwap));
+        });
+    }
+
+    [Test]
+    public void NumberOfCombinationsAndTurns()
+    {
+        const int numOfParticipants = 5;
+        var matchCreator = GetMatchCreator(numOfParticipants, RefereeType.Home);
+        var firstLeg = matchCreator.GetCombinations(LegType.First);
+        var firstTurn = firstLeg.GetCombinations(1);
+        var allTurns = firstLeg.GetTurns().ToList();
+        foreach(var turn in allTurns)
+        {
+            firstLeg.TurnDateTimePeriods.Add(turn, null);
+        }
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(firstLeg.Count, Is.EqualTo(numOfParticipants * 2));
+            Assert.That(firstTurn.Count, Is.EqualTo(2));
+            Assert.That(allTurns.Count, Is.EqualTo(numOfParticipants));
+            Assert.That(firstLeg.TurnDateTimePeriods.Count, Is.EqualTo(allTurns.Count));
+        });
+    }
+
     private static Collection<long> GetParticipants(int numOfParticipants)
     {
         var participants = new Collection<long>();
@@ -115,5 +153,14 @@ internal class MatchCreatorTests
         return participants;
     }
 
+    private static MatchCreator<long, long> GetMatchCreator(int numOfParticipants, RefereeType refereeType)
+    {
+        var participants = GetParticipants(numOfParticipants);
+        var tenantContext = new TenantContext();
+        tenantContext.TournamentContext.RefereeRuleSet.RefereeType = refereeType;
+
+        return new MatchCreator<long, long>(tenantContext, NullLogger<MatchCreator<long, long>>.Instance)
+            .SetParticipants(participants);
+    }
 }
 

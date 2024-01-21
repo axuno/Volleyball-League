@@ -51,9 +51,9 @@ internal class ParticipantCombination<TP, TR> where TP : struct where TR : struc
     }
 
     /// <summary>
-    /// Returns the string representation of the participants combination.
+    /// Returns the string representation of the participants' combination.
     /// </summary>
-    /// <returns>Returns the string representation of the participants combination.</returns>
+    /// <returns>Returns the string representation of the participants' combination.</returns>
     public override string ToString()
     {
         return string.Concat(Home.ToString(), " : ", Guest.ToString(), " / ", Referee?.ToString() ?? "-");

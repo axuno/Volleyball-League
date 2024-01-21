@@ -6,7 +6,7 @@ namespace League.Components;
 
 public class VenueSelector : ViewComponent
 {
-    private readonly AppDb _appDb;
+    private readonly IAppDb _appDb;
     private readonly ILogger<VenueSelector> _logger;
 
     public VenueSelector(ITenantContext tenantContext, ILogger<VenueSelector> logger)

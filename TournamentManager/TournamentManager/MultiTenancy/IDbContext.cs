@@ -44,7 +44,7 @@ public interface IDbContext
     /// <summary>
     /// Gives access to the repositories.
     /// </summary>
-    AppDb AppDb { get; }
+    IAppDb AppDb { get; }
 
     /// <summary>
     /// Gets a new instance of an <see cref="IDataAccessAdapter"/> which will be used to access repositories.

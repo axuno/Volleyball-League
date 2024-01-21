@@ -12,7 +12,7 @@ namespace TournamentManager.Plan;
 /// </summary>
 internal class ExcludeMatchDates
 {
-    private readonly AppDb _appDb;
+    private readonly IAppDb _appDb;
     private readonly ILogger<ExcludeMatchDates> _logger;
     
     /// <summary>

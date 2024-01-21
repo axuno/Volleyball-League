@@ -94,5 +94,5 @@ public class DbContext : IDbContext
     /// Gives access to the repositories.
     /// </summary>
     [YAXLib.Attributes.YAXDontSerialize]
-    public virtual AppDb AppDb { get; }
+    public virtual IAppDb AppDb { get; }
 }
