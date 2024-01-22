@@ -9,7 +9,6 @@ namespace TournamentManager.Tests.Plan;
 [TestFixture]
 internal class MatchCreatorTests
 {
-
     [Test]
     public void InstantiateMatchCreatorWithIncompatibleTypesShouldThrow()
     {

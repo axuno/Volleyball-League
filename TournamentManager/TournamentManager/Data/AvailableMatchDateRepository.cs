@@ -24,7 +24,7 @@ public class AvailableMatchDateRepository
     /// <param name="tournamentId"></param>
     /// <param name="cancellationToken"></param>
     /// <returns>Returns the <see cref="EntityCollection{TEntity}"/> of type <see cref="AvailableMatchDateEntity"/> for a tournament.</returns>
-    public async Task<EntityCollection<AvailableMatchDateEntity>> GetAvailableMatchDatesAsync (long tournamentId, CancellationToken cancellationToken)
+    public virtual async Task<EntityCollection<AvailableMatchDateEntity>> GetAvailableMatchDatesAsync (long tournamentId, CancellationToken cancellationToken)
     {
         var available = new EntityCollection<AvailableMatchDateEntity>();
         using var da = _dbContext.GetNewAdapter();
@@ -48,7 +48,7 @@ public class AvailableMatchDateRepository
     /// <param name="clear">Which entries to delete for the tournament.</param>
     /// <param name="cancellationToken"></param>
     /// <returns>Returns the number of deleted records.</returns>
-    public async Task<int> ClearAsync(long tournamentId, MatchDateClearOption clear, CancellationToken cancellationToken)
+    public virtual async Task<int> ClearAsync(long tournamentId, MatchDateClearOption clear, CancellationToken cancellationToken)
     {
         var deleted = 0;
 

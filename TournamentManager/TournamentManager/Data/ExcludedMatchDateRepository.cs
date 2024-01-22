@@ -27,7 +27,7 @@ public class ExcludedMatchDateRepository
     /// <param name="tournamentId"></param>
     /// <param name="cancellationToken"></param>
     /// <returns>Returns the <see cref="EntityCollection{TEntity}"/> of type <see cref="ExcludeMatchDateEntity"/> for a tournament.</returns>
-    public async Task<EntityCollection<ExcludeMatchDateEntity>> GetExcludedMatchDatesAsync (long tournamentId, CancellationToken cancellationToken)
+    public virtual async Task<EntityCollection<ExcludeMatchDateEntity>> GetExcludedMatchDatesAsync (long tournamentId, CancellationToken cancellationToken)
     {
         var excluded = new EntityCollection<ExcludeMatchDateEntity>();
         using var da = _dbContext.GetNewAdapter();

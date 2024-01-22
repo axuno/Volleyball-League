@@ -133,7 +133,7 @@ internal class MatchScheduler
 
         // Get match dates for every combination of a turn.
         // Matches in the same turnCombinations can even take place at the same time.
-        var datesFound = GetMatchDatesForTurn(turn, combinations, tournamentMatches);
+        var datesFound = GetMatchDatesForTurn(roundLeg, turn, combinations, tournamentMatches);
         _logger.LogDebug("Found dates for combination: {dates}",
             string.Join(", ",
                     datesFound.OrderBy(bd => bd?.MatchStartTime)
@@ -238,7 +238,7 @@ internal class MatchScheduler
         {
             if (!teamsWithoutHomeMatches.Contains(combination.Home)) continue;
 
-            _logger.LogDebug("Team cannot have home matches - {TeamId}. Swap with away team.", combination.Home);
+            _logger.LogDebug("Team cannot have home matches - {TeamId}. Swap with guest team.", combination.Home);
 
             // swap home and guest team (keep referee unchanged)
             combination.SwapHomeGuest();
@@ -266,11 +266,12 @@ internal class MatchScheduler
     /// <summary>
     /// Gets a lists of available match dates for the given <paramref name="turn"/> of the <paramref name="combinations"/>.
     /// </summary>
+    /// <param name="roundLeg"></param>
     /// <param name="turn"></param>
     /// <param name="combinations"></param>
     /// <param name="roundMatches"></param>
     /// <returns>A lists of available match dates.</returns>
-    private List<AvailableMatchDateEntity?> GetMatchDatesForTurn(int turn,
+    private List<AvailableMatchDateEntity?> GetMatchDatesForTurn(RoundLegEntity roundLeg, int turn,
         ParticipantCombinations<long, long> combinations, EntityCollection<MatchEntity> roundMatches)
     {
         var turnCombinations = combinations.GetCombinations(turn).ToList();
@@ -287,6 +288,22 @@ internal class MatchScheduler
 
             var availableDatesForCombination = _availableMatchDates.GetGeneratedAndManualAvailableMatchDates(combination.Home,
                 turnCombinationsPeriod, GetOccupiedMatchDates(combination, roundMatches));
+
+            // If no dates could be found, we extend the date period by 7 days (-3/+4) in both directions
+            if (availableDatesForCombination.Count == 0)
+            {
+                _logger.LogDebug("No free dates {from} - {to} found for {home} - {guest}: {period} * will be extended by 7 days in both directions.",
+                                                          turnCombinationsPeriod.Start, turnCombinationsPeriod.End, combination.Home, combination.Guest,
+                                                          turnCombinationsPeriod);
+                // The extension applies only to the current combination.
+                // We ensure that the extension does not exceed the round leg's date period.
+                turnCombinationsPeriod.Start = new[] { roundLeg.StartDateTime, turnCombinationsPeriod.Start!.Value.AddDays(-4) }.Max();
+                turnCombinationsPeriod.End = new[] { roundLeg.EndDateTime, turnCombinationsPeriod.End!.Value.AddDays(+3) }.Min();
+
+                availableDatesForCombination = _availableMatchDates.GetGeneratedAndManualAvailableMatchDates(combination.Home,
+                    turnCombinationsPeriod, GetOccupiedMatchDates(combination, roundMatches));
+            }
+
             // initialize MinTimeDiff for the whole list
             availableDatesForCombination.ForEach(amd => amd.MinTimeDiff = TimeSpan.MaxValue);
 
@@ -322,21 +339,21 @@ internal class MatchScheduler
             // Only 1 match date found, so optimization is not possible
             // and FindBestDate() would throw an exception
             1 => new List<AvailableMatchDateEntity?> { matchDates[0][0] },
-            _ => FindBestDates(matchDates)
+            _ => FindBestDatePerCombination(matchDates)
         };
     }
 
     /// <summary>
-    /// Finds the best match dates from a list of available match dates for each combination.
+    /// Finds the best match date for each combination from a list of available match dates.
     /// The best match is the date that has the smallest distance to the smallest date in the other turn(s).
     /// If no match dates could be determined for a team, bestDate will be set to null.
     /// <para/>
     /// This method is optimizing across all combinations of all turns.
     /// </summary>
     /// <param name="availableMatchDates"></param>
-    private static List<AvailableMatchDateEntity?> FindBestDates(List<List<AvailableMatchDateEntity>> availableMatchDates)
+    private static List<AvailableMatchDateEntity?> FindBestDatePerCombination(List<List<AvailableMatchDateEntity>> availableMatchDates)
     {
-        var bestMatchDatesPerCombination = new List<AvailableMatchDateEntity?>();
+        var bestMatchDatePerCombination = new List<AvailableMatchDateEntity?>();
 
         // Cross-compute the number of dates between matches of a turn.
         // Goal: Found match dates are as close to each other as possible
@@ -371,7 +388,7 @@ internal class MatchScheduler
                 .Where(md => md.MinTimeDiff == availableMatchDates[i]
                     .Min(d => d.MinTimeDiff))
                 .MinBy(md => md.MinTimeDiff);
-            bestMatchDatesPerCombination.Add(bestDate);
+            bestMatchDatePerCombination.Add(bestDate);
 
             // process the last combination
 
@@ -384,13 +401,13 @@ internal class MatchScheduler
                         Min(d => d.MinTimeDiff))
                     .MinBy(md => md.MinTimeDiff);
                 // the last "j-increment" is always the same as "matchDates[^1]" (loop condition)
-                bestMatchDatesPerCombination.Add(bestDate);
+                bestMatchDatePerCombination.Add(bestDate);
             }
         } // end i
 
         // returns the best match date found per combination,
         // so the number of elements is the same as the number of combinations
-        return bestMatchDatesPerCombination;
+        return bestMatchDatePerCombination;
     }
 
     /// <summary>

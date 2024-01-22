@@ -1,10 +1,10 @@
 ﻿using SD.LLBLGen.Pro.ORMSupportClasses;
 using TournamentManager.DAL.EntityClasses;
 using TournamentManager.DAL.HelperClasses;
+using TournamentManager.Data;
 using TournamentManager.MultiTenancy;
 
-
-namespace TournamentManager.Data;
+namespace TournamentManager;
 
 /// <summary>
 /// The Copy class is used to copy an existing tournament
@@ -24,7 +24,7 @@ public class TournamentCreator
     private readonly AppDb _appDb;
     private static TournamentCreator? _instance;
 
-    public TournamentCreator(IAppDb appDb)
+    private TournamentCreator(IAppDb appDb)
     {
         _appDb = (AppDb) appDb;
     }
