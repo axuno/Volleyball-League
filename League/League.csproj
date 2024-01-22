@@ -23,6 +23,8 @@ Localizations for English and German are included. The library is in operation o
         <!-- With dotnet, add parameter: -p:SatelliteResourceLanguages="""en;de""" -->
         <SatelliteResourceLanguages>en;de</SatelliteResourceLanguages>
         <ImplicitUsings>enable</ImplicitUsings>
+        <!-- AD0001 warning comes from depreciated Microsoft.AspNetCore.Mvc.Analyzers (transitive reference) -->
+        <NoWarn>$(NoWarn);AD0001</NoWarn>
     </PropertyGroup>
 
     <PropertyGroup>
