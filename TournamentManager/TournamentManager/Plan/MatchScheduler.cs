@@ -62,7 +62,7 @@ internal class MatchScheduler
     {
         await LoadEntitiesAsync(cancellationToken);
 
-        if (_appDb.MatchRepository.AnyCompleteMatchesExist(_tenantContext.TournamentContext.MatchPlanTournamentId))
+        if (await _appDb.MatchRepository.AnyCompleteMatchesExistAsync(_tenantContext.TournamentContext.MatchPlanTournamentId, cancellationToken))
             throw new InvalidOperationException("Completed matches exist for this tournament. Generating fixtures aborted.");
 
         foreach (var round in _tournament.Rounds)
@@ -79,7 +79,7 @@ internal class MatchScheduler
     {
         await LoadEntitiesAsync(cancellationToken);
 
-        if (_appDb.MatchRepository.AnyCompleteMatchesExist(round))
+        if (await _appDb.MatchRepository.AnyCompleteMatchesExistAsync(round, cancellationToken))
             throw new InvalidOperationException($"Completed matches exist for round '{round.Id}'. Generating fixtures aborted.");
 
         // We load all tournament matches, so that we can check for venues occupied by existing matches in memory.
