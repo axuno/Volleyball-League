@@ -70,7 +70,7 @@ public class MatchRepository
     {
         using var da = _dbContext.GetNewAdapter();
 
-        if (!(await GetPlannedMatchesAsync(new PredicateExpression(PlannedMatchFields.TournamentId == tournamentId & PlannedMatchFields.Id == id), cancellationToken)).Any())
+        if ((await GetPlannedMatchesAsync(new PredicateExpression(PlannedMatchFields.TournamentId == tournamentId & PlannedMatchFields.Id == id), cancellationToken)).Count == 0)
             return null;
 
         return (await da.FetchQueryAsync(
@@ -105,38 +105,48 @@ public class MatchRepository
             new QueryFactory().Calendar.Where(filter), cancellationToken));
     }
 
-    public virtual EntityCollection<MatchEntity> GetMatches(long tournamentId)
+    public virtual async Task<EntityCollection<MatchEntity>> GetMatches(long tournamentId, CancellationToken cancellationToken)
     {
         var rounds = new TournamentRepository(_dbContext).GetTournamentRounds(tournamentId);
 
         var roundId = new List<long>(rounds.Count);
         roundId.AddRange(rounds.Select(round => round.Id));
 
-        IRelationPredicateBucket bucket = new RelationPredicateBucket();
         IPredicateExpression roundFilter =
             new PredicateExpression(new FieldCompareRangePredicate(MatchFields.RoundId, null, false,
                 roundId.ToArray()));
-        bucket.PredicateExpression.AddWithAnd(roundFilter);
-
+        
         var matches = new EntityCollection<MatchEntity>();
         using var da = _dbContext.GetNewAdapter();
-        da.FetchEntityCollection(matches, bucket);
+
+        var qp = new QueryParameters
+        {
+            CollectionToFetch = matches,
+            FilterToUseAsPredicateExpression = { roundFilter }
+        };
+
+        await da.FetchEntityCollectionAsync(qp, cancellationToken);
         da.CloseConnection();
 
         return matches;
     }
 
-    public virtual EntityCollection<MatchEntity> GetMatches(RoundEntity round)
+    public virtual async Task<EntityCollection<MatchEntity>> GetMatches(RoundEntity round, CancellationToken cancellationToken)
     {
-        IRelationPredicateBucket bucket = new RelationPredicateBucket();
         IPredicateExpression roundFilter =
             new PredicateExpression(new FieldCompareRangePredicate(MatchFields.RoundId, null, false,
                 new[] {round.Id}));
-        bucket.PredicateExpression.AddWithAnd(roundFilter);
 
         var matches = new EntityCollection<MatchEntity>();
         using var da = _dbContext.GetNewAdapter();
-        da.FetchEntityCollection(matches, bucket);
+
+        var qp = new QueryParameters
+        {
+            CollectionToFetch = matches,
+            FilterToUseAsPredicateExpression = { roundFilter }
+        };
+
+        await da.FetchEntityCollectionAsync(qp, cancellationToken);
         da.CloseConnection();
 
         return matches;
@@ -149,7 +159,7 @@ public class MatchRepository
         if (!match.LegSequenceNo.HasValue)
             return null;
 
-        if (match.Round != null && match.Round.RoundLegs != null)
+        if (match.Round is { RoundLegs: not null })
         {
             return match.Round.RoundLegs.First(l => l.SequenceNo == match.LegSequenceNo);
         }

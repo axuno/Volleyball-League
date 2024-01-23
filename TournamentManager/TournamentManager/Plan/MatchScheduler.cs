@@ -45,7 +45,7 @@ internal class MatchScheduler
         _areEntitiesLoaded = true;
     }
 
-    internal async Task GenerateAvailableMatchDatesAsync(MatchDateClearOption clearMatchDates, RoundEntity round,
+    private async Task GenerateAvailableMatchDatesAsync(MatchDateClearOption clearMatchDates, RoundEntity round,
         EntityCollection<MatchEntity> tournamentMatches, CancellationToken cancellationToken)
     {
         await LoadEntitiesAsync(cancellationToken);
@@ -220,7 +220,7 @@ internal class MatchScheduler
                 cancellationToken);
         }
 
-        var tournamentMatches = _appDb.MatchRepository.GetMatches(round.TournamentId!.Value);
+        var tournamentMatches = await _appDb.MatchRepository.GetMatches(round.TournamentId!.Value, cancellationToken);
         return tournamentMatches;
     }
 
