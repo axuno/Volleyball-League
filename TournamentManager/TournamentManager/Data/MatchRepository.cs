@@ -284,7 +284,7 @@ public class MatchRepository
         var metaData = new LinqMetaData(da);
         if ((await (from matchEntity in metaData.Match
                 where matchEntity.Round.TournamentId == tournamentId && matchEntity.IsComplete
-                select matchEntity.Id).Take(1).ToListAsync(cancellationToken)).Count == 0)
+                select matchEntity.Id).Take(1).ToListAsync(cancellationToken)).Count != 0)
         {
             da.CloseConnection();
             return true;
