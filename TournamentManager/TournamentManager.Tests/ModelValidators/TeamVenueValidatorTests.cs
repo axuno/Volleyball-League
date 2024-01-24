@@ -13,9 +13,6 @@ namespace TournamentManager.Tests.ModelValidators;
 public class TeamVenueValidatorTests
 {
     private readonly ITenantContext _tenantContext;
-#pragma warning disable IDE0052 // Remove unread private members
-    private readonly AppDb _appDb; // mocked in CTOR
-#pragma warning restore IDE0052 // Remove unread private members
 
     public TeamVenueValidatorTests()
     {
@@ -49,8 +46,6 @@ public class TeamVenueValidatorTests
         tenantContextMock.SetupDbContext(dbContextMock);
             
         _tenantContext = tenantContextMock.Object;
-
-        _appDb = appDbMock.Object;
 
         #endregion
     }

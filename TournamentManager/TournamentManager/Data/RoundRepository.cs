@@ -52,22 +52,10 @@ public class RoundRepository
     public virtual async Task<RoundEntity?> GetRoundWithLegsAsync(long roundId, CancellationToken cancellationToken)
     {
         using var da = _dbContext.GetNewAdapter();
-        var result = (await da.FetchQueryAsync(
-            new QueryFactory().Round.Where(RoundFields.Id == roundId)
-                .WithPath(RoundEntity.PrefetchPathRoundLegs), cancellationToken)).Cast<RoundEntity>().ToList();
-        return result.FirstOrDefault();
-    }
-
-    public virtual RoundEntity GetRoundWithLegs(long roundId)
-    {
-        var round = new RoundEntity(roundId);
-        IPrefetchPath2 prefetchPathRoundLegs = new PrefetchPath2(EntityType.RoundEntity)
-        {
-            RoundEntity.PrefetchPathRoundLegs
-        };
-
-        using var da = _dbContext.GetNewAdapter();
-        da.FetchEntity(round, prefetchPathRoundLegs);
+        var metaData = new LinqMetaData(da);
+        var round = await metaData.Round.Where(r => r.Id == roundId)
+            .WithPath(new PathEdge<RoundEntity>(RoundEntity.PrefetchPathRoundLegs))
+            .FirstOrDefaultAsync(cancellationToken);
         da.CloseConnection();
         return round;
     }

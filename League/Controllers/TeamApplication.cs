@@ -29,7 +29,7 @@ namespace League.Controllers;
 public class TeamApplication : AbstractController
 {
     private readonly ITenantContext _tenantContext;
-    private readonly AppDb _appDb;
+    private readonly IAppDb _appDb;
     private readonly IAuthorizationService _authorizationService;
     private readonly ILogger<TeamApplication> _logger;
     private readonly Axuno.Tools.DateAndTime.TimeZoneConverter _timeZoneConverter;

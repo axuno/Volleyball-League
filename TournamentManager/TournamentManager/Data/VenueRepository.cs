@@ -53,7 +53,7 @@ public class VenueRepository
     public virtual async Task<bool> IsValidVenueIdAsync(long? venueId, CancellationToken cancellationToken)
     {
         var result = (await GetVenuesAsync(new PredicateExpression(VenueFields.Id.Equal(venueId)), cancellationToken)).Count == 1;
-        _logger.LogDebug("Valid venue: {trueFalse}", result);
+        _logger.LogDebug("Valid venue: {validVenue}", result);
         return result;
     }
 

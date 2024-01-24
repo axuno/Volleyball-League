@@ -16,7 +16,7 @@ namespace League.Tests.Identity;
 public class UserClaimStoreTests
 {
     private readonly UnitTestHelpers _uth = new();
-    private readonly AppDb _appDb;
+    private readonly IAppDb _appDb;
     private ApplicationUser _user = new();
     private readonly UserStore _store;
     private TeamEntity _team = new();

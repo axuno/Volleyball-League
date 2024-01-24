@@ -12,7 +12,7 @@ namespace League.Controllers;
 public class Contact : AbstractController
 {
 #pragma warning disable IDE0052 // Remove unread private members
-    private readonly AppDb _appDb;
+    private readonly IAppDb _appDb;
     private readonly TenantStore _tenantStore;
 #pragma warning restore IDE0052 // Remove unread private members
     private readonly ITenantContext _tenantContext;

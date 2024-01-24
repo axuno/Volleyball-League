@@ -16,9 +16,6 @@ namespace TournamentManager.Tests.ModelValidators;
 public class FixtureValidatorTests
 {
     private (ITenantContext TenantConext, Axuno.Tools.DateAndTime.TimeZoneConverter TimeZoneConverter, PlannedMatchRow PlannedMatch) _data;
-#pragma warning disable IDE0052 // Remove unread private members
-    private readonly AppDb _appDb; // mocked in CTOR
-#pragma warning restore IDE0052 // Remove unread private members
     private readonly CultureInfo _culture = CultureInfo.GetCultureInfo("en-US");
     private const string ExcludedDateReason = "Unit-Test";
 
@@ -122,14 +119,6 @@ public class FixtureValidatorTests
         tenantContextMock.SetupDbContext(dbContextMock);
         _data.TenantConext = tenantContextMock.Object;
             
-        _appDb = appDbMock.Object;
-
-        //var teamIds = orgCtxMock.Object.AppDb.MatchRepository.AreTeamsBusyAsync(new MatchEntity {Id = 1, HomeTeamId = 11, GuestTeamId = 22}, false, CancellationToken.None).Result;
-        //var matchrow = venueRepoMock.Object.GetOccupyingMatchesAsync(1, new DateTimePeriod(null, default(DateTime?)), 2, CancellationToken.None).Result;
-        //var venue = appDbMock.Object.VenueRepository.GetVenueById(2);
-        //var isValid = orgCtxMock.Object.AppDb.VenueRepository.IsValidVenueId(22).Result;
-        //isValid = orgCtxMock.Object.AppDb.VenueRepository.IsValidVenueId(21).Result;
-
         #endregion
     }
 

@@ -9,10 +9,11 @@ namespace TournamentManager.MultiTenancy;
 public class DbContext : IDbContext
 {
     private readonly object _locker = new();
+    private readonly IAppDb _appDb;
 
     public DbContext()
     {
-        AppDb = new AppDb(this);
+        _appDb = new AppDb(this);
     }
         
     /// <summary>
@@ -94,5 +95,5 @@ public class DbContext : IDbContext
     /// Gives access to the repositories.
     /// </summary>
     [YAXLib.Attributes.YAXDontSerialize]
-    public virtual AppDb AppDb { get; }
+    public virtual IAppDb AppDb => _appDb;
 }

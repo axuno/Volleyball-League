@@ -12,9 +12,6 @@ namespace TournamentManager.Tests.ModelValidators;
 public class MatchResultValidatorTests
 {
     private readonly (ITenantContext TenantContext, Axuno.Tools.DateAndTime.TimeZoneConverter TimeZoneConverter, (MatchRuleEntity matchRule, SetRuleEntity setRule)) _data;
-#pragma warning disable IDE0052 // Remove unread private members
-    private readonly AppDb _appDb; // mocked in CTOR
-#pragma warning restore IDE0052 // Remove unread private members
         
     public MatchResultValidatorTests()
     {
@@ -53,8 +50,6 @@ public class MatchResultValidatorTests
             );
         appDbMock.Setup(a => a.RoundRepository).Returns(roundRepoMock.Object);
 
-        _appDb = appDbMock.Object;
-            
         var dbContextMock = TestMocks.GetDbContextMock();
         dbContextMock.SetupAppDb(appDbMock);
             

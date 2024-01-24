@@ -20,7 +20,7 @@ public class Ranking : AbstractController
 {
     private readonly ITenantContext _tenantContext;
     private readonly IWebHostEnvironment _webHostEnvironment;
-    private readonly AppDb _appDb;
+    private readonly IAppDb _appDb;
     private readonly ILogger<Ranking> _logger;
     private readonly IMemoryCache _memoryCache;
 

@@ -70,7 +70,7 @@ public class MatchRepository
     {
         using var da = _dbContext.GetNewAdapter();
 
-        if (!(await GetPlannedMatchesAsync(new PredicateExpression(PlannedMatchFields.TournamentId == tournamentId & PlannedMatchFields.Id == id), cancellationToken)).Any())
+        if ((await GetPlannedMatchesAsync(new PredicateExpression(PlannedMatchFields.TournamentId == tournamentId & PlannedMatchFields.Id == id), cancellationToken)).Count == 0)
             return null;
 
         return (await da.FetchQueryAsync(
@@ -105,38 +105,48 @@ public class MatchRepository
             new QueryFactory().Calendar.Where(filter), cancellationToken));
     }
 
-    public virtual EntityCollection<MatchEntity> GetMatches(long tournamentId)
+    public virtual async Task<EntityCollection<MatchEntity>> GetMatches(long tournamentId, CancellationToken cancellationToken)
     {
         var rounds = new TournamentRepository(_dbContext).GetTournamentRounds(tournamentId);
 
         var roundId = new List<long>(rounds.Count);
         roundId.AddRange(rounds.Select(round => round.Id));
 
-        IRelationPredicateBucket bucket = new RelationPredicateBucket();
         IPredicateExpression roundFilter =
             new PredicateExpression(new FieldCompareRangePredicate(MatchFields.RoundId, null, false,
                 roundId.ToArray()));
-        bucket.PredicateExpression.AddWithAnd(roundFilter);
-
+        
         var matches = new EntityCollection<MatchEntity>();
         using var da = _dbContext.GetNewAdapter();
-        da.FetchEntityCollection(matches, bucket);
+
+        var qp = new QueryParameters
+        {
+            CollectionToFetch = matches,
+            FilterToUseAsPredicateExpression = { roundFilter }
+        };
+
+        await da.FetchEntityCollectionAsync(qp, cancellationToken);
         da.CloseConnection();
 
         return matches;
     }
 
-    public virtual EntityCollection<MatchEntity> GetMatches(RoundEntity round)
+    public virtual async Task<EntityCollection<MatchEntity>> GetMatches(RoundEntity round, CancellationToken cancellationToken)
     {
-        IRelationPredicateBucket bucket = new RelationPredicateBucket();
         IPredicateExpression roundFilter =
             new PredicateExpression(new FieldCompareRangePredicate(MatchFields.RoundId, null, false,
                 new[] {round.Id}));
-        bucket.PredicateExpression.AddWithAnd(roundFilter);
 
         var matches = new EntityCollection<MatchEntity>();
         using var da = _dbContext.GetNewAdapter();
-        da.FetchEntityCollection(matches, bucket);
+
+        var qp = new QueryParameters
+        {
+            CollectionToFetch = matches,
+            FilterToUseAsPredicateExpression = { roundFilter }
+        };
+
+        await da.FetchEntityCollectionAsync(qp, cancellationToken);
         da.CloseConnection();
 
         return matches;
@@ -149,7 +159,7 @@ public class MatchRepository
         if (!match.LegSequenceNo.HasValue)
             return null;
 
-        if (match.Round != null && match.Round.RoundLegs != null)
+        if (match.Round is { RoundLegs: not null })
         {
             return match.Round.RoundLegs.First(l => l.SequenceNo == match.LegSequenceNo);
         }
@@ -268,13 +278,13 @@ public class MatchRepository
     /// of the tournament rounds.
     /// </summary>
     /// <returns>Returns true if matches were found, else false.</returns>
-    public virtual bool AnyCompleteMatchesExist(long tournamentId)
+    public virtual async Task<bool> AnyCompleteMatchesExistAsync(long tournamentId, CancellationToken cancellationToken)
     {
         using var da = _dbContext.GetNewAdapter();
         var metaData = new LinqMetaData(da);
-        if ((from matchEntity in metaData.Match
+        if ((await (from matchEntity in metaData.Match
                 where matchEntity.Round.TournamentId == tournamentId && matchEntity.IsComplete
-                select matchEntity.Id).AsEnumerable().Any())
+                select matchEntity.Id).Take(1).ToListAsync(cancellationToken)).Count != 0)
         {
             da.CloseConnection();
             return true;
@@ -290,14 +300,15 @@ public class MatchRepository
     /// a tournament round.
     /// </summary>
     /// <param name="round">RoundEntity (only Id will be used)</param>
+    /// <param name="cancellationToken"></param>
     /// <returns>Returns true if matches were found, else false.</returns>
-    public virtual bool AnyCompleteMatchesExist(RoundEntity round)
+    public virtual async Task<bool> AnyCompleteMatchesExistAsync(RoundEntity round, CancellationToken cancellationToken)
     {
         using var da = _dbContext.GetNewAdapter();
         var metaData = new LinqMetaData(da);
-        if ((from matchEntity in metaData.Match
+        if ((await (from matchEntity in metaData.Match
                 where matchEntity.Round.Id == round.Id && matchEntity.IsComplete
-                select matchEntity.Id).AsEnumerable().Any())
+                select matchEntity.Id).Take(1).ToListAsync(cancellationToken)).Count != 0)
         {
             da.CloseConnection();
             return true;
@@ -312,44 +323,44 @@ public class MatchRepository
     /// Find out whether all matches of a tournament with a given Id are completed
     /// </summary>
     /// <returns>Returns true if all matches are completed, else false.</returns>
-    public virtual bool AllMatchesCompleted(TournamentEntity tournament)
+    public virtual async Task<bool> AllMatchesCompletedAsync(TournamentEntity tournament, CancellationToken cancellationToken)
     {
         using var da = _dbContext.GetNewAdapter();
         var metaData = new LinqMetaData(da);
 
-        if ((from matchEntity in metaData.Match
+        if ((await (from matchEntity in metaData.Match
                 where matchEntity.Round.TournamentId == tournament.Id && !matchEntity.IsComplete
-                select matchEntity.Id).AsEnumerable().Any())
+                select matchEntity.Id).Take(1).ToListAsync(cancellationToken)).Count == 0)
         {
             da.CloseConnection();
-            return false;
+            return true;
         }
 
         da.CloseConnection();
 
-        return true;
+        return false;
     }
 
     /// <summary>
     /// Find out whether all matches of a round with a gived Id are completed
     /// </summary>
     /// <returns>Returns true if all matches are completed, else false.</returns>
-    public virtual bool AllMatchesCompleted(RoundEntity round)
+    public virtual async Task<bool> AllMatchesCompletedAsync(RoundEntity round, CancellationToken cancellationToken)
     {
         using var da = _dbContext.GetNewAdapter();
         var metaData = new LinqMetaData(da);
 
-        if ((from matchEntity in metaData.Match
+        if (( await (from matchEntity in metaData.Match
                 where matchEntity.Round.Id == round.Id && !matchEntity.IsComplete
-                select matchEntity.Id).AsEnumerable().Any())
+                select matchEntity.Id).Take(1).ToListAsync(cancellationToken)).Count == 0)
         {
             da.CloseConnection();
-            return false;
+            return true;
         }
 
         da.CloseConnection();
 
-        return true;
+        return false;
     }
 
     /// <summary>

@@ -59,4 +59,9 @@ public interface ITournamentContext
     /// Rules for team master data
     /// </summary>
     TeamRules TeamRuleSet { get; set; }
+
+    /// <summary>
+    /// Rules for referee master data
+    /// </summary>
+    RefereeRules RefereeRuleSet { get; set; }
 }

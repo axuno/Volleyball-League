@@ -20,7 +20,7 @@ namespace League.Controllers;
 public class Venue : AbstractController
 {
     private readonly ITenantContext _tenantContext;
-    private readonly AppDb _appDb;
+    private readonly IAppDb _appDb;
     private readonly IAuthorizationService _authorizationService;
     private readonly IStringLocalizer<Venue> _localizer;
     private readonly RegionInfo _regionInfo;
