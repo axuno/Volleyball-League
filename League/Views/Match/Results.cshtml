@@ -7,6 +7,7 @@
 @inject ITenantContext TenantContext
 @model League.Models.MatchViewModels.ResultsViewModel
 @{
+    const string overruled = "/";
     ViewData["Title"] = Localizer["Match Results"].Value + " - " + Model.Tournament?.Name;
     var tenantUrlSegment = TenantContext.SiteContext.UrlSegmentValue;
     if (Model.CompletedMatches.Count == 0)
@@ -94,8 +95,9 @@
                                         @{ zonedTime = Model.TimeZoneConverter.ToZonedTime(match.MatchDate);}
                                         <td class="date text-truncate">@(Html.Raw(zonedTime != null ? zonedTime.DateTimeOffset.DateTime.ToShortDateString() + "<br/>" + zonedTime.Abbreviation : Localizer["unknown"].Value))</td>
                                         <td class="result">
-                                            <div>@(match.HomeMatchPoints.HasValue ? match.HomeMatchPoints.ToString() : unknown)</div>
-                                            <div>@(match.GuestMatchPoints.HasValue ? match.GuestMatchPoints.ToString() : unknown)</div>
+                                            @{ var flag = match.IsOverruled ? overruled : ""; }
+                                            <div>@(match.HomeMatchPoints.HasValue ? match.HomeMatchPoints.ToString() : unknown)<sup>@flag</sup></div>
+                                            <div>@(match.GuestMatchPoints.HasValue ? match.GuestMatchPoints.ToString() : unknown)<sup>@flag</sup></div>
                                         </td>
                                         <td class="result">
                                             <div>@(match.HomeSetPoints.HasValue ? match.HomeSetPoints.ToString() : unknown)</div>
@@ -166,6 +168,14 @@
                         </tbody>
                     </table>
                 </div>
+                @{
+                    if (Model.CompletedMatches.Any(m => m.RoundId == r.RoundId && m.IsOverruled))
+                    {
+                        <div class="text-muted">
+                            @(overruled) = @Localizer["Awarded points were adjusted manually"].
+                        </div>
+                    }
+                }
                 @{ zonedTime = Model.TimeZoneConverter.ToZonedTime(Model.CompletedMatches.Where(m => m.RoundId == r.RoundId).Max(m => m.ModifiedOn)); }
                 <div class="text-muted">
                     @Localizer["Last update"]: @zonedTime?.DateTimeOffset.DateTime.ToShortDateString() @zonedTime?.DateTimeOffset.DateTime.ToLongTimeString() @zonedTime?.Abbreviation
