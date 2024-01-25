@@ -180,4 +180,8 @@
   <data name="unknown" xml:space="preserve">
     <value>offen</value>
   </data>
+  <data name="Awarded points were adjusted manually" xml:space="preserve">
+    <value>Die vergebenen Punkte wurden manuell angepasst</value>
+    <comment>Flag if result is overruled</comment>
+  </data>
 </root>
