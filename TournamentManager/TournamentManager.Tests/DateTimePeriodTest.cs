@@ -19,6 +19,21 @@ public class DateTimePeriodTest
         });
     }
 
+    [Test]
+    public void Create_With_Date_Kind_Specified()
+    {
+        var date1 = new DateTime(2024, 06, 01, 18, 18, 18, DateTimeKind.Utc);
+        var date2 = new DateTime(2024, 06, 02, 18, 18, 18, DateTimeKind.Local);
+        var dtp = new DateTimePeriod(date1, date2);
+        Assert.Multiple(() =>
+        {
+            Assert.That(dtp.Start, Is.EqualTo(date1));
+            Assert.That(dtp.End, Is.EqualTo(date2));
+            Assert.That(dtp.Start?.Kind, Is.EqualTo(DateTimeKind.Utc));
+            Assert.That(dtp.End?.Kind, Is.EqualTo(DateTimeKind.Local));
+        });
+    }
+
     [TestCase("2020-06-01", "2060-06-02")]
     public void CreationAndAssigning(DateTime date1, DateTime date2)
     {
