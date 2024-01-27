@@ -36,7 +36,55 @@ internal class MatchSchedulerTests
             Assert.That(matches.All(m => m.LegSequenceNo == 1), Is.True);
             Assert.That(matches.All(m => m.RoundId == 1), Is.True);
             Assert.That(matches.All(m => m.VenueId == participants.First(p => p.Id == m.HomeTeamId).VenueId), Is.True);
+
+            // Check that venue is not double booked
+            Assert.That(matches.DistinctBy(m => m.VenueId).Select(m => m.VenueId!)
+                .All(venueId => !VenueHasOverlappingMatches(venueId, matches)), Is.True);
+
+            // Check that teams are not double booked
+            Assert.That(matches.Select(m => m.HomeTeamId)
+                .Union(matches.Select(m => m.GuestTeamId))
+                .Distinct()
+                .All(teamId => !TeamHasOverlappingMatches(teamId, matches)), Is.True);
         });
+    }
+
+    private static bool TeamHasOverlappingMatches(long teamId, EntityCollection<MatchEntity> matches)
+    {
+        var matchesOfTeam = matches.Where(m => m.HomeTeamId == teamId || m.GuestTeamId == teamId);
+        var dateTimePeriodsForMatchesOfTeam = matchesOfTeam.Select(m => new DateTimePeriod(m.PlannedStart!.Value, m.PlannedEnd!.Value)).ToList();
+        for (var i = 0; i < dateTimePeriodsForMatchesOfTeam.Count; i++)
+        {
+            for (var j = i + 1; j < dateTimePeriodsForMatchesOfTeam.Count; j++)
+            {
+                if (dateTimePeriodsForMatchesOfTeam[i].Overlaps(dateTimePeriodsForMatchesOfTeam[j]))
+                {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    private static bool VenueHasOverlappingMatches(long? venueId, EntityCollection<MatchEntity> matches)
+    {
+        if (venueId == null) return false;
+
+        var matchesAtVenue = matches.Where(m => m.VenueId == venueId);
+        var dateTimePeriodsForMatchesAtVenue = matchesAtVenue.Select(m => new DateTimePeriod(m.PlannedStart!.Value, m.PlannedEnd!.Value)).ToList();
+        for (var i = 0; i < dateTimePeriodsForMatchesAtVenue.Count; i++)
+        {
+            for (var j = i + 1; j < dateTimePeriodsForMatchesAtVenue.Count; j++)
+            {
+                if (dateTimePeriodsForMatchesAtVenue[i].Overlaps(dateTimePeriodsForMatchesAtVenue[j]))
+                {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 
     private MatchScheduler GetMatchSchedulerInstance()
