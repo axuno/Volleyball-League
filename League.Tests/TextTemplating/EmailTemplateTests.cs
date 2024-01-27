@@ -23,7 +23,7 @@ namespace League.Tests.TextTemplating;
 [TestFixture]
 public class EmailTemplateTests
 {
-    private readonly IServiceProvider _services;
+    private readonly ServiceProvider _services;
     private readonly LeagueTemplateRenderer _renderer;
     private readonly ITenantContext _tenantContext;
     private readonly IStringLocalizer<EmailResource> _localizer;
@@ -48,7 +48,13 @@ public class EmailTemplateTests
         _localizer = _services.GetRequiredService<IStringLocalizer<EmailResource>>();
     }
 
-    public string L(string toTranslate, string cultureName)
+    [OneTimeTearDown]
+    public void DisposeObjects()
+    {
+        _services.Dispose();
+    }
+
+    private string L(string toTranslate, string cultureName)
     {
         using var cs = new CultureSwitcher(new CultureInfo(cultureName), new CultureInfo(cultureName));
         return _localizer[toTranslate];
@@ -84,9 +90,9 @@ public class EmailTemplateTests
                 Console.WriteLine($"*** {TemplateName.ConfirmNewPrimaryEmailHtml} ***");
                 Console.WriteLine(html);
             } );
-                
-            Assert.That(text.Contains(L("Change your primary email address", cultureName)));
-            Assert.That(html.Contains(L("Change your primary email address", cultureName)));
+
+            Assert.That(text, Does.Contain(L("Change your primary email address", cultureName)));
+            Assert.That(html, Does.Contain(L("Change your primary email address", cultureName)));
         });
     }
         
@@ -125,7 +131,7 @@ public class EmailTemplateTests
                 Console.WriteLine(text);
             });
 
-            Assert.That(text.Contains(L("Sporting greetings", cultureName)));
+            Assert.That(text, Does.Contain(L("Sporting greetings", cultureName)));
                     
             if(isRegisteringUser) Assert.That(text.Contains("Link", StringComparison.CurrentCultureIgnoreCase));
             if(isRegisteringUser && showBank) Assert.That(text.Contains("Bank", StringComparison.CurrentCultureIgnoreCase) && text.Contains(_tenantContext.OrganizationContext.Bank.Amount.ToString(CultureInfo.GetCultureInfo(cultureName))));
@@ -155,7 +161,7 @@ public class EmailTemplateTests
                 Console.WriteLine(text);
             } );
 
-            Assert.That(text.Contains(L("Mr.", cultureName)));
+            Assert.That(text, Does.Contain(L("Mr.", cultureName)));
         });
     }
         
@@ -193,10 +199,10 @@ public class EmailTemplateTests
                 Console.WriteLine(text);
             } );
 
-            Assert.That(text.Contains(L("Season fixture date", cultureName)));
-            if (origPlannedStart.HasValue) Assert.That(text.Contains(L("Replacement fixture date", cultureName))); else Assert.IsFalse(text.Contains(L("Replacement fixture date", cultureName)));
-            Assert.That(text.Contains(L("Season fixture venue", cultureName)));
-            if (origVenue.HasValue) Assert.That(text.Contains(L("Replacement venue", cultureName))); else Assert.IsFalse(text.Contains(L("Replacement venue", cultureName)));
+            Assert.That(text, Does.Contain(L("Season fixture date", cultureName)));
+            if (origPlannedStart.HasValue) Assert.That(text, Does.Contain(L("Replacement fixture date", cultureName))); else Assert.That(text, Does.Not.Contain(L("Replacement fixture date", cultureName)));
+            Assert.That(text, Does.Contain(L("Season fixture venue", cultureName)));
+            if (origVenue.HasValue) Assert.That(text, Does.Contain(L("Replacement venue", cultureName))); else Assert.That(text, Does.Not.Contain(L("Replacement venue", cultureName)));
         });
     }
         
@@ -223,9 +229,9 @@ public class EmailTemplateTests
                 Console.WriteLine($"*** {TemplateName.NotifyCurrentPrimaryEmailTxt} ***");
                 Console.WriteLine(html);
             } );
-                
-            Assert.That(text.Contains(L("Your primary email is about to be changed to", cultureName)));
-            Assert.That(html.Contains(L("Your primary email is about to be changed to", cultureName)));
+
+            Assert.That(text, Does.Contain(L("Your primary email is about to be changed to", cultureName)));
+            Assert.That(html, Does.Contain(L("Your primary email is about to be changed to", cultureName)));
         });
     }        
         
@@ -254,8 +260,8 @@ public class EmailTemplateTests
                 Console.WriteLine($"*** {TemplateName.PasswordResetHtml} ***");
                 Console.WriteLine(html);
             } );
-            Assert.That(text.Contains(L("Here is your password recovery code", cultureName)));
-            Assert.That(html.Contains(L("Here is your password recovery code", cultureName)));
+            Assert.That(text, Does.Contain(L("Here is your password recovery code", cultureName)));
+            Assert.That(html, Does.Contain(L("Here is your password recovery code", cultureName)));
         });
     }
         
@@ -283,9 +289,9 @@ public class EmailTemplateTests
                 Console.WriteLine($"*** {TemplateName.PleaseConfirmEmailHtml} ***");
                 Console.WriteLine(html);
             } );
-                
-            Assert.That(text.Contains(L("Thank you for creating an account", cultureName)));
-            Assert.That(html.Contains(L("Thank you for creating an account", cultureName)));
+
+            Assert.That(text, Does.Contain(L("Thank you for creating an account", cultureName)));
+            Assert.That(html, Does.Contain(L("Thank you for creating an account", cultureName)));
         });
     }
         
@@ -336,10 +342,10 @@ public class EmailTemplateTests
                 Console.WriteLine($@"*** {TemplateName.ResultEnteredTxt} ***");
                 Console.WriteLine(text);
             } );
-                
-            Assert.That(text.Contains(L("Result", cultureName)));
-            if (withRemarks) Assert.That(text.Contains(m.Match.Remarks));
-            if (isOrigStartSet) Assert.That(text.Contains(m.Match.OrigPlannedStart?.ToString("d", new CultureInfo(cultureName))!));
+
+            Assert.That(text, Does.Contain(L("Result", cultureName)));
+            if (withRemarks) Assert.That(text, Does.Contain(m.Match.Remarks));
+            if (isOrigStartSet) Assert.That(text, Does.Contain(m.Match.OrigPlannedStart?.ToString("d", new CultureInfo(cultureName))!));
         });
     }
 
@@ -381,9 +387,9 @@ public class EmailTemplateTests
                 Console.WriteLine($"*** {TemplateName.AnnounceNextMatchTxt} ***");
                 Console.WriteLine(text);
             } );
-                
-            Assert.That(text.Contains(cultureName == "en" ? "Hello" : "Hallo"));
-            Assert.That(text.Contains(m.IcsCalendarUrl));
+
+            Assert.That(text, Does.Contain(cultureName == "en" ? "Hello" : "Hallo"));
+            Assert.That(text, Does.Contain(m.IcsCalendarUrl));
         });
     }
 
@@ -413,9 +419,9 @@ public class EmailTemplateTests
                 Console.WriteLine($"*** {TemplateName.RemindMatchResultTxt} ***");
                 Console.WriteLine(text);
             } );
-                
-            Assert.That(text.Contains(cultureName == "en" ? "Hello" : "Hallo"));
-            Assert.That(text.Contains(m.Fixture.HomeTeamNameForRound));
+
+            Assert.That(text, Does.Contain(cultureName == "en" ? "Hello" : "Hallo"));
+            Assert.That(text, Does.Contain(m.Fixture.HomeTeamNameForRound));
         });
     }
         
@@ -445,8 +451,8 @@ public class EmailTemplateTests
                 Console.WriteLine($"*** {TemplateName.UrgeMatchResultTxt} ***");
                 Console.WriteLine(text);
             } );
-                
-            Assert.That(text.Contains(cultureName == "en" ? "Hello" : "Hallo"));
+
+            Assert.That(text, Does.Contain(cultureName == "en" ? "Hello" : "Hallo"));
         });
     }
 }

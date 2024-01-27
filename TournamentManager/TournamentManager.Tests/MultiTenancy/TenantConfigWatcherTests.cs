@@ -37,8 +37,11 @@ public class TenantConfigWatcherTests
         CreateTenantContext(tenantName).SerializeToFile(Path.Combine(_directoryToWatch, $"Tenant.{tenantName}.config"));
         await Task.Delay(200);
 
-        Assert.That(_store.GetTenants().Count, Is.EqualTo(initialTenantCount + 1));
-        Assert.That(_store.GetTenantByIdentifier(tenantName)?.DbContext.ConnectionString, Does.Contain(tenantName));
+        Assert.Multiple(() =>
+        {
+            Assert.That(_store.GetTenants(), Has.Count.EqualTo(initialTenantCount + 1));
+            Assert.That(_store.GetTenantByIdentifier(tenantName)?.DbContext.ConnectionString, Does.Contain(tenantName));
+        });
     }
 
     [Test]
@@ -56,7 +59,7 @@ public class TenantConfigWatcherTests
         File.Delete(_store.GetTenants().First().Value.Filename);
         await Task.Delay(100);
 
-        Assert.That(_store.GetTenants().Count, Is.EqualTo(initialTenantCount - 1));
+        Assert.That(_store.GetTenants(), Has.Count.EqualTo(initialTenantCount - 1));
     }
 
     [Test]
@@ -156,7 +159,7 @@ public class TenantConfigWatcherTests
         Directory.Delete(_directoryToWatch, true);
     }
 
-    private TenantContext CreateTenantContext(string tenantIdentifier)
+    private static TenantContext CreateTenantContext(string tenantIdentifier)
     {
         var tenant = new TenantContext
         {

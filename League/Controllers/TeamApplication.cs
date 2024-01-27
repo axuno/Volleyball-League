@@ -112,7 +112,7 @@ public class TeamApplication : AbstractController
         }
         SaveModelToSession(sessionModel);
 
-        if (teamSelectModel.TeamsManagedByUser.Any())
+        if (teamSelectModel.TeamsManagedByUser.Count != 0)
         {
             return View(Views.ViewNames.TeamApplication.SelectTeam, teamSelectModel);
         }
@@ -334,7 +334,7 @@ public class TeamApplication : AbstractController
         selectVenueModel.TournamentId = sessionModel.PreviousTournamentId ?? _tenantContext.TournamentContext.ApplicationTournamentId;
         var teamValidator = new TeamVenueValidator(new TeamEntity { VenueId = selectVenueModel.VenueId }, _tenantContext);
 
-        if (!await selectVenueModel.ValidateAsync(teamValidator, ModelState, cancellationToken))
+        if (!await TeamVenueSelectModel.ValidateAsync(teamValidator, ModelState, cancellationToken))
         {
             return View(Views.ViewNames.TeamApplication.SelectVenue, selectVenueModel);
         }

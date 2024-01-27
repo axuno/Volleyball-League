@@ -322,7 +322,7 @@ public class Team : AbstractController
         teamEntity.VenueId = model.VenueId;
         var teamVenueValidator = new TeamVenueValidator(teamEntity, _tenantContext);
 
-        if (!await model.ValidateAsync(teamVenueValidator, ModelState, cancellationToken))
+        if (!await TeamVenueSelectModel.ValidateAsync(teamVenueValidator, ModelState, cancellationToken))
         {
             return PartialView(Views.ViewNames.Team._SelectVenueModalPartial, model);
         }

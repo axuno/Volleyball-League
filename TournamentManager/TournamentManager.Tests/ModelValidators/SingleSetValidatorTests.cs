@@ -19,7 +19,7 @@ public class SingleSetValidatorTests
         {
             var fact = sv.Facts.First(f => f.Id.Equals(Enum.Parse<SingleSetValidator.FactId>(e)));
             Console.WriteLine(fact.Id);
-            Assert.IsTrue(fact.CheckAsync != null);
+            Assert.That(fact.CheckAsync, Is.Not.EqualTo(null));
         }
     }
 
@@ -34,9 +34,9 @@ public class SingleSetValidatorTests
         var factResult = await sv.CheckAsync(SingleSetValidator.FactId.BallPointsNotNegative, CancellationToken.None);
         Assert.Multiple(() =>
         {
-            Assert.AreEqual(expected, factResult.Success);
-            Assert.IsNotNull(factResult.Message);
-            Assert.IsNull(factResult.Exception);
+            Assert.That(factResult.Success, Is.EqualTo(expected));
+            Assert.That(factResult.Message, Is.Not.Null);
+            Assert.That(factResult.Exception, Is.Null);
         });
     }
 
@@ -55,9 +55,9 @@ public class SingleSetValidatorTests
         var factResult = await sv.CheckAsync(SingleSetValidator.FactId.TieIsAllowed, CancellationToken.None);
         Assert.Multiple(() =>
         {
-            Assert.AreEqual(expected, factResult.Success);
-            Assert.IsNotNull(factResult.Message);
-            Assert.IsNull(factResult.Exception);
+            Assert.That(factResult.Success, Is.EqualTo(expected));
+            Assert.That(factResult.Message, Is.Not.Null);
+            Assert.That(factResult.Exception, Is.Null);
         });
     }
 
@@ -76,9 +76,9 @@ public class SingleSetValidatorTests
         var factResult = await sv.CheckAsync(SingleSetValidator.FactId.TieIsAllowed, CancellationToken.None);
         Assert.Multiple(() =>
         {
-            Assert.AreEqual(expected, factResult.Success);
-            Assert.IsNotNull(factResult.Message);
-            Assert.IsNull(factResult.Exception);
+            Assert.That(factResult.Success, Is.EqualTo(expected));
+            Assert.That(factResult.Message, Is.Not.Null);
+            Assert.That(factResult.Exception, Is.Null);
         });
     }
 
@@ -97,9 +97,9 @@ public class SingleSetValidatorTests
         var factResult = await sv.CheckAsync(SingleSetValidator.FactId.TieIsAllowed, CancellationToken.None);
         Assert.Multiple(() =>
         {
-            Assert.AreEqual(expected, factResult.Success);
-            Assert.IsNotNull(factResult.Message);
-            Assert.IsNull(factResult.Exception);
+            Assert.That(factResult.Success, Is.EqualTo(expected));
+            Assert.That(factResult.Message, Is.Not.Null);
+            Assert.That(factResult.Exception, Is.Null);
         });
     }
 
@@ -118,9 +118,9 @@ public class SingleSetValidatorTests
         var factResult = await sv.CheckAsync(SingleSetValidator.FactId.TieIsAllowed, CancellationToken.None);
         Assert.Multiple(() =>
         {
-            Assert.AreEqual(expected, factResult.Success);
-            Assert.IsNotNull(factResult.Message);
-            Assert.IsNull(factResult.Exception);
+            Assert.That(factResult.Success, Is.EqualTo(expected));
+            Assert.That(factResult.Message, Is.Not.Null);
+            Assert.That(factResult.Exception, Is.Null);
         });
     }
 
@@ -141,9 +141,9 @@ public class SingleSetValidatorTests
         var factResult = await sv.CheckAsync(SingleSetValidator.FactId.NumOfPointsToWinReached, CancellationToken.None);
         Assert.Multiple(() =>
         {
-            Assert.AreEqual(expected, factResult.Success);
-            Assert.IsNotNull(factResult.Message);
-            Assert.IsNull(factResult.Exception);
+            Assert.That(factResult.Success, Is.EqualTo(expected));
+            Assert.That(factResult.Message, Is.Not.Null);
+            Assert.That(factResult.Exception, Is.Null);
         });
     }
 
@@ -162,9 +162,9 @@ public class SingleSetValidatorTests
         var factResult = await sv.CheckAsync(SingleSetValidator.FactId.RegularWinReachedWithOnePointAhead, CancellationToken.None);
         Assert.Multiple(() =>
         {
-            Assert.AreEqual(expected, factResult.Success);
-            Assert.IsNotNull(factResult.Message);
-            Assert.IsNull(factResult.Exception);
+            Assert.That(factResult.Success, Is.EqualTo(expected));
+            Assert.That(factResult.Message, Is.Not.Null);
+            Assert.That(factResult.Exception, Is.Null);
         });
     }
 
@@ -184,9 +184,9 @@ public class SingleSetValidatorTests
         var factResult = await sv.CheckAsync(SingleSetValidator.FactId.TieBreakWinReachedWithOnePointAhead, CancellationToken.None);
         Assert.Multiple(() =>
         {
-            Assert.AreEqual(expected, factResult.Success);
-            Assert.IsNotNull(factResult.Message);
-            Assert.IsNull(factResult.Exception);
+            Assert.That(factResult.Success, Is.EqualTo(expected));
+            Assert.That(factResult.Message, Is.Not.Null);
+            Assert.That(factResult.Exception, Is.Null);
         });
     }
 
@@ -206,9 +206,9 @@ public class SingleSetValidatorTests
         var factResult = await sv.CheckAsync(SingleSetValidator.FactId.RegularWinReachedWithTwoPlusPointsAhead, CancellationToken.None);
         Assert.Multiple(() =>
         {
-            Assert.AreEqual(expected, factResult.Success);
-            Assert.IsNotNull(factResult.Message);
-            Assert.IsNull(factResult.Exception);
+            Assert.That(factResult.Success, Is.EqualTo(expected));
+            Assert.That(factResult.Message, Is.Not.Null);
+            Assert.That(factResult.Exception, Is.Null);
         });
     }
 
@@ -228,9 +228,9 @@ public class SingleSetValidatorTests
         var factResult = await sv.CheckAsync(SingleSetValidator.FactId.TieBreakWinReachedWithTwoPlusPointsAhead, CancellationToken.None);
         Assert.Multiple(() =>
         {
-            Assert.AreEqual(expected, factResult.Success);
-            Assert.IsNotNull(factResult.Message);
-            Assert.IsNull(factResult.Exception);
+            Assert.That(factResult.Success, Is.EqualTo(expected));
+            Assert.That(factResult.Message, Is.Not.Null);
+            Assert.That(factResult.Exception, Is.Null);
         });
     }
 
@@ -249,7 +249,7 @@ public class SingleSetValidatorTests
         var set = new SetEntity { HomeBallPoints = homePoints, GuestBallPoints = guestPoints, IsTieBreak = isTieBreak };
         var sv = new SingleSetValidator(set, (new TenantContext(), new SetRuleEntity(1) { NumOfPointsToWinRegular = 25, PointsDiffToWinRegular = 2, NumOfPointsToWinTiebreak = 15, PointsDiffToWinTiebreak = 2 }));
         var result = await sv.CheckAsync(CancellationToken.None);
-        Assert.AreEqual(expected, sv.GetFailedFacts().First(r => !r.Success).Id);
+        Assert.That(sv.GetFailedFacts().First(r => !r.Success).Id, Is.EqualTo(expected));
     }
 
     [TestCase(25, 0, false)]
@@ -260,7 +260,7 @@ public class SingleSetValidatorTests
     {
         var set = new SetEntity { HomeBallPoints = homePoints, GuestBallPoints = guestPoints, IsTieBreak = isTieBreak };
         var sv = new SingleSetValidator(set, (new TenantContext(), new SetRuleEntity(1) { NumOfPointsToWinRegular = 25, PointsDiffToWinRegular = 2, NumOfPointsToWinTiebreak = 15, PointsDiffToWinTiebreak = 2 }));
-        Assert.AreEqual(0, sv.GetFailedFacts().Count);
+        Assert.That(sv.GetFailedFacts(), Is.Empty);
     }
 
     [Test]
@@ -279,7 +279,7 @@ public class SingleSetValidatorTests
                 case SingleSetValidator.FactId.TieBreakWinReachedWithOnePointAhead:
                 case SingleSetValidator.FactId.RegularWinReachedWithTwoPlusPointsAhead:
                 case SingleSetValidator.FactId.TieBreakWinReachedWithTwoPlusPointsAhead:
-                    Assert.IsTrue(fact.FieldNames.Count() == 2);
+                    Assert.That(fact.FieldNames.Count(), Is.EqualTo(2));
                     break;
             }
         }

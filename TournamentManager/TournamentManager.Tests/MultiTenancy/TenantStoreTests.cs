@@ -56,17 +56,17 @@ public class TenantStoreTests
         Assert.Multiple(() =>
         {
             Assert.DoesNotThrow(() => tenants = _store.LoadTenants().GetTenants());
-            Assert.AreEqual(_tenantNames.Count, tenants.Count);
+            Assert.That(tenants, Has.Count.EqualTo(_tenantNames.Count));
             foreach (var name in _tenantNames)
             {
                 var tenant = _store.GetTenantByIdentifier(name);
-                Assert.AreEqual(name, tenant?.Identifier);
-                Assert.AreEqual(name, tenant?.Filename);
-                Assert.AreEqual(ConnKeyPrefix + name, tenant?.DbContext.ConnectionKey);
-                Assert.AreEqual(ConnValuePrefix + name, tenant?.DbContext.ConnectionString);
-                Assert.IsTrue(tenant != null && tenant.OrganizationContext.Name.StartsWith("Long") && tenant.OrganizationContext.ShortName.StartsWith("Short"));
-                Assert.IsTrue(tenant?.OrganizationContext.Tenant != null && tenant.SiteContext.Tenant != null && tenant.TournamentContext.Tenant != null);
-                if(tenant is { IsDefault: true }) Assert.AreEqual(tenant.Identifier, tenant.SiteContext.UrlSegmentValue);
+                Assert.That(tenant?.Identifier, Is.EqualTo(name));
+                Assert.That(tenant?.Filename, Is.EqualTo(name));
+                Assert.That(tenant?.DbContext.ConnectionKey, Is.EqualTo(ConnKeyPrefix + name));
+                Assert.That(tenant?.DbContext.ConnectionString, Is.EqualTo(ConnValuePrefix + name));
+                Assert.That(tenant != null && tenant.OrganizationContext.Name.StartsWith("Long") && tenant.OrganizationContext.ShortName.StartsWith("Short"), Is.True);
+                Assert.That(tenant?.OrganizationContext.Tenant != null && tenant.SiteContext.Tenant != null && tenant.TournamentContext.Tenant != null, Is.True);
+                if(tenant is { IsDefault: true }) Assert.That(tenant.SiteContext.UrlSegmentValue, Is.EqualTo(tenant.Identifier));
             }
         });
     }
@@ -76,7 +76,7 @@ public class TenantStoreTests
     {
         Assert.DoesNotThrow(() => _ = _store.LoadTenants());
         var tenant = _store.GetTenantByIdentifier("Tenant1");
-        Assert.AreEqual("Tenant1", tenant?.Identifier);
+        Assert.That(tenant?.Identifier, Is.EqualTo("Tenant1"));
     }
         
     [Test]
@@ -84,7 +84,7 @@ public class TenantStoreTests
     {
         Assert.DoesNotThrow(() => _ = _store.LoadTenants());
         var tenant = _store.GetTenantByUrlSegment("Tenant1");
-        Assert.AreEqual("Tenant1", tenant?.SiteContext.UrlSegmentValue);
+        Assert.That(tenant?.SiteContext.UrlSegmentValue, Is.EqualTo("Tenant1"));
     }
         
     [Test]
@@ -92,7 +92,7 @@ public class TenantStoreTests
     {
         Assert.DoesNotThrow(() => _ = _store.LoadTenants());
         var tenant = _store.GetDefaultTenant();
-        Assert.AreEqual("DefaultTenant", tenant?.Identifier);
+        Assert.That(tenant?.Identifier, Is.EqualTo("DefaultTenant"));
     }
         
     [Test]
@@ -101,8 +101,8 @@ public class TenantStoreTests
         Assert.Multiple(() =>
         {
             Assert.DoesNotThrow(() => _ = _store.LoadTenants());
-            Assert.IsFalse(_store.TryAddTenant(new TenantContext {Identifier = "Tenant1"}));
-            Assert.IsTrue(_store.TryAddTenant(new TenantContext {Identifier = "New_Tenant"}));
+            Assert.That(_store.TryAddTenant(new TenantContext {Identifier = "Tenant1"}), Is.False);
+            Assert.That(_store.TryAddTenant(new TenantContext {Identifier = "New_Tenant"}), Is.True);
         });
     }
         
@@ -112,8 +112,8 @@ public class TenantStoreTests
         Assert.Multiple(() =>
         {
             Assert.DoesNotThrow(() => _ = _store.LoadTenants());
-            Assert.IsTrue(_store.TryRemoveTenant("Tenant1"));
-            Assert.IsNull(_store.GetTenantByIdentifier("Tenant1"));
+            Assert.That(_store.TryRemoveTenant("Tenant1"), Is.True);
+            Assert.That(_store.GetTenantByIdentifier("Tenant1"), Is.Null);
         });
     }
         
@@ -127,8 +127,8 @@ public class TenantStoreTests
 
         Assert.Multiple(() =>
         {
-            Assert.IsTrue(_store.TryUpdateTenant("Tenant1", updateTenant!));
-            Assert.AreEqual(newGuid, _store.GetTenantByIdentifier("Tenant1")?.Guid);
+            Assert.That(_store.TryUpdateTenant("Tenant1", updateTenant!), Is.True);
+            Assert.That(_store.GetTenantByIdentifier("Tenant1")?.Guid, Is.EqualTo(newGuid));
         });
     }
         
@@ -146,8 +146,8 @@ public class TenantStoreTests
 
         Assert.Multiple(() =>
         {
-            Assert.IsTrue(_store.TryUpdateTenant("Tenant1", updateTenant!));
-            Assert.AreEqual(newGuid, _store.GetTenantByIdentifier("Tenant1")?.Guid);
+            Assert.That(_store.TryUpdateTenant("Tenant1", updateTenant!), Is.True);
+            Assert.That(_store.GetTenantByIdentifier("Tenant1")?.Guid, Is.EqualTo(newGuid));
         });
     }
 }

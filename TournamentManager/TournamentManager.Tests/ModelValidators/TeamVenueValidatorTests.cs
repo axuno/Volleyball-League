@@ -65,8 +65,11 @@ public class TeamVenueValidatorTests
 
         var factResult = await tv.CheckAsync(TeamVenueValidator.FactId.VenueIsSetIfRequired, CancellationToken.None);
 
-        Assert.IsNull(factResult.Exception);
-        Assert.That(factResult.Success, Is.EqualTo(expected));
+        Assert.Multiple(() =>
+        {
+            Assert.That(factResult.Exception, Is.Null);
+            Assert.That(factResult.Success, Is.EqualTo(expected));
+        });
     }
 
     [TestCase(1, true)]
@@ -83,7 +86,10 @@ public class TeamVenueValidatorTests
 
         var factResult = await tv.CheckAsync(TeamVenueValidator.FactId.VenueIsValid, CancellationToken.None);
 
-        Assert.IsNull(factResult.Exception);
-        Assert.That(factResult.Success, Is.EqualTo(expected));
+        Assert.Multiple(() =>
+        {
+            Assert.That(factResult.Exception, Is.Null);
+            Assert.That(factResult.Success, Is.EqualTo(expected));
+        });
     }
 }

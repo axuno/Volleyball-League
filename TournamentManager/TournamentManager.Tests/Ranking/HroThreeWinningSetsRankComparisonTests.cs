@@ -22,11 +22,14 @@ public class HroThreeWinningSetsRankComparisonTests
 
         var rl= ranking.GetList(out var updatedOn);
 
-        Assert.That(rl.Count, Is.EqualTo(2));
-        Assert.That(rl[0].Number, Is.EqualTo(1));
-        Assert.That(rl[1].Number, Is.EqualTo(2));
-        // Note: Even the direct comparison between teams is the same, so the team with the higher team ID is returned.
-        Assert.That(rl[0].TeamId, Is.EqualTo(2));
+        Assert.That(rl, Has.Count.EqualTo(2));
+        Assert.Multiple(() =>
+        {
+            Assert.That(rl[0].Number, Is.EqualTo(1));
+            Assert.That(rl[1].Number, Is.EqualTo(2));
+            // Note: Even the direct comparison between teams is the same, so the team with the higher team ID is returned.
+            Assert.That(rl[0].TeamId, Is.EqualTo(2));
+        });
     }
 
     [Test]
@@ -61,8 +64,11 @@ public class HroThreeWinningSetsRankComparisonTests
         ranks.Sort(comparer);
         var teamId2 = ranks[0].TeamId;
 
-        Assert.That(teamId1, Is.EqualTo(1));
-        Assert.That(teamId2, Is.EqualTo(1));
+        Assert.Multiple(() =>
+        {
+            Assert.That(teamId1, Is.EqualTo(1));
+            Assert.That(teamId2, Is.EqualTo(1));
+        });
     }
 
     [Test]
@@ -97,8 +103,11 @@ public class HroThreeWinningSetsRankComparisonTests
         ranks.Sort(comparer);
         var teamId2 = ranks[0].TeamId;
 
-        Assert.That(teamId1, Is.EqualTo(1));
-        Assert.That(teamId2, Is.EqualTo(1));
+        Assert.Multiple(() =>
+        {
+            Assert.That(teamId1, Is.EqualTo(1));
+            Assert.That(teamId2, Is.EqualTo(1));
+        });
     }
 
     [Test]
@@ -133,8 +142,11 @@ public class HroThreeWinningSetsRankComparisonTests
         ranks.Sort(comparer);
         var teamId2 = ranks[0].TeamId;
 
-        Assert.That(teamId1, Is.EqualTo(2));
-        Assert.That(teamId2, Is.EqualTo(2));
+        Assert.Multiple(() =>
+        {
+            Assert.That(teamId1, Is.EqualTo(2));
+            Assert.That(teamId2, Is.EqualTo(2));
+        });
     }
 
     [Test]
@@ -169,8 +181,11 @@ public class HroThreeWinningSetsRankComparisonTests
         ranks.Sort(comparer);
         var teamId2 = ranks[0].TeamId;
 
-        Assert.That(teamId1, Is.EqualTo(1));
-        Assert.That(teamId2, Is.EqualTo(1));
+        Assert.Multiple(() =>
+        {
+            Assert.That(teamId1, Is.EqualTo(1));
+            Assert.That(teamId2, Is.EqualTo(1));
+        });
     }
 
     [Test]
@@ -205,8 +220,11 @@ public class HroThreeWinningSetsRankComparisonTests
         ranks.Sort(comparer);
         var teamId2 = ranks[0].TeamId;
 
-        Assert.That(teamId1, Is.EqualTo(2));
-        Assert.That(teamId2, Is.EqualTo(2));
+        Assert.Multiple(() =>
+        {
+            Assert.That(teamId1, Is.EqualTo(2));
+            Assert.That(teamId2, Is.EqualTo(2));
+        });
     }
 
     [Test]
@@ -241,8 +259,11 @@ public class HroThreeWinningSetsRankComparisonTests
         ranks.Sort(comparer);
         var teamId2 = ranks[0].TeamId;
 
-        Assert.That(teamId1, Is.EqualTo(1));
-        Assert.That(teamId2, Is.EqualTo(1));
+        Assert.Multiple(() =>
+        {
+            Assert.That(teamId1, Is.EqualTo(1));
+            Assert.That(teamId2, Is.EqualTo(1));
+        });
     }
 
     /*

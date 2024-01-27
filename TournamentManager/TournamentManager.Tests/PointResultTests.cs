@@ -19,9 +19,12 @@ public class PointResultTests
     {
         var pointResult = new PointResult(home, guest);
 
-        Assert.That(pointResult.Home == home);
-        Assert.That(pointResult.Guest == guest);
-        Assert.That(pointResult.ToString(), Is.EqualTo($"{(home != null ? home.Value : "-")}:{(guest != null ? guest.Value : "-")}"));
+        Assert.Multiple(() =>
+        {
+            Assert.That(pointResult.Home, Is.EqualTo(home));
+            Assert.That(pointResult.Guest, Is.EqualTo(guest));
+            Assert.That(pointResult.ToString(), Is.EqualTo($"{(home != null ? home.Value : "-")}:{(guest != null ? guest.Value : "-")}"));
+        });
     }
 
     [Test]
@@ -63,8 +66,11 @@ public class PointResultTests
         var pointResult1 = new PointResult("25:18");
         var pointResult2 = new PointResult("25:18");
 
-        Assert.That(pointResult1 == pointResult2, Is.True);
-        Assert.That(pointResult1 != pointResult2, Is.False);
+        Assert.Multiple(() =>
+        {
+            Assert.That(pointResult1, Is.EqualTo(pointResult2));
+            Assert.That(pointResult1, Is.EqualTo(pointResult2));
+        });
     }
 
     [TestCase("25:0", "25:1", true)]
@@ -77,8 +83,11 @@ public class PointResultTests
         var pointResult1 = new PointResult(a);
         var pointResult2 = new PointResult(b);
 
-        Assert.That(pointResult1 > pointResult2, Is.EqualTo(expected));
-        Assert.That(pointResult1 < pointResult2, Is.EqualTo(!expected));
+        Assert.Multiple(() =>
+        {
+            Assert.That(pointResult1 > pointResult2, Is.EqualTo(expected));
+            Assert.That(pointResult1 < pointResult2, Is.EqualTo(!expected));
+        });
     }
 
     [Test]
@@ -86,8 +95,11 @@ public class PointResultTests
     {
         var pointResult = new PointResult(25, 1);
 
-        Assert.That(pointResult.CompareTo(null), Is.EqualTo(1));
-        Assert.That(pointResult.Compare(null, pointResult), Is.EqualTo(-1));
-        Assert.That(pointResult.Compare(null, null), Is.EqualTo(0));
+        Assert.Multiple(() =>
+        {
+            Assert.That(pointResult.CompareTo(null), Is.EqualTo(1));
+            Assert.That(pointResult.Compare(null, pointResult), Is.EqualTo(-1));
+            Assert.That(pointResult.Compare(null, null), Is.EqualTo(0));
+        });
     }
 }

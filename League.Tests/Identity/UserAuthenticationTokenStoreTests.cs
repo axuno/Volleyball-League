@@ -25,6 +25,12 @@ public class UserAuthenticationTokenStoreTests
         _store = _uth.GetUserStore();
     }
 
+    [OneTimeTearDown]
+    public void DisposeObjects()
+    {
+        _store.Dispose();
+    }
+
     private readonly ApplicationUser _testUser = new() {
         Email = "user@store.test",
         EmailConfirmed = true,
@@ -64,7 +70,7 @@ public class UserAuthenticationTokenStoreTests
     private async Task<ApplicationUser> CreateNewUser()
     {
         var user = GetNewUser();
-        Assert.AreEqual(IdentityResult.Success, await _store.CreateAsync(user, CancellationToken.None));
+        Assert.That(await _store.CreateAsync(user, CancellationToken.None), Is.EqualTo(IdentityResult.Success));
         return user;
     }
 
@@ -81,10 +87,10 @@ public class UserAuthenticationTokenStoreTests
         Assert.DoesNotThrowAsync(() => _store.AddLoginAsync(user, userLoginInfo, CancellationToken.None));
 
         Assert.DoesNotThrowAsync(() => _store.SetTokenAsync(user, userLoginInfo.LoginProvider, "TokenName", "TheValue",  CancellationToken.None));
-        Assert.AreEqual("TheValue", await _store.GetTokenAsync(user, userLoginInfo.LoginProvider, "TokenName", CancellationToken.None));
+        Assert.That(await _store.GetTokenAsync(user, userLoginInfo.LoginProvider, "TokenName", CancellationToken.None), Is.EqualTo("TheValue"));
 
         Assert.DoesNotThrowAsync(() => _store.RemoveTokenAsync(user, userLoginInfo.LoginProvider, "TokenName", CancellationToken.None));
-        Assert.IsNull(await _store.GetTokenAsync(user, userLoginInfo.LoginProvider, "TokenName", CancellationToken.None));
+        Assert.That(await _store.GetTokenAsync(user, userLoginInfo.LoginProvider, "TokenName", CancellationToken.None), Is.Null);
     }
 
     [Test]

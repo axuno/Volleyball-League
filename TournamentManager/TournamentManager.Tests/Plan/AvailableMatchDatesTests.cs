@@ -24,8 +24,8 @@ internal class AvailableMatchDatesTests
         Assert.Multiple(() =>
         {
             Assert.That(del: async () => await availableDates.GenerateNewAsync(tournament.Rounds[0], matches, CancellationToken.None), Throws.Nothing);
-            Assert.That(availableDates.GetGeneratedAndManualAvailableMatchDateDays(tournamentLeg).Count, Is.EqualTo(87));
-            Assert.That(availableDates.GetGeneratedAndManualAvailableMatchDates(1, new DateTimePeriod(tournamentLeg.StartDateTime, tournamentLeg.EndDateTime), null).Count, Is.EqualTo(17));
+            Assert.That(availableDates.GetGeneratedAndManualAvailableMatchDateDays(tournamentLeg), Has.Count.EqualTo(87));
+            Assert.That(availableDates.GetGeneratedAndManualAvailableMatchDates(1, new DateTimePeriod(tournamentLeg.StartDateTime, tournamentLeg.EndDateTime), null), Has.Count.EqualTo(17));
         });
     }
 
@@ -36,7 +36,7 @@ internal class AvailableMatchDatesTests
         Assert.That(await availableDates.ClearAsync(MatchDateClearOption.All, CancellationToken.None), Is.EqualTo(0));
     }
 
-    private AvailableMatchDates GetAvailableMatchDatesInstance()
+    private static AvailableMatchDates GetAvailableMatchDatesInstance()
     {
         var tenantContextMock = TestMocks.GetTenantContextMock();
         var appDbMock = TestMocks.GetAppDbMock();

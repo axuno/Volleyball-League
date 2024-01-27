@@ -19,6 +19,12 @@ public class BackgroundQueueServiceTests
         ExceptionFromBackgroundQueue = null;
     }
 
+    [TearDown]
+    public void DisposeObjects()
+    {
+        _serviceProvider?.Dispose();
+    }
+
     private ServiceProvider CreateServiceProvider()
     {
         var services = new ServiceCollection();
@@ -62,7 +68,7 @@ public class BackgroundQueueServiceTests
 
         Assert.Multiple(() =>
         {
-            Assert.AreEqual(expected, itemCounter);
+            Assert.That(itemCounter, Is.EqualTo(expected));
         });
     }
 
@@ -87,8 +93,8 @@ public class BackgroundQueueServiceTests
 
         Assert.Multiple(() =>
         {
-            Assert.AreEqual(expected, itemCounter);
-            Assert.AreEqual(ExceptionFromBackgroundQueue?.GetType(), typeof(AmbiguousImplementationException));
+            Assert.That(itemCounter, Is.EqualTo(expected));
+            Assert.That(typeof(AmbiguousImplementationException), Is.EqualTo(ExceptionFromBackgroundQueue?.GetType()));
         });
     }
 
@@ -104,7 +110,7 @@ public class BackgroundQueueServiceTests
             
         Assert.Multiple(() =>
         {
-            Assert.IsFalse(task.IsFaulted);
+            Assert.That(task.IsFaulted, Is.False);
         });
     }
 }

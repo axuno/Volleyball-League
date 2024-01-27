@@ -24,7 +24,7 @@ public class GermanHolidayImporterTests
 
         var imported = hImporter.Import(new DateTimePeriod(from, to)).ToList();
 
-        Assert.That(imported.Count, Is.EqualTo(expectedCount));
+        Assert.That(imported, Has.Count.EqualTo(expectedCount));
     }
 
     [TestCase("2023-01-01", "2023-12-31", 14)]
@@ -42,7 +42,7 @@ public class GermanHolidayImporterTests
 
         var imported = hImporter.Import(new DateTimePeriod(from, to)).ToList();
 
-        Assert.That(imported.Count, Is.EqualTo(expectedCount));
+        Assert.That(imported, Has.Count.EqualTo(expectedCount));
     }
 
     [TestCase("2023-01-01", "2023-12-31", 19)]
@@ -68,7 +68,7 @@ public class GermanHolidayImporterTests
 
         var imported = hImporter.Import(new DateTimePeriod(from, to)).ToList();
 
-        Assert.That(imported.Count, Is.EqualTo(expectedCount));
+        Assert.That(imported, Has.Count.EqualTo(expectedCount));
     }
 
     [TestCase("2019-09-01", "2020-06-30", 9)]
@@ -88,6 +88,6 @@ public class GermanHolidayImporterTests
 
         var imported = hImporter.Import(new DateTimePeriod(from, to)).ToList();
 
-        Assert.That(imported.Count, Is.EqualTo(expectedCount));
+        Assert.That(imported, Has.Count.EqualTo(expectedCount));
     }
 }

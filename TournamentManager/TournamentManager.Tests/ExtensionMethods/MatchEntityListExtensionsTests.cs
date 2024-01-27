@@ -35,7 +35,7 @@ public class MatchEntityListExtensionTests
         var teamIds = new[] {team1, team2};
         var matches = _matches.GetPreviousMatches(startIndex, teamIds, includeUndefined).ToList();
 
-        Assert.That(matches.Count, Is.EqualTo(expected));
+        Assert.That(matches, Has.Count.EqualTo(expected));
 
     }
 
@@ -58,7 +58,7 @@ public class MatchEntityListExtensionTests
         var teamIds = new[] { team1, team2 };
         var matches = _matches.GetNextMatches(startIndex, teamIds, includeUndefined).ToList();
 
-        Assert.That(matches.Count, Is.EqualTo(expected));
+        Assert.That(matches, Has.Count.EqualTo(expected));
     }
 
     [TestCase(-1)]

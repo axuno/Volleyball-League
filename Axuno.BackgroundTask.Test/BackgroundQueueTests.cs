@@ -17,6 +17,12 @@ public class BackgroundQueueTests
         ExceptionFromBackgroundQueue = null;
     }
 
+    [TearDown]
+    public void DisposeObjects()
+    {
+        _serviceProvider?.Dispose();
+    }
+
     private ServiceProvider CreateServiceProvider()
     {
         var services = new ServiceCollection();
@@ -42,7 +48,7 @@ public class BackgroundQueueTests
         Assert.Multiple(() =>
         {
             Assert.ThrowsAsync<TimeoutException>(async () => await queue.RunTaskAsync(queue.DequeueTask(), CancellationToken.None));
-            Assert.IsTrue(ExceptionFromBackgroundQueue is TimeoutException);
+            Assert.That(ExceptionFromBackgroundQueue is TimeoutException, Is.True);
         });
 
             

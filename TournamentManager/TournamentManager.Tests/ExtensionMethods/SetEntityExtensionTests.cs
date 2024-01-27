@@ -17,8 +17,8 @@ public class SetEntityExtensionTests
         set.CalculateSetPoints(setRule);
         Assert.Multiple(() =>
         {
-            Assert.AreEqual(expectedHomeSetPts, set.HomeSetPoints);
-            Assert.AreEqual(expectedGuestSetPts, set.GuestSetPoints);
+            Assert.That(set.HomeSetPoints, Is.EqualTo(expectedHomeSetPts));
+            Assert.That(set.GuestSetPoints, Is.EqualTo(expectedGuestSetPts));
         });
     }
 
@@ -31,10 +31,10 @@ public class SetEntityExtensionTests
         set.Overrule(homeBallPts, guestBallPts, homeSetPts, guestSetPts);
         Assert.Multiple(() =>
         {
-            Assert.AreEqual(homeSetPts, set.HomeSetPoints);
-            Assert.AreEqual(guestSetPts, set.GuestSetPoints);
-            Assert.IsFalse(set.IsTieBreak);
-            Assert.IsTrue(set.IsOverruled);
+            Assert.That(set.HomeSetPoints, Is.EqualTo(homeSetPts));
+            Assert.That(set.GuestSetPoints, Is.EqualTo(guestSetPts));
+            Assert.That(set.IsTieBreak, Is.False);
+            Assert.That(set.IsOverruled, Is.True);
         });
     }
 }

@@ -27,6 +27,12 @@ public class UserRoleStoreTests
         _userStore = _uth.GetUserStore();
     }
 
+    [OneTimeTearDown]
+    public void DisposeObjects()
+    {
+        _userStore.Dispose();
+    }
+
     [Test]
     public async Task ShouldThrow_WritingTo_Database()
     {
@@ -52,14 +58,17 @@ public class UserRoleStoreTests
     public async Task AddToRole_GetRoles_GetUsersInRole()
     {
         await _userStore.AddToRoleAsync(_user, Constants.RoleName.TournamentManager, CancellationToken.None);
-        Assert.IsTrue(await _userStore.IsInRoleAsync(_user, Constants.RoleName.TournamentManager, CancellationToken.None));
+        Assert.That(await _userStore.IsInRoleAsync(_user, Constants.RoleName.TournamentManager, CancellationToken.None), Is.True);
 
         // adding the same role again should throw
         Assert.ThrowsAsync<InvalidOperationException>(() => _userStore.AddToRoleAsync(_user, Constants.RoleName.TournamentManager, CancellationToken.None));
 
-        Assert.IsTrue((await _userStore.GetRolesAsync(_user, CancellationToken.None)).Contains(Constants.RoleName.TournamentManager));
+        await Assert.MultipleAsync(async () =>
+        {
+            Assert.That((await _userStore.GetRolesAsync(_user, CancellationToken.None)).Contains(Constants.RoleName.TournamentManager), Is.True);
 
-        Assert.IsTrue((await _userStore.GetUsersInRoleAsync(Constants.RoleName.TournamentManager, CancellationToken.None)).FirstOrDefault(u => u.Email == _user.Email) != null);
+            Assert.That((await _userStore.GetUsersInRoleAsync(Constants.RoleName.TournamentManager, CancellationToken.None)).FirstOrDefault(u => u.Email == _user.Email), Is.Not.EqualTo(null));
+        });
 
         Assert.DoesNotThrowAsync(async () => await _userStore.RemoveFromRoleAsync(_user, Constants.RoleName.TournamentManager, CancellationToken.None));
     }
@@ -75,17 +84,23 @@ public class UserRoleStoreTests
         await _appDb.GenericRepository.SaveEntityAsync(userEntity, true, true, CancellationToken.None);
 
         var user = await _userStore.FindByEmailAsync(email, CancellationToken.None);
-        Assert.IsTrue(await _userStore.IsInRoleAsync(user, Constants.RoleName.Player, CancellationToken.None));
-        Assert.IsTrue(await _userStore.IsInRoleAsync(user, Constants.RoleName.TeamManager, CancellationToken.None));
-        Assert.IsTrue((await _userStore.GetUsersInRoleAsync(Constants.RoleName.Player, CancellationToken.None)).Count == 1);
-        Assert.IsTrue((await _userStore.GetUsersInRoleAsync(Constants.RoleName.TeamManager, CancellationToken.None)).Count == 1);
+        await Assert.MultipleAsync(async () =>
+        {
+            Assert.That(await _userStore.IsInRoleAsync(user, Constants.RoleName.Player, CancellationToken.None), Is.True);
+            Assert.That(await _userStore.IsInRoleAsync(user, Constants.RoleName.TeamManager, CancellationToken.None), Is.True);
+            Assert.That((await _userStore.GetUsersInRoleAsync(Constants.RoleName.Player, CancellationToken.None)), Has.Count.EqualTo(1));
+            Assert.That((await _userStore.GetUsersInRoleAsync(Constants.RoleName.TeamManager, CancellationToken.None)), Has.Count.EqualTo(1));
+        });
 
 
         await _appDb.GenericRepository.DeleteEntitiesUsingConstraintAsync<PlayerInTeamEntity>(new PredicateExpression(), CancellationToken.None);
         await _appDb.GenericRepository.DeleteEntitiesUsingConstraintAsync<ManagerOfTeamEntity>(new PredicateExpression(), CancellationToken.None);
 
-        Assert.IsFalse(await _userStore.IsInRoleAsync(user, Constants.RoleName.Player, CancellationToken.None));
-        Assert.IsFalse(await _userStore.IsInRoleAsync(user, Constants.RoleName.TeamManager, CancellationToken.None));
+        Assert.Multiple(async () =>
+        {
+            Assert.That(await _userStore.IsInRoleAsync(user, Constants.RoleName.Player, CancellationToken.None), Is.False);
+            Assert.That(await _userStore.IsInRoleAsync(user, Constants.RoleName.TeamManager, CancellationToken.None), Is.False);
+        });
     }
 
     [Test]
@@ -113,7 +128,7 @@ public class UserRoleStoreTests
         await _appDb.GenericRepository.DeleteEntitiesUsingConstraintAsync<UserEntity>(new PredicateExpression(), CancellationToken.None);
 
         _user = new ApplicationUser { Email = "userrole@store.tests", UserName = "UserRoleStoreTester"};
-        Assert.AreEqual(IdentityResult.Success, await _userStore.CreateAsync(_user, CancellationToken.None));
+        Assert.That(await _userStore.CreateAsync(_user, CancellationToken.None), Is.EqualTo(IdentityResult.Success));
     }
 
     [TearDown]

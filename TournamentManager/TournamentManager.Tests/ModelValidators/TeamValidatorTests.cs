@@ -57,7 +57,7 @@ public class TeamValidatorTests
     [TestCase("Test Team Name", true)]
     [TestCase("", false)]
     [TestCase(null, false)]
-    public async Task TeamName_Must_Not_Be_Empty(string teamName, bool expected)
+    public async Task TeamName_Must_Not_Be_Empty(string? teamName, bool expected)
     {
         var team = new TeamEntity {Name = teamName};
             
@@ -67,16 +67,16 @@ public class TeamValidatorTests
         var factResult = await tv.CheckAsync(TeamValidator.FactId.TeamNameIsSet, CancellationToken.None);
         Assert.Multiple(() =>
         {
-            Assert.IsTrue(factResult.Enabled);
-            Assert.AreEqual(expected, factResult.Success);
-            Assert.IsNull(factResult.Exception);
+            Assert.That(factResult.Enabled, Is.True);
+            Assert.That(factResult.Success, Is.EqualTo(expected));
+            Assert.That(factResult.Exception, Is.Null);
         });
     }
 
     [TestCase("Test Team Name", 100, true)] // team IDs < 10 should fail
     [TestCase("Test Team Name", 1, false)]
     [TestCase(null, 1, false)]
-    public async Task Unique(string teamName, long teamId, bool expected)
+    public async Task Unique(string? teamName, long teamId, bool expected)
     {
         var team = new TeamEntity {Name = teamName, Id = teamId};
 
@@ -86,10 +86,10 @@ public class TeamValidatorTests
         var factResult = await tv.CheckAsync(TeamValidator.FactId.TeamNameIsUnique, CancellationToken.None);
         Assert.Multiple(() =>
         {
-            Assert.AreEqual(factResult.Enabled, teamName != null);
-            Assert.AreEqual(expected, factResult.Success);
-            if (factResult.Enabled && !factResult.Success) Assert.IsTrue(factResult.Message.Contains(teamName ?? string.Empty));
-            Assert.IsNull(factResult.Exception);
+            Assert.That(teamName != null, Is.EqualTo(factResult.Enabled));
+            Assert.That(factResult.Success, Is.EqualTo(expected));
+            if (factResult.Enabled && !factResult.Success) Assert.That(factResult.Message, Does.Contain(teamName ?? string.Empty));
+            Assert.That(factResult.Exception, Is.Null);
         });
     }
 
@@ -115,7 +115,7 @@ public class TeamValidatorTests
         {
             Assert.That(factResult.Enabled, Is.EqualTo(isEditable));
             Assert.That(factResult.Success, Is.EqualTo(expected));
-            Assert.IsNull(factResult.Exception);
+            Assert.That(factResult.Exception, Is.Null);
         });
     }
 
@@ -127,7 +127,7 @@ public class TeamValidatorTests
     [TestCase( "20:00:00", true, true)]
     [TestCase("20:00:00", false, false)]
     [TestCase( "23:00:00", true, false)] 
-    public async Task MatchTime_Within_Fixture_TimeLimit(TimeSpan startTime, bool startTimeMustBeSet, bool expected)
+    public async Task MatchTime_Within_Fixture_TimeLimit(TimeSpan? startTime, bool startTimeMustBeSet, bool expected)
     {
         // Note: all times are set and compared to local time
 
@@ -146,10 +146,10 @@ public class TeamValidatorTests
 
         Assert.Multiple(() =>
         {
-            Assert.AreEqual(expected, factResult.IsChecked == startTimeMustBeSet &&
+            Assert.That(factResult.IsChecked == startTimeMustBeSet &&
                                       factResult.Success && factResult.Message.Contains(_tenantContext.TournamentContext.FixtureRuleSet
-                                          .RegularMatchStartTime.MinDayTime.ToShortTimeString()));
-            Assert.IsNull(factResult.Exception);
+                                          .RegularMatchStartTime.MinDayTime.ToShortTimeString()), Is.EqualTo(expected));
+            Assert.That(factResult.Exception, Is.Null);
         });
     }
 
@@ -176,12 +176,12 @@ public class TeamValidatorTests
         var factResult = await tv.CheckAsync(TeamValidator.FactId.DayOfWeekWithinRange, CancellationToken.None);
         Assert.Multiple(() =>
         {
-            Assert.AreEqual(factResult.Enabled, isEditable && mustBeSet);
+            Assert.That(isEditable && mustBeSet, Is.EqualTo(factResult.Enabled));
             if (factResult.Enabled)
             {
-                Assert.AreEqual(expected, factResult.Success);
+                Assert.That(factResult.Success, Is.EqualTo(expected));
             }
-            Assert.IsNull(factResult.Exception);
+            Assert.That(factResult.Exception, Is.Null);
         });
     }
 
@@ -210,13 +210,13 @@ public class TeamValidatorTests
         var factResult = await tv.CheckAsync(TeamValidator.FactId.DayOfWeekWithinRange, CancellationToken.None);
         Assert.Multiple(() =>
         {
-            Assert.AreEqual(factResult.Enabled, _tenantContext.TournamentContext.TeamRuleSet.HomeMatchTime.IsEditable && _tenantContext.TournamentContext.TeamRuleSet.HomeMatchTime.MustBeSet);
+            Assert.That(_tenantContext.TournamentContext.TeamRuleSet.HomeMatchTime.IsEditable && _tenantContext.TournamentContext.TeamRuleSet.HomeMatchTime.MustBeSet, Is.EqualTo(factResult.Enabled));
             if (factResult.Enabled)
             {
-                Assert.IsTrue(errorIfNotInRange ? factResult.Type == FactType.Error : factResult.Type == FactType.Warning);
-                Assert.AreEqual(expected, factResult.Success);
+                Assert.That(errorIfNotInRange ? factResult.Type == FactType.Error : factResult.Type == FactType.Warning, Is.True);
+                Assert.That(factResult.Success, Is.EqualTo(expected));
             }
-            Assert.IsNull(factResult.Exception);
+            Assert.That(factResult.Exception, Is.Null);
         });
     }
 }

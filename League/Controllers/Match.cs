@@ -259,7 +259,7 @@ public class Match : AbstractController
 
             var permissionValidator = new MatchResultPermissionValidator(match, (_tenantContext, (model.Tournament!.IsPlanningMode, model.Round!.IsComplete, DateTime.UtcNow)));
             await permissionValidator.CheckAsync(cancellationToken);
-            if (permissionValidator.GetFailedFacts().Any())
+            if (permissionValidator.GetFailedFacts().Count != 0)
             {
                 return View(ViewNames.Match.EnterResultNotAllowed,
                     (model.Tournament, permissionValidator.GetFailedFacts().First().Message));
@@ -308,7 +308,7 @@ public class Match : AbstractController
 
             var permissionValidator = new MatchResultPermissionValidator(match, (_tenantContext, (model.Tournament!.IsPlanningMode, model.Round!.IsComplete, DateTime.UtcNow)));
             await permissionValidator.CheckAsync(cancellationToken);
-            if (permissionValidator.GetFailedFacts().Any())
+            if (permissionValidator.GetFailedFacts().Count != 0)
             {
                 return View(ViewNames.Match.EnterResultNotAllowed,
                     (model.Tournament, permissionValidator.GetFailedFacts().First().Message));

@@ -72,10 +72,10 @@ public class TeamInRoundValidatorTests
         var factResult = await tv.CheckAsync(TeamInRoundValidator.FactId.RoundBelongsToTournament, CancellationToken.None);
         Assert.Multiple(() =>
         {
-            Assert.IsTrue(factResult.Enabled);
-            Assert.AreEqual(expected, factResult.Success);
-            if (!factResult.Success) Assert.IsTrue( factResult.Message.Contains(tournament!.Description));
-            Assert.IsNull(factResult.Exception);
+            Assert.That(factResult.Enabled, Is.True);
+            Assert.That(factResult.Success, Is.EqualTo(expected));
+            if (!factResult.Success) Assert.That( factResult.Message, Does.Contain(tournament!.Description));
+            Assert.That(factResult.Exception, Is.Null);
         });
     }
 }
