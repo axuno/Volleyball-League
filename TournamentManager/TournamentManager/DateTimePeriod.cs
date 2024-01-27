@@ -1,5 +1,9 @@
 namespace TournamentManager;
 
+/// <summary>
+/// A struct to hold a period of time with start and end <see cref="DateTime"/> values.
+/// Note: Start and End will truncate the time to full seconds. <see cref="DateTime.Kind"/> is preserved.
+/// </summary>
 public record struct DateTimePeriod
 {
     private DateTime? _start;
@@ -14,7 +18,8 @@ public record struct DateTimePeriod
 
     /// <summary>
     /// Creates a new <see cref="DateTimePeriod"/>.
-    /// When setting Start and End, it is ensured that always Start &lt;= End
+    /// When setting Start and End, it is ensured that always Start &lt;= End.
+    /// Note: Start and End will truncate the time to full seconds. <see cref="DateTime.Kind"/> is preserved.
     /// </summary>
     /// <param name="start">Start <see cref="DateTime"/></param>
     /// <param name="end">End <see cref="DateTime"/></param>
@@ -26,7 +31,8 @@ public record struct DateTimePeriod
 
     /// <summary>
     /// Creates a new <see cref="DateTimePeriod"/>.
-    /// When setting Start and End, it is ensured that always Start &lt;= End
+    /// When setting Start and End, it is ensured that always Start &lt;= End.
+    /// Note: Start and End will truncate the time to full seconds. <see cref="DateTime.Kind"/> is preserved.
     /// </summary>
     /// <param name="start">Start <see cref="DateTime"/></param>
     /// <param name="end">End <see cref="DateTime"/></param>
@@ -38,7 +44,8 @@ public record struct DateTimePeriod
 
     /// <summary>
     /// Creates a new <see cref="DateTimePeriod"/>
-    /// When setting Start and End, it is ensured that always Start &lt;= End
+    /// When setting Start and End, it is ensured that always Start &lt;= End.
+    /// Note: Start and End will truncate the time to full seconds. <see cref="DateTime.Kind"/> is preserved.
     /// </summary>
     /// <param name="start">Start <see cref="DateTime"/></param>
     /// <param name="timeSpanToEnd">Timespan to end <see cref="TimeSpan"/></param>
@@ -53,7 +60,8 @@ public record struct DateTimePeriod
 
     /// <summary>
     /// Creates a new <see cref="DateTimePeriod"/>
-    /// When setting Start and End, it is ensured that always Start &lt;= End
+    /// When setting Start and End, it is ensured that always Start &lt;= End.
+    /// Note: Start and End will truncate the time to full seconds. <see cref="DateTime.Kind"/> is preserved.
     /// </summary>
     /// <param name="start">Start <see cref="DateTime"/></param>
     /// <param name="timeSpanToEnd">Timespan to end <see cref="TimeSpan"/></param>
@@ -84,7 +92,7 @@ public record struct DateTimePeriod
             else
             {
                 var d = value.Value;
-                _start = new DateTime(d.Year, d.Month, d.Day, d.Hour, d.Minute, d.Second);
+                _start = new DateTime(d.Year, d.Month, d.Day, d.Hour, d.Minute, d.Second, d.Kind);
             }
 
             SwapIfNeeded();
@@ -112,7 +120,7 @@ public record struct DateTimePeriod
             else
             {
                 var d = value.Value;
-                _end = new DateTime(d.Year, d.Month, d.Day, d.Hour, d.Minute, d.Second);
+                _end = new DateTime(d.Year, d.Month, d.Day, d.Hour, d.Minute, d.Second, d.Kind);
             }
 
             SwapIfNeeded();
