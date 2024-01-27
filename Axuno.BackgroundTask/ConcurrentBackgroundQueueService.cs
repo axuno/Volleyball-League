@@ -100,7 +100,7 @@ public class ConcurrentBackgroundQueueService : BackgroundService
                         }
                     }
 
-                    if (!taskChunk.Any()) continue;
+                    if (taskChunk.Count == 0) continue;
 
                     // Task.WhenAll will not throw all exceptions when it encounters them.
                     // Instead, it adds them to an AggregateException, that must be

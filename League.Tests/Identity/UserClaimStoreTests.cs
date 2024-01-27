@@ -6,6 +6,7 @@ using SD.LLBLGen.Pro.ORMSupportClasses;
 using TournamentManager.DAL.EntityClasses;
 using TournamentManager.DAL.DatabaseSpecific;
 using TournamentManager.MultiTenancy;
+using Microsoft.AspNetCore.Identity;
 
 namespace League.Tests.Identity;
 
@@ -27,20 +28,29 @@ public class UserClaimStoreTests
         _store = _uth.GetUserStore();
     }
 
+    [OneTimeTearDown]
+    public void DisposeObjects()
+    {
+        _store.Dispose();
+    }
+
     [Test]
     public void ClaimConstants()
     {
-        Assert.IsTrue(Constants.ClaimType.GetTeamRelatedClaimTypes().Contains(Constants.ClaimType.ManagesTeam));
-        Assert.IsTrue(Constants.ClaimType.GetTeamRelatedClaimTypes().Contains(Constants.ClaimType.PlaysInTeam));
-        Assert.IsTrue(Constants.ClaimType.GetProgrammaticClaimTypes().Contains(Constants.ClaimType.ImpersonatedByUser));
+        Assert.Multiple(() =>
+        {
+            Assert.That(Constants.ClaimType.GetTeamRelatedClaimTypes(), Does.Contain(Constants.ClaimType.ManagesTeam));
+            Assert.That(Constants.ClaimType.GetTeamRelatedClaimTypes(), Does.Contain(Constants.ClaimType.PlaysInTeam));
+            Assert.That(Constants.ClaimType.GetProgrammaticClaimTypes(), Does.Contain(Constants.ClaimType.ImpersonatedByUser));
 
-        Assert.IsTrue(Constants.ClaimType.GetAllValues<string>().Any(cn => cn == Constants.ClaimType.ManagesTeam));
-        Assert.IsTrue(Constants.ClaimType.GetAllValues<string>().Any(cn => cn == Constants.ClaimType.PlaysInTeam));
-        Assert.IsTrue(Constants.ClaimType.GetAllValues<string>().Any(cn => cn == Constants.ClaimType.ImpersonatedByUser));
-            
-        Assert.IsTrue(Constants.ClaimType.GetAllNames().Contains(nameof(Constants.ClaimType.ManagesTeam)));
-        Assert.IsTrue(Constants.ClaimType.GetAllNames().Contains(nameof(Constants.ClaimType.PlaysInTeam)));
-        Assert.IsTrue(Constants.ClaimType.GetAllNames().Contains(nameof(Constants.ClaimType.ImpersonatedByUser)));
+            Assert.That(Constants.ClaimType.GetAllValues<string>().Any(cn => cn == Constants.ClaimType.ManagesTeam), Is.True);
+            Assert.That(Constants.ClaimType.GetAllValues<string>().Any(cn => cn == Constants.ClaimType.PlaysInTeam), Is.True);
+            Assert.That(Constants.ClaimType.GetAllValues<string>().Any(cn => cn == Constants.ClaimType.ImpersonatedByUser), Is.True);
+
+            Assert.That(Constants.ClaimType.GetAllNames(), Does.Contain(nameof(Constants.ClaimType.ManagesTeam)));
+            Assert.That(Constants.ClaimType.GetAllNames(), Does.Contain(nameof(Constants.ClaimType.PlaysInTeam)));
+            Assert.That(Constants.ClaimType.GetAllNames(), Does.Contain(nameof(Constants.ClaimType.ImpersonatedByUser)));
+        });
     }
 
     [Test]
@@ -80,13 +90,13 @@ public class UserClaimStoreTests
         // same claim again - should not be added
         await _store.AddClaimsAsync(_user, new[] { claim }, CancellationToken.None);
         var claims = await _store.GetClaimsAsync(_user, CancellationToken.None);
-        Assert.AreEqual(1, claims.Count);
-        Assert.IsTrue(claims.FirstOrDefault(c => c.Type == claim.Type && c.Value == claim.Value && c.ValueType == claim.ValueType && c.Issuer == claim.Issuer) != null);
+        Assert.That(claims, Has.Count.EqualTo(1));
+        Assert.That(claims.FirstOrDefault(c => c.Type == claim.Type && c.Value == claim.Value && c.ValueType == claim.ValueType && c.Issuer == claim.Issuer), Is.Not.EqualTo(null));
 
         // remove
         await _store.RemoveClaimsAsync(_user, new[] {claim}, CancellationToken.None);
         claims = await _store.GetClaimsAsync(_user, CancellationToken.None);
-        Assert.IsTrue(claims.FirstOrDefault(c => c.Type == claim.Type && c.Value == claim.Value) == null);
+        Assert.That(claims.FirstOrDefault(c => c.Type == claim.Type && c.Value == claim.Value), Is.EqualTo(null));
 
         // List of claims to remove is empty
         Assert.DoesNotThrowAsync(() => _store.RemoveClaimsAsync(_user, new List<Claim>(), CancellationToken.None));
@@ -99,22 +109,22 @@ public class UserClaimStoreTests
         var claim = new Claim("type", "value", "valueType", "issuer");
         var newClaim = new Claim("newType", "newValue", "newValueType", "newIssuer");
         await _store.AddClaimsAsync(_user, new[] { claim }, CancellationToken.None);
-        Assert.AreEqual(1, (await _store.GetClaimsAsync(_user, CancellationToken.None)).Count);
+        Assert.That((await _store.GetClaimsAsync(_user, CancellationToken.None)), Has.Count.EqualTo(1));
 
         // replace
         await _store.ReplaceClaimAsync(_user, claim, newClaim, CancellationToken.None);
-        Assert.AreEqual(1, (await _store.GetClaimsAsync(_user, CancellationToken.None)).Count);
+        Assert.That((await _store.GetClaimsAsync(_user, CancellationToken.None)), Has.Count.EqualTo(1));
             
         // add the original claim again
         await _store.AddClaimsAsync(_user, new[] { claim }, CancellationToken.None);
-        Assert.AreEqual(2, (await _store.GetClaimsAsync(_user, CancellationToken.None)).Count);
+        Assert.That((await _store.GetClaimsAsync(_user, CancellationToken.None)), Has.Count.EqualTo(2));
         // this time, replacing will not happen, because the claim already exists
         await _store.ReplaceClaimAsync(_user, claim, newClaim, CancellationToken.None);
         // replacing a non-existent claim will do nothing
         await _store.ReplaceClaimAsync(_user, new Claim("non-existent", "non-existent"), newClaim, CancellationToken.None);
 
         var claims = await _store.GetClaimsAsync(_user, CancellationToken.None);
-        Assert.IsTrue(claims.Count(c => c.Type == "type" || c.Type == "newType") == 2);
+        Assert.That(claims.Count(c => c.Type == "type" || c.Type == "newType"), Is.EqualTo(2));
     }
 
     [Test]
@@ -124,7 +134,7 @@ public class UserClaimStoreTests
         await _store.AddClaimsAsync(_user, new[] { claim }, CancellationToken.None);
 
         var users = await _store.GetUsersForClaimAsync(claim, CancellationToken.None);
-        Assert.AreEqual(_user.Email, users.FirstOrDefault()?.Email);
+        Assert.That(users.FirstOrDefault()?.Email, Is.EqualTo(_user.Email));
     }
 
     #endregion
@@ -147,13 +157,13 @@ public class UserClaimStoreTests
         // same manager claim again - should not be added
         await _store.AddClaimsAsync(_user, new[] { claim }, CancellationToken.None);
         var claims = await _store.GetClaimsAsync(_user, CancellationToken.None);
-        Assert.AreEqual(1, claims.Count);
-        Assert.IsTrue(claims.FirstOrDefault(c => c.Type == claim.Type && c.Value == claim.Value && c.ValueType == claim.ValueType && c.Issuer == claim.Issuer) != null);
+        Assert.That(claims, Has.Count.EqualTo(1));
+        Assert.That(claims.FirstOrDefault(c => c.Type == claim.Type && c.Value == claim.Value && c.ValueType == claim.ValueType && c.Issuer == claim.Issuer), Is.Not.EqualTo(null));
 
         // remove manager
         await _store.RemoveClaimsAsync(_user, new[] { claim }, CancellationToken.None);
         claims = await _store.GetClaimsAsync(_user, CancellationToken.None);
-        Assert.IsTrue(claims.FirstOrDefault(c => c.Type == claim.Type && c.Value == claim.Value) == null);
+        Assert.That(claims.FirstOrDefault(c => c.Type == claim.Type && c.Value == claim.Value), Is.EqualTo(null));
         // non-existent team should throw
         Assert.ThrowsAsync<ArgumentException>(() => _store.RemoveClaimsAsync(_user,
             new [] { new Claim(Constants.ClaimType.ManagesTeam, "0") }, CancellationToken.None));
@@ -175,13 +185,13 @@ public class UserClaimStoreTests
         // same player claim again - should not be added
         await _store.AddClaimsAsync(_user, new[] { claim }, CancellationToken.None);
         var claims = await _store.GetClaimsAsync(_user, CancellationToken.None);
-        Assert.AreEqual(1, claims.Count);
-        Assert.IsTrue(claims.FirstOrDefault(c => c.Type == claim.Type && c.Value == claim.Value && c.ValueType == claim.ValueType && c.Issuer == claim.Issuer) != null);
+        Assert.That(claims, Has.Count.EqualTo(1));
+        Assert.That(claims.FirstOrDefault(c => c.Type == claim.Type && c.Value == claim.Value && c.ValueType == claim.ValueType && c.Issuer == claim.Issuer), Is.Not.EqualTo(null));
 
         // remove player
         await _store.RemoveClaimsAsync(_user, new[] { claim }, CancellationToken.None);
         claims = await _store.GetClaimsAsync(_user, CancellationToken.None);
-        Assert.IsTrue(claims.FirstOrDefault(c => c.Type == claim.Type && c.Value == claim.Value) == null);
+        Assert.That(claims.FirstOrDefault(c => c.Type == claim.Type && c.Value == claim.Value), Is.EqualTo(null));
     }
 
     [Test]
@@ -192,7 +202,7 @@ public class UserClaimStoreTests
 
         // get users for the claim type
         var users = await _store.GetUsersForClaimAsync(claim, CancellationToken.None);
-        Assert.AreEqual(_user.Email, users.FirstOrDefault()?.Email);
+        Assert.That(users.FirstOrDefault()?.Email, Is.EqualTo(_user.Email));
 
         // get users for claim type which is not implemented
         Assert.ThrowsAsync<NotImplementedException>(() => _store.GetUsersForClaimAsync(new Claim(Constants.ClaimType.NotImplementedClaim, "1", "z"),
@@ -207,7 +217,7 @@ public class UserClaimStoreTests
 
         // get users for the claim type
         var users = await _store.GetUsersForClaimAsync(claim, CancellationToken.None);
-        Assert.AreEqual(_user.Email, users.FirstOrDefault()?.Email);
+        Assert.That(users.FirstOrDefault()?.Email, Is.EqualTo(_user.Email));
     }
 
     #endregion

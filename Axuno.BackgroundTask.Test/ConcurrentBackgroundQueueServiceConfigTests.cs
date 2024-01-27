@@ -11,8 +11,8 @@ public class ConcurrentBackgroundQueueServiceConfigTests
         var config = new ConcurrentBackgroundQueueServiceConfig{ PollQueueDelay = default, MaxConcurrentCount = -1};
         Assert.Multiple(() =>
         {
-            Assert.AreEqual(TimeSpan.FromMilliseconds(100), config.PollQueueDelay);
-            Assert.AreEqual(5, config.MaxConcurrentCount);
+            Assert.That(config.PollQueueDelay, Is.EqualTo(TimeSpan.FromMilliseconds(100)));
+            Assert.That(config.MaxConcurrentCount, Is.EqualTo(5));
         });
     }
 }

@@ -47,7 +47,7 @@ public class SetEntityListExtensionTests
     {
         var sets = new List<SetEntity> { { -1, "25:1 25:2 25:3" } };
 
-        Assert.That(sets.Count, Is.EqualTo(3));
+        Assert.That(sets, Has.Count.EqualTo(3));
         Assert.That(sets.All(s => s.SequenceNo == s.GuestBallPoints));
     }
 
@@ -56,7 +56,7 @@ public class SetEntityListExtensionTests
     {
         var sets = new List<SetEntity> { { 12345, "25:1 25:2 25:3" } };
 
-        Assert.That(sets.Count, Is.EqualTo(3));
+        Assert.That(sets, Has.Count.EqualTo(3));
         Assert.That(sets.All(s => s.MatchId == 12345));
     }
 

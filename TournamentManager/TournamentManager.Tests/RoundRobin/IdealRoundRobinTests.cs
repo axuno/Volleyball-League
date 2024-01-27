@@ -30,7 +30,7 @@ internal class IdealRoundRobinTests
             uniqueCombinations.Add(combination);
         }
 
-        Assert.That(matches.Count, Is.EqualTo(uniqueCombinations.Count));
+        Assert.That(matches, Has.Count.EqualTo(uniqueCombinations.Count));
         Assert.That(matches.First().Turn, Is.EqualTo(1)); // first turn is 1
     }
 
@@ -51,7 +51,7 @@ internal class IdealRoundRobinTests
         var roundRobin = new IdealRoundRobinSystem<long>(participants);
         var matches = roundRobin.GenerateMatches();
 
-        Assert.That(matches.Count, Is.EqualTo((numOfParticipants - 1) * numOfParticipants / 2));
+        Assert.That(matches, Has.Count.EqualTo((numOfParticipants - 1) * numOfParticipants / 2));
     }
 
     [TestCase(5)]
@@ -82,12 +82,15 @@ internal class IdealRoundRobinTests
                 participantsWithConsecutiveHomeGuestMatches.Add(participant);
             }
 
-            Assert.That(maxConsecutiveHomeGuest.HomeCount, Is.LessThanOrEqualTo(numOfParticipants % 2 == 0 ? 2 : 1));
-            Assert.That(maxConsecutiveHomeGuest.GuestCount, Is.LessThanOrEqualTo(numOfParticipants % 2 == 0 ? 2 : 1));
+            Assert.Multiple(() =>
+            {
+                Assert.That(maxConsecutiveHomeGuest.HomeCount, Is.LessThanOrEqualTo(numOfParticipants % 2 == 0 ? 2 : 1));
+                Assert.That(maxConsecutiveHomeGuest.GuestCount, Is.LessThanOrEqualTo(numOfParticipants % 2 == 0 ? 2 : 1));
+            });
         }
 
         // Only even number of participants may have consecutive home/guest matches
-        Assert.That(participantsWithConsecutiveHomeGuestMatches.Count, Is.EqualTo(numOfParticipants % 2 == 0 ? numOfParticipants - 2 : 0));
+        Assert.That(participantsWithConsecutiveHomeGuestMatches, Has.Count.EqualTo(numOfParticipants % 2 == 0 ? numOfParticipants - 2 : 0));
     }
 
     [TestCase(4)]
@@ -112,7 +115,7 @@ internal class IdealRoundRobinTests
         var roundRobin = new IdealRoundRobinSystem<CustomTestStruct>(participants);
         var matches = roundRobin.GenerateMatches();
 
-        Assert.That(matches.Count, Is.EqualTo((participants.Count - 1) * participants.Count / 2));
+        Assert.That(matches, Has.Count.EqualTo((participants.Count - 1) * participants.Count / 2));
     }
 
     [Test]
@@ -127,7 +130,7 @@ internal class IdealRoundRobinTests
         var roundRobin = new IdealRoundRobinSystem<CustomTestStruct>(participants);
         var matches = roundRobin.GenerateMatches();
 
-        Assert.That(matches.Count, Is.EqualTo((participants.Count - 1) * participants.Count / 2));
+        Assert.That(matches, Has.Count.EqualTo((participants.Count - 1) * participants.Count / 2));
     }
 
     private static List<long> GetParticipants(int numOfParticipants)

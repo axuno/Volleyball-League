@@ -20,6 +20,12 @@ public class ConcurrentBackgroundQueueServiceTests
         ExceptionFromBackgroundQueue = null;
     }
 
+    [TearDown]
+    public void DisposeObjects()
+    {
+        _serviceProvider?.Dispose();
+    }
+
     private ServiceProvider CreateServiceProvider()
     {
         var services = new ServiceCollection();
@@ -63,7 +69,7 @@ public class ConcurrentBackgroundQueueServiceTests
         }
         await bgTaskSvc.StopAsync(cts.Token);
 
-        Assert.AreEqual(abortBeforeCompletion, expected != itemCounter);
+        Assert.That(expected != itemCounter, Is.EqualTo(abortBeforeCompletion));
     }
 
     [Test]
@@ -87,8 +93,8 @@ public class ConcurrentBackgroundQueueServiceTests
 
         Assert.Multiple(() =>
         {
-            Assert.AreEqual(expected, itemCounter);
-            Assert.AreEqual(ExceptionFromBackgroundQueue?.GetType(), typeof(AmbiguousImplementationException));
+            Assert.That(itemCounter, Is.EqualTo(expected));
+            Assert.That(typeof(AmbiguousImplementationException), Is.EqualTo(ExceptionFromBackgroundQueue?.GetType()));
         });
     }
         
@@ -108,7 +114,7 @@ public class ConcurrentBackgroundQueueServiceTests
         }
         if (itemCounter > 0) cts.Cancel();
 
-        Assert.AreEqual(1, itemCounter);
+        Assert.That(itemCounter, Is.EqualTo(1));
     }
 
     [Test]
@@ -126,7 +132,7 @@ public class ConcurrentBackgroundQueueServiceTests
         await Task.Delay(500, cts.Token);
         await bgTaskSvc.StopAsync(cts.Token);
 
-        Assert.AreEqual(2, itemCounter);
+        Assert.That(itemCounter, Is.EqualTo(2));
     }
 
     [Test]
@@ -140,7 +146,7 @@ public class ConcurrentBackgroundQueueServiceTests
         // Set the backing field for the Config property by reflection
         // in order to make the service throw
         bgTaskSvc.GetType().GetField($"<{nameof(ConcurrentBackgroundQueueService.Config)}>" + "k__BackingField", BindingFlags.NonPublic | BindingFlags.Instance)?.SetValue(bgTaskSvc, null);
-        Assert.IsNull(bgTaskSvc.Config);
+        Assert.That(bgTaskSvc.Config, Is.Null);
     }
 
     [Test]

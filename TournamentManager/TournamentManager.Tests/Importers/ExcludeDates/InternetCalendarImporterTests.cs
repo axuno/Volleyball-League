@@ -24,7 +24,7 @@ public class InternetCalendarImporterTests
 
         var imported = icsImporter.Import(new DateTimePeriod(from, to)).ToList();
 
-        Assert.That(imported.Count, Is.EqualTo(expectedCount));
+        Assert.That(imported, Has.Count.EqualTo(expectedCount));
         Assert.That(imported[0].Period.Duration(), Is.EqualTo(expectedDuration));
     }
 
@@ -45,7 +45,7 @@ public class InternetCalendarImporterTests
 
         var imported = icsImporter.Import(new DateTimePeriod(from, to)).ToList();
 
-        Assert.That(imported.Count, Is.EqualTo(expectedCount));
+        Assert.That(imported, Has.Count.EqualTo(expectedCount));
         Assert.That(imported[0].Period.Duration(), Is.EqualTo(expectedDuration));
     }
 }

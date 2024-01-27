@@ -25,6 +25,12 @@ public class UserLoginStoreTests
         _store = _uth.GetUserStore();
     }
 
+    [OneTimeTearDown]
+    public void DisposeObjects()
+    {
+        _store.Dispose();
+    }
+
     private readonly ApplicationUser _testUser = new() {
         Email = "user@store.test",
         EmailConfirmed = true,
@@ -69,7 +75,7 @@ public class UserLoginStoreTests
     private async Task<ApplicationUser> CreateNewUser()
     {
         var user = GetNewUser();
-        Assert.AreEqual(IdentityResult.Success, await _store.CreateAsync(user, CancellationToken.None));
+        Assert.That(await _store.CreateAsync(user, CancellationToken.None), Is.EqualTo(IdentityResult.Success));
         return user;
     }
 
@@ -81,22 +87,28 @@ public class UserLoginStoreTests
         Assert.DoesNotThrowAsync(() => _store.AddLoginAsync(user, login, CancellationToken.None));
 
         var userByLogin = await _store.FindByLoginAsync(login.LoginProvider, login.ProviderKey, CancellationToken.None);
-        Assert.IsNotNull(userByLogin);
-        Assert.IsTrue(user.Id == userByLogin.Id);
+        Assert.Multiple(() =>
+        {
+            Assert.That(userByLogin, Is.Not.Null);
+            Assert.That(user.Id, Is.EqualTo(userByLogin.Id));
+        });
 
         var login2 = new UserLoginInfo("provider2", "providerKey2", "displayName2");
         Assert.DoesNotThrowAsync(() => _store.AddLoginAsync(user, login2, CancellationToken.None));
 
         var logins = await _store.GetLoginsAsync(user, CancellationToken.None);
-        Assert.AreEqual(2, logins.Count);
-        Assert.IsTrue(logins.First(l => l.LoginProvider == login.LoginProvider).ProviderKey == login.ProviderKey);
-        Assert.IsTrue(logins.First(l => l.LoginProvider == login.LoginProvider).ProviderDisplayName == login.ProviderDisplayName);
-        Assert.IsTrue(logins.First(l => l.LoginProvider == login2.LoginProvider).ProviderKey == login2.ProviderKey);
-        Assert.IsTrue(logins.First(l => l.LoginProvider == login2.LoginProvider).ProviderDisplayName == login2.ProviderDisplayName);
+        Assert.That(logins, Has.Count.EqualTo(2));
+        Assert.Multiple(() =>
+        {
+            Assert.That(logins.First(l => l.LoginProvider == login.LoginProvider).ProviderKey, Is.EqualTo(login.ProviderKey));
+            Assert.That(logins.First(l => l.LoginProvider == login.LoginProvider).ProviderDisplayName, Is.EqualTo(login.ProviderDisplayName));
+            Assert.That(logins.First(l => l.LoginProvider == login2.LoginProvider).ProviderKey, Is.EqualTo(login2.ProviderKey));
+            Assert.That(logins.First(l => l.LoginProvider == login2.LoginProvider).ProviderDisplayName, Is.EqualTo(login2.ProviderDisplayName));
+        });
 
         Assert.DoesNotThrowAsync(() => _store.RemoveLoginAsync(user, login.LoginProvider, login.ProviderKey, CancellationToken.None));
         userByLogin = await _store.FindByLoginAsync(login.LoginProvider, login.ProviderKey, CancellationToken.None);
-        Assert.IsNull(userByLogin);
+        Assert.That(userByLogin, Is.Null);
     }
 
     [Test]

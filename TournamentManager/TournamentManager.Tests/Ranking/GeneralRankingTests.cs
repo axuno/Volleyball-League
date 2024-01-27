@@ -18,8 +18,11 @@ internal class GeneralRankingTests
         var ranking = new TournamentManager.Ranking.Ranking(new List<MatchCompleteRawRow>(),
             new List<MatchToPlayRawRow>(), comparison);
 
-        Assert.That(ranking.RankComparer.RankComparison, Is.EqualTo(comparison));
-        Assert.That(ranking.RankComparer.Description.Length, Is.AtLeast(1));
+        Assert.Multiple(() =>
+        {
+            Assert.That(ranking.RankComparer.RankComparison, Is.EqualTo(comparison));
+            Assert.That(ranking.RankComparer.Description, Has.Length.AtLeast(1));
+        });
     }
 
     [Test]
@@ -59,7 +62,7 @@ internal class GeneralRankingTests
             Assert.That(r1.MatchesToPlay, Is.EqualTo(0));
             Assert.That(ranks[3].MatchesToPlay, Is.EqualTo(1));
 
-            Assert.That(ranks.Count, Is.EqualTo(4)); // 2 played for Team Ids 1 and 2, 2 to play for Team Ids 3 and 4
+            Assert.That(ranks, Has.Count.EqualTo(4)); // 2 played for Team Ids 1 and 2, 2 to play for Team Ids 3 and 4
             Assert.That(r1.TeamId, Is.EqualTo(2));
             Assert.That(r1.ToString(), Is.EqualTo("1"));
             
@@ -87,7 +90,7 @@ internal class GeneralRankingTests
 
         var matchDays = ranking.GetMatchDays();
 
-        Assert.That(matchDays.Count, Is.EqualTo(2));
+        Assert.That(matchDays, Has.Count.EqualTo(2));
     }
 
     [Test]
@@ -110,9 +113,12 @@ internal class GeneralRankingTests
         var chart = new RankingChart(ranking, new List<(long TeamId, string TeamName)> { (1, "1"), (2, "2") },
             new RankingChart.ChartSettings()) { UseMatchDayMarker = true, ShowUpperDateLimit = true };
 
-        Assert.That(history.GetMatchDays().Count, Is.EqualTo(2));
-        Assert.That(history.GetByTeam(1).Count, Is.EqualTo(2));
-        Assert.That(history.GetByMatchDay().Count, Is.EqualTo(2));
-        Assert.That(() => { chart.GetSvg(); chart.GetPng(); }, Throws.Nothing);
+        Assert.Multiple(() =>
+        {
+            Assert.That(history.GetMatchDays(), Has.Count.EqualTo(2));
+            Assert.That(history.GetByTeam(1), Has.Count.EqualTo(2));
+            Assert.That(history.GetByMatchDay(), Has.Count.EqualTo(2));
+            Assert.That(() => { chart.GetSvg(); chart.GetPng(); }, Throws.Nothing);
+        });
     }
 }

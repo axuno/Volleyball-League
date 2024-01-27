@@ -84,7 +84,7 @@ public class SetsValidator : AbstractValidator<IList<SetEntity>, (ITenantContext
                     {
                         Message = SetsValidatorResource.ResourceManager.GetString(
                             nameof(FactId.AllSetsAreValid)) ?? string.Empty,
-                        Success = !SingleSetErrors.Any()
+                        Success = SingleSetErrors.Count == 0
                     };
                 }
             });

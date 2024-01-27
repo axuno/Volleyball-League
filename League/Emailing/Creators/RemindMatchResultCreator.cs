@@ -34,7 +34,7 @@ public class RemindMatchResult : IMailMessageCreator
                                                                            .MatchPlanTournamentId)))),
             cancellationToken);
 
-        if(!fixtures.Any()) yield break;
+        if(fixtures.Count == 0) yield break;
             
         var teamIds = new HashSet<long>();
         fixtures.ForEach(f =>

@@ -129,7 +129,7 @@ public class MatchResultValidator : AbstractValidator<MatchEntity, (ITenantConte
                     {
                         Message = MatchResultValidatorResource.ResourceManager.GetString(
                             nameof(FactId.SetsValidatorSuccessful)) ?? string.Empty,
-                        Success = !SetsValidator.GetFailedFacts().Any()
+                        Success = SetsValidator.GetFailedFacts().Count == 0
                     };
                 }
             });

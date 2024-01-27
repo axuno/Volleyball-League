@@ -9,6 +9,6 @@ public class BackgroundQueueServiceConfigTests
     public void Set_Config_Default()
     {
         var config = new BackgroundQueueServiceConfig{ PollQueueDelay = default};
-        Assert.AreEqual(TimeSpan.FromMilliseconds(100), config.PollQueueDelay);
+        Assert.That(config.PollQueueDelay, Is.EqualTo(TimeSpan.FromMilliseconds(100)));
     }
 }

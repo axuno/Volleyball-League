@@ -14,8 +14,8 @@ public class DateTimePeriodTest
         var dtp = new DateTimePeriod(date1, date2);
         Assert.Multiple(() =>
         {
-            Assert.AreEqual(date1, dtp.Start);
-            Assert.AreEqual(date2, dtp.End);
+            Assert.That(dtp.Start, Is.EqualTo(date1));
+            Assert.That(dtp.End, Is.EqualTo(date2));
         });
     }
 
@@ -25,8 +25,8 @@ public class DateTimePeriodTest
         var dtp = new DateTimePeriod(date1, date2);
         Assert.Multiple(() =>
         {
-            Assert.AreEqual(date1, dtp.Start);
-            Assert.AreEqual(date2, dtp.End);
+            Assert.That(dtp.Start, Is.EqualTo(date1));
+            Assert.That(dtp.End, Is.EqualTo(date2));
         });
     }
 
@@ -36,8 +36,8 @@ public class DateTimePeriodTest
         var dtp = new DateTimePeriod();
         Assert.Multiple(() =>
         {
-            Assert.AreEqual(dtp.Start, dtp.End);
-            Assert.IsNull(dtp.Start);
+            Assert.That(dtp.End, Is.EqualTo(dtp.Start));
+            Assert.That(dtp.Start, Is.Null);
         });
     }
 
@@ -50,8 +50,8 @@ public class DateTimePeriodTest
         var dtp = new DateTimePeriod(date1, date2);
         Assert.Multiple(() =>
         {
-            Assert.AreEqual(date1, dtp.End);
-            Assert.AreEqual(date2, dtp.Start);
+            Assert.That(dtp.End, Is.EqualTo(date1));
+            Assert.That(dtp.Start, Is.EqualTo(date2));
         });
     }
 
@@ -63,8 +63,8 @@ public class DateTimePeriodTest
         var dtp = new DateTimePeriod(date1, timeSpan);
         Assert.Multiple(() =>
         {
-            Assert.AreEqual(date1, dtp.Start);
-            Assert.AreEqual(timeSpan.HasValue ? date1?.Add(timeSpan.Value) : null, dtp.End);
+            Assert.That(dtp.Start, Is.EqualTo(date1));
+            Assert.That(dtp.End, Is.EqualTo(timeSpan.HasValue ? date1?.Add(timeSpan.Value) : null));
         });
     }
 
@@ -74,8 +74,8 @@ public class DateTimePeriodTest
         var dtp = new DateTimePeriod(date1, timeSpan);
         Assert.Multiple(() =>
         {
-            Assert.AreEqual(date1, dtp.Start);
-            Assert.AreEqual(date1.Add(timeSpan), dtp.End);
+            Assert.That(dtp.Start, Is.EqualTo(date1));
+            Assert.That(dtp.End, Is.EqualTo(date1.Add(timeSpan)));
         });
     }
 
@@ -85,8 +85,8 @@ public class DateTimePeriodTest
         var dtp = new DateTimePeriod(date1, timeSpan);
         Assert.Multiple(() =>
         {
-            Assert.AreEqual(date1, dtp.End);
-            Assert.AreEqual(timeSpan.HasValue ? date1?.Add(timeSpan.Value) : null, dtp.Start);
+            Assert.That(dtp.End, Is.EqualTo(date1));
+            Assert.That(dtp.Start, Is.EqualTo(timeSpan.HasValue ? date1?.Add(timeSpan.Value) : null));
         });
     }
 
@@ -98,8 +98,8 @@ public class DateTimePeriodTest
         var dtp = new DateTimePeriod(date1, date2);
         Assert.Multiple(() =>
         {
-            Assert.AreEqual(dtp.Start, dtp.End);
-            Assert.AreNotEqual(date1, dtp.Start);
+            Assert.That(dtp.End, Is.EqualTo(dtp.Start));
+            Assert.That(dtp.Start, Is.Not.EqualTo(date1));
         });
     }
 
@@ -111,7 +111,7 @@ public class DateTimePeriodTest
     public void ContainsNullable(DateTime? date1, DateTime? date2, DateTime? contains, bool expected)
     {
         var dtp = new DateTimePeriod(date1, date2);
-        Assert.AreEqual(expected, dtp.Contains(contains));
+        Assert.That(dtp.Contains(contains), Is.EqualTo(expected));
     }
 
     [TestCase("2020-06-01", "2020-06-03", "2020-06-01", true)]
@@ -122,7 +122,7 @@ public class DateTimePeriodTest
     public void Contains(DateTime? date1, DateTime? date2, DateTime contains, bool expected)
     {
         var dtp = new DateTimePeriod(date1, date2);
-        Assert.AreEqual(expected, dtp.Contains(contains));
+        Assert.That(dtp.Contains(contains), Is.EqualTo(expected));
     }
 
     [TestCase(null, null, false)]
@@ -137,7 +137,7 @@ public class DateTimePeriodTest
     {
         var dtp1 = new DateTimePeriod(new DateTime(2020, 06, 01), new DateTime(2020, 06, 04));
         var dtp2 = new DateTimePeriod(dt1, dt2);
-        Assert.AreEqual(expected, dtp1.Overlaps(dtp2));
+        Assert.That(dtp1.Overlaps(dtp2), Is.EqualTo(expected));
     }
 
     [TestCase(null, null, null)]
@@ -148,7 +148,7 @@ public class DateTimePeriodTest
     public void DurationNullable(DateTime? dt1, DateTime? dt2, TimeSpan? expected)
     {
         var dtp = new DateTimePeriod(dt1, dt2);
-        Assert.AreEqual(expected, dtp.Duration(true));
+        Assert.That(dtp.Duration(true), Is.EqualTo(expected));
     }
 
     [TestCase("2020-06-05", "2020-07-30", "55:00:00:00")]
@@ -156,6 +156,6 @@ public class DateTimePeriodTest
     public void Duration(DateTime dt1, DateTime dt2, TimeSpan expected)
     {
         var dtp = new DateTimePeriod(dt1, dt2);
-        Assert.AreEqual(expected, dtp.Duration());
+        Assert.That(dtp.Duration(), Is.EqualTo(expected));
     }
 }

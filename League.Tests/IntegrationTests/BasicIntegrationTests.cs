@@ -8,7 +8,13 @@ namespace League.Tests;
 public class BasicIntegrationTests
 {
     private readonly WebApplicationFactory<League.WebApp.Program> _factory;
-    
+
+    [OneTimeTearDown]
+    public void DisposeWebApplicationFactory()
+    {
+        _factory.Dispose();
+    }
+
     public BasicIntegrationTests()
     {
         _factory = new WebApplicationFactory<League.WebApp.Program>()

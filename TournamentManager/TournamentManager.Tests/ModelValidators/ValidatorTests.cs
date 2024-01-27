@@ -66,7 +66,7 @@ public class ValidatorTests
         Assert.Throws<ArithmeticException>(() => fact.CheckAsync(CancellationToken.None));
         fact.Enabled = false;
         Task.FromResult(sv.CheckAsync(fact.Id, CancellationToken.None));
-        Assert.IsNull(fact.Exception); // check is not executed
+        Assert.That(fact.Exception, Is.Null); // check is not executed
     }
 
     [Test]
@@ -76,8 +76,11 @@ public class ValidatorTests
         var fact = sv.Facts.First();
         var oldType = fact.Type;
         fact.Type = oldType == FactType.Error ? FactType.Warning : FactType.Error;
-        Assert.AreNotEqual(oldType, fact.Type);
-        Assert.IsTrue(fact.FieldNames.Count() == 1);
+        Assert.Multiple(() =>
+        {
+            Assert.That(fact.Type, Is.Not.EqualTo(oldType));
+            Assert.That(fact.FieldNames.Count(), Is.EqualTo(1));
+        });
     }
 
     [Test]
@@ -87,7 +90,7 @@ public class ValidatorTests
         var fact = sv.Facts.First();
         fact.CheckAsync = (cancellationToken) => throw new ArgumentNullException();
         Task.FromResult(sv.CheckAsync(fact.Id, CancellationToken.None));
-        Assert.IsTrue(!fact.Success && fact.IsChecked && fact.Exception is ArgumentNullException);
+        Assert.That(!fact.Success && fact.IsChecked && fact.Exception is ArgumentNullException, Is.True);
     }
 
     [Test]
@@ -98,7 +101,7 @@ public class ValidatorTests
         anyFact.IsChecked = anyFact.Success = true;
         anyFact.Exception = new AccessViolationException();
         anyFact.Reset();
-        Assert.IsTrue(!anyFact.IsChecked && !anyFact.Success && anyFact.Exception == null);
+        Assert.That(!anyFact.IsChecked && !anyFact.Success && anyFact.Exception == null, Is.True);
     }
 
     [Test]
@@ -106,7 +109,7 @@ public class ValidatorTests
     {
         var sv = new SimplisticValidator("model", 123456789);
         sv.Facts.ToList().ForEach(f => f.IsChecked = f.Success = true);
-        Assert.IsTrue(sv.Reset().All(f => !f.IsChecked && !f.Success && f.Exception == null));
+        Assert.That(sv.Reset().All(f => !f.IsChecked && !f.Success && f.Exception == null), Is.True);
     }
         
     [Test]
@@ -115,13 +118,16 @@ public class ValidatorTests
         var sv = CreateValidatorWithErrorForType(FactType.Critical);
             
         var result = sv.CheckAsync(CancellationToken.None).Result;
-        Assert.AreEqual(1, result.Count);
+        Assert.That(result, Has.Count.EqualTo(1));
 
         var firstResult = result[0];
-        Assert.AreEqual(FactType.Critical, firstResult.Type);
-        Assert.IsTrue(firstResult.Success == false);
-        Assert.IsTrue(result.Count != sv.Facts.Count && firstResult.Message == "error " + sv.Model && 
-                      firstResult.Enabled && firstResult.Id == 1 && firstResult.IsChecked);
+        Assert.Multiple(() =>
+        {
+            Assert.That(firstResult.Type, Is.EqualTo(FactType.Critical));
+            Assert.That(firstResult.Success, Is.EqualTo(false));
+            Assert.That(result.Count != sv.Facts.Count && firstResult.Message == "error " + sv.Model &&
+                          firstResult.Enabled && firstResult.Id == 1 && firstResult.IsChecked, Is.True);
+        });
     }
 
     [Test]
@@ -130,13 +136,16 @@ public class ValidatorTests
         var sv = CreateValidatorWithErrorForType(FactType.Error);
 
         var result = sv.CheckAsync(CancellationToken.None).Result;
-        Assert.AreEqual(1, result.Count);
+        Assert.That(result, Has.Count.EqualTo(1));
 
         var firstResult = result[0];
-        Assert.AreEqual(FactType.Error, firstResult.Type);
-        Assert.IsTrue(firstResult.Success == false);
-        Assert.IsTrue(result.Count != sv.Facts.Count && firstResult.Message == "error " + sv.Model &&
-                      firstResult.Enabled && firstResult.Id == 2 && firstResult.IsChecked);
+        Assert.Multiple(() =>
+        {
+            Assert.That(firstResult.Type, Is.EqualTo(FactType.Error));
+            Assert.That(firstResult.Success, Is.EqualTo(false));
+            Assert.That(result.Count != sv.Facts.Count && firstResult.Message == "error " + sv.Model &&
+                          firstResult.Enabled && firstResult.Id == 2 && firstResult.IsChecked, Is.True);
+        });
     }
 
     [Test]
@@ -145,13 +154,16 @@ public class ValidatorTests
         var sv = CreateValidatorWithErrorForType(FactType.Warning);
 
         var result = sv.CheckAsync(CancellationToken.None).Result;
-        Assert.AreEqual(sv.Facts.Count, result.Count);
+        Assert.That(result, Has.Count.EqualTo(sv.Facts.Count));
 
-        Assert.AreEqual(1, result.Count(f => !f.Success && f.Type == FactType.Warning));
-        Assert.AreEqual(1, result.Count(f => f.Type == FactType.Critical));
-        Assert.AreEqual(1, result.Count(f => f.Type == FactType.Error));
+        Assert.Multiple(() =>
+        {
+            Assert.That(result.Count(f => !f.Success && f.Type == FactType.Warning), Is.EqualTo(1));
+            Assert.That(result.Count(f => f.Type == FactType.Critical), Is.EqualTo(1));
+            Assert.That(result.Count(f => f.Type == FactType.Error), Is.EqualTo(1));
 
-        Assert.AreEqual(1, sv.GetFailedFacts().Count);
+            Assert.That(sv.GetFailedFacts(), Has.Count.EqualTo(1));
+        });
     }
 
     [Test]
@@ -161,20 +173,20 @@ public class ValidatorTests
         sv.Facts.Last().Enabled = true;
 
         var result = sv.CheckAsync(CancellationToken.None).Result;
-        Assert.AreEqual(sv.Facts.Count, result.Count);
+        Assert.That(result, Has.Count.EqualTo(sv.Facts.Count));
     }
 
     [Test]
     public void Get_Enabled_Facts()
     {
         var sv = new SimplisticValidator("The model", 123456789);
-        Assert.AreEqual(2, sv.GetEnabledFacts().Count);
+        Assert.That(sv.GetEnabledFacts(), Has.Count.EqualTo(2));
     }
 
-    private SimplisticValidator CreateValidatorWithErrorForType(FactType factType)
+    private static SimplisticValidator CreateValidatorWithErrorForType(FactType factType)
     {
         var sv = new SimplisticValidator("The model", 123456789);
-        Assert.AreEqual(3, sv.Facts.Count);
+        Assert.That(sv.Facts, Has.Count.EqualTo(3));
 
         var fact = sv.Facts.First(f => f.Type == factType);
         fact.Enabled = true;

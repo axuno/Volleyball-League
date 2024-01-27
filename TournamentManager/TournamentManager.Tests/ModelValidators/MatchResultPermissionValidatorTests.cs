@@ -22,9 +22,9 @@ public class MatchResultPermissionValidatorTests
         var factResults = mpv.GetFailedFacts();
         Assert.Multiple(() =>
         {
-            Assert.AreEqual(failureExpected, factResults.Count == 1);
-            Assert.AreEqual(failureExpected, factResults.FirstOrDefault()?.Id == MatchResultPermissionValidator.FactId.TournamentIsInActiveMode);
-            Assert.IsTrue(factResults.All(fr => fr.Exception == null));
+            Assert.That(factResults.Count == 1, Is.EqualTo(failureExpected));
+            Assert.That(factResults.FirstOrDefault()?.Id == MatchResultPermissionValidator.FactId.TournamentIsInActiveMode, Is.EqualTo(failureExpected));
+            Assert.That(factResults.All(fr => fr.Exception == null), Is.True);
         });
     }
 
@@ -42,9 +42,9 @@ public class MatchResultPermissionValidatorTests
         var factResults = mpv.GetFailedFacts();
         Assert.Multiple(() =>
         {
-            Assert.AreEqual(failureExpected, factResults.Count == 1);
-            Assert.AreEqual(failureExpected, factResults.FirstOrDefault()?.Id == MatchResultPermissionValidator.FactId.RoundIsStillRunning);
-            Assert.IsTrue(factResults.All(fr => fr.Exception == null));
+            Assert.That(factResults.Count == 1, Is.EqualTo(failureExpected));
+            Assert.That(factResults.FirstOrDefault()?.Id == MatchResultPermissionValidator.FactId.RoundIsStillRunning, Is.EqualTo(failureExpected));
+            Assert.That(factResults.All(fr => fr.Exception == null), Is.True);
         });
     }
 
@@ -63,9 +63,9 @@ public class MatchResultPermissionValidatorTests
         var factResults = mpv.GetFailedFacts();
         Assert.Multiple(() =>
         {
-            Assert.AreEqual(failureExpected, factResults.Count == 1);
-            Assert.AreEqual(failureExpected, factResults.FirstOrDefault()?.Id == MatchResultPermissionValidator.FactId.CurrentDateIsBeforeResultCorrectionDeadline);
-            Assert.IsTrue(factResults.All(fr => fr.Exception == null));
+            Assert.That(factResults.Count == 1, Is.EqualTo(failureExpected));
+            Assert.That(factResults.FirstOrDefault()?.Id == MatchResultPermissionValidator.FactId.CurrentDateIsBeforeResultCorrectionDeadline, Is.EqualTo(failureExpected));
+            Assert.That(factResults.All(fr => fr.Exception == null), Is.True);
         });
     }
 }

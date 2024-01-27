@@ -34,7 +34,7 @@ internal class RoundRobinTests
             uniqueCombinations.Add(combination);
         }
 
-        Assert.That(matches.Count, Is.EqualTo(uniqueCombinations.Count));
+        Assert.That(matches, Has.Count.EqualTo(uniqueCombinations.Count));
         Assert.That(matches.First().Turn, Is.EqualTo(1)); // first turn is 1
     }
     
@@ -59,7 +59,7 @@ internal class RoundRobinTests
         var roundRobin = new RoundRobinSystem<long>(participants);
         var matches = roundRobin.GenerateMatches();
 
-        Assert.That(matches.Count, Is.EqualTo((numOfParticipants - 1) * numOfParticipants / 2));
+        Assert.That(matches, Has.Count.EqualTo((numOfParticipants - 1) * numOfParticipants / 2));
     }
 
     [TestCase(4)]
@@ -89,11 +89,14 @@ internal class RoundRobinTests
                 participantsWithConsecutiveHomeGuestMatches.Add(participant);
             }
 
-            Assert.That(maxConsecutiveHomeGuest.HomeCount, Is.LessThanOrEqualTo(2));
-            Assert.That(maxConsecutiveHomeGuest.GuestCount, Is.LessThanOrEqualTo(2));
+            Assert.Multiple(() =>
+            {
+                Assert.That(maxConsecutiveHomeGuest.HomeCount, Is.LessThanOrEqualTo(2));
+                Assert.That(maxConsecutiveHomeGuest.GuestCount, Is.LessThanOrEqualTo(2));
+            });
         }
 
-        Assert.That(participantsWithConsecutiveHomeGuestMatches.Count, Is.EqualTo(numOfParticipants % 2 == 0 ? numOfParticipants - 2 : numOfParticipants - 1));
+        Assert.That(participantsWithConsecutiveHomeGuestMatches, Has.Count.EqualTo(numOfParticipants % 2 == 0 ? numOfParticipants - 2 : numOfParticipants - 1));
     }
 
     [Test]
@@ -107,7 +110,7 @@ internal class RoundRobinTests
         var roundRobin = new RoundRobinSystem<CustomTestStruct>(participants);
         var matches = roundRobin.GenerateMatches();
 
-        Assert.That(matches.Count, Is.EqualTo((participants.Count - 1) * participants.Count / 2));
+        Assert.That(matches, Has.Count.EqualTo((participants.Count - 1) * participants.Count / 2));
     }
 
     [Test]
@@ -122,7 +125,7 @@ internal class RoundRobinTests
         var roundRobin = new RoundRobinSystem<CustomTestStruct>(participants);
         var matches = roundRobin.GenerateMatches();
 
-        Assert.That(matches.Count, Is.EqualTo((participants.Count - 1) * participants.Count / 2));
+        Assert.That(matches, Has.Count.EqualTo((participants.Count - 1) * participants.Count / 2));
     }
 
     private static List<long> GetParticipants(int numOfParticipants)

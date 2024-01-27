@@ -12,6 +12,6 @@ public class MatchRuleEntityExtensionTests
     public void Calculate_Max_Number_Of_Sets(bool isBestOf, int numOfSets, int expected)
     {
         var rule = new MatchRuleEntity { BestOf = isBestOf, NumOfSets = numOfSets };
-        Assert.AreEqual(expected, rule.MaxNumOfSets());
+        Assert.That(rule.MaxNumOfSets(), Is.EqualTo(expected));
     }
 }

@@ -35,7 +35,7 @@ internal class MatchCreatorTests
         var combinationsReturnLeg =
             matchCreator.SetParticipants(participants).GetCombinations(LegType.Return);
 
-        Assert.That(combinationsFirstLeg.Count, Is.EqualTo(combinationsReturnLeg.Count));
+        Assert.That(combinationsFirstLeg, Has.Count.EqualTo(combinationsReturnLeg.Count));
     }
 
 
@@ -64,11 +64,14 @@ internal class MatchCreatorTests
             RefereeType.Guest => firstCombination.Guest,
             RefereeType.OtherFromRound => 1,
             _ => throw new ArgumentOutOfRangeException(nameof(refereeType))
-        };  
+        };
 
-        Assert.That(combinations.Count, Is.EqualTo(10));
-        Assert.That(matchCreator.CombinationsPerLeg, Is.EqualTo(4));
-        Assert.That(firstCombination.Referee, Is.EqualTo(expectedReferee));
+        Assert.Multiple(() =>
+        {
+            Assert.That(combinations, Has.Count.EqualTo(10));
+            Assert.That(matchCreator.CombinationsPerLeg, Is.EqualTo(4));
+            Assert.That(firstCombination.Referee, Is.EqualTo(expectedReferee));
+        });
     }
 
     [Test]
@@ -134,10 +137,10 @@ internal class MatchCreatorTests
 
         Assert.Multiple(() =>
         {
-            Assert.That(firstLeg.Count, Is.EqualTo(numOfParticipants * 2));
+            Assert.That(firstLeg, Has.Count.EqualTo(numOfParticipants * 2));
             Assert.That(firstTurn.Count, Is.EqualTo(2));
-            Assert.That(allTurns.Count, Is.EqualTo(numOfParticipants));
-            Assert.That(firstLeg.TurnDateTimePeriods.Count, Is.EqualTo(allTurns.Count));
+            Assert.That(allTurns, Has.Count.EqualTo(numOfParticipants));
+            Assert.That(firstLeg.TurnDateTimePeriods, Has.Count.EqualTo(allTurns.Count));
         });
     }
 

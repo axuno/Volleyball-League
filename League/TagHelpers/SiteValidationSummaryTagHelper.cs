@@ -177,7 +177,7 @@ public class SiteValidationSummaryTagHelper : TagHelper
             
         var cb = new HtmlContentBuilder();
 
-        if (!modelErrorMessages.Any()) return cb;
+        if (modelErrorMessages.Count == 0) return cb;
 
         _ = cb.AppendHtml("<ul>");
         foreach (var msg in modelErrorMessages)

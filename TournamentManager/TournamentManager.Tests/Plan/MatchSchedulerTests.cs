@@ -30,7 +30,7 @@ internal class MatchSchedulerTests
         Assert.Multiple(() =>
         {
             Assert.That(del: async () => await scheduler.ScheduleFixturesForTournament(false, CancellationToken.None), Throws.Nothing);
-            Assert.That(matches.Count, Is.EqualTo(expectedNumOfMatches));
+            Assert.That(matches, Has.Count.EqualTo(expectedNumOfMatches));
             Assert.That(matches.All(m => (m.PlannedEnd!.Value - m.PlannedStart!.Value) == _tenantContext.TournamentContext.FixtureRuleSet.PlannedDurationOfMatch), Is.True);
             Assert.That(matches.All(m => m.HomeTeamId == m.RefereeId), Is.True);
             Assert.That(matches.All(m => m.LegSequenceNo == 1), Is.True);

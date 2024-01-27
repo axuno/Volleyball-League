@@ -24,7 +24,7 @@ public class ExcelImporterTests
 
         var imported = xlImporter.Import(new DateTimePeriod(from, to)).ToList();
 
-        Assert.That(imported.Count, Is.EqualTo(expectedCount));
+        Assert.That(imported, Has.Count.EqualTo(expectedCount));
         if (expectedCount == 1)
             Assert.That(imported[0].Period.Duration(), Is.EqualTo(new TimeSpan(23, 59, 59)));
     }
@@ -43,8 +43,11 @@ public class ExcelImporterTests
 
         var imported = xlImporter.Import(new DateTimePeriod(from, to)).ToList();
 
-        Assert.That(imported.Count, Is.EqualTo(1));
-        Assert.That(imported[0].Period.Start, Is.EqualTo(new DateTime(2022, 1, 1)));
-        Assert.That(imported[0].Period.End, Is.EqualTo(new DateTime(2022, 2, 1, 23, 59, 59)));
+        Assert.That(imported, Has.Count.EqualTo(1));
+        Assert.Multiple(() =>
+        {
+            Assert.That(imported[0].Period.Start, Is.EqualTo(new DateTime(2022, 1, 1)));
+            Assert.That(imported[0].Period.End, Is.EqualTo(new DateTime(2022, 2, 1, 23, 59, 59)));
+        });
     }
 }

@@ -134,7 +134,7 @@ public class FixtureValidatorTests
         {
             var fact = fv.Facts.First(f => f.Id.Equals(Enum.Parse<FixtureValidator.FactId>(e)));
             Console.WriteLine(fact.Id);
-            Assert.IsTrue(fact.CheckAsync != null);
+            Assert.That(fact.CheckAsync, Is.Not.EqualTo(null));
         }
     }
 
@@ -152,10 +152,9 @@ public class FixtureValidatorTests
         var factResult = await fv.CheckAsync(FixtureValidator.FactId.PlannedStartIsSet, CancellationToken.None);
         Assert.Multiple(() =>
         {
-            Assert.AreEqual(_data.TenantConext.TournamentContext.FixtureRuleSet.PlannedMatchDateTimeMustBeSet,
-                factResult.Enabled);
-            Assert.AreEqual(expected, !factResult.Enabled || factResult.Success);
-            Assert.IsNull(factResult.Exception);
+            Assert.That(factResult.Enabled, Is.EqualTo(_data.TenantConext.TournamentContext.FixtureRuleSet.PlannedMatchDateTimeMustBeSet));
+            Assert.That(!factResult.Enabled || factResult.Success, Is.EqualTo(expected));
+            Assert.That(factResult.Exception, Is.Null);
         });
     }
 
@@ -169,7 +168,7 @@ public class FixtureValidatorTests
         _data.TenantConext.TournamentContext.FixtureRuleSet = new FixtureRuleSet();
         var fv = new FixtureValidator(match, _data, new DateTime(2019, 06, 30, 19, 00, 00));
         var factResult = await fv.CheckAsync(FixtureValidator.FactId.PlannedStartIsFutureDate, CancellationToken.None);
-        Assert.AreEqual(expected, factResult.Success);
+        Assert.That(factResult.Success, Is.EqualTo(expected));
     }
         
     [Test]
@@ -191,10 +190,9 @@ public class FixtureValidatorTests
 
         Assert.Multiple(() =>
         {
-            Assert.AreEqual(expected,
-                factResult.Success && factResult.Message.Contains(_data.TenantConext.TournamentContext.FixtureRuleSet
-                    .RegularMatchStartTime.MinDayTime.ToShortTimeString()));
-            Assert.IsNull(factResult.Exception);
+            Assert.That(factResult.Success && factResult.Message.Contains(_data.TenantConext.TournamentContext.FixtureRuleSet
+                    .RegularMatchStartTime.MinDayTime.ToShortTimeString()), Is.EqualTo(expected));
+            Assert.That(factResult.Exception, Is.Null);
         });
     }
 
@@ -227,8 +225,8 @@ public class FixtureValidatorTests
 
         Assert.Multiple(() =>
         {
-            Assert.AreEqual(expected, factResult.Success);
-            Assert.IsNull(factResult.Exception);
+            Assert.That(factResult.Success, Is.EqualTo(expected));
+            Assert.That(factResult.Exception, Is.Null);
         });
     }
 
@@ -260,11 +258,11 @@ public class FixtureValidatorTests
 
         Assert.Multiple(() =>
         {
-            Assert.AreEqual(expected, factResult.Success);
+            Assert.That(factResult.Success, Is.EqualTo(expected));
             if (!expected)
-                Assert.IsTrue(factResult.Message.Contains(match.HomeTeamId.ToString()) ||
-                              factResult.Message.Contains(match.GuestTeamId.ToString()));
-            Assert.IsNull(factResult.Exception);
+                Assert.That(factResult.Message.Contains(match.HomeTeamId.ToString()) ||
+                              factResult.Message.Contains(match.GuestTeamId.ToString()), Is.True);
+            Assert.That(factResult.Exception, Is.Null);
         });
     }
 
@@ -293,12 +291,12 @@ public class FixtureValidatorTests
 
         Assert.Multiple(() =>
         {
-            Assert.AreEqual(expected, factResult.Success);
-            Assert.IsTrue(factResult.Success || factResult.Message.Contains(ExcludedDateReason));
-            Assert.IsTrue(factResult.Success || StringContainsDateSeparatorBetweenApostrophes(factResult.Message, _culture));
-            Assert.IsTrue(factResult.Success || onlyDatePart ||
-                          StringContainsTimeSeparatorBetweenApostrophes(factResult.Message, _culture));
-            Assert.IsNull(factResult.Exception);
+            Assert.That(factResult.Success, Is.EqualTo(expected));
+            Assert.That(factResult.Success || factResult.Message.Contains(ExcludedDateReason), Is.True);
+            Assert.That(factResult.Success || StringContainsDateSeparatorBetweenApostrophes(factResult.Message, _culture), Is.True);
+            Assert.That(factResult.Success || onlyDatePart ||
+                          StringContainsTimeSeparatorBetweenApostrophes(factResult.Message, _culture), Is.True);
+            Assert.That(factResult.Exception, Is.Null);
         });
     }
 
@@ -321,7 +319,7 @@ public class FixtureValidatorTests
         var match = new MatchEntity { Id = 9999, HomeTeamId = homeTeam, GuestTeamId = guestTeam, PlannedStart = plannedStart, VenueId = venueId};
         var fv = new FixtureValidator(match, _data, DateTime.UtcNow);
         var factResult = await fv.CheckAsync(FixtureValidator.FactId.PlannedStartWeekdayIsTeamWeekday, CancellationToken.None);
-        Assert.AreEqual(expected, factResult.Success);
+        Assert.That(factResult.Success, Is.EqualTo(expected));
     }
 
     private static bool StringContainsDateSeparatorBetweenApostrophes(string toTest, CultureInfo culture)
@@ -350,8 +348,8 @@ public class FixtureValidatorTests
         var factResult = fv.CheckAsync(FixtureValidator.FactId.PlannedVenueIsSet, CancellationToken.None).Result;
         Assert.Multiple(() =>
         {
-            Assert.AreEqual(expected, factResult.Success);
-            Assert.IsNull(factResult.Exception);
+            Assert.That(factResult.Success, Is.EqualTo(expected));
+            Assert.That(factResult.Exception, Is.Null);
         });
     }
 
@@ -368,8 +366,8 @@ public class FixtureValidatorTests
 
         Assert.Multiple(() =>
         {
-            Assert.AreEqual(expected, factResult.Success);
-            Assert.IsNull(factResult.Exception);
+            Assert.That(factResult.Success, Is.EqualTo(expected));
+            Assert.That(factResult.Exception, Is.Null);
         });
     }
 
@@ -383,7 +381,7 @@ public class FixtureValidatorTests
         var match = new MatchEntity { Id = 9999, HomeTeamId = homeTeam, GuestTeamId = guestTeam, VenueId = venueId};
         var fv = new FixtureValidator(match, _data, DateTime.UtcNow);
         var factResult = fv.CheckAsync(FixtureValidator.FactId.PlannedVenueIsRegisteredVenueOfTeam, CancellationToken.None).Result;
-        Assert.AreEqual(expected, factResult.Success);
+        Assert.That(factResult.Success, Is.EqualTo(expected));
     }
 
     [Test]
@@ -403,12 +401,12 @@ public class FixtureValidatorTests
                 case FixtureValidator.FactId.PlannedStartWeekdayIsTeamWeekday:
                 case FixtureValidator.FactId.PlannedStartWithinDesiredTimeRange:
                 case FixtureValidator.FactId.PlannedStartWithinRoundLegs:
-                    Assert.IsTrue(fact.FieldNames.Count() == 1 && fact.FieldNames.Contains(nameof(fv.Model.PlannedStart)));
+                    Assert.That(fact.FieldNames.Count() == 1 && fact.FieldNames.Contains(nameof(fv.Model.PlannedStart)), Is.True);
                     break;
                 case FixtureValidator.FactId.PlannedVenueIsRegisteredVenueOfTeam:
                 case FixtureValidator.FactId.PlannedVenueIsSet:
                 case FixtureValidator.FactId.PlannedVenueNotOccupiedWithOtherMatch:
-                    Assert.IsTrue(fact.FieldNames.Count() == 1 && fact.FieldNames.Contains(nameof(fv.Model.VenueId)));
+                    Assert.That(fact.FieldNames.Count() == 1 && fact.FieldNames.Contains(nameof(fv.Model.VenueId)), Is.True);
                     break;
             }
         }

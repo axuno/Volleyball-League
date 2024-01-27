@@ -56,7 +56,7 @@ public class EmbeddedResourceQueryTests
         var assembly = typeof(EmbeddedResourceQueryTests).Assembly;
         var resourceNames = _sut.GetResourceNames(assembly).ToList();
 
-        Assert.That(resourceNames.Count, Is.EqualTo(2));
+        Assert.That(resourceNames, Has.Count.EqualTo(2));
         Assert.That(resourceNames, Contains.Item("Axuno.Tools.Tests.FileSystem.Data.my-json-file.json"));
     }
 
@@ -65,7 +65,7 @@ public class EmbeddedResourceQueryTests
     {
         var resourceNames = _sut.GetAllResourceNames().ToList();
 
-        Assert.That(resourceNames.Count, Is.EqualTo(2));
+        Assert.That(resourceNames, Has.Count.EqualTo(2));
         Assert.That(resourceNames, Contains.Item("Axuno.Tools.Tests.FileSystem.Data.my-json-file.json"));
     }
 }

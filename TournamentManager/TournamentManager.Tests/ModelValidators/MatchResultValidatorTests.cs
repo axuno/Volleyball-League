@@ -71,7 +71,7 @@ public class MatchResultValidatorTests
         {
             var fact = sv.Facts.First(f => f.Id.Equals(Enum.Parse<MatchResultValidator.FactId>(e)));
             Console.WriteLine(fact.Id);
-            Assert.IsTrue(fact.CheckAsync != null);
+            Assert.That(fact.CheckAsync, Is.Not.EqualTo(null));
         }
     }
 
@@ -102,10 +102,10 @@ public class MatchResultValidatorTests
         var factResult = mv.GetFailedFacts().First(f => f.Id == MatchResultValidator.FactId.SetsValidatorSuccessful);
         Assert.Multiple(() =>
         {
-            Assert.AreEqual(0, mv.SetsValidator.SingleSetErrors.Count);
-            Assert.AreEqual(SetsValidator.FactId.BestOfRequiredTieBreakPlayed, mv.SetsValidator.GetFailedFacts().First().Id);
-            Assert.IsFalse(factResult.Success);
-            Assert.IsNull(factResult.Exception);
+            Assert.That(mv.SetsValidator.SingleSetErrors, Is.Empty);
+            Assert.That(mv.SetsValidator.GetFailedFacts().First().Id, Is.EqualTo(SetsValidator.FactId.BestOfRequiredTieBreakPlayed));
+            Assert.That(factResult.Success, Is.False);
+            Assert.That(factResult.Exception, Is.Null);
         });
     }
 
@@ -135,10 +135,10 @@ public class MatchResultValidatorTests
         var factResult = await mv.CheckAsync(MatchResultValidator.FactId.SetsValidatorSuccessful, CancellationToken.None);
         Assert.Multiple(() =>
         {
-            Assert.AreEqual(0, mv.GetFailedFacts().Count);
-            Assert.AreEqual(0, mv.SetsValidator.SingleSetErrors.Count);
-            Assert.IsTrue(factResult.Success);
-            Assert.IsNull(factResult.Exception);
+            Assert.That(mv.GetFailedFacts(), Is.Empty);
+            Assert.That(mv.SetsValidator.SingleSetErrors, Is.Empty);
+            Assert.That(factResult.Success, Is.True);
+            Assert.That(factResult.Exception, Is.Null);
         });
     }
 
@@ -166,12 +166,12 @@ public class MatchResultValidatorTests
         {
             if (fails)
             {
-                Assert.AreEqual(MatchResultValidator.FactId.RealMatchDateWithinRoundLegs, factResults.First().Id);
-                Assert.NotNull(factResults.First().Message);
+                Assert.That(factResults.First().Id, Is.EqualTo(MatchResultValidator.FactId.RealMatchDateWithinRoundLegs));
+                Assert.That(factResults.First().Message, Is.Not.Null);
             }
             else
             {
-                Assert.IsTrue(!factResults.Any());
+                Assert.That(factResults, Is.Empty);
             }
                 
         });
@@ -196,9 +196,9 @@ public class MatchResultValidatorTests
         var factResults = mv.GetFailedFacts();
         Assert.Multiple(() =>
         {
-            Assert.AreEqual(1, factResults.Count);
-            Assert.AreEqual(MatchResultValidator.FactId.RealMatchDateIsSet, factResults.First().Id);
-            Assert.NotNull(factResults.First().Message);
+            Assert.That(factResults, Has.Count.EqualTo(1));
+            Assert.That(factResults.First().Id, Is.EqualTo(MatchResultValidator.FactId.RealMatchDateIsSet));
+            Assert.That(factResults.First().Message, Is.Not.Null);
         });
     }
 
@@ -222,9 +222,9 @@ public class MatchResultValidatorTests
         var factResults = mv.GetFailedFacts();
         Assert.Multiple(() =>
         {
-            Assert.AreEqual(1, factResults.Count);
-            Assert.AreEqual(MatchResultValidator.FactId.RealMatchDateTodayOrBefore, factResults.First().Id);
-            Assert.NotNull(factResults.First().Message);
+            Assert.That(factResults, Has.Count.EqualTo(1));
+            Assert.That(factResults.First().Id, Is.EqualTo(MatchResultValidator.FactId.RealMatchDateTodayOrBefore));
+            Assert.That(factResults.First().Message, Is.Not.Null);
         });
     }
 
@@ -250,10 +250,10 @@ public class MatchResultValidatorTests
         var factResults = mv.GetFailedFacts();
         Assert.Multiple(() =>
         {
-            Assert.AreEqual(1, factResults.Count);
-            Assert.AreEqual(MatchResultValidator.FactId.RealMatchDateEqualsFixture, factResults.First().Id);
-            Assert.NotNull(factResults.First().Message);
-            Assert.AreEqual(FactType.Warning, factResults.First().Type);
+            Assert.That(factResults, Has.Count.EqualTo(1));
+            Assert.That(factResults.First().Id, Is.EqualTo(MatchResultValidator.FactId.RealMatchDateEqualsFixture));
+            Assert.That(factResults.First().Message, Is.Not.Null);
+            Assert.That(factResults.First().Type, Is.EqualTo(FactType.Warning));
         });
     }
 
@@ -292,15 +292,15 @@ public class MatchResultValidatorTests
         {
             Assert.Multiple(() =>
             {
-                Assert.AreEqual(1, factResults.Count);
-                Assert.AreEqual(MatchResultValidator.FactId.RealMatchDurationIsPlausible, factResults.First().Id);
-                Assert.NotNull(factResults.First().Message);
-                Assert.AreEqual(FactType.Warning, factResults.First().Type);
+                Assert.That(factResults, Has.Count.EqualTo(1));
+                Assert.That(factResults.First().Id, Is.EqualTo(MatchResultValidator.FactId.RealMatchDurationIsPlausible));
+                Assert.That(factResults.First().Message, Is.Not.Null);
+                Assert.That(factResults.First().Type, Is.EqualTo(FactType.Warning));
             });
         }
         else
         {
-            Assert.AreEqual(0, factResults.Count);
+            Assert.That(factResults, Is.Empty);
         }
 
     }
@@ -315,13 +315,13 @@ public class MatchResultValidatorTests
             switch (fact.Id)
             {
                 case MatchResultValidator.FactId.RealMatchDateIsSet:
-                    Assert.IsTrue(fact.FieldNames.Count() == 2);
+                    Assert.That(fact.FieldNames.Count(), Is.EqualTo(2));
                     break;
                 case MatchResultValidator.FactId.RealMatchDateWithinRoundLegs:
-                    Assert.IsTrue(fact.FieldNames.Count() == 2);
+                    Assert.That(fact.FieldNames.Count(), Is.EqualTo(2));
                     break;
                 case MatchResultValidator.FactId.SetsValidatorSuccessful:
-                    Assert.IsTrue(fact.FieldNames.Count() == 1);
+                    Assert.That(fact.FieldNames.Count(), Is.EqualTo(1));
                     break;
             }
         }

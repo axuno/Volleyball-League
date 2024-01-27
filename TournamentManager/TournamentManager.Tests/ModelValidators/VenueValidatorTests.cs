@@ -15,7 +15,7 @@ public class VenueValidatorTests
 
     [TestCase("The venue name", true)]
     [TestCase(null, false)]
-    public async Task Venue_Name_Should_Be_Set(string venueName, bool expected)
+    public async Task Venue_Name_Should_Be_Set(string? venueName, bool expected)
     {
         var venue = new VenueEntity{Name = venueName};
 
@@ -24,9 +24,9 @@ public class VenueValidatorTests
         var factResult = await vv.CheckAsync(VenueValidator.FactId.NameIsSet, CancellationToken.None);
         Assert.Multiple(() =>
         {
-            Assert.IsTrue(factResult.Enabled);
-            Assert.AreEqual(expected, factResult.Success);
-            Assert.IsNull(factResult.Exception);
+            Assert.That(factResult.Enabled, Is.True);
+            Assert.That(factResult.Success, Is.EqualTo(expected));
+            Assert.That(factResult.Exception, Is.Null);
         });
     }
 
@@ -34,7 +34,7 @@ public class VenueValidatorTests
     [TestCase("12345", "City", null, false)]
     [TestCase("12345", null, null,false)]
     [TestCase(null, null, null, false)]
-    public async Task Address_Fields_Should_Be_Set(string postalCode, string city, string street, bool expected)
+    public async Task Address_Fields_Should_Be_Set(string? postalCode, string? city, string? street, bool expected)
     {
         var venue = new VenueEntity { PostalCode = postalCode, City = city, Street = street };
 
@@ -43,9 +43,9 @@ public class VenueValidatorTests
         var factResult = await vv.CheckAsync(VenueValidator.FactId.AddressFieldsAreSet, CancellationToken.None);
         Assert.Multiple(() =>
         {
-            Assert.IsTrue(factResult.Enabled);
-            Assert.AreEqual(expected, factResult.Success);
-            Assert.IsNull(factResult.Exception);
+            Assert.That(factResult.Enabled, Is.True);
+            Assert.That(factResult.Success, Is.EqualTo(expected));
+            Assert.That(factResult.Exception, Is.Null);
         });
     }
 
@@ -59,8 +59,8 @@ public class VenueValidatorTests
         var factResult = await vv.CheckAsync(VenueValidator.FactId.CanBeLocated, CancellationToken.None);
         Assert.Multiple(() =>
         {
-            Assert.AreEqual("OK", vv.Data.GeoResponse.StatusText);
-            Assert.IsNull(vv.Data.GeoResponse.Exception);
+            Assert.That(vv.Data.GeoResponse.StatusText, Is.EqualTo("OK"));
+            Assert.That(vv.Data.GeoResponse.Exception, Is.Null);
         });
     }
 
@@ -73,7 +73,7 @@ public class VenueValidatorTests
         var factResult = await vv.CheckAsync(VenueValidator.FactId.CanBeLocated, CancellationToken.None);
         Assert.Multiple(() =>
         {
-            Assert.IsInstanceOf<ArgumentException>(vv.Data.GeoResponse.Exception);
+            Assert.That(vv.Data.GeoResponse.Exception, Is.InstanceOf<ArgumentException>());
         });
     }
 
@@ -88,9 +88,9 @@ public class VenueValidatorTests
         var factResult = await vv.CheckAsync(VenueValidator.FactId.CanBeLocated, CancellationToken.None);
         Assert.Multiple(() =>
         {
-            Assert.IsTrue(factResult.Enabled);
-            Assert.AreEqual(found, factResult.Success);
-            Assert.IsNull(factResult.Exception);
+            Assert.That(factResult.Enabled, Is.True);
+            Assert.That(factResult.Success, Is.EqualTo(found));
+            Assert.That(factResult.Exception, Is.Null);
         });
     }
 
@@ -107,9 +107,9 @@ public class VenueValidatorTests
         var factResult = await vv.CheckAsync(VenueValidator.FactId.LocationIsPrecise, CancellationToken.None);
         Assert.Multiple(() =>
         {
-            Assert.IsTrue(factResult.Enabled);
-            Assert.AreEqual(expected, factResult.Success);
-            Assert.IsNull(factResult.Exception);
+            Assert.That(factResult.Enabled, Is.True);
+            Assert.That(factResult.Success, Is.EqualTo(expected));
+            Assert.That(factResult.Exception, Is.Null);
         });
     }
 
@@ -126,9 +126,9 @@ public class VenueValidatorTests
         var factResult = await vv.CheckAsync(VenueValidator.FactId.NotExistingGeoLocation, CancellationToken.None);
         Assert.Multiple(() =>
         {
-            Assert.AreEqual(factResult.Enabled, enabled);
-            Assert.AreEqual(enabled, factResult.Success);
-            Assert.IsNull(factResult.Exception);
+            Assert.That(enabled, Is.EqualTo(factResult.Enabled));
+            Assert.That(factResult.Success, Is.EqualTo(enabled));
+            Assert.That(factResult.Exception, Is.Null);
         });
     }
 
@@ -155,10 +155,10 @@ public class VenueValidatorTests
         var factResult = await vv.CheckAsync(VenueValidator.FactId.NotExistingGeoLocation, CancellationToken.None);
         Assert.Multiple(() =>
         {
-            Assert.IsTrue(factResult.Enabled);
-            Assert.AreEqual(success, factResult.Success);
-            if(!success) Assert.IsTrue(factResult.Message.Contains((closeByVenues.Max(v => v.Distance)*1000).ToString(CultureInfo.InvariantCulture)));
-            Assert.IsNull(factResult.Exception);
+            Assert.That(factResult.Enabled, Is.True);
+            Assert.That(factResult.Success, Is.EqualTo(success));
+            if(!success) Assert.That(factResult.Message, Does.Contain((closeByVenues.Max(v => v.Distance)*1000).ToString(CultureInfo.InvariantCulture)));
+            Assert.That(factResult.Exception, Is.Null);
         });
     }
 }

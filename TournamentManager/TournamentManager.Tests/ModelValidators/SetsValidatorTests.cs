@@ -18,7 +18,7 @@ public class SetsValidatorTests
         {
             var fact = sv.Facts.First(f => f.Id.Equals(Enum.Parse<SetsValidator.FactId>(e)));
             Console.WriteLine(fact.Id);
-            Assert.IsTrue(fact.CheckAsync != null);
+            Assert.That(fact.CheckAsync, Is.Not.EqualTo(null));
         }
     }
 
@@ -40,12 +40,12 @@ public class SetsValidatorTests
             {
                 if (shouldSucceed)
                 {
-                    Assert.AreEqual(0, sv.GetFailedFacts().Count);
+                    Assert.That(sv.GetFailedFacts(), Is.Empty);
                 }
                 else
                 {
-                    Assert.IsFalse(sv.GetFailedFacts().First(f => f.Id == SetsValidator.FactId.MixAndMaxOfSetsPlayed).Success);
-                    Assert.IsNotNull(sv.GetFailedFacts().First(f => f.Id == SetsValidator.FactId.MixAndMaxOfSetsPlayed).Message);
+                    Assert.That(sv.GetFailedFacts().First(f => f.Id == SetsValidator.FactId.MixAndMaxOfSetsPlayed).Success, Is.False);
+                    Assert.That(sv.GetFailedFacts().First(f => f.Id == SetsValidator.FactId.MixAndMaxOfSetsPlayed).Message, Is.Not.Null);
                 }
             }
         );
@@ -72,12 +72,12 @@ public class SetsValidatorTests
             {
                 if (shouldSucceed)
                 {
-                    Assert.AreEqual(0, sv.GetFailedFacts().Count);
+                    Assert.That(sv.GetFailedFacts(), Is.Empty);
                 }
                 else
                 {
-                    Assert.IsFalse(sv.GetFailedFacts().First(f => f.Id == SetsValidator.FactId.BestOfMinAndMaxOfSetsPlayed).Success);
-                    Assert.IsNotNull(sv.GetFailedFacts().First(f => f.Id == SetsValidator.FactId.BestOfMinAndMaxOfSetsPlayed).Message);
+                    Assert.That(sv.GetFailedFacts().First(f => f.Id == SetsValidator.FactId.BestOfMinAndMaxOfSetsPlayed).Success, Is.False);
+                    Assert.That(sv.GetFailedFacts().First(f => f.Id == SetsValidator.FactId.BestOfMinAndMaxOfSetsPlayed).Message, Is.Not.Null);
                 }
             }
         );
@@ -106,10 +106,10 @@ public class SetsValidatorTests
         var errorFacts = sv.GetFailedFacts();
         Assert.Multiple(() =>
         {
-            Assert.AreEqual(1, errorFacts.Count);
-            Assert.AreEqual(1, sv.SingleSetErrors.Count);
-            Assert.AreEqual(3, sv.SingleSetErrors.First().SequenceNo);
-            Assert.AreEqual(SingleSetValidator.FactId.TieBreakWinReachedWithTwoPlusPointsAhead, sv.SingleSetErrors.First().FactId);
+            Assert.That(errorFacts, Has.Count.EqualTo(1));
+            Assert.That(sv.SingleSetErrors, Has.Count.EqualTo(1));
+            Assert.That(sv.SingleSetErrors.First().SequenceNo, Is.EqualTo(3));
+            Assert.That(sv.SingleSetErrors.First().FactId, Is.EqualTo(SingleSetValidator.FactId.TieBreakWinReachedWithTwoPlusPointsAhead));
         });
     }
 
@@ -130,13 +130,13 @@ public class SetsValidatorTests
         var factResult = sv.GetFailedFacts().First(f => f.Id == SetsValidator.FactId.BestOfRequiredTieBreakPlayed);
         Assert.Multiple(() =>
         {
-            Assert.IsFalse(factResult.Success);
-            Assert.IsNull(factResult.Exception);
+            Assert.That(factResult.Success, Is.False);
+            Assert.That(factResult.Exception, Is.Null);
         });
 
         sets[2].IsTieBreak = true;
         await sv.CheckAsync(SetsValidator.FactId.BestOfRequiredTieBreakPlayed, CancellationToken.None);
-        Assert.AreEqual(0, sv.GetFailedFacts().Count);
+        Assert.That(sv.GetFailedFacts(), Is.Empty);
     }
 
     [Test]
@@ -159,15 +159,15 @@ public class SetsValidatorTests
         var factResult = sv.GetFailedFacts().First(f => f.Id == SetsValidator.FactId.BestOfNoMatchAfterBestOfReached);
         Assert.Multiple(() =>
         {
-            Assert.IsFalse(factResult.Success);
-            Assert.IsNull(factResult.Exception);
+            Assert.That(factResult.Success, Is.False);
+            Assert.That(factResult.Exception, Is.Null);
         });
 
         // Remove sets which exceed "Best-of-2 out of 3"
         sets.RemoveAt(3);
         sets.RemoveAt(3);
         await sv.CheckAsync(SetsValidator.FactId.BestOfNoMatchAfterBestOfReached, CancellationToken.None);
-        Assert.AreEqual(0, sv.GetFailedFacts().Count);
+        Assert.That(sv.GetFailedFacts(), Is.Empty);
     }
 
     [Test]
@@ -180,7 +180,7 @@ public class SetsValidatorTests
             switch (fact.Id)
             {
                 case SetsValidator.FactId.AllSetsAreValid:
-                    Assert.IsTrue(fact.FieldNames.Count() == 1);
+                    Assert.That(fact.FieldNames.Count(), Is.EqualTo(1));
                     break;
             }
         }

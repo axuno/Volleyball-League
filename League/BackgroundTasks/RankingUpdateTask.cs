@@ -146,7 +146,7 @@ public class RankingUpdateTask : IBackgroundTask
                 var newRanking = new Ranking(matchesPlayed.Where(mp => mp.RoundId == roundId),
                     matchesToPlay.Where(mtp => mtp.RoundId == roundId), (RankComparison) matchRule.RankComparer);
                 // Save the current last update
-                var currentLastUpdated = currentRanking.Any() ? currentRanking.Where(l => l.RoundId == roundId).Max(l => l.ModifiedOn) : DateTime.MinValue;
+                var currentLastUpdated = currentRanking.Count != 0 ? currentRanking.Where(l => l.RoundId == roundId).Max(l => l.ModifiedOn) : DateTime.MinValue;
                 var newRankingList = newRanking.GetList(out var newLastUpdated);
                     
                 // Has there been a change to the ranking?

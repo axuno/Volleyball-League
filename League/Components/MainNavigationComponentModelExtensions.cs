@@ -28,7 +28,7 @@ public static class MainNavigationComponentModelExtensions
         foreach (var node in nodes)
         {
             // First check if the url can be found in a child node!
-            if (node.ChildNodes.Any())
+            if (node.ChildNodes.Count != 0)
             {
                 var found = FindActiveNodeFromUrl(model, node.ChildNodes, httpContext);
                 if (found != null) return found;
@@ -122,7 +122,7 @@ public static class MainNavigationComponentModelExtensions
             return false;
         if (node.Key.Equals(currentNode.Key))
             return true;
-        if (!node.ChildNodes.Any())
+        if (node.ChildNodes.Count == 0)
             return false;
             
         return model.FindActiveNodeFromUrl(node.ChildNodes, httpContext) != null;
