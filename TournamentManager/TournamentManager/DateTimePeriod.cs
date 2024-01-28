@@ -167,7 +167,7 @@ public record struct DateTimePeriod
     /// <returns>Returns true, if the <see cref="DateTimePeriod"/> overlaps with another <see cref="DateTimePeriod"/>. If one of the start or end values is null, false is returned.</returns>
     public bool Overlaps(DateTimePeriod testPeriod)
     {
-        if (!(_start.HasValue && _end.HasValue && testPeriod.Start.HasValue && testPeriod.End.HasValue)) return false;
+        if (!(_start.HasValue && _end.HasValue && testPeriod is { Start: not null, End: not null })) return false;
         // https://stackoverflow.com/questions/325933/determine-whether-two-date-ranges-overlap
         return _start <= testPeriod.End && testPeriod.Start <= _end;
     }
@@ -177,9 +177,9 @@ public record struct DateTimePeriod
     /// Returns null, if Start and/or End are null.
     /// </summary>
     /// <returns>Gets the duration as the <see cref="TimeSpan"/> of End minus Date. Returns null, if Start and/or End are null.</returns>
-    public TimeSpan? Duration(bool nullable)
+    public TimeSpan? Duration(bool nullIfUndefined)
     {
-        if (!(Start.HasValue && End.HasValue && nullable)) return null;
+        if (!(Start.HasValue && End.HasValue && nullIfUndefined)) return null;
 
         return Duration();
     }

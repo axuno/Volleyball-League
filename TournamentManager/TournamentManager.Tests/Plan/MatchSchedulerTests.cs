@@ -98,7 +98,7 @@ internal class MatchSchedulerTests
 
         var genericRepoMock = TestMocks.GetRepo<GenericRepository>();
         genericRepoMock.Setup(rep =>
-                rep.SaveEntitiesAsync(It.IsAny<EntityCollection<MatchEntity>>(), true, false,It.IsAny<CancellationToken>()))
+                rep.SaveEntitiesAsync(It.IsAny<EntityCollection<MatchEntity>>(), It.IsAny<bool>(), It.IsAny<bool>(), It.IsAny<CancellationToken>()))
             .Returns((EntityCollection<MatchEntity> matches, bool refetchAfterSave, bool recursion, CancellationToken cancellationToken) =>
             {
                 // DO NOT add matches to tournamentMatches, because
