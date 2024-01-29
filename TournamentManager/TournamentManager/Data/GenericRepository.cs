@@ -6,36 +6,14 @@ namespace TournamentManager.Data;
 
 public class GenericRepository
 {
-    private static readonly ILogger _logger = AppLogging.CreateLogger<GenericRepository>();
+    private readonly ILogger _logger = AppLogging.CreateLogger<GenericRepository>();
     private readonly MultiTenancy.IDbContext _dbContext;
 
     public GenericRepository(MultiTenancy.IDbContext dbContext)
     {
         _dbContext = dbContext;
     }
-
-    public virtual bool SaveEntity<T>(T entityToSave, bool refetchAfterSave, bool recurse) where T:IEntity2
-    {
-        var transactionName = Guid.NewGuid().ToString("N");
-        using var da = _dbContext.GetNewAdapter();
-        try
-        {
-            da.StartTransaction(IsolationLevel.ReadCommitted, transactionName);
-            var success = da.SaveEntity(entityToSave, refetchAfterSave, recurse);
-            da.Commit();
-            _logger.LogDebug("Entity of type {type} saved.", typeof(T));
-            return success;
-        }
-        catch (Exception)
-        {
-            if (da.IsTransactionInProgress)
-                da.Rollback();
-
-            da.CloseConnection();
-            throw;
-        }
-    }
-
+    
     public virtual async Task<bool> SaveEntityAsync<T>(T entityToSave, bool refetchAfterSave, bool recurse, CancellationToken cancellationToken) where T : IEntity2
     {
         var transactionName = Guid.NewGuid().ToString("N");
@@ -44,15 +22,16 @@ public class GenericRepository
         {
             await da.StartTransactionAsync(IsolationLevel.ReadCommitted, transactionName, cancellationToken);
             var success = await da.SaveEntityAsync(entityToSave, refetchAfterSave, recurse, cancellationToken);
-            da.Commit();
+            await da.CommitAsync(cancellationToken);
             return success;
         }
-        catch (Exception)
+        catch (Exception e)
         {
+            _logger.LogCritical(e, "Error saving entity in transaction: {entity}", entityToSave);
+
             if (da.IsTransactionInProgress)
                 da.Rollback();
 
-            da.CloseConnection();
             throw;
         }
     }

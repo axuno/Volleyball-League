@@ -18,7 +18,7 @@ namespace TournamentManager.Data;
 /// </summary>
 public class RankingRepository
 {
-    private static readonly ILogger _logger = AppLogging.CreateLogger<RankingRepository>();
+    private readonly ILogger _logger = AppLogging.CreateLogger<RankingRepository>();
     private readonly MultiTenancy.IDbContext _dbContext;
 
     public RankingRepository(MultiTenancy.IDbContext dbContext)
@@ -29,7 +29,7 @@ public class RankingRepository
     public virtual async Task ReplaceAsync(RankingList rankingList, long roundId, CancellationToken cancellationToken)
     {
         var rankingColl = new EntityCollection<RankingEntity>(new RankingEntityFactory());
-        var da = _dbContext.GetNewAdapter();
+        using var da = _dbContext.GetNewAdapter();
 
         var transactionName = nameof(ReplaceAsync) + Guid.NewGuid().ToString("N");
 
@@ -78,27 +78,20 @@ public class RankingRepository
             await da.StartTransactionAsync(IsolationLevel.ReadCommitted, transactionName, cancellationToken);
 
             // Remove all existing ranking entities for the round
-            //existingEntities.RemoveRange(existingEntities);
             await da.DeleteEntityCollectionAsync(existingEntities, cancellationToken);
 
             // Save the new ranking entities
             await da.SaveEntityCollectionAsync(rankingColl, false, false, cancellationToken);
-
             await da.CommitAsync(cancellationToken);
         }
         catch (Exception e)
         {
-            _logger.LogCritical(e, $"Ranking for round id {roundId}");
+            _logger.LogCritical(e, "Error updating Ranking in transaction: RoundId={roundId}", roundId);
 
             if (da.IsTransactionInProgress)
                 da.Rollback();
 
             throw;
-        }
-        finally
-        {
-            da.CloseConnection();
-            da.Dispose();
         }
     }
 

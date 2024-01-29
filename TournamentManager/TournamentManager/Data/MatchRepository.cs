@@ -9,17 +9,20 @@ using TournamentManager.DAL.FactoryClasses;
 using TournamentManager.DAL.HelperClasses;
 using TournamentManager.DAL.Linq;
 using TournamentManager.DAL.TypedViewClasses;
+using TournamentManager.MultiTenancy;
 
 namespace TournamentManager.Data;
 
 public class MatchRepository
 {
-    private static readonly ILogger _logger = AppLogging.CreateLogger<MatchRepository>();
+    private readonly ILogger _logger = AppLogging.CreateLogger<MatchRepository>();
     private readonly MultiTenancy.IDbContext _dbContext;
+    private readonly IAppDb _appDb;
 
     public MatchRepository(MultiTenancy.IDbContext dbContext)
     {
         _dbContext = dbContext;
+        _appDb = _dbContext.AppDb;
     }
 
     public virtual async Task<List<CompletedMatchRow>> GetCompletedMatchesAsync(IPredicateExpression filter,
@@ -105,9 +108,9 @@ public class MatchRepository
             new QueryFactory().Calendar.Where(filter), cancellationToken));
     }
 
-    public virtual async Task<EntityCollection<MatchEntity>> GetMatches(long tournamentId, CancellationToken cancellationToken)
+    public virtual async Task<EntityCollection<MatchEntity>> GetMatchesAsync(long tournamentId, CancellationToken cancellationToken)
     {
-        var rounds = new TournamentRepository(_dbContext).GetTournamentRounds(tournamentId);
+        var rounds = await _appDb.TournamentRepository.GetTournamentRoundsAsync(tournamentId, cancellationToken);
 
         var roundId = new List<long>(rounds.Count);
         roundId.AddRange(rounds.Select(round => round.Id));
@@ -126,12 +129,10 @@ public class MatchRepository
         };
 
         await da.FetchEntityCollectionAsync(qp, cancellationToken);
-        da.CloseConnection();
-
         return matches;
     }
 
-    public virtual async Task<EntityCollection<MatchEntity>> GetMatches(RoundEntity round, CancellationToken cancellationToken)
+    public virtual async Task<EntityCollection<MatchEntity>> GetMatchesAsync(RoundEntity round, CancellationToken cancellationToken)
     {
         IPredicateExpression roundFilter =
             new PredicateExpression(new FieldCompareRangePredicate(MatchFields.RoundId, null, false,
@@ -147,36 +148,9 @@ public class MatchRepository
         };
 
         await da.FetchEntityCollectionAsync(qp, cancellationToken);
-        da.CloseConnection();
 
         return matches;
     }
-
-    public virtual RoundLegEntity? GetLeg(MatchEntity match)
-    {
-        // if leg does not exist or no match.SequenceNo: result will be NULL!
-
-        if (!match.LegSequenceNo.HasValue)
-            return null;
-
-        if (match.Round is { RoundLegs: not null })
-        {
-            return match.Round.RoundLegs.First(l => l.SequenceNo == match.LegSequenceNo);
-        }
-
-        using var da = _dbContext.GetNewAdapter();
-        {
-            var metaData = new LinqMetaData(da);
-            var q = from l in metaData.RoundLeg
-                where l.RoundId == match.RoundId && l.SequenceNo == match.LegSequenceNo
-                select l;
-
-            var result = q.First<RoundLegEntity>();
-            da.CloseConnection();
-            return result;
-        }
-    }
-
 
     public virtual async Task<MatchEntity?> GetMatchWithSetsAsync(long? matchId, CancellationToken cancellationToken)
     {
@@ -286,11 +260,8 @@ public class MatchRepository
                 where matchEntity.Round.TournamentId == tournamentId && matchEntity.IsComplete
                 select matchEntity.Id).Take(1).ToListAsync(cancellationToken)).Count != 0)
         {
-            da.CloseConnection();
             return true;
         }
-
-        da.CloseConnection();
 
         return false;
     }
@@ -310,11 +281,8 @@ public class MatchRepository
                 where matchEntity.Round.Id == round.Id && matchEntity.IsComplete
                 select matchEntity.Id).Take(1).ToListAsync(cancellationToken)).Count != 0)
         {
-            da.CloseConnection();
             return true;
         }
-
-        da.CloseConnection();
 
         return false;
     }
@@ -332,11 +300,8 @@ public class MatchRepository
                 where matchEntity.Round.TournamentId == tournament.Id && !matchEntity.IsComplete
                 select matchEntity.Id).Take(1).ToListAsync(cancellationToken)).Count == 0)
         {
-            da.CloseConnection();
             return true;
         }
-
-        da.CloseConnection();
 
         return false;
     }
@@ -354,11 +319,8 @@ public class MatchRepository
                 where matchEntity.Round.Id == round.Id && !matchEntity.IsComplete
                 select matchEntity.Id).Take(1).ToListAsync(cancellationToken)).Count == 0)
         {
-            da.CloseConnection();
             return true;
         }
-
-        da.CloseConnection();
 
         return false;
     }
@@ -373,17 +335,86 @@ public class MatchRepository
     public virtual async Task<bool> SaveMatchResultAsync(MatchEntity matchEntity, CancellationToken cancellationToken)
     {
         using var da = _dbContext.GetNewAdapter();
-        await da.StartTransactionAsync(IsolationLevel.ReadCommitted,
-            string.Concat(nameof(MatchRepository), nameof(SaveMatchResultAsync), Guid.NewGuid().ToString()), cancellationToken);
 
-        if (matchEntity.Sets.RemovedEntitiesTracker != null)
+        try
         {
-            await da.DeleteEntityCollectionAsync(matchEntity.Sets.RemovedEntitiesTracker, cancellationToken);
-            matchEntity.Sets.RemovedEntitiesTracker.Clear();
+            await da.StartTransactionAsync(IsolationLevel.ReadCommitted,
+                string.Concat(nameof(MatchRepository), nameof(SaveMatchResultAsync), Guid.NewGuid().ToString()), cancellationToken);
+
+            if (matchEntity.Sets.RemovedEntitiesTracker != null)
+            {
+                await da.DeleteEntityCollectionAsync(matchEntity.Sets.RemovedEntitiesTracker, cancellationToken);
+                matchEntity.Sets.RemovedEntitiesTracker.Clear();
+                matchEntity.Sets.RemovedEntitiesTracker = null;
+            }
+
+            var success = await da.SaveEntityAsync(matchEntity, false, true, cancellationToken);
+            await da.CommitAsync(cancellationToken);
+            return success;
+        }
+        catch (Exception e)
+        {
+            _logger.LogCritical(e, "Error saving in transaction: MatchId={matchId}", matchEntity.Id);
+
+            if (da.IsTransactionInProgress)
+                da.Rollback();
+
+            return false;
+        }
+    }
+
+    /// <summary>
+    /// Resets properties from <see cref="MatchEntity"/> that are connected to a match result,
+    /// and deletes all containing <see cref="SetEntity"/>s from the database, using a transaction.
+    /// </summary>
+    /// <param name="matchId">The <see cref="MatchEntity.Id"/>.</param>
+    /// <param name="cancellationToken"></param>
+    /// <returns><see langword="true"/>, if the operation was successful, else <see langword="false"/>. </returns>
+    /// <exception cref="ArgumentException"></exception>
+    public virtual async Task<bool> DeleteMatchResultAsync(long matchId, CancellationToken cancellationToken)
+    {
+        // Get the match with the sets
+        var matchEntity = await GetMatchWithSetsAsync(matchId, cancellationToken)
+                          ?? throw new ArgumentException(@"No match found", nameof(matchId));
+
+        matchEntity.HomePoints = matchEntity.GuestPoints = null;
+        matchEntity.Remarks = string.Empty;
+        matchEntity.IsOverruled = false;
+        matchEntity.IsComplete = false;
+
+        // Track the removed sets
+        matchEntity.Sets.RemovedEntitiesTracker = new EntityCollection<SetEntity>();
+        matchEntity.Sets.Clear();
+
+        using var da = _dbContext.GetNewAdapter();
+
+        try
+        {
+            await da.StartTransactionAsync(IsolationLevel.ReadCommitted,
+                string.Concat(nameof(MatchRepository), nameof(DeleteMatchResultAsync), Guid.NewGuid().ToString()), cancellationToken);
+
+            // Delete the sets
+            if (matchEntity.Sets.RemovedEntitiesTracker != null)
+            {
+                await da.DeleteEntityCollectionAsync(matchEntity.Sets.RemovedEntitiesTracker, cancellationToken);
+                matchEntity.Sets.RemovedEntitiesTracker.Clear();
+                matchEntity.Sets.RemovedEntitiesTracker = null;
+            }
+
+            // Save the changes to the match
+            var success = await da.SaveEntityAsync(matchEntity, false, true, cancellationToken);
+            await da.CommitAsync(cancellationToken);
+            return success;
+        }
+        catch (Exception e)
+        {
+            _logger.LogCritical(e, "Error saving entity in transaction: {MatchId}", matchId);
+
+            if (da.IsTransactionInProgress)
+                da.Rollback();
+
+            return false;
         }
 
-        var success = await da.SaveEntityAsync(matchEntity, false, true, cancellationToken);
-        da.Commit();
-        return success;
     }
 }

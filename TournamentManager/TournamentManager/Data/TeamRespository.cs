@@ -6,14 +6,13 @@ using TournamentManager.DAL.EntityClasses;
 using TournamentManager.DAL;
 using TournamentManager.DAL.FactoryClasses;
 using TournamentManager.DAL.HelperClasses;
-using TournamentManager.DAL.Linq;
 using TournamentManager.DAL.TypedViewClasses;
 
 namespace TournamentManager.Data;
 
 public class TeamRepository
 {
-    private static readonly ILogger _logger = AppLogging.CreateLogger<TeamRepository>();
+    private readonly ILogger _logger = AppLogging.CreateLogger<TeamRepository>();
     private readonly MultiTenancy.IDbContext _dbContext;
     public TeamRepository(MultiTenancy.IDbContext dbContext)
     {
@@ -53,21 +52,11 @@ public class TeamRepository
         return (await GetTeamEntitiesAsync(filter, cancellationToken)).FirstOrDefault();
     }
 
-    public virtual IQueryable<TeamEntity> GetTeamAsQuery(TournamentEntity t)
-    {
-        using var da = _dbContext.GetNewAdapter();
-        var metaData = new LinqMetaData(da);
-
-        var result = (metaData.TeamInRound.Where(tir => tir.Round.TournamentId == t.Id)
-            .Select(tir => tir.Team));
-        da.CloseConnection();
-        return result;
-    }
-
     /// <summary>
     /// Gets all rounds and their teams for a tournament prefetched.
     /// </summary>
     /// <param name="tournament">Tournament entity to use.</param>
+    /// <param name="cancellationToken"></param>
     /// <example><![CDATA[
     /// RoundEntity round = tir.Where(t => t.Round.Name == "A").First().Round;
     /// TeamEntity team = tir.Where(t => t.Team.Name == "Die Unglaublichen").First().Team;
@@ -75,7 +64,7 @@ public class TeamRepository
     /// TeamEntity[] teamsOfRound = tir.Where(x => x.Round.Name == "F").Select(y => y.Team).ToArray();
     /// ]]></example>
     /// <returns>Returns the TeamInRoundEntity for the tournament id.</returns>
-    public virtual EntityCollection<TeamInRoundEntity> GetTeamsAndRounds(TournamentEntity tournament)
+    public virtual async Task<EntityCollection<TeamInRoundEntity>> GetTeamsAndRoundsAsync(TournamentEntity tournament, CancellationToken cancellationToken)
     {
         IPrefetchPath2 prefetchPathTeamInRound = new PrefetchPath2(EntityType.TeamInRoundEntity)
         {
@@ -88,9 +77,17 @@ public class TeamRepository
         filter.PredicateExpression.Add(RoundFields.TournamentId == tournament.Id);
 
         var tir = new EntityCollection<TeamInRoundEntity>();
+
+        var qp = new QueryParameters
+        {
+            CollectionToFetch = tir,
+            PrefetchPathToUse = prefetchPathTeamInRound,
+            RelationsToUse = filter.Relations,
+            FilterToUse = filter.PredicateExpression
+        };
+
         using var da = _dbContext.GetNewAdapter();
-        da.FetchEntityCollection(tir, filter, prefetchPathTeamInRound);
-        da.CloseConnection();
+        await da.FetchEntityCollectionAsync(qp, cancellationToken);
 
         _logger.LogDebug("{teamCount} found for {tournamentId}", tir.Count, tournament.Id);
 

@@ -14,7 +14,7 @@ namespace TournamentManager.Data;
 /// </summary>
 public class ManagerOfTeamRepository
 {
-    private static readonly ILogger _logger = AppLogging.CreateLogger<ManagerOfTeamRepository>();
+    private readonly ILogger _logger = AppLogging.CreateLogger<ManagerOfTeamRepository>();
     private readonly MultiTenancy.IDbContext _dbContext;
 
     public ManagerOfTeamRepository(MultiTenancy.IDbContext dbContext)

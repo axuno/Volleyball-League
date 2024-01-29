@@ -13,7 +13,7 @@ namespace TournamentManager.Data;
 /// </summary>
 public class ExcludedMatchDateRepository
 {
-    private static readonly ILogger _logger = AppLogging.CreateLogger<ExcludedMatchDateRepository>();
+    private readonly ILogger _logger = AppLogging.CreateLogger<ExcludedMatchDateRepository>();
     private readonly MultiTenancy.IDbContext _dbContext;
     public ExcludedMatchDateRepository(MultiTenancy.IDbContext dbContext)
     {
@@ -37,7 +37,6 @@ public class ExcludedMatchDateRepository
             FilterToUse = ExcludeMatchDateFields.TournamentId == tournamentId
         };
         await da.FetchEntityCollectionAsync(qp, cancellationToken);
-        da.CloseConnection();
 
         return excluded;
     }

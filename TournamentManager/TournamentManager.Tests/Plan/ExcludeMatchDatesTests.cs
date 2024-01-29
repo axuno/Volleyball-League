@@ -28,6 +28,7 @@ internal class ExcludeMatchDatesTests
         Assert.Multiple(() =>
         {
             Assert.That(_excludeMatchDays, Has.Count.EqualTo(1));
+            Assert.That(_excludeMatchDays[0].TournamentId, Is.EqualTo(1));
             Assert.That(_excludeMatchDays[0].DateFrom, Is.EqualTo(new DateTime(2024, 1, 1)));
             Assert.That(_excludeMatchDays[0].DateTo, Is.EqualTo(new DateTime(2024, 1, 1).AddDays(1).AddMinutes(-1)));
             Assert.That(_excludeMatchDays[0].Reason, Is.EqualTo("Any Reason"));

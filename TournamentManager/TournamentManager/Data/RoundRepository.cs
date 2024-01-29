@@ -14,7 +14,7 @@ namespace TournamentManager.Data;
 
 public class RoundRepository
 {
-    private static readonly ILogger _logger = AppLogging.CreateLogger<RoundRepository>();
+    private readonly ILogger _logger = AppLogging.CreateLogger<RoundRepository>();
     private readonly MultiTenancy.IDbContext _dbContext;
 
     public RoundRepository(MultiTenancy.IDbContext dbContext)
@@ -56,21 +56,19 @@ public class RoundRepository
         var round = await metaData.Round.Where(r => r.Id == roundId)
             .WithPath(new PathEdge<RoundEntity>(RoundEntity.PrefetchPathRoundLegs))
             .FirstOrDefaultAsync(cancellationToken);
-        da.CloseConnection();
         return round;
     }
 
-    public virtual EntityCollection<RoundEntity> GetRoundsOfTeam(long? teamId)
+    public virtual async Task<EntityCollection<RoundEntity>> GetRoundsOfTeamAsync(long? teamId, CancellationToken cancellationToken)
     {
         if (!teamId.HasValue) return new EntityCollection<RoundEntity>();
 
         using var da = _dbContext.GetNewAdapter();
-        var rounds = (from tir in new LinqMetaData(da).TeamInRound
+        var rounds = await (from tir in new LinqMetaData(da).TeamInRound
             where tir.TeamId == teamId
             orderby tir.RoundId
-            select tir.Round);
+            select tir.Round).ToListAsync(cancellationToken);
 
-        da.CloseConnection();
         return new EntityCollection<RoundEntity>(rounds);
     }
  
