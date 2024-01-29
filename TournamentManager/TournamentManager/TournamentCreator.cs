@@ -2,6 +2,7 @@
 using SD.LLBLGen.Pro.ORMSupportClasses;
 using TournamentManager.DAL.EntityClasses;
 using TournamentManager.DAL.HelperClasses;
+using TournamentManager.Data;
 using TournamentManager.MultiTenancy;
 
 namespace TournamentManager;
@@ -86,7 +87,7 @@ public class TournamentCreator
     /// <returns>True, if creation was successful, false otherwise.</returns>
     public async Task<bool> CopyRound(long fromTournamentId, long toTournamentId, IList<long> excludeRoundId, CancellationToken cancellationToken)
     {
-        const string transactionName = "CopyRounds";
+        var transactionName = string.Concat(nameof(TournamentCreator), nameof(CopyRound), Guid.NewGuid().ToString("N"));
         var now = DateTime.UtcNow;
         
         // get the rounds of SOURCE tournament
@@ -165,7 +166,7 @@ public class TournamentCreator
 
     public async Task<bool> SetLegDates(IEnumerable<RoundEntity> rounds , int sequenceNo, DateTime start, DateTime end, CancellationToken cancellationToken)
     {
-        const string transactionName = "SetLegDates";
+        var transactionName = string.Concat(nameof(RankingRepository), nameof(SetLegDates), Guid.NewGuid().ToString("N"));
         var now = DateTime.UtcNow;
 
         var roundEntities = (rounds as RoundEntity[] ?? rounds.ToArray()).ToList();

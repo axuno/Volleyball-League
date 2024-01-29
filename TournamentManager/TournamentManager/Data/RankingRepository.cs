@@ -31,7 +31,8 @@ public class RankingRepository
         var rankingColl = new EntityCollection<RankingEntity>(new RankingEntityFactory());
         using var da = _dbContext.GetNewAdapter();
 
-        var transactionName = nameof(ReplaceAsync) + Guid.NewGuid().ToString("N");
+        var transactionName =
+            string.Concat(nameof(RankingRepository), nameof(ReplaceAsync), Guid.NewGuid().ToString("N"));
 
         try
         {

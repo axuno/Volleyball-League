@@ -339,7 +339,7 @@ public class MatchRepository
         try
         {
             await da.StartTransactionAsync(IsolationLevel.ReadCommitted,
-                string.Concat(nameof(MatchRepository), nameof(SaveMatchResultAsync), Guid.NewGuid().ToString()), cancellationToken);
+                string.Concat(nameof(MatchRepository), nameof(SaveMatchResultAsync), Guid.NewGuid().ToString("N")), cancellationToken);
 
             if (matchEntity.Sets.RemovedEntitiesTracker != null)
             {
@@ -348,9 +348,9 @@ public class MatchRepository
                 matchEntity.Sets.RemovedEntitiesTracker = null;
             }
 
-            var success = await da.SaveEntityAsync(matchEntity, false, true, cancellationToken);
+            await da.SaveEntityAsync(matchEntity, false, true, cancellationToken);
             await da.CommitAsync(cancellationToken);
-            return success;
+            return true;
         }
         catch (Exception e)
         {
@@ -378,20 +378,20 @@ public class MatchRepository
                           ?? throw new ArgumentException(@"No match found", nameof(matchId));
 
         matchEntity.HomePoints = matchEntity.GuestPoints = null;
+        matchEntity.RealStart = matchEntity.RealEnd = null;
         matchEntity.Remarks = string.Empty;
         matchEntity.IsOverruled = false;
         matchEntity.IsComplete = false;
-
-        // Track the removed sets
-        matchEntity.Sets.RemovedEntitiesTracker = new EntityCollection<SetEntity>();
-        matchEntity.Sets.Clear();
 
         using var da = _dbContext.GetNewAdapter();
 
         try
         {
             await da.StartTransactionAsync(IsolationLevel.ReadCommitted,
-                string.Concat(nameof(MatchRepository), nameof(DeleteMatchResultAsync), Guid.NewGuid().ToString()), cancellationToken);
+                string.Concat(nameof(MatchRepository), nameof(DeleteMatchResultAsync), Guid.NewGuid().ToString("N")), cancellationToken);
+
+            // Track the removed sets
+            matchEntity.Sets.RemovedEntitiesTracker = matchEntity.Sets;
 
             // Delete the sets
             if (matchEntity.Sets.RemovedEntitiesTracker != null)
@@ -402,9 +402,9 @@ public class MatchRepository
             }
 
             // Save the changes to the match
-            var success = await da.SaveEntityAsync(matchEntity, false, true, cancellationToken);
+            await da.SaveEntityAsync(matchEntity, false, false, cancellationToken);
             await da.CommitAsync(cancellationToken);
-            return success;
+            return true;
         }
         catch (Exception e)
         {

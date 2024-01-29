@@ -16,14 +16,14 @@ public class GenericRepository
     
     public virtual async Task<bool> SaveEntityAsync<T>(T entityToSave, bool refetchAfterSave, bool recurse, CancellationToken cancellationToken) where T : IEntity2
     {
-        var transactionName = Guid.NewGuid().ToString("N");
+        var transactionName = string.Concat(nameof(GenericRepository), nameof(SaveEntityAsync), Guid.NewGuid().ToString("N"));
         using var da = _dbContext.GetNewAdapter();
         try
         {
             await da.StartTransactionAsync(IsolationLevel.ReadCommitted, transactionName, cancellationToken);
-            var success = await da.SaveEntityAsync(entityToSave, refetchAfterSave, recurse, cancellationToken);
+            await da.SaveEntityAsync(entityToSave, refetchAfterSave, recurse, cancellationToken);
             await da.CommitAsync(cancellationToken);
-            return success;
+            return true;
         }
         catch (Exception e)
         {
