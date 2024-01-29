@@ -145,7 +145,7 @@ internal class MatchSchedulerTests
                 rep.AnyCompleteMatchesExistAsync(It.IsAny<long>(), It.IsAny<CancellationToken>()))
             .Returns((long tournamentId, CancellationToken cancellationToken) => Task.FromResult(false));
         matchRepoMock.Setup(rep =>
-                rep.GetMatches(It.IsAny<long>(), It.IsAny<CancellationToken>()))
+                rep.GetMatchesAsync(It.IsAny<long>(), It.IsAny<CancellationToken>()))
             .Returns((long tournamentId, CancellationToken cancellationToken) =>
             {
                return Task.FromResult(tournamentMatches);

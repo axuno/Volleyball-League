@@ -7,7 +7,7 @@ namespace TournamentManager.Data;
 
 public class RoleRepository
 {
-    private static readonly ILogger _logger = AppLogging.CreateLogger<RoleRepository>();
+    private readonly ILogger _logger = AppLogging.CreateLogger<RoleRepository>();
     private readonly MultiTenancy.IDbContext _dbContext;
         
     public RoleRepository(MultiTenancy.IDbContext dbContext)
@@ -25,13 +25,14 @@ public class RoleRepository
         return result;
     }
 
-    public virtual async Task<IdentityRoleEntity?> GetRoleByNameAsync(string roleName, CancellationToken cancellationToken)
+    public virtual async Task<IdentityRoleEntity?> GetRoleByNameAsync(string roleName,
+        CancellationToken cancellationToken)
     {
         roleName = roleName.ToLowerInvariant();
         using var da = _dbContext.GetNewAdapter();
         var metaData = new LinqMetaData(da);
         var result = await (from r in metaData.IdentityRole
-            where r.Name.ToLower() == roleName
+            where r.Name.Equals(roleName, StringComparison.InvariantCultureIgnoreCase)
             select r).FirstOrDefaultAsync(cancellationToken);
         return result;
     }
@@ -47,7 +48,7 @@ public class RoleRepository
         using var da = _dbContext.GetNewAdapter();
         var metaData = new LinqMetaData(da);
         var result = await (from r in metaData.IdentityRole
-            where roleName.ToLower() == r.Name.ToLower()
+            where roleName.Equals(r.Name, StringComparison.InvariantCultureIgnoreCase)
             select r).FirstOrDefaultAsync(cancellationToken);
 
         _logger.LogDebug("{roleName} exists: {trueFalse}", roleName, result != null);

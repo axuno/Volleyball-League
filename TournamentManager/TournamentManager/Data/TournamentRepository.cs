@@ -16,7 +16,7 @@ namespace TournamentManager.Data;
 /// </summary>
 public class TournamentRepository
 {
-    private static readonly ILogger _logger = AppLogging.CreateLogger<TournamentRepository>();
+    private readonly ILogger _logger = AppLogging.CreateLogger<TournamentRepository>();
     private readonly MultiTenancy.IDbContext _dbContext;
     public TournamentRepository(MultiTenancy.IDbContext dbContext)
     {
@@ -49,18 +49,17 @@ public class TournamentRepository
         return (await q.ExecuteAsync<IList<TournamentEntity>>(cancellationToken)).FirstOrDefault();
     }
 
-    public virtual EntityCollection<RoundEntity> GetTournamentRounds(long tournamentId)
+    public virtual async Task<EntityCollection<RoundEntity>> GetTournamentRoundsAsync(long tournamentId, CancellationToken cancellationToken)
     {
         using var da = _dbContext.GetNewAdapter();
         //var selectedRounds = new EntityCollection<RoundEntity>();
         var metaData = new LinqMetaData(da);
 
-        var q = (from r in metaData.Round
+        var q = await (from r in metaData.Round
             where r.TournamentId == tournamentId
-            select r);
+            select r).ToListAsync(cancellationToken);
 
         var result = new EntityCollection<RoundEntity>(q);
-        da.CloseConnection();
         return result;
     }
 

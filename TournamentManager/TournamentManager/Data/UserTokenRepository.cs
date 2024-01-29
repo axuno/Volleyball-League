@@ -7,7 +7,7 @@ namespace TournamentManager.Data;
 
 public class UserTokenRepository
 {
-    private static readonly ILogger _logger = AppLogging.CreateLogger<UserTokenRepository>();
+    private readonly ILogger _logger = AppLogging.CreateLogger<UserTokenRepository>();
     private readonly MultiTenancy.IDbContext _dbContext;
 
     public UserTokenRepository(MultiTenancy.IDbContext dbContext)

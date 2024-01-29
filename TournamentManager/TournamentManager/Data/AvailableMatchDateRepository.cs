@@ -11,7 +11,7 @@ namespace TournamentManager.Data;
 /// </summary>
 public class AvailableMatchDateRepository
 {
-    private static readonly ILogger<AvailableMatchDateRepository> _logger = AppLogging.CreateLogger<AvailableMatchDateRepository>();
+    private readonly ILogger<AvailableMatchDateRepository> _logger = AppLogging.CreateLogger<AvailableMatchDateRepository>();
     private readonly MultiTenancy.IDbContext _dbContext;
     public AvailableMatchDateRepository(MultiTenancy.IDbContext dbContext)
     {
@@ -34,7 +34,6 @@ public class AvailableMatchDateRepository
             FilterToUse = AvailableMatchDateFields.TournamentId == tournamentId
         };
         await da.FetchEntityCollectionAsync(qp, cancellationToken);
-        da.CloseConnection();
 
         _logger.LogDebug("Fetched {count} available match dates for tournament {tournamentId}.", available.Count, tournamentId);
 

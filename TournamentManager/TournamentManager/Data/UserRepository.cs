@@ -16,7 +16,7 @@ namespace TournamentManager.Data;
 /// </summary>
 public class UserRepository
 {
-    private static readonly ILogger _logger = AppLogging.CreateLogger<UserRepository>();
+    private readonly ILogger _logger = AppLogging.CreateLogger<UserRepository>();
     private readonly MultiTenancy.IDbContext _dbContext;
 
     public UserRepository(MultiTenancy.IDbContext dbContext)
@@ -44,7 +44,6 @@ public class UserRepository
             new PathEdge<UserEntity>(UserEntity.PrefetchPathPlayerInTeams)
         }).ExecuteAsync<EntityCollection<UserEntity>>(cancellationToken);
 
-        da.CloseConnection();
         return result.FirstOrDefault();
     }
 
@@ -56,13 +55,12 @@ public class UserRepository
 
         var result = await (from u in metaData.User
             where
-                u.Email.ToLower() == email
-            select u).WithPath(new IPathEdge[]
-        {
+                u.Email.Equals(email, StringComparison.InvariantCultureIgnoreCase)
+            select u).WithPath(new IPathEdge[] {
             new PathEdge<UserEntity>(UserEntity.PrefetchPathManagerOfTeams),
             new PathEdge<UserEntity>(UserEntity.PrefetchPathPlayerInTeams)
         }).ExecuteAsync<EntityCollection<UserEntity>>(cancellationToken);
-        da.CloseConnection();
+
         return result.FirstOrDefault();
     }
 
@@ -74,17 +72,17 @@ public class UserRepository
 
         var result = await (from u in metaData.User
             where
-                u.Email2.ToLower() == email
-            select u).WithPath(new IPathEdge[]
-        {
+                u.Email2.Equals(email, StringComparison.InvariantCultureIgnoreCase)
+            select u).WithPath(new IPathEdge[] {
             new PathEdge<UserEntity>(UserEntity.PrefetchPathManagerOfTeams),
             new PathEdge<UserEntity>(UserEntity.PrefetchPathPlayerInTeams)
         }).ExecuteAsync<EntityCollection<UserEntity>>(cancellationToken);
-        da.CloseConnection();
+
         return result.FirstOrDefault();
     }
 
-    public virtual async Task<UserEntity?> GetLoginUserByUserNameAsync(string userName, CancellationToken cancellationToken)
+    public virtual async Task<UserEntity?> GetLoginUserByUserNameAsync(string userName,
+        CancellationToken cancellationToken)
     {
         userName = userName.ToLowerInvariant().Trim();
         using var da = _dbContext.GetNewAdapter();
@@ -92,13 +90,12 @@ public class UserRepository
 
         var result = await (from u in metaData.User
             where
-                u.UserName.ToLower() == userName
-            select u).WithPath(new IPathEdge[]
-        {
+                u.UserName.Equals(userName, StringComparison.InvariantCultureIgnoreCase)
+            select u).WithPath(new IPathEdge[] {
             new PathEdge<UserEntity>(UserEntity.PrefetchPathManagerOfTeams),
             new PathEdge<UserEntity>(UserEntity.PrefetchPathPlayerInTeams)
         }).ExecuteAsync<EntityCollection<UserEntity>>(cancellationToken);
-        da.CloseConnection();
+
         return result.FirstOrDefault();
     }
 
@@ -115,7 +112,7 @@ public class UserRepository
             new PathEdge<UserEntity>(UserEntity.PrefetchPathManagerOfTeams),
             new PathEdge<UserEntity>(UserEntity.PrefetchPathPlayerInTeams)
         }).ExecuteAsync<EntityCollection<UserEntity>>(cancellationToken);
-        da.CloseConnection();
+
         return result.FirstOrDefault();
     }
 
@@ -130,7 +127,7 @@ public class UserRepository
         using var da = _dbContext.GetNewAdapter();
         var metaData = new LinqMetaData(da);
         var result = await (from u in metaData.User
-            where username == u.UserName.ToLower()
+            where username.Equals(u.UserName, StringComparison.InvariantCultureIgnoreCase)
             select u).FirstOrDefaultAsync();
         return result != null;
     }
@@ -146,7 +143,7 @@ public class UserRepository
         using var da = _dbContext.GetNewAdapter();
         var metaData = new LinqMetaData(da);
         var result = await (from u in metaData.User
-            where email == u.Email.ToLower()
+            where email.Equals(u.Email, StringComparison.InvariantCultureIgnoreCase)
             select u).FirstOrDefaultAsync();
         return result != null;
     }

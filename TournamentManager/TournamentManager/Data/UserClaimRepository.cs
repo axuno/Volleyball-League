@@ -7,7 +7,7 @@ namespace TournamentManager.Data;
 
 public class UserClaimRepository
 {
-    private static readonly ILogger _logger = AppLogging.CreateLogger<UserClaimRepository>();
+    private readonly ILogger _logger = AppLogging.CreateLogger<UserClaimRepository>();
     private readonly MultiTenancy.IDbContext _dbContext;
 
     public UserClaimRepository(MultiTenancy.IDbContext dbContext)
@@ -23,7 +23,7 @@ public class UserClaimRepository
         var result = await (from uc in metaData.IdentityUserClaim
             where uc.UserId == userId
             select uc).ToListAsync(cancellationToken);
-        da.CloseConnection();
+
         _logger.LogDebug("{claimsCount} found", result.Count);
 
         return result;
@@ -37,7 +37,6 @@ public class UserClaimRepository
         var result = await (from uc in metaData.IdentityUserClaim
             where uc.UserId == userId && uc.ClaimType == claimType && uc.ClaimValue == claimValue
             select uc).FirstOrDefaultAsync(cancellationToken);
-        da.CloseConnection();
         return result;
     }
 

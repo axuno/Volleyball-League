@@ -7,7 +7,7 @@ namespace TournamentManager.Data;
 
 public class UserRoleRepository
 {
-    private static readonly ILogger _logger = AppLogging.CreateLogger<UserRoleRepository>();
+    private readonly ILogger _logger = AppLogging.CreateLogger<UserRoleRepository>();
     private readonly MultiTenancy.IDbContext _dbContext;
 
     public UserRoleRepository(MultiTenancy.IDbContext dbContext)
@@ -25,7 +25,6 @@ public class UserRoleRepository
             select ur.IdentityRole).ToListAsync(cancellationToken);
         _logger.LogDebug("{roleCount} found for {userId}", result.Count, userId);
 
-        da.CloseConnection();
         return result;
     }
 

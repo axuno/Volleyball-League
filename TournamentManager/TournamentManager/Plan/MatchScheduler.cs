@@ -237,7 +237,7 @@ internal class MatchScheduler
                 cancellationToken);
         }
 
-        var tournamentMatches = await _appDb.MatchRepository.GetMatches(round.TournamentId!.Value, cancellationToken);
+        var tournamentMatches = await _appDb.MatchRepository.GetMatchesAsync(round.TournamentId!.Value, cancellationToken);
         return tournamentMatches;
     }
 
