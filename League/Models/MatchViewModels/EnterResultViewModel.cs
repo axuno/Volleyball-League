@@ -60,15 +60,19 @@ public class EnterResultViewModel
             MatchDate = TimeZoneConverter!.ToZonedTime(Match.PlannedStart)?.DateTimeOffset.Date;
         }
 
+        // Important: Sort sets by sequence number (i.e. 1, 2, 3, ...)
         Match.Sets.Sort((int)SetFieldIndex.SequenceNo, ListSortDirection.Ascending);
+
+        // Add sets from storage to form fields
         foreach (var set in Match.Sets)
         {
-            Sets.Add(new PointResult(set.HomeBallPoints, set.GuestBallPoints));
+            BallPoints.Add(new PointResult(set.HomeBallPoints, set.GuestBallPoints));
         }
 
-        while (Sets.Count < _maxNumberOfSets)
+        // Add empty sets to form fields
+        while (BallPoints.Count < _maxNumberOfSets)
         {
-            Sets.Add(new PointResult(default, default(int?)));
+            BallPoints.Add(new PointResult(default, default(int?)));
         }
 
         Id = Match.Id;
@@ -92,7 +96,7 @@ public class EnterResultViewModel
         // Add sets to entity
         Match.Sets.Clear(true);
         // sets where home or guest ball points are NULL will be ignored
-        Match.Sets.Add(Match.Id, Sets);
+        Match.Sets.Add(Match.Id, BallPoints);
 
         // point calculation must run before validation because of tie-break handling
         _ = Match.Sets.CalculateSetPoints(Round!.SetRule, Round.MatchRule);
@@ -132,7 +136,7 @@ public class EnterResultViewModel
     [MaxLength(2000)]
     public string? Remarks { get; set; }
 
-    public List<PointResult> Sets { get; set; } = new();
+    public List<PointResult> BallPoints { get; set; } = new();
 
     #endregion
 
@@ -162,7 +166,7 @@ public class EnterResultViewModel
             MatchDate?.Ticks.ToString() ?? string.Empty,
             MatchTimeFrom?.Ticks.ToString() ?? string.Empty,
             MatchTimeTo?.ToString() ?? string.Empty,
-            string.Join(string.Empty, Sets.Select(s => s.Home.ToString() + s.Guest.ToString())), 
+            string.Join(string.Empty, BallPoints.Select(s => s.Home + s.Guest.ToString())), 
             Remarks));
     }
 
@@ -189,7 +193,7 @@ public class EnterResultViewModel
                         {
                             foreach (var singleSet in validator.SetsValidator.SingleSetErrors)
                             {
-                                modelState.AddModelError($"set-{singleSet.SequenceNo-1}", string.Concat(string.Format(_localizer["Set #{0}"], singleSet.SequenceNo), ": ", singleSet.ErrorMessage));
+                                modelState.AddModelError($"{nameof(BallPoints)}-{singleSet.SequenceNo-1}", string.Concat(string.Format(_localizer["Set #{0}"], singleSet.SequenceNo), ": ", singleSet.ErrorMessage));
                             }
                         }
                         else

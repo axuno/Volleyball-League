@@ -25,9 +25,9 @@ public class SetsValidator : AbstractValidator<IList<SetEntity>, (ITenantContext
 
     private void CreateFacts()
     {
+        Facts.Add(AllSetsAreValid());
         Facts.Add(MinAndMaxOfSetsPlayed());
         Facts.Add(BestOfMinAndMaxOfSetsPlayed());
-        Facts.Add(AllSetsAreValid());
         Facts.Add(BestOfRequiredTieBreakPlayed());
         Facts.Add(BestOfNoMatchAfterBestOfReached());
     }
