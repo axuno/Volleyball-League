@@ -35,7 +35,7 @@ public class SetsValidatorTests
             sets.Add(new SetEntity());
         }
         var sv = new SetsValidator(sets, (new TenantContext(), (new MatchRuleEntity {BestOf = false, NumOfSets = 3}, new SetRuleEntity())));
-        await sv.CheckAsync(SetsValidator.FactId.MixAndMaxOfSetsPlayed, CancellationToken.None);
+        await sv.CheckAsync(SetsValidator.FactId.MinAndMaxOfSetsPlayed, CancellationToken.None);
         Assert.Multiple(() =>
             {
                 if (shouldSucceed)
@@ -44,8 +44,8 @@ public class SetsValidatorTests
                 }
                 else
                 {
-                    Assert.That(sv.GetFailedFacts().First(f => f.Id == SetsValidator.FactId.MixAndMaxOfSetsPlayed).Success, Is.False);
-                    Assert.That(sv.GetFailedFacts().First(f => f.Id == SetsValidator.FactId.MixAndMaxOfSetsPlayed).Message, Is.Not.Null);
+                    Assert.That(sv.GetFailedFacts().First(f => f.Id == SetsValidator.FactId.MinAndMaxOfSetsPlayed).Success, Is.False);
+                    Assert.That(sv.GetFailedFacts().First(f => f.Id == SetsValidator.FactId.MinAndMaxOfSetsPlayed).Message, Is.Not.Null);
                 }
             }
         );

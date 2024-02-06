@@ -111,7 +111,7 @@ public class Calendar
             evt.Description = !string.IsNullOrWhiteSpace(DescriptionOpponentsFormat)
                 ? string.Format(DescriptionOpponentsFormat, match.HomeTeamNameForRound, match.GuestTeamNameForRound)
                 : string.Empty;
-            if (match.VenueLongitude.HasValue && match.VenueLatitude.HasValue && !string.IsNullOrWhiteSpace(DescriptionGoogleMapsFormat))
+            if (match is { VenueLongitude: not null, VenueLatitude: not null } && !string.IsNullOrWhiteSpace(DescriptionGoogleMapsFormat))
                 evt.Description += "\n" + string.Format(DescriptionGoogleMapsFormat,
                     match.VenueLatitude.Value.ToString(System.Globalization.CultureInfo.InvariantCulture),
                     match.VenueLongitude.Value.ToString(System.Globalization.CultureInfo.InvariantCulture));
@@ -179,7 +179,7 @@ public class Calendar
             evt.Description = !string.IsNullOrWhiteSpace(DescriptionOpponentsFormat)
                 ? string.Format(DescriptionOpponentsFormat, match.HomeTeamNameForRound, match.GuestTeamNameForRound)
                 : string.Empty;
-            if (match.VenueLongitude.HasValue && match.VenueLatitude.HasValue && !string.IsNullOrWhiteSpace(DescriptionGoogleMapsFormat))
+            if (match is { VenueLongitude: not null, VenueLatitude: not null } && !string.IsNullOrWhiteSpace(DescriptionGoogleMapsFormat))
                 evt.Description += "\n" + string.Format(DescriptionGoogleMapsFormat,
                     match.VenueLatitude.Value.ToString(System.Globalization.CultureInfo.InvariantCulture),
                     match.VenueLongitude.Value.ToString(System.Globalization.CultureInfo.InvariantCulture));

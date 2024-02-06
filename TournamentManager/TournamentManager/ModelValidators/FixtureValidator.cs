@@ -49,288 +49,328 @@ public class FixtureValidator : AbstractValidator<MatchEntity, (ITenantContext T
 
     private void CreateFacts()
     {
-        Facts.Add(
-            new Fact<FactId>
-            {
-                Id = FactId.PlannedStartIsSet,
-                FieldNames = new []{ nameof(Model.PlannedStart) },
-                Enabled = Data.TenantContext.TournamentContext.FixtureRuleSet.PlannedMatchDateTimeMustBeSet,
-                Type = FactType.Critical,
-                CheckAsync = (cancellationToken) => Task.FromResult(
-                    new FactResult {
-                        Message = FixtureValidatorResource.ResourceManager.GetString(nameof(FactId.PlannedStartIsSet)) ?? string.Empty,
-                        Success = Model.PlannedStart.HasValue })
-            });
+        Facts.Add(PlannedStartIsSet());
+        Facts.Add(PlannedStartNotExcluded());
+        Facts.Add(PlannedStartIsFutureDate());
+        Facts.Add(PlannedStartWithinRoundLegs());
+        Facts.Add(PlannedStartWithinDesiredTimeRange());
+        Facts.Add(PlannedStartTeamsAreNotBusy());
+        Facts.Add(PlannedStartWeekdayIsTeamWeekday());
+        Facts.Add(PlannedVenueIsSet());
+        Facts.Add(PlannedVenueNotOccupiedWithOtherMatch());
+        Facts.Add(PlannedVenueIsRegisteredVenueOfTeam());
+    }
 
-        Facts.Add(
-            new Fact<FactId>
+    private Fact<FactId> PlannedVenueIsRegisteredVenueOfTeam()
+    {
+        return new Fact<FactId>
+        {
+            Id = FactId.PlannedVenueIsRegisteredVenueOfTeam,
+            FieldNames = new[] { nameof(Model.VenueId) },
+            Enabled = true,
+            Type = FactType.Warning,
+            CheckAsync = FactResult
+        };
+
+        async Task<FactResult> FactResult(CancellationToken cancellationToken)
+        {
+            await LoadTeamsInMatch(cancellationToken);
+            return new FactResult
             {
-                Id = FactId.PlannedStartNotExcluded,
-                FieldNames = new[] { nameof(Model.PlannedStart) },
-                Enabled = Data.TenantContext.TournamentContext.FixtureRuleSet.CheckForExcludedMatchDateTime,
-                Type = FactType.Warning,
-                CheckAsync = async (cancellationToken) => 
+                Message = FixtureValidatorResource.ResourceManager.GetString(
+                    nameof(FactId.PlannedVenueIsRegisteredVenueOfTeam)) ?? string.Empty,
+                Success = !Model.VenueId.HasValue || _teamsInMatch.Any(tim =>
+                    !tim.VenueId.HasValue || tim.VenueId == Model.VenueId)
+            };
+        }
+    }
+
+    private Fact<FactId> PlannedVenueNotOccupiedWithOtherMatch()
+    {
+        return new Fact<FactId>
+        {
+            Id = FactId.PlannedVenueNotOccupiedWithOtherMatch,
+            FieldNames = new[] { nameof(Model.VenueId) },
+            Type = FactType.Warning,
+            CheckAsync = FactResult
+        };
+
+        async Task<FactResult> FactResult(CancellationToken cancellationToken)
+        {
+            var otherMatch = Model.VenueId.HasValue
+                ? (await Data.TenantContext.DbContext.AppDb.VenueRepository.GetOccupyingMatchesAsync(
+                    Model.VenueId.Value, new DateTimePeriod(Model.PlannedStart, Model.PlannedEnd),
+                    Data.TenantContext.TournamentContext.MatchPlanTournamentId, cancellationToken))
+                .FirstOrDefault(m => m.Id != Model.Id)
+                : null;
+
+            return new FactResult
+            {
+                Message = string.Format(FixtureValidatorResource.ResourceManager.GetString(
+                    nameof(FactId.PlannedVenueNotOccupiedWithOtherMatch)) ?? string.Empty, otherMatch?.HomeTeamNameForRound, otherMatch?.GuestTeamNameForRound),
+                Success = otherMatch == null
+            };
+        }
+    }
+
+    private Fact<FactId> PlannedVenueIsSet()
+    {
+        return new Fact<FactId>
+        {
+            Id = FactId.PlannedVenueIsSet,
+            FieldNames = new[] { nameof(Model.VenueId) },
+            Enabled = Data.TenantContext.TournamentContext.FixtureRuleSet.PlannedVenueMustBeSet,
+            Type = FactType.Critical,
+            CheckAsync = async (cancellationToken) => 
+                new FactResult
                 {
-                    if (!Model.PlannedStart.HasValue) return _successResult;
-                    // MatchEntity.RoundId, MatchEntity.HomeTeamId, MatchEntity.GuestTeam must be set for the check to work
-                    var excluded =
-                        await Data.TenantContext.DbContext.AppDb.ExcludedMatchDateRepository.GetExcludedMatchDateAsync(Model,
-                            Data.TenantContext.TournamentContext.MatchPlanTournamentId, cancellationToken);
-
-                    if (excluded == null)
-                    {
-                        return _successResult;
-                    }
-                        
-                    var zonedPlannedStart = Data.TimeZoneConverter.ToZonedTime(Model.PlannedStart)?.DateTimeOffset.DateTime;
-
-                    return new FactResult
-                    {
-                        Message = string.Format(FixtureValidatorResource.ResourceManager.GetString(
-                                nameof(FactId.PlannedStartNotExcluded)) ?? string.Empty,
-                            Data.TenantContext.TournamentContext.FixtureRuleSet.UseOnlyDatePartForTeamFreeBusyTimes
-                                ? zonedPlannedStart?.ToShortDateString()
-                                : $"{zonedPlannedStart?.ToShortDateString()} {zonedPlannedStart?.ToShortTimeString()}",
-                            excluded.Reason),
-                        Success = false
-                    };
+                    Message = FixtureValidatorResource.ResourceManager.GetString(nameof(FactId.PlannedVenueIsSet)) ?? string.Empty,
+                    Success = Model.VenueId.HasValue && await Data.TenantContext.DbContext.AppDb.VenueRepository.IsValidVenueIdAsync(Model.VenueId.Value, cancellationToken)
                 }
-            });
+        };
+    }
 
-        Facts.Add(
-            new Fact<FactId>
-            {
-                Id = FactId.PlannedStartIsFutureDate,
-                FieldNames = new[] { nameof(Model.PlannedStart) },
-                Enabled = true,
-                Type = FactType.Warning,
-                CheckAsync = (cancellationToken) => Task.FromResult(
-                    new FactResult
-                    {
-                        Message = FixtureValidatorResource.ResourceManager.GetString(nameof(FactId.PlannedStartIsFutureDate)) ?? string.Empty,
-                        Success = !Model.PlannedStart.HasValue || Model.PlannedStart.Value.Date > CurrentDateTimeUtc.Date
-                    })
-            });
+    private Fact<FactId> PlannedStartWeekdayIsTeamWeekday()
+    {
+        return new Fact<FactId>
+        {
+            Id = FactId.PlannedStartWeekdayIsTeamWeekday,
+            FieldNames = new[] { nameof(Model.PlannedStart) },
+            Enabled = true,
+            Type = FactType.Warning,
+            CheckAsync = FactResult
+        };
 
-        Facts.Add(
-            new Fact<FactId>
+        async Task<FactResult> FactResult(CancellationToken cancellationToken)
+        {
+            if (!Model.VenueId.HasValue || !Model.PlannedStart.HasValue) return _successResult;
+            await LoadTeamsInMatch(cancellationToken);
+                        
+            var homeTeam = _teamsInMatch.FirstOrDefault(m => m.Id == Model.HomeTeamId);
+            var guestTeam = _teamsInMatch.FirstOrDefault(m => m.Id == Model.GuestTeamId);
+            var plannedStartDayOfWeek = (int?) Model.PlannedStart.Value.DayOfWeek;
+
+            if (homeTeam?.MatchDayOfWeek == null || guestTeam?.MatchDayOfWeek == null) return _successResult;
+                    
+            // 2 teams using the same venue have a match,
+            // and the planned start week day is either the home or guest team weekday
+            if (homeTeam.VenueId == guestTeam.VenueId && Model.VenueId == homeTeam.VenueId
+                                                      && (plannedStartDayOfWeek == homeTeam.MatchDayOfWeek || plannedStartDayOfWeek == guestTeam.MatchDayOfWeek))
             {
-                Id = FactId.PlannedStartWithinRoundLegs,
-                FieldNames = new[] { nameof(Model.PlannedStart) },
-                Enabled = true,
-                Type = FactType.Error,
-                CheckAsync = async (cancellationToken) =>
+                return _successResult;
+            }
+                    
+            if (plannedStartDayOfWeek !=
+                homeTeam.MatchDayOfWeek
+                && Model.VenueId == homeTeam.VenueId)
+            {
+                return new FactResult
                 {
-                    var round =
-                        await Data.TenantContext.DbContext.AppDb.RoundRepository.GetRoundWithLegsAsync(Model.RoundId,
-                            cancellationToken) ?? throw new InvalidOperationException($"Round Id '{Model.RoundId}' not found.");
+                    Message = string.Format(FixtureValidatorResource.ResourceManager.GetString(
+                            nameof(FactId.PlannedStartWeekdayIsTeamWeekday)) ?? string.Empty,
+                        Model.PlannedStart?.ToString("dddd"), Data.PlannedMatch.HomeTeamNameForRound),
+                    Success = false
+                };
+            }
 
-                    if (!Model.PlannedStart.HasValue || round.RoundLegs.Count == 0) { return _successResult; }
+            if (plannedStartDayOfWeek !=
+                guestTeam.MatchDayOfWeek
+                && Model.VenueId == guestTeam.VenueId)
+            {
+                return new FactResult
+                {
+                    Message = string.Format(FixtureValidatorResource.ResourceManager.GetString(
+                            nameof(FactId.PlannedStartWeekdayIsTeamWeekday)) ?? string.Empty,
+                        Model.PlannedStart?.ToString("dddd"), Data.PlannedMatch.GuestTeamNameForRound),
+                    Success = false
+                };
+            }
 
-                    round.RoundLegs.Sort((int) RoundLegFieldIndex.SequenceNo, ListSortDirection.Ascending);
+            return _successResult;
+        }
+    }
 
-                    var stayWithinLegDates = Data.TenantContext.TournamentContext.FixtureRuleSet.PlannedMatchTimeMustStayInCurrentLegBoundaries;
-                    var currentLeg = round.RoundLegs.First(rl => rl.SequenceNo == Model.LegSequenceNo);
+    private Fact<FactId> PlannedStartTeamsAreNotBusy()
+    {
+        return new Fact<FactId>
+        {
+            Id = FactId.PlannedStartTeamsAreNotBusy,
+            FieldNames = new[] { nameof(Model.PlannedStart) },
+            Enabled = true,
+            Type = FactType.Error,
+            CheckAsync = FactResult
+        };
 
-                    // Note: EndDateTime includes the full day
-                    if ((stayWithinLegDates && currentLeg.ContainsDate(Model.PlannedStart))
-                        ||
-                        (!stayWithinLegDates && round.RoundLegs.GetRoundLegForDate(Model.PlannedStart) != null))
-                    {
-                        return _successResult;
-                    }
+        async Task<FactResult> FactResult(CancellationToken cancellationToken)
+        {
+            var busyTeams = Model.PlannedStart.HasValue
+                ? await Data.TenantContext.DbContext.AppDb.MatchRepository.AreTeamsBusyAsync(
+                    Model, Data.TenantContext.TournamentContext.FixtureRuleSet.UseOnlyDatePartForTeamFreeBusyTimes, Data.TenantContext.TournamentContext.MatchPlanTournamentId, cancellationToken)
+                : Array.Empty<long>();
 
-                    var displayPeriods= string.Empty;
-                    if (stayWithinLegDates)
-                    {
-                        displayPeriods =
-                            $"{currentLeg.StartDateTime.ToShortDateString()} - {currentLeg.EndDateTime.ToShortDateString()}";
-                    }
-                    else
-                    {
+            return busyTeams.Length > 0
+                ? new FactResult
+                {
+                    Message = string.Format(FixtureValidatorResource.ResourceManager.GetString(
+                            nameof(FactId.PlannedStartTeamsAreNotBusy)) ?? string.Empty,
+                        Data.PlannedMatch.HomeTeamId == busyTeams.First()
+                            ? Data.PlannedMatch.HomeTeamNameForRound
+                            : Data.PlannedMatch.GuestTeamNameForRound),
+                    Success = busyTeams.Length == 0
+                }
+                : _successResult;
+        }
+    }
+
+    private Fact<FactId> PlannedStartWithinDesiredTimeRange()
+    {
+        return new Fact<FactId>
+        {
+            Id = FactId.PlannedStartWithinDesiredTimeRange,
+            FieldNames = new[] { nameof(Model.PlannedStart) },
+            Enabled = true, // set time range to 24h to always succeed the test
+            Type = FactType.Warning,
+            CheckAsync = (cancellationToken) => Task.FromResult(
+                new FactResult
+                {
+                    Message = string.Format(FixtureValidatorResource.ResourceManager.GetString(nameof(FactId.PlannedStartWithinDesiredTimeRange)) ?? string.Empty, Data.TenantContext.TournamentContext.FixtureRuleSet.RegularMatchStartTime.MinDayTime.ToShortTimeString(), Data.TenantContext.TournamentContext.FixtureRuleSet.RegularMatchStartTime.MaxDayTime.ToShortTimeString()),
+                    // regular start time is given in local time
+                    Success = !Model.PlannedStart.HasValue || 
+                              Data.TimeZoneConverter.ToZonedTime(Model.PlannedStart)?.DateTimeOffset.TimeOfDay >= Data.TenantContext.TournamentContext.FixtureRuleSet.RegularMatchStartTime.MinDayTime &&
+                              Data.TimeZoneConverter.ToZonedTime(Model.PlannedStart)?.DateTimeOffset.TimeOfDay <= Data.TenantContext.TournamentContext.FixtureRuleSet.RegularMatchStartTime.MaxDayTime
+                })
+        };
+    }
+
+    private Fact<FactId> PlannedStartWithinRoundLegs()
+    {
+        return new Fact<FactId>
+        {
+            Id = FactId.PlannedStartWithinRoundLegs,
+            FieldNames = new[] { nameof(Model.PlannedStart) },
+            Enabled = true,
+            Type = FactType.Error,
+            CheckAsync = FactResult
+        };
+
+        async Task<FactResult> FactResult(CancellationToken cancellationToken)
+        {
+            var round =
+                await Data.TenantContext.DbContext.AppDb.RoundRepository.GetRoundWithLegsAsync(Model.RoundId,
+                    cancellationToken) ?? throw new InvalidOperationException($"Round Id '{Model.RoundId}' not found.");
+
+            if (!Model.PlannedStart.HasValue || round.RoundLegs.Count == 0) {
+                return _successResult;
+            }
+
+            round.RoundLegs.Sort((int) RoundLegFieldIndex.SequenceNo, ListSortDirection.Ascending);
+
+            var stayWithinLegDates = Data.TenantContext.TournamentContext.FixtureRuleSet.PlannedMatchTimeMustStayInCurrentLegBoundaries;
+            var currentLeg = round.RoundLegs.First(rl => rl.SequenceNo == Model.LegSequenceNo);
+
+            // Note: EndDateTime includes the full day
+            if ((stayWithinLegDates && currentLeg.ContainsDate(Model.PlannedStart))
+                ||
+                (!stayWithinLegDates && round.RoundLegs.GetRoundLegForDate(Model.PlannedStart) != null))
+            {
+                return _successResult;
+            }
+
+            var displayPeriods= string.Empty;
+            if (stayWithinLegDates)
+            {
+                displayPeriods =
+                    $"{currentLeg.StartDateTime.ToShortDateString()} - {currentLeg.EndDateTime.ToShortDateString()}";
+            }
+            else
+            {
                             
-                        const string joinWith = ", ";
-                        displayPeriods = round.RoundLegs.Aggregate(displayPeriods,
-                            (current, leg) =>
-                                current +
-                                $"{Data.TimeZoneConverter.ToZonedTime(leg.StartDateTime)?.DateTimeOffset.DateTime.ToShortDateString()} - {Data.TimeZoneConverter.ToZonedTime(leg.EndDateTime)?.DateTimeOffset.DateTime.ToShortDateString()}{joinWith}");
+                const string joinWith = ", ";
+                displayPeriods = round.RoundLegs.Aggregate(displayPeriods,
+                    (current, leg) =>
+                        current +
+                        $"{Data.TimeZoneConverter.ToZonedTime(leg.StartDateTime)?.DateTimeOffset.DateTime.ToShortDateString()} - {Data.TimeZoneConverter.ToZonedTime(leg.EndDateTime)?.DateTimeOffset.DateTime.ToShortDateString()}{joinWith}");
 
-                        displayPeriods = displayPeriods[..^joinWith.Length];
-                    }
-
-                    return new FactResult
-                    {
-                        Message = string.Format(FixtureValidatorResource.ResourceManager.GetString(
-                            nameof(FactId.PlannedStartWithinRoundLegs)) ?? string.Empty, round.Description, displayPeriods),
-                        Success = false
-                    };
-                }
+                displayPeriods = displayPeriods[..^joinWith.Length];
             }
-        );
 
-        Facts.Add(
-            new Fact<FactId>
+            return new FactResult
             {
-                Id = FactId.PlannedStartWithinDesiredTimeRange,
-                FieldNames = new[] { nameof(Model.PlannedStart) },
-                Enabled = true, // set time range to 24h to always succeed the test
-                Type = FactType.Warning,
-                CheckAsync = (cancellationToken) => Task.FromResult(
-                    new FactResult
-                    {
-                        Message = string.Format(FixtureValidatorResource.ResourceManager.GetString(nameof(FactId.PlannedStartWithinDesiredTimeRange)) ?? string.Empty, Data.TenantContext.TournamentContext.FixtureRuleSet.RegularMatchStartTime.MinDayTime.ToShortTimeString(), Data.TenantContext.TournamentContext.FixtureRuleSet.RegularMatchStartTime.MaxDayTime.ToShortTimeString()),
-                        // regular start time is given in local time
-                        Success = !Model.PlannedStart.HasValue || 
-                                  Data.TimeZoneConverter.ToZonedTime(Model.PlannedStart)?.DateTimeOffset.TimeOfDay >= Data.TenantContext.TournamentContext.FixtureRuleSet.RegularMatchStartTime.MinDayTime &&
-                                  Data.TimeZoneConverter.ToZonedTime(Model.PlannedStart)?.DateTimeOffset.TimeOfDay <= Data.TenantContext.TournamentContext.FixtureRuleSet.RegularMatchStartTime.MaxDayTime
-                    })
+                Message = string.Format(FixtureValidatorResource.ResourceManager.GetString(
+                    nameof(FactId.PlannedStartWithinRoundLegs)) ?? string.Empty, round.Description, displayPeriods),
+                Success = false
+            };
+        }
+    }
+
+    private Fact<FactId> PlannedStartIsFutureDate()
+    {
+        return new Fact<FactId>
+        {
+            Id = FactId.PlannedStartIsFutureDate,
+            FieldNames = new[] { nameof(Model.PlannedStart) },
+            Enabled = true,
+            Type = FactType.Warning,
+            CheckAsync = (cancellationToken) => Task.FromResult(
+                new FactResult
+                {
+                    Message = FixtureValidatorResource.ResourceManager.GetString(nameof(FactId.PlannedStartIsFutureDate)) ?? string.Empty,
+                    Success = !Model.PlannedStart.HasValue || Model.PlannedStart.Value.Date > CurrentDateTimeUtc.Date
+                })
+        };
+    }
+
+    private Fact<FactId> PlannedStartNotExcluded()
+    {
+        return new Fact<FactId>
+        {
+            Id = FactId.PlannedStartNotExcluded,
+            FieldNames = new[] { nameof(Model.PlannedStart) },
+            Enabled = Data.TenantContext.TournamentContext.FixtureRuleSet.CheckForExcludedMatchDateTime,
+            Type = FactType.Warning,
+            CheckAsync = FactResult
+        };
+
+        async Task<FactResult> FactResult(CancellationToken cancellationToken)
+        {
+            if (!Model.PlannedStart.HasValue) return _successResult;
+            // MatchEntity.RoundId, MatchEntity.HomeTeamId, MatchEntity.GuestTeam must be set for the check to work
+            var excluded =
+                await Data.TenantContext.DbContext.AppDb.ExcludedMatchDateRepository.GetExcludedMatchDateAsync(Model,
+                    Data.TenantContext.TournamentContext.MatchPlanTournamentId, cancellationToken);
+
+            if (excluded == null)
+            {
+                return _successResult;
             }
-        );
-
-        Facts.Add(
-            new Fact<FactId>
-            {
-                Id = FactId.PlannedStartTeamsAreNotBusy,
-                FieldNames = new[] { nameof(Model.PlannedStart) },
-                Enabled = true,
-                Type = FactType.Error,
-                CheckAsync = async (cancellationToken) =>
-                {
-                    var busyTeams = Model.PlannedStart.HasValue
-                        ? await Data.TenantContext.DbContext.AppDb.MatchRepository.AreTeamsBusyAsync(
-                            Model, Data.TenantContext.TournamentContext.FixtureRuleSet.UseOnlyDatePartForTeamFreeBusyTimes, Data.TenantContext.TournamentContext.MatchPlanTournamentId, cancellationToken)
-                        : Array.Empty<long>();
-
-                    return busyTeams.Length > 0
-                        ? new FactResult
-                        {
-                            Message = string.Format(FixtureValidatorResource.ResourceManager.GetString(
-                                    nameof(FactId.PlannedStartTeamsAreNotBusy)) ?? string.Empty,
-                                Data.PlannedMatch.HomeTeamId == busyTeams.First()
-                                    ? Data.PlannedMatch.HomeTeamNameForRound
-                                    : Data.PlannedMatch.GuestTeamNameForRound),
-                            Success = busyTeams.Length == 0
-                        }
-                        : _successResult;
-                }
-            });
-
-        Facts.Add(
-            new Fact<FactId>
-            {
-                Id = FactId.PlannedStartWeekdayIsTeamWeekday,
-                FieldNames = new[] { nameof(Model.PlannedStart) },
-                Enabled = true,
-                Type = FactType.Warning,
-                CheckAsync = async (cancellationToken) =>
-                {
-                    if (!Model.VenueId.HasValue || !Model.PlannedStart.HasValue) return _successResult;
-                    await LoadTeamsInMatch(cancellationToken);
                         
-                    var homeTeam = _teamsInMatch.FirstOrDefault(m => m.Id == Model.HomeTeamId);
-                    var guestTeam = _teamsInMatch.FirstOrDefault(m => m.Id == Model.GuestTeamId);
-                    var plannedStartDayOfWeek = (int?) Model.PlannedStart.Value.DayOfWeek;
+            var zonedPlannedStart = Data.TimeZoneConverter.ToZonedTime(Model.PlannedStart)?.DateTimeOffset.DateTime;
 
-                    if (homeTeam?.MatchDayOfWeek == null || guestTeam?.MatchDayOfWeek == null) return _successResult;
-                    
-                    // 2 teams using the same venue have a match,
-                    // and the planned start week day is either the home or guest team weekday
-                    if (homeTeam.VenueId == guestTeam.VenueId && Model.VenueId == homeTeam.VenueId
-                        && (plannedStartDayOfWeek == homeTeam.MatchDayOfWeek || plannedStartDayOfWeek == guestTeam.MatchDayOfWeek))
-                    {
-                        return _successResult;
-                    }
-                    
-                    if (plannedStartDayOfWeek !=
-                        homeTeam.MatchDayOfWeek
-                        && Model.VenueId == homeTeam.VenueId)
-                    {
-                        return new FactResult
-                        {
-                            Message = string.Format(FixtureValidatorResource.ResourceManager.GetString(
-                                    nameof(FactId.PlannedStartWeekdayIsTeamWeekday)) ?? string.Empty,
-                                Model.PlannedStart?.ToString("dddd"), Data.PlannedMatch.HomeTeamNameForRound),
-                            Success = false
-                        };
-                    }
-
-                    if (plannedStartDayOfWeek !=
-                        guestTeam.MatchDayOfWeek
-                        && Model.VenueId == guestTeam.VenueId)
-                    {
-                        return new FactResult
-                        {
-                            Message = string.Format(FixtureValidatorResource.ResourceManager.GetString(
-                                    nameof(FactId.PlannedStartWeekdayIsTeamWeekday)) ?? string.Empty,
-                                Model.PlannedStart?.ToString("dddd"), Data.PlannedMatch.GuestTeamNameForRound),
-                            Success = false
-                        };
-                    }
-
-                    return _successResult;
-                }
-            });
-
-        Facts.Add(
-            new Fact<FactId>
+            return new FactResult
             {
-                Id = FactId.PlannedVenueIsSet,
-                FieldNames = new[] { nameof(Model.VenueId) },
-                Enabled = Data.TenantContext.TournamentContext.FixtureRuleSet.PlannedVenueMustBeSet,
-                Type = FactType.Critical,
-                CheckAsync = async (cancellationToken) => 
-                    new FactResult
-                    {
-                        Message = FixtureValidatorResource.ResourceManager.GetString(nameof(FactId.PlannedVenueIsSet)) ?? string.Empty,
-                        Success = Model.VenueId.HasValue && await Data.TenantContext.DbContext.AppDb.VenueRepository.IsValidVenueIdAsync(Model.VenueId.Value, cancellationToken)
-                    }
-            }
-        );
+                Message = string.Format(FixtureValidatorResource.ResourceManager.GetString(
+                        nameof(FactId.PlannedStartNotExcluded)) ?? string.Empty,
+                    Data.TenantContext.TournamentContext.FixtureRuleSet.UseOnlyDatePartForTeamFreeBusyTimes
+                        ? zonedPlannedStart?.ToShortDateString()
+                        : $"{zonedPlannedStart?.ToShortDateString()} {zonedPlannedStart?.ToShortTimeString()}",
+                    excluded.Reason),
+                Success = false
+            };
+        }
+    }
 
-        Facts.Add(
-            new Fact<FactId>
-            {
-                Id = FactId.PlannedVenueNotOccupiedWithOtherMatch,
-                FieldNames = new[] { nameof(Model.VenueId) },
-                Type = FactType.Warning,
-                CheckAsync = async (cancellationToken) =>
-                {
-                    var otherMatch = Model.VenueId.HasValue
-                        ? (await Data.TenantContext.DbContext.AppDb.VenueRepository.GetOccupyingMatchesAsync(
-                            Model.VenueId.Value, new DateTimePeriod(Model.PlannedStart, Model.PlannedEnd),
-                            Data.TenantContext.TournamentContext.MatchPlanTournamentId, cancellationToken))
-                        .FirstOrDefault(m => m.Id != Model.Id)
-                        : null;
-
-                    return new FactResult
-                    {
-                        Message = string.Format(FixtureValidatorResource.ResourceManager.GetString(
-                            nameof(FactId.PlannedVenueNotOccupiedWithOtherMatch)) ?? string.Empty, otherMatch?.HomeTeamNameForRound, otherMatch?.GuestTeamNameForRound),
-                        Success = otherMatch == null
-                    };
-                }
-            }
-        );
-
-        Facts.Add(
-            new Fact<FactId>
-            {
-                Id = FactId.PlannedVenueIsRegisteredVenueOfTeam,
-                FieldNames = new[] { nameof(Model.VenueId) },
-                Enabled = true,
-                Type = FactType.Warning,
-                CheckAsync = async (cancellationToken) =>
-                {
-                    await LoadTeamsInMatch(cancellationToken);
-                    return new FactResult
-                    {
-                        Message = FixtureValidatorResource.ResourceManager.GetString(
-                            nameof(FactId.PlannedVenueIsRegisteredVenueOfTeam)) ?? string.Empty,
-                        Success = !Model.VenueId.HasValue || _teamsInMatch.Any(tim =>
-                            !tim.VenueId.HasValue || tim.VenueId == Model.VenueId)
-                    };
-                }
-            }
-        );
+    private Fact<FactId> PlannedStartIsSet()
+    {
+        return new Fact<FactId>
+        {
+            Id = FactId.PlannedStartIsSet,
+            FieldNames = new []{ nameof(Model.PlannedStart) },
+            Enabled = Data.TenantContext.TournamentContext.FixtureRuleSet.PlannedMatchDateTimeMustBeSet,
+            Type = FactType.Critical,
+            CheckAsync = (cancellationToken) => Task.FromResult(
+                new FactResult {
+                    Message = FixtureValidatorResource.ResourceManager.GetString(nameof(FactId.PlannedStartIsSet)) ?? string.Empty,
+                    Success = Model.PlannedStart.HasValue })
+        };
     }
 }

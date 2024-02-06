@@ -19,40 +19,46 @@ public class TeamInRoundValidator : AbstractValidator<TeamInRoundEntity, (ITenan
 
     private void CreateFacts()
     {
-        Facts.Add(
-            new Fact<FactId>
+        Facts.Add(RoundBelongsToTournament());
+    }
+
+    private Fact<FactId> RoundBelongsToTournament()
+    {
+        return new Fact<FactId>
+        {
+            Id = FactId.RoundBelongsToTournament,
+            FieldNames = new[] {nameof(Model.RoundId)},
+            Enabled = true,
+            Type = FactType.Critical,
+            CheckAsync = FactResult
+        };
+
+        async Task<FactResult> FactResult(CancellationToken cancellationToken)
+        {
+            var roundWithTypeList = await Data.TenantContext.DbContext.AppDb.RoundRepository.GetRoundsWithTypeAsync(
+                new PredicateExpression(RoundFields.TournamentId == Data.TouramentId),
+                cancellationToken);
+
+            if (roundWithTypeList.Any(round => round.Id == Model.RoundId))
             {
-                Id = FactId.RoundBelongsToTournament,
-                FieldNames = new[] {nameof(Model.RoundId)},
-                Enabled = true,
-                Type = FactType.Critical,
-                CheckAsync = async (cancellationToken) =>
+                return new FactResult
                 {
-                    var roundWithTypeList = await Data.TenantContext.DbContext.AppDb.RoundRepository.GetRoundsWithTypeAsync(
-                        new PredicateExpression(RoundFields.TournamentId == Data.TouramentId),
-                        cancellationToken);
-
-                    if (roundWithTypeList.Any(round => round.Id == Model.RoundId))
-                    {
-                        return new FactResult
-                        {
-                            Message = TeamInRoundValidatorResource.RoundBelongsToTournament,
-                            Success = true
-                        };
-                    }
+                    Message = TeamInRoundValidatorResource.RoundBelongsToTournament,
+                    Success = true
+                };
+            }
                         
-                    var tournament =
-                        await Data.TenantContext.DbContext.AppDb.TournamentRepository.GetTournamentAsync(new PredicateExpression(TournamentFields.Id == Data.TouramentId),
-                            cancellationToken);
+            var tournament =
+                await Data.TenantContext.DbContext.AppDb.TournamentRepository.GetTournamentAsync(new PredicateExpression(TournamentFields.Id == Data.TouramentId),
+                    cancellationToken);
 
-                    return new FactResult
-                    {
-                        Message = string.Format(
-                            TeamInRoundValidatorResource.RoundBelongsToTournament ?? string.Empty,
-                            tournament?.Description),
-                        Success = false
-                    };
-                }
-            });
+            return new FactResult
+            {
+                Message = string.Format(
+                    TeamInRoundValidatorResource.RoundBelongsToTournament ?? string.Empty,
+                    tournament?.Description),
+                Success = false
+            };
+        }
     }
 }

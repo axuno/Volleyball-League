@@ -184,7 +184,7 @@ public class EnterResultViewModel
                 {
                     foreach (var setsError in validator.SetsValidator.GetFailedFacts())
                     {
-                        // This the the hint for existing errors in single sets
+                        // This is the hint for existing errors in single sets
                         if (setsError.Id == SetsValidator.FactId.AllSetsAreValid)
                         {
                             foreach (var singleSet in validator.SetsValidator.SingleSetErrors)

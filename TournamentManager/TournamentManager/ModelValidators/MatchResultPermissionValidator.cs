@@ -21,71 +21,83 @@ public class MatchResultPermissionValidator : AbstractValidator<MatchEntity, (IT
 
     private void CreateFacts()
     {
-        Facts.Add(
-            new Fact<FactId>
-            {
-                Id = FactId.TournamentIsInActiveMode,
-                FieldNames = new[] {string.Empty},
-                Enabled = true,
-                Type = FactType.Critical,
-                CheckAsync = (cancellationToken) => Task.FromResult(
-                    new FactResult
-                    {
-                        Message = MatchResultPermissionValidatorResource.ResourceManager.GetString(
-                            nameof(FactId.TournamentIsInActiveMode)) ?? string.Empty,
-                        Success = !Data.Criteria.TournamentInPlanMode
-                    })
-            });
+        Facts.Add(TournamentIsInActiveMode());
+        Facts.Add(RoundIsStillRunning());
+        Facts.Add(CurrentDateIsBeforeResultCorrectionDeadline());
+    }
 
-        Facts.Add(
-            new Fact<FactId>
-            {
-                Id = FactId.RoundIsStillRunning,
-                FieldNames = new[] { string.Empty },
-                Enabled = true,
-                Type = FactType.Critical,
-                CheckAsync = (cancellationToken) => Task.FromResult(
-                    new FactResult
-                    {
-                        Message = MatchResultPermissionValidatorResource.ResourceManager.GetString(
-                            nameof(FactId.RoundIsStillRunning)) ?? string.Empty,
-                        Success = !Data.Criteria.RoundIsCompleted
-                    })
-            });
+    private Fact<FactId> CurrentDateIsBeforeResultCorrectionDeadline()
+    {
+        return new Fact<FactId>
+        {
+            Id = FactId.CurrentDateIsBeforeResultCorrectionDeadline,
+            FieldNames = new[] { string.Empty },
+            Enabled = true,
+            Type = FactType.Critical,
+            CheckAsync = (cancellationToken) => FactResult()
+        };
 
-        Facts.Add(
-            new Fact<FactId>
+        Task<FactResult> FactResult()
+        {
+            var factResult = new FactResult
             {
-                Id = FactId.CurrentDateIsBeforeResultCorrectionDeadline,
-                FieldNames = new[] { string.Empty },
-                Enabled = true,
-                Type = FactType.Critical,
-                CheckAsync = async (cancellationToken) =>
+                Message = MatchResultPermissionValidatorResource.ResourceManager.GetString(
+                    nameof(FactId.CurrentDateIsBeforeResultCorrectionDeadline)) ?? string.Empty,
+                Success = true
+            };
+
+            if (!Model.RealStart.HasValue)
+            {
+                return Task.FromResult(factResult);
+            }
+
+            // negative values will allow unlimited corrections
+            var maxCorrectionDate = Data.TenantContext.TournamentContext.MaxDaysForResultCorrection >= 0 ? Model.RealStart.Value.AddDays(Data.TenantContext.TournamentContext.MaxDaysForResultCorrection) : DateTime.MaxValue;
+
+            if (maxCorrectionDate < Data.Criteria.CurrentDateUtc)
+            {
+                factResult.Success = false;
+                factResult.Message = string.Format(MatchResultPermissionValidatorResource.ResourceManager.GetString(
+                    nameof(FactId.CurrentDateIsBeforeResultCorrectionDeadline)) ?? string.Empty, Data.TenantContext.TournamentContext.MaxDaysForResultCorrection);
+            }
+
+            return Task.FromResult(factResult);
+        }
+    }
+
+    private Fact<FactId> RoundIsStillRunning()
+    {
+        return new Fact<FactId>
+        {
+            Id = FactId.RoundIsStillRunning,
+            FieldNames = new[] { string.Empty },
+            Enabled = true,
+            Type = FactType.Critical,
+            CheckAsync = (cancellationToken) => Task.FromResult(
+                new FactResult
                 {
-                    var factResult = new FactResult
-                    {
-                        Message = MatchResultPermissionValidatorResource.ResourceManager.GetString(
-                            nameof(FactId.CurrentDateIsBeforeResultCorrectionDeadline)) ?? string.Empty,
-                        Success = true
-                    };
+                    Message = MatchResultPermissionValidatorResource.ResourceManager.GetString(
+                        nameof(FactId.RoundIsStillRunning)) ?? string.Empty,
+                    Success = !Data.Criteria.RoundIsCompleted
+                })
+        };
+    }
 
-                    if (!Model.RealStart.HasValue)
-                    {
-                        return await Task.FromResult(factResult);
-                    }
-
-                    // negative values will allow unlimited corrections
-                    var maxCorrectionDate = Data.TenantContext.TournamentContext.MaxDaysForResultCorrection >= 0 ? Model.RealStart.Value.AddDays(Data.TenantContext.TournamentContext.MaxDaysForResultCorrection) : DateTime.MaxValue;
-
-                    if (maxCorrectionDate < Data.Criteria.CurrentDateUtc)
-                    {
-                        factResult.Success = false;
-                        factResult.Message = string.Format(MatchResultPermissionValidatorResource.ResourceManager.GetString(
-                            nameof(FactId.CurrentDateIsBeforeResultCorrectionDeadline)) ?? string.Empty, Data.TenantContext.TournamentContext.MaxDaysForResultCorrection);
-                    }
-
-                    return await Task.FromResult(factResult);
-                }
-            });
+    private Fact<FactId> TournamentIsInActiveMode()
+    {
+        return new Fact<FactId>
+        {
+            Id = FactId.TournamentIsInActiveMode,
+            FieldNames = new[] {string.Empty},
+            Enabled = true,
+            Type = FactType.Critical,
+            CheckAsync = (cancellationToken) => Task.FromResult(
+                new FactResult
+                {
+                    Message = MatchResultPermissionValidatorResource.ResourceManager.GetString(
+                        nameof(FactId.TournamentIsInActiveMode)) ?? string.Empty,
+                    Success = !Data.Criteria.TournamentInPlanMode
+                })
+        };
     }
 }
