@@ -17,19 +17,23 @@ public class PhoneNumberValidator : AbstractValidator<string, (PhoneNumberServic
 
     private void CreateFacts()
     {
-        Facts.Add(
-            new Fact<FactId>
-            {
-                Id = FactId.NumberIsValid,
-                FieldNames = new[] {"PhoneNumber"},
-                Enabled = true,
-                Type = FactType.Critical,
-                CheckAsync = (cancellationToken) => Task.FromResult(
-                    new FactResult
-                    {
-                        Message = PhoneNumberValidatorResource.NumberIsValid,
-                        Success = Data.PhoneNumberService.IsValid(Model, Data.Region.TwoLetterISORegionName)
-                    })
-            });
+        Facts.Add(NumberIsValid());
+    }
+
+    private Fact<FactId> NumberIsValid()
+    {
+        return new Fact<FactId>
+        {
+            Id = FactId.NumberIsValid,
+            FieldNames = new[] {"PhoneNumber"},
+            Enabled = true,
+            Type = FactType.Critical,
+            CheckAsync = (cancellationToken) => Task.FromResult(
+                new FactResult
+                {
+                    Message = PhoneNumberValidatorResource.NumberIsValid,
+                    Success = Data.PhoneNumberService.IsValid(Model, Data.Region.TwoLetterISORegionName)
+                })
+        };
     }
 }
