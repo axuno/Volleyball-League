@@ -10,9 +10,9 @@
     ViewData["Title"] = Localizer["Enter Match Result"].Value + " - " + Model.Tournament?.Name;
     var tenantUrlSegment = TenantContext.SiteContext.UrlSegmentValue;
 
-    string AddSetErr(int setIndex)
+    string AddBallPointsErr(int setIndex)
     {
-        return !ViewData.ModelState.IsValid && ViewData.ModelState.GetValidationState($"set-{setIndex}") == ModelValidationState.Invalid ? " input-validation-error" : string.Empty;
+        return !ViewData.ModelState.IsValid && ViewData.ModelState.GetValidationState($"{nameof(Model.BallPoints)}-{setIndex}") == ModelValidationState.Invalid ? " input-validation-error" : string.Empty;
     }
 
     string AddDateErr()
@@ -25,7 +25,7 @@
     <hr />
     <form asp-controller="@nameof(Match)" asp-action="@nameof(Match.EnterResult)" asp-route-tenant="@tenantUrlSegment" method="post" role="form" novalidate>
         <site-validation-summary show="All" warning="@Model.IsWarning"></site-validation-summary>
-        <input name="IsValid" type="hidden" value="@ViewData.ModelState.IsValid.ToString()" />@* needed for unobtrusive validation *@
+        <input name="IsValid" type="hidden" value="@ViewData.ModelState.IsValid.ToString()" />
         <input hidden="hidden" asp-for="Id" />
         <input hidden="hidden" asp-for="Hash" />
         @if (Model.IsWarning)
@@ -86,18 +86,18 @@
             </div>
         </div>
         @{
-            for (var i = 0; i < Model.Sets.Count; i++)
+            for (var i = 0; i < Model.BallPoints.Count; i++)
             {
-                var localI = i;
+                var counter = i;
                 <div class="row">
                     <div class="mb-3 col-12">
                         <label class="form-label">@Localizer["Set #{0}", i + 1]</label>
                         <div class="input-group">
-                            <input asp-for="@Model.Sets[localI].Home" type="text" autocomplete="off" class="form-control text-start @(AddSetErr(localI))" style="max-width:5em" aria-describedby="@nameof(Model.MatchDate)HelpBlock" />
+                            <input asp-for="@Model.BallPoints[counter].Home" type="text" autocomplete="off" class="form-control text-start @(AddBallPointsErr(counter))" style="max-width:5em" aria-describedby="@nameof(Model.MatchDate)HelpBlock" />
                             <span class="input-group-text">
                                 :
                             </span>
-                            <input asp-for="@Model.Sets[localI].Guest" type="text" autocomplete="off" class="form-control text-end @(AddSetErr(localI))" style="max-width:5em" aria-describedby="@nameof(Model.MatchDate)HelpBlock" />
+                            <input asp-for="@Model.BallPoints[counter].Guest" type="text" autocomplete="off" class="form-control text-end @(AddBallPointsErr(counter))" style="max-width:5em" aria-describedby="@nameof(Model.MatchDate)HelpBlock" />
                         </div>
                     </div>
                 </div>
@@ -154,7 +154,7 @@
             [].forEach.call(document.querySelectorAll('[data-input-type="time"]'), function (el) {
                 tdFactory.CreateTimePicker(el, '@(CultureInfo.CurrentCulture.DateTimeFormat.ShortTimePattern.Replace("tt", "T"))');
                 el._tempusDominus.updateOptions({
-                    stepping: 1,
+                    stepping: 1
                 });
             });
         };
