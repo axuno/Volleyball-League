@@ -6,15 +6,18 @@ using Microsoft.Extensions.FileProviders;
 namespace League.WebApp;
 
 /// <summary>
-/// The demo startup class to setup and configure the league.
+/// The demo startup class to set up and configure the league.
 /// </summary>
 public static class WebAppStartup
 {
     /// <summary>
     /// The method gets called by <see cref="Program"/> at startup, BEFORE building the app is completed.
     /// </summary>
-    public static void ConfigureServices(WebHostBuilderContext context, IServiceCollection services, ILoggerFactory loggerFactory)
+    public static void ConfigureServices(WebApplicationBuilder builder, ILoggerFactory loggerFactory)
     {
+        var services = builder.Services;
+        var environment = builder.Environment;
+
         services.AddHttpsRedirection(options =>
         {
             options.RedirectStatusCode = Microsoft.AspNetCore.Http.StatusCodes.Status301MovedPermanently;
@@ -23,7 +26,7 @@ public static class WebAppStartup
         // Add custom navigation menu items to the League default navigation system
         services.AddScoped<IMainNavigationNodeBuilder, CustomMainNavigationNodeBuilder>();
 
-        if (context.HostingEnvironment.IsDevelopment())
+        if (environment.IsDevelopment())
         {
             // Add runtime compilation for the app
             services.AddRazorPages().AddRazorRuntimeCompilation();
@@ -31,7 +34,7 @@ public static class WebAppStartup
             services.Configure<MvcRazorRuntimeCompilationOptions>(options =>
             {
                 var leagueLibraryPath = Path.GetFullPath(
-                    Path.Combine(context.HostingEnvironment.ContentRootPath, "..", nameof(League)));
+                    Path.Combine(environment.ContentRootPath, "..", nameof(League)));
 
                 options.FileProviders.Add(new PhysicalFileProvider(leagueLibraryPath));
             });

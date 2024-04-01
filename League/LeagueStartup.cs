@@ -35,7 +35,7 @@ using League.TextTemplatingModule;
 namespace League;
 
 /// <summary>
-/// The startup class to setup and configure the the <see cref="League"/> Razor Class Library.
+/// The startup class to set up and configure the <see cref="League"/> Razor Class Library.
 /// Used in a derived class.
 /// </summary>
 public static class LeagueStartup
@@ -78,10 +78,11 @@ public static class LeagueStartup
     /// This method MUST be called from the derived class.
     /// It is used to add required <see cref="League"/> services to the service container.
     /// </summary>
-    public static void ConfigureServices(WebHostBuilderContext context, IServiceCollection services, ILoggerFactory loggerFactory)
+    public static void ConfigureServices(WebApplicationBuilder builder, ILoggerFactory loggerFactory)
     {
-        var configuration = context.Configuration;
-        var environment = context.HostingEnvironment;
+        var configuration = builder.Configuration;
+        var environment = builder.Environment;
+        var services = builder.Services;
 
         // Allow TournamentManager to make use of Microsoft.Extensions.Logging
         TournamentManager.AppLogging.Configure(loggerFactory);

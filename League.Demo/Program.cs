@@ -9,7 +9,7 @@ public class Program
 {
     public static async Task Main(string[] args)
     {
-        // NLog: setup the logger first to catch all errors
+        // NLog: set up the logger first to catch all errors
         var currentDir = Directory.GetCurrentDirectory();
         var logConfigFile = Path.Combine(currentDir, LeagueStartup.ConfigurationFolder, "NLog.Internal.config");
         var logger = LogManager.Setup()
@@ -43,21 +43,15 @@ public class Program
 
             #endregion
 
-            builder.WebHost.ConfigureServices((context, services) =>
-            {
-                LeagueStartup.ConfigureServices(context, services, loggerFactory);
-                WebAppStartup.ConfigureServices(context, services, loggerFactory);
-            });
+            LeagueStartup.ConfigureServices(builder, loggerFactory);
+            WebAppStartup.ConfigureServices(builder, loggerFactory);
 
             var app = builder.Build();
 
-            builder.WebHost.ConfigureAppConfiguration(_ =>
-            {
-                LeagueStartup.Configure(app, loggerFactory);
-                LeagueStartup.InitializeRankingAndCharts(app.Services.GetRequiredService<TenantStore>(), app.Services.GetRequiredService<IBackgroundQueue>(), app.Services);
-                WebAppStartup.Configure(app, loggerFactory);
-            });
-            
+            LeagueStartup.Configure(app, loggerFactory);
+            LeagueStartup.InitializeRankingAndCharts(app.Services.GetRequiredService<TenantStore>(), app.Services.GetRequiredService<IBackgroundQueue>(), app.Services);
+            WebAppStartup.Configure(app, loggerFactory);
+
             await app.RunAsync();
         }
         catch (Exception e)
@@ -78,16 +72,14 @@ public class Program
         {
             Args = args,
             ApplicationName = typeof(Program).Assembly.GetName().Name, // don't use Assembly.Fullname
+            WebRootPath = "wwwroot" // Note: WebRootPath is relative to ContentRootPath.
             // Note: ContentRootPath is detected by the framework.
             // If set explicitly as WebApplicationOptions, WebApplicationFactory in unit tests does not override it.
         });
 
-        builder.WebHost
-            // Set WebRootPath as folder relative to ContentRootPath.
-            .UseWebRoot("wwwroot")
-            // Use static web assets from League (and other referenced projects or packages)
-            // Note: When the app is published, the static asset files get copied up into the wwwroot folder.
-            .UseStaticWebAssets();
+        // Use static web assets from League (and other referenced projects or packages)
+        // Note: When the app is published, the static asset files get copied up into the wwwroot folder.
+        builder.WebHost.UseStaticWebAssets();
 
         var absoluteConfigurationPath = Path.Combine(builder.Environment.ContentRootPath,
             LeagueStartup.ConfigurationFolder);
