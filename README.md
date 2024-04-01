@@ -60,6 +60,11 @@ A backup of the two demo databases is located in `League.Demo/Seed/Demo-Db.zip`.
 
 The default database names are `TestOrg` and `OtherOrg`. You may change these names, but then update the `DbContext/Catalog` name in `Tenant.TestOrg.Development.config` and  `Tenant.OtherOrg.Development.config` accordingly.
 
+### Build JavaScript and CSS
+
+    * Run `npm install` in the `League` directory to install the required npm packages.
+    * Run task 'prod' from Task Runner Explorer in Visual Studio to build the JavaScript and CSS files.
+
 ### Admin login
 
   The **admin login** for the two demo tenants is:

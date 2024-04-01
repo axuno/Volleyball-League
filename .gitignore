@@ -24,8 +24,8 @@ bld/
 
 # Visual Studio 2019 cache/options directory
 .vs/
-# Uncomment if you have tasks that create the project's static files in wwwroot
-wwwroot/
+# Uncomment if you have tasks that create the project's static files in wwwroot that should be excluded
+# wwwroot/
 
 # MSTest test Results
 [Tt]est[Rr]esult*/
@@ -264,4 +264,12 @@ paket-files/
 
 # Data Protection Keys for ASP.NET Core Data Protection
 **/DataProtectionKeys/*.xml
+
+# These files will be created by Task Runner Explorer
+/League/wwwroot/
+# Ignore everything in the wwwroot directory
+/League.Demo/wwwroot/*
+# But don't ignore these directories
+!/League.Demo/wwwroot/images/
+!/League.Demo/wwwroot/teamphoto/
 
