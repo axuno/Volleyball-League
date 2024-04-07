@@ -67,13 +67,18 @@ public class EnterResultViewModel
         foreach (var set in Match.Sets)
         {
             BallPoints.Add(new PointResult(set.HomeBallPoints, set.GuestBallPoints));
+            SetPoints.Add(new PointResult(set.HomeSetPoints, set.GuestSetPoints));
         }
 
-        // Add empty sets to form fields
+        // Add empty ball/set points to form fields
         while (BallPoints.Count < _maxNumberOfSets)
         {
             BallPoints.Add(new PointResult(default, default(int?)));
+            SetPoints.Add(new PointResult(default, default(int?)));
         }
+
+        HomePoints = Match.HomePoints;
+        GuestPoints = Match.GuestPoints;
 
         Id = Match.Id;
 
@@ -96,10 +101,21 @@ public class EnterResultViewModel
         // Add sets to entity
         Match.Sets.Clear(true);
         // sets where home or guest ball points are NULL will be ignored
-        Match.Sets.Add(Match.Id, BallPoints);
+        if (IsOverruling)
+        {
+            Match.Sets.Add(Match.Id, BallPoints, SetPoints);
+            Match.HomePoints = HomePoints;
+            Match.GuestPoints = GuestPoints;
+            Match.IsOverruled = true;
+        }
+        else
+        {
+            Match.Sets.Add(Match.Id, BallPoints);
+            Match.IsOverruled = false;
+            // Automatic point calculation must run before validation because of tie-break handling
+            _ = Match.Sets.CalculateSetPoints(Round!.SetRule, Round.MatchRule);
+        }
 
-        // point calculation must run before validation because of tie-break handling
-        _ = Match.Sets.CalculateSetPoints(Round!.SetRule, Round.MatchRule);
         Match.Remarks = Remarks;
         Match.ChangeSerial++;
         Match.IsComplete = true;
@@ -137,6 +153,31 @@ public class EnterResultViewModel
     public string? Remarks { get; set; }
 
     public List<PointResult> BallPoints { get; set; } = new();
+
+    #region * Overruling *
+
+    /// <summary>
+    /// <c>true</c> to allow overruling to award the set and match points manually.
+    /// </summary>
+    [HiddenInput]
+    public bool IsOverruling { get; set; } = false;
+
+    /// <summary>
+    /// Show, form fields if <see cref="IsOverruling"/> is <c>true</c>.
+    /// </summary>
+    public List<PointResult> SetPoints { get; set; } = new();
+
+    /// <summary>
+    /// Show field for home match points, if <see cref="IsOverruling"/> is <c>true</c>.
+    /// </summary>
+    public int? HomePoints { get; set; }
+
+    /// <summary>
+    /// Show field for guest match points, if <see cref="IsOverruling"/> is <c>true</c>.
+    /// </summary>
+    public int? GuestPoints { get; set; }
+
+    #endregion
 
     #endregion
 
@@ -193,7 +234,12 @@ public class EnterResultViewModel
                         {
                             foreach (var singleSet in validator.SetsValidator.SingleSetErrors)
                             {
-                                modelState.AddModelError($"{nameof(BallPoints)}-{singleSet.SequenceNo-1}", string.Concat(string.Format(_localizer["Set #{0}"], singleSet.SequenceNo), ": ", singleSet.ErrorMessage));
+                                modelState.AddModelError(
+                                    singleSet.FactId == SingleSetValidator.FactId.SetPointsAreValid // we have just one set error
+                                        ? $"{nameof(SetPoints)}-{singleSet.SequenceNo - 1}"
+                                        : $"{nameof(BallPoints)}-{singleSet.SequenceNo - 1}",
+                                    string.Concat(string.Format(_localizer["Set #{0}"], singleSet.SequenceNo), ": ",
+                                        singleSet.ErrorMessage));
                             }
                         }
                         else
@@ -202,6 +248,11 @@ public class EnterResultViewModel
                             modelState.AddModelError("", setsError.Message);
                         }
                     }
+                }
+
+                if (fact.Id == MatchResultValidator.FactId.MatchPointsAreValid)
+                {
+                    modelState.AddModelError($"{nameof(HomePoints)}", fact.Message);
                 }
             }
             else

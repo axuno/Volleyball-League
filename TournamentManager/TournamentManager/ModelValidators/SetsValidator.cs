@@ -3,7 +3,7 @@ using TournamentManager.MultiTenancy;
 
 namespace TournamentManager.ModelValidators;
 
-public class SetsValidator : AbstractValidator<IList<SetEntity>, (ITenantContext TenantContext,
+public sealed class SetsValidator : AbstractValidator<IList<SetEntity>, (ITenantContext TenantContext,
     (MatchRuleEntity MatchRule, SetRuleEntity SetRule) Rules), SetsValidator.FactId>
 {
     public enum FactId
@@ -15,10 +15,35 @@ public class SetsValidator : AbstractValidator<IList<SetEntity>, (ITenantContext
         BestOfNoMatchAfterBestOfReached
     }
 
+    private readonly MatchValidationMode _validationMode;
+
+    private static readonly Dictionary<MatchValidationMode, Dictionary<FactId, bool>> ModeConfiguration = new() {
+        {
+            MatchValidationMode.Default, new Dictionary<FactId, bool> {
+                { FactId.AllSetsAreValid, true },
+                { FactId.MinAndMaxOfSetsPlayed, true },
+                { FactId.BestOfMinAndMaxOfSetsPlayed, true },
+                { FactId.BestOfRequiredTieBreakPlayed, true },
+                { FactId.BestOfNoMatchAfterBestOfReached, true }
+            }
+        },
+        {
+            MatchValidationMode.Overrule, new Dictionary<FactId, bool> {
+                { FactId.AllSetsAreValid, true },
+                { FactId.MinAndMaxOfSetsPlayed, false },
+                { FactId.BestOfMinAndMaxOfSetsPlayed, false },
+                { FactId.BestOfRequiredTieBreakPlayed, false },
+                { FactId.BestOfNoMatchAfterBestOfReached, false }
+            }
+        }
+    };
+
     public SetsValidator(IList<SetEntity> model,
-        (ITenantContext TenantContext, (MatchRuleEntity MatchRule, SetRuleEntity SetRule) Rules) data) : base(model, data)
+        (ITenantContext TenantContext, (MatchRuleEntity MatchRule, SetRuleEntity SetRule) Rules) data, MatchValidationMode validationMode) : base(model, data)
     {
+        _validationMode = validationMode;
         CreateFacts();
+        ConfigureFacts(ModeConfiguration[validationMode]);
     }
 
     public List<(long Id, int SequenceNo, SingleSetValidator.FactId FactId, string ErrorMessage)> SingleSetErrors { get; } = new();
@@ -129,7 +154,7 @@ public class SetsValidator : AbstractValidator<IList<SetEntity>, (ITenantContext
             foreach (var set in Model)
             {
                 var singleSetValidator =
-                    new SingleSetValidator(set, (Data.TenantContext, Data.Rules.SetRule));
+                    new SingleSetValidator(set, (Data.TenantContext, Data.Rules.SetRule), _validationMode);
                 await singleSetValidator.CheckAsync(cancellationToken);
                 var errorFact = singleSetValidator.GetFailedFacts().FirstOrDefault();
                 if (errorFact != null)

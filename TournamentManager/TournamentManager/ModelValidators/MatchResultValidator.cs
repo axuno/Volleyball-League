@@ -4,7 +4,7 @@ using TournamentManager.MultiTenancy;
 
 namespace TournamentManager.ModelValidators;
 
-public class MatchResultValidator : AbstractValidator<MatchEntity, (ITenantContext TenantContext,
+public sealed class MatchResultValidator : AbstractValidator<MatchEntity, (ITenantContext TenantContext,
     Axuno.Tools.DateAndTime.TimeZoneConverter TimeZoneConverter, (MatchRuleEntity MatchRule, SetRuleEntity SetRule) Rules), MatchResultValidator.FactId>
 {
     internal DateTime Today { get; set; } = DateTime.UtcNow; // used for unit tests
@@ -15,26 +15,54 @@ public class MatchResultValidator : AbstractValidator<MatchEntity, (ITenantConte
         RealMatchDateWithinRoundLegs,
         RealMatchDateEqualsFixture,
         RealMatchDurationIsPlausible,
+        MatchPointsAreValid,
         SetsValidatorSuccessful
     }
 
+    private static readonly Dictionary<MatchValidationMode, Dictionary<FactId, bool>> ModeConfiguration = new() {
+        {
+            MatchValidationMode.Default, new Dictionary<FactId, bool> {
+                { FactId.RealMatchDateIsSet, true},
+                { FactId.RealMatchDateTodayOrBefore, true},
+                { FactId.RealMatchDateWithinRoundLegs, true},
+                { FactId.RealMatchDateEqualsFixture, true},
+                { FactId.RealMatchDurationIsPlausible, true},
+                { FactId.MatchPointsAreValid, false},
+                { FactId.SetsValidatorSuccessful, true}
+            }
+        },
+        {
+            MatchValidationMode.Overrule, new Dictionary<FactId, bool> {
+                { FactId.RealMatchDateIsSet, true},
+                { FactId.RealMatchDateTodayOrBefore, true},
+                { FactId.RealMatchDateWithinRoundLegs, false},
+                { FactId.RealMatchDateEqualsFixture, false},
+                { FactId.RealMatchDurationIsPlausible, true},
+                { FactId.MatchPointsAreValid, true},
+                { FactId.SetsValidatorSuccessful, true}
+            }
+        }
+    };
+
     public MatchResultValidator(MatchEntity model,
-        (ITenantContext TenantContext, Axuno.Tools.DateAndTime.TimeZoneConverter TimeZoneConverter, (MatchRuleEntity MatchRule, SetRuleEntity SetRule) Rules) data) : base(model, data)
+        (ITenantContext TenantContext, Axuno.Tools.DateAndTime.TimeZoneConverter TimeZoneConverter, (MatchRuleEntity MatchRule, SetRuleEntity SetRule) Rules) data, MatchValidationMode validationMode) : base(model, data)
     {
-        SetsValidator = new SetsValidator(Model.Sets, (Data.TenantContext, Data.Rules));
+        SetsValidator = new SetsValidator(Model.Sets, (Data.TenantContext, Data.Rules), validationMode);
         CreateFacts();
+        ConfigureFacts(ModeConfiguration[validationMode]);
     }
 
     public SetsValidator SetsValidator { get; }
 
-    public void CreateFacts()
+    private void CreateFacts()
     {
         Facts.Add(RealMatchDateIsSet());
         Facts.Add(RealMatchDateTodayOrBefore());
         Facts.Add(RealMatchDateWithinRoundLegs());
-        Facts.Add(SetsValidatorSuccessful());
         Facts.Add(RealMatchDateEqualsFixture());
         Facts.Add(RealMatchDurationIsPlausible());
+        Facts.Add(MatchPointsAreValid());
+        Facts.Add(SetsValidatorSuccessful());
     }
 
     private Fact<FactId> RealMatchDurationIsPlausible()
@@ -45,7 +73,7 @@ public class MatchResultValidator : AbstractValidator<MatchEntity, (ITenantConte
             // https://volleyball.de/nc/news/details/datum/2011/05/27/zahlenspiele-1025-spiele-dauerten-64-tage-und-26-minuten/
             Id = FactId.RealMatchDurationIsPlausible,
             FieldNames = new[] { nameof(Model.RealStart), nameof(Model.RealEnd) },
-            Enabled = true,
+            Enabled = default,
             Type = FactType.Warning,
             CheckAsync = (cancellationToken) => FactResult()
         };
@@ -74,7 +102,7 @@ public class MatchResultValidator : AbstractValidator<MatchEntity, (ITenantConte
         {
             Id = FactId.RealMatchDateEqualsFixture,
             FieldNames = new[] { nameof(Model.RealStart), nameof(Model.RealEnd) },
-            Enabled = true,
+            Enabled = default,
             Type = FactType.Warning,
             CheckAsync = (cancellationToken) => Task.FromResult(
                 new FactResult
@@ -92,17 +120,14 @@ public class MatchResultValidator : AbstractValidator<MatchEntity, (ITenantConte
         {
             Id = FactId.SetsValidatorSuccessful,
             FieldNames = new[] { string.Empty },
-            Enabled = true,
+            Enabled = default,
             Type = FactType.Critical,
             CheckAsync = async (cancellationToken) => await FactResult()
         };
 
         async Task<FactResult> FactResult()
         {
-            if (!Model.IsOverruled)
-            {
-                await SetsValidator.CheckAsync(CancellationToken.None);
-            }
+            await SetsValidator.CheckAsync(CancellationToken.None);
 
             return new FactResult
             {
@@ -119,12 +144,12 @@ public class MatchResultValidator : AbstractValidator<MatchEntity, (ITenantConte
         {
             Id = FactId.RealMatchDateWithinRoundLegs,
             FieldNames = new[] {nameof(Model.RealStart), nameof(Model.RealEnd) },
-            Enabled = true,
+            Enabled = default,
             Type = FactType.Error,
             CheckAsync = FactResult
         };
 
-        async Task<FactResult> FactResult(CancellationToken cancellationToken)
+    async Task<FactResult> FactResult(CancellationToken cancellationToken)
         {
             var successResult = new FactResult
             {
@@ -174,7 +199,7 @@ public class MatchResultValidator : AbstractValidator<MatchEntity, (ITenantConte
         {
             Id = FactId.RealMatchDateTodayOrBefore,
             FieldNames = new[] { nameof(Model.RealStart), nameof(Model.RealEnd) },
-            Enabled = true,
+            Enabled = default,
             Type = FactType.Error,
             CheckAsync = (cancellationToken) => Task.FromResult(
                 new FactResult
@@ -191,7 +216,7 @@ public class MatchResultValidator : AbstractValidator<MatchEntity, (ITenantConte
         {
             Id = FactId.RealMatchDateIsSet,
             FieldNames = new[] { nameof(Model.RealStart), nameof(Model.RealEnd) },
-            Enabled = true,
+            Enabled = default,
             Type = FactType.Critical,
             CheckAsync = (cancellationToken) => Task.FromResult(
                 new FactResult
@@ -199,6 +224,36 @@ public class MatchResultValidator : AbstractValidator<MatchEntity, (ITenantConte
                     Message = MatchResultValidatorResource.ResourceManager.GetString(nameof(FactId.RealMatchDateIsSet)) ?? string.Empty,
                     Success = Model is { RealStart: not null, RealEnd: not null }
                 })
+        };
+    }
+
+    private Fact<FactId> MatchPointsAreValid()
+    {
+        return new Fact<FactId>
+        {
+            Id = FactId.MatchPointsAreValid,
+            FieldNames = new[] { nameof(Model.HomePoints), nameof(Model.GuestPoints) },
+            Enabled = default,
+            Type = FactType.Critical,
+            CheckAsync = (cancellationToken) =>
+            {
+                var allowed = new List<int?>
+                {
+                    Data.Rules.MatchRule.PointsMatchLost,
+                    Data.Rules.MatchRule.PointsMatchTie,
+                    Data.Rules.MatchRule.PointsMatchWon,
+                    Data.Rules.MatchRule.PointsMatchLostAfterTieBreak,
+                    Data.Rules.MatchRule.PointsMatchWonAfterTieBreak
+                }.Distinct().ToList();
+
+                return Task.FromResult(
+                    new FactResult {
+                        Message = string.Format(MatchResultValidatorResource.ResourceManager.GetString(
+                                                    nameof(FactId.MatchPointsAreValid)) ??
+                                                string.Empty, string.Join(',', allowed)),
+                        Success = allowed.Contains(Model.HomePoints) && allowed.Contains(Model.GuestPoints)
+                    });
+            }
         };
     }
 }

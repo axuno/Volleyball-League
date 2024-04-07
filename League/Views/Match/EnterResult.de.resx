@@ -117,6 +117,12 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="All sets containing empty fields will be discarded" xml:space="preserve">
+    <value>Alle Sätze, die leere Felder enthalten, werden verworfen</value>
+  </data>
+  <data name="Back standard form" xml:space="preserve">
+    <value>Zurück zur Standardeingabe</value>
+  </data>
   <data name="Cancel" xml:space="preserve">
     <value>Abbrechen</value>
   </data>
@@ -126,23 +132,41 @@
   <data name="DD.MM.YYYY" xml:space="preserve">
     <value>TT.MM.JJJJ</value>
   </data>
+  <data name="Enable overruling" xml:space="preserve">
+    <value>Übersteuern aktivieren</value>
+  </data>
   <data name="Enter Match Result" xml:space="preserve">
     <value>Spielergebnis eintragen</value>
   </data>
   <data name="Opponents" xml:space="preserve">
     <value>Begegnung</value>
   </data>
+  <data name="Overruled results are flagged" xml:space="preserve">
+    <value>Übersteuerte Ergebnisse werden gekennzeichnet</value>
+  </data>
+  <data name="Overruling is enabled" xml:space="preserve">
+    <value>Übersteuern ist aktiviert</value>
+  </data>
   <data name="Please double-check all entries before saving" xml:space="preserve">
     <value>Bitte die Angaben vor dem Speichern kontrollieren</value>
   </data>
+  <data name="Points must be adjusted manually" xml:space="preserve">
+    <value>Punkte müssen manuell festgelegt werden</value>
+  </data>
   <data name="Remarks become part of the result submission" xml:space="preserve">
     <value>Anmerkungen sind Teil der Ergebnismeldung</value>
+  </data>
+  <data name="Results can be changed as long as the competition is running" xml:space="preserve">
+    <value>Ergebnisse können geändert werden, solange der Wettbewerb läuft</value>
   </data>
   <data name="Save" xml:space="preserve">
     <value>Speichern</value>
   </data>
   <data name="Set #{0}" xml:space="preserve">
     <value>{0}. Satz</value>
+  </data>
+  <data name="The result entry can be removed. The match goes back to fixtures." xml:space="preserve">
+    <value>Der Ergebniseintrag kann entfernt werden. Das Spiel geht zurück in den Spielplan.</value>
   </data>
   <data name="Time format" xml:space="preserve">
     <value>Zeitformat</value>

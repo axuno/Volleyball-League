@@ -1,17 +1,9 @@
-﻿using System;
-using System.Drawing.Text;
-using System.IO;
-using System.Linq;
-using System.Text.Encodings.Web;
-using System.Threading.Tasks;
+﻿using System.Text.Encodings.Web;
 using Microsoft.AspNetCore.Html;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Razor.TagHelpers;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.TagHelpers;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
-using Org.BouncyCastle.Utilities.Collections;
-using System.Collections.Generic;
 
 namespace League.TagHelpers;
 
@@ -86,7 +78,7 @@ public class SiteValidationSummaryTagHelper : TagHelper
 
     /// <summary>
     /// If <see cref="F:Microsoft.AspNetCore.Mvc.Rendering.ValidationSummary.All" /> or <see cref="F:Microsoft.AspNetCore.Mvc.Rendering.ValidationSummary.ModelOnly" />, appends a validation
-    /// summary. Otherwise (<see cref="F:Microsoft.AspNetCore.Mvc.Rendering.ValidationSummary.None" />, the default), this tag helper does nothing.
+    /// summary. Otherwise, (<see cref="F:Microsoft.AspNetCore.Mvc.Rendering.ValidationSummary.None" />, the default), this tag helper does nothing.
     /// </summary>
     /// <exception cref="T:System.ArgumentException">
     /// Thrown if setter is called with an undefined <see cref="P:Microsoft.AspNetCore.Mvc.TagHelpers.ValidationSummaryTagHelper.ValidationSummary" /> value e.g.
@@ -103,7 +95,7 @@ public class SiteValidationSummaryTagHelper : TagHelper
         set
         {
             if ((uint) value > 2U)
-                throw new ArgumentException($"Undefined {nameof(ValidationSummary)} value",
+                throw new ArgumentException($@"Undefined {nameof(ValidationSummary)} value",
                     nameof(ValidationSummary));
             _validationSummaryEnum = value;
         }

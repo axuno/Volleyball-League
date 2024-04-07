@@ -129,6 +129,9 @@
   <data name="RegularWinReachedWithTwoPlusPointsAhead" xml:space="preserve">
     <value>The difference in ball points must be {0} {1} if a team has {2} {3} ball points</value>
   </data>
+  <data name="SetPointsAreValid" xml:space="preserve">
+    <value>Allowed set points are {0}</value>
+  </data>
   <data name="TextAtLeast" xml:space="preserve">
     <value>at least</value>
   </data>

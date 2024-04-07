@@ -11,7 +11,7 @@ public class SetsValidatorTests
     [Test]
     public void All_Ids_Have_A_Check_Function()
     {
-        var sv = new SetsValidator(new List<SetEntity>(), (new TenantContext(), (new MatchRuleEntity(1), new SetRuleEntity(1))));
+        var sv = new SetsValidator(new List<SetEntity>(), (new TenantContext(), (new MatchRuleEntity(1), new SetRuleEntity(1))), MatchValidationMode.Default);
 
         var enums = Enum.GetNames(typeof(SetsValidator.FactId)).ToList();
         foreach (var e in enums)
@@ -34,7 +34,7 @@ public class SetsValidatorTests
         {
             sets.Add(new SetEntity());
         }
-        var sv = new SetsValidator(sets, (new TenantContext(), (new MatchRuleEntity {BestOf = false, NumOfSets = 3}, new SetRuleEntity())));
+        var sv = new SetsValidator(sets, (new TenantContext(), (new MatchRuleEntity {BestOf = false, NumOfSets = 3}, new SetRuleEntity())), MatchValidationMode.Default);
         await sv.CheckAsync(SetsValidator.FactId.MinAndMaxOfSetsPlayed, CancellationToken.None);
         Assert.Multiple(() =>
             {
@@ -66,7 +66,7 @@ public class SetsValidatorTests
             sets.Add(new SetEntity());
         }
 
-        var sv = new SetsValidator(sets, (new TenantContext(), (new MatchRuleEntity { BestOf = true, NumOfSets = 3 }, new SetRuleEntity())));
+        var sv = new SetsValidator(sets, (new TenantContext(), (new MatchRuleEntity { BestOf = true, NumOfSets = 3 }, new SetRuleEntity())), MatchValidationMode.Default);
         await sv.CheckAsync(SetsValidator.FactId.BestOfMinAndMaxOfSetsPlayed, CancellationToken.None);
         Assert.Multiple(() =>
             {
@@ -101,7 +101,7 @@ public class SetsValidatorTests
 
         var matchRule = new MatchRuleEntity() {BestOf = true, NumOfSets = 2};
             
-        var sv = new SetsValidator(sets, (new TenantContext(), (matchRule, setRule)));
+        var sv = new SetsValidator(sets, (new TenantContext(), (matchRule, setRule)), MatchValidationMode.Default);
         await sv.CheckAsync(CancellationToken.None);
         var errorFacts = sv.GetFailedFacts();
         Assert.Multiple(() =>
@@ -125,7 +125,7 @@ public class SetsValidatorTests
 
         var matchRule = new MatchRuleEntity() { BestOf = true, NumOfSets = 2 };
 
-        var sv = new SetsValidator(sets, (new TenantContext(), (matchRule, new SetRuleEntity())));
+        var sv = new SetsValidator(sets, (new TenantContext(), (matchRule, new SetRuleEntity())), MatchValidationMode.Default);
         await sv.CheckAsync(SetsValidator.FactId.BestOfRequiredTieBreakPlayed, CancellationToken.None);
         var factResult = sv.GetFailedFacts().First(f => f.Id == SetsValidator.FactId.BestOfRequiredTieBreakPlayed);
         Assert.Multiple(() =>
@@ -154,7 +154,7 @@ public class SetsValidatorTests
         var setRule = new SetRuleEntity {PointsSetWon = 1, PointsSetLost = 0, PointsSetTie = 0};
         var matchRule = new MatchRuleEntity { BestOf = true, NumOfSets = 2 };
 
-        var sv = new SetsValidator(sets, (new TenantContext(), (matchRule, new SetRuleEntity())));
+        var sv = new SetsValidator(sets, (new TenantContext(), (matchRule, new SetRuleEntity())), MatchValidationMode.Default);
         await sv.CheckAsync(SetsValidator.FactId.BestOfNoMatchAfterBestOfReached, CancellationToken.None);
         var factResult = sv.GetFailedFacts().First(f => f.Id == SetsValidator.FactId.BestOfNoMatchAfterBestOfReached);
         Assert.Multiple(() =>
@@ -173,7 +173,7 @@ public class SetsValidatorTests
     [Test]
     public void Check_FieldName_Of_Facts()
     {
-        var sv = new SetsValidator(new List<SetEntity>(), (new TenantContext(), (new MatchRuleEntity(), new SetRuleEntity())));
+        var sv = new SetsValidator(new List<SetEntity>(), (new TenantContext(), (new MatchRuleEntity(), new SetRuleEntity())), MatchValidationMode.Default);
 
         foreach (var fact in sv.Facts)
         {

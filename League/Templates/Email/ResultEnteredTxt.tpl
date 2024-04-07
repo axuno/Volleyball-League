@@ -12,6 +12,12 @@
 {{ end ~}}
 
 {{ L "Result" }}
+{{ if model.Match.Sets.size > 0 ~}}
+    {{~ L "Ball points" }} / {{ L "Set points" }}
+{{ else ~}}
+
+    {{~ L "No sets" ~}}
+{{ end ~}}
 {{ i = 0 }}
 {{ points = { homeball: 0, guestball: 0, homeset: 0, guestset: 0 } ~}}
 {{for set in model.Match.Sets ~}} 
@@ -20,7 +26,7 @@
     {{~ points.homeset = points.homeset + set.HomeSetPoints ~}}
     {{~ points.guestset = points.guestset + set.GuestSetPoints ~}}
     {{~ i = i + 1 ~}}
-    {{~ L "Set #{0}" i }}:  {{ set.HomeBallPoints | string.pad_left 2 }} : {{ set.GuestBallPoints }}
+    {{~ L "Set #{0}" i }}:  {{ set.HomeBallPoints | string.pad_left 2 }} : {{ set.GuestBallPoints | string.pad_right 2 }}  / {{ set.HomeSetPoints | string.pad_left 2 }} : {{ set.GuestSetPoints | string.pad_right 2 }}
 {{ end ~}}
 
 {{ padright = [ L "Ball points", L "Set points", L "Match points" ] | array.map "size" | array.sort | array.last ~}}

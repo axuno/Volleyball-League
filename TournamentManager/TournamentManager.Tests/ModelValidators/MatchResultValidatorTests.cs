@@ -11,7 +11,7 @@ namespace TournamentManager.Tests.ModelValidators;
 [TestFixture]
 public class MatchResultValidatorTests
 {
-    private readonly (ITenantContext TenantContext, Axuno.Tools.DateAndTime.TimeZoneConverter TimeZoneConverter, (MatchRuleEntity matchRule, SetRuleEntity setRule)) _data;
+    private readonly (ITenantContext TenantContext, Axuno.Tools.DateAndTime.TimeZoneConverter TimeZoneConverter, (MatchRuleEntity MatchRule, SetRuleEntity SetRule) Rules) _data;
         
     public MatchResultValidatorTests()
     {
@@ -64,7 +64,7 @@ public class MatchResultValidatorTests
     public void All_Ids_Have_A_Check_Function()
     {
         var set = new MatchEntity();
-        var sv = new MatchResultValidator(set, _data);
+        var sv = new MatchResultValidator(set, _data, MatchValidationMode.Default);
 
         var enums = Enum.GetNames(typeof(MatchResultValidator.FactId)).ToList();
         foreach (var e in enums)
@@ -97,7 +97,7 @@ public class MatchResultValidatorTests
 
         var matchRule = new MatchRuleEntity { BestOf = true, NumOfSets = 2 };
 
-        var mv = new MatchResultValidator(match, (_data.TenantContext, _data.TimeZoneConverter, (matchRule, setRule)));
+        var mv = new MatchResultValidator(match, (_data.TenantContext, _data.TimeZoneConverter, (matchRule, setRule)), MatchValidationMode.Default);
         await mv.CheckAsync(MatchResultValidator.FactId.SetsValidatorSuccessful, CancellationToken.None);
         var factResult = mv.GetFailedFacts().First(f => f.Id == MatchResultValidator.FactId.SetsValidatorSuccessful);
         Assert.Multiple(() =>
@@ -131,7 +131,7 @@ public class MatchResultValidatorTests
 
         var matchRule = new MatchRuleEntity { BestOf = true, NumOfSets = 2 };
 
-        var mv = new MatchResultValidator(match, (_data.TenantContext, _data.TimeZoneConverter, (matchRule, setRule)));
+        var mv = new MatchResultValidator(match, (_data.TenantContext, _data.TimeZoneConverter, (matchRule, setRule)), MatchValidationMode.Default);
         var factResult = await mv.CheckAsync(MatchResultValidator.FactId.SetsValidatorSuccessful, CancellationToken.None);
         Assert.Multiple(() =>
         {
@@ -159,7 +159,7 @@ public class MatchResultValidatorTests
             GuestTeamId = 10
         };
 
-        var mv = new MatchResultValidator(match, _data);
+        var mv = new MatchResultValidator(match, _data, MatchValidationMode.Default);
         await mv.CheckAsync(MatchResultValidator.FactId.RealMatchDateWithinRoundLegs, CancellationToken.None);
         var factResults = mv.GetFailedFacts();
         Assert.Multiple(() =>
@@ -191,7 +191,7 @@ public class MatchResultValidatorTests
             GuestTeamId = 10
         };
 
-        var mv = new MatchResultValidator(match, _data);
+        var mv = new MatchResultValidator(match, _data, MatchValidationMode.Default);
         await mv.CheckAsync(MatchResultValidator.FactId.RealMatchDateIsSet, CancellationToken.None);
         var factResults = mv.GetFailedFacts();
         Assert.Multiple(() =>
@@ -217,7 +217,7 @@ public class MatchResultValidatorTests
             GuestTeamId = 10
         };
 
-        var mv = new MatchResultValidator(match, _data) { Today = today };
+        var mv = new MatchResultValidator(match, _data, MatchValidationMode.Default) { Today = today };
         await mv.CheckAsync(MatchResultValidator.FactId.RealMatchDateTodayOrBefore, CancellationToken.None);
         var factResults = mv.GetFailedFacts();
         Assert.Multiple(() =>
@@ -245,7 +245,7 @@ public class MatchResultValidatorTests
             GuestTeamId = 10
         };
 
-        var mv = new MatchResultValidator(match, _data);
+        var mv = new MatchResultValidator(match, _data, MatchValidationMode.Default);
         await mv.CheckAsync(MatchResultValidator.FactId.RealMatchDateEqualsFixture, CancellationToken.None);
         var factResults = mv.GetFailedFacts();
         Assert.Multiple(() =>
@@ -284,7 +284,7 @@ public class MatchResultValidatorTests
         };
         match.Sets.AddRange(sets);
 
-        var mv = new MatchResultValidator(match, _data);
+        var mv = new MatchResultValidator(match, _data, MatchValidationMode.Default);
         await mv.CheckAsync(MatchResultValidator.FactId.RealMatchDurationIsPlausible, CancellationToken.None);
         var factResults = mv.GetFailedFacts();
 
@@ -305,10 +305,67 @@ public class MatchResultValidatorTests
 
     }
 
+    [TestCase(0,0)]
+    [TestCase(1,4)]
+    [TestCase(2, 3)]
+    [TestCase(3, 2)]
+    [TestCase(4, 1)]
+    public async Task Valid_Match_Points_Should_Pass_Validation(int? home, int? guest)
+    {
+        var data = _data;
+        data.Rules.MatchRule = new MatchRuleEntity
+        {
+            BestOf = true, NumOfSets = 3, PointsMatchLost = 0, PointsMatchTie = 1, PointsMatchWon = 2,
+            PointsMatchLostAfterTieBreak = 3, PointsMatchWonAfterTieBreak = 4
+        };
+
+        var match = new MatchEntity
+        {
+            HomePoints = home,
+            GuestPoints = guest
+        };
+        
+        var mv = new MatchResultValidator(match, data, MatchValidationMode.Default);
+        await mv.CheckAsync(MatchResultValidator.FactId.MatchPointsAreValid, CancellationToken.None);
+        var factResults = mv.GetFailedFacts();
+        Assert.That(factResults, Has.Count.EqualTo(0));
+    }
+
+    [TestCase(10, 1)]
+    [TestCase(-1, -1)]
+    [TestCase(null, 1)]
+    [TestCase(null, null)]
+    public async Task Invalid_Match_Points_Should_Fail_To_Validate(int? home, int? guest)
+    {
+        var data = _data;
+        data.Rules.MatchRule = new MatchRuleEntity
+        {
+            BestOf = true, NumOfSets = 3, PointsMatchLost = 0, PointsMatchTie = 1, PointsMatchWon = 2,
+            PointsMatchLostAfterTieBreak = 3, PointsMatchWonAfterTieBreak = 4
+        };
+
+        var match = new MatchEntity
+        {
+            HomePoints = home,
+            GuestPoints = guest
+        };
+
+        var mv = new MatchResultValidator(match, data, MatchValidationMode.Overrule);
+        await mv.CheckAsync(MatchResultValidator.FactId.MatchPointsAreValid, CancellationToken.None);
+        var factResults = mv.GetFailedFacts();
+        Assert.Multiple(() =>
+        {
+            Assert.That(factResults, Has.Count.EqualTo(1));
+            Assert.That(factResults.First().Id, Is.EqualTo(MatchResultValidator.FactId.MatchPointsAreValid));
+            Assert.That(factResults.First().Message, Is.Not.Null.And.Contains("0,1,2,3,4"));
+            Assert.That(factResults.First().Type, Is.EqualTo(FactType.Critical));
+        });
+    }
+
     [Test]
     public void Check_FieldName_Of_Facts()
     {
-        var mv = new MatchResultValidator(new MatchEntity(), _data);
+        var mv = new MatchResultValidator(new MatchEntity(), _data, MatchValidationMode.Default);
 
         foreach (var fact in mv.Facts)
         {

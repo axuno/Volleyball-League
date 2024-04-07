@@ -233,6 +233,10 @@
     <value>Keine Nachricht enthalten</value>
     <comment>ContactForm</comment>
   </data>
+  <data name="No sets" xml:space="preserve">
+    <value>Keine Sätze</value>
+    <comment>ResultEntered</comment>
+  </data>
   <data name="Number of changes" xml:space="preserve">
     <value>Anzahl Änderungen</value>
     <comment>ResultEntered, ChangeFixture</comment>

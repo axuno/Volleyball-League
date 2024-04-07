@@ -1,5 +1,4 @@
 ﻿@using System.Globalization
-@using League.Controllers
 @using Microsoft.AspNetCore.Mvc.Localization
 @using Microsoft.AspNetCore.Mvc.ModelBinding
 @using TournamentManager.MultiTenancy
@@ -15,6 +14,16 @@
         return !ViewData.ModelState.IsValid && ViewData.ModelState.GetValidationState($"{nameof(Model.BallPoints)}-{setIndex}") == ModelValidationState.Invalid ? " input-validation-error" : string.Empty;
     }
 
+    string AddSetPointsErr(int setIndex)
+    {
+        return !ViewData.ModelState.IsValid && ViewData.ModelState.GetValidationState($"{nameof(Model.SetPoints)}-{setIndex}") == ModelValidationState.Invalid ? " input-validation-error" : string.Empty;
+    }
+
+    string AddMatchPointsErr()
+    {
+        return !ViewData.ModelState.IsValid && (ViewData.ModelState.GetValidationState($"{nameof(Model.HomePoints)}") == ModelValidationState.Invalid || ViewData.ModelState.GetValidationState($"{nameof(Model.GuestPoints)}") == ModelValidationState.Invalid) ? " input-validation-error" : string.Empty;
+    }
+
     string AddDateErr()
     {
         return !ViewData.ModelState.IsValid && ViewData.ModelState.GetValidationState(nameof(Model.MatchDate)) == ModelValidationState.Invalid ? " input-validation-error" : string.Empty;
@@ -23,10 +32,39 @@
 <div class="mb-0 pb-1">
     <h2 class="h2">@ViewData["Title"]</h2>
     <hr />
-    <form asp-controller="@nameof(Match)" asp-action="@nameof(Match.EnterResult)" asp-route-tenant="@tenantUrlSegment" method="post" role="form" novalidate>
+    <div site-authorize-resource site-resource="@Model.Match" site-requirement="@League.Authorization.MatchOperations.OverruleResult" class="mb-2">
+        @if (Model.IsOverruling)
+        {
+            <site-alert type="Info">
+                <div style="margin: 0 !important">
+                    @Localizer["Overruling is enabled"].
+                    [<a data-bs-toggle="collapse" href="#overruling-details" aria-expanded="false" class="d-inline-block collapsed link">@(Localizer["Details"])</a>]
+                </div>
+                <div id="overruling-details" class="collapse">
+                    <ul class="mb-0">
+                        <li>@Localizer["Results can be changed as long as the competition is running"].</li>
+                        <li>@Localizer["Points must be adjusted manually"].</li>
+                        <li>@Localizer["All sets containing empty fields will be discarded"].</li>
+                        <li>@Localizer["The result entry can be removed. The match goes back to fixtures."]</li>
+                        <li>@Localizer["Overruled results are flagged"].</li>
+                    </ul>
+                </div>
+                <a asp-action="@nameof(League.Controllers.Match.EnterResult)" asp-controller="@nameof(League.Controllers.Match)" asp-route-tenant="@TenantContext.SiteContext.UrlSegmentValue" asp-route-id="@Model.Id" class="link">@Localizer["Back standard form"]</a>
+            </site-alert>
+        }
+        else
+        {
+            <a asp-action="@nameof(League.Controllers.Match.OverruleResult)" asp-controller="@nameof(League.Controllers.Match)" asp-route-tenant="@TenantContext.SiteContext.UrlSegmentValue" asp-route-id="@Model.Id" class="btn btn-secondary">@Localizer["Enable overruling"]</a>
+        }
+    </div>
+    <form method="post" role="form" novalidate>
         <site-validation-summary show="All" warning="@Model.IsWarning"></site-validation-summary>
         <input name="IsValid" type="hidden" value="@ViewData.ModelState.IsValid.ToString()" />
         <input hidden="hidden" asp-for="Id" />
+        @if (Model.IsOverruling)
+        {
+            <input hidden="hidden" asp-for="IsOverruling"/>
+        }
         <input hidden="hidden" asp-for="Hash" />
         @if (Model.IsWarning)
         {
@@ -44,7 +82,7 @@
             </div>
         </div>
         <div class="row">
-            <div class="mb-3 col-12 col-md-5">
+            <div class="mb-3 col-12 col-md-4">
                 <label asp-for="MatchDate" class="form-label"></label>
                 <div id="@(Model.MatchDate)-c" class="input-group" data-input-type="date" data-td-target-input="nearest" data-td-target-toggle="nearest">
                     <input asp-for="MatchDate" type="text" asp-format="{0:@(CultureInfo.CurrentCulture.DateTimeFormat.ShortDatePattern)}" autofocus autocomplete="off" class="form-control@(AddDateErr())" aria-describedby="@nameof(Model.MatchDate)HelpBlock" />
@@ -90,18 +128,49 @@
             {
                 var counter = i;
                 <div class="row">
-                    <div class="mb-3 col-12">
-                        <label class="form-label">@Localizer["Set #{0}", i + 1]</label>
+                    <label class="form-label">@Localizer["Set #{0}", i + 1]</label>
+                    <div class="mb-3 col-12 col-md-4">
+                        @if (Model.IsOverruling)
+                        {
+                            <div class="form-text">@Localizer["Ball Points"]</div>
+                        }
                         <div class="input-group">
-                            <input asp-for="@Model.BallPoints[counter].Home" type="text" autocomplete="off" class="form-control text-start @(AddBallPointsErr(counter))" style="max-width:5em" aria-describedby="@nameof(Model.MatchDate)HelpBlock" />
+                            <input asp-for="@Model.BallPoints[counter].Home" type="text" autocomplete="off" class="form-control text-start @(AddBallPointsErr(counter))" style="max-width:5em"/>
                             <span class="input-group-text">
                                 :
                             </span>
-                            <input asp-for="@Model.BallPoints[counter].Guest" type="text" autocomplete="off" class="form-control text-end @(AddBallPointsErr(counter))" style="max-width:5em" aria-describedby="@nameof(Model.MatchDate)HelpBlock" />
+                            <input asp-for="@Model.BallPoints[counter].Guest" type="text" autocomplete="off" class="form-control text-end @(AddBallPointsErr(counter))" style="max-width:5em"/>
                         </div>
                     </div>
+                    
+                    @if (Model.IsOverruling)
+                    {
+                        <div class="mb-3 col-12 col-md-4">
+                            <div class="form-text">@Localizer["Set Points"]</div>
+                            <div class="input-group">
+                                <input asp-for="@Model.SetPoints[counter].Home" type="text" autocomplete="off" class="form-control text-start @(AddSetPointsErr(counter))" style="max-width:5em"/>
+                                <span class="input-group-text">
+                                    :
+                                </span>
+                                <input asp-for="@Model.SetPoints[counter].Guest" type="text" autocomplete="off" class="form-control text-end @(AddSetPointsErr(counter))" style="max-width:5em"/>
+                            </div>
+                        </div>
+                    }
                 </div>
             }
+        }
+        @if (Model.IsOverruling)
+        {
+            <div class="row">
+                <label class="form-label">@Localizer["Match Points"]</label>
+                <div class="input-group">
+                    <input asp-for="@Model.HomePoints" type="text" autocomplete="off" class="form-control text-start @(AddMatchPointsErr())" style="max-width:5em"/>
+                    <span class="input-group-text">
+                        :
+                    </span>
+                    <input asp-for="@Model.GuestPoints" type="text" autocomplete="off" class="form-control text-end @(AddMatchPointsErr())" style="max-width:5em"/>
+                </div>
+            </div>
         }
         <div class="row">
             <div class="mb-3 col-12 col-md-8">
@@ -126,10 +195,11 @@
                     }
                     else
                     {
-                        <a asp-controller="@nameof(Match)" asp-action="@nameof(Match.Fixtures)" asp-route-tenant="@tenantUrlSegment" class="btn btn-lg btn-secondary">@Localizer["Cancel"]</a>
+                        <a asp-controller="@nameof(League.Controllers.Match)" asp-action="@nameof(League.Controllers.Match.Fixtures)" asp-route-tenant="@tenantUrlSegment" class="btn btn-lg btn-secondary">@Localizer["Cancel"]</a>
                     }
                 }
-                <button type="submit" class="btn btn-lg btn-primary">@Localizer["Save"]</button>
+                <button type="submit" value="save" class="btn btn-lg btn-primary me-5" 
+                        asp-controller="@nameof(League.Controllers.Match)" asp-action="@nameof(League.Controllers.Match.EnterResult)" asp-route-tenant="@tenantUrlSegment">@Localizer["Save"]</button>
             </div>
         </div>
     </form>
@@ -140,7 +210,8 @@
 }
 @section scripts
 {
-    <script type="text/javascript" src="~/lib/tempus-dominus/tempus-dominus.all.min.js" asp-append-version="true"></script>    <script type="text/javascript">
+    <script type="text/javascript" src="~/lib/tempus-dominus/tempus-dominus.all.min.js" asp-append-version="true"></script>    
+    <script type="text/javascript">
         document.addEventListener('DOMContentLoaded', OnDOMContentLoaded, false);
         function OnDOMContentLoaded() {
             const locale = '@(CultureInfo.CurrentCulture.ToString())';

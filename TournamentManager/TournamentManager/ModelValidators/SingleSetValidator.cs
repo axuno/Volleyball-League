@@ -3,12 +3,13 @@ using TournamentManager.MultiTenancy;
 
 namespace TournamentManager.ModelValidators;
 
-public class SingleSetValidator : AbstractValidator<SetEntity, (ITenantContext TenantContext,
+public sealed class SingleSetValidator : AbstractValidator<SetEntity, (ITenantContext TenantContext,
     SetRuleEntity SetRule), SingleSetValidator.FactId>
 {
     public enum FactId
     {
         BallPointsNotNegative,
+        SetPointsAreValid,
         TieIsAllowed,
 
         NumOfPointsToWinReached,
@@ -20,10 +21,38 @@ public class SingleSetValidator : AbstractValidator<SetEntity, (ITenantContext T
         TieBreakWinReachedWithTwoPlusPointsAhead
     }
 
+    private static readonly Dictionary<MatchValidationMode, Dictionary<FactId, bool>> ModeConfiguration = new() {
+        {
+            MatchValidationMode.Default, new Dictionary<FactId, bool> {
+                { FactId.BallPointsNotNegative, true },
+                { FactId.SetPointsAreValid, false },
+                { FactId.TieIsAllowed, true },
+                { FactId.NumOfPointsToWinReached, true },
+                { FactId.RegularWinReachedWithOnePointAhead, true },
+                { FactId.RegularWinReachedWithTwoPlusPointsAhead, true },
+                { FactId.TieBreakWinReachedWithOnePointAhead, true },
+                { FactId.TieBreakWinReachedWithTwoPlusPointsAhead, true }
+            }
+        },
+        {
+            MatchValidationMode.Overrule, new Dictionary<FactId, bool> {
+                { FactId.BallPointsNotNegative, true },
+                { FactId.SetPointsAreValid, true },
+                { FactId.TieIsAllowed, false },
+                { FactId.NumOfPointsToWinReached, false },
+                { FactId.RegularWinReachedWithOnePointAhead, false },
+                { FactId.RegularWinReachedWithTwoPlusPointsAhead, false },
+                { FactId.TieBreakWinReachedWithOnePointAhead, false },
+                { FactId.TieBreakWinReachedWithTwoPlusPointsAhead, false }
+            }
+        }
+    };
+
     public SingleSetValidator(SetEntity model,
-        (ITenantContext TenantContext, SetRuleEntity SetRule) data) : base(model, data)
+        (ITenantContext TenantContext, SetRuleEntity SetRule) data, MatchValidationMode validationMode) : base(model, data)
     {
         CreateFacts();
+        ConfigureFacts(ModeConfiguration[validationMode]);
     }
 
     private void CreateFacts()
@@ -31,9 +60,10 @@ public class SingleSetValidator : AbstractValidator<SetEntity, (ITenantContext T
         // facts for all
 
         Facts.Add(BallPointsNotNegative());
+        Facts.Add(SetPointsAreValid());
         Facts.Add(TieIsAllowed());
         Facts.Add(NumOfPointsToWinReached());
-
+        
         // facts for regular sets
 
         Facts.Add(RegularWinReachedWithOnePointAhead());
@@ -51,7 +81,7 @@ public class SingleSetValidator : AbstractValidator<SetEntity, (ITenantContext T
         {
             Id = FactId.TieBreakWinReachedWithTwoPlusPointsAhead,
             FieldNames = new[] {nameof(Model.HomeBallPoints), nameof(Model.GuestBallPoints)},
-            Enabled = true,
+            Enabled = default,
             Type = FactType.Error,
             CheckAsync = (cancellationToken) => FactResult()
         };
@@ -120,7 +150,7 @@ public class SingleSetValidator : AbstractValidator<SetEntity, (ITenantContext T
         {
             Id = FactId.TieBreakWinReachedWithOnePointAhead,
             FieldNames = new[] {nameof(Model.HomeBallPoints), nameof(Model.GuestBallPoints)},
-            Enabled = true,
+            Enabled = default,
             Type = FactType.Error,
             CheckAsync = (cancellationToken) => FactResult()
         };
@@ -159,7 +189,7 @@ public class SingleSetValidator : AbstractValidator<SetEntity, (ITenantContext T
         {
             Id = FactId.RegularWinReachedWithTwoPlusPointsAhead,
             FieldNames = new[] {nameof(Model.HomeBallPoints), nameof(Model.GuestBallPoints)},
-            Enabled = true,
+            Enabled = default,
             Type = FactType.Error,
             CheckAsync = (cancellationToken) => FactResult()
         };
@@ -229,7 +259,7 @@ public class SingleSetValidator : AbstractValidator<SetEntity, (ITenantContext T
         {
             Id = FactId.RegularWinReachedWithOnePointAhead,
             FieldNames = new[] {nameof(Model.HomeBallPoints), nameof(Model.GuestBallPoints)},
-            Enabled = true,
+            Enabled = default,
             Type = FactType.Error,
             CheckAsync = (cancellationToken) => FactResult()
         };
@@ -268,7 +298,7 @@ public class SingleSetValidator : AbstractValidator<SetEntity, (ITenantContext T
         {
             Id = FactId.NumOfPointsToWinReached,
             FieldNames = new[] {nameof(Model.HomeBallPoints), nameof(Model.GuestBallPoints)},
-            Enabled = true,
+            Enabled = default,
             Type = FactType.Error,
             CheckAsync = (cancellationToken) => Task.FromResult(
                 Model.IsTieBreak
@@ -299,7 +329,7 @@ public class SingleSetValidator : AbstractValidator<SetEntity, (ITenantContext T
         {
             Id = FactId.TieIsAllowed,
             FieldNames = new[] {nameof(Model.HomeBallPoints), nameof(Model.GuestBallPoints)},
-            Enabled = true,
+            Enabled = default,
             Type = FactType.Error,
             CheckAsync = (cancellationToken) => FactResult()
         };
@@ -338,7 +368,7 @@ public class SingleSetValidator : AbstractValidator<SetEntity, (ITenantContext T
         {
             Id = FactId.BallPointsNotNegative,
             FieldNames = new[] {nameof(Model.HomeBallPoints), nameof(Model.GuestBallPoints)},
-            Enabled = true,
+            Enabled = default,
             Type = FactType.Critical,
             CheckAsync = (cancellationToken) => Task.FromResult(
                 new FactResult
@@ -347,6 +377,36 @@ public class SingleSetValidator : AbstractValidator<SetEntity, (ITenantContext T
                         nameof(FactId.BallPointsNotNegative)) ?? string.Empty,
                     Success = Model is { HomeBallPoints: >= 0, GuestBallPoints: >= 0 }
                 })
+        };
+    }
+
+    private Fact<FactId> SetPointsAreValid()
+    {
+        return new Fact<FactId>
+        {
+            Id = FactId.SetPointsAreValid,
+            FieldNames = new[] { nameof(Model.HomeSetPoints), nameof(Model.GuestSetPoints) },
+            Enabled = default,
+            Type = FactType.Critical,
+            CheckAsync = (cancellationToken) =>
+            {
+                var allowed = new List<int?>
+                {
+                    Data.SetRule.PointsSetLost,
+                    Data.SetRule.PointsSetWon,
+                    Data.SetRule.PointsSetTie
+
+                }.Distinct().ToList();
+
+                return Task.FromResult(
+                    new FactResult
+                    {
+                        Message = string.Format(SingleSetValidatorResource.ResourceManager.GetString(
+                                                    nameof(FactId.SetPointsAreValid)) ??
+                                                string.Empty, string.Join(',', allowed)),
+                        Success = allowed.Contains(Model.HomeSetPoints) && allowed.Contains(Model.GuestSetPoints)
+                    });
+            }
         };
     }
 }

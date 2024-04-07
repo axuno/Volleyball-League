@@ -19,7 +19,7 @@ namespace TournamentManager.ModelValidators {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class SetsValidatorResource {
@@ -72,9 +72,9 @@ namespace TournamentManager.ModelValidators {
         /// <summary>
         ///   Looks up a localized string similar to Best {0} out of {1} sets must be played.
         /// </summary>
-        internal static string BestOfMixAndMaxOfSetsPlayed {
+        internal static string BestOfMinAndMaxOfSetsPlayed {
             get {
-                return ResourceManager.GetString("BestOfMixAndMaxOfSetsPlayed", resourceCulture);
+                return ResourceManager.GetString("BestOfMinAndMaxOfSetsPlayed", resourceCulture);
             }
         }
         
@@ -99,9 +99,9 @@ namespace TournamentManager.ModelValidators {
         /// <summary>
         ///   Looks up a localized string similar to {0} sets must be played.
         /// </summary>
-        internal static string MixAndMaxOfSetsPlayed {
+        internal static string MinAndMaxOfSetsPlayed {
             get {
-                return ResourceManager.GetString("MixAndMaxOfSetsPlayed", resourceCulture);
+                return ResourceManager.GetString("MinAndMaxOfSetsPlayed", resourceCulture);
             }
         }
     }
