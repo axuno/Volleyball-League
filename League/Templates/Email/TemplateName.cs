@@ -14,6 +14,7 @@ public static class TemplateName
     public const string NotifyCurrentPrimaryEmailHtml = nameof(NotifyCurrentPrimaryEmailHtml);
     public const string NotifyCurrentPrimaryEmailTxt = nameof(NotifyCurrentPrimaryEmailTxt);
     public const string ResultEnteredTxt = nameof(ResultEnteredTxt);
+    public const string ResultRemovedTxt = nameof(ResultRemovedTxt);
     public const string AnnounceNextMatchTxt = nameof(AnnounceNextMatchTxt);
     public const string RemindMatchResultTxt = nameof(RemindMatchResultTxt);
     public const string UrgeMatchResultTxt = nameof(UrgeMatchResultTxt);

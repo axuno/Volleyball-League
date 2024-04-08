@@ -161,7 +161,7 @@
         }
         @if (Model.IsOverruling)
         {
-            <div class="row">
+            <div class="row mb-3">
                 <label class="form-label">@Localizer["Match Points"]</label>
                 <div class="input-group">
                     <input asp-for="@Model.HomePoints" type="text" autocomplete="off" class="form-control text-start @(AddMatchPointsErr())" style="max-width:5em"/>
@@ -171,6 +171,7 @@
                     <input asp-for="@Model.GuestPoints" type="text" autocomplete="off" class="form-control text-end @(AddMatchPointsErr())" style="max-width:5em"/>
                 </div>
             </div>
+            <hr />
         }
         <div class="row">
             <div class="mb-3 col-12 col-md-8">
@@ -187,19 +188,28 @@
             </div>
         </div>
         <div class="row">
-            <div class="mb-3 col-12 mt-2">
+            <div class="mb-3 col-12 col-md-6 mt-2">
                 @{
                     if (Model.ReturnUrl != null && Url.IsLocalUrl(Model.ReturnUrl))
                     {
-                        <a href="@Model.ReturnUrl" class="btn btn-lg btn-secondary">@Localizer["Cancel"]</a>
+                        <a href="@Model.ReturnUrl" class="btn btn-lg btn-secondary me-3">@Localizer["Cancel"]</a>
                     }
                     else
                     {
-                        <a asp-controller="@nameof(League.Controllers.Match)" asp-action="@nameof(League.Controllers.Match.Fixtures)" asp-route-tenant="@tenantUrlSegment" class="btn btn-lg btn-secondary">@Localizer["Cancel"]</a>
+                        <a asp-controller="@nameof(League.Controllers.Match)" asp-action="@nameof(League.Controllers.Match.Fixtures)" asp-route-tenant="@tenantUrlSegment" class="btn btn-lg btn-secondary me-3">@Localizer["Cancel"]</a>
                     }
                 }
-                <button type="submit" value="save" class="btn btn-lg btn-primary me-5" 
+                
+                <button type="submit" value="save" class="btn btn-lg btn-primary" 
                         asp-controller="@nameof(League.Controllers.Match)" asp-action="@nameof(League.Controllers.Match.EnterResult)" asp-route-tenant="@tenantUrlSegment">@Localizer["Save"]</button>
+            </div>
+            <div class="mb-3 col-12 col-md-6 mt-md-2">
+                @if (Model is { IsOverruling: true, Match.IsComplete: true })
+                {
+                    // This creates a 'formaction' attribute on the button element
+                    <button type="submit" value="delete" class="btn btn-lg btn-warning"
+                            asp-controller="@nameof(League.Controllers.Match)" asp-action="@nameof(League.Controllers.Match.RemoveResult)" asp-route-tenant="@tenantUrlSegment"><i class="fas fa-exclamation-triangle"></i>&nbsp;@Localizer["Remove result entry"]</button>
+                }
             </div>
         </div>
     </form>

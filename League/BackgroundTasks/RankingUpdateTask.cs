@@ -67,8 +67,8 @@ public class RankingUpdateTask : IBackgroundTask
     public long? RoundId { get; set; }
 
     /// <summary>
-    /// If set to <see langword="true"/>, ranking tables and ranking charts will updated,
-    /// never mind whether <see cref="MatchEntity.ModifiedOn"/> &gt; <see cref="RankingEntity.CreatedOn"/> or not.
+    /// If set to <see langword="true"/>, ranking tables and ranking charts will be updated,
+    /// never mind whether <see cref="MatchEntity.ModifiedOn"/> is later than <see cref="RankingEntity.CreatedOn"/> or not.
     /// </summary>
     public bool EnforceUpdate { get; set; }
 
