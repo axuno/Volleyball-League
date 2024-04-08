@@ -236,7 +236,7 @@ public abstract class AbstractValidator<TModel, TData, TFactId>
             await CheckAsync(fact.Id, cancellationToken);
         }
         // stop after any not successful critical facts
-        if (facts.Any(f => f is { IsChecked: true, Success: false })) return facts;
+        if (facts.Exists(f => f is { IsChecked: true, Success: false })) return facts;
 
         // next process error facts
         facts = GetFactsOfType(FactType.Error).ToList();
@@ -245,7 +245,7 @@ public abstract class AbstractValidator<TModel, TData, TFactId>
             await CheckAsync(fact.Id, cancellationToken);
         }
         // stop after any not successful error facts
-        if (facts.Any(f => f is { IsChecked: true, Success: false })) return facts;
+        if (facts.Exists(f => f is { IsChecked: true, Success: false })) return facts;
 
         // Process all other facts
         foreach (var fact in Facts.Where(f => !f.IsChecked))

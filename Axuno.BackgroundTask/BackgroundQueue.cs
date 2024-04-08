@@ -33,10 +33,7 @@ public class BackgroundQueue : IBackgroundQueue
     /// <param name="taskItem">The <see cref="IBackgroundTask"/> to append to the queue.</param>
     public void QueueTask(IBackgroundTask taskItem)
     {
-        if (taskItem == null)
-        {
-            throw new ArgumentNullException(nameof(taskItem));
-        }
+        ArgumentNullException.ThrowIfNull(taskItem);
 
         TaskItems.Enqueue(taskItem);
         _signal.Release(); // increase the semaphore count for each item
@@ -59,18 +56,18 @@ public class BackgroundQueue : IBackgroundQueue
     /// <summary>
     /// Executes the given <see cref="IBackgroundTask"/>.
     /// </summary>
-    /// <param name="backgroundTask"></param>
+    /// <param name="task"></param>
     /// <param name="cancellationToken"></param>
     /// <returns>Returns the <see cref="Task"/> which was started.</returns>
-    public async Task RunTaskAsync(IBackgroundTask backgroundTask, CancellationToken cancellationToken)
+    public async Task RunTaskAsync(IBackgroundTask? task, CancellationToken cancellationToken)
     {
-        if (backgroundTask == null) return;
+        if (task == null) return;
 
         try
         {
             await _signal.WaitAsync(cancellationToken);
 
-            await CancelAfterAsync(backgroundTask.RunAsync, backgroundTask.Timeout, cancellationToken);
+            await CancelAfterAsync(task.RunAsync, task.Timeout, cancellationToken);
             _logger.LogDebug("Task completed.");
         }
         catch (Exception e) when (e is TaskCanceledException || e is OperationCanceledException)
