@@ -304,6 +304,8 @@ public static class LeagueStartup
         {
             // Used on controller method level
             options.AddPolicy(Authorization.PolicyName.MatchPolicy, policy => policy.RequireRole(Identity.Constants.RoleName.SystemManager, Identity.Constants.RoleName.TournamentManager, Identity.Constants.RoleName.TeamManager));
+            // Used on controller method level
+            options.AddPolicy(Authorization.PolicyName.OverruleResultPolicy, policy => policy.RequireRole(Identity.Constants.RoleName.SystemManager, Identity.Constants.RoleName.TournamentManager, Identity.Constants.RoleName.TeamManager));
             // Used in team views
             options.AddPolicy(Authorization.PolicyName.SeeTeamContactsPolicy, policy => policy.RequireRole(Identity.Constants.RoleName.SystemManager, Identity.Constants.RoleName.TournamentManager, Identity.Constants.RoleName.TeamManager, Identity.Constants.RoleName.Player));
             // Used for my team views

@@ -178,6 +178,21 @@ public abstract class AbstractValidator<TModel, TData, TFactId>
     }
 
     /// <summary>
+    /// Enables or disables the <see cref="Facts"/> with the given dictionary.
+    /// </summary>
+    /// <param name="facts">The facts to configure.</param>
+    protected void ConfigureFacts(IDictionary<TFactId, bool> facts)
+    {
+        foreach (var fact in Facts)
+        {
+            if (facts.TryGetValue(fact.Id, out var enabled))
+            {
+                fact.Enabled = enabled;
+            }
+        }
+    }
+
+    /// <summary>
     /// Invokes the Check for a fact with the <typeparamref name="TFactId"/> identifier.
     /// </summary>
     /// <param name="id">The identifier of the <see cref="Fact{TFactId}"/></param>
@@ -230,7 +245,7 @@ public abstract class AbstractValidator<TModel, TData, TFactId>
             await CheckAsync(fact.Id, cancellationToken);
         }
         // stop after any not successful error facts
-        if (facts.Any(f => f.IsChecked && !f.Success)) return facts;
+        if (facts.Any(f => f is { IsChecked: true, Success: false })) return facts;
 
         // Process all other facts
         foreach (var fact in Facts.Where(f => !f.IsChecked))

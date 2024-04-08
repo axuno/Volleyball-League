@@ -61,6 +61,15 @@ namespace TournamentManager.ModelValidators {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Allowed match points are {0}.
+        /// </summary>
+        internal static string MatchPointsAreValid {
+            get {
+                return ResourceManager.GetString("MatchPointsAreValid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Actual match day differs from the fixture.
         /// </summary>
         internal static string RealMatchDateEqualsFixture {

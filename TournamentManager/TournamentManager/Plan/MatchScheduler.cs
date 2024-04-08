@@ -152,10 +152,7 @@ internal class MatchScheduler
         // Matches in the same turnCombinations can even take place at the same time.
         var datesFound = GetMatchDatesForTurn(roundLeg, turn, combinations, tournamentMatches);
         _logger.LogDebug("Found dates for combination: {dates}",
-            string.Join(", ",
-                    datesFound.OrderBy(bd => bd?.MatchStartTime)
-                        .Select(bd => bd?.MatchStartTime.ToShortDateString() ?? "(null)"))
-                .Trim(',', ' '));
+            string.Join(", ", datesFound.Select(bd => bd?.MatchStartTime.ToShortDateString() ?? "(null)")).Trim(',', ' '));
 
         // datesFound contains calculated dates in the same sequence as turn combinations,
         // so the index can be used for both.

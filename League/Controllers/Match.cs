@@ -233,6 +233,26 @@ public class Match : AbstractController
     }
 
     /// <summary>
+    /// Prepares the view for entering a match result in advanced mode.
+    /// </summary>
+    /// <param name="id"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    //[Authorize(Policy = Authorization.PolicyName.OverruleResultPolicy)]
+    [HttpGet("overrule-result/{id:long}")]
+    public async Task<IActionResult> OverruleResult(long id, CancellationToken cancellationToken)
+    {
+        var match = await _appDb.MatchRepository.GetMatchWithSetsAsync(id, cancellationToken);
+        if (!(await _authorizationService.AuthorizeAsync(User, match, Authorization.MatchOperations.OverruleResult)).Succeeded)
+        {
+            return Forbid();
+        }
+
+        TempData.Put<string>(nameof(OverruleResult), true.ToString());
+        return Redirect(TenantLink.Action(nameof(EnterResult), nameof(Match), new { id })!);
+    }
+
+    /// <summary>
     /// Returns a form for entering a match result.
     /// </summary>
     /// <param name="id"></param>
@@ -254,8 +274,16 @@ public class Match : AbstractController
             {
                 return Forbid();
             }
-                
+
+            var overrule = TempData.Get<string>(nameof(OverruleResult)) == true.ToString();
+
+            if (overrule && !(await _authorizationService.AuthorizeAsync(User, match, Authorization.MatchOperations.OverruleResult)).Succeeded)
+            {
+                return Forbid();
+            }
+
             var model = await GetEnterResultViewModel(match, cancellationToken);
+            model.IsOverruling = overrule;
 
             var permissionValidator = new MatchResultPermissionValidator(match, (_tenantContext, (model.Tournament!.IsPlanningMode, model.Round!.IsComplete, DateTime.UtcNow)));
             await permissionValidator.CheckAsync(cancellationToken);
@@ -300,13 +328,28 @@ public class Match : AbstractController
             }
 
             model = await GetEnterResultViewModel(match, cancellationToken);
+
+            var isAuthorizedToOverrule =
+                (await _authorizationService.AuthorizeAsync(User, match, Authorization.MatchOperations.OverruleResult))
+                .Succeeded;
+            if (model.IsOverruling && !isAuthorizedToOverrule)
+            {
+                return Forbid();
+            }
+
             // sync input with new model instance
             if (!await TryUpdateModelAsync(model))
             {
                 return View(ViewNames.Match.EnterResult, model);
             }
 
+            // Check for active tournament and round, deadline for corrections
             var permissionValidator = new MatchResultPermissionValidator(match, (_tenantContext, (model.Tournament!.IsPlanningMode, model.Round!.IsComplete, DateTime.UtcNow)));
+            // Disable the deadline check, if the user is allowed to overrule results
+            if (isAuthorizedToOverrule)
+                permissionValidator.Facts.First(f =>
+                        f.Id == MatchResultPermissionValidator.FactId.CurrentDateIsBeforeResultCorrectionDeadline)
+                    .Enabled = false;
             await permissionValidator.CheckAsync(cancellationToken);
             if (permissionValidator.GetFailedFacts().Count != 0)
             {
@@ -318,7 +361,8 @@ public class Match : AbstractController
             ModelState.Clear();
 
             if (!await model.ValidateAsync(new MatchResultValidator(model.Match!,
-                    (_tenantContext, _timeZoneConverter, (model.Round.MatchRule, model.Round.SetRule))), ModelState))
+                    (_tenantContext, _timeZoneConverter, (model.Round.MatchRule, model.Round.SetRule)),
+                    model.IsOverruling ? MatchValidationMode.Overrule : MatchValidationMode.Default), ModelState))
             {
                 return View(ViewNames.Match.EnterResult, model);
             }
@@ -331,8 +375,9 @@ public class Match : AbstractController
 
         try
         {
-            // validation succeeded
-            match.CalculateMatchPoints(model.Round.MatchRule);
+            // Validation succeeded, calculate match points if not overruled.
+            // Overruled match points are already set in the model.
+            if (!model.IsOverruling) match.CalculateMatchPoints(model.Round.MatchRule);
                 
             // save the match entity and sets
             var success = await _appDb.MatchRepository.SaveMatchResultAsync(match, cancellationToken);

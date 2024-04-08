@@ -90,23 +90,57 @@ public static class SetEntityListExtensions
 
     /// <summary>
     /// Adds a <see cref="IList{T}"/> of <see cref="PointResult"/>s to the <see cref="IList{T}"/> of <see cref="SetEntity"/>.
+    /// Sets with <see langword="null"/> for home or guest points are skipped.
     /// </summary>
     /// <param name="setList"></param>
     /// <param name="matchId">The <see cref="MatchEntity.Id"/></param>
-    /// <param name="pointResults">The <see cref="IList{T}"/> of <see cref="PointResult"/>.</param>
-    public static void Add(this IList<SetEntity> setList, long matchId, IList<PointResult> pointResults)
+    /// <param name="ballPoints">The <see cref="IList{T}"/> of <see cref="PointResult"/>.</param>
+    public static void Add(this IList<SetEntity> setList, long matchId, IList<PointResult> ballPoints)
     {
         var sequenceNo = 0;
-        foreach (var pointResult in pointResults)
+        foreach (var ballPoint in ballPoints)
         {
-            if(pointResult.Home is null || pointResult.Guest is null)
+            // This should not happen after validation
+            if(ballPoint.Home is null || ballPoint.Guest is null)
                 continue;
 
             setList.Add(new SetEntity {
                 MatchId = matchId,
                 SequenceNo = ++sequenceNo,
-                HomeBallPoints = pointResult.Home.Value,
-                GuestBallPoints = pointResult.Guest.Value
+                HomeBallPoints = ballPoint.Home.Value,
+                GuestBallPoints = ballPoint.Guest.Value
+            });
+        }
+    }
+
+    /// <summary>
+    /// Adds a <see cref="IList{T}"/> of ball and set <see cref="PointResult"/>s to the <see cref="IList{T}"/> of <see cref="SetEntity"/>.
+    /// Sets with <see langword="null"/> for home/guest ball or set points are skipped.
+    /// Both lists are expected to be equal in size. Missing set points are treated as <see langword="null"/>.
+    /// </summary>
+    /// <param name="setList"></param>
+    /// <param name="matchId">The <see cref="MatchEntity.Id"/></param>
+    /// <param name="ballPoints">The <see cref="IList{T}"/> of ball <see cref="PointResult"/>.</param>
+    /// <param name="setPoints">The <see cref="IList{T}"/> of set <see cref="PointResult"/>.</param>
+    public static void Add(this IList<SetEntity> setList, long matchId, IList<PointResult> ballPoints, IList<PointResult> setPoints)
+    {
+        var sequenceNo = 0;
+        for (var index = 0; index < ballPoints.Count; index++)
+        {
+            var ballPoint = ballPoints[index];
+            var setPoint = index < setPoints.Count ? setPoints[index] : new PointResult();
+            // This should not happen after validation
+            if (ballPoint.Home is null || ballPoint.Guest is null ||
+                setPoint.Home is null || setPoint.Guest is null)
+                continue;
+
+            setList.Add(new SetEntity {
+                MatchId = matchId,
+                SequenceNo = ++sequenceNo,
+                HomeBallPoints = ballPoint.Home.Value,
+                GuestBallPoints = ballPoint.Guest.Value,
+                HomeSetPoints = setPoint.Home.Value,
+                GuestSetPoints = setPoint.Guest.Value
             });
         }
     }

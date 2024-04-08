@@ -7,6 +7,10 @@ public static class PolicyName
     /// </summary>
     public const string MatchPolicy = nameof(MatchPolicy);
     /// <summary>
+    /// Policy for entering match results in overruling mode.
+    /// </summary>
+    public const string OverruleResultPolicy = nameof(OverruleResultPolicy);
+    /// <summary>
     /// Policy for seeing team contact data
     /// </summary>
     public const string SeeTeamContactsPolicy = nameof(SeeTeamContactsPolicy);

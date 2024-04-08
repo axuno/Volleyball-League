@@ -7,7 +7,7 @@ public static class MatchOperations
 {
     public static readonly OperationAuthorizationRequirement ChangeFixture = new() { Name = nameof(ChangeFixture) };
     public static readonly OperationAuthorizationRequirement EnterResult = new() { Name = nameof(EnterResult) };
-    public static readonly OperationAuthorizationRequirement OverrideResult = new() { Name = nameof(OverrideResult) };
+    public static readonly OperationAuthorizationRequirement OverruleResult = new() { Name = nameof(OverruleResult) };
 }
 
 public class MatchAuthorizationHandler : AuthorizationHandler<OperationAuthorizationRequirement, MatchEntity>

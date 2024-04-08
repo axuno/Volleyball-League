@@ -62,8 +62,9 @@ The default database names are `TestOrg` and `OtherOrg`. You may change these na
 
 ### Build JavaScript and CSS
 
-    * Run `npm install` in the `League` directory to install the required npm packages.
-    * Run task 'prod' from Task Runner Explorer in Visual Studio to build the JavaScript and CSS files.
+* Open the Terminal, and navigate to the `League` project directory.
+* Run `npm install` to install the required `npm` packages.
+* Run `node .\node_modules\grunt-cli\bin\grunt prod` to build the JavaScript and CSS files (or run task 'prod' from Task Runner Explorer in Visual Studio). They will be stored in the `wwwroot` directory.
 
 ### Admin login
 
