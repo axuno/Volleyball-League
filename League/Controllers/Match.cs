@@ -718,6 +718,7 @@ public class Match : AbstractController
             
             if (model == null) return NotFound();
 
+            id = model.Id;
             var contentDisposition = new Microsoft.Net.Http.Headers.ContentDispositionHeaderValue("attachment");
             contentDisposition.SetHttpFileName($"{_localizer["Report Sheet"].Value}_{model.Id}.pdf");
             Response.Headers[Microsoft.Net.Http.Headers.HeaderNames.ContentDisposition] =

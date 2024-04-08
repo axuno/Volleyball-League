@@ -39,7 +39,7 @@ public class TeamInRoundValidator : AbstractValidator<TeamInRoundEntity, (ITenan
                 new PredicateExpression(RoundFields.TournamentId == Data.TouramentId),
                 cancellationToken);
 
-            if (roundWithTypeList.Any(round => round.Id == Model.RoundId))
+            if (roundWithTypeList.Exists(round => round.Id == Model.RoundId))
             {
                 return new FactResult
                 {

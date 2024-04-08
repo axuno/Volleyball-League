@@ -8,7 +8,7 @@ public class Reset
     private const string _key = "!?aht97+<good$key$#+*&12";
     // exactly 8 bytes for Initialization Vector
     private const string _iv = "!Ö*a1°~Q";
-    private readonly ExpiringTripleDES<ResetModel> _tripleDes = new(_key, _iv);
+    private readonly ExpiringAesEncryptor<ResetModel> _tripleDes = new(_key, _iv);
 
     private Reset()
     {
@@ -39,7 +39,7 @@ public class Reset
         return _tripleDes.Encrypt(model, expiresOn: expiresOn);
     }
 
-    public ExpiringTripleDES<ResetModel>.DecryptionResult DecryptResetKey(string encrypted, ResetModel model)
+    public ExpiringAesEncryptor<ResetModel>.DecryptionResult DecryptResetKey(string encrypted, ResetModel model)
     {
         return _tripleDes.Decrypt(encrypted, model);
     }

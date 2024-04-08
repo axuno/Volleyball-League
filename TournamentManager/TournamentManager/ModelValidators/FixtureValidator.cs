@@ -79,7 +79,7 @@ public class FixtureValidator : AbstractValidator<MatchEntity, (ITenantContext T
             {
                 Message = FixtureValidatorResource.ResourceManager.GetString(
                     nameof(FactId.PlannedVenueIsRegisteredVenueOfTeam)) ?? string.Empty,
-                Success = !Model.VenueId.HasValue || _teamsInMatch.Any(tim =>
+                Success = !Model.VenueId.HasValue || _teamsInMatch.Exists(tim =>
                     !tim.VenueId.HasValue || tim.VenueId == Model.VenueId)
             };
         }

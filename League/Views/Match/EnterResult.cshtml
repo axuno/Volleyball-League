@@ -162,7 +162,7 @@
         @if (Model.IsOverruling)
         {
             <div class="row mb-3">
-                <label class="form-label">@Localizer["Match Points"]</label>
+                <label asp-for="HomePoints" class="form-label">@Localizer["Match Points"]</label>
                 <div class="input-group">
                     <input asp-for="@Model.HomePoints" type="text" autocomplete="off" class="form-control text-start @(AddMatchPointsErr())" style="max-width:5em"/>
                     <span class="input-group-text">
