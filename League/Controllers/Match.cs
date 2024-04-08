@@ -440,7 +440,7 @@ public class Match : AbstractController
         }
         catch (Exception e)
         {
-            _logger.LogCritical(e, "Deleting result for {model} failed for MatchId '{modelId}'. User ID '{currentUser}'", nameof(EnterResultViewModel), model.Id, GetCurrentUserId());
+            _logger.LogCritical(e, "Deleting result for {Model} failed for MatchId '{ModelId}'. User ID '{CurrentUser}'", nameof(EnterResultViewModel), model.Id, GetCurrentUserId());
             TempData.Put<EnterResultViewModel.MatchResultMessage>(nameof(EnterResultViewModel.MatchResultMessage),
                 new EnterResultViewModel.MatchResultMessage { MatchId = model.Id, ChangeSuccess = false });
             // redirect to results overview, where success message is shown
