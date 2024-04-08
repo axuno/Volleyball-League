@@ -270,7 +270,7 @@ public class MatchRepository
     /// Find out whether there are already complete matches stored for 
     /// a tournament round.
     /// </summary>
-    /// <param name="round">RoundEntity (only Id will be used)</param>
+    /// <param name="round">RoundEntity (only ID will be used)</param>
     /// <param name="cancellationToken"></param>
     /// <returns>Returns true if matches were found, else false.</returns>
     public virtual async Task<bool> AnyCompleteMatchesExistAsync(RoundEntity round, CancellationToken cancellationToken)
@@ -288,7 +288,7 @@ public class MatchRepository
     }
 
     /// <summary>
-    /// Find out whether all matches of a tournament with a given Id are completed
+    /// Find out whether all matches of a tournament with a given ID are completed
     /// </summary>
     /// <returns>Returns true if all matches are completed, else false.</returns>
     public virtual async Task<bool> AllMatchesCompletedAsync(TournamentEntity tournament, CancellationToken cancellationToken)
@@ -307,7 +307,7 @@ public class MatchRepository
     }
 
     /// <summary>
-    /// Find out whether all matches of a round with a gived Id are completed
+    /// Find out whether all matches of a round with a given ID are completed
     /// </summary>
     /// <returns>Returns true if all matches are completed, else false.</returns>
     public virtual async Task<bool> AllMatchesCompletedAsync(RoundEntity round, CancellationToken cancellationToken)
@@ -378,8 +378,6 @@ public class MatchRepository
                           ?? throw new ArgumentException(@"Match not found", nameof(matchId));
 
         var clone = Clone(matchEntity);
-        //matchEntity.Fields.MarkAsFetched();
-        //matchEntity.Sets.ToList().ForEach(s => s.Fields.MarkAsFetched());
 
         matchEntity.HomePoints = matchEntity.GuestPoints = null;
         matchEntity.RealStart = matchEntity.RealEnd = null;
@@ -424,6 +422,8 @@ public class MatchRepository
 
     private static MatchEntity Clone(MatchEntity matchEntity)
     {
+        // Note: No need for Entity.Fields.MarkAsFetched() for MatchEntity and SetEntity.
+
         var clone = new MatchEntity
         {
             Id = matchEntity.Id,

@@ -3,6 +3,7 @@
 // Licensed under the MIT license.
 //
 
+using OxyPlot;
 using TournamentManager.DAL.TypedViewClasses;
 using TournamentManager.MultiTenancy;
 
@@ -46,10 +47,16 @@ public class ReportSheetCache
     public async Task<Stream> GetOrCreatePdf(MatchReportSheetRow data, string html, CancellationToken cancellationToken)
     {
         EnsureCacheFolder();
-        var matchId = data.Id;
+        var model =
+            (await _tenantContext.DbContext.AppDb.MatchRepository.GetMatchReportSheetAsync(
+                _tenantContext.TournamentContext.MatchPlanTournamentId, data.Id, cancellationToken));
+
+        if (model is null) return Stream.Null;
+
+        var matchId = model.Id;
 
         var cacheFile = GetPathToCacheFile(matchId);
-#pragma warning disable CA3003  // No potential File path injection
+
         if (!File.Exists(cacheFile) || IsOutdated(cacheFile, data.ModifiedOn))
         {
             _logger.LogDebug("Create new match report for tenant '{Tenant}', match '{MatchId}'", _tenantContext.Identifier, matchId);
@@ -61,15 +68,12 @@ public class ReportSheetCache
         _logger.LogDebug("Read match report from cache for tenant '{Tenant}', match '{MatchId}'", _tenantContext.Identifier, matchId);
         var stream = File.OpenRead(cacheFile);
         return stream;
-#pragma warning restore CA3003
     }
 
     private static bool IsOutdated(string cacheFile, DateTime dataModifiedOn)
     {
-#pragma warning disable CA3003  // No potential File path injection
         var fi = new FileInfo(cacheFile);
         return !fi.Exists || fi.LastWriteTimeUtc < dataModifiedOn; // Database dates are in UTC
-#pragma warning restore CA3003
     }
 
     private async Task<string?> GetReportSheetChromium(long matchId, string html, CancellationToken cancellationToken)
@@ -93,7 +97,6 @@ public class ReportSheetCache
     {
         if (!File.Exists(pdfFile)) return null;
 
-#pragma warning disable CA3003  // No potential File path injection
         var fullPath = GetPathToCacheFile(matchId);
         try
         {
@@ -104,7 +107,6 @@ public class ReportSheetCache
         {
             File.Copy(pdfFile, fullPath, true);    
         }
-#pragma warning restore CA3003
 
         return fullPath;
     }
