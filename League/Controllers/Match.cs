@@ -391,8 +391,8 @@ public class Match : AbstractController
                 // This preserves OutOfSyncExceptions. We only read what was successfully saved without a re-fetch.
                 match.Fields.MarkAsFetched();
                 match.Sets.ToList().ForEach(s => s.Fields.MarkAsFetched());
-                SendResultNotification(match);
-                UpdateRanking(match.RoundId);
+                SendResultNotification(match, false);
+                UpdateRanking(match.RoundId, false);
             }
         }
         catch (Exception e)
@@ -404,6 +404,48 @@ public class Match : AbstractController
 
         // redirect to results overview, where success message is shown
         return Redirect(TenantLink.Action(nameof(Results), nameof(Match))!);
+    }
+
+    /// <summary>
+    /// Processes the post for a match result.
+    /// </summary>
+    /// <param name="model"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    [Authorize(Policy = Authorization.PolicyName.OverruleResultPolicy)]
+    [HttpPost("remove-result/{*segments}")]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> RemoveResult([FromForm] EnterResultViewModel? model,
+        CancellationToken cancellationToken)
+    {
+        ArgumentNullException.ThrowIfNull(model);
+        ArgumentNullException.ThrowIfNull(model.Id);
+
+        try
+        {
+            var result =  await _appDb.MatchRepository.DeleteMatchResultAsync(model.Id.Value, cancellationToken);
+            if (result.Success)
+            {
+                var match = result.Match!;
+                // Set the remark to the user's input when removing a result
+                match.Remarks = model.Remarks;
+
+                SendResultNotification(match, true);
+                UpdateRanking(match.RoundId, true);
+            }
+
+            // redirect to fixture overview, where success message is shown
+            TempData.Put<EditFixtureViewModel.FixtureMessage>(nameof(EditFixtureViewModel.FixtureMessage), new EditFixtureViewModel.FixtureMessage { MatchId = model.Id.Value, ChangeSuccess = result.Success });
+            return Redirect(TenantLink.Action(nameof(Fixtures), nameof(Match))!);
+        }
+        catch (Exception e)
+        {
+            _logger.LogCritical(e, "Deleting result for {model} failed for MatchId '{modelId}'. User ID '{currentUser}'", nameof(EnterResultViewModel), model.Id, GetCurrentUserId());
+            TempData.Put<EnterResultViewModel.MatchResultMessage>(nameof(EnterResultViewModel.MatchResultMessage),
+                new EnterResultViewModel.MatchResultMessage { MatchId = model.Id, ChangeSuccess = false });
+            // redirect to results overview, where success message is shown
+            return Redirect(TenantLink.Action(nameof(Results), nameof(Match))!);
+        }
     }
 
     /// <summary>
@@ -701,7 +743,8 @@ public class Match : AbstractController
     
     private void SendFixtureNotification(long matchId)
     {
-        _sendMailTask.SetMessageCreator(new ChangeFixtureCreator
+        var smt = _sendMailTask.CreateNewInstance();
+        smt.SetMessageCreator(new ChangeFixtureCreator
         {
             Parameters =
             {
@@ -711,31 +754,34 @@ public class Match : AbstractController
             }
         });
 
-        _queue.QueueTask(_sendMailTask);
+        _queue.QueueTask(smt);
     }
 
-    private void SendResultNotification(in MatchEntity match)
+    private void SendResultNotification(in MatchEntity match, bool isResultRemoved)
     {
         // Todo: Should we check whether an existing result was changed?
-            
-        _sendMailTask.SetMessageCreator(new ResultEnteredCreator
+
+        var smt = _sendMailTask.CreateNewInstance();
+        smt.SetMessageCreator(new ResultEnteredCreator
         {
             Parameters =
             {
                 CultureInfo = CultureInfo.DefaultThreadCurrentUICulture ?? CultureInfo.CurrentCulture,
                 ChangedByUserId = GetCurrentUserId() ?? throw new InvalidOperationException("Current user ID must not be null"),
                 Match = match,
+                IsResultRemoved = isResultRemoved
             }
         });
 
-        _queue.QueueTask(_sendMailTask);
+        _queue.QueueTask(smt);
     }
 
-    private void UpdateRanking(in long roundId)
+    private void UpdateRanking(in long roundId, bool forceUpdate)
     {
         _rankingUpdateTask.TenantContext = _tenantContext;
         _rankingUpdateTask.RoundId = roundId;
         _rankingUpdateTask.Timeout = TimeSpan.FromMinutes(2);
+        _rankingUpdateTask.EnforceUpdate = forceUpdate;
         _queue.QueueTask(_rankingUpdateTask);
     }
 

@@ -56,9 +56,13 @@ public class ResultEnteredCreator : IMailMessageCreator
             HomeTeamName = teamUserRoundInfos.First(tur => tur.TeamId == Parameters.Match.HomeTeamId).TeamNameForRound,
             GuestTeamName = teamUserRoundInfos.First(tur => tur.TeamId == Parameters.Match.GuestTeamId).TeamNameForRound
         };
+
+        var plainTextContent = Parameters.IsResultRemoved
+            ? await renderer.RenderAsync(Templates.Email.TemplateName.ResultRemovedTxt, model,
+                Parameters.CultureInfo.TwoLetterISOLanguageName)
+            : await renderer.RenderAsync(Templates.Email.TemplateName.ResultEnteredTxt, model,
+                Parameters.CultureInfo.TwoLetterISOLanguageName);
             
-        var plainTextContent = await renderer.RenderAsync(Templates.Email.TemplateName.ResultEnteredTxt, model,
-            Parameters.CultureInfo.TwoLetterISOLanguageName);
 
         var recipientGroups = new[]
         {
@@ -79,7 +83,9 @@ public class ResultEnteredCreator : IMailMessageCreator
                 {
                     using (new CultureSwitcher(Parameters.CultureInfo, Parameters.CultureInfo))
                     {
-                        mailMergeMessage.Subject = localizer["Match result '{0}' vs. '{1}'", model.HomeTeamName, model.GuestTeamName].Value;
+                        mailMergeMessage.Subject = Parameters.IsResultRemoved
+                            ? localizer["Match result removed: '{0}' vs. '{1}'", model.HomeTeamName, model.GuestTeamName].Value
+                            : localizer["Match result '{0}' vs. '{1}'", model.HomeTeamName, model.GuestTeamName].Value;
                     }
                 }
                     
@@ -93,7 +99,7 @@ public class ResultEnteredCreator : IMailMessageCreator
                 }
             }
                 
-            // Send registration info also to league administration
+            // Send info also to league administration
             mailMergeMessage.MailMergeAddresses.Add(new MailMergeAddress(MailAddressType.Bcc,
                 tenantContext.SiteContext.Email.GeneralBcc.DisplayName,
                 tenantContext.SiteContext.Email.GeneralBcc.Address));
@@ -110,6 +116,7 @@ public class ResultEnteredCreator : IMailMessageCreator
     public class ResultEnteredParameters
     {
         public long ChangedByUserId { get; set; }
+        public bool IsResultRemoved { get; set; } = false;
         public MatchEntity? Match { get; set; }
         public CultureInfo CultureInfo { get; set; } = CultureInfo.CurrentCulture;
     }

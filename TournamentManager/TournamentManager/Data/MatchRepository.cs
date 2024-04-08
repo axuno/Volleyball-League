@@ -369,13 +369,17 @@ public class MatchRepository
     /// </summary>
     /// <param name="matchId">The <see cref="MatchEntity.Id"/>.</param>
     /// <param name="cancellationToken"></param>
-    /// <returns><see langword="true"/>, if the operation was successful, else <see langword="false"/>. </returns>
+    /// <returns>A <see cref="ValueTuple"/> with <see langword="true"/> and the <see cref="MatchEntity"/> with all fields marked as fetched, if the operation was successful, else <see langword="false"/> and <see langword="null"/>.</returns>
     /// <exception cref="ArgumentException"></exception>
-    public virtual async Task<bool> DeleteMatchResultAsync(long matchId, CancellationToken cancellationToken)
+    public virtual async Task<(bool Success, MatchEntity? Match)> DeleteMatchResultAsync(long matchId, CancellationToken cancellationToken)
     {
         // Get the match with the sets
         var matchEntity = await GetMatchWithSetsAsync(matchId, cancellationToken)
-                          ?? throw new ArgumentException(@"No match found", nameof(matchId));
+                          ?? throw new ArgumentException(@"Match not found", nameof(matchId));
+
+        var clone = Clone(matchEntity);
+        //matchEntity.Fields.MarkAsFetched();
+        //matchEntity.Sets.ToList().ForEach(s => s.Fields.MarkAsFetched());
 
         matchEntity.HomePoints = matchEntity.GuestPoints = null;
         matchEntity.RealStart = matchEntity.RealEnd = null;
@@ -404,7 +408,8 @@ public class MatchRepository
             // Save the changes to the match
             await da.SaveEntityAsync(matchEntity, false, false, cancellationToken);
             await da.CommitAsync(cancellationToken);
-            return true;
+
+            return (true, clone);
         }
         catch (Exception e)
         {
@@ -413,8 +418,49 @@ public class MatchRepository
             if (da.IsTransactionInProgress)
                 da.Rollback();
 
-            return false;
+            return (false, null);
+        }
+    }
+
+    private static MatchEntity Clone(MatchEntity matchEntity)
+    {
+        var clone = new MatchEntity
+        {
+            Id = matchEntity.Id,
+            RoundId = matchEntity.RoundId,
+            HomeTeamId = matchEntity.HomeTeamId,
+            GuestTeamId = matchEntity.GuestTeamId,
+            PlannedStart = matchEntity.PlannedStart,
+            PlannedEnd = matchEntity.PlannedEnd,
+            IsComplete = matchEntity.IsComplete,
+            HomePoints = matchEntity.HomePoints,
+            GuestPoints = matchEntity.GuestPoints,
+            RealStart = matchEntity.RealStart,
+            RealEnd = matchEntity.RealEnd,
+            Remarks = matchEntity.Remarks,
+            IsOverruled = matchEntity.IsOverruled,
+            CreatedOn = matchEntity.CreatedOn,
+            ModifiedOn = matchEntity.ModifiedOn,
+        };
+
+        foreach (var setEntity in matchEntity.Sets)
+        {
+            clone.Sets.Add(new SetEntity
+            {
+                Id = setEntity.Id,
+                MatchId = setEntity.MatchId,
+                SequenceNo = setEntity.SequenceNo,
+                HomeBallPoints = setEntity.HomeBallPoints,
+                GuestBallPoints = setEntity.GuestBallPoints,
+                HomeSetPoints = setEntity.HomeSetPoints,
+                GuestSetPoints = setEntity.GuestSetPoints,
+                IsTieBreak = setEntity.IsTieBreak,
+                IsOverruled = setEntity.IsOverruled,
+                CreatedOn = setEntity.CreatedOn,
+                ModifiedOn = setEntity.ModifiedOn
+            });
         }
 
+        return clone;
     }
 }

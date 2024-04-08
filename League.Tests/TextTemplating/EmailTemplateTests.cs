@@ -349,6 +349,60 @@ public class EmailTemplateTests
         });
     }
 
+    [TestCase("en", false, true)]
+    [TestCase("en", false, false)]
+    [TestCase("en", true, true)]
+    [TestCase("en", true, false)]
+    [TestCase("de", false, true)]
+    [TestCase("de", false, false)]
+    [TestCase("de", true, true)]
+    [TestCase("de", true, false)]
+    public void ResultRemoved_Test(string cultureName, bool isOrigStartSet, bool withRemarks)
+    {
+        var realStart = new DateTime(2023, 11, 30, 20, 00, 00);
+
+        var m = new ResultEnteredModel
+        {
+            Username = "User who entered",
+            RoundDescription = "Round description",
+            HomeTeamName = "Home Team",
+            GuestTeamName = "Guest Team",
+            Match = new TournamentManager.DAL.EntityClasses.MatchEntity
+            {
+                Id = 12345,
+                PlannedStart = new DateTime(2023, 11, 24, 20, 00, 00),
+                OrigPlannedStart = isOrigStartSet ? realStart.AddDays(-60) : (DateTime?) null,
+                RealStart = realStart,
+                RealEnd = realStart.AddHours(2),
+                HomePoints = 2, GuestPoints = 0,
+                Remarks = withRemarks ? "Some remarks" : string.Empty,
+                ChangeSerial = 7
+            }
+        };
+        m.Match.Sets.AddRange(new[]
+        {
+            new TournamentManager.DAL.EntityClasses.SetEntity {HomeBallPoints = 25, GuestBallPoints = 1, HomeSetPoints = 1, GuestSetPoints = 0},
+            new TournamentManager.DAL.EntityClasses.SetEntity {HomeBallPoints = 25, GuestBallPoints = 2, HomeSetPoints = 1, GuestSetPoints = 0},
+            new TournamentManager.DAL.EntityClasses.SetEntity {HomeBallPoints = 25, GuestBallPoints = 3, HomeSetPoints = 1, GuestSetPoints = 0}
+        });
+
+        string text = string.Empty, html = string.Empty;
+
+        Assert.Multiple(() =>
+        {
+            Assert.DoesNotThrowAsync(async () =>
+            {
+                text = await _renderer.RenderAsync(TemplateName.ResultRemovedTxt, m, cultureName);
+                Console.WriteLine($@"*** {TemplateName.ResultRemovedTxt} ***");
+                Console.WriteLine(text);
+            });
+
+            Assert.That(text, Does.Contain(L("Match result removed", cultureName)));
+            if (withRemarks) Assert.That(text, Does.Contain(m.Match.Remarks));
+            if (isOrigStartSet) Assert.That(text, Does.Contain(m.Match.OrigPlannedStart?.ToString("d", new CultureInfo(cultureName))!));
+        });
+    }
+
     [TestCase("en", true)]
     [TestCase("en", false)]
     [TestCase("de", true)]

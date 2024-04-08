@@ -123,7 +123,7 @@
   </data>
   <data name="Ball points" xml:space="preserve">
     <value>Ballpunkte</value>
-    <comment>ResultEntered</comment>
+    <comment>ResultEntered, ResultRemoved</comment>
   </data>
   <data name="Bank name" xml:space="preserve">
     <value>Name der Bank</value>
@@ -171,7 +171,7 @@
   </data>
   <data name="End of match" xml:space="preserve">
     <value>Spielende</value>
-    <comment>ResultEntered</comment>
+    <comment>ResultEntered, ResultRemoved</comment>
   </data>
   <data name="Fixture change for team '{0}'" xml:space="preserve">
     <value>Spielplanänderung für Team '{0}'</value>
@@ -195,19 +195,27 @@
   </data>
   <data name="Match day of {0}" xml:space="preserve">
     <value>Spieltag {0}</value>
-    <comment>ResultEntered</comment>
+    <comment>ResultEntered, ResultRemoved</comment>
   </data>
   <data name="Match day of {0}, played on {1}" xml:space="preserve">
     <value>Spieltag {0}, gespielt am {1}</value>
-    <comment>ResultEntered</comment>
+    <comment>ResultEntered, ResultRemoved</comment>
   </data>
   <data name="Match points" xml:space="preserve">
     <value>Spielpunkte</value>
-    <comment>ResultEntered</comment>
+    <comment>ResultEntered, ResultRemoved</comment>
   </data>
   <data name="Match result '{0}' vs. '{1}'" xml:space="preserve">
     <value>Spielergebnis '{0}' gg. '{1}'</value>
-    <comment>ResultEnterdCreator</comment>
+    <comment>ResultEnteredCreator</comment>
+  </data>
+  <data name="Match result removed" xml:space="preserve">
+    <value>Spielergebnis entfernt</value>
+    <comment>ResultEntered, ResultRemoved</comment>
+  </data>
+  <data name="Match result removed: '{0}' vs. '{1}'" xml:space="preserve">
+    <value>Spielergebnis entfernt: '{0}' vs. '{1}'</value>
+    <comment>ResultEnteredCreator</comment>
   </data>
   <data name="Message" xml:space="preserve">
     <value>Nachricht</value>
@@ -235,7 +243,7 @@
   </data>
   <data name="No sets" xml:space="preserve">
     <value>Keine Sätze</value>
-    <comment>ResultEntered</comment>
+    <comment>ResultEntered, ResultRemoved</comment>
   </data>
   <data name="Number of changes" xml:space="preserve">
     <value>Anzahl Änderungen</value>
@@ -271,7 +279,7 @@
   </data>
   <data name="Remarks" xml:space="preserve">
     <value>Anmerkungen</value>
-    <comment>ResultEntered</comment>
+    <comment>ResultEntered, ResultRemoved</comment>
   </data>
   <data name="Replacement fixture date" xml:space="preserve">
     <value>Neuer Ausweichspieltag</value>
@@ -283,7 +291,7 @@
   </data>
   <data name="Result" xml:space="preserve">
     <value>Ergebnis</value>
-    <comment>ResultEntered</comment>
+    <comment>ResultEntered, ResultRemoved</comment>
   </data>
   <data name="Season fixture date" xml:space="preserve">
     <value>Spieldatum lt. Saisonplan</value>
@@ -299,11 +307,11 @@
   </data>
   <data name="Set #{0}" xml:space="preserve">
     <value>{0}. Satz</value>
-    <comment>ResultEntered</comment>
+    <comment>ResultEntered, ResultRemoved</comment>
   </data>
   <data name="Set points" xml:space="preserve">
     <value>Satzpunkte</value>
-    <comment>ResultEntered</comment>
+    <comment>ResultEntered, ResultRemoved</comment>
   </data>
   <data name="Sporting greetings" xml:space="preserve">
     <value>Sportliche Grüße</value>
@@ -311,7 +319,7 @@
   </data>
   <data name="Start of match" xml:space="preserve">
     <value>Spielbeginn</value>
-    <comment>ResultEntered</comment>
+    <comment>ResultEntered, ResultRemoved</comment>
   </data>
   <data name="Subject" xml:space="preserve">
     <value>Betreff</value>
@@ -340,6 +348,10 @@
   <data name="The confirmation link can be used until" xml:space="preserve">
     <value>Der Bestätigungslink kann verwendet werden bis zum</value>
     <comment>PleaseConfirmEmail</comment>
+  </data>
+  <data name="The match went back to fixtures" xml:space="preserve">
+    <value>Das Spiel steht wieder im Spielplan</value>
+    <comment>ResultRemoved</comment>
   </data>
   <data name="The recovery code can be used once until" xml:space="preserve">
     <value>Der Schlüssel kann einmal verwendet werden bis zum</value>

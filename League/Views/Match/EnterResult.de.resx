@@ -129,9 +129,6 @@
   <data name="Date format" xml:space="preserve">
     <value>Datumsformat</value>
   </data>
-  <data name="DD.MM.YYYY" xml:space="preserve">
-    <value>TT.MM.JJJJ</value>
-  </data>
   <data name="Enable overruling" xml:space="preserve">
     <value>Übersteuern aktivieren</value>
   </data>
@@ -155,6 +152,9 @@
   </data>
   <data name="Remarks become part of the result submission" xml:space="preserve">
     <value>Anmerkungen sind Teil der Ergebnismeldung</value>
+  </data>
+  <data name="Remove result entry" xml:space="preserve">
+    <value>Ergebniseintrag entfernen</value>
   </data>
   <data name="Results can be changed as long as the competition is running" xml:space="preserve">
     <value>Ergebnisse können geändert werden, solange der Wettbewerb läuft</value>
