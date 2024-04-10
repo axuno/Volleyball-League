@@ -3,11 +3,13 @@
 // Licensed under the MIT license.
 //
 
-using OxyPlot;
 using TournamentManager.DAL.TypedViewClasses;
 using TournamentManager.MultiTenancy;
 
 namespace League.Caching;
+
+#pragma warning disable S2083   // reason: False positive due to CancellationToken in GetOrCreatePdf
+#pragma warning disable CA3003  // reason: False positive due to CancellationToken in GetOrCreatePdf
 public class ReportSheetCache
 {
     private readonly ITenantContext _tenantContext;
@@ -234,3 +236,5 @@ public class ReportSheetCache
         }
     }
 }
+#pragma warning restore CA3003
+#pragma warning restore S2083
