@@ -276,8 +276,11 @@ public class Match : AbstractController
             }
 
             var overrule = TempData.Get<string>(nameof(OverruleResult)) == true.ToString();
+            var userCanOverrule =
+                (await _authorizationService.AuthorizeAsync(User, match, Authorization.MatchOperations.OverruleResult))
+                .Succeeded;
 
-            if (overrule && !(await _authorizationService.AuthorizeAsync(User, match, Authorization.MatchOperations.OverruleResult)).Succeeded)
+            if (overrule && !userCanOverrule)
             {
                 return Forbid();
             }
@@ -286,6 +289,13 @@ public class Match : AbstractController
             model.IsOverruling = overrule;
 
             var permissionValidator = new MatchResultPermissionValidator(match, (_tenantContext, (model.Tournament!.IsPlanningMode, model.Round!.IsComplete, DateTime.UtcNow)));
+            if (userCanOverrule)
+            {
+                // Disable the deadline check, if the user is allowed to overrule results
+                permissionValidator.Facts.First(f =>
+                                           f.Id == MatchResultPermissionValidator.FactId.CurrentDateIsBeforeResultCorrectionDeadline)
+                    .Enabled = false;
+            }
             await permissionValidator.CheckAsync(cancellationToken);
             if (permissionValidator.GetFailedFacts().Count != 0)
             {
