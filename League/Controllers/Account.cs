@@ -305,16 +305,14 @@ public class Account : AbstractController
     {
         if (remoteError != null)
         {
-            _logger.LogInformation("{method} failed: {remoteError}.", nameof(ExternalSignInCallback), remoteError);
-            return SocialMediaSignInFailure($"Remote error: {remoteError}",
-                _localizer["Failed to sign-in with the social network account"].Value + $" ({remoteError})");
+            _logger.LogInformation("{method} failed. Remote error was supplied.", nameof(ExternalSignInCallback));
+            return SocialMediaSignInFailure(_localizer["Failed to sign-in with the social network account"].Value + $" ({remoteError})");
         }
         var info = await _signInManager.GetExternalLoginInfoAsync();
         if (info == null)
         {
             _logger.LogInformation("{method} failed to get external sign-in information", nameof(ExternalSignInCallback));
-            return SocialMediaSignInFailure("Failed to get external sign-in information",
-                _localizer["Failed to sign-in with the social network account"].Value);
+            return SocialMediaSignInFailure(_localizer["Failed to sign-in with the social network account"].Value);
         }
             
         // Sign-in user if provider represents a valid already registered user
@@ -323,7 +321,7 @@ public class Account : AbstractController
         if (await _signInManager.UserManager.FindByLoginAsync(info.LoginProvider, info.ProviderKey) == null)
         {
             ApplicationUser? existingUser = null;
-            // if the the current user is signed-in
+            // if the current user is signed in
             if (User.Identity!.IsAuthenticated)
             {
                 existingUser = await _signInManager.UserManager.FindByNameAsync(User.Identity.Name);
@@ -344,8 +342,7 @@ public class Account : AbstractController
                 if (await _signInManager.UserManager.AddLoginAsync(existingUser, info) != IdentityResult.Success)
                 {
                     _logger.LogInformation("{method} {email} is already associated with another account", nameof(ExternalSignInCallback), existingUser.Email);
-                    return SocialMediaSignInFailure($"Social network account for {existingUser.Email} is already associated with another account",
-                        _localizer.GetString("Your {0} account is already associated with another account at {1}", info.LoginProvider, _tenantContext.OrganizationContext.ShortName).Value);
+                    return SocialMediaSignInFailure(_localizer.GetString("Your {0} account is already associated with another account at {1}", info.LoginProvider, _tenantContext.OrganizationContext.ShortName).Value);
                 }
 
                 await UpdateUserFromExternalLogin(existingUser, info);
@@ -591,11 +588,8 @@ public class Account : AbstractController
         return Redirect(Url.IsLocalUrl(returnUrl) ? returnUrl : string.Empty);
     }
 
-    private IActionResult SocialMediaSignInFailure(string logErrorText, string errorMessage)
+    private IActionResult SocialMediaSignInFailure(string errorMessage)
     {
-#pragma warning disable CA2254 // Template should be a static expression
-        _logger.LogWarning(logErrorText);
-#pragma warning restore CA2254 // Template should be a static expression
         // using POST-REDIRECT-GET (PRG) design pattern might be better: https://andrewlock.net/post-redirect-get-using-tempdata-in-asp-net-core/
         ModelState.AddModelError(string.Empty, errorMessage);
         ViewData["Form"] = "SocialMedia"; // select the form for the validation summary
