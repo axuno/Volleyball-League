@@ -123,6 +123,9 @@
   <data name="Back standard form" xml:space="preserve">
     <value>Zurück zur Standardeingabe</value>
   </data>
+  <data name="Ball Points" xml:space="preserve">
+    <value>Ballpunkte</value>
+  </data>
   <data name="Cancel" xml:space="preserve">
     <value>Abbrechen</value>
   </data>
@@ -134,6 +137,9 @@
   </data>
   <data name="Enter Match Result" xml:space="preserve">
     <value>Spielergebnis eintragen</value>
+  </data>
+  <data name="Match Points" xml:space="preserve">
+    <value>Spielpunkte</value>
   </data>
   <data name="Opponents" xml:space="preserve">
     <value>Begegnung</value>
@@ -164,6 +170,9 @@
   </data>
   <data name="Set #{0}" xml:space="preserve">
     <value>{0}. Satz</value>
+  </data>
+  <data name="Set Points" xml:space="preserve">
+    <value>Satzpunkte</value>
   </data>
   <data name="The result entry can be removed. The match goes back to fixtures." xml:space="preserve">
     <value>Der Ergebniseintrag kann entfernt werden. Das Spiel geht zurück in den Spielplan.</value>
