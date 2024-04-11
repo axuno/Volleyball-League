@@ -6,20 +6,20 @@ namespace League.ControllerAttributes;
 
 public class TeamApplicationAllowedAttribute : ActionFilterAttribute
 {
-    public override void OnActionExecuting(ActionExecutingContext filterContext)
+    public override void OnActionExecuting(ActionExecutingContext context)
     {
-        if (filterContext.HttpContext.RequestServices.GetService(typeof(ITenantContext)) is
+        if (context.HttpContext.RequestServices.GetService(typeof(ITenantContext)) is
                 ITenantContext tenantContext &&
-            (!tenantContext.TournamentContext.ApplicationAllowed && ((filterContext.RouteData.Values["controller"]?.ToString() ?? string.Empty)
+            (!tenantContext.TournamentContext.ApplicationAllowed && ((context.RouteData.Values["controller"]?.ToString() ?? string.Empty)
                                                                          .Equals(nameof(League.Controllers.TeamApplication),
                                                                              StringComparison.OrdinalIgnoreCase) &&
-                                                                     !(filterContext.RouteData.Values["action"]?.ToString() ?? string.Empty)
+                                                                     !(context.RouteData.Values["action"]?.ToString() ?? string.Empty)
                                                                          .Equals(nameof(League.Controllers.TeamApplication.List),
                                                                              StringComparison.OrdinalIgnoreCase)
                 )))
         {
-            var tenantLink = filterContext.HttpContext.RequestServices.GetRequiredService<TenantLink>();
-            filterContext.Result = new RedirectResult(tenantLink.Action(nameof(Controllers.TeamApplication.List),
+            var tenantLink = context.HttpContext.RequestServices.GetRequiredService<TenantLink>();
+            context.Result = new RedirectResult(tenantLink.Action(nameof(Controllers.TeamApplication.List),
                 nameof(Controllers.TeamApplication))!);
         }
     }

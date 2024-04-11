@@ -10,22 +10,18 @@ namespace League.Controllers;
 [Route(TenantRouteConstraint.Template + "/[controller]")]
 public class Map : AbstractController
 {
-    private readonly IConfiguration _configuration;
     private readonly ILogger<Map> _logger;
     private readonly ITenantContext _tenantContext;
     private readonly IAppDb _appDb;
-    private readonly IStringLocalizer<Map> _localizer;
     private readonly GoogleConfiguration _googleConfig;
 
-    public Map(ITenantContext tenantContext, IConfiguration configuration, IStringLocalizer<Map> localizer, ILogger<Map> logger)
+    public Map(ITenantContext tenantContext, IConfiguration configuration, ILogger<Map> logger)
     {
         _tenantContext = tenantContext;
         _appDb = tenantContext.DbContext.AppDb;
-        _configuration = configuration;
-        _localizer = localizer;
         _logger = logger;
         _googleConfig = new GoogleConfiguration();
-        _configuration.Bind(nameof(GoogleConfiguration), _googleConfig);
+        configuration.Bind(nameof(GoogleConfiguration), _googleConfig);
     }
 
     [Route("")]

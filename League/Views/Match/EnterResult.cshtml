@@ -128,11 +128,11 @@
             {
                 var counter = i;
                 <div class="row">
-                    <label class="form-label">@Localizer["Set #{0}", i + 1]</label>
+                    <label asp-for="@Model.BallPoints[counter].Home" class="form-label">@Localizer["Set #{0}", i + 1]</label>
                     <div class="mb-3 col-12 col-md-4">
                         @if (Model.IsOverruling)
                         {
-                            <div class="form-text">@Localizer["Ball Points"]</div>
+                            <label asp-for="@Model.BallPoints[counter].Home" class=" form-text">@Localizer["Ball Points"]</label>
                         }
                         <div class="input-group">
                             <input asp-for="@Model.BallPoints[counter].Home" type="text" autocomplete="off" class="form-control text-start @(AddBallPointsErr(counter))" style="max-width:5em"/>
@@ -146,7 +146,7 @@
                     @if (Model.IsOverruling)
                     {
                         <div class="mb-3 col-12 col-md-4">
-                            <div class="form-text">@Localizer["Set Points"]</div>
+                            <label asp-for="@Model.SetPoints[counter].Home" class="form-text">@Localizer["Set Points"]</label>
                             <div class="input-group">
                                 <input asp-for="@Model.SetPoints[counter].Home" type="text" autocomplete="off" class="form-control text-start @(AddSetPointsErr(counter))" style="max-width:5em"/>
                                 <span class="input-group-text">

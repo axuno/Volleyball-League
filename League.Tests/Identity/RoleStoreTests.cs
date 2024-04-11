@@ -79,9 +79,9 @@ public class RoleStoreTests
             Assert.That(Constants.RoleName.GetTeamRelatedRoles(), Does.Contain(Constants.RoleName.TeamManager));
             Assert.That(Constants.RoleName.GetTeamRelatedRoles(), Does.Contain(Constants.RoleName.Player));
 
-            Assert.That(Constants.RoleName.GetAllValues<string>().Any(rn => rn == Constants.RoleName.TournamentManager), Is.True);
-            Assert.That(Constants.RoleName.GetAllValues<string>().Any(rn => rn == Constants.RoleName.SystemManager), Is.True);
-            Assert.That(Constants.RoleName.GetAllNames(), Does.Contain(nameof(Constants.RoleName.TournamentManager)));
+            Assert.That(Constants.RoleName.GetAllRoleValues<string>().Any(rn => rn == Constants.RoleName.TournamentManager), Is.True);
+            Assert.That(Constants.RoleName.GetAllRoleValues<string>().Any(rn => rn == Constants.RoleName.SystemManager), Is.True);
+            Assert.That(Constants.RoleName.GetAllRoleNames(), Does.Contain(nameof(Constants.RoleName.TournamentManager)));
         });
     }
 

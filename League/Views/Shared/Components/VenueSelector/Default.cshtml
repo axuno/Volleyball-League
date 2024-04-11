@@ -27,7 +27,7 @@
         {
                 <tr data-venue-id="@Model.VenueNotSpecifiedKey"><td></td><td colspan="2">@Localizer["There is no venue assigned"]</td></tr>
         }
-        @if (Model.Filter == VenueSelectorComponentModel.Criteria.AllVenues)
+        @if (Model.Filter == VenueSelectorComponentModel.Criteria.None)
         {
             // Show all venues if no filter criteria are set
             foreach (var v in Model.AllVenues)

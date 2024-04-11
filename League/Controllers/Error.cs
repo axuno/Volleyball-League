@@ -9,13 +9,11 @@ public class Error : AbstractController
     private readonly ILogger _logger;
     private readonly ILogger _notFoundLogger;
     private readonly IStringLocalizer<Error> _localizer;
-    private readonly IWebHostEnvironment _environment;
     private readonly ITenantContext _tenantContext;
 
-    public Error(ILogger<Error> logger, IStringLocalizer<Error> localizer, ILoggerFactory loggerFactory, IWebHostEnvironment environment, ITenantContext tenantContext)
+    public Error(ILogger<Error> logger, IStringLocalizer<Error> localizer, ILoggerFactory loggerFactory, ITenantContext tenantContext)
     {
         _logger = logger;
-        _environment = environment;
         _tenantContext = tenantContext;
         _localizer = localizer;
         _notFoundLogger = loggerFactory.CreateLogger(nameof(League) + ".NotFound");

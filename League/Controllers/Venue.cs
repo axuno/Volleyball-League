@@ -19,30 +19,23 @@ namespace League.Controllers;
 [Route(TenantRouteConstraint.Template + "/[controller]")]
 public class Venue : AbstractController
 {
-    private readonly ITenantContext _tenantContext;
     private readonly IAppDb _appDb;
     private readonly IAuthorizationService _authorizationService;
-    private readonly IStringLocalizer<Venue> _localizer;
     private readonly RegionInfo _regionInfo;
-    private readonly IConfiguration _configuration;
     private readonly ILogger<Venue> _logger;
     private readonly GoogleConfiguration _googleConfig;
     private readonly string _defaultReturnUrl;
 
     public Venue(ITenantContext tenantContext, IAuthorizationService authorizationService, 
-        IStringLocalizer<Venue> localizer, RegionInfo regionInfo,
-        IConfiguration configuration, ILogger<Venue> logger)
+        RegionInfo regionInfo, IConfiguration configuration, ILogger<Venue> logger)
     {
         _defaultReturnUrl = "/";
-        _tenantContext = tenantContext;
         _appDb = tenantContext.DbContext.AppDb;
         _authorizationService = authorizationService;
-        _localizer = localizer;
         _regionInfo = regionInfo;
-        _configuration = configuration;
         _logger = logger;
         _googleConfig = new GoogleConfiguration();
-        _configuration.Bind(nameof(GoogleConfiguration), _googleConfig);
+        configuration.Bind(nameof(GoogleConfiguration), _googleConfig);
     }
 
     [HttpGet("[action]/{id:long}")]

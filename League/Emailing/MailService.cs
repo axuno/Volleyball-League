@@ -20,13 +20,10 @@ public class MailMergeServiceConfig
 
 public class MailMergeService : IMailMergeService
 {
-    private readonly ITenantContext _tenantContext;
-
-    public MailMergeService(IOptions<MailMergeServiceConfig> serviceConfig, ITenantContext tenantContext )
+    public MailMergeService(IOptions<MailMergeServiceConfig> serviceConfig)
     {
         Settings = serviceConfig.Value.Settings!;
         MessageStore = serviceConfig.Value.MessageStore!;
-        _tenantContext = tenantContext;
     }
     public Settings Settings { get; }
     public IMessageStore MessageStore { get; }

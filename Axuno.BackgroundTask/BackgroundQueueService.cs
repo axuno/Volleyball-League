@@ -26,17 +26,17 @@ public class BackgroundQueueService : BackgroundService
     /// </summary>
     public IBackgroundQueue TaskQueue { get; }
 
-    protected override async Task ExecuteAsync(CancellationToken cancellationToken)
+    protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        while (!cancellationToken.IsCancellationRequested)
+        while (!stoppingToken.IsCancellationRequested)
         {
             try
             {
-                await Task.Delay(Config.PollQueueDelay, cancellationToken);
+                await Task.Delay(Config.PollQueueDelay, stoppingToken);
                 _logger.LogDebug($"TaskItem dequeuing.");
                 var taskItemReference = TaskQueue.DequeueTask();
                 _logger.LogDebug($"TaskItem start executing.");
-                await TaskQueue.RunTaskAsync(taskItemReference, cancellationToken);
+                await TaskQueue.RunTaskAsync(taskItemReference, stoppingToken);
                 _logger.LogDebug($"TaskItem completed.");
             }
             catch (Exception e) when (e is TaskCanceledException || e is OperationCanceledException)

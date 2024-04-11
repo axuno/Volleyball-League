@@ -30,7 +30,7 @@ public class TenantRouteConstraint : IRouteConstraint
     public const string Template = "{" + Key + ":" + Name + "}";
 
     /// <inheritdoc />
-    public bool Match(HttpContext? httpContext, IRouter? route, string parameterName, RouteValueDictionary values, RouteDirection routeDirection)
+    public bool Match(HttpContext? httpContext, IRouter? route, string routeKey, RouteValueDictionary values, RouteDirection routeDirection)
     {
         switch (routeDirection)
         {
@@ -39,11 +39,11 @@ public class TenantRouteConstraint : IRouteConstraint
                 var tenantResolver = httpContext.RequestServices.GetRequiredService<TenantResolver>();
                 var tenant = tenantResolver.Resolve();
                 return tenant.SiteContext.UrlSegmentValue
-                    .Equals(values[parameterName]?.ToString(), StringComparison.InvariantCultureIgnoreCase);
+                    .Equals(values[routeKey]?.ToString(), StringComparison.InvariantCultureIgnoreCase);
             case RouteDirection.UrlGeneration:
             default:
                 return _tenantStore.GetTenants().Values.FirstOrDefault(t =>
-                    t.SiteContext.UrlSegmentValue.Equals(values[parameterName]?.ToString(),
+                    t.SiteContext.UrlSegmentValue.Equals(values[routeKey]?.ToString(),
                         StringComparison.InvariantCultureIgnoreCase)) != null;
         }
     }

@@ -1,8 +1,7 @@
 ﻿// All scripts go into the same namespace
-if (Site === undefined) {
+if (typeof Site === 'undefined') {
     var Site = {};
 }
-
 /*
 Make characters of an <input type="password"/> field visible/invisible.
 

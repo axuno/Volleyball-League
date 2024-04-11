@@ -21,21 +21,19 @@ public class Team : AbstractController
 {
     private readonly ITenantContext _tenantContext;
     private readonly IAppDb _appDb;
-    private readonly IStringLocalizer<Team> _localizer;
     private readonly IAuthorizationService _authorizationService;
     private readonly ILogger<Team> _logger;
     private readonly Axuno.Tools.DateAndTime.TimeZoneConverter _timeZoneConverter;
     private readonly SignInManager<Identity.ApplicationUser> _signInManager;
     private readonly IWebHostEnvironment _webHostEnvironment;
 
-    public Team(ITenantContext tenantContext, Axuno.Tools.DateAndTime.TimeZoneConverter timeZoneConverter, IWebHostEnvironment webHostEnvironment, IStringLocalizer<Team> localizer, IAuthorizationService authorizationService, SignInManager<Identity.ApplicationUser> signInManger, ILogger<Team> logger)
+    public Team(ITenantContext tenantContext, Axuno.Tools.DateAndTime.TimeZoneConverter timeZoneConverter, IWebHostEnvironment webHostEnvironment, IAuthorizationService authorizationService, SignInManager<Identity.ApplicationUser> signInManger, ILogger<Team> logger)
     {
         _tenantContext = tenantContext;
         _timeZoneConverter = timeZoneConverter;
         _webHostEnvironment = webHostEnvironment;
         _appDb = tenantContext.DbContext.AppDb;
         _signInManager = signInManger;
-        _localizer = localizer;
         _authorizationService = authorizationService;
         _logger = logger;
     }

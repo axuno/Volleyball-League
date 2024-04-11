@@ -8,12 +8,10 @@ namespace League.WebApp.Controllers;
 public class Home : League.Controllers.AbstractController
 {
     private readonly TenantStore _tenantStore;
-    private readonly ILogger<Home> _logger;
 
-    public Home(TenantStore tenantStore, ILogger<Home> logger)
+    public Home(TenantStore tenantStore)
     {
         _tenantStore = tenantStore;
-        _logger = logger;
     }
 
     [Route("")]

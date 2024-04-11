@@ -28,7 +28,7 @@ public class RoleStore : IRoleStore<ApplicationRole>, IRoleClaimStore<Applicatio
         if (role == null)
             throw new ArgumentNullException(nameof(role));
 
-        if (!Constants.RoleName.GetAllValues<string>().Contains(role.Name))
+        if (!Constants.RoleName.GetAllRoleValues<string>().Contains(role.Name))
         {
             return IdentityResult.Failed(_identityErrorDescriber.InvalidRoleName(role.Name));
         }
@@ -58,7 +58,7 @@ public class RoleStore : IRoleStore<ApplicationRole>, IRoleClaimStore<Applicatio
         if (role == null)
             throw new ArgumentNullException(nameof(role));
 
-        if (!Constants.RoleName.GetAllValues<string>().Contains(role.Name))
+        if (!Constants.RoleName.GetAllRoleValues<string>().Contains(role.Name))
         {
             return IdentityResult.Failed(_identityErrorDescriber.InvalidRoleName(role.Name));
         }

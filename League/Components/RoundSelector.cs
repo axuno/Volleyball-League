@@ -6,13 +6,11 @@ namespace League.Components;
 
 public class RoundSelector : ViewComponent
 {
-    private readonly ITenantContext _tenantContext;
     private readonly IAppDb _appDb;
     private readonly ILogger<RoundSelector> _logger;
 
     public RoundSelector(ITenantContext tenantContext, ILogger<RoundSelector> logger)
     {
-        _tenantContext = tenantContext;
         _appDb = tenantContext.DbContext.AppDb;
         _logger = logger;
     }

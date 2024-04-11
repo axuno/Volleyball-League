@@ -7,7 +7,7 @@ Grunt tasks: https://gruntjs.com/configuring-tasks
 console.log(`Node ${process.version}`); // node version
 module.exports = function (grunt) {
     'use strict';
-    var sass = require('node-sass'); // used in grunt-sass options, must be included in package.json
+    const sass = require('node-sass'); // used in grunt-sass options, must be included in package.json
 
     grunt.loadNpmTasks('grunt-sass');
     grunt.loadNpmTasks('grunt-postcss');
