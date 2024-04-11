@@ -43,13 +43,13 @@ public class UserClaimStoreTests
             Assert.That(Constants.ClaimType.GetTeamRelatedClaimTypes(), Does.Contain(Constants.ClaimType.PlaysInTeam));
             Assert.That(Constants.ClaimType.GetProgrammaticClaimTypes(), Does.Contain(Constants.ClaimType.ImpersonatedByUser));
 
-            Assert.That(Constants.ClaimType.GetAllValues<string>().Any(cn => cn == Constants.ClaimType.ManagesTeam), Is.True);
-            Assert.That(Constants.ClaimType.GetAllValues<string>().Any(cn => cn == Constants.ClaimType.PlaysInTeam), Is.True);
-            Assert.That(Constants.ClaimType.GetAllValues<string>().Any(cn => cn == Constants.ClaimType.ImpersonatedByUser), Is.True);
+            Assert.That(Constants.ClaimType.GetAllClaimTypeValues<string>().Any(cn => cn == Constants.ClaimType.ManagesTeam), Is.True);
+            Assert.That(Constants.ClaimType.GetAllClaimTypeValues<string>().Any(cn => cn == Constants.ClaimType.PlaysInTeam), Is.True);
+            Assert.That(Constants.ClaimType.GetAllClaimTypeValues<string>().Any(cn => cn == Constants.ClaimType.ImpersonatedByUser), Is.True);
 
-            Assert.That(Constants.ClaimType.GetAllNames(), Does.Contain(nameof(Constants.ClaimType.ManagesTeam)));
-            Assert.That(Constants.ClaimType.GetAllNames(), Does.Contain(nameof(Constants.ClaimType.PlaysInTeam)));
-            Assert.That(Constants.ClaimType.GetAllNames(), Does.Contain(nameof(Constants.ClaimType.ImpersonatedByUser)));
+            Assert.That(Constants.ClaimType.GetAllClaimTypeNames(), Does.Contain(nameof(Constants.ClaimType.ManagesTeam)));
+            Assert.That(Constants.ClaimType.GetAllClaimTypeNames(), Does.Contain(nameof(Constants.ClaimType.PlaysInTeam)));
+            Assert.That(Constants.ClaimType.GetAllClaimTypeNames(), Does.Contain(nameof(Constants.ClaimType.ImpersonatedByUser)));
         });
     }
 

@@ -86,9 +86,9 @@ public class ViewLocalizer : IViewLocalizer, IViewContextAware
     }
 
     /// <inheritdoc />
-    public LocalizedString GetString(string name, params object[] values)
+    public LocalizedString GetString(string name, params object[] arguments)
     {
-        return _localizer!.GetString(name, values);
+        return _localizer!.GetString(name, arguments);
     }
 
     /// <inheritdoc />

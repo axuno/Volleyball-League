@@ -31,13 +31,13 @@ public class InternetCalendarImporter : IExcludeDateImporter
     /// <summary>
     /// Imports the <seealso cref="Stream"/> representation of an iCalendar.
     /// </summary>
-    /// <param name="dateLimits">The lower and upper UTC date limit to import.</param>
+    /// <param name="fromToTimePeriod">The lower and upper UTC date limit to import.</param>
     /// <returns>Return an <see cref="IEnumerable{T}"/> of type  <see cref="ExcludeDateRecord"/> with imported dates.</returns>
-    public IEnumerable<ExcludeDateRecord> Import(DateTimePeriod dateLimits)
+    public IEnumerable<ExcludeDateRecord> Import(DateTimePeriod fromToTimePeriod)
     {
         _iCalendarStreamReader.BaseStream.Position = 0;
         var iCal = Ical.Net.Calendar.Load(_iCalendarStreamReader);
-        return Map(iCal, dateLimits);
+        return Map(iCal, fromToTimePeriod);
     }
 
     private IEnumerable<ExcludeDateRecord> Map(Ical.Net.Calendar iCal, DateTimePeriod dateLimits)

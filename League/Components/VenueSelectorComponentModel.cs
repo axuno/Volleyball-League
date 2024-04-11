@@ -10,7 +10,7 @@ public class VenueSelectorComponentModel
         /// <summary>
         /// Show all venues.
         /// </summary>
-        AllVenues = 0,
+        None = 0,
         /// <summary>
         /// Show a selectable row for "venue not specified".
         /// </summary>

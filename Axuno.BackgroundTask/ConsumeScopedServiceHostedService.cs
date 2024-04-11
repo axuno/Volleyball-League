@@ -38,7 +38,7 @@ public class ConsumeScopedServiceHostedService : BackgroundService
         await scopedProcessingService.DoWork(stoppingToken);
     }
 
-    public override async Task StopAsync(CancellationToken stoppingToken)
+    public override async Task StopAsync(CancellationToken cancellationToken)
     {
         _logger.LogInformation(
             "Consume Scoped Service Hosted Service is stopping.");

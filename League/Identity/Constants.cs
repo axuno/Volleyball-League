@@ -43,18 +43,18 @@ public class Constants
         /// Get the values of all constants in this class.
         /// </summary>
         /// <returns>Returns the values of all constants in this class.</returns>
-        public static IEnumerable<T?> GetAllValues<T>()
+        public static IEnumerable<T?> GetAllRoleValues<T>()
         {
-            return Constants.GetAllValues<T>(typeof(RoleName));
+            return GetAllValues<T>(typeof(RoleName));
         }
 
         /// <summary>
         /// Get the names of all constants in this class.
         /// </summary>
         /// <returns>Returns the names of all constants in this class.</returns>
-        public static IEnumerable<string?> GetAllNames()
+        public static IEnumerable<string?> GetAllRoleNames()
         {
-            return Constants.GetAllNames(typeof(RoleName));
+            return GetAllNames(typeof(RoleName));
         }
     }
 
@@ -100,7 +100,7 @@ public class Constants
         /// Get the values of type T of all constants in this class.
         /// </summary>
         /// <returns>Returns the values of type T of all constants in this class.</returns>
-        public static IEnumerable<T?> GetAllValues<T>()
+        public static IEnumerable<T?> GetAllClaimTypeValues<T>()
         {
             return Constants.GetAllValues<T>(typeof(ClaimType));
         }
@@ -109,7 +109,7 @@ public class Constants
         /// Get the names of all constants in this class.
         /// </summary>
         /// <returns>Returns the names of all constants in this class.</returns>
-        public static IEnumerable<string?> GetAllNames()
+        public static IEnumerable<string?> GetAllClaimTypeNames()
         {
             return Constants.GetAllNames(typeof(ClaimType));
         }

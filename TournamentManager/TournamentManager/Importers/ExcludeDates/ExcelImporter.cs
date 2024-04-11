@@ -34,11 +34,11 @@ public class ExcelImporter : IExcludeDateImporter
     /// Excel date values are considered as local time and will be converted to UTC.
     /// A maximum of 1,000 rows will be imported.
     /// </remarks>
-    /// <param name="dateLimits">The limits for dates, which will be imported.</param>
+    /// <param name="fromToTimePeriod">The limits for dates, which will be imported.</param>
     /// <returns>
     /// Returns an <see cref="IEnumerable{T}" />of <see cref="ExcludeDateRecord"/>.
     /// </returns>
-    public IEnumerable<ExcludeDateRecord> Import(DateTimePeriod dateLimits)
+    public IEnumerable<ExcludeDateRecord> Import(DateTimePeriod fromToTimePeriod)
     {
         var xlFile = new FileInfo(_xlPathAndFileName);
         _logger.LogDebug("Opening Excel file '{excelFile}'", _xlPathAndFileName);
@@ -46,7 +46,7 @@ public class ExcelImporter : IExcludeDateImporter
 
         var worksheet = package.Workbook.Worksheets.First();
         _logger.LogDebug("Using the first worksheet, '{worksheetName}'", worksheet.Name);
-        _logger.LogDebug("Date limits are {dateStart} - {dateEnd}", dateLimits.Start, dateLimits.End);
+        _logger.LogDebug("Date limits are {dateStart} - {dateEnd}", fromToTimePeriod.Start, fromToTimePeriod.End);
         var row = 0;
 
         while (true)
@@ -76,7 +76,7 @@ public class ExcelImporter : IExcludeDateImporter
             from = _timeZoneConverter.ToUtc(from);
             to = _timeZoneConverter.ToUtc(to);
 
-            if (!dateLimits.Overlaps(new DateTimePeriod(from, to)))
+            if (!fromToTimePeriod.Overlaps(new DateTimePeriod(from, to)))
             {
                 _logger.LogDebug("UTC Dates {from} - {to} are out of limits", from, to);
                 continue;

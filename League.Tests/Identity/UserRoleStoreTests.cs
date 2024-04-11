@@ -145,7 +145,7 @@ public class UserRoleStoreTests
         await _appDb.GenericRepository.DeleteEntitiesUsingConstraintAsync<TeamEntity>(new PredicateExpression(), CancellationToken.None);
 
         var roles = new EntityCollection<IdentityRoleEntity>();
-        foreach (var roleName in Constants.RoleName.GetAllValues<string>())
+        foreach (var roleName in Constants.RoleName.GetAllRoleValues<string>())
         {
             roles.Add(new IdentityRoleEntity { Name = roleName });
         }

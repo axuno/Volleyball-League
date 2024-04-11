@@ -116,7 +116,7 @@ public partial class Location
             return value;
         }
 
-        private static Location? Parse(string input, IFormatProvider? provider, Regex regex)
+        private static Location? ParseLocation(string input, IFormatProvider? provider, Regex regex)
         {
             var match = regex.Match(input.Replace(", ", " "));
             if (!match.Success) return null;
@@ -195,7 +195,7 @@ public partial class Location
         internal static Location? ParseDegrees(string value, IFormatProvider? provider)
         {
             if (string.IsNullOrWhiteSpace(value)) return null;
-            return Parse(value, provider, DegreeRegex);
+            return ParseLocation(value, provider, DegreeRegex);
         }
 
         /// <summary>
@@ -212,7 +212,7 @@ public partial class Location
         internal static Location? ParseDegreesMinutes(string value, IFormatProvider? provider)
         {
             if (string.IsNullOrWhiteSpace(value)) return null;
-            return Parse(value, provider, DegreeMinuteRegex);
+            return ParseLocation(value, provider, DegreeMinuteRegex);
         }
 
         /// <summary>
@@ -229,7 +229,7 @@ public partial class Location
         internal static Location? ParseDegreesMinutesSeconds(string value, IFormatProvider? provider)
         {
             if (string.IsNullOrWhiteSpace(value)) return null;
-            return Parse(value, provider, DegreeMinuteSecondRegex);
+            return ParseLocation(value, provider, DegreeMinuteSecondRegex);
         }
 
         /// <summary>

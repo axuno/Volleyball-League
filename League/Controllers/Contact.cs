@@ -11,21 +11,15 @@ namespace League.Controllers;
 
 public class Contact : AbstractController
 {
-#pragma warning disable IDE0052 // Remove unread private members
-    private readonly IAppDb _appDb;
-    private readonly TenantStore _tenantStore;
-#pragma warning restore IDE0052 // Remove unread private members
     private readonly ITenantContext _tenantContext;
     private readonly IStringLocalizer<Account> _localizer;
     private readonly Axuno.BackgroundTask.IBackgroundQueue _queue;
     private readonly SendEmailTask _sendEmailTask;
     private readonly ILogger<Contact> _logger;
 
-    public Contact(ITenantContext tenantContext, TenantStore tenantStore, Axuno.BackgroundTask.IBackgroundQueue queue, SendEmailTask sendEmailTask, ILogger<Contact> logger, IStringLocalizer<Account> localizer)
+    public Contact(ITenantContext tenantContext, Axuno.BackgroundTask.IBackgroundQueue queue, SendEmailTask sendEmailTask, ILogger<Contact> logger, IStringLocalizer<Account> localizer)
     {
         _tenantContext = tenantContext;
-        _tenantStore = tenantStore;
-        _appDb = _tenantContext.DbContext.AppDb;
         _queue = queue;
         _sendEmailTask = sendEmailTask;
         _logger = logger;            

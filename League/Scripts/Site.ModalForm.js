@@ -1,13 +1,21 @@
 ﻿// All scripts go into the same namespace
 'use strict';
-if (Site === undefined) {
+if (typeof Site === 'undefined') {
     var Site = {};
 }
 // Define all undefined variables as empty objects
-if (bootstrap === undefined) bootstrap = {};
-if (JL === undefined) JL = {};
-if (URLSearchParams === undefined) URLSearchParams = {};
-if (AbortController === undefined) AbortController = {};
+if (typeof bootstrap === 'undefined') {
+    var bootstrap = {};
+}
+if (typeof JL === 'undefined') {
+    var JL = {};
+} 
+if (typeof URLSearchParams === 'undefined') {
+    var URLSearchParams = {};
+}
+if (typeof AbortController === 'undefined') {
+    var AbortController = {};
+}
 
 /* Handling of forms inside Bootstrap 5 modals */
 Site.ModalForm = function () {

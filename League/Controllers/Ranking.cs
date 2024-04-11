@@ -126,7 +126,7 @@ public class Ranking : AbstractController
             cache =>
             {
                 cache.AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(30);
-                var tokenSource = new CancellationTokenSource();
+                using var tokenSource = new CancellationTokenSource();
                 var token = new CancellationChangeToken(tokenSource.Token);
                 cache.AddExpirationToken(token);
                 return _appDb.RankingRepository.GetRankingListAsync(
@@ -143,7 +143,7 @@ public class Ranking : AbstractController
                 nameof(RoundLegPeriodRow)), cache =>
             {
                 cache.AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(30);
-                var tokenSource = new CancellationTokenSource();
+                using var tokenSource = new CancellationTokenSource();
                 var token = new CancellationChangeToken(tokenSource.Token);
                 cache.AddExpirationToken(token);
                 return (_appDb.RoundRepository.GetRoundLegPeriodAsync(

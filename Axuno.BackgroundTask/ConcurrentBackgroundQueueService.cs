@@ -41,9 +41,9 @@ public class ConcurrentBackgroundQueueService : BackgroundService
     /// <summary>
     /// Execute queued tasks.
     /// </summary>
-    /// <param name="cancellationToken"></param>
+    /// <param name="stoppingToken"></param>
     /// <returns>A <see cref="Task"/>.</returns>
-    protected override async Task ExecuteAsync(CancellationToken cancellationToken)
+    protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
         lock (_locker)
         {
@@ -54,10 +54,10 @@ public class ConcurrentBackgroundQueueService : BackgroundService
 
         try
         {
-            while (!cancellationToken.IsCancellationRequested)
+            while (!stoppingToken.IsCancellationRequested)
             {
-                cancellationToken.ThrowIfCancellationRequested();
-                await Task.Delay(Config.PollQueueDelay, cancellationToken);
+                stoppingToken.ThrowIfCancellationRequested();
+                await Task.Delay(Config.PollQueueDelay, stoppingToken);
 
                 if (_concurrentTaskCount < Config.MaxConcurrentCount && TaskQueue?.Count > 0)
                 {
@@ -72,12 +72,12 @@ public class ConcurrentBackgroundQueueService : BackgroundService
                     {
                         try
                         {
-                            cancellationToken.ThrowIfCancellationRequested();
+                            stoppingToken.ThrowIfCancellationRequested();
 
                             // The service shall only be cancelled when the app shuts down
                             using (var taskCancellation = new CancellationTokenSource())
                             using (var combinedCancellation =
-                                   CancellationTokenSource.CreateLinkedTokenSource(cancellationToken,
+                                   CancellationTokenSource.CreateLinkedTokenSource(stoppingToken,
                                        taskCancellation.Token))
                             {
                                 var t = TaskQueue?.RunTaskAsync(taskListReference.Dequeue(),
@@ -88,7 +88,7 @@ public class ConcurrentBackgroundQueueService : BackgroundService
                                 taskChunk.Add(t);
                             }
 
-                            cancellationToken.ThrowIfCancellationRequested();
+                            stoppingToken.ThrowIfCancellationRequested();
                         }
                         catch (Exception e)
                         {
@@ -111,7 +111,7 @@ public class ConcurrentBackgroundQueueService : BackgroundService
                         allTasks = Task.WhenAll(taskChunk);
                         // re-throws an AggregateException if one exists
                         // after waiting for the tasks to complete
-                        await allTasks.WaitAsync(cancellationToken);
+                        await allTasks.WaitAsync(stoppingToken);
                     }
                     catch (Exception e)
                     {

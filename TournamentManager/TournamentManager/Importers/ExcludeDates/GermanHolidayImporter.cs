@@ -18,20 +18,20 @@ public class GermanHolidayImporter : IExcludeDateImporter
         _logger = logger;
     }
 
-    public IEnumerable<ExcludeDateRecord> Import(DateTimePeriod dateLimits)
+    public IEnumerable<ExcludeDateRecord> Import(DateTimePeriod fromToTimePeriod)
     {
-        if (dateLimits is not { Start: not null, End: not null })
-            throw new ArgumentException(@"Lower and upper date limits must be set.", nameof(dateLimits));
+        if (fromToTimePeriod is not { Start: not null, End: not null })
+            throw new ArgumentException(@"Lower and upper date limits must be set.", nameof(fromToTimePeriod));
 
-        _logger.LogDebug("Starting import of German holidays for period {dateStart} to {dateEnd}", dateLimits.Start, dateLimits.End);
+        _logger.LogDebug("Starting import of German holidays for period {dateStart} to {dateEnd}", fromToTimePeriod.Start, fromToTimePeriod.End);
 
-        var currentYear = ((DateTime) dateLimits.Start).Year;
+        var currentYear = ((DateTime) fromToTimePeriod.Start).Year;
 
         // Stores all holidays within the dateLimits
         // This data will be returned
         var holidays = new List<Axuno.Tools.GermanHoliday>();
 
-        while (currentYear <= ((DateTime) dateLimits.End).Year)
+        while (currentYear <= ((DateTime) fromToTimePeriod.End).Year)
         {
             _logger.LogDebug("Processing year '{currentYear}'", currentYear);
             var currentYearHolidays = new Axuno.Tools.GermanHolidays(currentYear);
@@ -53,7 +53,7 @@ public class GermanHolidayImporter : IExcludeDateImporter
             currentYear++;
         }
 
-        return Map(holidays, dateLimits);
+        return Map(holidays, fromToTimePeriod);
     }
 
     private IEnumerable<ExcludeDateRecord> Map(List<Axuno.Tools.GermanHoliday> holidays, DateTimePeriod dateLimits)

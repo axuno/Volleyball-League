@@ -18,7 +18,7 @@ public class Role : AbstractController
     private readonly IAuthorizationService _authorizationService;
     private readonly IStringLocalizer<Role> _localizer;
     private readonly ILogger<Role> _logger;
-    private readonly ILoggerFactory _loggerFactory;
+
     private const string _defaultReturnUrl = "/";
 
     public Role(ITenantContext tenantContext,
@@ -30,7 +30,6 @@ public class Role : AbstractController
         _signInManager = signInManager;
         _authorizationService = authorizationService;
         _localizer = localizer;
-        _loggerFactory = loggerFactory;
         _logger = loggerFactory.CreateLogger<Role>();
     }
 
