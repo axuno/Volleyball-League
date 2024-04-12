@@ -179,7 +179,7 @@ public class RoleStore : IRoleStore<ApplicationRole>, IRoleClaimStore<Applicatio
         return Task.CompletedTask;
     }
 
-    public async Task<IList<Claim>> GetClaimsAsync(ApplicationRole role, CancellationToken cancellationToken)
+    public async Task<IList<Claim>> GetClaimsAsync(ApplicationRole role, CancellationToken cancellationToken = default)
     {
         if (role == null)
             throw new ArgumentNullException(nameof(role));
@@ -188,7 +188,7 @@ public class RoleStore : IRoleStore<ApplicationRole>, IRoleClaimStore<Applicatio
         return claimEntities.Select(claimEntity => new Claim(claimEntity.ClaimType, claimEntity.ClaimValue, claimEntity.ValueType, claimEntity.Issuer)).ToList();
     }
 
-    public async Task AddClaimAsync(ApplicationRole role, Claim claim, CancellationToken cancellationToken)
+    public async Task AddClaimAsync(ApplicationRole role, Claim claim, CancellationToken cancellationToken = default)
     {
         if (role == null)
             throw new ArgumentNullException(nameof(role));
@@ -221,7 +221,7 @@ public class RoleStore : IRoleStore<ApplicationRole>, IRoleClaimStore<Applicatio
         }
     }
 
-    public async Task RemoveClaimAsync(ApplicationRole role, Claim claim, CancellationToken cancellationToken)
+    public async Task RemoveClaimAsync(ApplicationRole role, Claim claim, CancellationToken cancellationToken = default)
     {
         if (role == null)
             throw new ArgumentNullException(nameof(role));

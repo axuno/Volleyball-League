@@ -45,10 +45,7 @@ public class ConcurrentBackgroundQueueService : BackgroundService
     /// <returns>A <see cref="Task"/>.</returns>
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        lock (_locker)
-        {
-            _resetEvent.WaitOne();
-        }
+        await WaitForStartSignal();
 
         var taskListReference = new Queue<IBackgroundTask>();
 
@@ -59,93 +56,111 @@ public class ConcurrentBackgroundQueueService : BackgroundService
                 stoppingToken.ThrowIfCancellationRequested();
                 await Task.Delay(Config.PollQueueDelay, stoppingToken);
 
-                if (_concurrentTaskCount < Config.MaxConcurrentCount && TaskQueue?.Count > 0)
-                {
-                    Interlocked.Increment(ref _concurrentTaskCount);
-                    _logger.LogDebug("Num of tasks: {concurrentTaskCount}", _concurrentTaskCount);
-                    taskListReference.Enqueue(TaskQueue.DequeueTask());
-                }
-                else
-                {
-                    var taskChunk = new List<Task>();
-                    while (taskListReference.Count > 0)
-                    {
-                        try
-                        {
-                            stoppingToken.ThrowIfCancellationRequested();
-
-                            // The service shall only be cancelled when the app shuts down
-                            using (var taskCancellation = new CancellationTokenSource())
-                            using (var combinedCancellation =
-                                   CancellationTokenSource.CreateLinkedTokenSource(stoppingToken,
-                                       taskCancellation.Token))
-                            {
-                                var t = TaskQueue?.RunTaskAsync(taskListReference.Dequeue(),
-                                    combinedCancellation.Token);
-                                if (t is null)
-                                    throw new NullReferenceException($"{nameof(TaskQueue)} cannot be null here.");
-                                if (t.Exception != null) throw t.Exception;
-                                taskChunk.Add(t);
-                            }
-
-                            stoppingToken.ThrowIfCancellationRequested();
-                        }
-                        catch (Exception e)
-                        {
-                            _logger.LogError(e, "Error occurred executing TaskItem.");
-                        }
-                        finally
-                        {
-                            Interlocked.Decrement(ref _concurrentTaskCount);
-                        }
-                    }
-
-                    if (taskChunk.Count == 0) continue;
-
-                    // Task.WhenAll will not throw all exceptions when it encounters them.
-                    // Instead, it adds them to an AggregateException, that must be
-                    // checked at the end of waiting for the tasks to complete
-                    Task? allTasks = null;
-                    try
-                    {
-                        allTasks = Task.WhenAll(taskChunk);
-                        // re-throws an AggregateException if one exists
-                        // after waiting for the tasks to complete
-                        await allTasks.WaitAsync(stoppingToken);
-                    }
-                    catch (Exception e)
-                    {
-                        _logger.LogError(e, "Task chunk exception");
-                        if (allTasks?.Exception != null)
-                        {
-                            _logger.LogError(allTasks.Exception, "Task chunk aggregate exception");
-                        }
-                    }
-                    finally
-                    {
-                        taskListReference.Clear();
-                    }
-                }
+                EnqueuePendingTasks(taskListReference);
+                await ExecuteTaskChunk(taskListReference, stoppingToken);
             }
         }
-        catch (Exception e) when (e is TaskCanceledException)
+        catch (TaskCanceledException ex)
         {
-            _logger.LogError(e, $"{nameof(ConcurrentBackgroundQueueService)} was canceled.");
+            _logger.LogError(ex, "{Service} was canceled.", nameof(ConcurrentBackgroundQueueService));
         }
-        catch(Exception e)
+        catch (Exception ex)
         {
-            _logger.LogError(e, $"{nameof(ConcurrentBackgroundQueueService)} failed.");
-            TaskQueue = null; // we can't process the queue any more
+            _logger.LogError(ex, "{Service} failed.", nameof(ConcurrentBackgroundQueueService));
+            TaskQueue = null; // we can't process the queue anymore
         }
         finally
         {
-            lock (_locker)
+            SignalServiceStopped();
+        }
+    }
+
+    private Task WaitForStartSignal()
+    {
+        lock (_locker)
+        {
+            _resetEvent.WaitOne();
+        }
+
+        return Task.CompletedTask;
+    }
+
+    private void EnqueuePendingTasks(Queue<IBackgroundTask> taskListReference)
+    {
+        if (_concurrentTaskCount >= Config.MaxConcurrentCount || TaskQueue == null || TaskQueue.Count == 0)
+            return;
+
+        Interlocked.Increment(ref _concurrentTaskCount);
+        _logger.LogDebug("Num of tasks: {ConcurrentTaskCount}", _concurrentTaskCount);
+
+        taskListReference.Enqueue(TaskQueue.DequeueTask());
+    }
+
+    private async Task ExecuteTaskChunk(Queue<IBackgroundTask> taskListReference, CancellationToken stoppingToken)
+    {
+        if (taskListReference.Count == 0)
+            return;
+
+        var taskChunk = new List<Task>();
+
+        try
+        {
+            while (taskListReference.Count > 0)
             {
-                _resetEvent.Reset();
-                _resetEvent.Set();
+                stoppingToken.ThrowIfCancellationRequested();
+
+                using var taskCancellation = CancellationTokenSource.CreateLinkedTokenSource(stoppingToken);
+                var task = (TaskQueue?.RunTaskAsync(taskListReference.Dequeue(), taskCancellation.Token)) ??
+                           throw new NullReferenceException($"{nameof(TaskQueue)} cannot be null here.");
+
+                if (task.Exception != null)
+                    throw task.Exception;
+
+                taskChunk.Add(task);
+            }
+
+            await ExecuteTaskChunkAndWait(taskChunk);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error occurred executing TaskItem.");
+        }
+        finally
+        {
+            Interlocked.Decrement(ref _concurrentTaskCount);
+            taskListReference.Clear();
+        }
+    }
+
+    private async Task ExecuteTaskChunkAndWait(List<Task> taskChunk)
+    {
+        if (taskChunk.Count == 0)
+            return;
+
+        try
+        {
+            await Task.WhenAll(taskChunk);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Task chunk exception");
+            var taskChunkExceptions = taskChunk.Where(task => task.Exception != null).Select(task => task.Exception!).ToList();
+            if (taskChunkExceptions.Count > 0)
+            {
+                _logger.LogError(new AggregateException(taskChunkExceptions), "Task chunk aggregate exception");
             }
         }
     }
+
+    private void SignalServiceStopped()
+    {
+        lock (_locker)
+        {
+            _resetEvent.Reset();
+            _resetEvent.Set();
+        }
+    }
+
 
     /// <summary>
     /// Stops the service.
@@ -154,8 +169,8 @@ public class ConcurrentBackgroundQueueService : BackgroundService
     /// <returns></returns>
     public override async Task StopAsync(CancellationToken cancellationToken)
     {
-        _logger.LogDebug($"{nameof(ConcurrentBackgroundQueueService)} is stopping.");
+        _logger.LogDebug("{Service} is stopping.", nameof(ConcurrentBackgroundQueueService));
         await base.StopAsync(cancellationToken);
-        _logger.LogDebug($"{nameof(ConcurrentBackgroundQueueService)} stopped.");
+        _logger.LogDebug("{Service} stopped.", nameof(ConcurrentBackgroundQueueService));
     }
 }

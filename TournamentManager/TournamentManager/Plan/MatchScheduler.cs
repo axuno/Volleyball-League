@@ -365,64 +365,57 @@ internal class MatchScheduler
     /// This method is optimizing across all combinations of all turns.
     /// </summary>
     /// <param name="availableMatchDates"></param>
+#pragma warning disable S3776 // Method is already refactored and should not be split further
     private static List<AvailableMatchDateEntity?> FindBestDatePerCombination(List<List<AvailableMatchDateEntity>> availableMatchDates)
     {
-        var bestMatchDatePerCombination = new List<AvailableMatchDateEntity?>();
-
         // Cross-compute the number of dates between matches of a turn.
         // Goal: Found match dates are as close to each other as possible
 
-        // start with 1st dates, end with last but one dates
-        for (var i = 0; i < availableMatchDates.Count - 1; i++)
+        var bestMatchDatePerCombination = new List<AvailableMatchDateEntity?>();
+
+        // Loop through each team's available match dates
+        for (var i = 0; i < availableMatchDates.Count; i++)
         {
-            // start with 2nd dates, end with last dates
-            for (var j = 1; j < availableMatchDates.Count; j++)
+            // Loop through each opponent team's available match dates
+            for (var j = 0; j < availableMatchDates.Count; j++)
             {
-                // compare each date in the first list...
-                foreach (var dates1 in availableMatchDates[i])
+                // Skip comparing the team's own dates with itself
+                if (i != j)
                 {
-                    // ... with the dates in the second list
-                    foreach (var dates2 in availableMatchDates[j])
+                    // Compare each date in the team's list with dates in the opponent's list
+                    foreach (var dates1 in availableMatchDates[i])
                     {
-                        var daysDiff = Math.Abs((dates1.MatchStartTime.Date - dates2.MatchStartTime.Date).Days);
+                        foreach (var dates2 in availableMatchDates[j])
+                        {
+                            // Calculate the time difference between the match dates
+                            var daysDiff = Math.Abs((dates1.MatchStartTime.Date - dates2.MatchStartTime.Date).Days);
 
-                        // save minimum dates found for later reference
-                        if (daysDiff < dates1.MinTimeDiff.Days)
-                            dates1.MinTimeDiff = new TimeSpan(daysDiff, 0, 0, 0);
+                            // Update the minimum time difference for each date
+                            if (daysDiff < dates1.MinTimeDiff.Days)
+                                dates1.MinTimeDiff = new TimeSpan(daysDiff, 0, 0, 0);
 
-                        if (daysDiff < dates2.MinTimeDiff.Days)
-                            dates2.MinTimeDiff = new TimeSpan(daysDiff, 0, 0, 0);
-                    } // end dates2
-                } // end dates1
-            } // end j
+                            if (daysDiff < dates2.MinTimeDiff.Days)
+                                dates2.MinTimeDiff = new TimeSpan(daysDiff, 0, 0, 0);
+                        }
+                    }
+                }
+            }
 
-            // Get the date that has the smallest distance to the smallest date in the other turn(s).
+            // Find the best match date for this team based on the minimum time difference
             // Note: If no match dates could be determined for a team, bestDate will be null.
             var bestDate = availableMatchDates[i]
-                .Where(md => md.MinTimeDiff == availableMatchDates[i]
-                    .Min(d => d.MinTimeDiff))
+                .Where(md => md.MinTimeDiff == availableMatchDates[i].Min(d => d.MinTimeDiff))
                 .MinBy(md => md.MinTimeDiff);
+
+            // Add the best match date to the list
             bestMatchDatePerCombination.Add(bestDate);
-
-            // process the last combination
-
-            // in case comparisons took place,
-            // now the "j-loop" group is not processed yet:
-            if (i + 1 >= availableMatchDates.Count - 1)
-            {
-                bestDate = availableMatchDates[^1]
-                    .Where(md => md.MinTimeDiff == availableMatchDates[^1].
-                        Min(d => d.MinTimeDiff))
-                    .MinBy(md => md.MinTimeDiff);
-                // the last "j-increment" is always the same as "matchDates[^1]" (loop condition)
-                bestMatchDatePerCombination.Add(bestDate);
-            }
-        } // end i
+        }
 
         // returns the best match date found per combination,
         // so the number of elements is the same as the number of combinations
         return bestMatchDatePerCombination;
     }
+#pragma warning restore S3776
 
     /// <summary>
     /// Desired <see cref="DateTimePeriod"/>s are assigned to round turns mathematically,

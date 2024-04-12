@@ -23,12 +23,11 @@ public class DelayedEvent
     /// </summary>
     public FileSystemEventArgs Args { get; }
 
-    public virtual bool IsDuplicate(object obj)
+    public virtual bool IsDuplicate(object? obj)
     {
-        if (!(obj is DelayedEvent delayedEvent))
+        if (obj is not DelayedEvent delayedEvent)
             return false;
 
-        var allEventArgs = Args;
         var renamedEventArgs = Args as RenamedEventArgs;
 
         var allDelayedEventArgs = delayedEvent.Args;
@@ -37,16 +36,16 @@ public class DelayedEvent
         // We also eliminate Changed events that follow recent Created events
         // because many apps create new files by creating an empty file and then
         // update the file with the file content.
-        return (allEventArgs.ChangeType == allDelayedEventArgs.ChangeType
-                && allEventArgs.FullPath == allDelayedEventArgs.FullPath &&
-                allEventArgs.Name == allDelayedEventArgs.Name) &&
+        return (Args.ChangeType == allDelayedEventArgs.ChangeType
+                && Args.FullPath == allDelayedEventArgs.FullPath &&
+                Args.Name == allDelayedEventArgs.Name) &&
                ((renamedEventArgs == null && delayedRenamedEventArgs == null) || (renamedEventArgs != null &&
                    delayedRenamedEventArgs != null &&
                    renamedEventArgs.OldFullPath == delayedRenamedEventArgs.OldFullPath &&
                    renamedEventArgs.OldName == delayedRenamedEventArgs.OldName)) ||
-               (allEventArgs.ChangeType == WatcherChangeTypes.Created
+               (Args.ChangeType == WatcherChangeTypes.Created
                 && allDelayedEventArgs.ChangeType == WatcherChangeTypes.Changed
-                && allEventArgs.FullPath == allDelayedEventArgs.FullPath &&
-                allEventArgs.Name == allDelayedEventArgs.Name);
+                && Args.FullPath == allDelayedEventArgs.FullPath &&
+                Args.Name == allDelayedEventArgs.Name);
     }
 }

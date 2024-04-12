@@ -74,34 +74,33 @@ internal class MatchesAnalyzer<TP>  where TP : struct, IEquatable<TP>
     public static IEnumerable<int> GetLastConsecutiveCounts(TP participant, bool forHome, IList<(int Turn, TP Home, TP Guest)> matches)
     {
         using var e = matches.Reverse().GetEnumerator();
-        for (var more = e.MoveNext(); more;)
+
+        while (e.MoveNext())
         {
             var first = forHome ? e.Current.Home : e.Current.Guest;
-            if (first.Equals(participant))
-            {
-                var count = 1;
-                while (more && e.MoveNext())
-                {
-                    first = forHome ? e.Current.Home : e.Current.Guest;
-                    var second = forHome ? e.Current.Guest : e.Current.Home;
-
-                    if (first.Equals(participant))
-                    {
-                        count++;
-                    }
-
-                    if (second.Equals(participant))
-                    {
-                        break;
-                    }
-                }
-                yield return count;
-            }
-            else
+            if (!first.Equals(participant))
             {
                 yield return 0;
+                continue;
             }
-            more = e.MoveNext();
+
+            var count = 1;
+            while (e.MoveNext())
+            {
+                first = forHome ? e.Current.Home : e.Current.Guest;
+                var second = forHome ? e.Current.Guest : e.Current.Home;
+
+                if (first.Equals(participant))
+                {
+                    count++;
+                }
+
+                if (second.Equals(participant))
+                {
+                    break;
+                }
+            }
+            yield return count;
         }
     }
 }

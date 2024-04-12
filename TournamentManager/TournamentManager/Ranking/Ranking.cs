@@ -97,8 +97,23 @@ public class Ranking
 
     private RankingList GetUnsortedList(IEnumerable<long> teamIds, DateTime upperDateLimit, out DateTime lastUpdatedOn)
     {
-        var teamIdList = teamIds.ToList(); // no multiple enumerations
-        lastUpdatedOn = DateTime.UtcNow;
+        var teamIdList = teamIds.ToList();
+        lastUpdatedOn = GetLastUpdatedOn(teamIdList);
+
+        var rankingList = new RankingList { UpperDateLimit = upperDateLimit, LastUpdatedOn = lastUpdatedOn };
+
+        foreach (var teamId in teamIdList)
+        {
+            var rank = CalculateRank(teamId, upperDateLimit);
+            rankingList.Add(rank);
+        }
+
+        return rankingList;
+    }
+
+    private DateTime GetLastUpdatedOn(ICollection<long> teamIdList)
+    {
+        var lastUpdatedOn = DateTime.UtcNow;
         if (MatchesPlayed.Any())
             lastUpdatedOn = MatchesPlayed
                 .Where(m => teamIdList.Contains(m.HomeTeamId) || teamIdList.Contains(m.GuestTeamId))
@@ -108,55 +123,51 @@ public class Ranking
                 .Where(m => teamIdList.Contains(m.HomeTeamId) || teamIdList.Contains(m.GuestTeamId))
                 .Max(m => m.ModifiedOn);
 
-        var rankingList = new RankingList {UpperDateLimit = upperDateLimit, LastUpdatedOn = lastUpdatedOn};
+        return lastUpdatedOn;
+    }
 
-        foreach (var teamId in teamIdList)
+    private Rank CalculateRank(long teamId, DateTime upperDateLimit)
+    {
+        var rank = new Rank { Number = -1, TeamId = teamId };
+
+        foreach (var match in GetMatchesPlayedForTeam(teamId, upperDateLimit))
         {
-            var rank = new Rank {Number = -1, TeamId = teamId, MatchesPlayed = MatchesPlayed.Count(m => m.HomeTeamId == teamId || m.GuestTeamId == teamId), MatchesToPlay = MatchesToPlay.Count(m => m.HomeTeamId == teamId || m.GuestTeamId == teamId)};
-
-            // upperDateLimit contains the date part (without time), so the MatchDate must also be compared with the date part!
-            foreach (var match in MatchesPlayed.Where(m => (m.HomeTeamId == teamId || m.GuestTeamId == teamId) && m.MatchDate.HasValue && m.MatchDate.Value.Date <= upperDateLimit.Date))
-            {
-                if (match.HomeTeamId == teamId)
-                {
-                    rank.MatchPoints.Home += match.HomeMatchPoints ?? 0;
-                    rank.MatchPoints.Guest += match.GuestMatchPoints ?? 0;
-
-                    rank.SetPoints.Home += match.HomeSetPoints ?? 0;
-                    rank.SetPoints.Guest += match.GuestSetPoints ?? 0;
-
-                    rank.BallPoints.Home += match.HomeBallPoints ?? 0;
-                    rank.BallPoints.Guest += match.GuestBallPoints ?? 0;
-
-                    rank.MatchesWon.Home += match.HomeMatchPoints > match.GuestMatchPoints ? 1 : 0;
-                    rank.MatchesWon.Guest += match.HomeMatchPoints < match.GuestMatchPoints ? 1 : 0;
-
-                    rank.SetsWon.Home += match.HomeSetPoints;
-                    rank.SetsWon.Guest += match.GuestSetPoints;
-                }
-                else
-                {
-                    rank.MatchPoints.Home += match.GuestMatchPoints ?? 0;
-                    rank.MatchPoints.Guest += match.HomeMatchPoints ?? 0;
-
-                    rank.SetPoints.Home += match.GuestSetPoints ?? 0;
-                    rank.SetPoints.Guest += match.HomeSetPoints ?? 0;
-
-                    rank.BallPoints.Home += match.GuestBallPoints ?? 0;
-                    rank.BallPoints.Guest += match.HomeBallPoints ?? 0;
-
-                    rank.MatchesWon.Home += match.HomeMatchPoints < match.GuestMatchPoints ? 1 : 0;
-                    rank.MatchesWon.Guest += match.HomeMatchPoints > match.GuestMatchPoints ? 1 : 0;
-
-                    // Todo: This only correct if SetRule.PointsSetWon = 1 and SetRule.PointsSetLost = 0 and SetRule.PointSetTie = 0
-                    rank.SetsWon.Home += match.GuestSetPoints;
-                    rank.SetsWon.Guest += match.HomeSetPoints;
-                }
-            }
-            rankingList.Add(rank);
+            UpdateRankStatistics(rank, match, teamId);
         }
 
-        return rankingList;
+        return rank;
+    }
+
+    private IEnumerable<MatchCompleteRawRow> GetMatchesPlayedForTeam(long teamId, DateTime upperDateLimit)
+    {
+        return MatchesPlayed
+            .Where(m => (m.HomeTeamId == teamId || m.GuestTeamId == teamId) &&
+                        m.MatchDate.HasValue &&
+                        m.MatchDate.Value.Date <= upperDateLimit.Date);
+    }
+
+    private void UpdateRankStatistics(Rank rank, MatchCompleteRawRow match, long teamId)
+    {
+        var isHomeTeam = match.HomeTeamId == teamId;
+
+        var homeMatchPoints = isHomeTeam ? match.HomeMatchPoints ?? 0 : match.GuestMatchPoints ?? 0;
+        var guestMatchPoints = isHomeTeam ? match.GuestMatchPoints ?? 0 : match.HomeMatchPoints ?? 0;
+        var homeSetPoints = isHomeTeam ? match.HomeSetPoints ?? 0 : match.GuestSetPoints ?? 0;
+        var guestSetPoints = isHomeTeam ? match.GuestSetPoints ?? 0 : match.HomeSetPoints ?? 0;
+        var homeBallPoints = isHomeTeam ? match.HomeBallPoints ?? 0 : match.GuestBallPoints ?? 0;
+        var guestBallPoints = isHomeTeam ? match.GuestBallPoints ?? 0 : match.HomeBallPoints ?? 0;
+
+        rank.MatchPoints.Home += homeMatchPoints;
+        rank.MatchPoints.Guest += guestMatchPoints;
+        rank.SetPoints.Home += homeSetPoints;
+        rank.SetPoints.Guest += guestSetPoints;
+        rank.BallPoints.Home += homeBallPoints;
+        rank.BallPoints.Guest += guestBallPoints;
+
+        rank.MatchesWon.Home += homeMatchPoints > guestMatchPoints ? 1 : 0;
+        rank.MatchesWon.Guest += homeMatchPoints < guestMatchPoints ? 1 : 0;
+        rank.SetsWon.Home += homeSetPoints > guestSetPoints ? 1 : 0;
+        rank.SetsWon.Guest += guestSetPoints > homeSetPoints ? 1 : 0;
     }
 
     /// <summary>

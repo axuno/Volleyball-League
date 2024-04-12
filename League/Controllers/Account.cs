@@ -133,7 +133,7 @@ public class Account : AbstractController
 
         if (user == null)
         {
-            _logger.LogInformation("No account found for '{user}'.", model.EmailOrUsername);
+            _logger.LogInformation("No account found for '{User}'.", model.EmailOrUsername);
             ModelState.AddModelError(string.Empty, _localizer["No account found for these credentials."].Value);
             return View(model);
         }
@@ -142,7 +142,7 @@ public class Account : AbstractController
 
         if (result.Succeeded)
         {
-            _logger.LogInformation("User Id '{userId}' signed in.", user.Id);
+            _logger.LogInformation("User Id '{UserId}' signed in.", user.Id);
             return RedirectToLocal(returnUrl ?? "/" + _tenantContext.SiteContext.UrlSegmentValue);
         }
 
@@ -151,16 +151,16 @@ public class Account : AbstractController
             if (!await _signInManager.UserManager.IsEmailConfirmedAsync(user) &&
                 _signInManager.UserManager.Options.SignIn.RequireConfirmedEmail)
             {
-                _logger.LogInformation("Sign-in not allowed: Email for user id '{userId}' is not confirmed", user.Id);
+                _logger.LogInformation("Sign-in not allowed: Email for user id '{UserId}' is not confirmed", user.Id);
                 return Redirect(TenantLink.Action(nameof(Message), nameof(Account), new { messageTypeText = MessageType.SignInRejectedEmailNotConfirmed })!);
             }
             
-            _logger.LogInformation("Account for user id '{userId}': {result}", user.Id, result);
+            _logger.LogInformation("Account for user id '{UserId}': {Result}", user.Id, result);
             return Redirect(TenantLink.Action(nameof(Message), nameof(Account), new { messageTypeText = MessageType.SignInRejected })!);
         }
 
         // PasswordSignIn failed
-        _logger.LogInformation("Wrong password for '{user}'.", model.EmailOrUsername);
+        _logger.LogInformation("Wrong password for '{User}'.", model.EmailOrUsername);
         ModelState.AddModelError(string.Empty, _localizer["No account found for these credentials."].Value);
         return View(model);
     }
@@ -273,7 +273,7 @@ public class Account : AbstractController
 
         if (result.Succeeded)
         {
-            _logger.LogInformation("User (email: {userEmail}, username: {userName}) created a new account with password.", user.Email, user.UserName);
+            _logger.LogInformation("User (email: {UserEmail}, username: {UserName}) created a new account with password.", user.Email, user.UserName);
             if (await _signInManager.CanSignInAsync(user))
             {
                 await _signInManager.SignInAsync(user, isPersistent: false);
@@ -282,7 +282,7 @@ public class Account : AbstractController
             return Redirect(TenantLink.Action(nameof(Manage.Index), nameof(Manage))!);
         }
 
-        _logger.LogError("User (email: {userEmail}) could not be created. {errors}", user.Email, result.Errors);
+        _logger.LogError("User (email: {UserEmail}) could not be created. {Errors}", user.Email, result.Errors);
         AddErrors(result);
         return View(model);
     }
@@ -305,79 +305,40 @@ public class Account : AbstractController
     {
         if (remoteError != null)
         {
-            _logger.LogInformation("{method} failed. Remote error was supplied.", nameof(ExternalSignInCallback));
+            _logger.LogInformation("{Method} failed. Remote error was supplied.", nameof(ExternalSignInCallback));
             return SocialMediaSignInFailure(_localizer["Failed to sign-in with the social network account"].Value + $" ({remoteError})");
         }
+
         var info = await _signInManager.GetExternalLoginInfoAsync();
         if (info == null)
         {
-            _logger.LogInformation("{method} failed to get external sign-in information", nameof(ExternalSignInCallback));
+            _logger.LogInformation("{Method} failed to get external sign-in information", nameof(ExternalSignInCallback));
             return SocialMediaSignInFailure(_localizer["Failed to sign-in with the social network account"].Value);
         }
-            
-        // Sign-in user if provider represents a valid already registered user
 
-        // There is no external login stored for this user?
-        if (await _signInManager.UserManager.FindByLoginAsync(info.LoginProvider, info.ProviderKey) == null)
+        if (await IsExternalLoginStoredAsync(info))
         {
-            ApplicationUser? existingUser = null;
-            // if the current user is signed in
-            if (User.Identity!.IsAuthenticated)
+            var result = await _signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, isPersistent: false);
+            if (result.Succeeded)
             {
-                existingUser = await _signInManager.UserManager.FindByNameAsync(User.Identity.Name);
-            }
-            else
-            {
-                // see if there is a user account for any external provider email
-                var allExternalEmails = info.Principal.FindAll(ClaimTypes.Email).Select(ct => ct.Value);
-                foreach (var externalEmail in allExternalEmails)
-                {
-                    existingUser = await _signInManager.UserManager.FindByEmailAsync(externalEmail);
-                    if (existingUser != null) break;
-                }
-            }
-            if (existingUser != null)
-            {
-                // Add external user login for this user.
-                if (await _signInManager.UserManager.AddLoginAsync(existingUser, info) != IdentityResult.Success)
-                {
-                    _logger.LogInformation("{method} {email} is already associated with another account", nameof(ExternalSignInCallback), existingUser.Email);
-                    return SocialMediaSignInFailure(_localizer.GetString("Your {0} account is already associated with another account at {1}", info.LoginProvider, _tenantContext.OrganizationContext.ShortName).Value);
-                }
+                await _signInManager.UpdateExternalAuthenticationTokensAsync(info);
 
-                await UpdateUserFromExternalLogin(existingUser, info);
+                _logger.LogInformation("User signed-in in with login provider '{LoginProvider}'.", info.LoginProvider);
+                return RedirectToLocal(returnUrl ?? "/" + _tenantContext.SiteContext.UrlSegmentValue);
+            }
+
+            if (result.IsLockedOut || result.IsNotAllowed)
+            {
+                _logger.LogInformation("Account for username '{IdentityName}': {Result}", info.Principal.Identity?.Name ?? "(null)", result);
+                return View(ViewNames.Account.SignInRejected, result);
             }
         }
 
-        // sign in the user with this external login provider if the user already has a registered external login.
-        var result = await _signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, isPersistent: false);
-        if (result.Succeeded)
-        {
-            // Update any authentication tokens if login succeeded
-            await _signInManager.UpdateExternalAuthenticationTokensAsync(info);
-
-            _logger.LogInformation("User signed-in in with login provider '{loginProvider}'.", info.LoginProvider);
-            return RedirectToLocal(returnUrl ?? "/" + _tenantContext.SiteContext.UrlSegmentValue);
-        }
-        if (result.IsLockedOut || result.IsNotAllowed)
-        {
-            _logger.LogInformation("Account for username '{identityName}': {result}", info.Principal.Identity?.Name ?? "(null)", result);
-            return View(ViewNames.Account.SignInRejected, result);
-        }
-
-        // If the user does not have an account, then ask the user to create an account.
         ViewData["ReturnUrl"] = returnUrl;
         ViewData["LoginProvider"] = info.LoginProvider;
-        // We use the first email returned by the provider for the new account
+        var model = CreateExternalSignInConfirmationViewModelAsync(info.Principal);
 
-        return View(ViewNames.Account.ExternalSignInConfirmation,
-            new ExternalSignConfirmationViewModel
-            {
-                Email = info.Principal.FindFirstValue(ClaimTypes.Email),
-                Gender = string.Empty,
-                FirstName = info.Principal.FindFirstValue(ClaimTypes.GivenName) ?? string.Empty,
-                LastName = info.Principal.FindFirstValue(ClaimTypes.Surname) ?? string.Empty
-            });
+        return View(ViewNames.Account.ExternalSignInConfirmation, model);
     }
 
     [HttpPost(nameof(ExternalSignInConfirmation))]
@@ -395,7 +356,7 @@ public class Account : AbstractController
         var info = await _signInManager.GetExternalLoginInfoAsync();
         if (info == null)
         {
-            _logger.LogInformation($"{nameof(ExternalSignInConfirmation)} failed to get external sign-in information");
+            _logger.LogInformation("{Method} failed to get external sign-in information", nameof(ExternalSignInConfirmation));
             return Redirect(TenantLink.Action(nameof(Message), nameof(Account), new { messageTypeText = MessageType.ExternalSignInFailure })!);
         }
         var user = new ApplicationUser
@@ -420,13 +381,13 @@ public class Account : AbstractController
             {
                 await _signInManager.SignInAsync(user, isPersistent: false);
                 _logger.LogInformation(
-                    "User created an account for email '{userEmail}' using {loginProvider} provider.", user.Email, info.LoginProvider);
+                    "User created an account for email '{UserEmail}' using {LoginProvider} provider.", user.Email, info.LoginProvider);
 
                 // Update any authentication tokens as well
                 if (await _signInManager.UpdateExternalAuthenticationTokensAsync(info) !=
                     IdentityResult.Success)
                     _logger.LogWarning(
-                        "External authentication tokens could not be updated for email '{userEmail}' using {loginProvider} provider.", user.Email, info.LoginProvider);
+                        "External authentication tokens could not be updated for email '{UserEmail}' using {LoginProvider} provider.", user.Email, info.LoginProvider);
 
                 // email is flagged as confirmed if local email and external email are equal
                 if (user.EmailConfirmed)
@@ -469,7 +430,7 @@ public class Account : AbstractController
 
         if (user == null || (!await _signInManager.UserManager.IsEmailConfirmedAsync(user) && _signInManager.UserManager.Options.SignIn.RequireConfirmedEmail))
         {
-            _logger.LogInformation("No account found for '{user}'.", model.EmailOrUsername);
+            _logger.LogInformation("No account found for '{User}'.", model.EmailOrUsername);
             ModelState.AddModelError(string.Empty, _localizer["No account found for these credentials."]);
             await Task.Delay(5000);
             return View(model);
@@ -517,7 +478,7 @@ public class Account : AbstractController
 
         if (user == null)
         {
-            _logger.LogInformation("No account found for '{user}'.", model.EmailOrUsername);
+            _logger.LogInformation("No account found for '{User}'.", model.EmailOrUsername);
             ModelState.AddModelError(string.Empty, _localizer["No account found for these credentials."]);
             await Task.Delay(5000);
             return View();
@@ -569,8 +530,55 @@ public class Account : AbstractController
             }
         }
 
-        _logger.LogWarning("Undefined {messageType}: '{messageText}'", nameof(MessageType), messageTypeText);
+        _logger.LogWarning("Undefined {MessageType}: '{MessageText}'", nameof(MessageType), messageTypeText);
         return RedirectToLocal("/" + _tenantContext.SiteContext.UrlSegmentValue);
+    }
+
+    private async Task<bool> IsExternalLoginStoredAsync(ExternalLoginInfo info)
+    {
+        var existingUser = await FindExistingUserAsync(info);
+        if (existingUser == null) return true;
+
+        await AssociateExternalLoginAsync(existingUser, info);
+        return false;
+    }
+    private async Task<ApplicationUser?> FindExistingUserAsync(ExternalLoginInfo info)
+    {
+        if (User.Identity?.IsAuthenticated ?? false)
+        {
+            return await _signInManager.UserManager.FindByNameAsync(User.Identity.Name);
+        }
+
+        var allExternalEmails = info.Principal.FindAll(ClaimTypes.Email).Select(ct => ct.Value);
+        foreach (var externalEmail in allExternalEmails)
+        {
+            var user = await _signInManager.UserManager.FindByEmailAsync(externalEmail);
+            if (user != null) return user;
+        }
+
+        return null;
+    }
+
+    private async Task AssociateExternalLoginAsync(ApplicationUser user, ExternalLoginInfo info)
+    {
+        var result = await _signInManager.UserManager.AddLoginAsync(user, info);
+        if (result != IdentityResult.Success)
+        {
+            _logger.LogInformation("{Method} {Email} is already associated with another account", nameof(ExternalSignInCallback), user.Email);
+            throw new InvalidOperationException(_localizer.GetString("Your {0} account is already associated with another account at {1}", info.LoginProvider, _tenantContext.OrganizationContext.ShortName).Value);
+        }
+        await UpdateUserFromExternalLogin(user, info);
+    }
+
+    private static ExternalSignConfirmationViewModel CreateExternalSignInConfirmationViewModelAsync(ClaimsPrincipal principal)
+    {
+        return new ExternalSignConfirmationViewModel
+        {
+            Email = principal.FindFirstValue(ClaimTypes.Email),
+            Gender = string.Empty,
+            FirstName = principal.FindFirstValue(ClaimTypes.GivenName) ?? string.Empty,
+            LastName = principal.FindFirstValue(ClaimTypes.Surname) ?? string.Empty
+        };
     }
 
     #region ** Helpers **
@@ -673,7 +681,7 @@ public class Account : AbstractController
                 });
                 break;
             default:
-                _logger.LogError($"Illegal enum type for {nameof(EmailPurpose)}");
+                _logger.LogError("Illegal enum type for {Purpose}", nameof(EmailPurpose));
                 break;
         }
 
