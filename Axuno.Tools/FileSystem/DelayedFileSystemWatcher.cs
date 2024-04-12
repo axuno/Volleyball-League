@@ -35,7 +35,7 @@ public class DelayedFileSystemWatcher : IDisposable
     private int _consolidationInterval = 1000; // initial value in milliseconds
     private readonly System.Timers.Timer _timer;
 
-    #region Delegate to FileSystemWatcher
+    #region *** Delegate to FileSystemWatcher ***
 
     /// <summary>
     /// Initializes a new instance of the <see cref="DelayedFileSystemWatcher"/> class.
@@ -289,7 +289,7 @@ public class DelayedFileSystemWatcher : IDisposable
 
     #endregion
 
-    #region Implementation
+    #region *** Implementation ***
 
     private void Initialize(out System.Timers.Timer timer)
     {
@@ -323,82 +323,78 @@ public class DelayedFileSystemWatcher : IDisposable
 
     private void ElapsedEventHandler(object? sender, ElapsedEventArgs e)
     {
-        // We don't fire the events inside the lock.
-        // We will queue them here until the code exits the locks.
-        Queue? eventsToBeFired = null;
-        if (Monitor.TryEnter(_enterThread))
+        if (!Monitor.TryEnter(_enterThread))
+            return;
+
+        try
         {
-            // Only one thread at a time is processing the events                
-            try
+            var eventsToBeFired = ProcessEvents();
+            if (eventsToBeFired != null)
+                RaiseEvents(eventsToBeFired);
+        }
+        finally
+        {
+            Monitor.Exit(_enterThread);
+        }
+    }
+
+    private Queue? ProcessEvents()
+    {
+        var eventsToBeFired = new Queue(32);
+
+        lock (_events.SyncRoot)
+        {
+            for (var i = 0; i < _events.Count; i++)
             {
-                eventsToBeFired = new Queue(32);
-                // Lock the collection while processing the events
-                lock (_events.SyncRoot)
-                {
-                    for (var i = 0; i < _events.Count; i++)
-                    {
-                        var current = _events[i] as DelayedEvent;
-                        if (current is { Delayed: true })
-                        {
-                            // This event has been delayed already so we can fire it
-                            // We just need to remove any duplicates
-                            for (var j = i + 1; j < _events.Count; j++)
-                            {
-                                if (current.IsDuplicate(_events[j]!))
-                                {
-                                    // Removing later duplicates
-                                    _events.RemoveAt(j);
-                                    j--; // Don't skip next event
-                                }
-                            }
+                if (_events[i] is not DelayedEvent current)
+                    continue;
 
-                            var raiseEvent = true;
-                            if (current.Args.ChangeType is WatcherChangeTypes.Created or WatcherChangeTypes.Changed)
-                            {
-                                // check if the file can be opened for reading (i.e. copying has been completed)
-                                FileStream? stream = null;
-                                try
-                                {
-                                    stream = File.Open(current.Args.FullPath, FileMode.Open, FileAccess.Read,
-                                        FileShare.None);
-                                }
-                                catch (IOException)
-                                {
-                                    raiseEvent = false;
-                                }
-                                finally
-                                {
-                                    stream?.Close();
-                                }
-                            }
-
-                            if (!raiseEvent) continue;
-
-                            // Add the event to the list of events to be fired
-                            eventsToBeFired.Enqueue(current);
-                            // Remove it from the current list
-                            _events.RemoveAt(i);
-                            i--; // meaning: the next event won't be skipped
-                        }
-                        else
-                        {
-                            // This event was not delayed yet, so we will delay processing
-                            // of this event for at least one timer interval
-                            if (current != null) current.Delayed = true;
-                        }
-                    }
-                }
-            }
-            finally
-            {
-                Monitor.Exit(_enterThread);
+                if (current.Delayed)
+                    ProcessDelayedEvent(current, eventsToBeFired, ref i);
+                else
+                    current.Delayed = true;
             }
         }
-        // else - this timer event was skipped, processing will happen during the next timer event
 
-        // Now fire all the events if any events are in eventsToBeFired
-        if (eventsToBeFired != null) RaiseEvents(eventsToBeFired);
+        return eventsToBeFired.Count > 0 ? eventsToBeFired : null;
     }
+
+    private void ProcessDelayedEvent(DelayedEvent current, Queue eventsToBeFired, ref int i)
+    {
+        if (current.Args.ChangeType is not (WatcherChangeTypes.Created or WatcherChangeTypes.Changed))
+            return;
+
+        if (!CanOpenFile(current.Args.FullPath))
+            return;
+
+        RemoveDuplicates(current);
+        eventsToBeFired.Enqueue(current);
+        _events.RemoveAt(i);
+        i--; // Decrement i to process the next event correctly
+    }
+
+    private bool CanOpenFile(string fullPath)
+    {
+        try
+        {
+            using var stream = File.Open(fullPath, FileMode.Open, FileAccess.Read, FileShare.None);
+            return true;
+        }
+        catch (IOException)
+        {
+            return false;
+        }
+    }
+
+    private void RemoveDuplicates(DelayedEvent current)
+    {
+        for (var j = _events.Count - 1; j > 0; j--)
+        {
+            if (current.IsDuplicate(_events[j]))
+                _events.RemoveAt(j);
+        }
+    }
+
 
     /// <summary>
     /// Gets or sets the interval in milliseconds, after which events will be fired.

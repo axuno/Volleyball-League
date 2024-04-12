@@ -37,6 +37,7 @@ public class InternetCalendarImporter : IExcludeDateImporter
     {
         _iCalendarStreamReader.BaseStream.Position = 0;
         var iCal = Ical.Net.Calendar.Load(_iCalendarStreamReader);
+        _logger.LogInformation("Imported {Count} events from iCalendar", iCal.Events.Count);
         return Map(iCal, fromToTimePeriod);
     }
 

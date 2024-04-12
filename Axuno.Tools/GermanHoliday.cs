@@ -88,18 +88,8 @@ public class GermanHoliday
         return PublicHolidayStateIds.Exists(s => s == stateId);
     }
 
-    public static bool operator ==(GermanHoliday? h1, GermanHoliday? h2)
-    {
-        if (h1 is null || h2 is null) return false;
-        return h1.Equals(h2);
-    }
-
-    public static bool operator !=(GermanHoliday? h1, GermanHoliday? h2)
-    {
-        if (h1 is null || h2 is null) return true;
-        return !h1.Equals(h2);
-    }
-
+    // Note: We don't have operator overloading for == and != because they should not be used on reference types.
+    
     public static bool operator <(GermanHoliday? h1, GermanHoliday? h2)
     {
         if (h1 is null || h2 is null) return false;

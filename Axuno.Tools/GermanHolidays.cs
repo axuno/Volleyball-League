@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.Xml.Linq;
 
 namespace Axuno.Tools;
@@ -367,7 +368,7 @@ public class GermanHolidays : List<GermanHoliday>
     /// <summary>
     /// Loads holiday data for a year from an XML file and adds, merges, removes or replaces
     /// the standard German holidays which are calculated automatically.
-    /// All element and attribute names/values must match XML standards, but are not case sensitive.
+    /// All element and attribute names/values must match XML standards, but are not case-sensitive.
     /// Dates not in scope of the year given with CTOR will just be ignored.
     /// </summary>
     /// <remarks>
@@ -379,122 +380,141 @@ public class GermanHolidays : List<GermanHoliday>
     /// <param name="path">A URI string referencing the holidays XML file to load.</param>
     public void Load(string path)
     {
-        // load holiday data from XML file
-        var holidayQuery = from holiday in XElement.Load(path).Elements()
-            where holiday.Name.ToString().ToLower() == "holiday"
-            select holiday;
+        var holidays = XElement.Load(path).Elements("holiday");
 
-        foreach (var holiday in holidayQuery)
+        foreach (var holiday in holidays)
         {
-            // get the standard German holiday id (if any)
-            Id? holidayId = null;
-            if (holiday.Attributes().Any(e => e.Name.ToString().ToLower() == "id"))
-                holidayId = (Id) Enum.Parse(typeof(Id),
-                    holiday.Attributes().First(
-                        e => e.Name.ToString().ToLower() == "id").Value,
-                    true);
+            var holidayId = GetHolidayId(holiday);
+            var action = GetActionType(holiday);
+            var (dateFrom, dateTo) = GetDateRange(holiday);
+            var holidayType = GetHolidayType(holiday);
+            var name = holiday.Element("name")?.Value ?? string.Empty;
+            var stateIds = GetStateIds(holiday);
 
-            // what to do with this holiday? The default action is "Merge".
-            var action = ActionType.Merge;
-            if (holiday.Attributes().Any(e => e.Name.ToString().ToLower() == "action"))
-                action = (ActionType) Enum.Parse(typeof(ActionType),
-                    holiday.Attributes().First(
-                        e => e.Name.ToString().ToLower() == "action").Value,
-                    true);
-
-            // remove an existing (standard German) holiday
-            if (action == ActionType.Remove && holidayId.HasValue)
-            {
-                Remove(this[holidayId.Value]!);
-                continue;
-            }
-
-            // get the dates (if any)
-            var dateFrom = DateTime.MinValue;
-            var dateTo = DateTime.MinValue;
-            if (holiday.Elements().Any(e => e.Name.ToString().ToLower() == "datefrom") &&
-                holiday.Elements().Any(e => e.Name.ToString().ToLower() == "dateto"))
-            {
-                dateFrom =
-                    DateTime.Parse(
-                        holiday.Elements().First(e => e.Name.ToString().ToLower() == "datefrom").Value);
-                dateTo =
-                    DateTime.Parse(holiday.Elements().First(e => e.Name.ToString().ToLower() == "dateto").Value);
-
-                // Swap from/to dates, if mixed up
-                if (dateFrom > dateTo) (dateFrom, dateTo) = (dateTo, dateFrom);
-
-                // holiday must be within the year given by CTOR
-                if (dateFrom.Year < Year && dateTo.Year == Year)
-                    dateFrom = new DateTime(Year, 1, 1);
-
-                if (dateFrom.Year == Year && dateTo.Year > Year)
-                    dateTo = new DateTime(Year, 12, 31);
-
-                if (dateFrom.Year != Year && dateTo.Year != Year)
-                    continue;
-            }
-
-            // get the holiday type
-            var holidayType =
-                (Type)
-                Enum.Parse(typeof(Type),
-                    holiday.Elements().First(e => e.Name.ToString().ToLower() == "type").Value, true);
-
-            var name = holiday.Elements().First(e => e.Name.ToString().ToLower() == "name").Value;
-
-            // get the federal state ids (if any)
-            XElement? stateIds = null;
-            var germanFederalStateIds = new List<GermanFederalStates.Id>();
-            if (holiday.Elements().Any(e => e.Name.ToString().ToLower() == "publicholidaystateids"))
-            {
-                stateIds = holiday.Elements().First(e => e.Name.ToString().ToLower() == "publicholidaystateids");
-                if (stateIds.HasElements)
-                    foreach (var stateId in stateIds.Elements())
-                        germanFederalStateIds.Add(
-                            (GermanFederalStates.Id) Enum.Parse(typeof(GermanFederalStates.Id), stateId.Value,
-                                true));
-            }
-
-            // Only with Replace action the dates may be missing
-            if (action != ActionType.Replace && (dateFrom == DateTime.MinValue || dateTo == DateTime.MinValue))
-                throw new InvalidOperationException("Missing 'date from' and/or 'date to' in XML data.");
-
-            while (dateFrom <= dateTo)
-            {
-                var tmpDateFrom = new DateTime(dateFrom.Ticks);
-                var germanHoliday = new GermanHoliday(holidayId, holidayType, name, () => tmpDateFrom)
-                {
-                    PublicHolidayStateIds = germanFederalStateIds
-                };
-                switch (action)
-                {
-                    case ActionType.Merge:
-                        Merge(germanHoliday);
-                        break;
-                    case ActionType.Add:
-                        Add(germanHoliday);
-                        break;
-                    case ActionType.Replace:
-                        // The holiday must exist in the list
-                        if (holidayId.HasValue && this[holidayId.Value] is not null)
-                        {
-                            // replace the existing standard date only if a new date was given
-                            if (tmpDateFrom != DateTime.MinValue)
-                                this[holidayId.Value]!.CalcDateFunc = () => tmpDateFrom;
-                            this[holidayId.Value]!.Type = holidayType;
-                            this[holidayId.Value]!.Name = name;
-                            // replace state ids, if any were supplied
-                            if (stateIds != null)
-                                this[holidayId.Value]!.PublicHolidayStateIds = germanFederalStateIds;
-                        }
-
-                        break;
-                }
-
-                dateFrom = dateFrom.AddDays(1);
-            }
+            ProcessHoliday(holidayId, action, dateFrom, dateTo, holidayType, name, stateIds);
         }
+    }
+
+    private Id? GetHolidayId(XElement holiday)
+    {
+        if (holiday.Attribute("id") != null && Enum.TryParse<Id>(holiday.Attribute("id")?.Value, true, out var id))
+            return id;
+        return null;
+    }
+
+    private ActionType GetActionType(XElement holiday)
+    {
+        if (Enum.TryParse<ActionType>(holiday.Attribute("action")?.Value, true, out var action))
+            return action;
+        return ActionType.Merge;
+    }
+
+    private (DateTime, DateTime) GetDateRange(XElement holiday)
+    {
+        var dateFrom = DateTime.MinValue;
+        var dateTo = DateTime.MinValue;
+
+        if (holiday.Element("datefrom") != null && holiday.Element("dateto") != null)
+        {
+            dateFrom = DateTime.ParseExact(holiday.Element("datefrom")?.Value!, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None);
+            dateTo = DateTime.ParseExact(holiday.Element("dateto")?.Value!, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None);
+
+            if (dateFrom > dateTo)
+                (dateFrom, dateTo) = (dateTo, dateFrom);
+        }
+
+        return (dateFrom, dateTo);
+    }
+
+    private Type GetHolidayType(XElement holiday)
+    {
+        if (Enum.TryParse<Type>(holiday.Element("type")?.Value, true, out var type))
+            return type;
+        throw new InvalidOperationException("Missing or invalid holiday type.");
+    }
+
+    private List<GermanFederalStates.Id> GetStateIds(XElement holiday)
+    {
+        var stateIds = new List<GermanFederalStates.Id>();
+
+        var publicHolidayStateIds = holiday.Element("publicholidaystateids");
+        if (publicHolidayStateIds != null && publicHolidayStateIds.HasElements)
+        {
+            stateIds.AddRange(publicHolidayStateIds.Elements().Select(stateId =>
+                Enum.Parse<GermanFederalStates.Id>(stateId.Value, true)));
+        }
+
+        return stateIds;
+    }
+
+    private void ProcessHoliday(Id? holidayId, ActionType action, DateTime dateFrom, DateTime dateTo, Type holidayType, string name, List<GermanFederalStates.Id> stateIds)
+    {
+        if (action == ActionType.Remove && holidayId.HasValue)
+        {
+            RemoveHoliday(holidayId.Value);
+            return;
+        }
+
+        ValidateDateRange(action, dateFrom, dateTo);
+
+        while (dateFrom <= dateTo)
+        {
+            var tmpDateFrom = dateFrom; // no capture of modified closure
+            var germanHoliday = new GermanHoliday(holidayId, holidayType, name, () => tmpDateFrom)
+            {
+                PublicHolidayStateIds = stateIds
+            };
+
+            switch (action)
+            {
+                case ActionType.Merge:
+                    MergeHoliday(germanHoliday);
+                    break;
+                case ActionType.Add:
+                    AddHoliday(germanHoliday);
+                    break;
+                case ActionType.Replace:
+                    ReplaceHoliday(holidayId, germanHoliday);
+                    break;
+            }
+
+            dateFrom = dateFrom.AddDays(1);
+        }
+    }
+
+    private void ValidateDateRange(ActionType action, DateTime dateFrom, DateTime dateTo)
+    {
+        if (action != ActionType.Replace && (dateFrom == DateTime.MinValue || dateTo == DateTime.MinValue))
+            throw new InvalidOperationException("Missing 'date from' and/or 'date to' in XML data.");
+    }
+
+    private void RemoveHoliday(Id holidayId)
+    {
+        Remove(this[holidayId]!.Name);
+    }
+
+    private void MergeHoliday(GermanHoliday germanHoliday)
+    {
+        Merge(germanHoliday);
+    }
+
+    private void AddHoliday(GermanHoliday germanHoliday)
+    {
+        Add(germanHoliday);
+    }
+
+    private void ReplaceHoliday(Id? holidayId, GermanHoliday newHoliday)
+    {
+        if (!holidayId.HasValue || this[holidayId.Value] == null)
+            throw new InvalidOperationException("Holiday to replace not found.");
+
+        var existingHoliday = this[holidayId.Value]!;
+
+        // Replace the existing holiday with the new one
+        existingHoliday.CalcDateFunc = newHoliday.CalcDateFunc;
+        existingHoliday.Type = newHoliday.Type;
+        existingHoliday.Name = newHoliday.Name;
+        existingHoliday.PublicHolidayStateIds = newHoliday.PublicHolidayStateIds;
     }
 
     #region *** Enums ***

@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using HarfBuzzSharp;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using TournamentManager;
 using TournamentManager.DAL;
@@ -213,75 +214,107 @@ public class EnterResultViewModel
 
     public async Task<bool> ValidateAsync(MatchResultValidator validator, ModelStateDictionary modelState)
     {
+        await ValidateWithValidatorAsync(validator, modelState);
+
+        if (!modelState.IsValid)
+        {
+            HandleInvalidModelState(modelState);
+        }
+
+        return modelState.IsValid;
+    }
+
+    private async Task ValidateWithValidatorAsync(MatchResultValidator validator, ModelStateDictionary modelState)
+    {
         await validator.CheckAsync(CancellationToken.None);
 
         foreach (var fact in validator.GetFailedFacts())
         {
             if (fact.Type == FactType.Critical || fact.Type == FactType.Error)
             {
-                if (fact.FieldNames.Contains(nameof(MatchResultValidator.Model.RealStart)) 
-                    || fact.FieldNames.Contains(nameof(MatchResultValidator.Model.RealEnd)))
-                {
-                    modelState.AddModelError(nameof(EnterResultViewModel.MatchDate), fact.Message);
-                }
+                HandleCriticalOrErrorFact(fact, validator, modelState);
+            }
+            else
+            {
+                HandleWarningFact(fact, modelState);
+            }
+        }
+    }
 
-                if (fact.Id == MatchResultValidator.FactId.SetsValidatorSuccessful)
-                {
-                    foreach (var setsError in validator.SetsValidator.GetFailedFacts())
-                    {
-                        // This is the hint for existing errors in single sets
-                        if (setsError.Id == SetsValidator.FactId.AllSetsAreValid)
-                        {
-                            foreach (var singleSet in validator.SetsValidator.SingleSetErrors)
-                            {
-                                modelState.AddModelError(
-                                    singleSet.FactId == SingleSetValidator.FactId.SetPointsAreValid // we have just one set error
-                                        ? $"{nameof(SetPoints)}-{singleSet.SequenceNo - 1}"
-                                        : $"{nameof(BallPoints)}-{singleSet.SequenceNo - 1}",
-                                    string.Concat(string.Format(_localizer["Set #{0}"], singleSet.SequenceNo), ": ",
-                                        singleSet.ErrorMessage));
-                            }
-                        }
-                        else
-                        {
-                            // Errors about sets in general
-                            modelState.AddModelError("", setsError.Message);
-                        }
-                    }
-                }
+    private void HandleCriticalOrErrorFact(Fact<MatchResultValidator.FactId> fact, MatchResultValidator validator, ModelStateDictionary modelState)
+    {
+        if (fact.FieldNames.Contains(nameof(MatchResultValidator.Model.RealStart)) ||
+            fact.FieldNames.Contains(nameof(MatchResultValidator.Model.RealEnd)))
+        {
+            AddModelErrorForMatchDate(fact, modelState);
+        }
+        else if (fact.Id == MatchResultValidator.FactId.SetsValidatorSuccessful)
+        {
+            AddModelErrorForSets(validator, modelState);
+        }
+        else if (fact.Id == MatchResultValidator.FactId.MatchPointsAreValid)
+        {
+            AddModelErrorForMatchPoints(fact, modelState);
+        }
+        else
+        {
+            AddModelErrorForOtherFacts(fact, modelState);
+        }
+    }
 
-                if (fact.Id == MatchResultValidator.FactId.MatchPointsAreValid)
+    private void AddModelErrorForMatchDate(Fact<MatchResultValidator.FactId> fact, ModelStateDictionary modelState)
+    {
+        modelState.AddModelError(nameof(EnterResultViewModel.MatchDate), fact.Message);
+    }
+
+    private void AddModelErrorForSets(MatchResultValidator validator, ModelStateDictionary modelState)
+    {
+        foreach (var setsError in validator.SetsValidator.GetFailedFacts())
+        {
+            if (setsError.Id == SetsValidator.FactId.AllSetsAreValid)
+            {
+                foreach (var singleSet in validator.SetsValidator.SingleSetErrors)
                 {
-                    modelState.AddModelError($"{nameof(HomePoints)}", fact.Message);
+                    var fieldName = singleSet.FactId == SingleSetValidator.FactId.SetPointsAreValid
+                        ? $"{nameof(SetPoints)}-{singleSet.SequenceNo - 1}"
+                        : $"{nameof(BallPoints)}-{singleSet.SequenceNo - 1}";
+
+                    modelState.AddModelError(fieldName, $"{string.Format(_localizer["Set #{0}"], singleSet.SequenceNo)}: {singleSet.ErrorMessage}");
                 }
             }
             else
             {
-                modelState.AddModelError(string.Empty, fact.Message);
-                // Validator generates FactType.Warning only, if no errors exist
-                IsWarning = true;
+                modelState.AddModelError("", setsError.Message);
             }
         }
+    }
 
-        // The Hash is re-calculated with the new submitted values.
-        // We have to compare to the original hidden Hash field value,
-        // because to override warnings, form fields must be unchanged since last post
+    private void AddModelErrorForMatchPoints(Fact<MatchResultValidator.FactId> fact, ModelStateDictionary modelState)
+    {
+        modelState.AddModelError($"{nameof(HomePoints)}", fact.Message);
+    }
+
+    private void AddModelErrorForOtherFacts(Fact<MatchResultValidator.FactId> fact, ModelStateDictionary modelState)
+    {
+        modelState.AddModelError(string.Empty, fact.Message);
+    }
+
+    private void HandleWarningFact(Fact<MatchResultValidator.FactId> fact, ModelStateDictionary modelState)
+    {
+        modelState.AddModelError(string.Empty, fact.Message);
+        IsWarning = true;
+    }
+
+    private void HandleInvalidModelState(ModelStateDictionary modelState)
+    {
         var newHash = ComputeInputHash();
         if (IsWarning && OverrideWarnings && newHash == Hash)
         {
             modelState.Clear();
             IsWarning = false;
         }
-
-        if (!modelState.IsValid)
-        {
-            // Show checkbox unchecked
-            OverrideWarnings = false;
-            // Set hash field value to latest form fields content
-            Hash = newHash;
-        }
-
-        return modelState.IsValid;
+        OverrideWarnings = false;
+        Hash = newHash;
     }
 
     public class MatchResultMessage
