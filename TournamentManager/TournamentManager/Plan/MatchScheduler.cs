@@ -151,7 +151,7 @@ internal class MatchScheduler
         // Get match dates for every combination of a turn.
         // Matches in the same turnCombinations can even take place at the same time.
         var datesFound = GetMatchDatesForTurn(roundLeg, turn, combinations, tournamentMatches);
-        _logger.LogDebug("Found dates for combination: {dates}",
+        _logger.LogDebug("Found dates for combination: {Dates}",
             string.Join(", ", datesFound.Select(bd => bd?.MatchStartTime.ToShortDateString() ?? "(null)")).Trim(',', ' '));
 
         // datesFound contains calculated dates in the same sequence as turn combinations,
@@ -306,7 +306,7 @@ internal class MatchScheduler
             // If no dates could be found, we extend the date period by 7 days (-3/+4) in both directions
             if (availableDatesForCombination.Count == 0)
             {
-                _logger.LogDebug("No free dates {from} - {to} found for {home} - {guest}: {period} * will be extended by 7 days in both directions.",
+                _logger.LogDebug("No free dates {From} - {To} found for {Home} - {Guest}: {Period} * will be extended by 7 days in both directions.",
                                                           turnCombinationsPeriod.Start, turnCombinationsPeriod.End, combination.Home, combination.Guest,
                                                           turnCombinationsPeriod);
                 // The extension applies only to the current combination.
@@ -327,18 +327,18 @@ internal class MatchScheduler
                 gm.HomeTeamId == combination.Home || gm.GuestTeamId == combination.Guest);
             if (lastMatchOfCombination != null)
             {
-                _logger.LogDebug("Last match date for home team '{homeTeam}' or guest team '{guestTeam}' is '{plannedStart}'", combination.Home, combination.Guest, lastMatchOfCombination.PlannedStart?.ToShortDateString() ?? "none");
+                _logger.LogDebug("Last match date for home team '{HomeTeam}' or guest team '{GuestTeam}' is '{PlannedStart}'", combination.Home, combination.Guest, lastMatchOfCombination.PlannedStart?.ToShortDateString() ?? "none");
             }
             else
             {
-                _logger.LogDebug("No matches yet for home team '{homeTeam}' or guest team '{guestTeam}'", combination.Home, combination.Guest);
+                _logger.LogDebug("No matches yet for home team '{HomeTeam}' or guest team '{GuestTeam}'", combination.Home, combination.Guest);
             }
 #endif
             // If no dates could be found, the date will be set to null.
             if (availableDatesForCombination.Count == 0)
             {
                 _logger.LogDebug(
-                    "No free dates {from} - {to} found for {home } - {guest}: {period} * will be set to NULL.",
+                    "No free dates {From} - {To} found for {Home} - {Guest}: {Period} * will be set to NULL.",
                     turnCombinationsPeriod.Start, turnCombinationsPeriod.End, combination.Home, combination.Guest,
                     turnCombinationsPeriod);
             }
@@ -434,7 +434,7 @@ internal class MatchScheduler
 
         var periodDaysCount = allMatchDaysOfRound.Count / (combinations.GetTurns().Count() + 1);
 
-        _logger.LogDebug("*** Round: {roundName} - RoundLeg: {legDescription}\n", roundLeg.Round.Name, roundLeg.Description);
+        _logger.LogDebug("*** Round: {RoundName} - RoundLeg: {LegDescription}\n", roundLeg.Round.Name, roundLeg.Description);
 
         // Initialize the dictionary with the turns and date empty periods
         combinations.TurnDateTimePeriods.Clear();
@@ -468,7 +468,7 @@ internal class MatchScheduler
                                                combinations.TurnDateTimePeriods[key]?.End);
             }
 
-            _logger.LogDebug("Turn #{turn} date period: From={from}, To={to}, {days} days",
+            _logger.LogDebug("Turn #{Turn} date period: From={From}, To={To}, {Days} days",
                 key, combinations.TurnDateTimePeriods[key]?.Start?.ToShortDateString(),
                 combinations.TurnDateTimePeriods[key]?.End?.ToShortDateString(),
                 (combinations.TurnDateTimePeriods[key]?.End - combinations.TurnDateTimePeriods[key]?.Start)

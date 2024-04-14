@@ -35,35 +35,31 @@ public class Match : AbstractController
     private readonly SendEmailTask _sendMailTask;
     private readonly RankingUpdateTask _rankingUpdateTask;
     private readonly RazorViewToStringRenderer _razorViewToStringRenderer;
-    
+
     /// <summary>
     /// The controller for handling <see cref="MatchEntity"/>s.
     /// </summary>
     /// <param name="tenantContext"></param>
     /// <param name="localizer"></param>
     /// <param name="authorizationService"></param>
-    /// <param name="timeZoneConverter"></param>
-    /// <param name="queue"></param>
-    /// <param name="sendMailTask"></param>
-    /// <param name="rankingUpdateTask"></param>
-    /// <param name="razorViewToStringRenderer"></param>
+    /// <param name="serviceProvider"></param>
     /// <param name="logger"></param>
     public Match(ITenantContext tenantContext, IStringLocalizer<Match> localizer,
-        IAuthorizationService authorizationService,
-        Axuno.Tools.DateAndTime.TimeZoneConverter timeZoneConverter, Axuno.BackgroundTask.IBackgroundQueue queue,
-        SendEmailTask sendMailTask, RankingUpdateTask rankingUpdateTask,
-        RazorViewToStringRenderer razorViewToStringRenderer, ILogger<Match> logger)
+        IAuthorizationService authorizationService, IServiceProvider serviceProvider,
+        ILogger<Match> logger)
     {
         _tenantContext = tenantContext;
         _appDb = tenantContext.DbContext.AppDb;
         _localizer = localizer;
         _authorizationService = authorizationService;
-        _timeZoneConverter = timeZoneConverter;
-        _queue = queue;
-        _sendMailTask = sendMailTask;
-        _rankingUpdateTask = rankingUpdateTask;
-        _razorViewToStringRenderer = razorViewToStringRenderer;
         _logger = logger;
+
+        // Get required services from the service provider to stay below the 7 parameter limit of SonarCloud
+        _timeZoneConverter = serviceProvider.GetRequiredService<Axuno.Tools.DateAndTime.TimeZoneConverter>();
+        _queue = serviceProvider.GetRequiredService<Axuno.BackgroundTask.IBackgroundQueue>();
+        _sendMailTask = serviceProvider.GetRequiredService<SendEmailTask>();
+        _rankingUpdateTask = serviceProvider.GetRequiredService<RankingUpdateTask>();
+        _razorViewToStringRenderer = serviceProvider.GetRequiredService<RazorViewToStringRenderer>();
     }
 
     /// <summary>
@@ -100,12 +96,12 @@ public class Match : AbstractController
         // if called after a fixture has been updated, make sure the active round is set, so that highlighted changes are visible
         if (model.FixtureMessage != null)
         {
-            model.ActiveRoundId = model.PlannedMatches.FirstOrDefault(m => m.Id == model.FixtureMessage.MatchId)?.RoundId;
+            model.ActiveRoundId = model.PlannedMatches.Find(m => m.Id == model.FixtureMessage.MatchId)?.RoundId;
         }
 
         if (model.Tournament == null)
         {
-            _logger.LogCritical("{tournamentId} '{id}' does not exist. User ID: '{currentUser}'", nameof(_tenantContext.TournamentContext.MatchPlanTournamentId), _tenantContext.TournamentContext.MatchPlanTournamentId, GetCurrentUserId());
+            _logger.LogCritical("{TournamentId} '{Id}' does not exist. User ID: '{CurrentUser}'", nameof(_tenantContext.TournamentContext.MatchPlanTournamentId), _tenantContext.TournamentContext.MatchPlanTournamentId, GetCurrentUserId());
         }
 
         return View(ViewNames.Match.Fixtures, model);
@@ -149,7 +145,7 @@ public class Match : AbstractController
         }
         catch (Exception e)
         {
-            _logger.LogCritical(e, "Error creating {calendar} for user ID '{currentUser}'", nameof(Calendar), GetCurrentUserId());
+            _logger.LogCritical(e, "Error creating {Calendar} for user ID '{CurrentUser}'", nameof(Calendar), GetCurrentUserId());
             return NoContent();
         }
     }
@@ -193,7 +189,7 @@ public class Match : AbstractController
         }
         catch (Exception e)
         {
-            _logger.LogCritical(e, "Error creating {calendar} for user ID '{currentUser}'", nameof(PublicCalendar), GetCurrentUserId());
+            _logger.LogCritical(e, "Error creating {Calendar} for user ID '{CurrentUser}'", nameof(PublicCalendar), GetCurrentUserId());
             return NoContent();
         }
     }
@@ -222,12 +218,12 @@ public class Match : AbstractController
         // if called after a fixture has been updated, make sure the active round is set, so that highlighted changes are visible
         if (model.MatchResultMessage != null)
         {
-            model.ActiveRoundId = model.CompletedMatches.FirstOrDefault(m => m.Id == model.MatchResultMessage.MatchId)?.RoundId;
+            model.ActiveRoundId = model.CompletedMatches.Find(m => m.Id == model.MatchResultMessage.MatchId)?.RoundId;
         }
 
         if (model.Tournament == null)
         {
-            _logger.LogCritical("{name} '{tournamentId}' does not exist. User ID '{currentUser}'", nameof(_tenantContext.TournamentContext.MatchPlanTournamentId), _tenantContext.TournamentContext.MatchPlanTournamentId, GetCurrentUserId());
+            _logger.LogCritical("{Name} '{TournamentId}' does not exist. User ID '{CurrentUser}'", nameof(_tenantContext.TournamentContext.MatchPlanTournamentId), _tenantContext.TournamentContext.MatchPlanTournamentId, GetCurrentUserId());
         }
         return View(ViewNames.Match.Results, model);
     }
@@ -300,14 +296,14 @@ public class Match : AbstractController
             if (permissionValidator.GetFailedFacts().Count != 0)
             {
                 return View(ViewNames.Match.EnterResultNotAllowed,
-                    (model.Tournament, permissionValidator.GetFailedFacts().First().Message));
+                    (model.Tournament, permissionValidator.GetFailedFacts()[0].Message));
             }
                 
             return View(ViewNames.Match.EnterResult, model);
         }
         catch (Exception e)
         {
-            _logger.LogCritical(e, "Building {model} failed for MatchId '{matchId}'", nameof(EnterResultViewModel), id);
+            _logger.LogCritical(e, "Building {Model} failed for MatchId '{MatchId}'", nameof(EnterResultViewModel), id);
             throw;
         }
     }
@@ -379,7 +375,7 @@ public class Match : AbstractController
         }
         catch (Exception e)
         {
-            _logger.LogCritical(e, "Building {model} failed for MatchId '{modelId}'. User ID '{currentUser}'", nameof(EnterResultViewModel), model?.Id, GetCurrentUserId());
+            _logger.LogCritical(e, "Building {Model} failed for MatchId '{ModelId}'. User ID '{CurrentUser}'", nameof(EnterResultViewModel), model?.Id, GetCurrentUserId());
             throw;
         }
 
@@ -391,7 +387,7 @@ public class Match : AbstractController
                 
             // save the match entity and sets
             var success = await _appDb.MatchRepository.SaveMatchResultAsync(match, cancellationToken);
-            _logger.LogInformation("Result for match ID {matchId} was entered by user ID '{currentUser}'", match.Id, GetCurrentUserId());
+            _logger.LogInformation("Result for match ID {MatchId} was entered by user ID '{CurrentUser}'", match.Id, GetCurrentUserId());
 
             TempData.Put<EnterResultViewModel.MatchResultMessage>(nameof(EnterResultViewModel.MatchResultMessage),
                 new EnterResultViewModel.MatchResultMessage { MatchId = model.Id, ChangeSuccess = success });
@@ -407,7 +403,7 @@ public class Match : AbstractController
         }
         catch (Exception e)
         {
-            _logger.LogCritical(e, "Building {enterResultViewModel} failed for MatchId '{model.Id}' and  user ID '{currentUser}'", nameof(EnterResultViewModel), model.Id, GetCurrentUserId());
+            _logger.LogCritical(e, "Building {EnterResultViewModel} failed for MatchId '{ModelId}' and  user ID '{CurrentUserId}'", nameof(EnterResultViewModel), model.Id, GetCurrentUserId());
             TempData.Put<EnterResultViewModel.MatchResultMessage>(nameof(EnterResultViewModel.MatchResultMessage),
                 new EnterResultViewModel.MatchResultMessage { MatchId = model.Id, ChangeSuccess = false });
         }
@@ -475,11 +471,9 @@ public class Match : AbstractController
 
         if (model.PlannedMatch == null || model.Tournament == null)
         {
-            var msg = $"No data for fixture id '{model.Id}'. User ID '{GetCurrentUserId()}'.";
-#pragma warning disable CA2254 // Template should be a static expression
-            _logger.LogInformation(msg);
-#pragma warning restore CA2254 // Template should be a static expression
-            return NotFound(msg);
+            var userId = GetCurrentUserId();
+            _logger.LogInformation("No data for fixture id '{ModelId}'. User ID '{CurrentUserId}'.", model.Id, userId);
+            return NotFound($"No data for fixture id '{model.Id}'. User ID '{userId}'.");
         }
 
         if (!(await _authorizationService.AuthorizeAsync(User,
@@ -516,11 +510,9 @@ public class Match : AbstractController
 
         if (model.PlannedMatch == null || model.Tournament == null)
         {
-            var msg = $"No data for fixture id '{model.Id}'. User ID '{GetCurrentUserId()}'";
-#pragma warning disable CA2254 // Template should be a static expression
-            _logger.LogInformation(msg);
-#pragma warning restore CA2254 // Template should be a static expression
-            return NotFound(msg);
+            var userId = GetCurrentUserId();
+            _logger.LogInformation("No data for fixture id '{ModelId}'. User ID '{CurrentUserId}'", model.Id, userId);
+            return NotFound($"No data for fixture id '{model.Id}'. User ID '{userId}'");
         }
 
         if (!(await _authorizationService.AuthorizeAsync(User,
@@ -568,13 +560,13 @@ public class Match : AbstractController
         try
         {
             fixtureMessage.ChangeSuccess = await _appDb.GenericRepository.SaveEntityAsync(match, false, false, cancellationToken);
-            _logger.LogInformation("Fixture for match id {matchId} updated successfully for user ID '{currentUser}'", match.Id, GetCurrentUserId());
+            _logger.LogInformation("Fixture for match id {MatchId} updated successfully for user ID '{CurrentUserId}'", match.Id, GetCurrentUserId());
             if (fixtureIsChanged && !model.Tournament.IsPlanningMode) SendFixtureNotification(match.Id);
         }
         catch (Exception e)
         {
             fixtureMessage.ChangeSuccess = false;
-            _logger.LogCritical(e, "Fixture update for match id {matchId} failed for user ID '{currentUser}'", match.Id, GetCurrentUserId());
+            _logger.LogCritical(e, "Fixture update for match id {MatchId} failed for user ID '{CurrentUserId}'", match.Id, GetCurrentUserId());
         }
 
         // redirect to fixture overview, where success message is shown
@@ -620,7 +612,7 @@ public class Match : AbstractController
         }
         catch (Exception e)
         {
-            _logger.LogCritical(e, "Error loading match in '{methodName}' for user ID '{currentUser}'", nameof(_appDb.MatchRepository.GetPlannedMatchesAsync), GetCurrentUserId());
+            _logger.LogCritical(e, "Error loading match in '{MethodName}' for user ID '{CurrentUserId}'", nameof(_appDb.MatchRepository.GetPlannedMatchesAsync), GetCurrentUserId());
             return null;
         }
     }
@@ -650,7 +642,7 @@ public class Match : AbstractController
         }
         catch (Exception e)
         {
-            _logger.LogCritical(e, "Error adding display data to model '{model}' for user ID '{currentUser}'", nameof(EditFixtureViewModel), GetCurrentUserId());
+            _logger.LogCritical(e, "Error adding display data to model '{Model}' for user ID '{CurrentUserId}'", nameof(EditFixtureViewModel), GetCurrentUserId());
             return null;
         }
     }
@@ -662,7 +654,7 @@ public class Match : AbstractController
 
         if (tournament != null) return tournament;
 
-        _logger.LogCritical("{name} '{id}' does not exist. User ID '{currentUser}'.", nameof(_tenantContext.TournamentContext.MatchPlanTournamentId), _tenantContext.TournamentContext.MatchPlanTournamentId, GetCurrentUserId());
+        _logger.LogCritical("{Name} '{Id}' does not exist. User ID '{CurrentUserId}'.", nameof(_tenantContext.TournamentContext.MatchPlanTournamentId), _tenantContext.TournamentContext.MatchPlanTournamentId, GetCurrentUserId());
         return null;
     }
 
@@ -673,7 +665,7 @@ public class Match : AbstractController
 
         if (tournament != null) return tournament;
 
-        _logger.LogCritical("{name} '{id}' does not exist. User ID '{currentUser}'.", nameof(_tenantContext.TournamentContext.MatchResultTournamentId), _tenantContext.TournamentContext.MatchPlanTournamentId, GetCurrentUserId());
+        _logger.LogCritical("{Name} '{Id}' does not exist. User ID '{CurrentUserId}'.", nameof(_tenantContext.TournamentContext.MatchResultTournamentId), _tenantContext.TournamentContext.MatchPlanTournamentId, GetCurrentUserId());
         return null;
     }
 
@@ -685,21 +677,21 @@ public class Match : AbstractController
             cancellationToken);
         if (teamInRound.Count != 2)
         {
-            _logger.LogCritical("Number of found opponents for a match does not equal 2. User ID '{currentUser}'.", GetCurrentUserId());
+            _logger.LogCritical("Number of found opponents for a match does not equal 2. User ID '{CurrentUserId}'.", GetCurrentUserId());
         }
 
         var tournament = await _appDb.TournamentRepository.GetTournamentAsync(
             new PredicateExpression(TournamentFields.Id == _tenantContext.TournamentContext.MatchResultTournamentId), cancellationToken);
         if (tournament == null)
         {
-            _logger.LogCritical("{name} '{id}' does not exist", nameof(_tenantContext.TournamentContext.MatchResultTournamentId), _tenantContext.TournamentContext.MatchPlanTournamentId);
+            _logger.LogCritical("{Name} '{Id}' does not exist", nameof(_tenantContext.TournamentContext.MatchResultTournamentId), _tenantContext.TournamentContext.MatchPlanTournamentId);
         }
 
         var roundWithRules =
             await _appDb.RoundRepository.GetRoundWithRulesAsync(match.RoundId, cancellationToken);
         if (roundWithRules == null)
         {
-            _logger.LogCritical("Round with {roundId}='{id}' does not exist. User ID '{currentUser}'.", _tenantContext.TournamentContext.MatchPlanTournamentId, match.RoundId, GetCurrentUserId());
+            _logger.LogCritical("Round with {RoundId}='{Id}' does not exist. User ID '{CurrentUserId}'.", _tenantContext.TournamentContext.MatchPlanTournamentId, match.RoundId, GetCurrentUserId());
         }
 
         return tournament != null && roundWithRules != null && teamInRound.Count == 2
@@ -744,7 +736,7 @@ public class Match : AbstractController
         }
         catch (Exception e)
         {
-            _logger.LogCritical(e, "{method} failed for match ID '{matchId}'", nameof(ReportSheet), id);
+            _logger.LogCritical(e, "{Method} failed for match ID '{MatchId}'", nameof(ReportSheet), id);
         }
             
         // Not able to render report sheet as PDF: return HTML
