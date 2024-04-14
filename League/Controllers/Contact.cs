@@ -9,6 +9,7 @@ using TournamentManager.MultiTenancy;
 
 namespace League.Controllers;
 
+[Route("[controller]")]
 public class Contact : AbstractController
 {
     private readonly ITenantContext _tenantContext;
@@ -27,8 +28,8 @@ public class Contact : AbstractController
         _tenantContext = tenantContext;
     }
         
-    [HttpGet(TenantRouteConstraint.Template + "/contact", Name = RouteNames.TenantContact)]
-    [HttpGet("/contact", Name = RouteNames.GeneralContact)]
+    [HttpGet("/" + TenantRouteConstraint.Template + "/[controller]", Name = RouteNames.TenantContact)]
+    [HttpGet("", Name = RouteNames.GeneralContact)]
     public IActionResult Index()
     {
         var model = new ContactViewModel();
@@ -45,8 +46,8 @@ public class Contact : AbstractController
         return View(ViewNames.Contact.Index, model);
     }
 
-    [HttpPost(TenantRouteConstraint.Template + "/contact", Name = RouteNames.TenantContact)]
-    [HttpPost("/contact", Name = RouteNames.GeneralContact)]
+    [HttpPost("/" + TenantRouteConstraint.Template + "/[controller]", Name = RouteNames.TenantContact)]
+    [HttpPost("", Name = RouteNames.GeneralContact)]
     [ValidateAntiForgeryToken]
     public IActionResult Index(ContactViewModel model)
     {
@@ -68,7 +69,7 @@ public class Contact : AbstractController
                 new RouteValueDictionary { { TenantRouteConstraint.Key, _tenantContext.SiteContext.UrlSegmentValue } });
     }
 
-    [HttpGet(TenantRouteConstraint.Template + "/contact-confirmation", Name = RouteNames.TenantContactConfirmation)]
+    [HttpGet("/" + TenantRouteConstraint.Template + "/contact-confirmation", Name = RouteNames.TenantContactConfirmation)]
     [HttpGet("/contact-confirmation", Name = RouteNames.GeneralContactConfirmation)]
     public IActionResult ContactConfirmation()
     {

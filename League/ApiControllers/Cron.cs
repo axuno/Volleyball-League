@@ -19,6 +19,7 @@ namespace League.ApiControllers;
 /// <see cref="Routing"/> and <see cref="HttpContent"/> specific data.
 /// </remarks>
 [ApiController]
+[Route("api/[controller]")]
 public class Cron : AbstractController
 {
     private readonly ITenantContext _tenantContext;
@@ -58,7 +59,7 @@ public class Cron : AbstractController
     /// </summary>
     /// <param name="key">The authentication key for the service.</param>
     /// <returns></returns>
-    [HttpGet("/api/cron/automail/all/{key}")]
+    [HttpGet("automail/all/{key}")]
     public async Task<IActionResult> RunAllAutoMails(string key)
     {
         if(!IsAuthorized(key)) return Unauthorized("Incorrect authorization key");
@@ -98,10 +99,11 @@ public class Cron : AbstractController
     /// <summary>
     /// Queues all auto mail jobs for the given date.
     /// </summary>
+    /// <remarks>Note: If a tenant is used, it must be the first route key by definition.</remarks>
     /// <param name="key">The authentication key for the service.</param>
     /// <param name="referenceDate">The reference date which will be taken for queuing mails.</param>
     /// <returns></returns>
-    [HttpGet(TenantRouteConstraint.Template + "/api/cron/automail/{key}/{referenceDate?}")]
+    [HttpGet("/" + TenantRouteConstraint.Template + "/api/[controller]/automail/{key}/{referenceDate?}")]
     public IActionResult AutoMail(string key, string? referenceDate)
     {
         if(!IsAuthorized(key)) return Unauthorized("Incorrect authorization key");
@@ -116,24 +118,21 @@ public class Cron : AbstractController
         // Strip hours, minutes, seconds
         cronDateTime = new DateTime(cronDateTime.Year, cronDateTime.Month, cronDateTime.Day);
 
-        string message;
+        var formattedDate = cronDateTime.ToString("d", CultureInfo.InvariantCulture);
         if (forceDate || !HasAlreadyRun(cronDateTime))
         {
-            message = $"Queuing jobs for {cronDateTime.ToString("d", CultureInfo.InvariantCulture)}";
-#pragma warning disable CA2254 // Template should be a static expression
-            _logger.LogInformation(message);
-#pragma warning restore CA2254 // Template should be a static expression
+            _logger.LogInformation("Queuing jobs for {CronDateTime}", formattedDate);
             QueueJobs(cronDateTime);
             // success
-            return Ok(new QueuingResult {Success = true, ReferenceDate = cronDateTime, Message = message });
+            return Ok(new QueuingResult {Success = true, ReferenceDate = cronDateTime, Message = $"Queuing jobs for {formattedDate}" });
         }
 
         // failure
-        message = $"Job already executed for {(string.IsNullOrEmpty(referenceDate) ? "today" : cronDateTime.ToString("d", CultureInfo.InvariantCulture))}";
-#pragma warning disable CA2254 // Template should be a static expression            
-        _logger.LogInformation(message);
-#pragma warning restore CA2254 // Template should be a static expression
-        return Ok(new QueuingResult {Success = false, ReferenceDate = cronDateTime, Message = message });
+        formattedDate = (string.IsNullOrEmpty(referenceDate)
+            ? "today"
+            : cronDateTime.ToString("d", CultureInfo.InvariantCulture));
+        _logger.LogInformation("Job already executed for {LastJobExecution}", formattedDate);
+        return Ok(new QueuingResult {Success = false, ReferenceDate = cronDateTime, Message = $"Job already executed for {formattedDate}" });
     }
 
     /// <summary>
@@ -239,7 +238,7 @@ public class Cron : AbstractController
         }
         catch(Exception e)
         {
-            const string message = "Error after sending get request for url '{url}'";
+            const string message = "Error after sending get request for url '{Url}'";
             _logger.LogError(e, message, url);
             var now = DateTime.UtcNow;
                 
@@ -247,7 +246,7 @@ public class Cron : AbstractController
             {
                 Success = true, Url = url,
                 QueuingResult = new QueuingResult
-                    {Success = false, ReferenceDate = new DateTime(now.Year, now.Month, now.Day), Message = message},
+                    {Success = false, ReferenceDate = new DateTime(now.Year, now.Month, now.Day, 0,0,0, now.Kind), Message = $"Error after sending get request for url '{url}'" },
                 // depth of inner exceptions could lead to JSON serialization exception, so create a new one
                 Exception = new InvalidOperationException(e.Message){Source = e.Source} 
             };
