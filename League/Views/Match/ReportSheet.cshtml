@@ -2,7 +2,7 @@
 @using TournamentManager.DAL.EntityClasses
 @inject ITenantContext TenantContext
 @inject Axuno.Tools.DateAndTime.TimeZoneConverter TimeZoneConverter
-@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer localizer
+@inject IViewLocalizer localizer
 @model TournamentManager.DAL.TypedViewClasses.MatchReportSheetRow
 @{
     Layout = null;
@@ -40,16 +40,11 @@
 
     string Repeat(string s, int n)
     {
-        var result = string.Empty;
-        for (var i = 0; i < n; i++)
-        {
-            result += s;
-        }
-        return result;
+        return string.Concat(Enumerable.Repeat(s, n));
     }
 }
 <!DOCTYPE html>
-<html>
+<html lang="@(System.Threading.Thread.CurrentThread.CurrentUICulture.TwoLetterISOLanguageName)">
 <head>
     <meta name="viewport" content="width=device-width" />
     <title>@ViewData["Title"]</title>

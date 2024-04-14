@@ -4,7 +4,7 @@ namespace TournamentManager.RoundRobin;
 // on https://stackoverflow.com/questions/1293058/round-robin-tournament-algorithm-in-c-sharp
 /// <summary>
 /// This generic class calculates all matches for a group of participants.
-/// The round robin system is applied, i.e. all participants in the group play each other.
+/// The round-robin system is applied, i.e. all participants in the group play each other.
 /// Then the number of home/guest matches is analyzed and optimized.
 /// </summary>
 /// <typeparam name="TP">The <see langword="struct"/> participant type.</typeparam>
@@ -29,8 +29,9 @@ internal class RoundRobinSystem<TP> : IRoundRobinSystem<TP> where TP : struct, I
     /// <returns>A list of matches represented as <see cref="ValueTuple"/>s of turn and participants.</returns>
     public IList<(int Turn, TP Home, TP Guest)> GenerateMatches()
     {
+#pragma warning disable S125 // This is not commented out code
         /*
-        Round robin match calculations are as follows.
+        Round-robin match calculations are as follows.
         Example with 5 participants (which total in 10 matches):
                 +-   A -+    -+ -+
                 |       |     |  |
@@ -42,10 +43,11 @@ internal class RoundRobinSystem<TP> : IRoundRobinSystem<TP> where TP : struct, I
           |  |  |          |
           +- +- +-   E    -+
         */
+#pragma warning restore S125
 
         // Create a new list of participants that we can modify.
         var participants = new List<TP?>();
-        Participants.ToList().ForEach(p => participants.Add(p));
+        foreach (var participant in Participants) { participants.Add(participant);}
 
         // If the number of participants is odd, add a default value to make it even.
         if (participants.Count % 2 != 0)
