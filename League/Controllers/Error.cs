@@ -4,6 +4,7 @@ using TournamentManager.MultiTenancy;
 
 namespace League.Controllers;
 
+[Route("[controller]")]
 public class Error : AbstractController
 {
     private readonly ILogger _logger;
@@ -19,7 +20,7 @@ public class Error : AbstractController
         _notFoundLogger = loggerFactory.CreateLogger(nameof(League) + ".NotFound");
     }
 
-    [Route("error/{id?}")]
+    [Route("{id?}")]
     [HttpGet]
     public IActionResult Index(string? id)
     {
@@ -59,7 +60,7 @@ public class Error : AbstractController
         return View(Views.ViewNames.Error.Index, viewModel);
     }
 
-    [Route(TenantRouteConstraint.Template + "/error/access-denied")]
+    [Route("/" + TenantRouteConstraint.Template + "/[controller]/access-denied")]
     [HttpGet]
     public IActionResult AccessDenied(string returnUrl)
     {

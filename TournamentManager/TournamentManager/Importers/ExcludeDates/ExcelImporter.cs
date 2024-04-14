@@ -69,7 +69,8 @@ public class ExcelImporter : IExcludeDateImporter
             if (from > to) (from, to) = (to, from);
 
             // No time part means, the whole day should be excluded
-            if (from.TimeOfDay.TotalMilliseconds == 0 && to.TimeOfDay.TotalMilliseconds == 0)
+            const int millisecondsOneSecond = 1000;
+            if (from.TimeOfDay.TotalMilliseconds < millisecondsOneSecond && to.TimeOfDay.TotalMilliseconds < millisecondsOneSecond)
                 // Add the time span until the end of the day
                 to = to.AddDays(1).AddSeconds(-1);
 
