@@ -6,6 +6,7 @@
 @model League.Models.RankingViewModels.AllTimeTournamentModel
 @{
     ViewData["Title"] = Localizer["All-time Tournament Tables"].Value;
+    const string tableDescriptionId = "table-description-id"; // for aria-describedby of a table element
     var tenantUrlSegment = TenantContext.SiteContext.UrlSegmentValue;
     if (Model.RankingList.Count == 0)
     {
@@ -25,7 +26,7 @@
     var activeRoundId = rounds.First().RoundId;
 }
 <div class="mb-0 pb-1">
-    <h2 class="h2">@ViewData["Title"]</h2>
+    <h2 id="@tableDescriptionId" class="h2">@ViewData["Title"]</h2>
     <hr class="mb-4" />
     @{
         var tournamentCount = 0;
@@ -62,8 +63,9 @@
     <ul class="nav nav-tabs" id="round-tabs" role="tablist">
         @foreach (var r in rounds)
         {
+            var ariaSelected = r.RoundId == activeRoundId ? "true" : "false";
             <li class="nav-item">
-                <a class="nav-link py-1@{if (r.RoundId == activeRoundId){<text> active</text>}}" id="tab-link-@(r.RoundId)" data-bs-toggle="tab" href="#tab-@(r.RoundId)" role="tab" aria-selected="@(r.RoundId == activeRoundId ? "true" : "false")">@r.RoundDescription</a>
+                <a class="nav-link py-1@{if (r.RoundId == activeRoundId){<text> active</text>}}" id="tab-link-@(r.RoundId)" data-bs-toggle="tab" href="#tab-@(r.RoundId)" role="tab" aria-selected="@ariaSelected">@r.RoundDescription</a>
             </li>
         }
     </ul>
@@ -74,7 +76,7 @@
             <div class="tab-pane@{if (r.RoundId == activeRoundId) {<text> show active</text>}}" id="tab-@(r.RoundId)" role="tabpanel">
                 <div class="text-success">@r.RoundTypeDescription</div>
                 <div class="rounded table-responsive">
-                    <table class="table table-sm">
+                    <table class="table table-sm" aria-describedby="@tableDescriptionId">
                         <thead class="rounded">
                             <tr>
                                 <th class="rank">@Localizer["Rank"]</th>

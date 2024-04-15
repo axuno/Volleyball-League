@@ -8,6 +8,7 @@
 @model League.Models.RankingViewModels.RankingListModel
 @{
     ViewData["Title"] = Localizer["Table"].Value + " - " + Model.Tournament?.Name;
+    const string tableDescriptionId = "table-description-id"; // for aria-describedby of a table element
     if (Model.RankingList.Count == 0)
     {
         <div class="mb-0 pb-1">
@@ -39,14 +40,15 @@
     }
 }
 <div class="mb-0 pb-1">
-    <h2 class="h2">@ViewData["Title"]</h2>
+    <h2 id="@tableDescriptionId" class="h2">@ViewData["Title"]</h2>
     <hr class="mb-4" />
 
     <ul class="nav nav-tabs" id="round-tabs" role="tablist">
         @foreach (var r in rounds)
         {
+            var ariaSelected = r.RoundId == activeRoundId ? "true" : "false";
             <li class="nav-item">
-                <a class="nav-link py-1@{if (r.RoundId == activeRoundId){<text> active</text>}}" id="tab-link-@(r.RoundId)" data-bs-toggle="tab" href="#tab-@(r.RoundId)" role="tab" aria-selected="@(r.RoundId == activeRoundId ? "true" : "false")">@r.RoundDescription</a>
+                <a class="nav-link py-1@{if (r.RoundId == activeRoundId){<text> active</text>}}" id="tab-link-@(r.RoundId)" data-bs-toggle="tab" href="#tab-@(r.RoundId)" role="tab" aria-selected="@ariaSelected">@r.RoundDescription</a>
             </li>
         }
     </ul>
@@ -56,7 +58,7 @@
             <div class="tab-pane@{if (r.RoundId == activeRoundId) {<text> show active</text>}}" id="tab-@(r.RoundId)" role="tabpanel">
                 <div class="text-success">@r.RoundTypeDescription</div>
                 <div class="rounded table-responsive">
-                    <table class="table table-sm">
+                    <table class="table table-sm" aria-describedby="@tableDescriptionId">
                         <thead class="rounded">
                             <tr>
                                 <th class="rank">@Localizer["Rank"]</th>
@@ -87,7 +89,7 @@
                                 var rankingList = Model.RankingList.Where(m => m.RoundId == r.RoundId).OrderBy(m => m.Rank).ToList();
                                 for (var i = 0; i < rankingList.Count; i++)
                                 {
-                                    var bgColor = i < rankBgColors.Count ? ToColor(rankBgColors[i]) : Color.Gray;
+                                    var bgColor = i < rankBgColors.Length ? ToColor(rankBgColors[i]) : Color.Gray;
                                     var rankRow = rankingList[i];
                                     <tr>
                                         <td class="rank">@rankRow.Rank <span class="badge rounded-pill" style="font-size: .7rem; background-color: rgba(@bgColor.R, @bgColor.G, @bgColor.B, @bgColor.A)">&nbsp;</span></td>

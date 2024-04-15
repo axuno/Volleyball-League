@@ -8,9 +8,10 @@
 @{
     ViewData["Title"] = Localizer["Team Registration"].Value + " - " + Model.TournamentName;
     var tenantUrlSegment = TenantContext.SiteContext.UrlSegmentValue;
+    const string tableDescriptionId = "table-description-id"; // for aria-describedby of a table element
 }
 <div class="mb-0 pb-1">
-    <h2 class="h2">@ViewData["Title"]</h2>
+    <h2 id="@tableDescriptionId" class="h2">@ViewData["Title"]</h2>
     <hr class="mb-2" />
     @* Form with only 1 input field can be submitted with enter key. So we have to prevent default submit behavior and trigger a click on saveBtn *@
     <form asp-controller="@nameof(TeamApplication)" asp-action="@nameof(TeamApplication.SelectTeam)" asp-route-tenant="@tenantUrlSegment" method="post" role="form" novalidate>
@@ -20,7 +21,7 @@
                 <label asp-for="SelectedTeamId" class="d-block form-label"></label>
                 <div class="table-responsive-sm">
                     @* Wrapping this way make tables responsive and 100% width *@
-                    <table class="table table-sm table-light mb-0">
+                    <table class="table table-sm table-light mb-0" aria-describedby="@tableDescriptionId">
                         <thead class="rounded">
                             <tr>
                                 <th><i class="far fa-check-circle"></i></th>

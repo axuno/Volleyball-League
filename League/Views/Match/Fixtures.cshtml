@@ -14,6 +14,7 @@
 @{
     ViewData["Title"] = Localizer["Fixtures"].Value + " - " + Model.Tournament?.Name;
     var tenantUrlSegment = TenantContext.SiteContext.UrlSegmentValue;
+    const string tableDescriptionId = "table-description-id"; // for aria-describedby of a table element
     if (Model.PlannedMatches.Count == 0)
     {
         <div class="mb-0 pb-1">
@@ -59,14 +60,15 @@
     }
 }
 <div class="mb-0 pb-1">
-    <h2 class="h2">@ViewData["Title"]</h2>
+    <h2 id="@tableDescriptionId" class="h2">@ViewData["Title"]</h2>
     <hr class="mb-4" />
     <partial name="@League.Views.ViewNames.Match._FixtureMessagesPartial" model="@Model.FixtureMessage" />
     <ul class="nav nav-tabs" id="round-tabs" role="tablist">
         @foreach (var r in rounds)
         {
+            var ariaSelected = r.RoundId == activeRoundId ? "true" : "false";
             <li class="nav-item">
-                <a class="nav-link py-1@{if (r.RoundId == activeRoundId){<text> active</text>}}" id="tab-link-@(r.RoundId)" data-bs-toggle="tab" href="#tab-@(r.RoundId)" role="tab" aria-selected="@(r.RoundId == activeRoundId ? "true" : "false")">@r.RoundDescription</a>
+                <a class="nav-link py-1@{if (r.RoundId == activeRoundId){<text> active</text>}}" id="tab-link-@(r.RoundId)" data-bs-toggle="tab" href="#tab-@(r.RoundId)" role="tab" aria-selected="@ariaSelected">@r.RoundDescription</a>
             </li>
         }
     </ul>
@@ -80,7 +82,7 @@
                     <span class="badge bg-dark"></span>
                 </div>
                 <div class="rounded table-responsive" style="min-height: 13rem">@* min height assures dropdowns are not clipped *@
-                    <table class="table table-sm">
+                    <table class="table table-sm" aria-describedby="@tableDescriptionId">
                         <thead class="rounded">
                             <tr>
                                 <th class="opponents">@Localizer["Opponents"]</th>

@@ -6,6 +6,7 @@
 @model League.Models.RankingViewModels.AllTimeTeamModel
 @{
     ViewData["Title"] = Localizer["All-time Team Table"].Value;
+    const string tableDescriptionId = "table-description-id"; // for aria-describedby of a table element
     var tenantUrlSegment = TenantContext.SiteContext.UrlSegmentValue;
     if (Model.RankingList.Count == 0)
     {
@@ -23,7 +24,7 @@
     var teamRankRows = Model.RankingList.Where(rl => rl.TeamId == Model.SelectedTeamId).OrderByDescending(rl => Model.GetTournamentPeriod(rl.TournamentId).Start);
 }
 <div class="mb-0 pb-1">
-    <h2 class="h2">@ViewData["Title"]</h2>
+    <h2 id="@tableDescriptionId" class="h2">@ViewData["Title"]</h2>
     <hr class="mb-2" />
     <div class="mb-2">
         <h3 class="h3 d-inline-block">@selectedTeam.TeamName</h3>
@@ -38,7 +39,7 @@
 
     <div class="tab-content mt-1" id="ranking-table">
         <div class="rounded table-responsive">
-            <table class="table table-sm">
+            <table class="table table-sm" aria-describedby="@tableDescriptionId">
                 <thead class="rounded">
                     <tr>
                         <th class="tournament">
