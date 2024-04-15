@@ -48,7 +48,7 @@ public class VenueSelector : ViewComponent
         }
         catch (Exception e)
         {
-            _logger.LogCritical(e, $"Error creating view model for component '{nameof(VenueSelector)}'");
+            _logger.LogCritical(e, "Error creating view model for component '{Component}'", nameof(VenueSelector));
             return null;
         }
     }

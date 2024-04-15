@@ -7,6 +7,7 @@
 @{
     ViewData["Title"] = Localizer["Teams"].Value + " - " + Model.Tournament?.Name;
     var tenantUrlSegment = TenantContext.SiteContext.UrlSegmentValue;
+    const string tableDescriptionId = "table-description-id"; // for aria-describedby of a table element
     if (Model.RoundsWithTeams.Count == 0)
     {
         <div class="mb-0 pb-1">
@@ -22,18 +23,19 @@
     var activeRoundId = Model.ActiveRoundId ?? 0;
     var rounds = Model.RoundsWithTeams.GroupBy(t => t.RoundName, (key, m) => new { RoundName = key, RoundId = m.First().RoundId, RoundDescription = m.First().RoundDescription, RoundTypeName = m.First().RoundTypeName, RoundTypeDescription = m.First().RoundTypeDescription })
         .OrderBy(m => m.RoundName).ToList();
-    var useRecentRoundCookie = !(Model.ActiveRoundId.HasValue && rounds.Any(r => r.RoundId == Model.ActiveRoundId));
+    var useRecentRoundCookie = !(Model.ActiveRoundId.HasValue && rounds.Exists(r => r.RoundId == Model.ActiveRoundId));
     if (useRecentRoundCookie) { activeRoundId = rounds.FirstOrDefault()?.RoundId ?? 0; }
 }
 <div class="mb-0 pb-1">
-    <h2 class="h2">@ViewData["Title"]</h2>
+    <h2 id="@tableDescriptionId" class="h2">@ViewData["Title"]</h2>
     <hr class="mb-4" />
 
     <ul class="nav nav-tabs" id="round-tabs" role="tablist">
         @foreach (var r in rounds)
         {
+            var ariaSelected = r.RoundId == activeRoundId ? "true" : "false";
             <li class="nav-item">
-                <a class="nav-link py-1@{if (r.RoundId == activeRoundId){<text> active</text>}}" id="tab-link-@(r.RoundId)" data-bs-toggle="tab" href="#tab-@(r.RoundId)" role="tab" aria-selected="@(r.RoundId == activeRoundId ? "true" : "false")">@r.RoundDescription</a>
+                <a class="nav-link py-1@{if (r.RoundId == activeRoundId){<text> active</text>}}" id="tab-link-@(r.RoundId)" data-bs-toggle="tab" href="#tab-@(r.RoundId)" role="tab" aria-selected="@ariaSelected">@r.RoundDescription</a>
             </li>
         }
     </ul>
@@ -43,7 +45,7 @@
             <div class="tab-pane@{if (r.RoundId == activeRoundId){<text> show active</text>}}" id="tab-@(r.RoundId)" role="tabpanel">
                 <div class="text-success">@r.RoundTypeDescription</div>
                 <div class="rounded table-responsive">
-                    <table class="table table-sm">
+                    <table class="table table-sm" aria-describedby="@tableDescriptionId">
                         <thead class="rounded">
                             <tr>
                                 <th>@Localizer["Team"]</th>

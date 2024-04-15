@@ -78,7 +78,7 @@ public class RankingChart
     /// Gets the list of colors used for the lines in the chart from rank 1 (first in the list) to rank 10 (last) as ARGB integer.
     /// Only 20 colors are defined, all others will be rendered in gray.
     /// </summary>
-    public static readonly List<uint> LineColors = new(new[]
+    public static readonly uint[] LineColors = 
     {
         // 10 best
         OxyColors.Red.ToUint(), OxyColors.Green.ToUint(), OxyColors.Orange.ToUint(), 
@@ -90,7 +90,7 @@ public class RankingChart
         OxyColors.DarkCyan.ToUint(), OxyColors.DarkOrchid.ToUint(), OxyColors.LightPink.ToUint(), 
         OxyColors.Goldenrod.ToUint(), OxyColors.HotPink.ToUint(), OxyColors.Purple.ToUint(), 
         OxyColors.SlateGray.ToUint()
-    });
+    };
 
     /// <summary>
     /// Gets the settings for creating the chart.
@@ -172,7 +172,7 @@ public class RankingChart
             var lineSeries = new LineSeries
             {
                 RenderInLegend = Settings.ShowLegend, 
-                Color = lastRank.Number < LineColors.Count ? OxyColor.FromUInt32(LineColors[lastRank.Number - 1]) : OxyColors.Gray,
+                Color = lastRank.Number < LineColors.Length ? OxyColor.FromUInt32(LineColors[lastRank.Number - 1]) : OxyColors.Gray,
                 LineStyle = LineStyle.Solid,
                 StrokeThickness = 3.0D
             };

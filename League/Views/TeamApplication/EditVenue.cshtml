@@ -7,10 +7,11 @@
 @inject ITenantContext TenantContext
 @model League.Models.VenueViewModels.VenueEditModel
 @{  ViewData["Title"] = Localizer["Team Registration"].Value + " - " + ViewData["TournamentName"];
+    const string tableDescriptionId = "table-description-id"; // for aria-describedby of a table element
     var tenantUrlSegment = TenantContext.SiteContext.UrlSegmentValue;
 }
 <div class="mb-0 pb-1">
-    <h2 class="h2">@ViewData["Title"]</h2>
+    <h2 id="@tableDescriptionId" class="h2">@ViewData["Title"]</h2>
     <hr />
     @* Form with only 1 input field can be submitted with enter key. So we have to prevent default submit behavior and trigger a click on saveBtn *@
     <form asp-controller="@nameof(TeamApplication)" asp-action="@nameof(TeamApplication.EditVenue)" asp-route-tenant="@tenantUrlSegment" method="post" role="form" novalidate>
@@ -69,7 +70,7 @@
     <modal-body>
         <div class="table-responsive">
             @* Wrapping this way makes tables responsive and 100% width *@
-        <table id="venue-list" class="table table-sm table-light">
+            <table id="venue-list" class="table table-sm table-light" aria-describedby="@tableDescriptionId">
             <thead class="rounded">
                 <tr>
                     <th>@Localizer["Name"]</th>

@@ -155,7 +155,7 @@ public class TournamentCreator
         }
         catch (Exception e)
         {
-            _logger.LogCritical(e, "Error cloning rounds in transaction: New TournamentId={tournamentId}", toTournamentId);
+            _logger.LogCritical(e, "Error cloning rounds in transaction: New TournamentId={TournamentId}", toTournamentId);
 
             if (da.IsTransactionInProgress)
                 da.Rollback(transactionName);
@@ -207,7 +207,7 @@ public class TournamentCreator
         }
         catch (Exception e)
         {
-            _logger.LogCritical(e, "Error updating round legs in transaction: TournamentId={tournamentId}", tournamentId);
+            _logger.LogCritical(e, "Error updating round legs in transaction: TournamentId={TournamentId}", tournamentId);
 
             if (da.IsTransactionInProgress)
                 da.Rollback();
