@@ -1,55 +1,47 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
-
-    <PropertyGroup>
-        <Product>League.Demo</Product>
-        <TargetFramework>net6.0</TargetFramework>
-        <NeutralLanguage>en</NeutralLanguage>
-        <!-- With dotnet, add parameter: -p:SatelliteResourceLanguages="""en;de""" -->
-        <SatelliteResourceLanguages>en;de</SatelliteResourceLanguages>
-        <ImplicitUsings>enable</ImplicitUsings>
-    </PropertyGroup>
-
-    <ItemGroup>
-        <InternalsVisibleTo Include="League.Tests" />
-    </ItemGroup>
-
-    <ItemGroup>
-        <ProjectReference Include="..\League\League.csproj" />
-    </ItemGroup>
-
-    <ItemGroup>
-        <Folder Include="logs\" />
-        <Folder Include="wwwroot\" />
-    </ItemGroup>
-
-    <ItemGroup>
-        <Compile Update="Views\ViewNames.cs">
-            <DependentUpon>ViewNames.tt</DependentUpon>
-            <DesignTime>True</DesignTime>
-            <AutoGen>True</AutoGen>
-        </Compile>
-    </ItemGroup>
-
-    <ItemGroup>
-        <Content Update="Views\Home\Privacy.cshtml">
-            <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-            <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-        </Content>
-        <Content Update="Views\Shared\_Layout.cshtml">
-            <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-            <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-        </Content>
-    </ItemGroup>
-
-    <ItemGroup>
-        <None Update="Views\ViewNames.tt">
-            <LastGenOutput>ViewNames.cs</LastGenOutput>
-            <Generator>TextTemplatingFileGenerator</Generator>
-        </None>
-    </ItemGroup>
-
-    <ItemGroup>
-        <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
-    </ItemGroup>
-
+  <PropertyGroup>
+    <Product>League.Demo</Product>
+    <TargetFramework>net8.0</TargetFramework>
+    <NeutralLanguage>en</NeutralLanguage>
+    <!-- With dotnet, add parameter: -p:SatelliteResourceLanguages="""en;de""" -->
+    <SatelliteResourceLanguages>en;de</SatelliteResourceLanguages>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <NoWarn>$(NoWarn);NETSDK1206</NoWarn>
+  </PropertyGroup>
+  <ItemGroup>
+    <InternalsVisibleTo Include="League.Tests" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\League\League.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="logs\" />
+    <Folder Include="wwwroot\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Update="Views\ViewNames.cs">
+      <DependentUpon>ViewNames.tt</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Update="Views\Home\Privacy.cshtml">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Update="Views\Shared\_Layout.cshtml">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <None Update="Views\ViewNames.tt">
+      <LastGenOutput>ViewNames.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
+  </ItemGroup>
 </Project>

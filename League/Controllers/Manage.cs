@@ -76,7 +76,7 @@ public class Manage : AbstractController
             ManageMessage = TempData.Get<ManageMessage>(nameof(ManageMessage))
         };
         // Display phone numbers in the format of the current region
-        model.ApplicationUser.PhoneNumber = _phoneNumberService.Format(model.ApplicationUser.PhoneNumber,
+        model.ApplicationUser.PhoneNumber = _phoneNumberService.Format(model.ApplicationUser.PhoneNumber ?? string.Empty,
             _regionInfo.TwoLetterISORegionName);
         model.ApplicationUser.PhoneNumber2 = _phoneNumberService.Format(model.ApplicationUser.PhoneNumber2,
             _regionInfo.TwoLetterISORegionName);
@@ -195,7 +195,7 @@ public class Manage : AbstractController
         }
 
         // ChangeEmailAsync also sets EmailConfirmed = true
-        var result = await _userManager.ChangeEmailAsync(user, e.Base64UrlDecode(), code.Base64UrlDecode());
+        var result = await _userManager.ChangeEmailAsync(user, e.Base64UrlDecode()!, code.Base64UrlDecode()!);
         if (result != IdentityResult.Success)
         {
             TempData.Put<ManageMessage>(nameof(ManageMessage), new ManageMessage { AlertType = SiteAlertTagHelper.AlertType.Danger, MessageId = MessageId.ChangeEmailFailure });
@@ -287,7 +287,7 @@ public class Manage : AbstractController
             return PartialView(ViewNames.Manage._ChangePasswordModalPartial, model);
         }
         var user = await GetCurrentUserAsync();
-        if (user != null)
+        if (user != null && model is { CurrentPassword: not null, NewPassword: not null })
         {
             if (!await _userManager.CheckPasswordAsync(user, model.CurrentPassword))
             {
@@ -328,7 +328,7 @@ public class Manage : AbstractController
         }
 
         var user = await GetCurrentUserAsync();
-        if (user != null)
+        if (user != null && model.NewPassword != null)
         {
             var result = await _userManager.AddPasswordAsync(user, model.NewPassword);
             if (result.Succeeded)

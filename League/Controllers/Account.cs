@@ -138,7 +138,7 @@ public class Account : AbstractController
             return View(model);
         }
 
-        var result = await _signInManager.PasswordSignInAsync(user.UserName, model.Password, model.RememberMe, lockoutOnFailure: true);
+        var result = await _signInManager.PasswordSignInAsync(user.UserName ?? string.Empty, model.Password, model.RememberMe, lockoutOnFailure: true);
 
         if (result.Succeeded)
         {
@@ -194,7 +194,7 @@ public class Account : AbstractController
             ModelState.AddModelError(nameof(CreateAccountViewModel.Captcha), _localizer["Math task result was incorrect"].Value);
         }
 
-        if (await _signInManager.UserManager.FindByEmailAsync(model.Email) != null)
+        if (model.Email == null || await _signInManager.UserManager.FindByEmailAsync(model.Email) != null)
         {
             ModelState.AddModelError(nameof(CreateAccountViewModel.Email), _localizer["This email is not available for a new account"].Value);
         }
@@ -269,7 +269,7 @@ public class Account : AbstractController
             PhoneNumberConfirmed = false
         };
             
-        var result = await _signInManager.UserManager.CreateAsync(user, model.Password);
+        var result = await _signInManager.UserManager.CreateAsync(user, model.Password!);
 
         if (result.Succeeded)
         {
@@ -424,10 +424,9 @@ public class Account : AbstractController
         if (model.EmailOrUsername != null && model.EmailOrUsername.Contains('@'))
         {
             user = await _signInManager.UserManager.FindByEmailAsync(model.EmailOrUsername);
+            user ??= await _signInManager.UserManager.FindByNameAsync(model.EmailOrUsername);
         }
-
-        user ??= await _signInManager.UserManager.FindByNameAsync(model.EmailOrUsername);
-
+        
         if (user == null || (!await _signInManager.UserManager.IsEmailConfirmedAsync(user) && _signInManager.UserManager.Options.SignIn.RequireConfirmedEmail))
         {
             _logger.LogInformation("No account found for '{User}'.", model.EmailOrUsername);
@@ -472,10 +471,9 @@ public class Account : AbstractController
         if (model.EmailOrUsername != null && model.EmailOrUsername.Contains('@'))
         {
             user = await _signInManager.UserManager.FindByEmailAsync(model.EmailOrUsername);
+            user ??= await _signInManager.UserManager.FindByNameAsync(model.EmailOrUsername);
         }
-
-        user ??= await _signInManager.UserManager.FindByNameAsync(model.EmailOrUsername);
-
+        
         if (user == null)
         {
             _logger.LogInformation("No account found for '{User}'.", model.EmailOrUsername);
@@ -483,7 +481,7 @@ public class Account : AbstractController
             await Task.Delay(5000);
             return View();
         }
-        var result = await _signInManager.UserManager.ResetPasswordAsync(user, model.Code.Base64UrlDecode(), model.Password);
+        var result = await _signInManager.UserManager.ResetPasswordAsync(user, model.Code.Base64UrlDecode() ?? string.Empty, model.Password ?? string.Empty);
         if (result.Succeeded)
         {
             return Redirect(TenantLink.Action(nameof(Message), nameof(Account), new { messageTypeText = MessageType.PasswordChanged })!);
@@ -546,7 +544,8 @@ public class Account : AbstractController
     {
         if (User.Identity?.IsAuthenticated ?? false)
         {
-            return await _signInManager.UserManager.FindByNameAsync(User.Identity.Name);
+            if (User.Identity.Name != null)
+                return await _signInManager.UserManager.FindByNameAsync(User.Identity.Name);
         }
 
         var allExternalEmails = info.Principal.FindAll(ClaimTypes.Email).Select(ct => ct.Value);
@@ -574,7 +573,7 @@ public class Account : AbstractController
     {
         return new ExternalSignConfirmationViewModel
         {
-            Email = principal.FindFirstValue(ClaimTypes.Email),
+            Email = principal.FindFirstValue(ClaimTypes.Email) ?? string.Empty,
             Gender = string.Empty,
             FirstName = principal.FindFirstValue(ClaimTypes.GivenName) ?? string.Empty,
             LastName = principal.FindFirstValue(ClaimTypes.Surname) ?? string.Empty
@@ -639,6 +638,12 @@ public class Account : AbstractController
     /// <param name="purpose">The <see cref="EmailPurpose"/> of the email.</param>
     private async Task SendCodeByEmail(ApplicationUser user, EmailPurpose purpose)
     {
+        if (user.Email is null)
+        {
+            _logger.LogCritical("Unexpected missing Email for user {user}", user);
+            return;
+        }
+
         string code;
         var deadline = DateTime.UtcNow.Add(_dataProtectionTokenProviderOptions.Value.TokenLifespan);
         // round down to full hours

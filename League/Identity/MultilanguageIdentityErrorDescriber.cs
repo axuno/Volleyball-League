@@ -63,21 +63,21 @@ public class MultiLanguageIdentityErrorDescriber : IdentityErrorDescriber
         };
     }
 
-    public override IdentityError InvalidUserName(string userName)
+    public override IdentityError InvalidUserName(string? userName)
     {
         return new IdentityError
         {
             Code = nameof(InvalidUserName),
-            Description = _localizer[nameof(InvalidUserName), userName]
+            Description = _localizer[nameof(InvalidUserName), userName ?? string.Empty]
         };
     }
 
-    public override IdentityError InvalidEmail(string email)
+    public override IdentityError InvalidEmail(string? email)
     {
         return new IdentityError
         {
             Code = nameof(InvalidEmail),
-            Description = _localizer[nameof(InvalidEmail), email]
+            Description = _localizer[nameof(InvalidEmail), email ?? string.Empty]
         };
     }
 
@@ -99,12 +99,12 @@ public class MultiLanguageIdentityErrorDescriber : IdentityErrorDescriber
         };
     }
 
-    public override IdentityError InvalidRoleName(string role)
+    public override IdentityError InvalidRoleName(string? role)
     {
         return new IdentityError
         {
             Code = nameof(InvalidRoleName),
-            Description = _localizer[nameof(InvalidRoleName), role]
+            Description = _localizer[nameof(InvalidRoleName), role ?? string.Empty]
         };
     }
 

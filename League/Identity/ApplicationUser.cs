@@ -5,7 +5,7 @@ namespace League.Identity;
 /// <summary>Represents a custom user in the AspNetCore Identity system</summary>
 public class ApplicationUser : IdentityUser<long>, IIdentity
 {
-    public override string UserName
+    public override string? UserName
     {
         get
         {
@@ -14,7 +14,7 @@ public class ApplicationUser : IdentityUser<long>, IIdentity
 
         set
         {
-            Name = value;
+            Name = value ?? string.Empty;
         }
     }
 

@@ -18,8 +18,8 @@ public class TenantStoreTests
     public TenantStoreTests()
     {
         // Configure connection strings per tenant
-        var connStr = new List<KeyValuePair<string, string>>();
-        _tenantNames.ForEach(t => connStr.Add(new KeyValuePair<string, string>($"{ConnectionStrings}:{ConnKeyPrefix}{t}", $"{ConnValuePrefix}{t}")));
+        var connStr = new List<KeyValuePair<string, string?>>();
+        _tenantNames.ForEach(t => connStr.Add(new KeyValuePair<string, string?>($"{ConnectionStrings}:{ConnKeyPrefix}{t}", $"{ConnValuePrefix}{t}")));
         // Build configuration
         var cb = new ConfigurationBuilder();
         cb.AddInMemoryCollection(connStr);

@@ -25,9 +25,9 @@ public class Captcha : AbstractController
 
         // Change the response headers to output an un-cached image.
         HttpContext.Response.Clear();
-        HttpContext.Response.Headers.Add("Expires", DateTime.UtcNow.Date.AddDays(-1).ToString("R"));
-        HttpContext.Response.Headers.Add("Cache-Control", "no-store, no-cache, must-revalidate");
-        HttpContext.Response.Headers.Add("Pragma", "no-cache");
+        HttpContext.Response.Headers.Append("Expires", DateTime.UtcNow.Date.AddDays(-1).ToString("R"));
+        HttpContext.Response.Headers.Append("Cache-Control", "no-store, no-cache, must-revalidate");
+        HttpContext.Response.Headers.Append("Pragma", "no-cache");
 
         HttpContext.Response.ContentType = "image/svg+xml";
         return Task.FromResult(Content(ci.Image));

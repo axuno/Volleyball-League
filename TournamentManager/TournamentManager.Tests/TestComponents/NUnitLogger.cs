@@ -97,7 +97,7 @@ public class NUnitLogger : ILogger, IDisposable
     /// <typeparam name="TState"></typeparam>
     /// <param name="state"></param>
     /// <returns>Returns the instance of this logger.</returns>
-    public IDisposable BeginScope<TState>(TState state)
+    public IDisposable BeginScope<TState>(TState state) where TState : notnull
     {
         return this;
     }
