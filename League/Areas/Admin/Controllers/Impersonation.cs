@@ -79,7 +79,10 @@ public class Impersonation : AbstractController
         if (originalUserId != null)
         {
             var appUser = await _signInManager.UserManager.FindByIdAsync(originalUserId);
-            await _signInManager.SignInAsync(appUser, true);
+            if (appUser != null)
+                await _signInManager.SignInAsync(appUser, true);
+            else
+                await _signInManager.SignOutAsync();
         }
         else
         {

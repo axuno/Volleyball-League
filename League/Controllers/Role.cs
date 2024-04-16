@@ -146,7 +146,7 @@ public class Role : AbstractController
                 new { model.ReturnUrl }));
         }
 
-        var newTeamMember = await _signInManager.UserManager.FindByEmailAsync(model.UserEmail);
+        var newTeamMember = model.UserEmail != null ? await _signInManager.UserManager.FindByEmailAsync(model.UserEmail) : null;
         if (newTeamMember != null)
         {
             await _signInManager.UserManager.AddClaimAsync(newTeamMember, new Claim(model.ClaimType, model.TeamId.ToString()));

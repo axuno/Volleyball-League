@@ -767,6 +767,11 @@ public class TeamApplication : AbstractController
         }
 
         // make sure that any changes are immediately reflected in the user's application cookie
-        await _signInManager.RefreshSignInAsync(await _signInManager.UserManager.FindByIdAsync(User.FindFirstValue(ClaimTypes.NameIdentifier)));
+        var userName = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var appUser = userName != null ? await _signInManager.UserManager.FindByIdAsync(userName) : null;
+        if (appUser != null)
+            await _signInManager.RefreshSignInAsync(appUser);
+        else
+            await _signInManager.SignOutAsync();
     }
 }

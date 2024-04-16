@@ -148,7 +148,7 @@ public class UserStore : IUserStore<ApplicationUser>, IUserEmailStore<Applicatio
     {
         cancellationToken.ThrowIfCancellationRequested();
         if (string.IsNullOrEmpty(normalizedUserName))
-            throw new ArgumentNullException(nameof(normalizedUserName), "Null or empty");
+            throw new ArgumentNullException(nameof(normalizedUserName), @"Null or empty");
 
         var userEntity = await _appDb.UserRepository.GetLoginUserByUserNameAsync(normalizedUserName, cancellationToken);
         if (userEntity == null) return null;
@@ -158,7 +158,7 @@ public class UserStore : IUserStore<ApplicationUser>, IUserEmailStore<Applicatio
         return user;
     }
 #nullable enable annotations
-    public Task<string> GetNormalizedUserNameAsync(ApplicationUser user, CancellationToken cancellationToken)
+    public Task<string?> GetNormalizedUserNameAsync(ApplicationUser user, CancellationToken cancellationToken)
     {
         if (user == null)
             throw new ArgumentNullException(nameof(user));
@@ -174,7 +174,7 @@ public class UserStore : IUserStore<ApplicationUser>, IUserEmailStore<Applicatio
         return Task.FromResult(user.Id.ToString());
     }
 
-    public Task<string> GetUserNameAsync(ApplicationUser user, CancellationToken cancellationToken)
+    public Task<string?> GetUserNameAsync(ApplicationUser user, CancellationToken cancellationToken)
     {
         if (user == null)
             throw new ArgumentNullException(nameof(user));
@@ -182,26 +182,26 @@ public class UserStore : IUserStore<ApplicationUser>, IUserEmailStore<Applicatio
         return Task.FromResult(user.UserName);
     }
 
-    public Task SetNormalizedUserNameAsync(ApplicationUser user, string normalizedName,
+    public Task SetNormalizedUserNameAsync(ApplicationUser user, string? normalizedName,
         CancellationToken cancellationToken)
     {
         if (user == null)
             throw new ArgumentNullException(nameof(user));
 
         if (string.IsNullOrEmpty(normalizedName))
-            throw new ArgumentNullException(nameof(normalizedName), "Null or empty");
+            throw new ArgumentNullException(nameof(normalizedName), @"Null or empty");
 
         user.NormalizedUserName = _keyNormalizer.NormalizeName(normalizedName);
         return Task.CompletedTask;
     }
 
-    public Task SetUserNameAsync(ApplicationUser user, string userName, CancellationToken cancellationToken)
+    public Task SetUserNameAsync(ApplicationUser user, string? userName, CancellationToken cancellationToken)
     {
         if (user == null)
             throw new ArgumentNullException(nameof(user));
 
         if (string.IsNullOrEmpty(userName))
-            throw new ArgumentNullException(nameof(userName), "Null or empty");
+            throw new ArgumentNullException(nameof(userName), @"Null or empty");
 
         user.UserName = userName;
         SetNormalizedUserNameAsync(user, userName, cancellationToken);
@@ -251,13 +251,13 @@ public class UserStore : IUserStore<ApplicationUser>, IUserEmailStore<Applicatio
     #endregion
 
     #region ** IUserEmailStore **
-    public Task SetEmailAsync(ApplicationUser user, string email, CancellationToken cancellationToken)
+    public Task SetEmailAsync(ApplicationUser user, string? email, CancellationToken cancellationToken)
     {
         if (user == null)
             throw new ArgumentNullException(nameof(user));
 
         if (string.IsNullOrEmpty(email))
-            throw new ArgumentNullException(nameof(email), "Null or empty");
+            throw new ArgumentNullException(nameof(email), @"Null or empty");
 
         user.Email = email;
         SetNormalizedEmailAsync(user, email, cancellationToken);
@@ -265,7 +265,7 @@ public class UserStore : IUserStore<ApplicationUser>, IUserEmailStore<Applicatio
         return Task.CompletedTask;
     }
 
-    public Task<string> GetEmailAsync(ApplicationUser user, CancellationToken cancellationToken)
+    public Task<string?> GetEmailAsync(ApplicationUser user, CancellationToken cancellationToken)
     {
         if (user == null)
             throw new ArgumentNullException(nameof(user));
@@ -299,7 +299,7 @@ public class UserStore : IUserStore<ApplicationUser>, IUserEmailStore<Applicatio
         cancellationToken.ThrowIfCancellationRequested();
 
         if (string.IsNullOrEmpty(normalizedEmail))
-            throw new ArgumentNullException(nameof(normalizedEmail), "Null or empty");
+            throw new ArgumentNullException(nameof(normalizedEmail), @"Null or empty");
 
         var userEntity = await _appDb.UserRepository.GetLoginUserByEmailAsync(normalizedEmail, cancellationToken);
         if (userEntity == null) return null;
@@ -309,7 +309,7 @@ public class UserStore : IUserStore<ApplicationUser>, IUserEmailStore<Applicatio
         return user;
     }
 #nullable enable annotations
-    public Task<string> GetNormalizedEmailAsync(ApplicationUser user, CancellationToken cancellationToken)
+    public Task<string?> GetNormalizedEmailAsync(ApplicationUser user, CancellationToken cancellationToken)
     {
         if (user == null)
             throw new ArgumentNullException(nameof(user));
@@ -317,14 +317,14 @@ public class UserStore : IUserStore<ApplicationUser>, IUserEmailStore<Applicatio
         return Task.FromResult(user.NormalizedEmail);
     }
 
-    public Task SetNormalizedEmailAsync(ApplicationUser user, string normalizedEmail,
+    public Task SetNormalizedEmailAsync(ApplicationUser user, string? normalizedEmail,
         CancellationToken cancellationToken)
     {
         if (user == null)
             throw new ArgumentNullException(nameof(user));
 
         if (string.IsNullOrEmpty(normalizedEmail))
-            throw new ArgumentNullException(nameof(normalizedEmail), "Null or empty");
+            throw new ArgumentNullException(nameof(normalizedEmail), @"Null or empty");
 
         user.NormalizedEmail = _keyNormalizer.NormalizeEmail(normalizedEmail);
         return Task.CompletedTask;
@@ -332,7 +332,7 @@ public class UserStore : IUserStore<ApplicationUser>, IUserEmailStore<Applicatio
     #endregion
 
     #region ** IUserPhoneNumberStore **
-    public Task SetPhoneNumberAsync(ApplicationUser user, string phoneNumber, CancellationToken cancellationToken)
+    public Task SetPhoneNumberAsync(ApplicationUser user, string? phoneNumber, CancellationToken cancellationToken)
     {
         if (user == null)
             throw new ArgumentNullException(nameof(user));
@@ -342,7 +342,7 @@ public class UserStore : IUserStore<ApplicationUser>, IUserEmailStore<Applicatio
         return Task.CompletedTask;
     }
 
-    public Task<string> GetPhoneNumberAsync(ApplicationUser user, CancellationToken cancellationToken)
+    public Task<string?> GetPhoneNumberAsync(ApplicationUser user, CancellationToken cancellationToken)
     {
         if (user == null)
             throw new ArgumentNullException(nameof(user));
@@ -376,7 +376,7 @@ public class UserStore : IUserStore<ApplicationUser>, IUserEmailStore<Applicatio
     #endregion
 
     #region ** IUserPasswordStore **
-    public Task SetPasswordHashAsync(ApplicationUser user, string passwordHash, CancellationToken cancellationToken)
+    public Task SetPasswordHashAsync(ApplicationUser user, string? passwordHash, CancellationToken cancellationToken)
     {
         if (user == null)
             throw new ArgumentNullException(nameof(user));
@@ -410,7 +410,7 @@ public class UserStore : IUserStore<ApplicationUser>, IUserEmailStore<Applicatio
             throw new ArgumentNullException(nameof(user));
 
         if (string.IsNullOrEmpty(roleName))
-            throw new ArgumentNullException(nameof(roleName), "Null or empty");
+            throw new ArgumentNullException(nameof(roleName), @"Null or empty");
 
         if (Constants.RoleName.GetTeamRelatedRoles().Contains(roleName))
         {
@@ -445,7 +445,7 @@ public class UserStore : IUserStore<ApplicationUser>, IUserEmailStore<Applicatio
             throw new ArgumentNullException(nameof(user));
 
         if (string.IsNullOrEmpty(roleName))
-            throw new ArgumentNullException(nameof(roleName), "Null or empty");
+            throw new ArgumentNullException(nameof(roleName), @"Null or empty");
 
         if (Constants.RoleName.GetTeamRelatedRoles().Contains(roleName))
         {
@@ -508,7 +508,7 @@ public class UserStore : IUserStore<ApplicationUser>, IUserEmailStore<Applicatio
             throw new ArgumentNullException(nameof(user));
 
         if (string.IsNullOrEmpty(roleName))
-            throw new ArgumentNullException(nameof(roleName), "Null or empty");
+            throw new ArgumentNullException(nameof(roleName), @"Null or empty");
 
         var roles = await GetRolesAsync(user, cancellationToken);
         return roles.Any(r => r.Equals(roleName, StringComparison.InvariantCultureIgnoreCase));
@@ -827,12 +827,11 @@ public class UserStore : IUserStore<ApplicationUser>, IUserEmailStore<Applicatio
         return Task.CompletedTask;
     }
 
-    public Task<string> GetSecurityStampAsync(ApplicationUser user, CancellationToken cancellationToken)
+    public Task<string?> GetSecurityStampAsync(ApplicationUser user, CancellationToken cancellationToken)
     {
-        if (user == null)
-            throw new ArgumentNullException(nameof(user));
+        ArgumentNullException.ThrowIfNull(user);
 
-        return Task.FromResult<string>(user.SecurityStamp);
+        return Task.FromResult(user.SecurityStamp);
     }
     #endregion
 
@@ -864,10 +863,10 @@ public class UserStore : IUserStore<ApplicationUser>, IUserEmailStore<Applicatio
             throw new ArgumentNullException(nameof(user));
 
         if (string.IsNullOrEmpty(loginProvider))
-            throw new ArgumentNullException(nameof(loginProvider), "Null or empty");
+            throw new ArgumentNullException(nameof(loginProvider), @"Null or empty");
 
         if (string.IsNullOrEmpty(providerKey))
-            throw new ArgumentNullException(nameof(providerKey), "Null or empty");
+            throw new ArgumentNullException(nameof(providerKey), @"Null or empty");
 
         try
         {
@@ -900,10 +899,10 @@ public class UserStore : IUserStore<ApplicationUser>, IUserEmailStore<Applicatio
     public async Task<ApplicationUser> FindByLoginAsync(string loginProvider, string providerKey, CancellationToken cancellationToken)
     {
         if (string.IsNullOrEmpty(loginProvider))
-            throw new ArgumentNullException(nameof(loginProvider), "Null or empty");
+            throw new ArgumentNullException(nameof(loginProvider), @"Null or empty");
 
         if (string.IsNullOrEmpty(providerKey))
-            throw new ArgumentNullException(nameof(providerKey), "Null or empty");
+            throw new ArgumentNullException(nameof(providerKey), @"Null or empty");
 
         var userEntity = await _appDb.UserLoginRepository.GetUserByLoginAsync(loginProvider, providerKey, cancellationToken);
         if (userEntity == null) return null;
@@ -922,29 +921,29 @@ public class UserStore : IUserStore<ApplicationUser>, IUserEmailStore<Applicatio
             throw new ArgumentNullException(nameof(user));
 
         if (string.IsNullOrEmpty(loginProvider))
-            throw new ArgumentNullException(nameof(loginProvider), "Null or empty");
+            throw new ArgumentNullException(nameof(loginProvider), @"Null or empty");
 
         if (string.IsNullOrEmpty(name))
-            throw new ArgumentNullException(nameof(name), "Null or empty");
+            throw new ArgumentNullException(nameof(name), @"Null or empty");
 
         var userTokenEntity = await _appDb.UserTokenRepository.GetTokenAsync(user.Id, loginProvider, name, cancellationToken);
         return userTokenEntity?.Value;
     }
 
-    public async Task SetTokenAsync(ApplicationUser user, string loginProvider, string name, string value,
+    public async Task SetTokenAsync(ApplicationUser user, string loginProvider, string name, string? value,
         CancellationToken cancellationToken)
     {
         if (user == null)
             throw new ArgumentNullException(nameof(user));
 
         if (string.IsNullOrEmpty(loginProvider))
-            throw new ArgumentNullException(nameof(loginProvider), "Null or empty");
+            throw new ArgumentNullException(nameof(loginProvider), @"Null or empty");
 
         if (string.IsNullOrEmpty(name))
-            throw new ArgumentNullException(nameof(name), "Null or empty");
+            throw new ArgumentNullException(nameof(name), @"Null or empty");
 
         if (string.IsNullOrEmpty(value))
-            throw new ArgumentNullException(nameof(value), "Null or empty");
+            throw new ArgumentNullException(nameof(value), @"Null or empty");
 
         try
         {
@@ -970,10 +969,10 @@ public class UserStore : IUserStore<ApplicationUser>, IUserEmailStore<Applicatio
             throw new ArgumentNullException(nameof(user));
 
         if (string.IsNullOrEmpty(loginProvider))
-            throw new ArgumentNullException(nameof(loginProvider), "Null or empty");
+            throw new ArgumentNullException(nameof(loginProvider), @"Null or empty");
 
         if (string.IsNullOrEmpty(name))
-            throw new ArgumentNullException(nameof(name), "Null or empty");
+            throw new ArgumentNullException(nameof(name), @"Null or empty");
 
         var msg = $"AuthenticationToken with name '{name}' for provider '{loginProvider}' and user id '{user.Id}' could not be removed";
         try
