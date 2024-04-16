@@ -542,10 +542,9 @@ public class Account : AbstractController
     }
     private async Task<ApplicationUser?> FindExistingUserAsync(ExternalLoginInfo info)
     {
-        if (User.Identity?.IsAuthenticated ?? false)
+        if ((User.Identity?.IsAuthenticated ?? false) && User.Identity.Name != null)
         {
-            if (User.Identity.Name != null)
-                return await _signInManager.UserManager.FindByNameAsync(User.Identity.Name);
+            return await _signInManager.UserManager.FindByNameAsync(User.Identity.Name);
         }
 
         var allExternalEmails = info.Principal.FindAll(ClaimTypes.Email).Select(ct => ct.Value);
@@ -640,7 +639,7 @@ public class Account : AbstractController
     {
         if (user.Email is null)
         {
-            _logger.LogCritical("Unexpected missing Email for user {user}", user);
+            _logger.LogCritical("Unexpected missing Email for user {User}", user);
             return;
         }
 
