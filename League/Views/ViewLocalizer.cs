@@ -4,19 +4,14 @@
 // 2021-02-07: Modifications by axuno
 // 2023-01-20: Modifications by axuno
 
-using System;
-using System.Collections.Generic;
+
 using System.Diagnostics;
-using System.IO;
 using System.Reflection;
 using System.Text;
-using MailMergeLib.AspNet;
-using Microsoft.AspNetCore.Hosting;
+using League.Emailing;
 using Microsoft.AspNetCore.Mvc.Controllers;
-using Microsoft.AspNetCore.Mvc.Localization;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
-using Microsoft.Extensions.Localization;
 
 namespace League.Views;
 

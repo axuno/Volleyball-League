@@ -49,25 +49,18 @@ public class ReportSheetCache
     public async Task<Stream> GetOrCreatePdf(MatchReportSheetRow data, string html, CancellationToken cancellationToken)
     {
         EnsureCacheFolder();
-        var model =
-            (await _tenantContext.DbContext.AppDb.MatchRepository.GetMatchReportSheetAsync(
-                _tenantContext.TournamentContext.MatchPlanTournamentId, data.Id, cancellationToken));
 
-        if (model is null) return Stream.Null;
-
-        var matchId = model.Id;
-
-        var cacheFile = GetPathToCacheFile(matchId);
+        var cacheFile = GetPathToCacheFile(data.Id);
 
         if (!File.Exists(cacheFile) || IsOutdated(cacheFile, data.ModifiedOn))
         {
-            _logger.LogDebug("Create new match report for tenant '{Tenant}', match '{MatchId}'", _tenantContext.Identifier, matchId);
-            cacheFile = await GetReportSheetChromium(matchId, html, cancellationToken);
+            _logger.LogDebug("Create new match report for tenant '{Tenant}', match '{MatchId}'", _tenantContext.Identifier, data.Id);
+            cacheFile = await GetReportSheetChromium(data.Id, html, cancellationToken);
             // GetReportSheetPuppeteer() still throws on production server
             if (cacheFile == null) return Stream.Null;
         }
 
-        _logger.LogDebug("Read match report from cache for tenant '{Tenant}', match '{MatchId}'", _tenantContext.Identifier, matchId);
+        _logger.LogDebug("Read match report from cache for tenant '{Tenant}', match '{MatchId}'", _tenantContext.Identifier, data.Id);
         var stream = File.OpenRead(cacheFile);
         return stream;
     }

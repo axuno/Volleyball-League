@@ -25,6 +25,7 @@ using Axuno.VirtualFileSystem;
 using League.BackgroundTasks;
 using League.Caching;
 using League.ConfigurationPoco;
+using League.Emailing;
 using League.MultiTenancy;
 using TournamentManager.DI;
 using TournamentManager.MultiTenancy;

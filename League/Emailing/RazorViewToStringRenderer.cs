@@ -14,7 +14,7 @@ using Microsoft.AspNetCore.Mvc.ViewFeatures;
    https://github.com/RickStrahl/WestwindToolkit/blob/master/Westwind.Web.Mvc/Utils/ViewRenderer.cs   (MIT License)
 */
 
-namespace MailMergeLib.AspNet;
+namespace League.Emailing;
 
 public class RazorViewToStringRenderer
 {

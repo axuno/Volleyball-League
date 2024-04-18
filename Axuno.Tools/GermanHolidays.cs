@@ -380,7 +380,7 @@ public class GermanHolidays : List<GermanHoliday>
     /// <param name="path">A URI string referencing the holidays XML file to load.</param>
     public void Load(string path)
     {
-        var holidays = XElement.Load(path).Elements("holiday");
+        var holidays = XElement.Load(path).Elements("Holiday");
 
         foreach (var holiday in holidays)
         {
@@ -388,7 +388,7 @@ public class GermanHolidays : List<GermanHoliday>
             var action = GetActionType(holiday);
             var (dateFrom, dateTo) = GetDateRange(holiday);
             var holidayType = GetHolidayType(holiday);
-            var name = holiday.Element("name")?.Value ?? string.Empty;
+            var name = holiday.Element("Name")?.Value ?? string.Empty;
             var stateIds = GetStateIds(holiday);
 
             ProcessHoliday(holidayId, action, dateFrom, dateTo, holidayType, name, stateIds);
@@ -397,14 +397,14 @@ public class GermanHolidays : List<GermanHoliday>
 
     private Id? GetHolidayId(XElement holiday)
     {
-        if (holiday.Attribute("id") != null && Enum.TryParse<Id>(holiday.Attribute("id")?.Value, true, out var id))
+        if (holiday.Attribute("Id") != null && Enum.TryParse<Id>(holiday.Attribute("Id")?.Value, true, out var id))
             return id;
         return null;
     }
 
     private ActionType GetActionType(XElement holiday)
     {
-        if (Enum.TryParse<ActionType>(holiday.Attribute("action")?.Value, true, out var action))
+        if (Enum.TryParse<ActionType>(holiday.Attribute("Action")?.Value, true, out var action))
             return action;
         return ActionType.Merge;
     }
@@ -414,10 +414,10 @@ public class GermanHolidays : List<GermanHoliday>
         var dateFrom = DateTime.MinValue;
         var dateTo = DateTime.MinValue;
 
-        if (holiday.Element("datefrom") != null && holiday.Element("dateto") != null)
+        if (holiday.Element("DateFrom") != null && holiday.Element("DateTo") != null)
         {
-            dateFrom = DateTime.ParseExact(holiday.Element("datefrom")?.Value!, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None);
-            dateTo = DateTime.ParseExact(holiday.Element("dateto")?.Value!, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None);
+            dateFrom = DateTime.ParseExact(holiday.Element("DateFrom")?.Value!, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None);
+            dateTo = DateTime.ParseExact(holiday.Element("DateTo")?.Value!, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None);
 
             if (dateFrom > dateTo)
                 (dateFrom, dateTo) = (dateTo, dateFrom);
@@ -428,7 +428,7 @@ public class GermanHolidays : List<GermanHoliday>
 
     private Type GetHolidayType(XElement holiday)
     {
-        if (Enum.TryParse<Type>(holiday.Element("type")?.Value, true, out var type))
+        if (Enum.TryParse<Type>(holiday.Element("Type")?.Value, true, out var type))
             return type;
         throw new InvalidOperationException("Missing or invalid holiday type.");
     }
@@ -437,7 +437,7 @@ public class GermanHolidays : List<GermanHoliday>
     {
         var stateIds = new List<GermanFederalStates.Id>();
 
-        var publicHolidayStateIds = holiday.Element("publicholidaystateids");
+        var publicHolidayStateIds = holiday.Element("PublicHolidayStateIds");
         if (publicHolidayStateIds != null && publicHolidayStateIds.HasElements)
         {
             stateIds.AddRange(publicHolidayStateIds.Elements().Select(stateId =>
@@ -447,7 +447,8 @@ public class GermanHolidays : List<GermanHoliday>
         return stateIds;
     }
 
-    private void ProcessHoliday(Id? holidayId, ActionType action, DateTime dateFrom, DateTime dateTo, Type holidayType, string name, List<GermanFederalStates.Id> stateIds)
+    private void ProcessHoliday(Id? holidayId, ActionType action, DateTime dateFrom, DateTime dateTo, Type holidayType,
+        string name, List<GermanFederalStates.Id> stateIds)
     {
         if (action == ActionType.Remove && holidayId.HasValue)
         {

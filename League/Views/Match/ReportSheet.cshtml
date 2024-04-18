@@ -2,7 +2,8 @@
 @using TournamentManager.DAL.EntityClasses
 @inject ITenantContext TenantContext
 @inject Axuno.Tools.DateAndTime.TimeZoneConverter TimeZoneConverter
-@inject IViewLocalizer localizer
+@* use fully qualified name for IViewLocalizer! *@
+@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer localizer 
 @model TournamentManager.DAL.TypedViewClasses.MatchReportSheetRow
 @{
     Layout = null;
