@@ -15,9 +15,9 @@ public class NUnitLogger<T> : NUnitLogger, ILogger<T>
     { }
 
     /// <summary>
-    /// Gets a new instance of an <see cref="NUnitLogger"/>.
+    /// Gets a new instance of a <see cref="NUnitLogger"/>.
     /// </summary>
-    /// <returns>Returns a new instance of an <see cref="NUnitLogger"/>.</returns>
+    /// <returns>Returns a new instance of a <see cref="NUnitLogger"/>.</returns>
     public new ILogger<T> Create()
     {
         return new NUnitLogger<T>();

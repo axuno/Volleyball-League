@@ -71,7 +71,14 @@ public class Team : AbstractController
     public async Task<IActionResult> MyTeam(long? id, CancellationToken cancellationToken)
     {
         // make sure that any changes are immediately reflected in the user's application cookie
-        await _signInManager.RefreshSignInAsync(await _signInManager.UserManager.FindByIdAsync(User.FindFirstValue(ClaimTypes.NameIdentifier)));
+        var appUser = await _signInManager.UserManager.GetUserAsync(User);
+        if (appUser != null)
+            await _signInManager.RefreshSignInAsync(appUser);
+        else
+        {
+            await _signInManager.SignOutAsync();
+            return Redirect(TenantLink.Action(nameof(MyTeam), nameof(Team), new { id = default(long?) })!);
+        }
             
         var userTeamIds = GetUserClaimTeamIds();
         // As admin, any selected team will be returned as "my team"

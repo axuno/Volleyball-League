@@ -235,9 +235,9 @@ public class UserStoreTests
 
             Assert.That(await _store.GetUserIdAsync(user, CancellationToken.None), Is.EqualTo(user.Id.ToString()));
             Assert.That(await _store.GetUserNameAsync(user, CancellationToken.None), Is.EqualTo(user.UserName));
-            Assert.That(await _store.GetNormalizedUserNameAsync(user, CancellationToken.None), Is.EqualTo(user.UserName.ToUpperInvariant()));
+            Assert.That(await _store.GetNormalizedUserNameAsync(user, CancellationToken.None), Is.EqualTo(user.UserName?.ToUpperInvariant()));
 
-            Assert.That(await _store.GetNormalizedEmailAsync(user, CancellationToken.None), Is.EqualTo(user.Email.ToUpperInvariant()));
+            Assert.That(await _store.GetNormalizedEmailAsync(user, CancellationToken.None), Is.EqualTo(user.Email?.ToUpperInvariant()));
         });
     }
 

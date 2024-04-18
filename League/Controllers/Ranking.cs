@@ -121,7 +121,7 @@ public class Ranking : AbstractController
 
     private async Task<List<RankingListRow>> GetRankingListCached(CancellationToken cancellationToken)
     {
-        return await _memoryCache.GetOrCreateAsync(
+        var rankingList = await _memoryCache.GetOrCreateAsync(
             string.Join("_", _tenantContext.Identifier, typeof(Ranking).FullName, nameof(RankingListRow)),
             cache =>
             {
@@ -134,11 +134,16 @@ public class Ranking : AbstractController
                     cancellationToken);
             }
         );
+
+        if (rankingList != null) return rankingList;
+
+        _logger.LogCritical("Could not get or create round leg periods");
+        return new List<RankingListRow>();
     }
 
     private async Task<List<RoundLegPeriodRow>> GetRoundLegPeriodsCached(List<RankingListRow> rankingList, CancellationToken cancellationToken)
     {
-        return await _memoryCache.GetOrCreateAsync(
+        var roundLegPeriods = await _memoryCache.GetOrCreateAsync(
             string.Join("_", _tenantContext.Identifier, typeof(Ranking).FullName,
                 nameof(RoundLegPeriodRow)), cache =>
             {
@@ -152,6 +157,10 @@ public class Ranking : AbstractController
                     cancellationToken));
             }
         );
+        if (roundLegPeriods != null) return roundLegPeriods;
+
+        _logger.LogCritical("Could not get or create round leg periods");
+        return new List<RoundLegPeriodRow>();
     }
 
     private Dictionary<long, FileInfo> GetChartFileInfos(IEnumerable<long> roundIds)

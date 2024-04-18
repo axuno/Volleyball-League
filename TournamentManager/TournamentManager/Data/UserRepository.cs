@@ -137,8 +137,10 @@ public class UserRepository
     /// </summary>
     /// <param name="email"></param>
     /// <returns>Returns true, if a user with the given email exists, else false.</returns>
-    public virtual async Task<bool> EmailExistsAsync(string email)
+    public virtual async Task<bool> EmailExistsAsync(string? email)
     {
+        if (email == null) return false;
+
         email = email.ToLowerInvariant();
         using var da = _dbContext.GetNewAdapter();
         var metaData = new LinqMetaData(da);

@@ -141,15 +141,15 @@ public class RoleStore : IRoleStore<ApplicationRole>, IRoleClaimStore<Applicatio
         return new ApplicationRole { Id = roleEntity.Id, Name = roleEntity.Name };
     }
 #nullable enable annotations
-    public Task<string> GetNormalizedRoleNameAsync(ApplicationRole role, CancellationToken cancellationToken)
+    public Task<string?> GetNormalizedRoleNameAsync(ApplicationRole role, CancellationToken cancellationToken)
     {
         if (role == null)
             throw new ArgumentNullException(nameof(role));
 
-        return Task.FromResult(_keyNormalizer.NormalizeName(role.Name));
+        return Task.FromResult<string?>(_keyNormalizer.NormalizeName(role.Name));
     }
 
-    public Task SetNormalizedRoleNameAsync(ApplicationRole role, string normalizedName, CancellationToken cancellationToken)
+    public Task SetNormalizedRoleNameAsync(ApplicationRole role, string? normalizedName, CancellationToken cancellationToken)
     {
         return Task.CompletedTask;
     }
@@ -162,20 +162,21 @@ public class RoleStore : IRoleStore<ApplicationRole>, IRoleClaimStore<Applicatio
         return Task.FromResult(role.Id.ToString());
     }
 
-    public Task<string> GetRoleNameAsync(ApplicationRole role, CancellationToken cancellationToken)
+    public Task<string?> GetRoleNameAsync(ApplicationRole role, CancellationToken cancellationToken)
     {
-        if (role == null)
-            throw new ArgumentNullException(nameof(role));
+        ArgumentNullException.ThrowIfNull(role);
 
-        return Task.FromResult(role.Name);
+        return Task.FromResult<string?>(role.Name);
     }
 
-    public Task SetRoleNameAsync(ApplicationRole role, string roleName, CancellationToken cancellationToken)
+    public Task SetRoleNameAsync(ApplicationRole role, string? roleName, CancellationToken cancellationToken)
     {
-        if (role == null)
-            throw new ArgumentNullException(nameof(role));
+        ArgumentNullException.ThrowIfNull(role);
 
-        role.Name = roleName ?? throw new ArgumentNullException(nameof(roleName));
+        if (string.IsNullOrEmpty(roleName))
+            throw new ArgumentNullException(nameof(roleName), @"Null or empty");
+
+        role.Name = roleName;
         return Task.CompletedTask;
     }
 
