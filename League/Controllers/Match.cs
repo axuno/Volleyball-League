@@ -1,6 +1,7 @@
 ﻿using System.Text;
 using League.BackgroundTasks;
 using League.Caching;
+using League.Emailing;
 using League.Emailing.Creators;
 using League.Helpers;
 using League.Models.MatchViewModels;

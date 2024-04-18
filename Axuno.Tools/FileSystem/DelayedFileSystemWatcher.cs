@@ -25,12 +25,12 @@ public class DelayedFileSystemWatcher : IDisposable
     /// <summary>
     /// Lock order is _enterThread, _events.SyncRoot
     /// </summary>
-    private readonly object _enterThread = new (); // Only one timer event is processed at any given moment
+    private readonly object _enterThread = new(); // Only one timer event is processed at any given moment
 
     /// <summary>
     /// Stores the events fired by <see cref="FileSystemWatcher"/>.
     /// </summary>
-    private ArrayList _events = new ();
+    private ArrayList _events = new();
 
     private int _consolidationInterval = 1000; // initial value in milliseconds
     private readonly System.Timers.Timer _timer;
@@ -76,7 +76,7 @@ public class DelayedFileSystemWatcher : IDisposable
     {
         _fileSystemWatcher = new FileSystemWatcher(path);
         foreach (var filter in typeFilters) _fileSystemWatcher.Filters.Add(filter);
-        
+
         Initialize(out _timer);
     }
 
@@ -323,19 +323,31 @@ public class DelayedFileSystemWatcher : IDisposable
 
     private void ElapsedEventHandler(object? sender, ElapsedEventArgs e)
     {
-        if (!Monitor.TryEnter(_enterThread))
-            return;
+        var eventsToBeFired = TryProcessEvents();
 
-        try
+        if (eventsToBeFired != null)
         {
-            var eventsToBeFired = ProcessEvents();
-            if (eventsToBeFired != null)
-                RaiseEvents(eventsToBeFired);
+            RaiseEvents(eventsToBeFired);
         }
-        finally
+    }
+
+    private Queue? TryProcessEvents()
+    {
+        Queue? eventsToBeFired = null;
+
+        if (Monitor.TryEnter(_enterThread))
         {
-            Monitor.Exit(_enterThread);
+            try
+            {
+                eventsToBeFired = ProcessEvents();
+            }
+            finally
+            {
+                Monitor.Exit(_enterThread);
+            }
         }
+
+        return eventsToBeFired;
     }
 
     private Queue? ProcessEvents()
@@ -346,13 +358,16 @@ public class DelayedFileSystemWatcher : IDisposable
         {
             for (var i = 0; i < _events.Count; i++)
             {
-                if (_events[i] is not DelayedEvent current)
-                    continue;
+                var current = _events[i] as DelayedEvent;
 
-                if (current.Delayed)
+                if (current is { Delayed: true })
+                {
                     ProcessDelayedEvent(current, eventsToBeFired, ref i);
+                }
                 else
-                    current.Delayed = true;
+                {
+                    DelayEvent(current);
+                }
             }
         }
 
@@ -361,40 +376,52 @@ public class DelayedFileSystemWatcher : IDisposable
 
     private void ProcessDelayedEvent(DelayedEvent current, Queue eventsToBeFired, ref int i)
     {
-        if (current.Args.ChangeType is not (WatcherChangeTypes.Created or WatcherChangeTypes.Changed))
+        RemoveDuplicateEvents(current, i);
+
+        if (!ShouldRaiseEvent(current))
             return;
 
-        if (!CanOpenFile(current.Args.FullPath))
-            return;
-
-        RemoveDuplicates(current);
         eventsToBeFired.Enqueue(current);
         _events.RemoveAt(i);
-        i--; // Decrement i to process the next event correctly
+        i--;
     }
 
-    private bool CanOpenFile(string fullPath)
+    private void RemoveDuplicateEvents(DelayedEvent current, int i)
     {
-        try
-        {
-            using var stream = File.Open(fullPath, FileMode.Open, FileAccess.Read, FileShare.None);
-            return true;
-        }
-        catch (IOException)
-        {
-            return false;
-        }
-    }
-
-    private void RemoveDuplicates(DelayedEvent current)
-    {
-        for (var j = _events.Count - 1; j > 0; j--)
+        for (var j = _events.Count - 1; j > i; j--)
         {
             if (current.IsDuplicate(_events[j]))
+            {
                 _events.RemoveAt(j);
+            }
         }
     }
 
+    private bool ShouldRaiseEvent(DelayedEvent current)
+    {
+        if (current.Args.ChangeType is WatcherChangeTypes.Created or WatcherChangeTypes.Changed)
+        {
+            try
+            {
+                using var stream = File.Open(current.Args.FullPath, FileMode.Open, FileAccess.Read, FileShare.None);
+                return true;
+            }
+            catch (IOException)
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private void DelayEvent(DelayedEvent? current)
+    {
+        if (current != null)
+        {
+            current.Delayed = true;
+        }
+    }
 
     /// <summary>
     /// Gets or sets the interval in milliseconds, after which events will be fired.

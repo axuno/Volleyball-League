@@ -20,7 +20,7 @@ public class EmailTemplateDefinitionProvider : TemplateDefinitionProvider
                     defaultCultureName: CultureInfo.DefaultThreadCurrentCulture?.Name ?? fallbackCultureName,
                     layout: TemplateName.HtmlLayout)
                 .WithVirtualFilePath(
-                    path + nameof(TemplateName.ConfirmNewPrimaryEmailHtml) + ext, //template content path
+                    path + nameof(TemplateName.ConfirmNewPrimaryEmailHtml) + ext, // template content file
                     isInlineLocalized: true
                 )
         );
@@ -31,7 +31,7 @@ public class EmailTemplateDefinitionProvider : TemplateDefinitionProvider
                     localizationResource: typeof(EmailResource),
                     defaultCultureName: CultureInfo.DefaultThreadCurrentCulture?.Name ?? fallbackCultureName)
                 .WithVirtualFilePath(
-                    path + nameof(TemplateName.ConfirmNewPrimaryEmailTxt) + ext, //template content path
+                    path + nameof(TemplateName.ConfirmNewPrimaryEmailTxt) + ext, // template content file
                     isInlineLocalized: true
                 )
         );
@@ -42,7 +42,7 @@ public class EmailTemplateDefinitionProvider : TemplateDefinitionProvider
                 localizationResource: typeof(EmailResource),
                 defaultCultureName: CultureInfo.DefaultThreadCurrentCulture?.Name ?? fallbackCultureName
             ).WithVirtualFilePath(
-                path + nameof(TemplateName.ConfirmTeamApplicationTxt) + ext, //template content path
+                path + nameof(TemplateName.ConfirmTeamApplicationTxt) + ext, // template content file
                 isInlineLocalized: true
             )
         );
@@ -53,7 +53,7 @@ public class EmailTemplateDefinitionProvider : TemplateDefinitionProvider
                 localizationResource: typeof(EmailResource),
                 defaultCultureName: CultureInfo.DefaultThreadCurrentCulture?.Name ?? fallbackCultureName
             ).WithVirtualFilePath(
-                path + nameof(TemplateName.ContactFormTxt) + ext, //template content folder
+                path + nameof(TemplateName.ContactFormTxt) + ext, // template content file
                 isInlineLocalized: true
             )
         );
@@ -65,7 +65,7 @@ public class EmailTemplateDefinitionProvider : TemplateDefinitionProvider
                     defaultCultureName: CultureInfo.DefaultThreadCurrentCulture?.Name ?? fallbackCultureName,
                     layout: TemplateName.HtmlLayout)
                 .WithVirtualFilePath(
-                    path + nameof(TemplateName.PasswordResetHtml) + ext, //template content path
+                    path + nameof(TemplateName.PasswordResetHtml) + ext, // template content file
                     isInlineLocalized: true
                 )
         );
@@ -76,7 +76,7 @@ public class EmailTemplateDefinitionProvider : TemplateDefinitionProvider
                     localizationResource: typeof(EmailResource),
                     defaultCultureName: CultureInfo.DefaultThreadCurrentCulture?.Name ?? fallbackCultureName)
                 .WithVirtualFilePath(
-                    path + nameof(TemplateName.PasswordResetTxt) + ext, //template content path
+                    path + nameof(TemplateName.PasswordResetTxt) + ext, // template content file
                     isInlineLocalized: true
                 )
         );
@@ -88,7 +88,7 @@ public class EmailTemplateDefinitionProvider : TemplateDefinitionProvider
                     defaultCultureName: CultureInfo.DefaultThreadCurrentCulture?.Name ?? fallbackCultureName,
                     layout: TemplateName.HtmlLayout)
                 .WithVirtualFilePath(
-                    path + nameof(TemplateName.PleaseConfirmEmailHtml) + ext, //template content path
+                    path + nameof(TemplateName.PleaseConfirmEmailHtml) + ext, // template content file
                     isInlineLocalized: true
                 )
         );
@@ -99,7 +99,7 @@ public class EmailTemplateDefinitionProvider : TemplateDefinitionProvider
                     localizationResource: typeof(EmailResource),
                     defaultCultureName: CultureInfo.DefaultThreadCurrentCulture?.Name ?? fallbackCultureName)
                 .WithVirtualFilePath(
-                    path + nameof(TemplateName.PleaseConfirmEmailTxt) + ext, //template content path
+                    path + nameof(TemplateName.PleaseConfirmEmailTxt) + ext, // template content file
                     isInlineLocalized: true
                 )
         );
@@ -110,7 +110,7 @@ public class EmailTemplateDefinitionProvider : TemplateDefinitionProvider
                 localizationResource: typeof(EmailResource),
                 defaultCultureName: CultureInfo.DefaultThreadCurrentCulture?.Name ?? fallbackCultureName
             ).WithVirtualFilePath(
-                path + nameof(TemplateName.ChangeFixtureTxt) + ext, //template content folder
+                path + nameof(TemplateName.ChangeFixtureTxt) + ext, // template content file
                 isInlineLocalized: true
             )
         );
@@ -122,7 +122,7 @@ public class EmailTemplateDefinitionProvider : TemplateDefinitionProvider
                     defaultCultureName: CultureInfo.DefaultThreadCurrentCulture?.Name ?? fallbackCultureName,
                     layout: TemplateName.HtmlLayout)
                 .WithVirtualFilePath(
-                    path + nameof(TemplateName.NotifyCurrentPrimaryEmailHtml) + ext, //template content path
+                    path + nameof(TemplateName.NotifyCurrentPrimaryEmailHtml) + ext, // template content file
                     isInlineLocalized: true
                 )
         );
@@ -133,7 +133,7 @@ public class EmailTemplateDefinitionProvider : TemplateDefinitionProvider
                     localizationResource: typeof(EmailResource),
                     defaultCultureName: CultureInfo.DefaultThreadCurrentCulture?.Name ?? fallbackCultureName)
                 .WithVirtualFilePath(
-                    path + nameof(TemplateName.NotifyCurrentPrimaryEmailTxt) + ext, //template content path
+                    path + nameof(TemplateName.NotifyCurrentPrimaryEmailTxt) + ext, // template content file
                     isInlineLocalized: true
                 )
         );
@@ -144,7 +144,7 @@ public class EmailTemplateDefinitionProvider : TemplateDefinitionProvider
                 localizationResource: typeof(EmailResource),
                 defaultCultureName: CultureInfo.DefaultThreadCurrentCulture?.Name ?? fallbackCultureName
             ).WithVirtualFilePath(
-                path + nameof(TemplateName.ResultEnteredTxt) + ext, //template content folder
+                path + nameof(TemplateName.ResultEnteredTxt) + ext, // template content file
                 isInlineLocalized: true
             )
         );
@@ -155,7 +155,7 @@ public class EmailTemplateDefinitionProvider : TemplateDefinitionProvider
                 localizationResource: typeof(EmailResource),
                 defaultCultureName: CultureInfo.DefaultThreadCurrentCulture?.Name ?? fallbackCultureName
             ).WithVirtualFilePath(
-                path + nameof(TemplateName.ResultRemovedTxt) + ext, //template content folder
+                path + nameof(TemplateName.ResultRemovedTxt) + ext, // template content file
                 isInlineLocalized: true
             )
         );
@@ -166,7 +166,7 @@ public class EmailTemplateDefinitionProvider : TemplateDefinitionProvider
                 localizationResource: null,
                 defaultCultureName: CultureInfo.DefaultThreadCurrentCulture?.Name ?? fallbackCultureName
             ).WithVirtualFilePath(
-                path + nameof(TemplateName.AnnounceNextMatchTxt) + ext, //template content folder
+                path + nameof(TemplateName.AnnounceNextMatchTxt), // template content folder
                 isInlineLocalized: false
             )
         );
@@ -177,7 +177,7 @@ public class EmailTemplateDefinitionProvider : TemplateDefinitionProvider
                 localizationResource: null,
                 defaultCultureName: CultureInfo.DefaultThreadCurrentCulture?.Name ?? fallbackCultureName
             ).WithVirtualFilePath(
-                path + nameof(TemplateName.RemindMatchResultTxt) + ext, //template content folder
+                path + nameof(TemplateName.RemindMatchResultTxt), // template content folder
                 isInlineLocalized: false
             )
         );
@@ -188,7 +188,7 @@ public class EmailTemplateDefinitionProvider : TemplateDefinitionProvider
                 localizationResource: null,
                 defaultCultureName: CultureInfo.DefaultThreadCurrentCulture?.Name ?? fallbackCultureName
             ).WithVirtualFilePath(
-                path + nameof(TemplateName.UrgeMatchResultTxt) + ext, //template content folder
+                path + nameof(TemplateName.UrgeMatchResultTxt), // template content folder
                 isInlineLocalized: false
             )
         );
@@ -198,7 +198,7 @@ public class EmailTemplateDefinitionProvider : TemplateDefinitionProvider
                 TemplateName.HtmlLayout,
                 isLayout: true
             ).WithVirtualFilePath(
-                path + nameof(TemplateName.HtmlLayout) + ext, //template content path
+                path + nameof(TemplateName.HtmlLayout) + ext, // template content file
                 isInlineLocalized: true
             )
         );

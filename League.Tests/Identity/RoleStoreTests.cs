@@ -101,7 +101,7 @@ public class RoleStoreTests
             _appDb.DbContext.CommandTimeOut = 2;
             // new claim
             var role = new ApplicationRole() {Name = Constants.RoleName.TournamentManager};
-            Assert.Multiple(async () =>
+            await Assert.MultipleAsync(async () =>
             {
                 Assert.That(await _roleStore.CreateAsync(role, CancellationToken.None), Is.Not.EqualTo(IdentityResult.Success));
                 Assert.That(await _roleStore.DeleteAsync(role, CancellationToken.None), Is.Not.EqualTo(IdentityResult.Success));
@@ -150,7 +150,7 @@ public class RoleStoreTests
         Assert.That(await _roleStore.CreateAsync(role, CancellationToken.None), Is.EqualTo(IdentityResult.Success));
 
         var createdRole = await _roleStore.FindByNameAsync(role.Name, CancellationToken.None);
-        Assert.Multiple(async () =>
+        await Assert.MultipleAsync(async () =>
         {
             Assert.That(createdRole.Name, Is.EqualTo(role.Name));
 
@@ -170,7 +170,7 @@ public class RoleStoreTests
 
         // trying to update a role with an unknown name should fail
         createdRole.Name = "some-illegal-role-name";
-        Assert.Multiple(async () =>
+        await Assert.MultipleAsync(async () =>
         {
             Assert.That(await _roleStore.UpdateAsync(createdRole, CancellationToken.None), Is.Not.EqualTo(IdentityResult.Success));
 
@@ -180,7 +180,7 @@ public class RoleStoreTests
 
         // update with allowed role name should succeed
         createdRole.Name = Constants.RoleName.Player;
-        Assert.Multiple(async () =>
+        await Assert.MultipleAsync(async () =>
         {
             Assert.That(await _roleStore.UpdateAsync(createdRole, CancellationToken.None), Is.EqualTo(IdentityResult.Success));
             Assert.That(await _roleStore.FindByNameAsync(Constants.RoleName.Player, CancellationToken.None), Is.Not.Null);
@@ -203,7 +203,7 @@ public class RoleStoreTests
         var newRole = new ApplicationRole { Name = Constants.RoleName.SystemManager };
         Assert.That(await _roleStore.CreateAsync(newRole, CancellationToken.None), Is.EqualTo(IdentityResult.Success));
         var createdRole = await _roleStore.FindByNameAsync(Constants.RoleName.SystemManager, CancellationToken.None);
-        Assert.Multiple(async () =>
+        await Assert.MultipleAsync(async () =>
         {
             Assert.That(createdRole, Is.Not.Null);
 

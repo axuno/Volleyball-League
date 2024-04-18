@@ -128,7 +128,12 @@ public class Ranking
 
     private Rank CalculateRank(long teamId, DateTime upperDateLimit)
     {
-        var rank = new Rank { Number = -1, TeamId = teamId };
+        var rank = new Rank
+        {
+            Number = -1, TeamId = teamId,
+            MatchesPlayed = MatchesPlayed.Count(m => m.HomeTeamId == teamId || m.GuestTeamId == teamId),
+            MatchesToPlay = MatchesToPlay.Count(m => m.HomeTeamId == teamId || m.GuestTeamId == teamId)
+        };
 
         foreach (var match in GetMatchesPlayedForTeam(teamId, upperDateLimit))
         {
@@ -166,8 +171,8 @@ public class Ranking
 
         rank.MatchesWon.Home += homeMatchPoints > guestMatchPoints ? 1 : 0;
         rank.MatchesWon.Guest += homeMatchPoints < guestMatchPoints ? 1 : 0;
-        rank.SetsWon.Home += homeSetPoints > guestSetPoints ? 1 : 0;
-        rank.SetsWon.Guest += guestSetPoints > homeSetPoints ? 1 : 0;
+        rank.SetsWon.Home += homeSetPoints;
+        rank.SetsWon.Guest += guestSetPoints;
     }
 
     /// <summary>

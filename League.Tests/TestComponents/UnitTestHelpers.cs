@@ -17,7 +17,6 @@ using NLog;
 using NLog.Extensions.Logging;
 using SD.LLBLGen.Pro.ORMSupportClasses;
 using TournamentManager.MultiTenancy;
-using ILogger = Microsoft.Extensions.Logging.ILogger;
 
 namespace League.Tests;
 
@@ -30,9 +29,8 @@ public class UnitTestHelpers
     public UnitTestHelpers()
     {
         _configPath = DirectoryLocator.GetTargetConfigurationPath();
-        var msSqlPath = Path.Combine(DirectoryLocator.GetTargetProjectPath(typeof(League.LeagueStartup)), @"..\..\MsSqlDb");
+        var msSqlPath = Path.GetFullPath(Path.Combine(DirectoryLocator.GetTargetProjectPath(typeof(League.LeagueStartup)), @"..\..\MsSqlDb"));
 
-        // For the unit tests we
         _tenantContext = new TenantContext
         {
             DbContext =
@@ -64,7 +62,6 @@ public class UnitTestHelpers
         RuntimeConfiguration.ConfigureDQE<SD.LLBLGen.Pro.DQE.SqlServer.SQLServerDQEConfiguration>(c => c
             .SetTraceLevel(System.Diagnostics.TraceLevel.Verbose)
             .AddDbProviderFactory(typeof(System.Data.SqlClient.SqlClientFactory)));
-        //RuntimeConfiguration.SetDependencyInjectionInfo(new[] { typeof(TournamentManager.Validators.UserEntityValidator).Assembly }, new[] { "TournamentManager.Validators" });
 
         RuntimeConfiguration.Tracing.SetTraceLevel("ORMPersistenceExecution", System.Diagnostics.TraceLevel.Verbose);
         RuntimeConfiguration.Tracing.SetTraceLevel("ORMPlainSQLQueryExecution", System.Diagnostics.TraceLevel.Verbose);
@@ -126,7 +123,7 @@ public class UnitTestHelpers
                 {
                     // The complete Templates folder is embedded in the project file
                     vfs.FileSets.AddEmbedded<LeagueTemplateRenderer>(nameof(League) + ".Templates");
-                    // vfs.FileSets.AddPhysical(Path.Combine(Directory.GetCurrentDirectory(), "Templates"));
+                    // To use physical files: vfs.FileSets.AddPhysical(Path.Combine(Directory.GetCurrentDirectory(), "Templates"));
                 },
                 locOpt =>
                 {
@@ -174,7 +171,7 @@ public class UnitTestHelpers
 
     private void HowToUseServices()
     {
-        var logger = (ILogger) GetStandardServiceProvider().GetRequiredService(typeof(ILogger<UnitTestHelpers>));
+        var logger = (Microsoft.Extensions.Logging.ILogger) GetStandardServiceProvider().GetRequiredService(typeof(ILogger<UnitTestHelpers>));
         logger.LogError("error");
         var localizer = (IStringLocalizer)GetStandardServiceProvider().GetRequiredService(typeof(IStringLocalizer<League.Controllers.Account>));
         _ = localizer["This is your password recovery key"].Value;

@@ -23,7 +23,7 @@ public class GermanHolidayImporter : IExcludeDateImporter
         if (fromToTimePeriod is not { Start: not null, End: not null })
             throw new ArgumentException(@"Lower and upper date limits must be set.", nameof(fromToTimePeriod));
 
-        _logger.LogDebug("Starting import of German holidays for period {dateStart} to {dateEnd}", fromToTimePeriod.Start, fromToTimePeriod.End);
+        _logger.LogDebug("Starting import of German holidays for period {DateStart} to {DateEnd}", fromToTimePeriod.Start, fromToTimePeriod.End);
 
         var currentYear = ((DateTime) fromToTimePeriod.Start).Year;
 
@@ -33,12 +33,12 @@ public class GermanHolidayImporter : IExcludeDateImporter
 
         while (currentYear <= ((DateTime) fromToTimePeriod.End).Year)
         {
-            _logger.LogDebug("Processing year '{currentYear}'", currentYear);
+            _logger.LogDebug("Processing year '{CurrentYear}'", currentYear);
             var currentYearHolidays = new Axuno.Tools.GermanHolidays(currentYear);
 
             // This generates all holidays
             currentYearHolidays.GenerateGermanHolidays();
-            _logger.LogDebug("Generated and added {count} holidays.", currentYearHolidays.Count);
+            _logger.LogDebug("Generated and added {Count} holidays.", currentYearHolidays.Count);
 
             // Loading custom holidays expects that German holiday are already in the list,
             // because otherwise the "Replace" command will not succeed
@@ -46,7 +46,7 @@ public class GermanHolidayImporter : IExcludeDateImporter
             {
                 // The holidays file must be imported **for each year**
                 currentYearHolidays.Load(_specialHolidaysXmlFile);
-                _logger.LogDebug("Holidays from file '{filename}' loaded. Now counts {holidaysCount} for year {year}", _specialHolidaysXmlFile, currentYearHolidays.Count, currentYear);
+                _logger.LogDebug("Holidays from file '{Filename}' loaded. Now counts {HolidaysCount} for year {Year}", _specialHolidaysXmlFile, currentYearHolidays.Count, currentYear);
             }
 
             holidays.AddRange(currentYearHolidays.GetFiltered(_holidayFilter));
