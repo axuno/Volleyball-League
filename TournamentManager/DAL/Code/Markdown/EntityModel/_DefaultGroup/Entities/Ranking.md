@@ -87,96 +87,112 @@ Setting name | Value
 --|--
 Generate as nullable type | True
 Field property is public | True
+Field property has private setter | False
 
 #### BallPointsWon (NormalField)
 Setting name | Value
 --|--
 Generate as nullable type | True
 Field property is public | True
+Field property has private setter | False
 
 #### CreatedOn (NormalField)
 Setting name | Value
 --|--
 Generate as nullable type | True
 Field property is public | True
+Field property has private setter | False
 
 #### Id (NormalField)
 Setting name | Value
 --|--
 Generate as nullable type | True
 Field property is public | True
+Field property has private setter | False
 
 #### MatchesPlayed (NormalField)
 Setting name | Value
 --|--
 Generate as nullable type | True
 Field property is public | True
+Field property has private setter | False
 
 #### MatchesToPlay (NormalField)
 Setting name | Value
 --|--
 Generate as nullable type | True
 Field property is public | True
+Field property has private setter | False
 
 #### MatchPointsLost (NormalField)
 Setting name | Value
 --|--
 Generate as nullable type | True
 Field property is public | True
+Field property has private setter | False
 
 #### MatchPointsWon (NormalField)
 Setting name | Value
 --|--
 Generate as nullable type | True
 Field property is public | True
+Field property has private setter | False
 
 #### ModifiedOn (NormalField)
 Setting name | Value
 --|--
 Generate as nullable type | True
 Field property is public | True
+Field property has private setter | False
 
 #### Rank (NormalField)
 Setting name | Value
 --|--
 Generate as nullable type | True
 Field property is public | True
+Field property has private setter | False
 
 #### RoundId (NormalField)
 Setting name | Value
 --|--
 Generate as nullable type | True
 Field property is public | True
+Field property has private setter | False
 
 #### SetPointsLost (NormalField)
 Setting name | Value
 --|--
 Generate as nullable type | True
 Field property is public | True
+Field property has private setter | False
 
 #### SetPointsWon (NormalField)
 Setting name | Value
 --|--
 Generate as nullable type | True
 Field property is public | True
+Field property has private setter | False
 
 #### TeamId (NormalField)
 Setting name | Value
 --|--
 Generate as nullable type | True
 Field property is public | True
+Field property has private setter | False
 
 #### TournamentId (NormalField)
 Setting name | Value
 --|--
 Generate as nullable type | True
 Field property is public | True
+Field property has private setter | False
 
 #### ValuationDate (NormalField)
 Setting name | Value
 --|--
 Generate as nullable type | True
 Field property is public | True
+Field property has private setter | False
 
 #### Round (NavigatorSingleValue)
 Setting name | Value

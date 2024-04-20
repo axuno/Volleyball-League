@@ -80,72 +80,84 @@ Setting name | Value
 --|--
 Generate as nullable type | True
 Field property is public | True
+Field property has private setter | False
 
 #### CreatedOn (NormalField)
 Setting name | Value
 --|--
 Generate as nullable type | True
 Field property is public | True
+Field property has private setter | False
 
 #### Direction (NormalField)
 Setting name | Value
 --|--
 Generate as nullable type | True
 Field property is public | True
+Field property has private setter | False
 
 #### Extension (NormalField)
 Setting name | Value
 --|--
 Generate as nullable type | True
 Field property is public | True
+Field property has private setter | False
 
 #### Id (NormalField)
 Setting name | Value
 --|--
 Generate as nullable type | True
 Field property is public | True
+Field property has private setter | False
 
 #### Latitude (NormalField)
 Setting name | Value
 --|--
 Generate as nullable type | True
 Field property is public | True
+Field property has private setter | False
 
 #### Longitude (NormalField)
 Setting name | Value
 --|--
 Generate as nullable type | True
 Field property is public | True
+Field property has private setter | False
 
 #### ModifiedOn (NormalField)
 Setting name | Value
 --|--
 Generate as nullable type | True
 Field property is public | True
+Field property has private setter | False
 
 #### Name (NormalField)
 Setting name | Value
 --|--
 Generate as nullable type | True
 Field property is public | True
+Field property has private setter | False
 
 #### PostalCode (NormalField)
 Setting name | Value
 --|--
 Generate as nullable type | True
 Field property is public | True
+Field property has private setter | False
 
 #### PrecisePosition (NormalField)
 Setting name | Value
 --|--
 Generate as nullable type | True
 Field property is public | True
+Field property has private setter | False
 
 #### Street (NormalField)
 Setting name | Value
 --|--
 Generate as nullable type | True
 Field property is public | True
+Field property has private setter | False
 
 #### AvailableMatchDates (NavigatorCollection)
 Setting name | Value

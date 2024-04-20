@@ -111,138 +111,161 @@ Setting name | Value
 --|--
 Generate as nullable type | True
 Field property is public | True
+Field property has private setter | False
 
 #### Birthday (NormalField)
 Setting name | Value
 --|--
 Generate as nullable type | True
 Field property is public | True
+Field property has private setter | False
 
 #### CreatedOn (NormalField)
 Setting name | Value
 --|--
 Generate as nullable type | True
 Field property is public | True
+Field property has private setter | False
 
 #### Email (NormalField)
 Setting name | Value
 --|--
 Generate as nullable type | True
 Field property is public | True
+Field property has private setter | False
 
 #### Email2 (NormalField)
 Setting name | Value
 --|--
 Generate as nullable type | True
 Field property is public | True
+Field property has private setter | False
 
 #### EmailConfirmedOn (NormalField)
 Setting name | Value
 --|--
 Generate as nullable type | True
 Field property is public | True
+Field property has private setter | False
 
 #### FirstName (NormalField)
 Setting name | Value
 --|--
 Generate as nullable type | True
 Field property is public | True
+Field property has private setter | False
 
 #### Gender (NormalField)
 Setting name | Value
 --|--
 Generate as nullable type | True
 Field property is public | True
+Field property has private setter | False
 
 #### Guid (NormalField)
 Setting name | Value
 --|--
 Generate as nullable type | True
 Field property is public | True
+Field property has private setter | False
 
 #### Id (NormalField)
 Setting name | Value
 --|--
 Generate as nullable type | True
 Field property is public | True
+Field property has private setter | False
 
 #### LastLoginOn (NormalField)
 Setting name | Value
 --|--
 Generate as nullable type | True
 Field property is public | True
+Field property has private setter | False
 
 #### LastName (NormalField)
 Setting name | Value
 --|--
 Generate as nullable type | True
 Field property is public | True
+Field property has private setter | False
 
 #### LockoutEndDateUtc (NormalField)
 Setting name | Value
 --|--
 Generate as nullable type | True
 Field property is public | True
+Field property has private setter | False
 
 #### MiddleName (NormalField)
 Setting name | Value
 --|--
 Generate as nullable type | True
 Field property is public | True
+Field property has private setter | False
 
 #### ModifiedOn (NormalField)
 Setting name | Value
 --|--
 Generate as nullable type | True
 Field property is public | True
+Field property has private setter | False
 
 #### Nickname (NormalField)
 Setting name | Value
 --|--
 Generate as nullable type | True
 Field property is public | True
+Field property has private setter | False
 
 #### PasswordHash (NormalField)
 Setting name | Value
 --|--
 Generate as nullable type | True
 Field property is public | True
+Field property has private setter | False
 
 #### PhoneNumber (NormalField)
 Setting name | Value
 --|--
 Generate as nullable type | True
 Field property is public | True
+Field property has private setter | False
 
 #### PhoneNumber2 (NormalField)
 Setting name | Value
 --|--
 Generate as nullable type | True
 Field property is public | True
+Field property has private setter | False
 
 #### PhoneNumberConfirmedOn (NormalField)
 Setting name | Value
 --|--
 Generate as nullable type | True
 Field property is public | True
+Field property has private setter | False
 
 #### Remarks (NormalField)
 Setting name | Value
 --|--
 Generate as nullable type | True
 Field property is public | True
+Field property has private setter | False
 
 #### Title (NormalField)
 Setting name | Value
 --|--
 Generate as nullable type | True
 Field property is public | True
+Field property has private setter | False
 
 #### UserName (NormalField)
 Setting name | Value
 --|--
 Generate as nullable type | True
 Field property is public | True
+Field property has private setter | False
 
 #### IdentityUserClaims (NavigatorCollection)
 Setting name | Value

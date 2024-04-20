@@ -4,8 +4,8 @@
 This information is generated from the project `TournamentManager`, using the file `D:\Internet\Websites\League\Src\TournamentManager\DAL\TournamentManager.llblgenproj`. 
 
 --|--
-Generated on | 12-Jan-2023
-Using LLBLGen Pro version | LLBLGen Pro v5.9 RTM (v5.9.2)
+Generated on | 20-Apr-2024
+Using LLBLGen Pro version | LLBLGen Pro v5.11 RTM (v5.11.1)
 Project creator | axuno gGmbH
 Project name | TournamentManager
 

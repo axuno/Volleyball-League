@@ -72,54 +72,63 @@ Setting name | Value
 --|--
 Generate as nullable type | True
 Field property is public | True
+Field property has private setter | False
 
 #### HomeTeamId (NormalField)
 Setting name | Value
 --|--
 Generate as nullable type | True
 Field property is public | True
+Field property has private setter | False
 
 #### Id (NormalField)
 Setting name | Value
 --|--
 Generate as nullable type | True
 Field property is public | True
+Field property has private setter | False
 
 #### IsGenerated (NormalField)
 Setting name | Value
 --|--
 Generate as nullable type | True
 Field property is public | True
+Field property has private setter | False
 
 #### MatchEndTime (NormalField)
 Setting name | Value
 --|--
 Generate as nullable type | True
 Field property is public | True
+Field property has private setter | False
 
 #### MatchStartTime (NormalField)
 Setting name | Value
 --|--
 Generate as nullable type | True
 Field property is public | True
+Field property has private setter | False
 
 #### ModifiedOn (NormalField)
 Setting name | Value
 --|--
 Generate as nullable type | True
 Field property is public | True
+Field property has private setter | False
 
 #### TournamentId (NormalField)
 Setting name | Value
 --|--
 Generate as nullable type | True
 Field property is public | True
+Field property has private setter | False
 
 #### VenueId (NormalField)
 Setting name | Value
 --|--
 Generate as nullable type | True
 Field property is public | True
+Field property has private setter | False
 
 #### Team (NavigatorSingleValue)
 Setting name | Value

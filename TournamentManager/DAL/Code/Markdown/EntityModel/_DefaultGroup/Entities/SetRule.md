@@ -79,78 +79,91 @@ Setting name | Value
 --|--
 Generate as nullable type | True
 Field property is public | True
+Field property has private setter | False
 
 #### Id (NormalField)
 Setting name | Value
 --|--
 Generate as nullable type | True
 Field property is public | True
+Field property has private setter | False
 
 #### MaxSubstitutions (NormalField)
 Setting name | Value
 --|--
 Generate as nullable type | True
 Field property is public | True
+Field property has private setter | False
 
 #### MaxTimeouts (NormalField)
 Setting name | Value
 --|--
 Generate as nullable type | True
 Field property is public | True
+Field property has private setter | False
 
 #### ModifiedOn (NormalField)
 Setting name | Value
 --|--
 Generate as nullable type | True
 Field property is public | True
+Field property has private setter | False
 
 #### Name (NormalField)
 Setting name | Value
 --|--
 Generate as nullable type | True
 Field property is public | True
+Field property has private setter | False
 
 #### NumOfPointsToWinRegular (NormalField)
 Setting name | Value
 --|--
 Generate as nullable type | True
 Field property is public | True
+Field property has private setter | False
 
 #### NumOfPointsToWinTiebreak (NormalField)
 Setting name | Value
 --|--
 Generate as nullable type | True
 Field property is public | True
+Field property has private setter | False
 
 #### PointsDiffToWinRegular (NormalField)
 Setting name | Value
 --|--
 Generate as nullable type | True
 Field property is public | True
+Field property has private setter | False
 
 #### PointsDiffToWinTiebreak (NormalField)
 Setting name | Value
 --|--
 Generate as nullable type | True
 Field property is public | True
+Field property has private setter | False
 
 #### PointsSetLost (NormalField)
 Setting name | Value
 --|--
 Generate as nullable type | True
 Field property is public | True
+Field property has private setter | False
 
 #### PointsSetTie (NormalField)
 Setting name | Value
 --|--
 Generate as nullable type | True
 Field property is public | True
+Field property has private setter | False
 
 #### PointsSetWon (NormalField)
 Setting name | Value
 --|--
 Generate as nullable type | True
 Field property is public | True
+Field property has private setter | False
 
 #### Rounds (NavigatorCollection)
 Setting name | Value

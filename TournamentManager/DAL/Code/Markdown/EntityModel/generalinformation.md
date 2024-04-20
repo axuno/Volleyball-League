@@ -64,7 +64,7 @@ Typed view output type default | PocoWithQuerySpecQuery
 
 --|--
 Target language | C#
-Target platform | .NET Standard 2.1
+Target platform | .NET 8
 Root namespace | TournamentManager.DAL
 Template group | Adapter
 Selected preset | SD.Presets.Adapter.General.Netstandard

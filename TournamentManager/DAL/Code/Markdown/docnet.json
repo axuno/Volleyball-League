@@ -3,7 +3,7 @@
 	"Source": ".",
 	"Destination": "..\\Site\\",
 	"Theme": "Light",
-	"Footer" : "TournamentManager Model Documentation. &copy;2023 axuno gGmbH",
+	"Footer" : "TournamentManager Model Documentation. &copy;2024 axuno gGmbH",
 	"MaxLevelInToC": 3,
 	"Pages": 
 	{
