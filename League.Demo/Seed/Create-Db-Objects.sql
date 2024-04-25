@@ -90,25 +90,40 @@ BEGIN
   RETURN ROUND(@geo1.STDistance(@geo2)/1000, 3); /* result in kilometers */
 END
 GO
-/****** Object:  UserDefinedFunction [dbo].[Weekday]    Script Date: 06.08.2023 20:51:06 ******/
+/****** Object:  UserDefinedFunction [dbo].[Weekday]    Script Date: 25.04.2024 20:45:00 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
-CREATE FUNCTION [dbo].[Weekday] (@dow int
-)
+CREATE FUNCTION dbo.[Weekday] (@dow int)
 RETURNS nvarchar(15)
 WITH EXECUTE AS CALLER
 AS
 BEGIN
-  If @dow = 0 RETURN 'Sonntag'
-  Else If @dow = 1 RETURN 'Montag'
-    Else If @dow = 2 RETURN 'Dienstag'
-      Else If @dow = 3 RETURN 'Mittwoch'
-        Else If @dow = 4 RETURN 'Donnerstag'
-          Else If @dow = 5 RETURN 'Freitag'
-            Else If @dow = 6 RETURN 'Samstag'
-  Return ''
+	-- NOTE: To return the name in a specific language, use: SET LANGUAGE '<name>' in the caller. You cannet set it in a UDF.
+    DECLARE @weekday nvarchar(15)
+
+	IF @dow >= 0 AND @dow <=6
+		SET @weekday = DATENAME(WEEKDAY, DATEADD(DAY, @dow, '2023-10-01')); /* 2023-10-01 is a Sunday */
+    ELSE
+		SET @weekday = '';
+        
+    RETURN @weekday
+END
+GO
+/****** Object:  UserDefinedFunction [dbo].[UtcToLocal]    Script Date: 25.04.2024 20:45:00 ******/
+SET ANSI_NULLS ON
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE FUNCTION UtcToLocal (@UtcDateTime datetime2, @TimeZoneIdentifier nvarchar(100) = 'W. Europe Standard Time')
+RETURNS datetime2
+AS
+BEGIN
+    DECLARE @LocalDateTime datetime2;
+
+    SET @LocalDateTime = @UtcDateTime AT TIME ZONE 'UTC' AT TIME ZONE @TimeZoneIdentifier;
+
+    RETURN @LocalDateTime;
 END
 GO
 /****** Object:  Table [dbo].[Match]    Script Date: 06.08.2023 20:51:06 ******/
@@ -587,6 +602,8 @@ select
   round.TournamentId AS TournamentId,
   match.RoundId AS RoundId,
   round.Description AS RoundDescription,
+  RoundLeg.SequenceNo AS LegSequenceNo,
+  roundleg.Description AS LegDescription,
   team.Id AS TeamId,
   team.Name AS TeamName,
   teamguest.Id AS OpponentId,
@@ -602,13 +619,16 @@ from
   join team on ((match.HomeTeamId = team.Id)))
   join team teamguest on ((match.GuestTeamId = teamguest.Id)))
   join venue on ((match.VenueId = venue.Id)))
-  join round on ((match.RoundId = round.Id)))
+  join round on ((match.RoundId = round.Id))
+  join roundleg on (match.RoundId = RoundLeg.RoundId and match.LegSequenceNo = roundleg.SequenceNo))
 union
 select
   match.Id AS MatchId,
   round.TournamentId AS TournamentId,
   match.RoundId AS RoundId,
   round.Description AS RoundDescription,
+  RoundLeg.SequenceNo AS LegSequenceNo,
+  roundleg.Description AS LegDescription,
   teamguest.Id AS TeamId,
   teamguest.Name AS TeamName,
   team.Id AS OpponentId,
@@ -624,9 +644,10 @@ from
   join team on ((match.HomeTeamId = team.Id)))
   join team teamguest on ((match.GuestTeamId = teamguest.Id)))
   join venue on ((match.VenueId = venue.Id)))
-  join round on ((match.RoundId = round.Id)))
+  join round on ((match.RoundId = round.Id))
+  join roundleg on (match.RoundId = RoundLeg.RoundId and match.LegSequenceNo = roundleg.SequenceNo))
 GO
-/****** Object:  View [dbo].[m_TeamsNotInLastRound]    Script Date: 06.08.2023 20:51:06 ******/
+/****** Object:  View [dbo].[m_TeamsNotInLastRound]    Script Date: 25.04.2024 20:45:00 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
