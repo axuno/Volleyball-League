@@ -115,7 +115,7 @@ GO
 SET ANSI_NULLS ON
 SET QUOTED_IDENTIFIER ON
 GO
-CREATE FUNCTION UtcToLocal (@UtcDateTime datetime2, @TimeZoneIdentifier nvarchar(100) = 'W. Europe Standard Time')
+CREATE FUNCTION [dbo].[UtcToLocal] (@UtcDateTime datetime2, @TimeZoneIdentifier nvarchar(100) = 'W. Europe Standard Time')
 RETURNS datetime2
 AS
 BEGIN
