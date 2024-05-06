@@ -10,7 +10,7 @@ module.exports = function (grunt) {
     const sass = require('node-sass'); // used in grunt-sass options, must be included in package.json
 
     grunt.loadNpmTasks('grunt-sass');
-    grunt.loadNpmTasks('grunt-postcss');
+    grunt.loadNpmTasks('@lodder/grunt-postcss'); // grunt-postcss is retired, use @lodder/grunt-postcss
     grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks('grunt-contrib-concat');
     grunt.loadNpmTasks('grunt-contrib-copy');
@@ -38,10 +38,10 @@ module.exports = function (grunt) {
         // Postcss
         postcss: {
             options: {
-                // map: true, // inline sourcemaps
+                // map: true, // inline source maps
                 // or
                 map: {
-                    inline: false, // save all sourcemaps as separate files...
+                    inline: false, // save all source maps as separate files...
                     annotation: 'wwwroot/css/maps/', // ...to the specified directory relative to the project root
                     sourcesContent: true // whether original contents (e.g. Sass sources) will be included to a sourcemap. 
                 },
