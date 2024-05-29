@@ -234,7 +234,7 @@ public class TournamentCreator
         if (!await _appDb.MatchRepository.AllMatchesCompletedAsync(new TournamentEntity(tournamentId), cancellationToken))
         {
             var ex = new InvalidOperationException($@"Tournament {tournamentId} contains incomplete matches.");
-            _logger.LogCritical(@"Tournament {tournamentId} contains incomplete matches. {exception}", tournamentId, ex);
+            _logger.LogCritical(@"Tournament {TournamentId} contains incomplete matches. {Exception}", tournamentId, ex);
             throw ex;
         }
 
@@ -253,10 +253,10 @@ public class TournamentCreator
         if (!await da.SaveEntityAsync(tournament, true, true, cancellationToken))
         {
             var ex = new InvalidOperationException($"Tournament Id {tournamentId} could not be saved to persistent storage.");
-            _logger.LogCritical(@"Tournament Id {tournamentId} could not be saved to persistent storage. {exception}", tournamentId, ex);
+            _logger.LogCritical(@"Tournament Id {TournamentId} could not be saved to persistent storage. {Exception}", tournamentId, ex);
             throw ex;
         }
-        _logger.LogInformation("Tournament {tournament} set as completed.", tournament);
+        _logger.LogInformation("Tournament {Tournament} set as completed.", tournament);
     }
 
     public virtual async Task SetRoundCompleted(RoundEntity round, CancellationToken cancellationToken)
@@ -264,7 +264,7 @@ public class TournamentCreator
         if (!await _appDb.MatchRepository.AllMatchesCompletedAsync(round, cancellationToken))
         {
             var ex = new InvalidOperationException($"Round {round.Id} has uncompleted matches.");
-            _logger.LogCritical(@"Round {roundId} has uncompleted matches. {exception}", round.Id, ex);
+            _logger.LogCritical(@"Round {RoundId} has uncompleted matches. {Exception}", round.Id, ex);
             throw ex;
         }
 
