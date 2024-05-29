@@ -1,260 +1,262 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
-  <PropertyGroup>
-    <Product>Volleyball-League</Product>
-    <TargetFramework>net8.0</TargetFramework>
-    <AssemblyName>League</AssemblyName>
-    <RootNamespace>League</RootNamespace>
-    <UserSecretsId>ceea2bf6-8147-49b9-be85-26fca01f9ed3</UserSecretsId>
-    <NeutralLanguage>en</NeutralLanguage>
-    <PackageId>Volleyball-League</PackageId>
-    <Description>Volleyball League is an open source sports platform that brings everything necessary to organize and to run a league.
+    <PropertyGroup>
+        <Product>Volleyball-League</Product>
+        <TargetFramework>net8.0</TargetFramework>
+        <AssemblyName>League</AssemblyName>
+        <RootNamespace>League</RootNamespace>
+        <UserSecretsId>ceea2bf6-8147-49b9-be85-26fca01f9ed3</UserSecretsId>
+        <NeutralLanguage>en</NeutralLanguage>
+        <PackageId>Volleyball-League</PackageId>
+        <Description>Volleyball League is an open source sports platform that brings everything necessary to organize and to run a league.
 Localizations for English and German are included. The library is in operation on platform https://volleyball-liga.de/
         </Description>
-    <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <PackageProjectUrl>https://github.com/axuno/Volleyball-League</PackageProjectUrl>
-    <RepositoryType>Git</RepositoryType>
-    <PackageTags>competition platform league asp-net sport volleyball net60</PackageTags>
-    <PackageReleaseNotes>
-    </PackageReleaseNotes>
-    <IsPackable>true</IsPackable>
-    <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
-    <GenerateEmbeddedFilesManifest>true</GenerateEmbeddedFilesManifest>
-    <!-- With dotnet, add parameter: -p:SatelliteResourceLanguages="""en;de""" -->
-    <SatelliteResourceLanguages>en;de</SatelliteResourceLanguages>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <!-- AD0001 warning comes from depreciated Microsoft.AspNetCore.Mvc.Analyzers (transitive reference) -->
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <PackageProjectUrl>https://github.com/axuno/Volleyball-League</PackageProjectUrl>
+        <RepositoryType>Git</RepositoryType>
+        <PackageTags>competition platform league asp-net sport volleyball net60</PackageTags>
+        <PackageReleaseNotes>
+        </PackageReleaseNotes>
+        <IsPackable>true</IsPackable>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+        <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+        <GenerateEmbeddedFilesManifest>true</GenerateEmbeddedFilesManifest>
+        <!-- If true (default), NuGetizer will apply the shortened revision ID to the package version during the packing process. -->
+        <UseShortSourceRevisionId>false</UseShortSourceRevisionId>
+        <!-- With dotnet, add parameter: -p:SatelliteResourceLanguages="""en;de""" -->
+        <SatelliteResourceLanguages>en;de</SatelliteResourceLanguages>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <!-- AD0001 warning comes from depreciated Microsoft.AspNetCore.Mvc.Analyzers (transitive reference) -->
     <NoWarn>$(NoWarn);AD0001;NETSDK1206</NoWarn>
-  </PropertyGroup>
-  <PropertyGroup>
-    <AddRazorSupportForMvc>true</AddRazorSupportForMvc>
-    <!-- Use path "/" instead of "_content/League" for embedded assets of the RCL -->
-    <StaticWebAssetBasePath Condition="$(StaticWebAssetBasePath) == ''">/</StaticWebAssetBasePath>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <OutputPath>bin\Release\</OutputPath>
-    <WarningLevel>3</WarningLevel>
-    <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
-    <Deterministic>true</Deterministic>
-    <PublishRepositoryUrl>true</PublishRepositoryUrl>
-    <EmbedUntrackedSources>true</EmbedUntrackedSources>
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>portable</DebugType>
-    <IncludeSymbols>true</IncludeSymbols>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-  </PropertyGroup>
-  <ItemGroup>
-    <Using Include="System.Globalization" />
-    <Using Include="Microsoft.AspNetCore.Authorization" />
-    <Using Include="Microsoft.AspNetCore.Builder" />
-    <Using Include="Microsoft.AspNetCore.Hosting" />
-    <Using Include="Microsoft.AspNetCore.Hosting" />
-    <Using Include="Microsoft.AspNetCore.Http" />
-    <Using Include="Microsoft.AspNetCore.Identity" />
-    <Using Include="Microsoft.AspNetCore.Localization" />
-    <Using Include="Microsoft.AspNetCore.Mvc" />
-    <Using Include="Microsoft.AspNetCore.Mvc.Localization" />
-    <Using Include="Microsoft.AspNetCore.Routing" />
-    <Using Include="Microsoft.Extensions.Configuration" />
-    <Using Include="Microsoft.Extensions.DependencyInjection" />
-    <Using Include="Microsoft.Extensions.Hosting" />
-    <Using Include="Microsoft.Extensions.Localization" />
-    <Using Include="Microsoft.Extensions.Logging" />
-    <Using Include="Microsoft.Extensions.Options" />
-  </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="Axuno.TextTemplating" Version="2.0.1" />
-    <PackageReference Include="JSNLog" Version="3.0.3" />
-    <PackageReference Include="MailMergeLib" Version="5.11.1" />
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.Facebook" Version="8.0.4" />
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="8.0.4" />
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.MicrosoftAccount" Version="8.0.4" />
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="8.0.4" />
-    <PackageReference Include="Microsoft.DotNet.PlatformAbstractions" Version="3.1.6" />
-    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.2" />
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-    <PackageReference Include="NLog" Version="5.2.8" />
-    <PackageReference Include="NLog.Web.AspNetCore" Version="5.3.8" />
-    <PackageReference Include="NuGetizer" Version="1.2.1">
-      <PrivateAssets>all</PrivateAssets>
-      <PackEmbeddedResource>true</PackEmbeddedResource>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-    <PackageReference Include="PuppeteerSharp" Version="9.1.0" />
-    <PackageReference Include="StackifyMiddleware" Version="3.3.3.4767" />
-    <PackageReference Include="System.Data.SqlClient" Version="4.8.6" />
-    <PackageReference Include="System.Net.Http" Version="4.3.4" />
-    <PackageReference Include="System.Security.Cryptography.Xml" Version="8.0.0" />
-    <PackageReference Include="System.Text.RegularExpressions" Version="4.3.1" />
-  </ItemGroup>
-  <ItemGroup>
-    <DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="2.0.3" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Axuno.BackgroundTask\Axuno.BackgroundTask.csproj" />
-    <ProjectReference Include="..\Axuno.Web\Axuno.Web.csproj" />
-    <ProjectReference Include="..\TournamentManager\DAL\DatabaseGeneric\TournamentManager.DAL.DbGeneric.csproj" />
-    <ProjectReference Include="..\TournamentManager\DAL\DatabaseSpecific\TournamentManager.DAL.DBSpecific.csproj" />
-    <ProjectReference Include="..\TournamentManager\TournamentManager\TournamentManager.csproj" />
-  </ItemGroup>
-  <ItemGroup>
-    <!-- Packages to include by NuGetizer -->
-    <PackDependencies Include="..\Axuno.BackgroundTask\Axuno.BackgroundTask.csproj" />
-    <PackDependencies Include="..\Axuno.Web\Axuno.Web.csproj" />
-    <PackDependencies Include="..\TournamentManager\DAL\DatabaseGeneric\TournamentManager.DAL.DbGeneric.csproj" />
-    <PackDependencies Include="..\TournamentManager\DAL\DatabaseSpecific\TournamentManager.DAL.DBSpecific.csproj" />
-    <PackDependencies Include="..\TournamentManager\TournamentManager\TournamentManager.csproj" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Update="Configuration\*.*">
-      <!-- Avoid conflicts with the Configuration of the Web app -->
-      <!-- Options are: Always | Never | PreserveNewest -->
-      <CopyToPublishDirectory>Never</CopyToPublishDirectory>
-    </Content>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Update="Models\ErrorViewModels\StatusCodes.Designer.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>StatusCodes.resx</DependentUpon>
-    </Compile>
-    <Compile Update="Models\ErrorViewModels\StatusDescriptions.Designer.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>StatusDescriptions.resx</DependentUpon>
-    </Compile>
-    <Compile Update="Resources\DataAnnotationResource.Designer.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>DataAnnotationResource.resx</DependentUpon>
-    </Compile>
-    <Compile Update="Resources\ModelBindingMessageResource.Designer.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>ModelBindingMessageResource.resx</DependentUpon>
-    </Compile>
-    <Compile Update="Templates\Email\Localization\EmailResource.Designer.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>EmailResource.resx</DependentUpon>
-    </Compile>
-    <Compile Update="Views\Role\_AddMemberModalPartial - Copy.Designer.cs">
-      <DependentUpon>_AddMemberModalPartial.resx</DependentUpon>
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-    </Compile>
-    <Compile Update="Views\Role\_AddMemberModalPartial.Designer.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>_AddMemberModalPartial.resx</DependentUpon>
-    </Compile>
-    <Compile Update="Views\Role\_RemoveMemberModalPartial.Designer.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>_RemoveMemberModalPartial.resx</DependentUpon>
-    </Compile>
-    <Compile Update="Views\TeamApplication\_TeamApplicationMessagesPartial.Designer.cs">
-      <DependentUpon>_TeamApplicationMessagesPartial.resx</DependentUpon>
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-    </Compile>
-    <Compile Update="Views\Team\_MyTeamMessagesPartial.Designer.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>_MyTeamMessagesPartial.resx</DependentUpon>
-    </Compile>
-    <Compile Update="Views\ViewNames.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>ViewNames.tt</DependentUpon>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <None Update="Views\ViewNames.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>ViewNames.cs</LastGenOutput>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Update="Models\ErrorViewModels\StatusDescriptions.de.resx">
-      <Generator>PublicResXFileCodeGenerator</Generator>
-    </EmbeddedResource>
-    <EmbeddedResource Update="Models\ErrorViewModels\StatusCodes.de.resx">
-      <Generator>PublicResXFileCodeGenerator</Generator>
-    </EmbeddedResource>
-    <EmbeddedResource Update="Models\ErrorViewModels\StatusCodes.resx">
-      <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>StatusCodes.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Update="Models\ErrorViewModels\StatusDescriptions.resx">
-      <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>StatusDescriptions.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Update="Resources\DataAnnotationResource.resx">
-      <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>DataAnnotationResource.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Update="Resources\ModelBindingMessageResource.resx">
-      <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>ModelBindingMessageResource.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Update="Templates\Email\Localization\EmailResource.resx">
-      <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>EmailResource.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Update="Views\Role\_RemoveMemberModalPartial.resx">
-      <LastGenOutput>_RemoveMemberModalPartial.Designer.cs</LastGenOutput>
-      <Generator>PublicResXFileCodeGenerator</Generator>
-    </EmbeddedResource>
-    <EmbeddedResource Update="Views\Role\_AddMemberModalPartial.resx">
-      <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>_AddMemberModalPartial.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Update="Views\TeamApplication\_TeamApplicationMessagesPartial.resx">
-      <LastGenOutput>_TeamApplicationMessagesPartial.Designer.cs</LastGenOutput>
-      <Generator>PublicResXFileCodeGenerator</Generator>
-    </EmbeddedResource>
-    <EmbeddedResource Update="Views\Team\_MyTeamMessagesPartial.resx">
-      <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>_MyTeamMessagesPartial.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Templates\Email\**\*.tpl" />
-  </ItemGroup>
-  <ItemGroup>
-    <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
-  </ItemGroup>
-  <ItemGroup>
-    <!-- Exclude resource from package as content files -->
-    <Content Remove="Properties\launchSettings.json" />
-    <None Include="Properties\launchSettings.json" />
-  </ItemGroup>
-  <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
-    <TypeScriptTarget>ES5</TypeScriptTarget>
-    <TypeScriptJSXEmit>React</TypeScriptJSXEmit>
-    <TypeScriptModuleKind>AMD</TypeScriptModuleKind>
-    <TypeScriptCompileOnSaveEnabled>True</TypeScriptCompileOnSaveEnabled>
-    <TypeScriptNoImplicitAny>False</TypeScriptNoImplicitAny>
-    <TypeScriptRemoveComments>False</TypeScriptRemoveComments>
-    <TypeScriptOutFile />
-    <TypeScriptOutDir />
-    <TypeScriptGeneratesDeclarations>False</TypeScriptGeneratesDeclarations>
-    <TypeScriptNoEmitOnError>True</TypeScriptNoEmitOnError>
-    <TypeScriptSourceMap>True</TypeScriptSourceMap>
-    <TypeScriptMapRoot />
-    <TypeScriptSourceRoot />
-  </PropertyGroup>
-  <!-- Custom PropertyGroup to add the Environment name during publish. The EnvironmentName property is used for the 'Environment' variable in web.config when publishing. -->
-  <PropertyGroup Condition=" '$(Configuration)' == '' Or '$(Configuration)' == 'Debug'">
-    <EnvironmentName>Development</EnvironmentName>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)' != '' AND '$(Configuration)' != 'Debug' ">
-    <EnvironmentName>Production</EnvironmentName>
-  </PropertyGroup>
+    </PropertyGroup>
+    <PropertyGroup>
+        <AddRazorSupportForMvc>true</AddRazorSupportForMvc>
+        <!-- Use path "/" instead of "_content/League" for embedded assets of the RCL -->
+        <StaticWebAssetBasePath Condition="$(StaticWebAssetBasePath) == ''">/</StaticWebAssetBasePath>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+        <OutputPath>bin\Release\</OutputPath>
+        <WarningLevel>3</WarningLevel>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+        <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
+        <Deterministic>true</Deterministic>
+        <PublishRepositoryUrl>true</PublishRepositoryUrl>
+        <EmbedUntrackedSources>true</EmbedUntrackedSources>
+        <DebugSymbols>true</DebugSymbols>
+        <DebugType>portable</DebugType>
+        <IncludeSymbols>true</IncludeSymbols>
+        <DefineConstants>DEBUG;TRACE</DefineConstants>
+    </PropertyGroup>
+    <ItemGroup>
+        <Using Include="System.Globalization" />
+        <Using Include="Microsoft.AspNetCore.Authorization" />
+        <Using Include="Microsoft.AspNetCore.Builder" />
+        <Using Include="Microsoft.AspNetCore.Hosting" />
+        <Using Include="Microsoft.AspNetCore.Hosting" />
+        <Using Include="Microsoft.AspNetCore.Http" />
+        <Using Include="Microsoft.AspNetCore.Identity" />
+        <Using Include="Microsoft.AspNetCore.Localization" />
+        <Using Include="Microsoft.AspNetCore.Mvc" />
+        <Using Include="Microsoft.AspNetCore.Mvc.Localization" />
+        <Using Include="Microsoft.AspNetCore.Routing" />
+        <Using Include="Microsoft.Extensions.Configuration" />
+        <Using Include="Microsoft.Extensions.DependencyInjection" />
+        <Using Include="Microsoft.Extensions.Hosting" />
+        <Using Include="Microsoft.Extensions.Localization" />
+        <Using Include="Microsoft.Extensions.Logging" />
+        <Using Include="Microsoft.Extensions.Options" />
+    </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="Axuno.TextTemplating" Version="2.0.1" />
+        <PackageReference Include="JSNLog" Version="3.0.3" />
+        <PackageReference Include="MailMergeLib" Version="5.11.1" />
+        <PackageReference Include="Microsoft.AspNetCore.Authentication.Facebook" Version="8.0.4" />
+        <PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="8.0.4" />
+        <PackageReference Include="Microsoft.AspNetCore.Authentication.MicrosoftAccount" Version="8.0.4" />
+        <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="8.0.4" />
+        <PackageReference Include="Microsoft.DotNet.PlatformAbstractions" Version="3.1.6" />
+        <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+        <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.2" />
+        <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+        <PackageReference Include="NLog" Version="5.2.8" />
+        <PackageReference Include="NLog.Web.AspNetCore" Version="5.3.8" />
+        <PackageReference Include="NuGetizer" Version="1.2.1">
+            <PrivateAssets>all</PrivateAssets>
+            <PackEmbeddedResource>true</PackEmbeddedResource>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+        <PackageReference Include="PuppeteerSharp" Version="9.1.0" />
+        <PackageReference Include="StackifyMiddleware" Version="3.3.3.4767" />
+        <PackageReference Include="System.Data.SqlClient" Version="4.8.6" />
+        <PackageReference Include="System.Net.Http" Version="4.3.4" />
+        <PackageReference Include="System.Security.Cryptography.Xml" Version="8.0.0" />
+        <PackageReference Include="System.Text.RegularExpressions" Version="4.3.1" />
+    </ItemGroup>
+    <ItemGroup>
+        <DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="2.0.3" />
+    </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\Axuno.BackgroundTask\Axuno.BackgroundTask.csproj" />
+        <ProjectReference Include="..\Axuno.Web\Axuno.Web.csproj" />
+        <ProjectReference Include="..\TournamentManager\DAL\DatabaseGeneric\TournamentManager.DAL.DbGeneric.csproj" />
+        <ProjectReference Include="..\TournamentManager\DAL\DatabaseSpecific\TournamentManager.DAL.DBSpecific.csproj" />
+        <ProjectReference Include="..\TournamentManager\TournamentManager\TournamentManager.csproj" />
+    </ItemGroup>
+    <ItemGroup>
+        <!-- Packages to include by NuGetizer -->
+        <PackDependencies Include="..\Axuno.BackgroundTask\Axuno.BackgroundTask.csproj" />
+        <PackDependencies Include="..\Axuno.Web\Axuno.Web.csproj" />
+        <PackDependencies Include="..\TournamentManager\DAL\DatabaseGeneric\TournamentManager.DAL.DbGeneric.csproj" />
+        <PackDependencies Include="..\TournamentManager\DAL\DatabaseSpecific\TournamentManager.DAL.DBSpecific.csproj" />
+        <PackDependencies Include="..\TournamentManager\TournamentManager\TournamentManager.csproj" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Update="Configuration\*.*">
+            <!-- Avoid conflicts with the Configuration of the Web app -->
+            <!-- Options are: Always | Never | PreserveNewest -->
+            <CopyToPublishDirectory>Never</CopyToPublishDirectory>
+        </Content>
+    </ItemGroup>
+    <ItemGroup>
+        <Compile Update="Models\ErrorViewModels\StatusCodes.Designer.cs">
+            <DesignTime>True</DesignTime>
+            <AutoGen>True</AutoGen>
+            <DependentUpon>StatusCodes.resx</DependentUpon>
+        </Compile>
+        <Compile Update="Models\ErrorViewModels\StatusDescriptions.Designer.cs">
+            <DesignTime>True</DesignTime>
+            <AutoGen>True</AutoGen>
+            <DependentUpon>StatusDescriptions.resx</DependentUpon>
+        </Compile>
+        <Compile Update="Resources\DataAnnotationResource.Designer.cs">
+            <DesignTime>True</DesignTime>
+            <AutoGen>True</AutoGen>
+            <DependentUpon>DataAnnotationResource.resx</DependentUpon>
+        </Compile>
+        <Compile Update="Resources\ModelBindingMessageResource.Designer.cs">
+            <DesignTime>True</DesignTime>
+            <AutoGen>True</AutoGen>
+            <DependentUpon>ModelBindingMessageResource.resx</DependentUpon>
+        </Compile>
+        <Compile Update="Templates\Email\Localization\EmailResource.Designer.cs">
+            <DesignTime>True</DesignTime>
+            <AutoGen>True</AutoGen>
+            <DependentUpon>EmailResource.resx</DependentUpon>
+        </Compile>
+        <Compile Update="Views\Role\_AddMemberModalPartial - Copy.Designer.cs">
+            <DependentUpon>_AddMemberModalPartial.resx</DependentUpon>
+            <DesignTime>True</DesignTime>
+            <AutoGen>True</AutoGen>
+        </Compile>
+        <Compile Update="Views\Role\_AddMemberModalPartial.Designer.cs">
+            <DesignTime>True</DesignTime>
+            <AutoGen>True</AutoGen>
+            <DependentUpon>_AddMemberModalPartial.resx</DependentUpon>
+        </Compile>
+        <Compile Update="Views\Role\_RemoveMemberModalPartial.Designer.cs">
+            <DesignTime>True</DesignTime>
+            <AutoGen>True</AutoGen>
+            <DependentUpon>_RemoveMemberModalPartial.resx</DependentUpon>
+        </Compile>
+        <Compile Update="Views\TeamApplication\_TeamApplicationMessagesPartial.Designer.cs">
+            <DependentUpon>_TeamApplicationMessagesPartial.resx</DependentUpon>
+            <DesignTime>True</DesignTime>
+            <AutoGen>True</AutoGen>
+        </Compile>
+        <Compile Update="Views\Team\_MyTeamMessagesPartial.Designer.cs">
+            <DesignTime>True</DesignTime>
+            <AutoGen>True</AutoGen>
+            <DependentUpon>_MyTeamMessagesPartial.resx</DependentUpon>
+        </Compile>
+        <Compile Update="Views\ViewNames.cs">
+            <DesignTime>True</DesignTime>
+            <AutoGen>True</AutoGen>
+            <DependentUpon>ViewNames.tt</DependentUpon>
+        </Compile>
+    </ItemGroup>
+    <ItemGroup>
+        <None Update="Views\ViewNames.tt">
+            <Generator>TextTemplatingFileGenerator</Generator>
+            <LastGenOutput>ViewNames.cs</LastGenOutput>
+        </None>
+    </ItemGroup>
+    <ItemGroup>
+        <EmbeddedResource Update="Models\ErrorViewModels\StatusDescriptions.de.resx">
+            <Generator>PublicResXFileCodeGenerator</Generator>
+        </EmbeddedResource>
+        <EmbeddedResource Update="Models\ErrorViewModels\StatusCodes.de.resx">
+            <Generator>PublicResXFileCodeGenerator</Generator>
+        </EmbeddedResource>
+        <EmbeddedResource Update="Models\ErrorViewModels\StatusCodes.resx">
+            <Generator>PublicResXFileCodeGenerator</Generator>
+            <LastGenOutput>StatusCodes.Designer.cs</LastGenOutput>
+        </EmbeddedResource>
+        <EmbeddedResource Update="Models\ErrorViewModels\StatusDescriptions.resx">
+            <Generator>PublicResXFileCodeGenerator</Generator>
+            <LastGenOutput>StatusDescriptions.Designer.cs</LastGenOutput>
+        </EmbeddedResource>
+        <EmbeddedResource Update="Resources\DataAnnotationResource.resx">
+            <Generator>PublicResXFileCodeGenerator</Generator>
+            <LastGenOutput>DataAnnotationResource.Designer.cs</LastGenOutput>
+        </EmbeddedResource>
+        <EmbeddedResource Update="Resources\ModelBindingMessageResource.resx">
+            <Generator>PublicResXFileCodeGenerator</Generator>
+            <LastGenOutput>ModelBindingMessageResource.Designer.cs</LastGenOutput>
+        </EmbeddedResource>
+        <EmbeddedResource Update="Templates\Email\Localization\EmailResource.resx">
+            <Generator>PublicResXFileCodeGenerator</Generator>
+            <LastGenOutput>EmailResource.Designer.cs</LastGenOutput>
+        </EmbeddedResource>
+        <EmbeddedResource Update="Views\Role\_RemoveMemberModalPartial.resx">
+            <LastGenOutput>_RemoveMemberModalPartial.Designer.cs</LastGenOutput>
+            <Generator>PublicResXFileCodeGenerator</Generator>
+        </EmbeddedResource>
+        <EmbeddedResource Update="Views\Role\_AddMemberModalPartial.resx">
+            <Generator>PublicResXFileCodeGenerator</Generator>
+            <LastGenOutput>_AddMemberModalPartial.Designer.cs</LastGenOutput>
+        </EmbeddedResource>
+        <EmbeddedResource Update="Views\TeamApplication\_TeamApplicationMessagesPartial.resx">
+            <LastGenOutput>_TeamApplicationMessagesPartial.Designer.cs</LastGenOutput>
+            <Generator>PublicResXFileCodeGenerator</Generator>
+        </EmbeddedResource>
+        <EmbeddedResource Update="Views\Team\_MyTeamMessagesPartial.resx">
+            <Generator>PublicResXFileCodeGenerator</Generator>
+            <LastGenOutput>_MyTeamMessagesPartial.Designer.cs</LastGenOutput>
+        </EmbeddedResource>
+    </ItemGroup>
+    <ItemGroup>
+        <EmbeddedResource Include="Templates\Email\**\*.tpl" />
+    </ItemGroup>
+    <ItemGroup>
+        <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
+    </ItemGroup>
+    <ItemGroup>
+        <!-- Exclude resource from package as content files -->
+        <Content Remove="Properties\launchSettings.json" />
+        <None Include="Properties\launchSettings.json" />
+    </ItemGroup>
+    <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
+        <TypeScriptTarget>ES5</TypeScriptTarget>
+        <TypeScriptJSXEmit>React</TypeScriptJSXEmit>
+        <TypeScriptModuleKind>AMD</TypeScriptModuleKind>
+        <TypeScriptCompileOnSaveEnabled>True</TypeScriptCompileOnSaveEnabled>
+        <TypeScriptNoImplicitAny>False</TypeScriptNoImplicitAny>
+        <TypeScriptRemoveComments>False</TypeScriptRemoveComments>
+        <TypeScriptOutFile />
+        <TypeScriptOutDir />
+        <TypeScriptGeneratesDeclarations>False</TypeScriptGeneratesDeclarations>
+        <TypeScriptNoEmitOnError>True</TypeScriptNoEmitOnError>
+        <TypeScriptSourceMap>True</TypeScriptSourceMap>
+        <TypeScriptMapRoot />
+        <TypeScriptSourceRoot />
+    </PropertyGroup>
+    <!-- Custom PropertyGroup to add the Environment name during publish. The EnvironmentName property is used for the 'Environment' variable in web.config when publishing. -->
+    <PropertyGroup Condition=" '$(Configuration)' == '' Or '$(Configuration)' == 'Debug'">
+        <EnvironmentName>Development</EnvironmentName>
+    </PropertyGroup>
+    <PropertyGroup Condition=" '$(Configuration)' != '' AND '$(Configuration)' != 'Debug' ">
+        <EnvironmentName>Production</EnvironmentName>
+    </PropertyGroup>
 </Project>
