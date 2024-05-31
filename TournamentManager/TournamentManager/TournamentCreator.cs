@@ -305,7 +305,7 @@ public class TournamentCreator
         if (!await _appDb.MatchRepository.AllMatchesCompletedAsync(round, cancellationToken))
         {
             var ex = new InvalidOperationException($"Round {round.Id} has uncompleted matches.");
-            _logger.LogCritical(@"Round {RoundId} has uncompleted matches. {Exception}", round.Id, ex);
+            _logger.LogCritical(ex,@"Round {RoundId} has uncompleted matches.", round.Id);
             throw ex;
         }
 
