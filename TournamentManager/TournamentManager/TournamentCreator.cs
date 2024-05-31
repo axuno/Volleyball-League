@@ -20,6 +20,8 @@ public class TournamentCreator
     /// <param name="TargetName">The name for the target tournament.</param>
     /// <param name="TargetDescription">The description for the target tournament.</param>
     /// <param name="TargetLegDates">The leg dates to use for the target tournament round legs. The list cover maximum number of legs across akk rounds.</param>
+    /// <param name="RoundsToExclude">The round IDs to exclude from copy.</param>
+    /// <param name="DisableChecks">Disable safety checks.</param>
     /// <param name="ModifiedOn">The <see cref="DateTime"/> to use for CreatedOn / ModifiedOn of entities.</param>
     public record CopyTournamentArgs(
         long SourceTournamentId,
@@ -28,6 +30,7 @@ public class TournamentCreator
         string? TargetDescription,
         IList<(DateTime Start, DateTime End)> TargetLegDates,
         IList<long> RoundsToExclude,
+        bool DisableChecks,
         DateTime ModifiedOn);
 
     private readonly ILogger<TournamentCreator> _logger;
@@ -64,13 +67,14 @@ public class TournamentCreator
     /// new List&lt;(DateTime Start, DateTime End)&gt; {
     ///    (new DateTime(2024, 9, 23), new DateTime(2025, 2, 1)), // 1st leg
     ///    (new DateTime(2025, 2, 3), new DateTime(2025, 5, 30))  // 2nd leg
-    /// }, Array.Empty&lt;long&gt;(), DateTime.UtcNow);
+    /// }, Array.Empty&lt;long&gt;(), false, DateTime.UtcNow);
     ///         
     /// var success = await TournamentCreator
     ///    .Instance(AppDb, AppLogging.CreateLogger&lt;TournamentCreator&gt;())
     ///    .CreateNewFromSourceTournament(copyArgs, CancellationToken.None);
     /// </code>
     /// <returns><see langword="true"/>, if the new tournament was created successfully.</returns>
+    /// <exception cref="InvalidOperationException"></exception>
     public async Task<bool> CreateNewFromSourceTournament(CopyTournamentArgs copyArgs, CancellationToken cancellationToken)
     {
         if (copyArgs.SetSourceTournamentCompleted) await SetTournamentCompleted(copyArgs.SourceTournamentId, cancellationToken);
@@ -101,6 +105,7 @@ public class TournamentCreator
     /// <param name="copyArgs">The <see cref="CopyTournamentArgs"/> to be used.</param>
     /// <param name="cancellationToken"></param>
     /// <returns>A <see cref="ValueTuple"/> with the Source (unchanged) and the new Target <see cref="TournamentEntity"/>.</returns>
+    /// <exception cref="InvalidOperationException"></exception>
     internal async Task<(TournamentEntity Source, TournamentEntity Target)> CopyTournament (CopyTournamentArgs copyArgs, CancellationToken cancellationToken)
     {
         _modifiedOn = copyArgs.ModifiedOn;
@@ -108,6 +113,23 @@ public class TournamentCreator
             await _appDb.TournamentRepository.GetTournamentAsync(
                 new PredicateExpression(TournamentFields.Id == copyArgs.SourceTournamentId), CancellationToken.None)
             ?? throw new InvalidOperationException($"'{copyArgs.SourceTournamentId}' not found.");
+
+        if(copyArgs.DisableChecks)
+        {
+            _logger.LogWarning("Safety checks disabled.");
+        }
+        else
+        {
+            if (sourceTournament.IsPlanningMode)
+            {
+                throw new InvalidOperationException($"Source tournament {sourceTournament.Id} is in planning mode.");
+            }
+
+            if (sourceTournament.NextTournamentId.HasValue)
+            {
+                throw new InvalidOperationException($"Source tournament {sourceTournament.Id} has already a next tournament.");
+            }
+        }
 
         // Create the target tournament
         var targetTournament = new TournamentEntity
