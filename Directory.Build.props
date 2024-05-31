@@ -18,6 +18,8 @@
         <AnalysisLevel>latest</AnalysisLevel>
         <Features>strict</Features>
         <NoWarn>$(NoWarn);1591</NoWarn>
+        <!-- If true (default), NuGetizer will apply the shortened revision ID to the package version during the packing process. -->
+        <UseShortSourceRevisionId>false</UseShortSourceRevisionId>
     </PropertyGroup>
 
 </Project>

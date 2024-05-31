@@ -1,3 +1,4 @@
+using System.Data;
 using Microsoft.Extensions.Logging;
 using SD.LLBLGen.Pro.LinqSupportClasses;
 using SD.LLBLGen.Pro.ORMSupportClasses;
@@ -52,7 +53,6 @@ public class TournamentRepository
     public virtual async Task<EntityCollection<RoundEntity>> GetTournamentRoundsAsync(long tournamentId, CancellationToken cancellationToken)
     {
         using var da = _dbContext.GetNewAdapter();
-        //var selectedRounds = new EntityCollection<RoundEntity>();
         var metaData = new LinqMetaData(da);
 
         var q = await (from r in metaData.Round
@@ -60,6 +60,18 @@ public class TournamentRepository
             select r).ToListAsync(cancellationToken);
 
         var result = new EntityCollection<RoundEntity>(q);
+        return result;
+    }
+
+    public virtual async Task<List<long>> GetTournamentRoundIdsAsync(long tournamentId, CancellationToken cancellationToken)
+    {
+        using var da = _dbContext.GetNewAdapter();
+        var metaData = new LinqMetaData(da);
+
+        var result = await (from r in metaData.Round
+            where r.TournamentId == tournamentId
+            select r.Id).ToListAsync(cancellationToken);
+
         return result;
     }
 
@@ -86,5 +98,43 @@ public class TournamentRepository
         };
         await da.FetchEntityCollectionAsync(qp, cancellationToken);
         return t.FirstOrDefault();
+    }
+
+    internal virtual async Task<bool> SaveTournamentsAsync(TournamentEntity sourceTournament, TournamentEntity targetTournament, CancellationToken cancellationToken)
+    {
+        using var da = _dbContext.GetNewAdapter();
+
+        try
+        {
+            await da.StartTransactionAsync(IsolationLevel.ReadCommitted,
+                string.Concat(nameof(SaveTournamentsAsync), Guid.NewGuid().ToString("N")), cancellationToken);
+
+            await da.SaveEntityAsync(targetTournament, true, true, cancellationToken);
+
+            if (sourceTournament.NextTournamentId is null)
+            {
+                sourceTournament.NextTournamentId = targetTournament.Id;
+                sourceTournament.ModifiedOn = sourceTournament.ModifiedOn;
+                await da.SaveEntityAsync(sourceTournament, true, false, cancellationToken);
+                _logger.LogDebug("{Property} set to {NextTournamentId}", nameof(TournamentEntity.NextTournamentId), sourceTournament.NextTournamentId);
+            }
+            else
+            {
+                _logger.LogDebug("{Property} was already set to {NextTournamentId}", nameof(TournamentEntity.NextTournamentId), sourceTournament.NextTournamentId);
+            }
+
+            await da.CommitAsync(cancellationToken);
+            return true;
+        }
+        catch (Exception e)
+        {
+            _logger.LogCritical(e, "Error saving transaction for tournament IDs {TargetId} and {SourceId}",
+                targetTournament.Id, sourceTournament.Id);
+
+            if (da.IsTransactionInProgress)
+                da.Rollback();
+
+            return false;
+        }
     }
 }

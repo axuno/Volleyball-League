@@ -2,183 +2,221 @@
 using SD.LLBLGen.Pro.ORMSupportClasses;
 using TournamentManager.DAL.EntityClasses;
 using TournamentManager.DAL.HelperClasses;
-using TournamentManager.Data;
 using TournamentManager.MultiTenancy;
 
 namespace TournamentManager;
 
 /// <summary>
-/// The Copy class is used to copy an existing tournament
-/// to a new one. Usually, the sequence is as follows:
-/// 1. Copy the tournament e.g. from id 10 to 11:
-///    Copy.Tournament(10, 11);
-/// 2. Copy the rounds of a tournament:
-///    Copy.Round(10, 11, null);
-///    (Rounds not needed can be given in the list of 3rd parameter)
-/// 3. Copy the teams of tournament 
-///    and assign the teams to the rounds created in step 2:
-///    Copy.TeamsWithPersons(10, 11, null);
-///    (Teams not needed can be given in the list of 3rd parameter)
+/// The TournamentCreator class is responsible for copying an existing tournament to a new one.
+/// It provides methods to copy the tournament, rounds, and round legs from the source tournament to the target tournament.
 /// </summary>
 public class TournamentCreator
 {
-    private readonly ILogger _logger = AppLogging.CreateLogger<TournamentCreator>();
+    /// <summary>
+    /// Arguments for the <see cref="CopyTournament"/> method.
+    /// </summary>
+    /// <param name="SourceTournamentId">The ID of the source tournament.</param>
+    /// <param name="SetSourceTournamentCompleted">Try to set the source tournament as completed.</param>
+    /// <param name="TargetName">The name for the target tournament.</param>
+    /// <param name="TargetDescription">The description for the target tournament.</param>
+    /// <param name="TargetLegDates">The leg dates to use for the target tournament round legs. The list cover maximum number of legs across akk rounds.</param>
+    /// <param name="ModifiedOn">The <see cref="DateTime"/> to use for CreatedOn / ModifiedOn of entities.</param>
+    public record CopyTournamentArgs(
+        long SourceTournamentId,
+        bool SetSourceTournamentCompleted,
+        string TargetName,
+        string? TargetDescription,
+        IList<(DateTime Start, DateTime End)> TargetLegDates,
+        IList<long> RoundsToExclude,
+        DateTime ModifiedOn);
+
+    private readonly ILogger<TournamentCreator> _logger;
     private readonly IAppDb _appDb;
+    private DateTime _modifiedOn;
     private static TournamentCreator? _instance;
 
-    private TournamentCreator(IAppDb appDb)
+
+    private TournamentCreator(IAppDb appDb, ILogger<TournamentCreator> logger)
     {
         _appDb = appDb;
+        _logger = logger;
     }
 
-    public static TournamentCreator Instance(IAppDb appDb)
+    /// <summary>
+    /// Returns the singleton instance of the <see cref="TournamentCreator"/> class.
+    /// </summary>
+    /// <param name="appDb"></param>
+    /// <param name="logger"></param>
+    /// <returns>The singleton instance of the <see cref="TournamentCreator"/> class.</returns>
+    public static TournamentCreator Instance(IAppDb appDb, ILogger<TournamentCreator> logger)
     {
-        _instance ??= new TournamentCreator(appDb);
+        _instance ??= new TournamentCreator(appDb, logger);
         return _instance;
     }
 
     /// <summary>
-    /// Copies the tournament basic data and the tournament leg data
-    /// from the source to a new target tournament. The new tournament id must
-    /// not exist. For start and end date of leg data 1 year is added.
+    /// Creates a new tournament from the source tournament.
     /// </summary>
-    /// <param name="fromTournamentId">Existing source tournament id.</param>
-    /// <param name="newName"></param>
-    /// <param name="newDescription"></param>
+    /// <param name="copyArgs">Definition of changes from source to new tournament.</param>
     /// <param name="cancellationToken"></param>
-    /// <returns>True, if creation was successful, false otherwise.</returns>
-    public async Task<long?> CopyTournament (long fromTournamentId, string newName, string? newDescription, CancellationToken cancellationToken)
+    /// <code>
+    /// var copyArgs = new TournamentCreator.CopyTournamentArgs(25, false, "Tournament 2024/25", null,
+    /// new List&lt;(DateTime Start, DateTime End)&gt; {
+    ///    (new DateTime(2024, 9, 23), new DateTime(2025, 2, 1)), // 1st leg
+    ///    (new DateTime(2025, 2, 3), new DateTime(2025, 5, 30))  // 2nd leg
+    /// }, Array.Empty&lt;long&gt;(), DateTime.UtcNow);
+    ///         
+    /// var success = await TournamentCreator
+    ///    .Instance(AppDb, AppLogging.CreateLogger&lt;TournamentCreator&gt;())
+    ///    .CreateNewFromSourceTournament(copyArgs, CancellationToken.None);
+    /// </code>
+    /// <returns><see langword="true"/>, if the new tournament was created successfully.</returns>
+    public async Task<bool> CreateNewFromSourceTournament(CopyTournamentArgs copyArgs, CancellationToken cancellationToken)
     {
-        var now = DateTime.UtcNow;
-        var fromTournament =
-            await _appDb.TournamentRepository.GetTournamentAsync(
-                new PredicateExpression(TournamentFields.Id == fromTournamentId), CancellationToken.None)
-            ?? throw new InvalidOperationException($"'{fromTournamentId}' not found.");
+        if (copyArgs.SetSourceTournamentCompleted) await SetTournamentCompleted(copyArgs.SourceTournamentId, cancellationToken);
 
-        var newTournament = new TournamentEntity
+        var (sourceTournament, targetTournament) = await CopyTournament(copyArgs, cancellationToken);
+
+        var success = await CopyRoundsWithLegsToTarget(copyArgs, targetTournament, cancellationToken);
+
+        if (!success) return success;
+
+        try
         {
-            IsPlanningMode = true,
-            Name = newName,
-            Description = newDescription,
-            TypeId = fromTournament.TypeId,
-            IsComplete = false,
-            CreatedOn = now,
-            ModifiedOn = now,
-        };
+            await _appDb.TournamentRepository.SaveTournamentsAsync(sourceTournament, targetTournament, cancellationToken);
+        }
+        catch (Exception e)
+        {
+            _logger.LogCritical(e, "Error saving Tournaments from {TournamentCreator}", nameof(TournamentCreator));
+            return false;
+        }
 
-        var success = await _appDb.GenericRepository.SaveEntityAsync(newTournament, true, false, cancellationToken);
-        _logger.LogInformation("New tournament {newTournament} saved successfully: {success}", newTournament, success);
-        if (!success) return null;
-
-        fromTournament.NextTournamentId = newTournament.Id;
-        fromTournament.ModifiedOn = now;
-
-        // save last tournament
-        success = await _appDb.GenericRepository.SaveEntityAsync(fromTournament, true, false, cancellationToken);
-        _logger.LogInformation("Setting next tournament {newTournament} for {fromTournament} saved successfully: {success}", newTournament, fromTournament, success);
-        if (!success) return null;
-
-        return newTournament.Id;
+        return true;
     }
 
 
     /// <summary>
-    /// Copies the round basic data and the round leg data
-    /// from the source to an existing target tournament. The new tournament id must
-    /// already exist. Leg data for each round is taken over from target tournament legs
-    /// on a 1:1 base (same number of legs, dates/times).
+    /// Copies the tournament basic data from the source to a new target tournament <see cref="TournamentEntity"/>.
     /// </summary>
-    /// <param name="fromTournamentId">Existing source tournament id.</param>
-    /// <param name="toTournamentId">Existing target tournament id.</param>
-    /// <param name="excludeRoundId">List of round id's to be excluded (empty list for 'none')</param>
-    /// <param name="legDates">The legs' start and end date.</param>
+    /// <param name="copyArgs">The <see cref="CopyTournamentArgs"/> to be used.</param>
     /// <param name="cancellationToken"></param>
-    /// <returns>True, if creation was successful, false otherwise.</returns>
-    public async Task<bool> CopyRoundWithLegs(long fromTournamentId, long toTournamentId, IList<long> excludeRoundId, IList<(DateTime Start, DateTime End)> legDates, CancellationToken cancellationToken)
+    /// <returns>A <see cref="ValueTuple"/> with the Source (unchanged) and the new Target <see cref="TournamentEntity"/>.</returns>
+    internal async Task<(TournamentEntity Source, TournamentEntity Target)> CopyTournament (CopyTournamentArgs copyArgs, CancellationToken cancellationToken)
     {
-        var transactionName = Guid.NewGuid().ToString("N");
-        var now = DateTime.UtcNow;
-        
-        // get the rounds of SOURCE tournament
-        var roundIds = (await _appDb.TournamentRepository.GetTournamentRoundsAsync(fromTournamentId, cancellationToken)).Select(r => r.Id).ToList();
+        _modifiedOn = copyArgs.ModifiedOn;
+        var sourceTournament =
+            await _appDb.TournamentRepository.GetTournamentAsync(
+                new PredicateExpression(TournamentFields.Id == copyArgs.SourceTournamentId), CancellationToken.None)
+            ?? throw new InvalidOperationException($"'{copyArgs.SourceTournamentId}' not found.");
 
-        using var da = _appDb.DbContext.GetNewAdapter();
-
-        var roundsWithLegs = new Queue<RoundEntity>();
-        foreach (var r in roundIds)
+        // Create the target tournament
+        var targetTournament = new TournamentEntity
         {
-            var round = await _appDb.RoundRepository.GetRoundWithLegsAsync(r, cancellationToken);
-            if (round != null) roundsWithLegs.Enqueue(round);
-        }
+            IsPlanningMode = true,
+            Name = copyArgs.TargetName,
+            Description = copyArgs.TargetDescription,
+            TypeId = sourceTournament.TypeId,
+            IsComplete = false,
+            CreatedOn = _modifiedOn,
+            ModifiedOn = _modifiedOn,
+        };
 
-        try
-        {
-            await da.StartTransactionAsync(System.Data.IsolationLevel.ReadUncommitted, transactionName, cancellationToken);
+        // Update the source tournament
+        // sourceTournament.NextTournamentId (and sourceTournament.ModifiedOn) can be set immediately
+        // after the target tournament is saved, and NextTournamentId is NULL
 
-            foreach (var r in roundIds)
-            {
-                var round = roundsWithLegs.Dequeue();
-
-                // skip excluded round id's
-                if (excludeRoundId.Contains(r))
-                    continue;
-
-                // create new round and use data of source round
-                var newRound = new RoundEntity
-                {
-                    TournamentId = toTournamentId,
-                    Name = round.Name,
-                    Description = round.Description,
-                    TypeId = round.TypeId,
-                    NumOfLegs = round.NumOfLegs,
-                    MatchRuleId = round.MatchRuleId,
-                    SetRuleId = round.SetRuleId,
-                    IsComplete = false,
-                    CreatedOn = now,
-                    ModifiedOn = now,
-                    NextRoundId = null
-                };
-
-                // create the round leg records based on the TARGET tournament legs, but use new log dates
-                for (var index = 0; index < round.RoundLegs.Count; index++)
-                {
-                    var rl = round.RoundLegs[index];
-                    var newRoundLeg = new RoundLegEntity {
-                        SequenceNo = rl.SequenceNo,
-                        Description = rl.Description,
-                        StartDateTime = index < legDates.Count ? legDates[index].Start : now,
-                        EndDateTime = index < legDates.Count ? legDates[index].End : now,
-                        CreatedOn = now,
-                        ModifiedOn = now
-                    };
-                    newRound.RoundLegs.Add(newRoundLeg);
-                }
-
-                // save recursively (new round with the new round legs)
-                await da.SaveEntityAsync(newRound, true, true, cancellationToken);
-            }
-
-            // commit after all rounds are processed successfully
-            await da.CommitAsync(cancellationToken);
-            _logger.LogInformation("{numOfRounds} rounds with legs saved successfully.", roundIds.Count);
-            return true;
-        }
-        catch (Exception e)
-        {
-            _logger.LogCritical(e, "Error cloning rounds in transaction: New TournamentId={TournamentId}", toTournamentId);
-
-            if (da.IsTransactionInProgress)
-                da.Rollback(transactionName);
-
-            return false;
-        }
+        return (sourceTournament, targetTournament);
     }
 
+    /// <summary>
+    /// Copies the round basic data and the round leg data
+    /// from the source to an existing target tournament. Leg basic data for each round is copied from the source to the target tournament.
+    /// </summary>
+    /// <param name="args"></param>
+    /// <param name="targetTournament"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns>The <paramref name="targetTournament"/> <see cref="TournamentEntity"/> with rounds and round legs added.</returns>
+    internal async Task<bool> CopyRoundsWithLegsToTarget(CopyTournamentArgs args, TournamentEntity targetTournament, CancellationToken cancellationToken)
+    {
+        // get the round IDs of the SOURCE tournament
+        var sourceRoundIds = await _appDb.TournamentRepository.GetTournamentRoundIdsAsync(args.SourceTournamentId, cancellationToken);
+        
+        foreach (var sourceRoundId in sourceRoundIds)
+        {
+            var sourceRound = await _appDb.RoundRepository.GetRoundWithLegsAsync(sourceRoundId, cancellationToken);
+
+            if (sourceRound is null)
+            {
+                _logger.LogCritical("Round {RoundId} not found.", sourceRoundId);
+                return false;
+            }
+
+            // skip excluded round id's
+            if (args.RoundsToExclude.Contains(sourceRoundId))
+            {
+                _logger.LogDebug("Round {RoundId} excluded from copy.", sourceRoundId);
+                continue;
+            }
+
+            // Create target round from the source round
+            var targetRound = new RoundEntity
+            {
+                Tournament = targetTournament, // this adds the round to the target tournament
+                Name = sourceRound.Name,
+                Description = sourceRound.Description,
+                TypeId = sourceRound.TypeId,
+                NumOfLegs = sourceRound.NumOfLegs,
+                MatchRuleId = sourceRound.MatchRuleId,
+                SetRuleId = sourceRound.SetRuleId,
+                IsComplete = false,
+                CreatedOn = _modifiedOn,
+                ModifiedOn = _modifiedOn,
+                NextRoundId = null
+            };
+
+            var legDates = args.TargetLegDates;
+
+            if (sourceRound.RoundLegs.Count > legDates.Count)
+            {
+                _logger.LogCritical("Round {RoundId} has {Legs} legs, but only {LegDates} leg dates provided.", sourceRoundId, sourceRound.RoundLegs.Count, legDates.Count);
+                return false;
+            }
+
+            // Create the round leg records based on the TARGET tournament legs, but use new log dates
+            for (var index = 0; index < sourceRound.RoundLegs.Count; index++)
+            {
+                var rl = sourceRound.RoundLegs[index];
+                var targetRoundLeg = new RoundLegEntity
+                {
+                    Round = targetRound, // this adds the round leg to the target round
+                    SequenceNo = rl.SequenceNo,
+                    Description = rl.Description,
+                    StartDateTime = legDates[index].Start,
+                    EndDateTime = legDates[index].End,
+                    CreatedOn = _modifiedOn,
+                    ModifiedOn = _modifiedOn
+                };
+            }
+
+            _logger.LogDebug("Round {RoundId} with {Legs} legs copied to target tournament.", sourceRoundId, sourceRound.RoundLegs.Count);
+        }
+
+        _logger.LogDebug("Target tournament contains {RoundCount} rounds.", targetTournament.Rounds.Count);
+
+        return true;
+    }
+
+    /// <summary>
+    /// Sets the start and end dates for the legs having the <paramref name="sequenceNo"/> of the specified <paramref name="rounds"/>.
+    /// </summary>
+    /// <param name="rounds"></param>
+    /// <param name="sequenceNo"></param>
+    /// <param name="start"></param>
+    /// <param name="end"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns><see langword="true"/>, if successful.</returns>
     public async Task<bool> SetLegDates(ICollection<RoundEntity> rounds , int sequenceNo, DateTime start, DateTime end, CancellationToken cancellationToken)
     {
-        var transactionName = string.Concat(nameof(RankingRepository), nameof(SetLegDates), Guid.NewGuid().ToString("N"));
-        var now = DateTime.UtcNow;
-
         if (rounds.Count == 0)
             return false;
 
@@ -193,32 +231,27 @@ public class TournamentCreator
         if (!tournamentId.HasValue)
             return false;
 
-        using var da = _appDb.DbContext.GetNewAdapter();
-
         try
         {
-            await da.StartTransactionAsync(System.Data.IsolationLevel.ReadUncommitted, transactionName, cancellationToken);
-
             foreach (var round in rounds)
             {
                 foreach (var leg in round.RoundLegs.Where(l => l.SequenceNo == sequenceNo))
                 {
                     leg.StartDateTime = start;
                     leg.EndDateTime = end;
-                    leg.ModifiedOn = now;
+                    leg.ModifiedOn = _modifiedOn;
 
-                    await da.SaveEntityAsync(leg, false, false, cancellationToken);
+                    await _appDb.GenericRepository.SaveEntityAsync(leg, false, false, cancellationToken);
+                    _logger.LogDebug("RoundLeg {RoundLegId} updated with new dates.", leg.Id);
                 }
             }
-            await da.CommitAsync(cancellationToken);
+
             return true;
         }
         catch (Exception e)
         {
-            _logger.LogCritical(e, "Error updating round legs in transaction: TournamentId={TournamentId}", tournamentId);
+            _logger.LogCritical(e, "Error updating round legs: TournamentId={TournamentId}", tournamentId);
 
-            if (da.IsTransactionInProgress)
-                da.Rollback();
             return false;
         }
     }
@@ -228,37 +261,45 @@ public class TournamentCreator
     /// </summary>
     /// <param name="tournamentId">The Tournament to be set as &quot;completed&quot;</param>
     /// <param name="cancellationToken"></param>
-    /// <exception cref="ArgumentException">Throws an exception if any match of the tournament is not completed yet.</exception>
+    /// <exception cref="InvalidOperationException">Throws an exception if any match of the tournament is not completed yet.</exception>
     public async Task SetTournamentCompleted(long tournamentId, CancellationToken cancellationToken)
     {
         if (!await _appDb.MatchRepository.AllMatchesCompletedAsync(new TournamentEntity(tournamentId), cancellationToken))
         {
             var ex = new InvalidOperationException($@"Tournament {tournamentId} contains incomplete matches.");
-            _logger.LogCritical(@"Tournament {TournamentId} contains incomplete matches. {Exception}", tournamentId, ex);
+            _logger.LogCritical(ex,@"Tournament {TournamentId} contains incomplete matches.", tournamentId);
             throw ex;
         }
 
         var tournament = await _appDb.TournamentRepository.GetTournamentWithRoundsAsync(tournamentId, CancellationToken.None) ?? throw new InvalidOperationException($"Tournament with Id '{tournamentId}' not found.");
-        var now = DateTime.UtcNow;
+
+        // Note: Setting rounds and tournament as completed also removes inconsistencies
+        // (e.g. a tournament is marked as completed, but not all rounds are completed)
 
         foreach (var round in tournament.Rounds)
         {
             await SetRoundCompleted(round, cancellationToken);
         }
 
-        tournament.IsComplete = true;
-        tournament.ModifiedOn = now;
-
-        using var da = _appDb.DbContext.GetNewAdapter();
-        if (!await da.SaveEntityAsync(tournament, true, true, cancellationToken))
+        if (!tournament.IsComplete)
         {
-            var ex = new InvalidOperationException($"Tournament Id {tournamentId} could not be saved to persistent storage.");
-            _logger.LogCritical(@"Tournament Id {TournamentId} could not be saved to persistent storage. {Exception}", tournamentId, ex);
-            throw ex;
+            tournament.IsComplete = true;
+            tournament.ModifiedOn = _modifiedOn;
+            await _appDb.GenericRepository.SaveEntityAsync(tournament, false, false, cancellationToken);
+            _logger.LogDebug("Tournament {Tournament} set as completed.", tournament);
         }
-        _logger.LogInformation("Tournament {Tournament} set as completed.", tournament);
+        else
+        {
+            _logger.LogDebug("Tournament {Tournament} was already set as completed.", tournament);
+        }
     }
 
+    /// <summary>
+    /// Sets the specified round as completed if all matches of the round are completed.
+    /// </summary>
+    /// <param name="round">The round to be set as completed.</param>
+    /// <param name="cancellationToken"></param>
+    /// <exception cref="InvalidOperationException">Thrown if any match of the round is not completed yet.</exception>
     public virtual async Task SetRoundCompleted(RoundEntity round, CancellationToken cancellationToken)
     {
         if (!await _appDb.MatchRepository.AllMatchesCompletedAsync(round, cancellationToken))
@@ -268,11 +309,22 @@ public class TournamentCreator
             throw ex;
         }
 
-        using var da = _appDb.DbContext.GetNewAdapter();
-        da.FetchEntity(round);
-        round.IsComplete = true;
-        round.ModifiedOn = DateTime.UtcNow;
-        await da.SaveEntityAsync(round, cancellationToken);
-        _logger.LogInformation("Round {round} set as complete.", round);
+        if (round.IsDirty || round.IsNew)
+        {
+            round = (await _appDb.RoundRepository.GetRoundWithLegsAsync(round.Id, cancellationToken))!;
+        }
+
+        if (!round.IsComplete)
+        {
+            round.IsComplete = true;
+            round.ModifiedOn = _modifiedOn;
+
+            await _appDb.GenericRepository.SaveEntityAsync(round, false, false, cancellationToken);
+            _logger.LogDebug("Round {round} set as complete.", round);
+        }
+        else
+        {
+            _logger.LogDebug("Round {round} was already set as complete.", round);
+        }
     }
 }
