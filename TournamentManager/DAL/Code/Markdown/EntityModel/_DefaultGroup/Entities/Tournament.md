@@ -17,7 +17,7 @@ Related Entity | Full description
 [Ranking](../../_DefaultGroup/Entities/Ranking.htm) | Ranking.Tournament - Tournament.Rankings (m:1) 
 [Registration](../../_DefaultGroup/Entities/Registration.htm) | Registration.Tournament - Tournament.Registrations (m:1) 
 [Round](../../_DefaultGroup/Entities/Round.htm) | Round.Tournament - Tournament.Rounds (m:1) 
-[Tournament](../../_DefaultGroup/Entities/Tournament.htm) | Tournament.Tournament - Tournament.Tournaments (m:1) 
+[Tournament](../../_DefaultGroup/Entities/Tournament.htm) | Tournament.NextTournament - Tournament.Tournaments (m:1) 
 [TournamentType](../../_DefaultGroup/Entities/TournamentType.htm) | Tournament.TournamentType - TournamentType.Tournaments (m:1) 
 
 ## Fields
@@ -139,6 +139,11 @@ Setting name | Value
 --|--
 Navigator property is public | True
 
+#### NextTournament (NavigatorSingleValue)
+Setting name | Value
+--|--
+Navigator property is public | True
+
 #### Rankings (NavigatorCollection)
 Setting name | Value
 --|--
@@ -150,11 +155,6 @@ Setting name | Value
 Navigator property is public | True
 
 #### Rounds (NavigatorCollection)
-Setting name | Value
---|--
-Navigator property is public | True
-
-#### Tournament (NavigatorSingleValue)
 Setting name | Value
 --|--
 Navigator property is public | True
@@ -171,7 +171,7 @@ Navigator property is public | True
 
 ### Attribute definitions per element
 
-#### Tournament (NavigatorSingleValue)
+#### NextTournament (NavigatorSingleValue)
 
 * `Browsable($false)`
 

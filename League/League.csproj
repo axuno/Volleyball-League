@@ -20,8 +20,6 @@ Localizations for English and German are included. The library is in operation o
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
         <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
         <GenerateEmbeddedFilesManifest>true</GenerateEmbeddedFilesManifest>
-        <!-- If true (default), NuGetizer will apply the shortened revision ID to the package version during the packing process. -->
-        <UseShortSourceRevisionId>false</UseShortSourceRevisionId>
         <!-- With dotnet, add parameter: -p:SatelliteResourceLanguages="""en;de""" -->
         <SatelliteResourceLanguages>en;de</SatelliteResourceLanguages>
         <ImplicitUsings>enable</ImplicitUsings>

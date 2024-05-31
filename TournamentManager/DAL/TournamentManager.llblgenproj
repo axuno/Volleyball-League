@@ -743,7 +743,7 @@
           <FieldFieldRelationship FkField="TeamId" PkField="Id" />
         </FieldRelationships>
       </NormalRelationship>
-      <NormalRelationship Name="Tournament.Tournament-Tournament.Tournaments" Start=":Tournament" End=":Tournament" StartNavigator="Tournament" EndNavigator="Tournaments" Type="4" EndIsOptional="true">
+      <NormalRelationship Name="Tournament.NextTournament-Tournament.Tournaments" Start=":Tournament" End=":Tournament" StartNavigator="NextTournament" EndNavigator="Tournaments" Type="4" EndIsOptional="true">
         <FieldRelationships>
           <FieldFieldRelationship FkField="NextTournamentId" PkField="Id" />
         </FieldRelationships>
