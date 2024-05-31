@@ -114,7 +114,7 @@ public class TournamentRepository
             if (sourceTournament.NextTournamentId is null)
             {
                 sourceTournament.NextTournamentId = targetTournament.Id;
-                sourceTournament.ModifiedOn = sourceTournament.ModifiedOn;
+                sourceTournament.ModifiedOn = targetTournament.ModifiedOn;
                 await da.SaveEntityAsync(sourceTournament, true, false, cancellationToken);
                 _logger.LogDebug("{Property} set to {NextTournamentId}", nameof(TournamentEntity.NextTournamentId), sourceTournament.NextTournamentId);
             }

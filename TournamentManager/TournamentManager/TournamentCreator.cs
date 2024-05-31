@@ -186,7 +186,7 @@ public class TournamentCreator
             for (var index = 0; index < sourceRound.RoundLegs.Count; index++)
             {
                 var rl = sourceRound.RoundLegs[index];
-                var targetRoundLeg = new RoundLegEntity
+                _ = new RoundLegEntity
                 {
                     Round = targetRound, // this adds the round leg to the target round
                     SequenceNo = rl.SequenceNo,
