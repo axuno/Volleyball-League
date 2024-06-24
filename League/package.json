@@ -25,7 +25,6 @@
     "jsnlog": "2.30.0",
     "node-sass": "9.0.0",
     "postcss": "^8.4.38",
-    "pixrem": "5.0.0",
     "@popperjs/core": "2.11.8",
     "@eonasdan/tempus-dominus": "6.9.6",
     "set-value": ">=4.1.0"
