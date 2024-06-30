@@ -141,4 +141,7 @@
   <data name="The registration deadline for this season has unfortunately already expired" xml:space="preserve">
     <value>Die Anmeldefrist für die diese Saison ist leider bereits abgelaufen</value>
   </data>
+  <data name="Closing date" xml:space="preserve">
+    <value>Anmeldeschluss</value>
+  </data>
 </root>

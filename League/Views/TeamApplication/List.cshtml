@@ -14,11 +14,12 @@
 }
     <div class="mb-0 pb-1">
         <h2 id="@tableDescriptionId" class="h2">@ViewData["Title"]</h2>
-        <hr class="mb-" />
+        <hr class="mb-4" />
         <partial name="@nameof(League.Views.ViewNames.TeamApplication._TeamApplicationMessagesPartial)" />
         @if (TenantContext.TournamentContext.ApplicationAllowed)
         {
             <a asp-controller="@nameof(League.Controllers.TeamApplication)" asp-action="@nameof(League.Controllers.TeamApplication.Start)" asp-route-tenant="@tenantUrlSegment" class="btn btn-primary mb-2">@Localizer["Register team now"]</a>
+            <span class="ms-5 text-success">@(Localizer["Closing date"]): @Model.TimeZoneConverter.ToZonedTime(TenantContext.TournamentContext.ApplicationDeadline)?.DateTimeOffset.DateTime.ToShortDateString()</span>
         }
         else
         {
@@ -33,7 +34,7 @@
             return;
         }
 
-        <div class="table-responsive mb-2">
+        <div class="table-responsive mb-2 mt-2">
             @* Wrapping this way make tables responsive and 100% width *@
             <table id="team-list" class="table table-sm table-light mb-0" aria-describedby="@tableDescriptionId">
                 <thead class="rounded">
