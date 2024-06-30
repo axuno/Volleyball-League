@@ -8,10 +8,10 @@
     <NoWarn>CA5362;CS1591</NoWarn>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="NuGetizer" Version="1.2.1">
+    <PackageReference Include="NuGetizer" Version="1.2.2">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="SD.LLBLGen.Pro.ORMSupportClasses" Version="5.11.1" />
+    <PackageReference Include="SD.LLBLGen.Pro.ORMSupportClasses" Version="5.11.2" />
   </ItemGroup>
 </Project>
