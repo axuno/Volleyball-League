@@ -22,7 +22,7 @@
 </div>
 <div>
     @* Create the action url using the same named route as when invoking the controller action method *@
-    <form asp-route="@ViewContext.ActionDescriptor.AttributeRouteInfo?.Name" method="post" class="col-md-8 col-sm-10 col-12 ps-0" role="form" novalidate>
+    <form asp-route="@ViewContext.ActionDescriptor.AttributeRouteInfo?.Name" method="post" class="col-md-8 col-sm-10 col-12 ps-0" novalidate>
         <site-validation-summary show="All">
             <b>@Localizer["Input has some issues"]:</b>
         </site-validation-summary>
@@ -64,7 +64,12 @@
         <div class="mb-3">
             <div class="mt-2">
                 <img id="CaptchaImage" style="vertical-align: bottom; display: inline" src="@Url.Action(nameof(League.Controllers.Captcha.Index), nameof(League.Controllers.Captcha))@("?guid=" + Guid.NewGuid())" alt="Captcha" title=""/>
-                <label class="d-inline" onclick="javascript:if (document.images) document.images.CaptchaImage.src = '@Url.Action(nameof(League.Controllers.Captcha.Index), nameof(League.Controllers.Captcha))?new=1&amp;time=' + new Date().getTime();" style="cursor: pointer"><i class="fa fa-sync-alt fa-2x" style="margin: 0 5px 0 5px;" title="@Localizer["Reload"]"></i></label><br/>
+                <label role="button" tabindex="0" class="d-inline"
+                       onclick="javascript:if (document.images) document.images.CaptchaImage.src = '@Url.Action(nameof(League.Controllers.Captcha.Index), nameof(League.Controllers.Captcha))?new=1&amp;time=' + new Date().getTime();" 
+                       onkeypress="javascript:if (document.images) document.images.CaptchaImage.src = '@Url.Action(nameof(League.Controllers.Captcha.Index), nameof(League.Controllers.Captcha))?new=1&amp;time=' + new Date().getTime();"
+                       style="cursor: pointer">
+                    <i class="fa fa-sync-alt fa-2x" style="margin: 0 5px 0 5px;" title="@Localizer["Reload"]"></i>
+                </label><br/>
             </div>
             <label asp-for="Captcha" class="form-label mt-2"></label>
             <div class="input-group">

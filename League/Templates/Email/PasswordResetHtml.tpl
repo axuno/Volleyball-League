@@ -5,7 +5,7 @@
     <!--[if mso]>
         <v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word" href="{{ model.CallbackUrl }}" style="height: 38px; v-text-anchor: middle; width: 200px;" arcsize="27%" strokecolor="#018dff" fillcolor="#018dff">
             <w:anchorlock/>
-            <center style="color: #ffffff; font-family: Arial, sans-serif; font-size: 13px; font-weight: bold;">@buttonText</center>
+            <center style="color: #ffffff; font-family: Arial, sans-serif; font-size: 13px; font-weight: bold;">{{ L "Change Password" }}</center>
         </v:roundrect>
     <![endif]-->
     <!--[if !mso]><!-- -->

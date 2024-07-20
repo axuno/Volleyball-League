@@ -21,12 +21,12 @@
             var loginProviders = (await SignInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             if (loginProviders.Count != 0)
             {
-                <h3 class="h3">@Localizer["Register with a social network account"]</h3>
-                <form asp-controller="@nameof(Account)" asp-action="@nameof(Account.ExternalSignIn)" asp-route-tenant="@tenantUrlSegment" asp-route-returnurl="@ViewData["ReturnUrl"]" method="post" class="" role="form" novalidate>
+                <h3 id="register-social-media" class="h3">@Localizer["Register with a social network account"]</h3>
+                <form asp-controller="@nameof(Account)" asp-action="@nameof(Account.ExternalSignIn)" asp-route-tenant="@tenantUrlSegment" asp-route-returnurl="@ViewData["ReturnUrl"]" method="post" aria-labelledby="register-social-media" novalidate>
                     <div class="flex-row">
-                        @foreach (var provider in loginProviders)
+                        @foreach (var providerName in loginProviders.Select(lp => lp.Name))
                         {
-                            <button type="submit" class="btn btn-lg btn-secondary mb-2 me-2" name="provider" value="@provider.Name">@provider.Name</button>
+                            <button type="submit" class="btn btn-lg btn-secondary mb-2 me-2" name="provider" value="@providerName">@providerName</button>
                         }
                     </div>
                 </form>
@@ -36,12 +36,12 @@
     }
 </div>
 <div>
-    <h3 class="h3">@Localizer["Register with your email address"]</h3>
+    <h3 id="register-email" class="h3">@Localizer["Register with your email address"]</h3>
     <p>
         @Localizer["We will send you a message containing the confirmation code to your email address."]<br />
         @Localizer["Once your email is confirmed, you can finalize the registration."]
     </p>
-    <form asp-controller="@nameof(Account)" asp-action="@nameof(Account.CreateAccount)" asp-route-tenant="@tenantUrlSegment" asp-route-returnurl="@ViewData["ReturnUrl"]" method="post" class="col-md-8 col-sm-10 col-12 ps-0" role="form" novalidate>
+    <form asp-controller="@nameof(Account)" asp-action="@nameof(Account.CreateAccount)" asp-route-tenant="@tenantUrlSegment" asp-route-returnurl="@ViewData["ReturnUrl"]" method="post" class="col-md-8 col-sm-10 col-12 ps-0" aria-labelledby="register-email" novalidate>
         <site-validation-summary show="All">
             <b>@Localizer["Input has some issues"]:</b>
         </site-validation-summary>
@@ -58,7 +58,12 @@
         <div class="mb-3">
             <div class="mt-2">
                 <img id="CaptchaImage" style="vertical-align: bottom; display:inline" src="@Url.Action(nameof(League.Controllers.Captcha.Index), nameof(League.Controllers.Captcha))@("?guid=" + Guid.NewGuid())" alt="Captcha" title="" />
-                <label class="d-inline" onclick="javascript:if (document.images) document.images.CaptchaImage.src = '@Url.Action(nameof(League.Controllers.Captcha.Index), nameof(League.Controllers.Captcha))?new=1&amp;time=' + new Date().getTime();" style="cursor: pointer"><i class="fa fa-sync-alt fa-2x" style="margin: 0 5px 0 5px;" title="@Localizer["Reload"]"></i></label><br />
+                <label role="button" tabindex="0" class="d-inline"
+                       onclick="javascript:if (document.images) document.images.CaptchaImage.src = '@Url.Action(nameof(Captcha.Index), nameof(Captcha))?new=1&amp;time=' + new Date().getTime();"
+                       onkeypress="javascript:if (document.images) document.images.CaptchaImage.src = '@Url.Action(nameof(Captcha.Index), nameof(Captcha))?new=1&amp;time=' + new Date().getTime();"
+                       style="cursor: pointer">
+                    <i class="fa fa-sync-alt fa-2x" style="margin: 0 5px 0 5px;" title="@Localizer["Reload"]"></i>
+                </label><br />
             </div>
             <label asp-for="Captcha" class="form-label mt-2"></label>
             <div class="input-group">
