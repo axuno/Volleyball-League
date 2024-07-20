@@ -1,7 +1,7 @@
 ﻿@model League.Components.MainNavigationComponentModel
 @using League.Components
 
-<ul class="navbar-nav me-auto mt-2 mt-md-0 w-100" role="menubar" data-bs-theme="light">
+<ul class="navbar-nav me-auto mt-2 mt-md-0 w-100" data-bs-theme="light">
     @foreach (var node in Model.TopNavigationNodes)
     {
         // Node keys after "RightAlignSeparator" shall be aligned to the right margin of the navigation bar
@@ -21,7 +21,7 @@
         else
         {
             <li class="nav-item dropdown">
-                <a class="@Model.GetClass(Context, node, "nav-link dropdown-toggle", "active", true)" data-bs-toggle="dropdown" href="@Url.Content(node.Url!)" role="button">
+                <a class="@Model.GetClass(Context, node, "nav-link dropdown-toggle", "active", true)" data-bs-toggle="dropdown" href="@Url.Content(node.Url!)">
                     @Html.Raw(node.GetIcon())@node.Text
                 </a>
                 <partial name="@League.Views.ViewNames.Shared.NavigationNodeChildDropdownPartial" model="(Model, node)" />

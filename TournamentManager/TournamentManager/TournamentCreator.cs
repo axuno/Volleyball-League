@@ -342,11 +342,11 @@ public class TournamentCreator
             round.ModifiedOn = _modifiedOn;
 
             await _appDb.GenericRepository.SaveEntityAsync(round, false, false, cancellationToken);
-            _logger.LogDebug("Round {round} set as complete.", round);
+            _logger.LogDebug("Round {RoundId} set as complete.", round.Id);
         }
         else
         {
-            _logger.LogDebug("Round {round} was already set as complete.", round);
+            _logger.LogDebug("Round {RoundId} was already set as complete.", round.Id);
         }
     }
 }

@@ -19,7 +19,7 @@
     <hr />
 </div>
 <div>
-    <form asp-controller="@nameof(Account)" asp-action="@nameof(Account.Register)" asp-route-tenant="@tenantUrlSegment" asp-route-returnurl="@ViewData["ReturnUrl"]" method="post" class="col-md-8 col-sm-10 col-12 ps-0" role="form" novalidate>
+    <form asp-controller="@nameof(Account)" asp-action="@nameof(Account.Register)" asp-route-tenant="@tenantUrlSegment" asp-route-returnurl="@ViewData["ReturnUrl"]" method="post" class="col-md-8 col-sm-10 col-12 ps-0" novalidate>
         <site-validation-summary show="All">
             <b>@Localizer["Input has some issues"]:</b>
         </site-validation-summary>
@@ -35,9 +35,14 @@
             <label asp-for="Password" class="form-label"></label>
             <div class="input-group">
                 <input asp-for="Password" class="form-control" required="required" type="text" aria-describedby="passwordHelpBlock" />
-                <span class="input-group-text" style="cursor: pointer" onclick="Site.ShowHidePassword(this)">
+                <button class="input-group-text" 
+                        type="button"
+                        tabindex="0"
+                        style="cursor: pointer"
+                        onclick="Site.ShowHidePassword(this)"
+                        onkeyup="if(event.keyCode !== 9) Site.ShowHidePassword(this);">
                     <i class="fas fa-eye"></i>
-                </span>
+                </button>
             </div>
             <span asp-validation-for="Password" class="text-danger"></span>
             <small id="passwordHelpBlock" class="form-text text-muted">
@@ -48,9 +53,14 @@
             <label asp-for="ConfirmPassword" class="form-label"></label>
             <div class="input-group">
                 <input asp-for="ConfirmPassword" required="required" type="text" class="form-control" />
-                <span class="input-group-text" style="cursor: pointer" onclick="Site.ShowHidePassword(this)">
+                <button class="input-group-text" 
+                        type="button"
+                        tabindex="0"
+                        style="cursor: pointer"
+                        onclick="Site.ShowHidePassword(this)"
+                        onkeyup="if(event.keyCode !== 9) Site.ShowHidePassword(this);">
                     <i class="fas fa-eye"></i>
-                </span>
+                </button>
             </div>
             <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
         </div>

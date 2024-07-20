@@ -7,9 +7,9 @@
     if (Context.Features.Get<IRequestCultureFeature>() != null)
     {
         <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="/" role="button">
+            <button class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="/">
                 @(System.Threading.Thread.CurrentThread.CurrentCulture.ThreeLetterISOLanguageName.ToUpperInvariant().First() + System.Threading.Thread.CurrentThread.CurrentCulture.ThreeLetterISOLanguageName[1..].ToLowerInvariant())
-            </a>
+            </button>
             <ul class="dropdown-menu shadow dropdown-menu-end" style="margin-top: -0.3rem">
                 @{
                     var encodedCurrentRequest = WebUtility.UrlEncode($"{Context.Request.Path}{Context.Request.QueryString}");
