@@ -534,7 +534,7 @@ public static class LeagueStartup
         // Custom ViewLocalizer, necessary for views located in a library (still required in NET60):
         services.AddTransient<IViewLocalizer, League.Views.ViewLocalizer>();
 
-        var mvcBuilder = services.AddMvc(options =>
+        services.AddMvc(options =>
             {
                 options.EnableEndpointRouting = true; // the default
                 // Add model binding messages for errors that do not reach data annotation validation
@@ -560,7 +560,7 @@ public static class LeagueStartup
             .AddControllersAsServices(); // will add controllers with ServiceLifetime.Transient
 
         #region *** Text Templating ***
-        
+
         services.AddTextTemplatingModule(vfs =>
             {
                 // The complete Templates folder is embedded in the project file

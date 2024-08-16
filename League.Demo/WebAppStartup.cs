@@ -26,10 +26,20 @@ public static class WebAppStartup
         // Add custom navigation menu items to the League default navigation system
         services.AddScoped<IMainNavigationNodeBuilder, CustomMainNavigationNodeBuilder>();
 
+        // Add runtime compilation. It is enough to define this in the app which consumes the League RCL.
         if (environment.IsDevelopment())
         {
-            // Add runtime compilation for the app
+            // Note: Each call to AddRazorRuntimeCompilation() serves a specific purpose and is not repetitive.
+
+            // Enable runtime compilation for controllers:
+            services.AddControllers().AddControllersAsServices().AddRazorRuntimeCompilation();
+
+            // Add runtime compilation for razor pages
             services.AddRazorPages().AddRazorRuntimeCompilation();
+
+            // If you want to enable runtime compilation for other view components, you can use the following code:
+            services.AddMvc().AddRazorRuntimeCompilation();
+
             // Add runtime compilation for the League RCL
             services.Configure<MvcRazorRuntimeCompilationOptions>(options =>
             {
