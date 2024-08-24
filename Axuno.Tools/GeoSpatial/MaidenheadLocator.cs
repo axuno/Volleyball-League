@@ -29,6 +29,9 @@ namespace Axuno.Tools.GeoSpatial;
 /// </remarks>
 public class MaidenheadLocator
 {
+    // Default timeout for regular expressions
+    private static int _regExTimeout = 1000;
+
     /// <summary>
     ///     Checks whether a string is a valid Maidenhead locator
     /// </summary>
@@ -36,7 +39,7 @@ public class MaidenheadLocator
     /// <returns>Return true, if the string is a valid Maidenhead locator</returns>
     public static bool IsLocator(string locator)
     {
-        return Regex.IsMatch(locator, "^[A-R]{2}[0-9]{2}[A-X]{2}$");
+        return Regex.IsMatch(locator, "^[A-R]{2}[0-9]{2}[A-X]{2}$", RegexOptions.None, TimeSpan.FromMicroseconds(_regExTimeout));
     }
 
     /// <summary>
