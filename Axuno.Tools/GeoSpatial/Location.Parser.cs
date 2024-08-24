@@ -8,6 +8,9 @@ namespace Axuno.Tools.GeoSpatial;
 /// </summary>
 public partial class Location
 {
+    // Default timeout value for the regular expressions
+    private static int _regExTimeout = 1000;
+
     /// <summary>Parsing latitude and longitude information.</summary>
     /// <example>
     /// User input:
@@ -83,15 +86,15 @@ public partial class Location
         private const RegexOptions Options =
             RegexOptions.Compiled | RegexOptions.IgnorePatternWhitespace | RegexOptions.IgnoreCase;
 
-        private static readonly Regex DegreeRegex = new(DegreePattern, Options);
+        private static readonly Regex DegreeRegex = new(DegreePattern, Options, TimeSpan.FromMilliseconds(_regExTimeout));
 
-        private static readonly Regex DegreeMinuteRegex = new(DegreeMinutePattern, Options);
+        private static readonly Regex DegreeMinuteRegex = new(DegreeMinutePattern, Options, TimeSpan.FromMilliseconds(_regExTimeout));
 
-        private static readonly Regex DegreeMinuteSecondRegex = new(DegreeMinuteSecondPattern, Options);
+        private static readonly Regex DegreeMinuteSecondRegex = new(DegreeMinuteSecondPattern, Options, TimeSpan.FromMilliseconds(_regExTimeout));
 
         private static readonly Regex IsoRegex =
             new(IsoPattern,
-                RegexOptions.Compiled | RegexOptions.CultureInvariant | RegexOptions.IgnorePatternWhitespace);
+                RegexOptions.Compiled | RegexOptions.CultureInvariant | RegexOptions.IgnorePatternWhitespace, TimeSpan.FromMilliseconds(_regExTimeout));
 
         private static Location? CreateLocation(Angle? latitude, Angle? longitude, double? altitude)
         {
@@ -216,7 +219,7 @@ public partial class Location
         }
 
         /// <summary>
-        ///     Parses the input string for a value containg a pair of degree
+        ///     Parses the input string for a value containing a pair of degree
         ///     minute second values.
         /// </summary>
         /// <param name="value">The input to parse.</param>
@@ -278,13 +281,13 @@ public partial class Location
                     break;
                 case 3: // sign + MM : value is degrees and minutes
                     angle = Angle.FromDegrees(
-                        int.Parse(value.Substring(1, degreeDigits), CultureInfo.InvariantCulture),
+                        int.Parse(value.AsSpan(1, degreeDigits), CultureInfo.InvariantCulture),
                         double.Parse(value[(degreeDigits + 1)..], CultureInfo.InvariantCulture));
                     break;
                 case 5: // sign + MM + SS : value is degrees, minutes and seconds
                     angle = Angle.FromDegrees(
-                        int.Parse(value.Substring(1, degreeDigits), CultureInfo.InvariantCulture),
-                        int.Parse(value.Substring(degreeDigits + 1, 2), CultureInfo.InvariantCulture),
+                        int.Parse(value.AsSpan(1, degreeDigits), CultureInfo.InvariantCulture),
+                        int.Parse(value.AsSpan(degreeDigits + 1, 2), CultureInfo.InvariantCulture),
                         double.Parse(value[(degreeDigits + 3)..], CultureInfo.InvariantCulture));
                     break;
                 default:
@@ -301,7 +304,7 @@ public partial class Location
             var group = match.Groups[groupName];
 
             // Need to check that only a single capture occurred, as the suffixes are used more than once
-            if (group.Success && group.Captures.Count == 1)
+            if (group is { Success: true, Captures.Count: 1 })
             {
                 result = group.Value;
                 return true;

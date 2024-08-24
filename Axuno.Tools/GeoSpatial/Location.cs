@@ -202,7 +202,7 @@ public sealed partial class Location : IEquatable<Location>, IFormattable, IXmlS
 
     /// <summary>
     ///     Calculates the great circle distance, in meters, between this instance
-    ///     and the specified value.
+    ///     and the specified value, using the Haversine formula.
     /// </summary>
     /// <param name="point">The location of the other point.</param>
     /// <returns>The great circle distance, in meters.</returns>
