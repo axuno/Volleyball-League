@@ -58,6 +58,10 @@ internal class MatchScheduler
     /// assigns optimized match dates and stores the matches to
     /// the persistent storage.
     /// </summary>
+    /// <param name="keepExisting">If <see langword="true"/>, all existing fixtures remain unchanged.
+    /// Only fixtures for newly added teams will be created.
+    /// </param>
+    /// <param name="cancellationToken"></param>
     public async Task ScheduleFixturesForTournament(bool keepExisting, CancellationToken cancellationToken)
     {
         await LoadEntitiesAsync(cancellationToken);
@@ -74,7 +78,11 @@ internal class MatchScheduler
     /// assigns optimized match dates and stores the matches to
     /// the persistent storage.
     /// </summary>
-    public async Task ScheduleFixturesForRound(RoundEntity round, bool keepExisting,
+    /// <remarks>Keep this method private.</remarks>
+    /// <param name="round">The round where fixtures will be created.</param>
+    /// <param name="keepExisting">If <see langword="true"/>, all existing fixtures remain unchanged. Only fixtures for newly added teams will be created.</param>
+    /// <param name="cancellationToken"></param>
+    private async Task ScheduleFixturesForRound(RoundEntity round, bool keepExisting,
         CancellationToken cancellationToken)
     {
         await LoadEntitiesAsync(cancellationToken);
