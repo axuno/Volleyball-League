@@ -1,7 +1,11 @@
-﻿@{
-    ViewData["Title"] = "Index";
+﻿@using League.Helpers
+@using TournamentManager.MultiTenancy
+@inject ITenantContext TenantContext
+@{
+    ViewData.Title(string.Concat("News - ", TenantContext.OrganizationContext.ShortName));
+    ViewData.Description(TenantContext.OrganizationContext.Description);
 }
 <div class="mb-0 pb-1">
-    <h2 class="h2">OtherOrg News</h2>
-    News Content goes here.
+    <h2 class="h2">@(TenantContext.OrganizationContext.ShortName) News</h2>
+    Content goes here...
 </div>
