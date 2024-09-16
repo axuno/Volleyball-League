@@ -27,7 +27,7 @@ GO
 INSERT INTO dbo.SetRule (Id, Name, NumOfPointsToWinRegular, NumOfPointsToWinTiebreak, PointsDiffToWinRegular, PointsDiffToWinTiebreak, PointsSetLost, PointsSetTie, PointsSetWon, MaxTimeouts, MaxSubstitutions, CreatedOn, ModifiedOn)
 VALUES 
   (1, N'Indoor set rule', 25, 15, 2, 2, 0, 0, 1, 2, 6, GETDATE(), GETDATE()),
-  (1, N'Beach set rule', 21, 15, 2, 2, 0, 0, 1, 2, 0, GETDATE(), GETDATE())
+  (2, N'Beach set rule', 21, 15, 2, 2, 0, 0, 1, 2, 0, GETDATE(), GETDATE())
 GO
 SET IDENTITY_INSERT dbo.SetRule OFF;
 GO
@@ -52,7 +52,7 @@ SET IDENTITY_INSERT dbo.[User] ON;
 GO
 INSERT INTO dbo.[User] (Id, Guid, UserName, PasswordHash, Email, EmailConfirmedOn, PhoneNumber, PhoneNumberConfirmedOn, LastLoginOn, AccessFailedCount, LockoutEndDateUtc, Gender, Title, FirstName, MiddleName, LastName, Nickname, PhoneNumber2, Email2, Birthday, Remarks, CreatedOn, ModifiedOn)
 VALUES 
-  (1, N'49afc1e5-d439-40d7-bb13-ce994a825069', N'sysadmin', NULL, N'admin@axuno.net', '20230817', N'', NULL, NULL, 0, NULL, N'm', N'', N'admin', N'', N'admin', N'', N'', N'', NULL, NULL, '20230817', '20230817')
+  (1, N'49afc1e5-d439-40d7-bb13-ce994a825069', N'sysadmin', '', N'admin@axuno.net', '20230817', N'', NULL, NULL, 0, NULL, N'm', N'', N'admin', N'', N'admin', N'', N'', N'', NULL, NULL, '20230817', '20230817')
 GO
 SET IDENTITY_INSERT dbo.[User] OFF; 
 GO
