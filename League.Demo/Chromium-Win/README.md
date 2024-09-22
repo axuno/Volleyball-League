@@ -1,4 +1,4 @@
-# Chromium v111.0.5545.0
+# Chromium v131.0.6733.0
 This folder contains the binaries of the Chromium web browser.
 
 It can be downloaded from here:
