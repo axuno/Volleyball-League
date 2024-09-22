@@ -55,8 +55,9 @@ public class ReportSheetCache
         if (!File.Exists(cacheFile) || IsOutdated(cacheFile, data.ModifiedOn))
         {
             _logger.LogDebug("Create new match report for tenant '{Tenant}', match '{MatchId}'", _tenantContext.Identifier, data.Id);
-            cacheFile = await GetReportSheetChromium(data.Id, html, cancellationToken);
-            // GetReportSheetPuppeteer() still throws on production server
+            // cacheFile = await GetReportSheetChromium(data.Id, html, cancellationToken);
+            cacheFile = await GetReportSheetPuppeteer(data.Id, html, cancellationToken);
+            // GetReportSheetPuppeteer(...) still throws on production server
             if (cacheFile == null) return Stream.Null;
         }
 
@@ -119,7 +120,7 @@ public class ReportSheetCache
         var options = new PuppeteerSharp.LaunchOptions
         {
             Headless = true,
-            Product = PuppeteerSharp.Product.Chrome,
+            Browser = PuppeteerSharp.SupportedBrowser.Chromium,
             // Alternative: --use-cmd-decoder=validating 
             Args = new[]
                 { "--no-sandbox", "--disable-gpu", "--disable-extensions", "--use-cmd-decoder=passthrough" },
