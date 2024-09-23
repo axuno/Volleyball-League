@@ -714,6 +714,7 @@ public class Match : AbstractController
     public async Task<IActionResult> ReportSheet(long id, [FromServices] ReportSheetCache cache, CancellationToken cancellationToken)
     {
         MatchReportSheetRow? model = null;
+        cache.UsePuppeteer = false;
             
         try
         {
@@ -730,7 +731,6 @@ public class Match : AbstractController
             var html = await _razorViewToStringRenderer.RenderViewToStringAsync(
                 $"~/Views/{nameof(Match)}/{ViewNames.Match.ReportSheet}.cshtml", model);
 
-            //var cache = new ReportSheetCache(_tenantContext, _configuration, _webHostEnvironment);
             var stream = await cache.GetOrCreatePdf(model, html, cancellationToken);
             _logger.LogInformation("PDF file returned for tenant '{Tenant}' and match id '{MatchId}'", _tenantContext.Identifier, id);
             return new FileStreamResult(stream, "application/pdf");
