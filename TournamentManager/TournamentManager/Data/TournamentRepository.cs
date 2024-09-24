@@ -128,7 +128,7 @@ public class TournamentRepository
         }
         catch (Exception e)
         {
-            _logger.LogCritical(e, "Error saving transaction for tournament IDs {TargetId} and {SourceId}",
+            _logger.LogError(e, "Error saving transaction for tournament IDs {TargetId} and {SourceId}",
                 targetTournament.Id, sourceTournament.Id);
 
             if (da.IsTransactionInProgress)

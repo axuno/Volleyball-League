@@ -102,7 +102,7 @@ public class Match : AbstractController
 
         if (model.Tournament == null)
         {
-            _logger.LogCritical("{TournamentId} '{Id}' does not exist. User ID: '{CurrentUser}'", nameof(_tenantContext.TournamentContext.MatchPlanTournamentId), _tenantContext.TournamentContext.MatchPlanTournamentId, GetCurrentUserId());
+            _logger.LogError("{TournamentId} '{Id}' does not exist. User ID: '{CurrentUser}'", nameof(_tenantContext.TournamentContext.MatchPlanTournamentId), _tenantContext.TournamentContext.MatchPlanTournamentId, GetCurrentUserId());
         }
 
         return View(ViewNames.Match.Fixtures, model);
@@ -146,7 +146,7 @@ public class Match : AbstractController
         }
         catch (Exception e)
         {
-            _logger.LogCritical(e, "Error creating {Calendar} for user ID '{CurrentUser}'", nameof(Calendar), GetCurrentUserId());
+            _logger.LogError(e, "Error creating {Calendar} for user ID '{CurrentUser}'", nameof(Calendar), GetCurrentUserId());
             return NoContent();
         }
     }
@@ -190,7 +190,7 @@ public class Match : AbstractController
         }
         catch (Exception e)
         {
-            _logger.LogCritical(e, "Error creating {Calendar} for user ID '{CurrentUser}'", nameof(PublicCalendar), GetCurrentUserId());
+            _logger.LogError(e, "Error creating {Calendar} for user ID '{CurrentUser}'", nameof(PublicCalendar), GetCurrentUserId());
             return NoContent();
         }
     }
@@ -224,7 +224,7 @@ public class Match : AbstractController
 
         if (model.Tournament == null)
         {
-            _logger.LogCritical("{Name} '{TournamentId}' does not exist. User ID '{CurrentUser}'", nameof(_tenantContext.TournamentContext.MatchPlanTournamentId), _tenantContext.TournamentContext.MatchPlanTournamentId, GetCurrentUserId());
+            _logger.LogError("{Name} '{TournamentId}' does not exist. User ID '{CurrentUser}'", nameof(_tenantContext.TournamentContext.MatchPlanTournamentId), _tenantContext.TournamentContext.MatchPlanTournamentId, GetCurrentUserId());
         }
         return View(ViewNames.Match.Results, model);
     }
@@ -304,7 +304,7 @@ public class Match : AbstractController
         }
         catch (Exception e)
         {
-            _logger.LogCritical(e, "Building {Model} failed for MatchId '{MatchId}'", nameof(EnterResultViewModel), id);
+            _logger.LogError(e, "Building {Model} failed for MatchId '{MatchId}'", nameof(EnterResultViewModel), id);
             throw;
         }
     }
@@ -376,7 +376,7 @@ public class Match : AbstractController
         }
         catch (Exception e)
         {
-            _logger.LogCritical(e, "Building {Model} failed for MatchId '{ModelId}'. User ID '{CurrentUser}'", nameof(EnterResultViewModel), model?.Id, GetCurrentUserId());
+            _logger.LogError(e, "Building {Model} failed for MatchId '{ModelId}'. User ID '{CurrentUser}'", nameof(EnterResultViewModel), model?.Id, GetCurrentUserId());
             throw;
         }
 
@@ -404,7 +404,7 @@ public class Match : AbstractController
         }
         catch (Exception e)
         {
-            _logger.LogCritical(e, "Building {EnterResultViewModel} failed for MatchId '{ModelId}' and  user ID '{CurrentUserId}'", nameof(EnterResultViewModel), model.Id, GetCurrentUserId());
+            _logger.LogError(e, "Building {EnterResultViewModel} failed for MatchId '{ModelId}' and  user ID '{CurrentUserId}'", nameof(EnterResultViewModel), model.Id, GetCurrentUserId());
             TempData.Put<EnterResultViewModel.MatchResultMessage>(nameof(EnterResultViewModel.MatchResultMessage),
                 new EnterResultViewModel.MatchResultMessage { MatchId = model.Id, ChangeSuccess = false });
         }
@@ -447,7 +447,7 @@ public class Match : AbstractController
         }
         catch (Exception e)
         {
-            _logger.LogCritical(e, "Deleting result for {Model} failed for MatchId '{ModelId}'. User ID '{CurrentUser}'", nameof(EnterResultViewModel), model.Id, GetCurrentUserId());
+            _logger.LogError(e, "Deleting result for {Model} failed for MatchId '{ModelId}'. User ID '{CurrentUser}'", nameof(EnterResultViewModel), model.Id, GetCurrentUserId());
             TempData.Put<EnterResultViewModel.MatchResultMessage>(nameof(EnterResultViewModel.MatchResultMessage),
                 new EnterResultViewModel.MatchResultMessage { MatchId = model.Id, ChangeSuccess = false });
             // redirect to results overview, where success message is shown
@@ -567,7 +567,7 @@ public class Match : AbstractController
         catch (Exception e)
         {
             fixtureMessage.ChangeSuccess = false;
-            _logger.LogCritical(e, "Fixture update for match id {MatchId} failed for user ID '{CurrentUserId}'", match.Id, GetCurrentUserId());
+            _logger.LogError(e, "Fixture update for match id {MatchId} failed for user ID '{CurrentUserId}'", match.Id, GetCurrentUserId());
         }
 
         // redirect to fixture overview, where success message is shown
@@ -613,7 +613,7 @@ public class Match : AbstractController
         }
         catch (Exception e)
         {
-            _logger.LogCritical(e, "Error loading match in '{MethodName}' for user ID '{CurrentUserId}'", nameof(_appDb.MatchRepository.GetPlannedMatchesAsync), GetCurrentUserId());
+            _logger.LogError(e, "Error loading match in '{MethodName}' for user ID '{CurrentUserId}'", nameof(_appDb.MatchRepository.GetPlannedMatchesAsync), GetCurrentUserId());
             return null;
         }
     }
@@ -643,7 +643,7 @@ public class Match : AbstractController
         }
         catch (Exception e)
         {
-            _logger.LogCritical(e, "Error adding display data to model '{Model}' for user ID '{CurrentUserId}'", nameof(EditFixtureViewModel), GetCurrentUserId());
+            _logger.LogError(e, "Error adding display data to model '{Model}' for user ID '{CurrentUserId}'", nameof(EditFixtureViewModel), GetCurrentUserId());
             return null;
         }
     }
@@ -655,7 +655,7 @@ public class Match : AbstractController
 
         if (tournament != null) return tournament;
 
-        _logger.LogCritical("{Name} '{Id}' does not exist. User ID '{CurrentUserId}'.", nameof(_tenantContext.TournamentContext.MatchPlanTournamentId), _tenantContext.TournamentContext.MatchPlanTournamentId, GetCurrentUserId());
+        _logger.LogError("{Name} '{Id}' does not exist. User ID '{CurrentUserId}'.", nameof(_tenantContext.TournamentContext.MatchPlanTournamentId), _tenantContext.TournamentContext.MatchPlanTournamentId, GetCurrentUserId());
         return null;
     }
 
@@ -666,7 +666,7 @@ public class Match : AbstractController
 
         if (tournament != null) return tournament;
 
-        _logger.LogCritical("{Name} '{Id}' does not exist. User ID '{CurrentUserId}'.", nameof(_tenantContext.TournamentContext.MatchResultTournamentId), _tenantContext.TournamentContext.MatchPlanTournamentId, GetCurrentUserId());
+        _logger.LogError("{Name} '{Id}' does not exist. User ID '{CurrentUserId}'.", nameof(_tenantContext.TournamentContext.MatchResultTournamentId), _tenantContext.TournamentContext.MatchPlanTournamentId, GetCurrentUserId());
         return null;
     }
 
@@ -678,21 +678,21 @@ public class Match : AbstractController
             cancellationToken);
         if (teamInRound.Count != 2)
         {
-            _logger.LogCritical("Number of found opponents for a match does not equal 2. User ID '{CurrentUserId}'.", GetCurrentUserId());
+            _logger.LogError("Number of found opponents for a match does not equal 2. User ID '{CurrentUserId}'.", GetCurrentUserId());
         }
 
         var tournament = await _appDb.TournamentRepository.GetTournamentAsync(
             new PredicateExpression(TournamentFields.Id == _tenantContext.TournamentContext.MatchResultTournamentId), cancellationToken);
         if (tournament == null)
         {
-            _logger.LogCritical("{Name} '{Id}' does not exist", nameof(_tenantContext.TournamentContext.MatchResultTournamentId), _tenantContext.TournamentContext.MatchPlanTournamentId);
+            _logger.LogError("{Name} '{Id}' does not exist", nameof(_tenantContext.TournamentContext.MatchResultTournamentId), _tenantContext.TournamentContext.MatchPlanTournamentId);
         }
 
         var roundWithRules =
             await _appDb.RoundRepository.GetRoundWithRulesAsync(match.RoundId, cancellationToken);
         if (roundWithRules == null)
         {
-            _logger.LogCritical("Round with {RoundId}='{Id}' does not exist. User ID '{CurrentUserId}'.", _tenantContext.TournamentContext.MatchPlanTournamentId, match.RoundId, GetCurrentUserId());
+            _logger.LogError("Round with {RoundId}='{Id}' does not exist. User ID '{CurrentUserId}'.", _tenantContext.TournamentContext.MatchPlanTournamentId, match.RoundId, GetCurrentUserId());
         }
 
         return tournament != null && roundWithRules != null && teamInRound.Count == 2
@@ -714,7 +714,7 @@ public class Match : AbstractController
     public async Task<IActionResult> ReportSheet(long id, [FromServices] ReportSheetCache cache, CancellationToken cancellationToken)
     {
         MatchReportSheetRow? model = null;
-        cache.UsePuppeteer = false;
+        cache.UsePuppeteer = true;
             
         try
         {
@@ -737,7 +737,7 @@ public class Match : AbstractController
         }
         catch (Exception e)
         {
-            _logger.LogCritical(e, "{Method} failed for match ID '{MatchId}'", nameof(ReportSheet), id);
+            _logger.LogError(e, "{Method} failed for match ID '{MatchId}'", nameof(ReportSheet), id);
         }
             
         // Not able to render report sheet as PDF: return HTML

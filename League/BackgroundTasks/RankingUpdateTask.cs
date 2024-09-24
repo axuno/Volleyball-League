@@ -169,7 +169,7 @@ public class RankingUpdateTask : IBackgroundTask
         }
         catch (Exception e)
         {
-            _logger.LogCritical(e, "Could not update ranking table and/or chart files");
+            _logger.LogError(e, "Could not update ranking table and/or chart files");
         }
 
         if (rankingWasUpdated) DeleteObsoleteChartImageFiles(roundIds);
@@ -236,7 +236,7 @@ public class RankingUpdateTask : IBackgroundTask
         }
         catch (Exception e)
         {
-            _logger.LogCritical(e, "Could not delete one or more obsolete chart image files");
+            _logger.LogError(e, "Could not delete one or more obsolete chart image files");
         }
     }
 }

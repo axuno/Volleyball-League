@@ -27,7 +27,7 @@ public class GenericRepository
         }
         catch (Exception e)
         {
-            _logger.LogCritical(e, "Error saving entity in transaction: {entity}", entityToSave);
+            _logger.LogError(e, "Error saving entity in transaction: {entity}", entityToSave);
 
             if (da.IsTransactionInProgress)
                 da.Rollback();

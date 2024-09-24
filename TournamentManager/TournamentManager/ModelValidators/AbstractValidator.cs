@@ -218,7 +218,7 @@ public abstract class AbstractValidator<TModel, TData, TFactId>
             fact.IsChecked = true;
             fact.Message = string.Empty;
             fact.Exception = e;
-            Logger.LogCritical(e, "Fact '{factId}': {factSuccess}", id, fact.Success);
+            Logger.LogError(e, "Fact '{factId}': {factSuccess}", id, fact.Success);
         }
 
         return fact;

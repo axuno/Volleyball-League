@@ -87,7 +87,7 @@ public class RankingRepository
         }
         catch (Exception e)
         {
-            _logger.LogCritical(e, "Error updating Ranking in transaction: RoundId={roundId}", roundId);
+            _logger.LogError(e, "Error updating Ranking in transaction: RoundId={roundId}", roundId);
 
             if (da.IsTransactionInProgress)
                 da.Rollback();

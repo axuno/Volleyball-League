@@ -134,7 +134,7 @@ public class Upload : AbstractController
         }
         catch (Exception e)
         {
-            _logger.LogCritical(e, "File for team id '{teamId}' could not be stored", teamId);
+            _logger.LogError(e, "File for team id '{teamId}' could not be stored", teamId);
             Response.StatusCode = 409;
             return Json(new {error = _localizer["Uploaded file could not be processed"].Value});
         }

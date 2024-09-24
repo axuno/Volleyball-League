@@ -639,7 +639,7 @@ public class Account : AbstractController
     {
         if (user.Email is null)
         {
-            _logger.LogCritical("Unexpected missing Email for user {User}", user);
+            _logger.LogError("Unexpected missing Email for user {User}", user);
             return;
         }
 
