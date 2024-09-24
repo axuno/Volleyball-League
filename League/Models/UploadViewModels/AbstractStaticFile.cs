@@ -38,7 +38,7 @@ public abstract class AbstractStaticFile
         }
         catch (Exception e)
         {
-            _logger.LogCritical(e, "File '{path}' could not be saved", fullFilePath);
+            _logger.LogError(e, "File '{path}' could not be saved", fullFilePath);
             throw;
         }
     }
@@ -61,7 +61,7 @@ public abstract class AbstractStaticFile
             }
             catch (Exception e)
             {
-                _logger.LogCritical(e, "File '{filename}' could not be deleted", fileInfo.FullName);
+                _logger.LogError(e, "File '{filename}' could not be deleted", fileInfo.FullName);
                 throw;
             }
         }
@@ -83,7 +83,7 @@ public abstract class AbstractStaticFile
             }
             catch (Exception e)
             {
-                _logger.LogCritical(e, "File '{fileName}' could not be deleted", fileInfo.FullName);
+                _logger.LogError(e, "File '{fileName}' could not be deleted", fileInfo.FullName);
                 throw;
             }
         }

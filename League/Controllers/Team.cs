@@ -59,7 +59,7 @@ public class Team : AbstractController
 
         if (model.Tournament == null)
         {
-            _logger.LogCritical("{teamTournamentId} '{id}' does not exist", nameof(_tenantContext.TournamentContext.TeamTournamentId), _tenantContext.TournamentContext.TeamTournamentId);
+            _logger.LogError("{teamTournamentId} '{id}' does not exist", nameof(_tenantContext.TournamentContext.TeamTournamentId), _tenantContext.TournamentContext.TeamTournamentId);
             return NotFound();
         }
 
@@ -249,7 +249,7 @@ public class Team : AbstractController
         catch (Exception e)
         {
             TempData.Put<MyTeamMessageModel.MyTeamMessage>(nameof(MyTeamMessageModel.MyTeamMessage), new MyTeamMessageModel.MyTeamMessage { AlertType = SiteAlertTagHelper.AlertType.Danger, MessageId = MyTeamMessageModel.MessageId.TeamDataFailure});
-            _logger.LogCritical(e, "Error saving team id '{teamId}'", model.Team.IsNew ? "new" : model.Team.Id.ToString());
+            _logger.LogError(e, "Error saving team id '{teamId}'", model.Team.IsNew ? "new" : model.Team.Id.ToString());
             return JsonResponseRedirect(TenantLink.Action(nameof(MyTeam), nameof(Team),new { id = team.Id }));
         }
 
@@ -347,7 +347,7 @@ public class Team : AbstractController
         }
         catch (Exception e)
         {
-            _logger.LogCritical(e, "Failed to save selected venue for team id {teamId}, venue id {venueId}", model.TeamId, model.VenueId);
+            _logger.LogError(e, "Failed to save selected venue for team id {teamId}, venue id {venueId}", model.TeamId, model.VenueId);
         }
             
         return JsonResponseRedirect(TenantLink.Action(nameof(MyTeam), nameof(Team), new { model.TeamId }));

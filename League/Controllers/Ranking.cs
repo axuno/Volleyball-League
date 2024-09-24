@@ -63,7 +63,7 @@ public class Ranking : AbstractController
 
             if (model.Tournament == null)
             {
-                _logger.LogCritical("{name} '{id}' does not exist. User ID '{currentUser}'.", nameof(_tenantContext.TournamentContext.MatchPlanTournamentId), _tenantContext.TournamentContext.MatchResultTournamentId, GetCurrentUserId());
+                _logger.LogError("{name} '{id}' does not exist. User ID '{currentUser}'.", nameof(_tenantContext.TournamentContext.MatchPlanTournamentId), _tenantContext.TournamentContext.MatchResultTournamentId, GetCurrentUserId());
                 return NotFound();
             }
 
@@ -71,7 +71,7 @@ public class Ranking : AbstractController
         }
         catch (Exception e)
         {
-            _logger.LogCritical(e, "Error when creating the ranking table");
+            _logger.LogError(e, "Error when creating the ranking table");
             return NotFound();
         }
     }
@@ -93,7 +93,7 @@ public class Ranking : AbstractController
         }
         catch (Exception e)
         {
-            _logger.LogCritical(e, $"Error when creating the {nameof(AllTimeTournament)} table");
+            _logger.LogError(e, $"Error when creating the {nameof(AllTimeTournament)} table");
             throw;
         }
     }
@@ -114,7 +114,7 @@ public class Ranking : AbstractController
         }
         catch (Exception e)
         {
-            _logger.LogCritical(e, $"Error when creating the {nameof(AllTimeTeam)} table");
+            _logger.LogError(e, $"Error when creating the {nameof(AllTimeTeam)} table");
             throw;
         }
     }
@@ -137,7 +137,7 @@ public class Ranking : AbstractController
 
         if (rankingList != null) return rankingList;
 
-        _logger.LogCritical("Could not get or create round leg periods");
+        _logger.LogError("Could not get or create round leg periods");
         return new List<RankingListRow>();
     }
 
@@ -159,7 +159,7 @@ public class Ranking : AbstractController
         );
         if (roundLegPeriods != null) return roundLegPeriods;
 
-        _logger.LogCritical("Could not get or create round leg periods");
+        _logger.LogError("Could not get or create round leg periods");
         return new List<RoundLegPeriodRow>();
     }
 

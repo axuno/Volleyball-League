@@ -36,7 +36,7 @@ public class RoundSelector : ViewComponent
         }
         catch (Exception e)
         {
-            _logger.LogCritical(e, $"Error creating view model for component '{nameof(RoundSelector)}'");
+            _logger.LogError(e, $"Error creating view model for component '{nameof(RoundSelector)}'");
             return null;
         }
     }

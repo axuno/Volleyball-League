@@ -84,7 +84,7 @@ public class TeamApplication : AbstractController
 
         if (model.Tournament == null)
         {
-            _logger.LogCritical("{name} '{id}' does not exist", nameof(_tenantContext.TournamentContext.ApplicationTournamentId), _tenantContext.TournamentContext.ApplicationTournamentId);
+            _logger.LogError("{name} '{id}' does not exist", nameof(_tenantContext.TournamentContext.ApplicationTournamentId), _tenantContext.TournamentContext.ApplicationTournamentId);
             return NotFound();
         }
 
@@ -463,7 +463,7 @@ public class TeamApplication : AbstractController
 
         if (roundWithType == null)
         {
-            _logger.LogCritical("No round found for '{RoundId}'", sessionModel.TeamInRound.RoundId);
+            _logger.LogError("No round found for '{RoundId}'", sessionModel.TeamInRound.RoundId);
             return Redirect(TenantLink.Action(nameof(Start))!);
         }
 
@@ -498,7 +498,7 @@ public class TeamApplication : AbstractController
             }
             catch (Exception e)
             {
-                _logger.LogCritical(e, "{entityName} with ID {teamInRoundId} for team ID {teamId} not found", nameof(TeamInRoundEntity), sessionModel.TeamInRound!.Id, sessionModel.TeamInRound.TeamId);
+                _logger.LogError(e, "{entityName} with ID {teamInRoundId} for team ID {teamId} not found", nameof(TeamInRoundEntity), sessionModel.TeamInRound!.Id, sessionModel.TeamInRound.TeamId);
                 throw;
             }
                 
@@ -554,7 +554,7 @@ public class TeamApplication : AbstractController
         }
         catch (Exception e)
         {
-            _logger.LogCritical(e, "Team application could not be saved.");
+            _logger.LogError(e, "Team application could not be saved.");
             HttpContext.Session.Remove(TeamApplicationSessionName);
             TempData.Put<TeamApplicationMessageModel.TeamApplicationMessage>(
                 nameof(TeamApplicationMessageModel.TeamApplicationMessage),
@@ -640,7 +640,7 @@ public class TeamApplication : AbstractController
 
         if (tournament == null)
         {
-            _logger.LogCritical("No tournament found for ID '{ApplicationTournamentId}'", _tenantContext.TournamentContext.ApplicationTournamentId);
+            _logger.LogError("No tournament found for ID '{ApplicationTournamentId}'", _tenantContext.TournamentContext.ApplicationTournamentId);
             throw new InvalidOperationException($"No tournament found for ID '{_tenantContext.TournamentContext.ApplicationTournamentId}'");
         }
 
@@ -705,7 +705,7 @@ public class TeamApplication : AbstractController
             cancellationToken);
         if (teamApplicationTournament == null)
         {
-            _logger.LogCritical("No tournament found for ID '{ApplicationTournamentId}'", _tenantContext.TournamentContext.ApplicationTournamentId);
+            _logger.LogError("No tournament found for ID '{ApplicationTournamentId}'", _tenantContext.TournamentContext.ApplicationTournamentId);
             throw new InvalidOperationException($"No tournament found for ID '{_tenantContext.TournamentContext.ApplicationTournamentId}'");
         }
 

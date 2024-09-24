@@ -354,7 +354,7 @@ public class MatchRepository
         }
         catch (Exception e)
         {
-            _logger.LogCritical(e, "Error saving in transaction: MatchId={matchId}", matchEntity.Id);
+            _logger.LogError(e, "Error saving in transaction: MatchId={matchId}", matchEntity.Id);
 
             if (da.IsTransactionInProgress)
                 da.Rollback();
@@ -411,7 +411,7 @@ public class MatchRepository
         }
         catch (Exception e)
         {
-            _logger.LogCritical(e, "Error saving entity in transaction: {MatchId}", matchId);
+            _logger.LogError(e, "Error saving entity in transaction: {MatchId}", matchId);
 
             if (da.IsTransactionInProgress)
                 da.Rollback();

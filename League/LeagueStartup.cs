@@ -641,7 +641,7 @@ public static class LeagueStartup
                 }
                 catch (Exception e)
                 {
-                    logger.LogCritical(e, "Folder '{folderName}': Does not exist and could not be created.", folderName);
+                    logger.LogError(e, "Folder '{folderName}': Does not exist and could not be created.", folderName);
                 }
             }
         }

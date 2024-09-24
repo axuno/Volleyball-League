@@ -153,11 +153,12 @@ public class ReportSheetCache
             Args = new[]  // Chromium requires using a sandboxed browser for PDF generation, unless sandbox is disabled
                 { "--no-sandbox", "--disable-gpu", "--disable-extensions", "--use-cmd-decoder=passthrough" },
             ExecutablePath = _pathToChromium,
-            Timeout = 5000
+            Timeout = 5000,
+            ProtocolTimeout = 10000 // default is 180,000
         };
         // Use Puppeteer as a wrapper for the browser, which can generate PDF from HTML
-        // Start command line arguments set by Puppeteer:
-        // --allow-pre-commit-input --disable-background-networking --disable-background-timer-throttling --disable-backgrounding-occluded-windows --disable-breakpad --disable-client-side-phishing-detection --disable-component-extensions-with-background-pages --disable-component-update --disable-default-apps --disable-dev-shm-usage --disable-extensions --disable-features=Translate,BackForwardCache,AcceptCHFrame,MediaRouter,OptimizationHints --disable-hang-monitor --disable-ipc-flooding-protection --disable-popup-blocking --disable-prompt-on-repost --disable-renderer-backgrounding --disable-sync --enable-automation --enable-blink-features=IdleDetection --enable-features=NetworkServiceInProcess2 --export-tagged-pdf --force-color-profile=srgb --metrics-recording-only --no-first-run --password-store=basic --use-mock-keychain --headless
+        // Start command line arguments set by Puppeteer v20:
+        // --allow-pre-commit-input --disable-background-networking --disable-background-timer-throttling --disable-backgrounding-occluded-windows --disable-breakpad --disable-client-side-phishing-detection --disable-component-extensions-with-background-pages --disable-component-update --disable-default-apps --disable-dev-shm-usage --disable-extensions --disable-field-trial-config --disable-hang-monitor --disable-infobars --disable-ipc-flooding-protection --disable-popup-blocking --disable-prompt-on-repost --disable-renderer-backgrounding --disable-search-engine-choice-screen --disable-sync --enable-automation --enable-blink-features=IdleDetection --export-tagged-pdf --generate-pdf-document-outline --force-color-profile=srgb --metrics-recording-only --no-first-run --password-store=basic --use-mock-keychain --disable-features=Translate,AcceptCHFrame,MediaRouter,OptimizationHints,ProcessPerSiteUpToMainFrameThreshold --enable-features= --headless=new --hide-scrollbars --mute-audio about:blank --no-sandbox --disable-gpu --disable-extensions --use-cmd-decoder=passthrough --remote-debugging-port=0 --user-data-dir="C:\Users\xyz\AppData\Local\Temp\yk1fjkgt.phb"
         await using var browser = await PuppeteerSharp.Puppeteer.LaunchAsync(options, _loggerFactory).ConfigureAwait(false);
         await using var page = await browser.NewPageAsync().ConfigureAwait(false);
 

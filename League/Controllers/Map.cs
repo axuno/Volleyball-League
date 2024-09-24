@@ -39,7 +39,7 @@ public class Map : AbstractController
         };
         if (model.Tournament == null)
         {
-            _logger.LogCritical("{variable} '{value}' does not exist", nameof(_tenantContext.TournamentContext.MapTournamentId), _tenantContext.TournamentContext.MapTournamentId);
+            _logger.LogError("{variable} '{value}' does not exist", nameof(_tenantContext.TournamentContext.MapTournamentId), _tenantContext.TournamentContext.MapTournamentId);
         }
         return View(Views.ViewNames.Map.Index, model);
     }
@@ -62,7 +62,7 @@ public class Map : AbstractController
         };
         if (model.Tournament == null)
         {
-            _logger.LogCritical("{variable} '{value}' does not exist", nameof(_tenantContext.TournamentContext.MapTournamentId), _tenantContext.TournamentContext.MapTournamentId);
+            _logger.LogError("{variable} '{value}' does not exist", nameof(_tenantContext.TournamentContext.MapTournamentId), _tenantContext.TournamentContext.MapTournamentId);
         }
 
         return View(Views.ViewNames.Map.Index, model);

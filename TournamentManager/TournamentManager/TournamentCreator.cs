@@ -91,7 +91,7 @@ public class TournamentCreator
         }
         catch (Exception e)
         {
-            _logger.LogCritical(e, "Error saving Tournaments from {TournamentCreator}", nameof(TournamentCreator));
+            _logger.LogError(e, "Error saving Tournaments from {TournamentCreator}", nameof(TournamentCreator));
             return false;
         }
 
@@ -169,7 +169,7 @@ public class TournamentCreator
 
             if (sourceRound is null)
             {
-                _logger.LogCritical("Round {RoundId} not found.", sourceRoundId);
+                _logger.LogError("Round {RoundId} not found.", sourceRoundId);
                 return false;
             }
 
@@ -200,7 +200,7 @@ public class TournamentCreator
 
             if (sourceRound.RoundLegs.Count > legDates.Count)
             {
-                _logger.LogCritical("Round {RoundId} has {Legs} legs, but only {LegDates} leg dates provided.", sourceRoundId, sourceRound.RoundLegs.Count, legDates.Count);
+                _logger.LogError("Round {RoundId} has {Legs} legs, but only {LegDates} leg dates provided.", sourceRoundId, sourceRound.RoundLegs.Count, legDates.Count);
                 return false;
             }
 
@@ -272,7 +272,7 @@ public class TournamentCreator
         }
         catch (Exception e)
         {
-            _logger.LogCritical(e, "Error updating round legs: TournamentId={TournamentId}", tournamentId);
+            _logger.LogError(e, "Error updating round legs: TournamentId={TournamentId}", tournamentId);
 
             return false;
         }
@@ -289,7 +289,7 @@ public class TournamentCreator
         if (!await _appDb.MatchRepository.AllMatchesCompletedAsync(new TournamentEntity(tournamentId), cancellationToken))
         {
             var ex = new InvalidOperationException($@"Tournament {tournamentId} contains incomplete matches.");
-            _logger.LogCritical(ex,@"Tournament {TournamentId} contains incomplete matches.", tournamentId);
+            _logger.LogError(ex,@"Tournament {TournamentId} contains incomplete matches.", tournamentId);
             throw ex;
         }
 
@@ -327,7 +327,7 @@ public class TournamentCreator
         if (!await _appDb.MatchRepository.AllMatchesCompletedAsync(round, cancellationToken))
         {
             var ex = new InvalidOperationException($"Round {round.Id} has uncompleted matches.");
-            _logger.LogCritical(ex,@"Round {RoundId} has uncompleted matches.", round.Id);
+            _logger.LogError(ex,@"Round {RoundId} has uncompleted matches.", round.Id);
             throw ex;
         }
 

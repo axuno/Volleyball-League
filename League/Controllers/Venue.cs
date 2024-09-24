@@ -211,7 +211,7 @@ public class Venue : AbstractController
         }
         catch (Exception e)
         {
-            _logger.LogCritical(e, "Failed to save venue.");
+            _logger.LogError(e, "Failed to save venue.");
             return Redirect(SetAdjustedReturnResult(nameof(Create), model.ReturnUrl, false));
         }
     }

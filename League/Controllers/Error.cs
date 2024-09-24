@@ -40,7 +40,7 @@ public class Error : AbstractController
         {
             viewModel.OrigPath = exceptionFeature?.Path;
             viewModel.Exception = exceptionFeature?.Error;
-            _logger.LogCritical(viewModel.Exception, "Path: {origPath}", viewModel.OrigPath);
+            _logger.LogError(viewModel.Exception, "Path: {origPath}", viewModel.OrigPath);
         }
         else
         {
