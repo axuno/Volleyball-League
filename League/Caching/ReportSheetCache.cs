@@ -150,8 +150,8 @@ public class ReportSheetCache
             Headless = true,
             Browser = PuppeteerSharp.SupportedBrowser.Chromium,
             // Alternative: --use-cmd-decoder=validating 
-            // Args = new[]  // removed on 2024-09-23
-            //    { "--no-sandbox", "--disable-gpu", "--disable-extensions", "--use-cmd-decoder=passthrough" },
+            Args = new[]  // Chromium requires using a sandboxed browser for PDF generation, unless sandbox is disabled
+                { "--no-sandbox", "--disable-gpu", "--disable-extensions", "--use-cmd-decoder=passthrough" },
             ExecutablePath = _pathToChromium,
             Timeout = 5000
         };
@@ -164,28 +164,6 @@ public class ReportSheetCache
         await page.SetContentAsync(html); // Bootstrap 5 is loaded from CDN
         await page.EvaluateExpressionHandleAsync("document.fonts.ready"); // Wait for fonts to be loaded. Omitting this might result in no text rendered in pdf.
 
-        // Todo: This part works on the development machine, but throws on the production web server
-        /*
-2023-03-21 22:23:44.4533||FATAL|League.Controllers.Match|ReportSheet failed for match ID '3188' PuppeteerSharp.MessageException: Protocol error (IO.read): Read failed
-   at PuppeteerSharp.CDPSession.SendAsync(String method, Object args, Boolean waitForCallback) in C:\projects\puppeteer-sharp\lib\PuppeteerSharp\CDPSession.cs:line 94
-   at PuppeteerSharp.CDPSession.SendAsync[T](String method, Object args) in C:\projects\puppeteer-sharp\lib\PuppeteerSharp\CDPSession.cs:line 55
-   at PuppeteerSharp.Helpers.ProtocolStreamReader.ReadProtocolStreamByteAsync(CDPSession client, String handle, String path) in C:\projects\puppeteer-sharp\lib\PuppeteerSharp\Helpers\ProtocolStreamReader.cs:line 63
-   at PuppeteerSharp.Page.PdfInternalAsync(String file, PdfOptions options) in C:\projects\puppeteer-sharp\lib\PuppeteerSharp\Page.cs:line 1175
-   at League.Caching.ReportSheetCache.GetReportSheetPuppeteer(Int64 matchId, String html, CancellationToken cancellationToken)
-   at League.Caching.ReportSheetCache.GetReportSheetPuppeteer(Int64 matchId, String html, CancellationToken cancellationToken)
-   at League.Caching.ReportSheetCache.GetReportSheetPuppeteer(Int64 matchId, String html, CancellationToken cancellationToken)
-   at League.Caching.ReportSheetCache.GetOrCreatePdf(MatchReportSheetRow data, String html, CancellationToken cancellationToken)
-   at League.Controllers.Match.ReportSheet(Int64 id, CancellationToken cancellationToken)    at PuppeteerSharp.CDPSession.SendAsync(String method, Object args, Boolean waitForCallback) in C:\projects\puppeteer-sharp\lib\PuppeteerSharp\CDPSession.cs:line 94
-   at PuppeteerSharp.CDPSession.SendAsync[T](String method, Object args) in C:\projects\puppeteer-sharp\lib\PuppeteerSharp\CDPSession.cs:line 55
-   at PuppeteerSharp.Helpers.ProtocolStreamReader.ReadProtocolStreamByteAsync(CDPSession client, String handle, String path) in C:\projects\puppeteer-sharp\lib\PuppeteerSharp\Helpers\ProtocolStreamReader.cs:line 63
-   at PuppeteerSharp.Page.PdfInternalAsync(String file, PdfOptions options) in C:\projects\puppeteer-sharp\lib\PuppeteerSharp\Page.cs:line 1175
-   at League.Caching.ReportSheetCache.GetReportSheetPuppeteer(Int64 matchId, String html, CancellationToken cancellationToken)
-   at League.Caching.ReportSheetCache.GetReportSheetPuppeteer(Int64 matchId, String html, CancellationToken cancellationToken)
-   at League.Caching.ReportSheetCache.GetReportSheetPuppeteer(Int64 matchId, String html, CancellationToken cancellationToken)
-   at League.Caching.ReportSheetCache.GetOrCreatePdf(MatchReportSheetRow data, String html, CancellationToken cancellationToken)
-   at League.Controllers.Match.ReportSheet(Int64 id, CancellationToken cancellationToken)
-   |url: https://volleyball-liga.de/augsburg/match/reportsheet/3188|action: ReportSheet
-         */
         var fullPath = GetPathToCacheFile(matchId);
         try
         {
@@ -219,13 +197,12 @@ public class ReportSheetCache
 
         if (proc is null)
         {
-            //_logger.LogCritical("Process '{PathToChromium}' could not be started.", _pathToChromium);
-            throw new InvalidOperationException($"Process '{_pathToChromium}' could not be started.");
+            _logger.LogError("Process '{PathToChromium}' could not be started.", _pathToChromium);
         }
 
         const int timeout = 8000;
         var timePassed = 0;
-        while (!proc.HasExited)
+        while (proc is { HasExited: false })
         {
             timePassed += 100;
             await Task.Delay(100, default);
@@ -235,6 +212,7 @@ public class ReportSheetCache
             throw new OperationCanceledException($"Chromium timed out after {timeout}ms.");
         }
 
+        // non-existing file is handled in MovePdfToCache
         return pdfFile;
     }
 
