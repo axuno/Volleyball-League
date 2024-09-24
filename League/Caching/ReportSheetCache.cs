@@ -197,13 +197,12 @@ public class ReportSheetCache
 
         if (proc is null)
         {
-            //_logger.LogCritical("Process '{PathToChromium}' could not be started.", _pathToChromium);
-            throw new InvalidOperationException($"Process '{_pathToChromium}' could not be started.");
+            _logger.LogError("Process '{PathToChromium}' could not be started.", _pathToChromium);
         }
 
         const int timeout = 8000;
         var timePassed = 0;
-        while (!proc.HasExited)
+        while (proc is { HasExited: false })
         {
             timePassed += 100;
             await Task.Delay(100, default);
@@ -213,6 +212,7 @@ public class ReportSheetCache
             throw new OperationCanceledException($"Chromium timed out after {timeout}ms.");
         }
 
+        // non-existing file is handled in MovePdfToCache
         return pdfFile;
     }
 
