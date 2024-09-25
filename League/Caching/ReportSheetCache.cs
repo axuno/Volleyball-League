@@ -47,13 +47,14 @@ public class ReportSheetCache
         _pathToChromium = Path.Combine(webHostEnvironment.ContentRootPath, configuration["Chromium:ExecutablePath"] ?? string.Empty);
         _loggerFactory = loggerFactory;
         _logger = loggerFactory.CreateLogger<ReportSheetCache>();
+        UsePuppeteer = false;
     }
 
     /// <summary>
     /// Gets or sets a value indicating whether to use Puppeteer for generating the report sheet,
     /// instead of Chromium command line.
     /// </summary>
-    public bool UsePuppeteer { get; set; } = false;
+    public bool UsePuppeteer { get; set; }
 
     private void EnsureCacheFolder()
     {
@@ -108,7 +109,7 @@ public class ReportSheetCache
         // Temporary file with HTML content - extension must be ".html"!
         var htmlUri = await CreateHtmlFile(html, tempFolder, cancellationToken);
 
-        var pdfFile = await CreateReportSheetPdfChromium(tempFolder, htmlUri);
+        var pdfFile = await CreateReportSheetPdfChromium(tempFolder, htmlUri, cancellationToken);
 
         var cacheFile = MovePdfToCache(pdfFile, matchId);
 
@@ -154,7 +155,7 @@ public class ReportSheetCache
                 { "--no-sandbox", "--disable-gpu", "--disable-extensions", "--use-cmd-decoder=passthrough" },
             ExecutablePath = _pathToChromium,
             Timeout = 5000,
-            ProtocolTimeout = 10000 // default is 180,000
+            ProtocolTimeout = 10000 // default is 180,000 - used for page.PdfDataAsync
         };
         // Use Puppeteer as a wrapper for the browser, which can generate PDF from HTML
         // Start command line arguments set by Puppeteer v20:
@@ -168,7 +169,6 @@ public class ReportSheetCache
         var fullPath = GetPathToCacheFile(matchId);
         try
         {
-            // page.PdfDataAsync times out after 180,000ms (3 minutes)
             var bytes = await page.PdfDataAsync(new PuppeteerSharp.PdfOptions
                 { Scale = 1.0M, Format = PuppeteerSharp.Media.PaperFormat.A4 }).ConfigureAwait(false);
 
@@ -183,9 +183,10 @@ public class ReportSheetCache
         return fullPath;
     }
 
-    private async Task<string> CreateReportSheetPdfChromium(string tempFolder, string htmlUri)
+    private async Task<string> CreateReportSheetPdfChromium(string tempFolder, string htmlUri, CancellationToken cancellationToken)
     {
-        // Temporary file for the PDF stream form Chromium
+        // Temporary file for the PDF stream from Chromium
+        // Note: non-existing file is handled in MovePdfToCache
         var pdfFile = Path.Combine(tempFolder, Path.GetRandomFileName() + ".pdf");
 
         // Run Chromium
@@ -196,25 +197,21 @@ public class ReportSheetCache
             { CreateNoWindow = true, UseShellExecute = false };
         var proc = System.Diagnostics.Process.Start(startInfo);
 
-        if (proc is null)
+        if (proc == null)
         {
             _logger.LogError("Process '{PathToChromium}' could not be started.", _pathToChromium);
+            return pdfFile;
         }
 
-        const int timeout = 8000;
-        var timePassed = 0;
-        while (proc is { HasExited: false })
-        {
-            timePassed += 100;
-            await Task.Delay(100, default);
-            if (timePassed < timeout) continue;
+        var timeout = TimeSpan.FromMilliseconds(5000);
+        var processTask = proc.WaitForExitAsync(cancellationToken);
 
-            proc.Kill(true);
-            throw new OperationCanceledException($"Chromium timed out after {timeout}ms.");
-        }
+        await Task.WhenAny(processTask, Task.Delay(timeout, cancellationToken));
 
-        // non-existing file is handled in MovePdfToCache
-        return pdfFile;
+        if (processTask.IsCompleted) return pdfFile;
+
+        proc.Kill(true);
+        throw new OperationCanceledException($"Chromium timed out after {timeout.TotalMilliseconds}ms.");
     }
 
     private static async Task<string> CreateHtmlFile(string html, string tempFolder, CancellationToken cancellationToken)

@@ -714,7 +714,7 @@ public class Match : AbstractController
     public async Task<IActionResult> ReportSheet(long id, [FromServices] ReportSheetCache cache, CancellationToken cancellationToken)
     {
         MatchReportSheetRow? model = null;
-        cache.UsePuppeteer = true;
+        cache.UsePuppeteer = false;
             
         try
         {
