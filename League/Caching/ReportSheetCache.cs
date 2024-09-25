@@ -47,13 +47,14 @@ public class ReportSheetCache
         _pathToChromium = Path.Combine(webHostEnvironment.ContentRootPath, configuration["Chromium:ExecutablePath"] ?? string.Empty);
         _loggerFactory = loggerFactory;
         _logger = loggerFactory.CreateLogger<ReportSheetCache>();
+        UsePuppeteer = false;
     }
 
     /// <summary>
     /// Gets or sets a value indicating whether to use Puppeteer for generating the report sheet,
     /// instead of Chromium command line.
     /// </summary>
-    public bool UsePuppeteer { get; set; } = false;
+    public bool UsePuppeteer { get; set; }
 
     private void EnsureCacheFolder()
     {
