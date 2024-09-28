@@ -8,7 +8,6 @@ using TournamentManager.MultiTenancy;
 
 namespace League.Caching;
 
-#pragma warning disable S2083   // reason: False positive due to CancellationToken in GetOrCreatePdf
 #pragma warning disable CA3003  // reason: False positive due to CancellationToken in GetOrCreatePdf
 
 /// <summary>
@@ -18,7 +17,7 @@ public class ReportSheetCache
 {
     private readonly ITenantContext _tenantContext;
     private readonly IWebHostEnvironment _webHostEnvironment;
-    private readonly string _pathToChromium;
+    private readonly string _pathToBrowser;
     private readonly ILoggerFactory _loggerFactory;
     private readonly ILogger<ReportSheetCache> _logger;
 
@@ -44,7 +43,7 @@ public class ReportSheetCache
     {
         _tenantContext = tenantContext;
         _webHostEnvironment = webHostEnvironment;
-        _pathToChromium = Path.Combine(webHostEnvironment.ContentRootPath, configuration["Chromium:ExecutablePath"] ?? string.Empty);
+        _pathToBrowser = Path.Combine(webHostEnvironment.ContentRootPath, configuration["Browser:ExecutablePath"] ?? string.Empty);
         _loggerFactory = loggerFactory;
         _logger = loggerFactory.CreateLogger<ReportSheetCache>();
         UsePuppeteer = false;
@@ -52,18 +51,17 @@ public class ReportSheetCache
 
     /// <summary>
     /// Gets or sets a value indicating whether to use Puppeteer for generating the report sheet,
-    /// instead of Chromium command line.
+    /// instead of Browser command line.
     /// </summary>
     public bool UsePuppeteer { get; set; }
 
     private void EnsureCacheFolder()
     {
         var cacheFolder = Path.Combine(_webHostEnvironment.WebRootPath, ReportSheetCacheFolder);
-        if (!Directory.Exists(cacheFolder))
-        {
-            Directory.CreateDirectory(cacheFolder);
-            _logger.LogDebug("Cache folder '{CacheFolder}' created", cacheFolder);
-        }
+        if (Directory.Exists(cacheFolder)) return;
+
+        Directory.CreateDirectory(cacheFolder);
+        _logger.LogDebug("Cache folder '{CacheFolder}' created", cacheFolder);
     }
 
     /// <summary>
@@ -83,11 +81,19 @@ public class ReportSheetCache
         {
             _logger.LogDebug("Create new match report for tenant '{Tenant}', match '{MatchId}'", _tenantContext.Identifier, data.Id);
 
-            cacheFile = UsePuppeteer
-                ? await GetReportSheetPuppeteer(data.Id, html, cancellationToken)
-                : await GetReportSheetChromium(data.Id, html, cancellationToken);
+            using var converter = new HtmlToPdfConverter(_pathToBrowser, CreateTempPathFolder(), _loggerFactory)
+                { UsePuppeteer = UsePuppeteer };
 
-            if (cacheFile == null) return Stream.Null;
+            var pdfData = await converter.GeneratePdfData(html, cancellationToken);
+
+            if (pdfData != null)
+            {
+                await File.WriteAllBytesAsync(cacheFile, pdfData, cancellationToken);
+                return File.OpenRead(cacheFile);
+            }
+
+            _logger.LogWarning("No PDF data created for match ID '{MatchId}'", data.Id);
+            return Stream.Null;
         }
 
         _logger.LogDebug("Read match report from cache for tenant '{Tenant}', match '{MatchId}'", _tenantContext.Identifier, data.Id);
@@ -101,124 +107,12 @@ public class ReportSheetCache
         return !fi.Exists || fi.LastWriteTimeUtc < dataModifiedOn; // Database dates are in UTC
     }
 
-    private async Task<string?> GetReportSheetChromium(long matchId, string html, CancellationToken cancellationToken)
-    {
-        // Create folder in TempPath
-        var tempFolder = CreateTempPathFolder();
-            
-        // Temporary file with HTML content - extension must be ".html"!
-        var htmlUri = await CreateHtmlFile(html, tempFolder, cancellationToken);
-
-        var pdfFile = await CreateReportSheetPdfChromium(tempFolder, htmlUri, cancellationToken);
-
-        var cacheFile = MovePdfToCache(pdfFile, matchId);
-
-        DeleteTempPathFolder(tempFolder);
-
-        return cacheFile;
-    }
-
-    private string? MovePdfToCache(string pdfFile, long matchId)
-    {
-        if (!File.Exists(pdfFile)) return null;
-
-        var fullPath = GetPathToCacheFile(matchId);
-        try
-        {
-            // may throw UnauthorizedAccessException on production server
-            File.Move(pdfFile, fullPath, true);
-        }
-        catch
-        {
-            File.Copy(pdfFile, fullPath, true);    
-        }
-
-        return fullPath;
-    }
-
     private string GetPathToCacheFile(long matchId)
     {
         var fileName = string.Format(ReportSheetFilenameTemplate, _tenantContext.Identifier, matchId,
             Thread.CurrentThread.CurrentUICulture.TwoLetterISOLanguageName);
 
         return Path.Combine(_webHostEnvironment.WebRootPath, ReportSheetCacheFolder, fileName);
-    }
-
-    private async Task<string?> GetReportSheetPuppeteer(long matchId, string html, CancellationToken cancellationToken)
-    {
-        var options = new PuppeteerSharp.LaunchOptions
-        {
-            Headless = true,
-            Browser = PuppeteerSharp.SupportedBrowser.Chromium,
-            // Alternative: --use-cmd-decoder=validating 
-            Args = new[]  // Chromium requires using a sandboxed browser for PDF generation, unless sandbox is disabled
-                { "--no-sandbox", "--disable-gpu", "--disable-extensions", "--use-cmd-decoder=passthrough" },
-            ExecutablePath = _pathToChromium,
-            Timeout = 5000,
-            ProtocolTimeout = 10000 // default is 180,000 - used for page.PdfDataAsync
-        };
-        // Use Puppeteer as a wrapper for the browser, which can generate PDF from HTML
-        // Start command line arguments set by Puppeteer v20:
-        // --allow-pre-commit-input --disable-background-networking --disable-background-timer-throttling --disable-backgrounding-occluded-windows --disable-breakpad --disable-client-side-phishing-detection --disable-component-extensions-with-background-pages --disable-component-update --disable-default-apps --disable-dev-shm-usage --disable-extensions --disable-field-trial-config --disable-hang-monitor --disable-infobars --disable-ipc-flooding-protection --disable-popup-blocking --disable-prompt-on-repost --disable-renderer-backgrounding --disable-search-engine-choice-screen --disable-sync --enable-automation --enable-blink-features=IdleDetection --export-tagged-pdf --generate-pdf-document-outline --force-color-profile=srgb --metrics-recording-only --no-first-run --password-store=basic --use-mock-keychain --disable-features=Translate,AcceptCHFrame,MediaRouter,OptimizationHints,ProcessPerSiteUpToMainFrameThreshold --enable-features= --headless=new --hide-scrollbars --mute-audio about:blank --no-sandbox --disable-gpu --disable-extensions --use-cmd-decoder=passthrough --remote-debugging-port=0 --user-data-dir="C:\Users\xyz\AppData\Local\Temp\yk1fjkgt.phb"
-        await using var browser = await PuppeteerSharp.Puppeteer.LaunchAsync(options, _loggerFactory).ConfigureAwait(false);
-        await using var page = await browser.NewPageAsync().ConfigureAwait(false);
-
-        await page.SetContentAsync(html); // Bootstrap 5 is loaded from CDN
-        await page.EvaluateExpressionHandleAsync("document.fonts.ready"); // Wait for fonts to be loaded. Omitting this might result in no text rendered in pdf.
-
-        var fullPath = GetPathToCacheFile(matchId);
-        try
-        {
-            var bytes = await page.PdfDataAsync(new PuppeteerSharp.PdfOptions
-                { Scale = 1.0M, Format = PuppeteerSharp.Media.PaperFormat.A4 }).ConfigureAwait(false);
-
-            await File.WriteAllBytesAsync(fullPath, bytes, cancellationToken);
-        }
-        catch(Exception ex)
-        {
-            _logger.LogError(ex, "Error creating PDF file with Puppeteer for match ID '{MatchId}'", matchId);
-            await File.WriteAllBytesAsync(fullPath, Array.Empty<byte>(), cancellationToken);
-        }
-
-        return fullPath;
-    }
-
-    private async Task<string> CreateReportSheetPdfChromium(string tempFolder, string htmlUri, CancellationToken cancellationToken)
-    {
-        // Temporary file for the PDF stream from Chromium
-        // Note: non-existing file is handled in MovePdfToCache
-        var pdfFile = Path.Combine(tempFolder, Path.GetRandomFileName() + ".pdf");
-
-        // Run Chromium
-        // Command line switches overview: https://kapeli.com/cheat_sheets/Chromium_Command_Line_Switches.docset/Contents/Resources/Documents/index
-        // or better https://peter.sh/experiments/chromium-command-line-switches/
-        var startInfo = new System.Diagnostics.ProcessStartInfo(_pathToChromium,
-                $"--allow-pre-commit-input --disable-background-networking --disable-background-timer-throttling --disable-backgrounding-occluded-windows --disable-breakpad --disable-client-side-phishing-detection --disable-component-extensions-with-background-pages --disable-component-update --disable-default-apps --disable-dev-shm-usage --disable-extensions --disable-features=Translate,BackForwardCache,AcceptCHFrame,MediaRouter,OptimizationHints --disable-hang-monitor --disable-ipc-flooding-protection --disable-popup-blocking --disable-prompt-on-repost --disable-renderer-backgrounding --disable-sync --enable-automation --enable-blink-features=IdleDetection --enable-features=NetworkServiceInProcess2 --export-tagged-pdf --force-color-profile=srgb --metrics-recording-only --no-first-run --password-store=basic --use-mock-keychain --headless --hide-scrollbars --mute-audio --no-sandbox --disable-gpu --use-cmd-decoder=passthrough --no-margins --user-data-dir={tempFolder} --no-pdf-header-footer --print-to-pdf={pdfFile} {htmlUri}")
-            { CreateNoWindow = true, UseShellExecute = false };
-        var proc = System.Diagnostics.Process.Start(startInfo);
-
-        if (proc == null)
-        {
-            _logger.LogError("Process '{PathToChromium}' could not be started.", _pathToChromium);
-            return pdfFile;
-        }
-
-        var timeout = TimeSpan.FromMilliseconds(5000);
-        var processTask = proc.WaitForExitAsync(cancellationToken);
-
-        await Task.WhenAny(processTask, Task.Delay(timeout, cancellationToken));
-
-        if (processTask.IsCompleted) return pdfFile;
-
-        proc.Kill(true);
-        throw new OperationCanceledException($"Chromium timed out after {timeout.TotalMilliseconds}ms.");
-    }
-
-    private static async Task<string> CreateHtmlFile(string html, string tempFolder, CancellationToken cancellationToken)
-    {
-        var htmlFile = Path.Combine(tempFolder, Path.GetRandomFileName() + ".html");
-        await File.WriteAllTextAsync(htmlFile, html, cancellationToken);
-        return new Uri(htmlFile).AbsoluteUri;
     }
 
     private static string CreateTempPathFolder()
@@ -228,20 +122,6 @@ public class ReportSheetCache
         if (!Directory.Exists(tempFolder)) Directory.CreateDirectory(tempFolder);
         return tempFolder;
     }
-
-    private static void DeleteTempPathFolder(string path)
-    {
-        // Delete folder in TempPath
-        if (!Directory.Exists(path)) return;
-        try
-        {
-            Directory.Delete(path, true);
-        }
-        catch
-        {
-            // Best effort when trying to remove
-        }
-    }
 }
 #pragma warning restore CA3003
-#pragma warning restore S2083
+

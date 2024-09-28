@@ -136,7 +136,7 @@ public class UnitTestHelpers
             .BuildServiceProvider();
     }
 
-    public static ServiceProvider GetReportSheetCacheServiceProvider(ITenantContext tenantContext, IWebHostEnvironment webHostEnvironment, IEnumerable<KeyValuePair<string,string?>> chromiumPath)
+    public static ServiceProvider GetReportSheetCacheServiceProvider(ITenantContext tenantContext, IWebHostEnvironment webHostEnvironment, IEnumerable<KeyValuePair<string,string?>> browserPath)
     {
         return new ServiceCollection()
             .AddLogging(builder =>
@@ -151,7 +151,7 @@ public class UnitTestHelpers
             .AddTransient<IConfiguration>(sp =>
             {
                 var c = new ConfigurationManager();
-                c.AddInMemoryCollection(chromiumPath);
+                c.AddInMemoryCollection(browserPath);
                 return c;
             })
             .AddTransient<ITenantContext>(sp => tenantContext)
