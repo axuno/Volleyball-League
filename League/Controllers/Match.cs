@@ -8,7 +8,6 @@ using League.Models.MatchViewModels;
 using League.MultiTenancy;
 using League.Routing;
 using League.Views;
-using MailMergeLib.AspNet;
 using SD.LLBLGen.Pro.ORMSupportClasses;
 using SD.LLBLGen.Pro.QuerySpec;
 using TournamentManager.DAL.EntityClasses;
@@ -707,12 +706,15 @@ public class Match : AbstractController
     /// if the match has not already been played.
     /// </summary>
     /// <param name="id"></param>
-    /// <param name="cache">The cache injected from services.</param>
+    /// <param name="services"></param>
     /// <param name="cancellationToken"></param>
     /// <returns>A match report sheet suitable for a printout, if the match has not already been played.</returns>
     [HttpGet("[action]/{id:long}")]
-    public async Task<IActionResult> ReportSheet(long id, [FromServices] ReportSheetCache cache, CancellationToken cancellationToken)
+    public async Task<IActionResult> ReportSheet(long id, IServiceProvider services, CancellationToken cancellationToken)
     {
+        if (!ModelState.IsValid) return BadRequest(ModelState);
+        var cache = services.GetRequiredService<ReportSheetCache>();
+
         MatchReportSheetRow? model = null;
         cache.UsePuppeteer = false;
             
@@ -727,7 +729,6 @@ public class Match : AbstractController
             contentDisposition.SetHttpFileName($"{_localizer["Report Sheet"].Value}_{model.Id}.pdf");
             Response.Headers[Microsoft.Net.Http.Headers.HeaderNames.ContentDisposition] =
                 contentDisposition.ToString();
-
             var html = await _razorViewToStringRenderer.RenderViewToStringAsync(
                 $"~/Views/{nameof(Match)}/{ViewNames.Match.ReportSheet}.cshtml", model);
 
@@ -744,7 +745,7 @@ public class Match : AbstractController
         Response.Clear();
         return View(ViewNames.Match.ReportSheet, model);
     }
-    
+
     private void SendFixtureNotification(long matchId)
     {
         var smt = _sendMailTask.CreateNewInstance();

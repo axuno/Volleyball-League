@@ -1,4 +1,6 @@
-# Chromium v131.0.6733.0
+# Chromium 111.0.5545.0
+# Chromium 131.x has issues with rendering dashed or dotted lines
+
 This folder contains the binaries of the Chromium web browser.
 
 It can be downloaded from here:
