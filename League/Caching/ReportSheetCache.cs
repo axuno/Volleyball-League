@@ -18,7 +18,7 @@ public class ReportSheetCache
 {
     private readonly ITenantContext _tenantContext;
     private readonly IWebHostEnvironment _webHostEnvironment;
-    private readonly string _pathToChromium;
+    private readonly string _pathToBrowser;
     private readonly ILoggerFactory _loggerFactory;
     private readonly ILogger<ReportSheetCache> _logger;
 
@@ -44,7 +44,7 @@ public class ReportSheetCache
     {
         _tenantContext = tenantContext;
         _webHostEnvironment = webHostEnvironment;
-        _pathToChromium = Path.Combine(webHostEnvironment.ContentRootPath, configuration["Chromium:ExecutablePath"] ?? string.Empty);
+        _pathToBrowser = Path.Combine(webHostEnvironment.ContentRootPath, configuration["Browser:ExecutablePath"] ?? string.Empty);
         _loggerFactory = loggerFactory;
         _logger = loggerFactory.CreateLogger<ReportSheetCache>();
         UsePuppeteer = false;
@@ -52,7 +52,7 @@ public class ReportSheetCache
 
     /// <summary>
     /// Gets or sets a value indicating whether to use Puppeteer for generating the report sheet,
-    /// instead of Chromium command line.
+    /// instead of Browser command line.
     /// </summary>
     public bool UsePuppeteer { get; set; }
 
@@ -85,7 +85,7 @@ public class ReportSheetCache
 
             cacheFile = UsePuppeteer
                 ? await GetReportSheetPuppeteer(data.Id, html, cancellationToken)
-                : await GetReportSheetChromium(data.Id, html, cancellationToken);
+                : await GetReportSheetBrowser(data.Id, html, cancellationToken);
 
             if (cacheFile == null) return Stream.Null;
         }
@@ -101,7 +101,7 @@ public class ReportSheetCache
         return !fi.Exists || fi.LastWriteTimeUtc < dataModifiedOn; // Database dates are in UTC
     }
 
-    private async Task<string?> GetReportSheetChromium(long matchId, string html, CancellationToken cancellationToken)
+    private async Task<string?> GetReportSheetBrowser(long matchId, string html, CancellationToken cancellationToken)
     {
         // Create folder in TempPath
         var tempFolder = CreateTempPathFolder();
@@ -109,7 +109,7 @@ public class ReportSheetCache
         // Temporary file with HTML content - extension must be ".html"!
         var htmlUri = await CreateHtmlFile(html, tempFolder, cancellationToken);
 
-        var pdfFile = await CreateReportSheetPdfChromium(tempFolder, htmlUri, cancellationToken);
+        var pdfFile = await CreateReportSheetPdfBrowser(tempFolder, htmlUri, cancellationToken);
 
         var cacheFile = MovePdfToCache(pdfFile, matchId);
 
@@ -151,9 +151,9 @@ public class ReportSheetCache
             Headless = true,
             Browser = PuppeteerSharp.SupportedBrowser.Chromium,
             // Alternative: --use-cmd-decoder=validating 
-            Args = new[]  // Chromium requires using a sandboxed browser for PDF generation, unless sandbox is disabled
+            Args = new[]  // Chromium-based browsers requires using a sandboxed browser for PDF generation, unless sandbox is disabled
                 { "--no-sandbox", "--disable-gpu", "--disable-extensions", "--use-cmd-decoder=passthrough" },
-            ExecutablePath = _pathToChromium,
+            ExecutablePath = _pathToBrowser,
             Timeout = 5000,
             ProtocolTimeout = 10000 // default is 180,000 - used for page.PdfDataAsync
         };
@@ -183,23 +183,23 @@ public class ReportSheetCache
         return fullPath;
     }
 
-    private async Task<string> CreateReportSheetPdfChromium(string tempFolder, string htmlUri, CancellationToken cancellationToken)
+    private async Task<string> CreateReportSheetPdfBrowser(string tempFolder, string htmlUri, CancellationToken cancellationToken)
     {
-        // Temporary file for the PDF stream from Chromium
+        // Temporary file for the PDF stream from the Browser
         // Note: non-existing file is handled in MovePdfToCache
         var pdfFile = Path.Combine(tempFolder, Path.GetRandomFileName() + ".pdf");
 
-        // Run Chromium
+        // Run the Browser
         // Command line switches overview: https://kapeli.com/cheat_sheets/Chromium_Command_Line_Switches.docset/Contents/Resources/Documents/index
         // or better https://peter.sh/experiments/chromium-command-line-switches/
-        var startInfo = new System.Diagnostics.ProcessStartInfo(_pathToChromium,
+        var startInfo = new System.Diagnostics.ProcessStartInfo(_pathToBrowser,
                 $"--allow-pre-commit-input --disable-background-networking --disable-background-timer-throttling --disable-backgrounding-occluded-windows --disable-breakpad --disable-client-side-phishing-detection --disable-component-extensions-with-background-pages --disable-component-update --disable-default-apps --disable-dev-shm-usage --disable-extensions --disable-features=Translate,BackForwardCache,AcceptCHFrame,MediaRouter,OptimizationHints --disable-hang-monitor --disable-ipc-flooding-protection --disable-popup-blocking --disable-prompt-on-repost --disable-renderer-backgrounding --disable-sync --enable-automation --enable-blink-features=IdleDetection --enable-features=NetworkServiceInProcess2 --export-tagged-pdf --force-color-profile=srgb --metrics-recording-only --no-first-run --password-store=basic --use-mock-keychain --headless --hide-scrollbars --mute-audio --no-sandbox --disable-gpu --use-cmd-decoder=passthrough --no-margins --user-data-dir={tempFolder} --no-pdf-header-footer --print-to-pdf={pdfFile} {htmlUri}")
             { CreateNoWindow = true, UseShellExecute = false };
         var proc = System.Diagnostics.Process.Start(startInfo);
 
         if (proc == null)
         {
-            _logger.LogError("Process '{PathToChromium}' could not be started.", _pathToChromium);
+            _logger.LogError("Process '{PathToBrowser}' could not be started.", _pathToBrowser);
             return pdfFile;
         }
 
@@ -211,7 +211,7 @@ public class ReportSheetCache
         if (processTask.IsCompleted) return pdfFile;
 
         proc.Kill(true);
-        throw new OperationCanceledException($"Chromium timed out after {timeout.TotalMilliseconds}ms.");
+        throw new OperationCanceledException($"Browser timed out after {timeout.TotalMilliseconds}ms.");
     }
 
     private static async Task<string> CreateHtmlFile(string html, string tempFolder, CancellationToken cancellationToken)

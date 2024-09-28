@@ -25,7 +25,7 @@ public class ReportSheetCacheTests
     {
         _webHostEnvironment = new HostingEnvironment {
             WebRootPath = Path.GetTempPath(), ContentRootPath
-                // Because we use the Chromium installation in the demo web app
+                // Because we use a Browser installation in the demo web app
                 = DirectoryLocator.GetTargetProjectPath(typeof(League.WebApp.WebAppStartup))
         };
 
@@ -34,10 +34,10 @@ public class ReportSheetCacheTests
             Identifier = "testorg"
         };
 
-        var chromiumPath = new List<KeyValuePair<string, string?>>
-            { new("Chromium:ExecutablePath", "Chromium-Win\\chrome.exe") };
+        var browserPath = new List<KeyValuePair<string, string?>>
+            { new("Browser:ExecutablePath", "Chromium-Win\\chrome.exe") };
 
-        IServiceProvider services = UnitTestHelpers.GetReportSheetCacheServiceProvider(_tenantContext, _webHostEnvironment, chromiumPath);
+        IServiceProvider services = UnitTestHelpers.GetReportSheetCacheServiceProvider(_tenantContext, _webHostEnvironment, browserPath);
         _cache = services.GetRequiredService<ReportSheetCache>();
     }
 
