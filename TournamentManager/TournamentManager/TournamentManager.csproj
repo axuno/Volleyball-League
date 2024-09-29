@@ -25,6 +25,7 @@ Volleyball League is an open source sports platform that brings everything neces
     </PackageReference>
     <PackageReference Include="OxyPlot.Core" Version="2.1.2" />
     <PackageReference Include="OxyPlot.SkiaSharp" Version="2.1.2" />
+    <PackageReference Include="PuppeteerSharp" Version="20.0.2" />
     <PackageReference Include="System.Reflection.TypeExtensions" Version="4.7.0" />
     <PackageReference Include="Ical.Net" Version="4.2.0" />
     <PackageReference Include="libphonenumber-csharp" Version="8.13.39" />

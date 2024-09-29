@@ -20,6 +20,8 @@ public class ReportSheetCache
     private readonly string _pathToBrowser;
     private readonly ILoggerFactory _loggerFactory;
     private readonly ILogger<ReportSheetCache> _logger;
+    // Can eventually be removed when the date is never displayed on report sheets
+    public static readonly bool DisplayMatchDate = false;
 
     /// <summary>
     /// Folder name for the report sheet cache
@@ -55,6 +57,11 @@ public class ReportSheetCache
     /// </summary>
     public bool UsePuppeteer { get; set; }
 
+    /// <summary>
+    /// The kind of browser to use for generating the PDF.
+    /// </summary>
+    public TournamentManager.HtmlToPdfConverter.BrowserKind BrowserKind { get; set; }
+
     private void EnsureCacheFolder()
     {
         var cacheFolder = Path.Combine(_webHostEnvironment.WebRootPath, ReportSheetCacheFolder);
@@ -81,8 +88,8 @@ public class ReportSheetCache
         {
             _logger.LogDebug("Create new match report for tenant '{Tenant}', match '{MatchId}'", _tenantContext.Identifier, data.Id);
 
-            using var converter = new HtmlToPdfConverter(_pathToBrowser, CreateTempPathFolder(), _loggerFactory)
-                { UsePuppeteer = UsePuppeteer };
+            using var converter = new TournamentManager.HtmlToPdfConverter.HtmlToPdfConverter(_pathToBrowser, CreateTempPathFolder(), _loggerFactory)
+                { UsePuppeteer = UsePuppeteer, BrowserKind = BrowserKind};
 
             var pdfData = await converter.GeneratePdfData(html, cancellationToken);
 
@@ -101,10 +108,16 @@ public class ReportSheetCache
         return stream;
     }
 
-    private static bool IsOutdated(string cacheFile, DateTime dataModifiedOn)
+    private bool IsOutdated(string cacheFile, DateTime dataModifiedOn)
     {
         var fi = new FileInfo(cacheFile);
-        return !fi.Exists || fi.LastWriteTimeUtc < dataModifiedOn; // Database dates are in UTC
+
+        if (DisplayMatchDate) // Can eventually be removed when the date is never displayed on report sheets
+        {
+            return !fi.Exists || fi.LastWriteTimeUtc < dataModifiedOn; // Database dates are in UTC
+        }
+
+        return !fi.Exists;
     }
 
     private string GetPathToCacheFile(long matchId)

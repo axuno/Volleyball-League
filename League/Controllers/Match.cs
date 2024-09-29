@@ -14,6 +14,7 @@ using TournamentManager.DAL.EntityClasses;
 using TournamentManager.DAL.HelperClasses;
 using TournamentManager.DAL.TypedViewClasses;
 using TournamentManager.ExtensionMethods;
+using TournamentManager.HtmlToPdfConverter;
 using TournamentManager.ModelValidators;
 using TournamentManager.MultiTenancy;
 
@@ -30,6 +31,7 @@ public class Match : AbstractController
     private readonly IStringLocalizer<Match> _localizer;
     private readonly IAuthorizationService _authorizationService;
     private readonly Axuno.Tools.DateAndTime.TimeZoneConverter _timeZoneConverter;
+    private readonly IServiceProvider _serviceProvider;
     private readonly ILogger<Match> _logger;
     private readonly Axuno.BackgroundTask.IBackgroundQueue _queue;
     private readonly SendEmailTask _sendMailTask;
@@ -52,6 +54,7 @@ public class Match : AbstractController
         _appDb = tenantContext.DbContext.AppDb;
         _localizer = localizer;
         _authorizationService = authorizationService;
+        _serviceProvider = serviceProvider;
         _logger = logger;
 
         // Get required services from the service provider to stay below the 7 parameter limit of SonarCloud
@@ -706,17 +709,17 @@ public class Match : AbstractController
     /// if the match has not already been played.
     /// </summary>
     /// <param name="id"></param>
-    /// <param name="services"></param>
     /// <param name="cancellationToken"></param>
     /// <returns>A match report sheet suitable for a printout, if the match has not already been played.</returns>
     [HttpGet("[action]/{id:long}")]
-    public async Task<IActionResult> ReportSheet(long id, IServiceProvider services, CancellationToken cancellationToken)
+    public async Task<IActionResult> ReportSheet(long id, CancellationToken cancellationToken)
     {
         if (!ModelState.IsValid) return BadRequest(ModelState);
-        var cache = services.GetRequiredService<ReportSheetCache>();
-
+        
         MatchReportSheetRow? model = null;
+        var cache = _serviceProvider.GetRequiredService<ReportSheetCache>();
         cache.UsePuppeteer = false;
+        cache.BrowserKind = BrowserKind.Chromium;
             
         try
         {
@@ -733,8 +736,12 @@ public class Match : AbstractController
                 $"~/Views/{nameof(Match)}/{ViewNames.Match.ReportSheet}.cshtml", model);
 
             var stream = await cache.GetOrCreatePdf(model, html, cancellationToken);
-            _logger.LogInformation("PDF file returned for tenant '{Tenant}' and match id '{MatchId}'", _tenantContext.Identifier, id);
-            return new FileStreamResult(stream, "application/pdf");
+
+            if (stream != Stream.Null) // Returning Stream.Null would create an empty page in the web browser
+            {
+                _logger.LogInformation("PDF file returned for tenant '{Tenant}' and match id '{MatchId}'", _tenantContext.Identifier, id);
+                return new FileStreamResult(stream, "application/pdf");
+            }
         }
         catch (Exception e)
         {
@@ -743,6 +750,7 @@ public class Match : AbstractController
             
         // Not able to render report sheet as PDF: return HTML
         Response.Clear();
+        _logger.LogError("HTML content instead of PDF returned for tenant '{Tenant}' and match id '{MatchId}'", _tenantContext.Identifier, id);
         return View(ViewNames.Match.ReportSheet, model);
     }
 

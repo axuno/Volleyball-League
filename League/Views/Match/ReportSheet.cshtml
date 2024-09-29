@@ -6,6 +6,8 @@
 @inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer localizer 
 @model TournamentManager.DAL.TypedViewClasses.MatchReportSheetRow
 @{
+    // Can eventually be removed when the date is never displayed on report sheets
+    var displayMatchDate = League.Caching.ReportSheetCache.DisplayMatchDate;
     Layout = null;
     var numberOfSets = Model.BestOf ? Model.NumOfSets * 2 - 1 : Model.NumOfSets;
 
@@ -123,6 +125,9 @@
     </style>
     <!-- Custom styles for League ReportSheet -->
     <style>
+        html {
+            -webkit-print-color-adjust: exact; /* Show colors in PDF output */
+        }
         @@media print {
             @@page {
                 size: 210mm 297mm;
@@ -247,14 +252,18 @@
             </div>
             <div class="col-6" style="padding: 0">
                 <div class="text-end">
-                    @(Model.OrigPlannedStart.HasValue ? $"{localizer["Changed date"].Value}:" : $"{localizer["Date"].Value}:")
-                    @if (Model.PlannedStart.HasValue && TimeZoneConverter != null)
+                    @if (displayMatchDate)
                     {
-                        @($"{TimeZoneConverter.ToZonedTime(Model.PlannedStart)!.DateTimeOffset.DateTime:D} - {TimeZoneConverter.ToZonedTime(Model.PlannedStart)!.DateTimeOffset.DateTime:t}")
+                        @(Model.OrigPlannedStart.HasValue ? $"{localizer["Changed date"].Value}:" : $"{localizer["Date"].Value}:")
+                        @if (Model.PlannedStart.HasValue)
+                        {
+                            @($"{TimeZoneConverter.ToZonedTime(Model.PlannedStart)!.DateTimeOffset.DateTime:D} - {TimeZoneConverter.ToZonedTime(Model.PlannedStart)!.DateTimeOffset.DateTime:t}")
+                        }
                     }
                     else
                     {
-                        <text>___________</text>
+                        @localizer["Date"].Value
+                        <text>: ____________________</text>
                     }
                 </div>
                 <div class="text-end">@localizer["Start time"]: ___________</div>
