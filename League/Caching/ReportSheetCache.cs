@@ -108,7 +108,7 @@ public class ReportSheetCache
         return stream;
     }
 
-    private bool IsOutdated(string cacheFile, DateTime dataModifiedOn)
+    private static bool IsOutdated(string cacheFile, DateTime dataModifiedOn)
     {
         var fi = new FileInfo(cacheFile);
 

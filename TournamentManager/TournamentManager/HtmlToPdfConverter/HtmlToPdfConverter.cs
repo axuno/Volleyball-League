@@ -81,7 +81,7 @@ public class HtmlToPdfConverter : IDisposable
     public async Task<byte[]?> GeneratePdfData(FileInfo htmlFile, CancellationToken cancellationToken)
     {
         var pdfData = UsePuppeteer
-            ? await GetPdfDataPuppeteer(htmlFile, cancellationToken)
+            ? await GetPdfDataPuppeteer(htmlFile)
             : await GetPdfDataBrowser(htmlFile, cancellationToken);
 
         return pdfData;
@@ -112,7 +112,7 @@ public class HtmlToPdfConverter : IDisposable
         }
     }
 
-    private async Task<byte[]?> GetPdfDataPuppeteer(FileInfo fileInfo, CancellationToken cancellationToken)
+    private async Task<byte[]?> GetPdfDataPuppeteer(FileInfo fileInfo)
     {
         return await GetPdfDataPuppeteer(fileInfo.FullName, true);
     }
