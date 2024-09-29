@@ -3,7 +3,9 @@
 // Licensed under the MIT license.
 //
 
-namespace League.Caching;
+using Microsoft.Extensions.Logging;
+
+namespace TournamentManager.HtmlToPdfConverter;
 
 #pragma warning disable CA3003  // reason: False positive due to CancellationToken in GetPdfDataBrowser
 
@@ -33,6 +35,7 @@ public class HtmlToPdfConverter : IDisposable
         _loggerFactory = loggerFactory;
         _logger = loggerFactory.CreateLogger<HtmlToPdfConverter>();
         UsePuppeteer = false;
+        BrowserKind = BrowserKind.Chromium;
     }
 
     /// <summary>
@@ -40,6 +43,11 @@ public class HtmlToPdfConverter : IDisposable
     /// instead of Browser command line.
     /// </summary>
     public bool UsePuppeteer { get; set; }
+
+    /// <summary>
+    /// The kind of browser to use for generating the PDF.
+    /// </summary>
+    public BrowserKind BrowserKind { get; set; }
 
     private void EnsureTempFolder(string tempFolder)
     {
@@ -58,8 +66,23 @@ public class HtmlToPdfConverter : IDisposable
     public async Task<byte[]?> GeneratePdfData(string html, CancellationToken cancellationToken)
     {
         var pdfData = UsePuppeteer
-            ? await GetPdfDataPuppeteer(html)
+            ? await GetPdfDataPuppeteer(html, false)
             : await GetPdfDataBrowser(html, cancellationToken);
+
+        return pdfData;
+    }
+
+    /// <summary>
+    /// Creates a PDF file from the specified HTML file.
+    /// </summary>
+    /// <param name="htmlFile"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns>A <see cref="Stream"/> of the PDF file.</returns>
+    public async Task<byte[]?> GeneratePdfData(FileInfo htmlFile, CancellationToken cancellationToken)
+    {
+        var pdfData = UsePuppeteer
+            ? await GetPdfDataPuppeteer(htmlFile)
+            : await GetPdfDataBrowser(htmlFile, cancellationToken);
 
         return pdfData;
     }
@@ -67,10 +90,14 @@ public class HtmlToPdfConverter : IDisposable
     private async Task<byte[]?> GetPdfDataBrowser(string html, CancellationToken cancellationToken)
     {
         var tmpHtmlPath = await CreateHtmlFile(html, cancellationToken);
+        return await GetPdfDataBrowser(new FileInfo(tmpHtmlPath), cancellationToken);
+    }
 
+    private async Task<byte[]?> GetPdfDataBrowser(FileInfo fileInfo, CancellationToken cancellationToken)
+    {
         try
         {
-            var tmpPdfFile = await CreatePdfDataBrowser(tmpHtmlPath, cancellationToken);
+            var tmpPdfFile = await CreatePdfDataBrowser(fileInfo.FullName, cancellationToken);
 
             if (tmpPdfFile != null && File.Exists(tmpPdfFile))
                 return await File.ReadAllBytesAsync(tmpPdfFile, cancellationToken);
@@ -85,34 +112,45 @@ public class HtmlToPdfConverter : IDisposable
         }
     }
 
-    private async Task<byte[]?> GetPdfDataPuppeteer(string html)
+    private async Task<byte[]?> GetPdfDataPuppeteer(FileInfo fileInfo)
+    {
+        return await GetPdfDataPuppeteer(fileInfo.FullName, true);
+    }
+
+    private async Task<byte[]?> GetPdfDataPuppeteer(string fileOrHtmlContent, bool isFile)
     {
         var options = new PuppeteerSharp.LaunchOptions
         {
             Headless = true,
-            Browser = PuppeteerSharp.SupportedBrowser.Chromium,
+            Browser = (PuppeteerSharp.SupportedBrowser) BrowserKind,
             // Alternative: --use-cmd-decoder=validating 
             Args = new[]  // Chromium-based browsers require using a sandboxed browser for PDF generation, unless sandbox is disabled
-                { "--no-sandbox", "--disable-gpu", "--disable-extensions", "--use-cmd-decoder=passthrough" },
+                { "--no-sandbox", "--disable-gpu", "--allow-file-access-from-files", "--disable-extensions", "--use-cmd-decoder=passthrough" },
             ExecutablePath = _pathToBrowser,
+            UserDataDir = _tempFolder,
             Timeout = 5000,
             ProtocolTimeout = 10000 // default is 180,000 - used for page.PdfDataAsync
         };
+
         // Use Puppeteer as a wrapper for the browser, which can generate PDF from HTML
         // Start command line arguments set by Puppeteer v20:
         // --allow-pre-commit-input --disable-background-networking --disable-background-timer-throttling --disable-backgrounding-occluded-windows --disable-breakpad --disable-client-side-phishing-detection --disable-component-extensions-with-background-pages --disable-component-update --disable-default-apps --disable-dev-shm-usage --disable-extensions --disable-field-trial-config --disable-hang-monitor --disable-infobars --disable-ipc-flooding-protection --disable-popup-blocking --disable-prompt-on-repost --disable-renderer-backgrounding --disable-search-engine-choice-screen --disable-sync --enable-automation --enable-blink-features=IdleDetection --export-tagged-pdf --generate-pdf-document-outline --force-color-profile=srgb --metrics-recording-only --no-first-run --password-store=basic --use-mock-keychain --disable-features=Translate,AcceptCHFrame,MediaRouter,OptimizationHints,ProcessPerSiteUpToMainFrameThreshold --enable-features= --headless=new --hide-scrollbars --mute-audio about:blank --no-sandbox --disable-gpu --disable-extensions --use-cmd-decoder=passthrough --remote-debugging-port=0 --user-data-dir="C:\Users\xyz\AppData\Local\Temp\yk1fjkgt.phb"
         await using var browser = await PuppeteerSharp.Puppeteer.LaunchAsync(options, _loggerFactory).ConfigureAwait(false);
         await using var page = await browser.NewPageAsync().ConfigureAwait(false);
 
-        await page.SetContentAsync(html); // Bootstrap 5 is loaded from CDN
+        if (isFile)
+            await page.GoToAsync(new Uri(fileOrHtmlContent).AbsoluteUri);
+        else
+            await page.SetContentAsync(fileOrHtmlContent);
+
         await page.EvaluateExpressionHandleAsync("document.fonts.ready"); // Wait for fonts to be loaded. Omitting this might result in no text rendered in pdf.
 
         try
         {
             return await page.PdfDataAsync(new PuppeteerSharp.PdfOptions
-                { Scale = 1.0M, Format = PuppeteerSharp.Media.PaperFormat.A4 }).ConfigureAwait(false);
+            { Scale = 1.0M, Format = PuppeteerSharp.Media.PaperFormat.A4 }).ConfigureAwait(false);
         }
-        catch(Exception ex)
+        catch (Exception ex)
         {
             _logger.LogError(ex, "Error creating PDF file with Puppeteer");
             return null;
@@ -125,13 +163,16 @@ public class HtmlToPdfConverter : IDisposable
         // Note: non-existing file is handled in MovePdfToCache
         var pdfFile = Path.Combine(_tempFolder, Path.GetRandomFileName() + ".pdf");
 
+        // Note: --timeout ={timeout.TotalMilliseconds} as Browser argument does not work
+        var timeout = TimeSpan.FromMilliseconds(5000);
+
         // Run the Browser
         // Command line switches overview: https://kapeli.com/cheat_sheets/Chromium_Command_Line_Switches.docset/Contents/Resources/Documents/index
         // or better https://peter.sh/experiments/chromium-command-line-switches/
         var startInfo = new System.Diagnostics.ProcessStartInfo(_pathToBrowser,
-                $"--allow-pre-commit-input --disable-background-networking --disable-background-timer-throttling --disable-backgrounding-occluded-windows --disable-breakpad --disable-client-side-phishing-detection --disable-component-extensions-with-background-pages --disable-component-update --disable-default-apps --disable-dev-shm-usage --disable-extensions --disable-features=Translate,BackForwardCache,AcceptCHFrame,MediaRouter,OptimizationHints --disable-hang-monitor --disable-ipc-flooding-protection --disable-popup-blocking --disable-prompt-on-repost --disable-renderer-backgrounding --disable-sync --enable-automation --enable-blink-features=IdleDetection --enable-features=NetworkServiceInProcess2 --export-tagged-pdf --force-color-profile=srgb --metrics-recording-only --no-first-run --password-store=basic --use-mock-keychain --headless --hide-scrollbars --mute-audio --no-sandbox --disable-gpu --use-cmd-decoder=passthrough --no-margins --user-data-dir={_tempFolder} --no-pdf-header-footer --print-to-pdf={pdfFile} {htmlFile}")
-            { CreateNoWindow = true, UseShellExecute = false };
-        var proc = System.Diagnostics.Process.Start(startInfo);
+                $"--allow-pre-commit-input --allow-file-access-from-files --disable-background-networking --disable-background-timer-throttling --disable-backgrounding-occluded-windows --disable-breakpad --disable-client-side-phishing-detection --disable-component-extensions-with-background-pages --disable-component-update --disable-default-apps --disable-dev-shm-usage --disable-extensions --disable-features=Translate,BackForwardCache,AcceptCHFrame,MediaRouter,OptimizationHints --disable-hang-monitor --disable-ipc-flooding-protection --disable-popup-blocking --disable-prompt-on-repost --disable-renderer-backgrounding --disable-sync --enable-automation --enable-blink-features=IdleDetection --enable-features=NetworkServiceInProcess2 --export-tagged-pdf --force-color-profile=srgb --metrics-recording-only --no-first-run --password-store=basic --use-mock-keychain --headless --hide-scrollbars --mute-audio --no-sandbox --disable-gpu --use-cmd-decoder=passthrough --no-margins --no-pdf-header-footer --print-to-pdf={pdfFile} {htmlFile}")
+        { CreateNoWindow = true, UseShellExecute = false };
+        using var proc = System.Diagnostics.Process.Start(startInfo);
 
         if (proc == null)
         {
@@ -139,7 +180,6 @@ public class HtmlToPdfConverter : IDisposable
             return pdfFile;
         }
 
-        var timeout = TimeSpan.FromMilliseconds(5000);
         var processTask = proc.WaitForExitAsync(cancellationToken);
 
         await Task.WhenAny(processTask, Task.Delay(timeout, cancellationToken));
@@ -154,7 +194,7 @@ public class HtmlToPdfConverter : IDisposable
     {
         var htmlFile = Path.Combine(_tempFolder, Path.GetRandomFileName() + ".html"); // extension must be "html"
         await File.WriteAllTextAsync(htmlFile, html, cancellationToken);
-        return new Uri(htmlFile).AbsoluteUri;
+        return htmlFile;
     }
 
     private static string CreateTempPathFolder(string tempPath)
