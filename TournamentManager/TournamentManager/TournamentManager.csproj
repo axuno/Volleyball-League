@@ -17,21 +17,21 @@ Volleyball League is an open source sports platform that brings everything neces
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="EPPlus" Version="7.2.0" />
-    <PackageReference Include="NLog" Version="5.3.2" />
-    <PackageReference Include="NuGetizer" Version="1.2.2">
+    <PackageReference Include="EPPlus" Version="7.3.2" />
+    <PackageReference Include="NLog" Version="5.3.4" />
+    <PackageReference Include="NuGetizer" Version="1.2.3">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="OxyPlot.Core" Version="2.1.2" />
-    <PackageReference Include="OxyPlot.SkiaSharp" Version="2.1.2" />
+    <PackageReference Include="OxyPlot.Core" Version="2.2.0" />
+    <PackageReference Include="OxyPlot.SkiaSharp" Version="2.2.0" />
     <PackageReference Include="PuppeteerSharp" Version="20.0.2" />
     <PackageReference Include="System.Reflection.TypeExtensions" Version="4.7.0" />
     <PackageReference Include="Ical.Net" Version="4.2.0" />
-    <PackageReference Include="libphonenumber-csharp" Version="8.13.39" />
-    <PackageReference Include="NLog.Extensions.Logging" Version="5.3.11" />
+    <PackageReference Include="libphonenumber-csharp" Version="8.13.46" />
+    <PackageReference Include="NLog.Extensions.Logging" Version="5.3.14" />
     <PackageReference Include="System.Data.SqlClient" Version="4.8.6" />
-    <PackageReference Include="YAXLib" Version="4.2.2" />
+    <PackageReference Include="YAXLib" Version="4.3.0" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Axuno.Tools\Axuno.Tools.csproj" />
