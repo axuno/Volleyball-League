@@ -64,23 +64,23 @@ Localizations for English and German are included. The library is in operation o
         <Using Include="Microsoft.Extensions.Options" />
     </ItemGroup>
     <ItemGroup>
-        <PackageReference Include="Axuno.TextTemplating" Version="2.0.1" />
+        <PackageReference Include="Axuno.TextTemplating" Version="2.1.0" />
         <PackageReference Include="JSNLog" Version="3.0.3" />
-        <PackageReference Include="MailMergeLib" Version="5.12.0" />
-        <PackageReference Include="Microsoft.AspNetCore.Authentication.Facebook" Version="8.0.6" />
-        <PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="8.0.6" />
-        <PackageReference Include="Microsoft.AspNetCore.Authentication.MicrosoftAccount" Version="8.0.6" />
-        <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="8.0.6" />
+        <PackageReference Include="MailMergeLib" Version="5.12.3" />
+        <PackageReference Include="Microsoft.AspNetCore.Authentication.Facebook" Version="8.0.8" />
+        <PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="8.0.8" />
+        <PackageReference Include="Microsoft.AspNetCore.Authentication.MicrosoftAccount" Version="8.0.8" />
+        <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="8.0.8" />
         <PackageReference Include="Microsoft.DotNet.PlatformAbstractions" Version="3.1.6" />
         <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.2" />
+        <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.5" />
         <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-        <PackageReference Include="NLog" Version="5.3.2" />
-        <PackageReference Include="NLog.Web.AspNetCore" Version="5.3.11" />
-        <PackageReference Include="NuGetizer" Version="1.2.2">
+        <PackageReference Include="NLog" Version="5.3.4" />
+        <PackageReference Include="NLog.Web.AspNetCore" Version="5.3.14" />
+        <PackageReference Include="NuGetizer" Version="1.2.3">
             <PrivateAssets>all</PrivateAssets>
             <PackEmbeddedResource>true</PackEmbeddedResource>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
