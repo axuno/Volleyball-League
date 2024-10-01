@@ -452,14 +452,10 @@ public static class LeagueStartup
 
         #region ** Timezone service per request **
 
-        services.AddSingleton<NodaTime.TimeZones.DateTimeZoneCache>(sp =>
-            new NodaTime.TimeZones.DateTimeZoneCache(NodaTime.TimeZones.TzdbDateTimeZoneSource.Default));
-
-        var tzId = configuration.GetSection("TimeZone").Value ?? "America/New_York";
+        var ianaTzId = configuration.GetSection("TimeZone").Value ?? "America/New_York";
         // TimeZoneConverter will use the culture of the current scope
         services.AddScoped(sp => new Axuno.Tools.DateAndTime.TimeZoneConverter(
-            sp.GetRequiredService<NodaTime.TimeZones.DateTimeZoneCache>(), tzId, CultureInfo.CurrentCulture,
-            NodaTime.TimeZones.Resolvers.LenientResolver));
+            ianaTzId, CultureInfo.CurrentCulture));
 
         #endregion
 

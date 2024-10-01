@@ -38,15 +38,11 @@ public static class TextTemplatingServiceCollectionExtensions
         services.TryAddSingleton(typeof(IStringLocalizer<>), typeof(StringLocalizer<>));
 
         #region ** Timezone service **
-
-        services.TryAddSingleton<NodaTime.TimeZones.DateTimeZoneCache>(sp =>
-            new NodaTime.TimeZones.DateTimeZoneCache(NodaTime.TimeZones.TzdbDateTimeZoneSource.Default));
             
-        var tzId = "America/New_York"; // America/New_York
+        var ianaTzId = "America/New_York"; // America/New_York
         // TimeZoneConverter will use the culture of the current scope
         services.TryAddTransient<Axuno.Tools.DateAndTime.TimeZoneConverter>(sp => new Axuno.Tools.DateAndTime.TimeZoneConverter(
-            sp.GetRequiredService<NodaTime.TimeZones.DateTimeZoneCache>(), tzId, CultureInfo.GetCultureInfo("en"),
-            NodaTime.TimeZones.Resolvers.LenientResolver));
+            ianaTzId, CultureInfo.GetCultureInfo("en")));
 
         #endregion
             

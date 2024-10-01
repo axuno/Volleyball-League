@@ -11,24 +11,16 @@ public class ZonedTime : IZonedTimeInfo
     {
     }
 
-    /// <summary>
-    /// Gets the <see cref="CultureInfo"/> used for localization.
-    /// </summary>
+    /// <inheritdoc />
     public CultureInfo CultureInfo { get; internal set; } = CultureInfo.InvariantCulture;
 
-    /// <summary>
-    /// Gets the IANA timezone ID related to the <see cref="DateTimeOffset"/>.
-    /// </summary>
+    /// <inheritdoc />
     public string TimeZoneId { get; internal set; } = string.Empty;
 
-    /// <summary>
-    /// Gets the <see cref="DateTimeOffset"/> which is set based on the timezone offset to UTC.
-    /// </summary>
+    /// <inheritdoc />
     public DateTimeOffset DateTimeOffset { get; internal set; }
 
-    /// <summary>
-    /// Gets the generic name for the time zone.
-    /// </summary>
+    /// <inheritdoc/>
     public string GenericName { get; internal set; } = string.Empty;
 
     /// <summary>
@@ -41,23 +33,15 @@ public class ZonedTime : IZonedTimeInfo
     /// </summary>
     public string DisplayName { get; internal set; } = string.Empty;
 
-    /// <summary>
-    /// Gets the name of the timezone related to the <see cref="DateTimeOffset"/>.
-    /// </summary>
+    /// <inheritdoc/>
     public string Name { get; internal set; } = string.Empty;
 
-    /// <summary>
-    /// Gets the timezone abbreviation related to the <see cref="DateTimeOffset"/>.
-    /// </summary>
+    /// <inheritdoc/>
     public string Abbreviation { get; internal set; } = string.Empty;
 
-    /// <summary>
-    /// Gets whether the timezone related to the <see cref="DateTimeOffset"/> is daylight saving time.
-    /// </summary>
+    /// <inheritdoc/>
     public bool IsDaylightSavingTime { get; internal set; }
 
-    /// <summary>
-    /// Gets the time difference between the current time zone's standard time and Coordinated Universal Time (UTC).
-    /// </summary>
+    /// <inheritdoc/>
     public TimeSpan BaseUtcOffset { get; internal set; }
 }

@@ -1,6 +1,5 @@
 ﻿using System.Globalization;
 using NUnit.Framework;
-using NodaTime;
 
 namespace Axuno.Tools.Tests.DateAndTime;
 
@@ -9,12 +8,31 @@ public class TimeZoneConverterTests
 {
     private static Axuno.Tools.DateAndTime.TimeZoneConverter GetTimeZoneConverter(string culture)
     {
-        var tzc = new Axuno.Tools.DateAndTime.TimeZoneConverter(
-            new NodaTime.TimeZones.DateTimeZoneCache(NodaTime.TimeZones.TzdbDateTimeZoneSource.Default),
-            "Europe/Berlin",
-            CultureInfo.GetCultureInfo(culture),
-            NodaTime.TimeZones.Resolvers.LenientResolver);
+        var tzc = new Axuno.Tools.DateAndTime.TimeZoneConverter("Europe/Berlin", CultureInfo.GetCultureInfo(culture));
         return tzc;
+    }
+
+    [Test]
+    public void UnknownTimeZoneId_ShouldThrow()
+    {
+        // Act, Assert
+        Assert.That(() =>
+        {
+            _ = new Axuno.Tools.DateAndTime.TimeZoneConverter("unknown-time-zone", CultureInfo.CurrentCulture);
+        }, Throws.Exception.TypeOf<TimeZoneNotFoundException>());
+    }
+
+    [Test]
+    public void UseCurrentCulture_IfCultureIsMissing()
+    {
+        // Arrange
+        var utcDateTime = new DateTime(2022, 1, 1, 12, 0, 0, DateTimeKind.Utc);
+
+        // Act
+        var convertedDateTime = new Axuno.Tools.DateAndTime.TimeZoneConverter("Europe/Berlin").ToZonedTime(utcDateTime)!;
+
+        // Assert
+        Assert.That(convertedDateTime.CultureInfo.TwoLetterISOLanguageName, Is.EqualTo(CultureInfo.CurrentUICulture.TwoLetterISOLanguageName));
     }
 
     [Test]
@@ -40,7 +58,7 @@ public class TimeZoneConverterTests
             Assert.That(convertedDateTime.Abbreviation, Is.EqualTo("MEZ"));
             Assert.That(convertedDateTime.IsDaylightSavingTime, Is.False);
             Assert.That(convertedDateTime.DateTimeOffset.Offset, Is.EqualTo(new TimeSpan(0, 1, 0, 0)));
-            Assert.That(convertedDateTime.BaseUtcOffset, Is.EqualTo(new TimeSpan(0,1,0,0)));
+            Assert.That(convertedDateTime.BaseUtcOffset, Is.EqualTo(new TimeSpan(0, 1, 0, 0)));
         });
     }
 
@@ -173,14 +191,22 @@ public class TimeZoneConverterTests
         // Assert
         Assert.That(convertedDateTime, Is.Null);
     }
+
     [Test]
     public void GetTimeZoneList_ShouldReturnTimeZoneList_WhenTimeZoneProviderIsNull()
     {
-        // Arrange
-        IDateTimeZoneProvider? timeZoneProvider = null;
-
         // Act
-        var timeZoneList = Axuno.Tools.DateAndTime.TimeZoneConverter.GetTimeZoneList(timeZoneProvider);
+        var timeZoneList = Axuno.Tools.DateAndTime.TimeZoneConverter.GetSystemTimeZoneList();
+
+        // Assert
+        Assert.That(timeZoneList, Is.InstanceOf<IReadOnlyCollection<string>>());
+    }
+
+    [Test]
+    public void GetIanaTimeZoneList_ShouldReturnTimeZoneList_WhenTimeZoneProviderIsNull()
+    {
+        // Act
+        var timeZoneList = Axuno.Tools.DateAndTime.TimeZoneConverter.GetIanaTimeZoneList();
 
         // Assert
         Assert.That(timeZoneList, Is.InstanceOf<IReadOnlyCollection<string>>());

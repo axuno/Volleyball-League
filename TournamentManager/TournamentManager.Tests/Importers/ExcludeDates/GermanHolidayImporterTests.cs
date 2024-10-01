@@ -16,9 +16,7 @@ public class GermanHolidayImporterTests
     {
         // using CET as time zone
         var tzConverter = new Axuno.Tools.DateAndTime.TimeZoneConverter(
-            new NodaTime.TimeZones.DateTimeZoneCache(NodaTime.TimeZones.TzdbDateTimeZoneSource.Default), "Europe/Berlin",
-            CultureInfo.CurrentCulture,
-            NodaTime.TimeZones.Resolvers.LenientResolver);
+            "Europe/Berlin", CultureInfo.CurrentCulture);
         var holidayFilter = new Predicate<GermanHoliday>(h => h.Type == GermanHolidays.Type.Public && h.PublicHolidayStateIds.Count == new GermanFederalStates().Count);
         var hImporter = new GermanHolidayImporter(null, holidayFilter, tzConverter, NullLogger<GermanHolidayImporter>.Instance);
 
@@ -34,9 +32,7 @@ public class GermanHolidayImporterTests
     {
         // using CET as time zone
         var tzConverter = new Axuno.Tools.DateAndTime.TimeZoneConverter(
-            new NodaTime.TimeZones.DateTimeZoneCache(NodaTime.TimeZones.TzdbDateTimeZoneSource.Default), "Europe/Berlin",
-            CultureInfo.CurrentCulture,
-            NodaTime.TimeZones.Resolvers.LenientResolver);
+            "Europe/Berlin", CultureInfo.CurrentCulture);
         var holidayFilter = new Predicate<GermanHoliday>(h => h.Type == GermanHolidays.Type.Public && h.PublicHolidayStateIds.Contains(GermanFederalStates.Id.Bayern));
         var hImporter = new GermanHolidayImporter(null, holidayFilter, tzConverter, NullLogger<GermanHolidayImporter>.Instance);
 
@@ -52,9 +48,7 @@ public class GermanHolidayImporterTests
     {
         // using CET as time zone
         var tzConverter = new Axuno.Tools.DateAndTime.TimeZoneConverter(
-            new NodaTime.TimeZones.DateTimeZoneCache(NodaTime.TimeZones.TzdbDateTimeZoneSource.Default), "Europe/Berlin",
-            CultureInfo.CurrentCulture,
-            NodaTime.TimeZones.Resolvers.LenientResolver);
+            "Europe/Berlin", CultureInfo.CurrentCulture);
         var holidayFilter = new Predicate<GermanHoliday>(
             h =>
                 h.Type == GermanHolidays.Type.Public &&
@@ -80,9 +74,7 @@ public class GermanHolidayImporterTests
         var customHolidayFilePath = Path.Combine(TestContext.CurrentContext.TestDirectory, "Assets", "Custom_Holidays_Sample.xml");
         // using CET as time zone
         var tzConverter = new Axuno.Tools.DateAndTime.TimeZoneConverter(
-            new NodaTime.TimeZones.DateTimeZoneCache(NodaTime.TimeZones.TzdbDateTimeZoneSource.Default), "Europe/Berlin",
-            CultureInfo.CurrentCulture,
-            NodaTime.TimeZones.Resolvers.LenientResolver);
+            "Europe/Berlin", CultureInfo.CurrentCulture);
         var holidayFilter = new Predicate<GermanHoliday>(h => h.Type == GermanHolidays.Type.School);
         var hImporter = new GermanHolidayImporter(customHolidayFilePath, holidayFilter, tzConverter, NullLogger<GermanHolidayImporter>.Instance);
 

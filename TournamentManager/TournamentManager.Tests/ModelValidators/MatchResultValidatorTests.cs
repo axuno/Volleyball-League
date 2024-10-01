@@ -17,9 +17,7 @@ public class MatchResultValidatorTests
     {
         #region *** TimeZoneConverter ***
 
-        var tzProvider = new NodaTime.TimeZones.DateTimeZoneCache(NodaTime.TimeZones.TzdbDateTimeZoneSource.Default);
-        var tzId = "Europe/Berlin";
-        _data.TimeZoneConverter = new Axuno.Tools.DateAndTime.TimeZoneConverter(tzProvider, tzId, System.Globalization.CultureInfo.GetCultureInfo("en-US"), NodaTime.TimeZones.Resolvers.LenientResolver);
+        _data.TimeZoneConverter = new Axuno.Tools.DateAndTime.TimeZoneConverter("Europe/Berlin", System.Globalization.CultureInfo.GetCultureInfo("en-US"));
 
         #endregion
 

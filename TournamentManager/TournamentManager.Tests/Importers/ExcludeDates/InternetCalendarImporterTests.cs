@@ -16,9 +16,7 @@ public class InternetCalendarImporterTests
         var icsFilePath = Path.Combine(TestContext.CurrentContext.TestDirectory, "Assets", "School_Holidays_Bavaria_2024.ics");
         // using CET as time zone
         var tzConverter = new Axuno.Tools.DateAndTime.TimeZoneConverter(
-            new NodaTime.TimeZones.DateTimeZoneCache(NodaTime.TimeZones.TzdbDateTimeZoneSource.Default), "Europe/Berlin",
-            CultureInfo.CurrentCulture,
-            NodaTime.TimeZones.Resolvers.LenientResolver);
+            "Europe/Berlin", CultureInfo.CurrentCulture);
 
         var icsImporter = new InternetCalendarImporter(File.ReadAllText(icsFilePath, Encoding.UTF8), "Europe/Berlin", NullLogger<InternetCalendarImporter>.Instance);
 
