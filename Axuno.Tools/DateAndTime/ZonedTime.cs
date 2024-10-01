@@ -57,7 +57,7 @@ public class ZonedTime : IZonedTimeInfo
     public bool IsDaylightSavingTime { get; internal set; }
 
     /// <summary>
-    /// Gets the base UTC offset of the timezone related to the <see cref="DateTimeOffset"/>.
+    /// Gets the time difference between the current time zone's standard time and Coordinated Universal Time (UTC).
     /// </summary>
     public TimeSpan BaseUtcOffset { get; internal set; }
 }

@@ -73,7 +73,7 @@ public class TimeZoneConverter
     /// <summary>
     /// Converts the <see cref="DateTime"/> of any <see cref="DateTimeKind"/> to a <see cref="DateTime"/> of <see cref="DateTimeKind.Utc"/>.
     /// </summary>
-    /// <param name="zoneDateTime">A <see cref="DateTime"/> in the the timezone specified with the timezone ID given when creating this converter instance.</param>
+    /// <param name="zoneDateTime">A <see cref="DateTime"/> in the timezone specified with the timezone ID given when creating this converter instance.</param>
     /// <returns>Returns the converted <see cref="DateTime"/> with <see cref="DateTimeKind.Utc"/> or null, if the <paramref name="zoneDateTime"/> parameter is null.</returns>
     public DateTime? ToUtc(DateTime? zoneDateTime)
     {
@@ -83,7 +83,7 @@ public class TimeZoneConverter
     /// <summary>
     /// Converts the <see cref="DateTime"/> of any <see cref="DateTimeKind"/> to a <see cref="DateTime"/> of <see cref="DateTimeKind.Utc"/>.
     /// </summary>
-    /// <param name="zoneDateTime">A <see cref="DateTime"/> in the the timezone specified with the timezone ID given when creating this converter instance.</param>
+    /// <param name="zoneDateTime">A <see cref="DateTime"/> in the timezone specified with the timezone ID given when creating this converter instance.</param>
     /// <returns>Returns the converted <see cref="DateTime"/> with <see cref="DateTimeKind.Utc"/>.</returns>
     public DateTime ToUtc(DateTime zoneDateTime)
     {
