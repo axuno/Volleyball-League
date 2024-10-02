@@ -134,7 +134,7 @@ public class TimeZoneConverterTests
         var expectedDateTime = new DateTime(2022, 1, 1, 7, 0, 0, DateTimeKind.Utc);
 
         // Act
-        var convertedDateTime = GetTimeZoneConverter("en-US").ToUtc(localDateTime, "Europe/Berlin");
+        var convertedDateTime = Axuno.Tools.DateAndTime.TimeZoneConverter.ToUtc(localDateTime, "Europe/Berlin");
 
         // Assert
         Assert.That(convertedDateTime, Is.EqualTo(expectedDateTime));
@@ -186,7 +186,7 @@ public class TimeZoneConverterTests
         DateTime? dateTimeOfAnyKind = null;
 
         // Act
-        var convertedDateTime = GetTimeZoneConverter("en-US").ToUtc(dateTimeOfAnyKind, "Europe/Berlin");
+        var convertedDateTime = Axuno.Tools.DateAndTime.TimeZoneConverter.ToUtc(dateTimeOfAnyKind, "Europe/Berlin");
 
         // Assert
         Assert.That(convertedDateTime, Is.Null);

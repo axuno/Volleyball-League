@@ -71,7 +71,7 @@ public class TimeZoneConverter
         return ToUtc(zoneDateTime, _ianaTimeZoneId);
     }
 
-    public DateTime? ToUtc(DateTime? zoneDateTime, string timeZoneId)
+    public static DateTime? ToUtc(DateTime? zoneDateTime, string timeZoneId)
     {
         if (!zoneDateTime.HasValue) return null;
 
@@ -94,7 +94,7 @@ public class TimeZoneConverter
     /// <param name="timeZoneId">The ID of the IANA timezone database, https://en.wikipedia.org/wiki/List_of_tz_database_time_zones.</param>
     /// <returns>Returns the converted <see cref="DateTime"/> with <see cref="DateTimeKind.Utc"/>.</returns>
     /// <exception cref="TimeZoneNotFoundException">If <paramref name="timeZoneId"/> is unknown.</exception>
-    public DateTime ToUtc(DateTime zoneDateTime, string timeZoneId)
+    public static DateTime ToUtc(DateTime zoneDateTime, string timeZoneId)
     {
         return (DateTime) ToUtc((DateTime?) zoneDateTime, timeZoneId)!;
     }
