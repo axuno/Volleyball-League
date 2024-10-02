@@ -115,9 +115,7 @@ public class UnitTestHelpers
             })
             .AddLocalization()
             .AddSingleton(sp => new Axuno.Tools.DateAndTime.TimeZoneConverter(
-                sp.GetRequiredService<NodaTime.TimeZones.DateTimeZoneCache>(), "Europe/Berlin",
-                CultureInfo.CurrentCulture,
-                NodaTime.TimeZones.Resolvers.LenientResolver))
+                "Europe/Berlin", CultureInfo.CurrentCulture))
             .AddTransient<ITenantContext>(sp => tenantContext)
             .AddTextTemplatingModule(vfs =>
                 {

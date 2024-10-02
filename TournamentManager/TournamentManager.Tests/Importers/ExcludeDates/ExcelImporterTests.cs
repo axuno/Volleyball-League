@@ -17,9 +17,7 @@ public class ExcelImporterTests
         var xlFilePath = Path.Combine(TestContext.CurrentContext.TestDirectory, "Assets", "ExcludedDates.xlsx");
         // using CET as time zone
         var tzConverter = new Axuno.Tools.DateAndTime.TimeZoneConverter(
-            new NodaTime.TimeZones.DateTimeZoneCache(NodaTime.TimeZones.TzdbDateTimeZoneSource.Default), "Europe/Berlin",
-            CultureInfo.CurrentCulture,
-            NodaTime.TimeZones.Resolvers.LenientResolver);
+            "Europe/Berlin", CultureInfo.CurrentCulture);
         var xlImporter = new ExcelImporter(xlFilePath, tzConverter, NullLogger<ExcelImporter>.Instance);
 
         var imported = xlImporter.Import(new DateTimePeriod(from, to)).ToList();
@@ -36,9 +34,7 @@ public class ExcelImporterTests
         var xlFilePath = Path.Combine(TestContext.CurrentContext.TestDirectory, "Assets", "ExcludedDates.xlsx");
         // Using UTC as time zone
         var tzConverter = new Axuno.Tools.DateAndTime.TimeZoneConverter(
-            new NodaTime.TimeZones.DateTimeZoneCache(NodaTime.TimeZones.TzdbDateTimeZoneSource.Default), "UTC",
-            CultureInfo.CurrentCulture,
-            NodaTime.TimeZones.Resolvers.LenientResolver);
+            "UTC", CultureInfo.CurrentCulture);
         var xlImporter = new ExcelImporter(xlFilePath, tzConverter, NullLogger<ExcelImporter>.Instance);
 
         var imported = xlImporter.Import(new DateTimePeriod(from, to)).ToList();

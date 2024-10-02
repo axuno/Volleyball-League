@@ -1,49 +1,30 @@
 ﻿using System.Globalization;
-using NodaTime;
-using NodaTime.TimeZones;
-using TzConverter = TimeZoneConverter;
-namespace Axuno.Tools.DateAndTime;
+using TimeZoneNames;
 
+namespace Axuno.Tools.DateAndTime;
 /// <summary>
-/// Converts from <see cref="DateTime"/> or <see cref="DateTimeOffset"/> and zone specific <see cref="ZonedTime"/>.
+/// Converts between <see cref="DateTime"/> or <see cref="DateTimeOffset"/> and zone specific <see cref="ZonedTime"/>.
 /// </summary>
-/// <remarks>
-/// There is a NuGet package "TimeZoneConverter", version=6.1.0+ which might be able to replace this class.
-/// Credits to Joe Audette's blog who introduced a similar solution. Unfortunately Joe passed away in 2020.
-/// </remarks>
 public class TimeZoneConverter
 {
-    private readonly IDateTimeZoneProvider _dateTimeZoneProvider;
-    private readonly string _timeZoneId;
-    private readonly CultureInfo? _cultureInfo;
-    private readonly ZoneLocalMappingResolver? _resolver;
+    // IANA timezone ID
+    private readonly string _ianaTimeZoneId;
+    private readonly CultureInfo _cultureInfo;
 
     /// <summary>
     /// CTOR.
     /// </summary>
-    /// <param name="dateTimeZoneProvider"></param>
-    /// <param name="timeZoneInfo">The Windows <see cref="TimeZoneInfo"/> to use for converting.</param>
-    /// <param name="cultureInfo">The <see cref="CultureInfo"/> to use for converting.</param>
-    /// <param name="resolver">The <see cref="ZoneLocalMappingResolver"/> to use for converting.</param>
-    public TimeZoneConverter(IDateTimeZoneProvider dateTimeZoneProvider, TimeZoneInfo timeZoneInfo,
-        CultureInfo? cultureInfo = null, ZoneLocalMappingResolver? resolver = null) : this(dateTimeZoneProvider,
-        TzConverter.TZConvert.WindowsToIana(timeZoneInfo.Id), cultureInfo, resolver)
-    {}
-
-    /// <summary>
-    /// CTOR.
-    /// </summary>
-    /// <param name="dateTimeZoneProvider"></param>
-    /// <param name="ianaTimeZoneId">The IANA timezone ID to use for converting.</param>
-    /// <param name="cultureInfo">The <see cref="CultureInfo"/> to use for converting.</param>
-    /// <param name="resolver">The <see cref="ZoneLocalMappingResolver"/> to use for converting.</param>
-    public TimeZoneConverter(IDateTimeZoneProvider dateTimeZoneProvider, string ianaTimeZoneId,
-        CultureInfo? cultureInfo = null, ZoneLocalMappingResolver? resolver = null)
+    /// <param name="ianaTimeZoneId">
+    /// The IANA timezone ID to use for converting.
+    /// We initialize with IANA because of compatibility with the NodaTime TimeZoneConverter we had before.
+    /// </param>
+    /// <param name="cultureInfo">The <see cref="CultureInfo"/> to use for converting. Default is <see cref="CultureInfo.CurrentUICulture"/>.</param>
+    /// <exception cref="TimeZoneNotFoundException"></exception>
+    public TimeZoneConverter(string ianaTimeZoneId, CultureInfo? cultureInfo = null)
     {
-        _dateTimeZoneProvider = dateTimeZoneProvider;
-        _timeZoneId = ianaTimeZoneId;
-        _cultureInfo = cultureInfo;
-        _resolver = resolver;
+        _ianaTimeZoneId = ianaTimeZoneId;
+        _ = TimeZoneInfo.FindSystemTimeZoneById(ianaTimeZoneId);
+        _cultureInfo = cultureInfo ?? CultureInfo.CurrentUICulture;
     }
 
     /// <summary>
@@ -53,9 +34,9 @@ public class TimeZoneConverter
     /// <param name="dateTimeOfAnyKind"></param>
     /// <param name="cultureInfo">The <see cref="CultureInfo"/> to use for time zone localization. If <see langword="null"/>, the default culture will be used.</param>
     /// <returns>Returns the converted <see cref="DateTime"/> as a <see cref="ZonedTime"/> instance or null, if the <paramref name="dateTimeOfAnyKind"/> parameter is null.</returns>
-    public ZonedTime? ToZonedTime(DateTime? dateTimeOfAnyKind, CultureInfo? cultureInfo = null)
+    public IZonedTimeInfo? ToZonedTime(DateTime? dateTimeOfAnyKind, CultureInfo? cultureInfo = null)
     {
-        return ToZonedTime(dateTimeOfAnyKind, _timeZoneId, cultureInfo ?? _cultureInfo, _dateTimeZoneProvider);
+        return ToZonedTime(dateTimeOfAnyKind, _ianaTimeZoneId, cultureInfo ?? _cultureInfo);
     }
 
     /// <summary>
@@ -65,9 +46,9 @@ public class TimeZoneConverter
     /// <param name="dateTimeOfAnyKind"></param>
     /// <param name="cultureInfo">The <see cref="CultureInfo"/> to use for time zone localization. If <see langword="null"/>, the default culture will be used.</param>
     /// <returns>Returns the converted <see cref="DateTime"/> as a <see cref="ZonedTime"/> instance.</returns>
-    public ZonedTime? ToZonedTime(DateTime dateTimeOfAnyKind, CultureInfo? cultureInfo = null)
+    public IZonedTimeInfo? ToZonedTime(DateTime dateTimeOfAnyKind, CultureInfo? cultureInfo = null)
     {
-        return ToZonedTime(dateTimeOfAnyKind, _timeZoneId, cultureInfo ?? _cultureInfo, _dateTimeZoneProvider);
+        return ToZonedTime(dateTimeOfAnyKind, _ianaTimeZoneId, cultureInfo ?? _cultureInfo);
     }
 
     /// <summary>
@@ -77,7 +58,7 @@ public class TimeZoneConverter
     /// <returns>Returns the converted <see cref="DateTime"/> with <see cref="DateTimeKind.Utc"/> or null, if the <paramref name="zoneDateTime"/> parameter is null.</returns>
     public DateTime? ToUtc(DateTime? zoneDateTime)
     {
-        return ToUtc(zoneDateTime, _timeZoneId, _dateTimeZoneProvider, _resolver);
+        return ToUtc(zoneDateTime, _ianaTimeZoneId);
     }
 
     /// <summary>
@@ -87,19 +68,23 @@ public class TimeZoneConverter
     /// <returns>Returns the converted <see cref="DateTime"/> with <see cref="DateTimeKind.Utc"/>.</returns>
     public DateTime ToUtc(DateTime zoneDateTime)
     {
-        return ToUtc(zoneDateTime, _timeZoneId, _dateTimeZoneProvider, _resolver);
+        return ToUtc(zoneDateTime, _ianaTimeZoneId);
     }
 
-    /// <summary>
-    /// Converts the <see cref="DateTime"/> of any <see cref="DateTimeKind"/> to a <see cref="DateTime"/> of <see cref="DateTimeKind.Utc"/>.
-    /// </summary>
-    /// <param name="zoneDateTime">A <see cref="DateTime"/> in the timezone specified with parameter <paramref name="timeZoneId"/>.</param>
-    /// <param name="timeZoneId">The ID of the IANA timezone database, https://en.wikipedia.org/wiki/List_of_tz_database_time_zones.</param>
-    /// <returns>Returns the converted <see cref="DateTime"/> with <see cref="DateTimeKind.Utc"/> or null, if the <paramref name="zoneDateTime"/> parameter is <see langword="null"/>.</returns>
-    /// <exception cref="DateTimeZoneNotFoundException">If <paramref name="timeZoneId"/> is unknown.</exception>
-    public DateTime? ToUtc(DateTime? zoneDateTime, string timeZoneId)
+    public static DateTime? ToUtc(DateTime? zoneDateTime, string timeZoneId)
     {
-        return ToUtc(zoneDateTime, timeZoneId, _dateTimeZoneProvider, _resolver);
+        if (!zoneDateTime.HasValue) return null;
+
+        // Convert IANA time zone to Windows time zone ID
+        var windowsTimeZoneId = TimeZoneInfo.FindSystemTimeZoneById(timeZoneId);
+
+        // Convert the local time to UTC
+        // We have to change the DateTimeKind to Unspecified, because the TimeZoneInfo.ConvertTimeToUtc method does not work with Local time
+        // This makes the method compatible with the NodaTime TimeZoneConverter we had before.
+        zoneDateTime = DateTime.SpecifyKind(zoneDateTime.Value, DateTimeKind.Unspecified);
+        var utcDateTime = TimeZoneInfo.ConvertTimeToUtc(zoneDateTime.Value, windowsTimeZoneId);
+
+        return utcDateTime;
     }
 
     /// <summary>
@@ -108,10 +93,10 @@ public class TimeZoneConverter
     /// <param name="zoneDateTime">A <see cref="DateTime"/> in the timezone specified with parameter <paramref name="timeZoneId"/>.</param>
     /// <param name="timeZoneId">The ID of the IANA timezone database, https://en.wikipedia.org/wiki/List_of_tz_database_time_zones.</param>
     /// <returns>Returns the converted <see cref="DateTime"/> with <see cref="DateTimeKind.Utc"/>.</returns>
-    /// <exception cref="DateTimeZoneNotFoundException">If <paramref name="timeZoneId"/> is unknown.</exception>
-    public DateTime ToUtc(DateTime zoneDateTime, string timeZoneId)
+    /// <exception cref="TimeZoneNotFoundException">If <paramref name="timeZoneId"/> is unknown.</exception>
+    public static DateTime ToUtc(DateTime zoneDateTime, string timeZoneId)
     {
-        return ToUtc(zoneDateTime, timeZoneId, _dateTimeZoneProvider, _resolver);
+        return (DateTime) ToUtc((DateTime?) zoneDateTime, timeZoneId)!;
     }
 
     /// <summary>
@@ -121,25 +106,20 @@ public class TimeZoneConverter
     /// <param name="dateTimeOfAnyKind"></param>
     /// <param name="timeZoneId"></param>
     /// <param name="cultureInfo">The see <see cref="CultureInfo"/> to use for localizing timezone strings. Default is <see cref="CultureInfo.CurrentUICulture"/>.</param>
-    /// <param name="timeZoneProvider">The <see cref="IDateTimeZoneProvider"/> to use. For performance use a <see cref="DateTimeZoneCache"/>.
-    /// <example>
-    /// IDateTimeZoneProvider dtzp = new DateTimeZoneCache(TzdbDateTimeZoneSource.Default)
-    /// </example>
-    /// </param>
     /// <returns>Returns the converted <see cref="DateTime"/> as a <see cref="ZonedTime"/> instance or null, if the <paramref name="dateTimeOfAnyKind"/> parameter is null.</returns>
-    /// <exception cref="DateTimeZoneNotFoundException">If <paramref name="timeZoneId"/> is unknown.</exception>
-    public static ZonedTime? ToZonedTime(DateTime? dateTimeOfAnyKind, string timeZoneId,
-        CultureInfo? cultureInfo = null, IDateTimeZoneProvider? timeZoneProvider = null)
+    /// <exception cref="TimeZoneNotFoundException">If <paramref name="timeZoneId"/> is unknown.</exception>
+    public static IZonedTimeInfo? ToZonedTime(DateTime? dateTimeOfAnyKind, string timeZoneId, CultureInfo? cultureInfo = null)
     {
         if (!dateTimeOfAnyKind.HasValue) return null;
 
-        var utcDateTime = dateTimeOfAnyKind.Value.Kind switch {
+        var utcDateTime = dateTimeOfAnyKind.Value.Kind switch
+        {
             DateTimeKind.Utc => dateTimeOfAnyKind.Value,
-            DateTimeKind.Local => dateTimeOfAnyKind.Value.ToUniversalTime(),
+            DateTimeKind.Local => TimeZoneInfo.ConvertTimeToUtc(dateTimeOfAnyKind.Value),
             _ => DateTime.SpecifyKind(dateTimeOfAnyKind.Value, DateTimeKind.Utc)
         };
 
-        return ToZonedTime(new DateTimeOffset(utcDateTime), timeZoneId, cultureInfo, timeZoneProvider);
+        return ToZonedTime(new DateTimeOffset(utcDateTime), timeZoneId, cultureInfo);
     }
 
     /// <summary>
@@ -149,17 +129,11 @@ public class TimeZoneConverter
     /// <param name="dateTimeOfAnyKind"></param>
     /// <param name="timeZoneId"></param>
     /// <param name="cultureInfo">The see <see cref="CultureInfo"/> to use for localizing timezone strings. Default is <see cref="CultureInfo.CurrentUICulture"/>.</param>
-    /// <param name="timeZoneProvider">The <see cref="IDateTimeZoneProvider"/> to use. For performance use a <see cref="DateTimeZoneCache"/>.
-    /// <example>
-    /// IDateTimeZoneProvider dtzp = new DateTimeZoneCache(TzdbDateTimeZoneSource.Default)
-    /// </example>
-    /// </param>
     /// <returns>Returns the converted <see cref="DateTime"/> as a <see cref="ZonedTime"/> instance.</returns>
-    /// <exception cref="DateTimeZoneNotFoundException">If <paramref name="timeZoneId"/> is unknown.</exception>
-    public static ZonedTime? ToZonedTime(DateTime dateTimeOfAnyKind, string timeZoneId,
-        CultureInfo? cultureInfo = null, IDateTimeZoneProvider? timeZoneProvider = null)
+    /// <exception cref="TimeZoneNotFoundException">If <paramref name="timeZoneId"/> is unknown.</exception>
+    public static IZonedTimeInfo? ToZonedTime(DateTime dateTimeOfAnyKind, string timeZoneId, CultureInfo? cultureInfo = null)
     {
-        return ToZonedTime((DateTime?) dateTimeOfAnyKind, timeZoneId, cultureInfo, timeZoneProvider);
+        return ToZonedTime((DateTime?) dateTimeOfAnyKind, timeZoneId, cultureInfo);
     }
 
     /// <summary>
@@ -168,44 +142,34 @@ public class TimeZoneConverter
     /// <param name="dateTimeOffset"></param>
     /// <param name="timeZoneId">The ID of the IANA timezone database, https://en.wikipedia.org/wiki/List_of_tz_database_time_zones.</param>
     /// <param name="cultureInfo">The see <see cref="CultureInfo"/> to use for localizing timezone strings. Default is <see cref="CultureInfo.CurrentUICulture"/>.</param>
-    /// <param name="timeZoneProvider">The <see cref="IDateTimeZoneProvider"/> to use. For performance use a <see cref="DateTimeZoneCache"/>.
-    /// <example>
-    /// IDateTimeZoneProvider dtzp = new DateTimeZoneCache(TzdbDateTimeZoneSource.Default)
-    /// </example>
-    /// </param>
     /// <returns>Returns the converted <see cref="Nullable{DateTimeOffset}"/> as a <see cref="ZonedTime"/> instance  or null, if the <paramref name="dateTimeOffset"/> parameter is null.</returns>
-    /// <exception cref="DateTimeZoneNotFoundException">If IANA <paramref name="timeZoneId"/> is unknown.</exception>
-    public static ZonedTime? ToZonedTime(DateTimeOffset? dateTimeOffset, string timeZoneId,
-        CultureInfo? cultureInfo = null, IDateTimeZoneProvider? timeZoneProvider = null)
+    /// <exception cref="TimeZoneNotFoundException">If IANA <paramref name="timeZoneId"/> is unknown.</exception>
+    public static IZonedTimeInfo? ToZonedTime(DateTimeOffset? dateTimeOffset, string timeZoneId, CultureInfo? cultureInfo = null)
     {
         if (!dateTimeOffset.HasValue) return null;
 
         var zonedDateTime = new ZonedTime();
 
-        timeZoneProvider ??= DateTimeZoneProviders.Tzdb;
         cultureInfo ??= CultureInfo.CurrentUICulture;
 
-        // throws if timeZoneId is unknown
-        var timeZone = timeZoneProvider[timeZoneId];
+        // Convert IANA time zone to Windows time zone ID
+        var windowsTimeZoneId = TimeZoneInfo.FindSystemTimeZoneById(timeZoneId);
 
-        var instantInZone = Instant.FromDateTimeUtc(dateTimeOffset.Value.UtcDateTime).InZone(timeZone);
+        // Convert UTC to the specified time zone
+        var localDateTime = TimeZoneInfo.ConvertTime(dateTimeOffset.Value.UtcDateTime, windowsTimeZoneId);
+
         zonedDateTime.CultureInfo = cultureInfo;
-        zonedDateTime.DateTimeOffset = instantInZone.ToDateTimeOffset();
-        zonedDateTime.IsDaylightSavingTime = instantInZone.IsDaylightSavingTime();
-
-        var timeZoneInfo = TzConverter.TZConvert.GetTimeZoneInfo(timeZoneId);
-        zonedDateTime.DisplayName = timeZoneInfo.DisplayName;
-        zonedDateTime.BaseUtcOffset = timeZoneInfo.BaseUtcOffset;
+        zonedDateTime.DateTimeOffset = new DateTimeOffset(localDateTime, windowsTimeZoneId.GetUtcOffset(localDateTime));
+        zonedDateTime.IsDaylightSavingTime = windowsTimeZoneId.IsDaylightSavingTime(localDateTime);
+        zonedDateTime.DisplayName = windowsTimeZoneId.DisplayName;
+        zonedDateTime.BaseUtcOffset = windowsTimeZoneId.BaseUtcOffset;
         zonedDateTime.TimeZoneId = timeZoneId;
 
-        var tzNames =
-            TimeZoneNames.TZNames.GetNamesForTimeZone(timeZone.Id, cultureInfo.TwoLetterISOLanguageName);
+        var tzNames = TZNames.GetNamesForTimeZone(timeZoneId, cultureInfo.TwoLetterISOLanguageName);
         zonedDateTime.GenericName = tzNames.Generic ?? string.Empty;
         zonedDateTime.Name = (zonedDateTime.IsDaylightSavingTime ? tzNames.Daylight : tzNames.Standard) ?? string.Empty;
 
-        var tzAbbr =
-            TimeZoneNames.TZNames.GetAbbreviationsForTimeZone(timeZone.Id,
-                cultureInfo.TwoLetterISOLanguageName);
+        var tzAbbr = TZNames.GetAbbreviationsForTimeZone(timeZoneId, cultureInfo.TwoLetterISOLanguageName);
         zonedDateTime.GenericAbbreviation = tzAbbr.Generic ?? string.Empty;
         zonedDateTime.Abbreviation = (zonedDateTime.IsDaylightSavingTime ? tzAbbr.Daylight : tzAbbr.Standard) ?? string.Empty;
 
@@ -218,59 +182,13 @@ public class TimeZoneConverter
     /// <param name="dateTimeOffset"></param>
     /// <param name="timeZoneId">The ID of the IANA timezone database, https://en.wikipedia.org/wiki/List_of_tz_database_time_zones.</param>
     /// <param name="cultureInfo">The see <see cref="CultureInfo"/> to use for localizing timezone strings. Default is <see cref="CultureInfo.CurrentUICulture"/>.</param>
-    /// <param name="timeZoneProvider">The <see cref="IDateTimeZoneProvider"/> to use. For performance use a <see cref="DateTimeZoneCache"/>.
-    /// <example>
-    /// IDateTimeZoneProvider dtzp = new DateTimeZoneCache(TzdbDateTimeZoneSource.Default)
-    /// </example>
-    /// </param>
     /// <returns>Returns the converted <see cref="Nullable{DateTimeOffset}"/> as a <see cref="ZonedTime"/> instance.</returns>
-    /// <exception cref="DateTimeZoneNotFoundException">If IANA <paramref name="timeZoneId"/> is unknown.</exception>
-    public static ZonedTime? ToZonedTime(DateTimeOffset dateTimeOffset, string timeZoneId,
-        CultureInfo? cultureInfo = null, IDateTimeZoneProvider? timeZoneProvider = null)
+    /// <exception cref="TimeZoneNotFoundException">If IANA <paramref name="timeZoneId"/> is unknown.</exception>
+    public static IZonedTimeInfo? ToZonedTime(DateTimeOffset dateTimeOffset, string timeZoneId, CultureInfo? cultureInfo = null)
     {
-        return ToZonedTime((DateTimeOffset?) dateTimeOffset, timeZoneId, cultureInfo, timeZoneProvider);
+        return ToZonedTime((DateTimeOffset?) dateTimeOffset, timeZoneId, cultureInfo);
     }
 
-    /// <summary>
-    /// Converts the <see cref="DateTime"/> of any <see cref="DateTimeKind"/> to a <see cref="DateTime"/> of <see cref="DateTimeKind.Utc"/>.
-    /// </summary>
-    /// <param name="zoneDateTime"></param>
-    /// <param name="timeZoneId">The ID of the IANA timezone database, https://en.wikipedia.org/wiki/List_of_tz_database_time_zones.</param>
-    /// <param name="timeZoneProvider"></param>
-    /// <param name="resolver">The <see cref="ZoneLocalMappingResolver"/> to use. Default is <see cref="Resolvers.LenientResolver"/>´, which never throws an exception due to ambiguity or skipped time.</param>
-    /// <returns>Returns the converted <see cref="DateTime"/> with <see cref="DateTimeKind.Utc"/> or null, if the <paramref name="zoneDateTime"/> parameter is null.</returns>
-    /// <exception cref="DateTimeZoneNotFoundException">If <paramref name="timeZoneId"/> is unknown.</exception>
-    public static DateTime? ToUtc(DateTime? zoneDateTime, string timeZoneId,
-        IDateTimeZoneProvider? timeZoneProvider, ZoneLocalMappingResolver? resolver = null)
-    {
-        if (!zoneDateTime.HasValue) return null;
-
-        timeZoneProvider ??= DateTimeZoneProviders.Tzdb;
-        // never throws an exception due to ambiguity or skipped time:
-        resolver ??= Resolvers.LenientResolver;
-        // throws if timeZoneId is unknown
-        var timeZone = timeZoneProvider[timeZoneId];
-
-        var local = LocalDateTime.FromDateTime(zoneDateTime.Value);
-        var zonedTime = timeZone.ResolveLocal(local, resolver);
-        return zonedTime.ToDateTimeUtc();
-    }
-
-    /// <summary>
-    /// Converts the <see cref="DateTime"/> of any <see cref="DateTimeKind"/> to a <see cref="DateTime"/> of <see cref="DateTimeKind.Utc"/>.
-    /// </summary>
-    /// <param name="zoneDateTime"></param>
-    /// <param name="timeZoneId">The ID of the IANA timezone database, https://en.wikipedia.org/wiki/List_of_tz_database_time_zones.</param>
-    /// <param name="timeZoneProvider"></param>
-    /// <param name="resolver">The <see cref="ZoneLocalMappingResolver"/> to use. Default is <see cref="Resolvers.LenientResolver"/>´, which never throws an exception due to ambiguity or skipped time.</param>
-    /// <returns>Returns the converted <see cref="DateTime"/> with <see cref="DateTimeKind.Utc"/>.</returns>
-    /// <exception cref="DateTimeZoneNotFoundException">If <paramref name="timeZoneId"/> is unknown.</exception>
-    public static DateTime ToUtc(DateTime zoneDateTime, string timeZoneId,
-        IDateTimeZoneProvider timeZoneProvider, ZoneLocalMappingResolver? resolver = null)
-    {
-        return ToUtc((DateTime?)zoneDateTime, timeZoneId, timeZoneProvider, resolver)!.Value;
-    }
-        
     /// <summary>
     /// Checks whether the Windows <see cref="TimeZoneInfo"/> can be mapped to a IANA timezone ID.
     /// </summary>
@@ -278,17 +196,34 @@ public class TimeZoneConverter
     /// <returns>Returns <c>true</c> if the <see cref="TimeZoneInfo"/> can be mapped to a IANA timezone, otherwise <c>false</c>.</returns>
     public static bool CanMapToIanaTimeZone(TimeZoneInfo timeZoneInfo)
     {
-        return TzConverter.TZConvert.TryWindowsToIana(timeZoneInfo.Id, out _);
+        return TimeZoneInfo.TryConvertWindowsIdToIanaId(timeZoneInfo.Id, out _);
     }
 
     /// <summary>
-    /// Get a collection of available <see cref="IDateTimeZoneProvider.Ids"/>.
+    /// Get a collection of available <see cref="TimeZoneInfo.Id"/>s.
     /// </summary>
-    /// <param name="timeZoneProvider">The <see cref="IDateTimeZoneProvider"/> to use. Default is <see cref="DateTimeZoneProviders.Tzdb"/>.</param>
-    /// <returns>Returns a collection of available <see cref="IDateTimeZoneProvider.Ids"/>.</returns>
-    public static IReadOnlyCollection<string> GetTimeZoneList(IDateTimeZoneProvider? timeZoneProvider = null)
+    /// <returns>Returns a collection of available <see cref="TimeZoneInfo.Id"/>s.</returns>
+    public static IReadOnlyCollection<string> GetSystemTimeZoneList()
     {
-        timeZoneProvider ??= DateTimeZoneProviders.Tzdb;
-        return timeZoneProvider.Ids;
+        return TimeZoneInfo.GetSystemTimeZones().Select(tz => tz.Id).ToList().AsReadOnly();
+    }
+
+    /// <summary>
+    /// Get a collection of IANA Ids for <see cref="TimeZoneInfo"/>s that can be converted to IANA.
+    /// </summary>
+    /// <returns>A collection of IANA Ids for <see cref="TimeZoneInfo"/>s that can be converted to IANA.</returns>
+    public static IReadOnlyCollection<string> GetIanaTimeZoneList()
+    {
+        var ianaTimeZones = new List<string>();
+
+        foreach (var timeZone in TimeZoneInfo.GetSystemTimeZones())
+        {
+            if (TimeZoneInfo.TryConvertWindowsIdToIanaId(timeZone.Id, out var ianaTimeZoneId))
+            {
+                ianaTimeZones.Add(ianaTimeZoneId);
+            }
+        }
+
+        return ianaTimeZones.AsReadOnly();
     }
 }

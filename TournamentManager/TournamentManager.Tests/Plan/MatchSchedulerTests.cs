@@ -193,9 +193,7 @@ internal class MatchSchedulerTests
         // Create MatchScheduler instance
         var logger = NullLogger<MatchScheduler>.Instance;
         var tzConverter = new Axuno.Tools.DateAndTime.TimeZoneConverter(
-            new NodaTime.TimeZones.DateTimeZoneCache(NodaTime.TimeZones.TzdbDateTimeZoneSource.Default), "Europe/Berlin",
-            CultureInfo.CurrentCulture,
-            NodaTime.TimeZones.Resolvers.LenientResolver);
+            "Europe/Berlin", CultureInfo.CurrentCulture);
         
         _tenantContext = tenantContextMock.Object;
         _tenantContext.TournamentContext.MatchPlanTournamentId = 1;

@@ -81,7 +81,7 @@
                                 const string unknown = "-";
                                 var matches = Model.CompletedMatches.Where(m => m.RoundId == r.RoundId).OrderBy(m => m.RoundLegSequenceNo).ThenBy(m => m.MatchDate).ToList();
                                 var legs = matches.GroupBy(m => m.RoundLegSequenceNo).ToList();
-                                Axuno.Tools.DateAndTime.ZonedTime? zonedTime;
+                                Axuno.Tools.DateAndTime.IZonedTimeInfo? zonedTime;
                                 for (var i = 0; i < matches.Count; i++)
                                 {
                                     var match = matches[i];

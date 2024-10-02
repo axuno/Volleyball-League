@@ -23,9 +23,7 @@ public class FixtureValidatorTests
     {
         #region *** TimeZoneConverter ***
 
-        var tzProvider = new NodaTime.TimeZones.DateTimeZoneCache(NodaTime.TimeZones.TzdbDateTimeZoneSource.Default);
-        var tzId = "Europe/Berlin";
-        _data.TimeZoneConverter = new Axuno.Tools.DateAndTime.TimeZoneConverter(tzProvider, tzId, _culture, NodaTime.TimeZones.Resolvers.LenientResolver);
+        _data.TimeZoneConverter = new Axuno.Tools.DateAndTime.TimeZoneConverter("Europe/Berlin", _culture);
 
         #endregion
 

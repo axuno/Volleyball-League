@@ -80,9 +80,7 @@ internal class AvailableMatchDatesTests
         // Create AvailableMatchDates instance
         var logger = NullLogger<AvailableMatchDates>.Instance;
         var tzConverter = new Axuno.Tools.DateAndTime.TimeZoneConverter(
-            new NodaTime.TimeZones.DateTimeZoneCache(NodaTime.TimeZones.TzdbDateTimeZoneSource.Default), "Europe/Berlin",
-            CultureInfo.CurrentCulture,
-            NodaTime.TimeZones.Resolvers.LenientResolver);
+            "Europe/Berlin", CultureInfo.CurrentCulture);
         var availableMatchDates = new AvailableMatchDates(tenantContextMock.Object, tzConverter, logger);
         return availableMatchDates;
     }
