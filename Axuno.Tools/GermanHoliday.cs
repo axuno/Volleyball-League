@@ -8,7 +8,7 @@ public class GermanHoliday
     /// <summary>
     /// CTOR.
     /// </summary>
-    /// <param name="id">Nullable HolidayId</param>
+    /// <param name="id">A well-known <see cref="GermanHolidays.Id"/> or <see langword="null"/> </param>
     /// <param name="type">HolidayType</param>
     /// <param name="name">Holiday name</param>
     /// <param name="calcDateFunc">Function for date calculation</param>
@@ -26,7 +26,7 @@ public class GermanHoliday
     }
 
     /// <summary>
-    /// Constructor for usage from inside of class GermanHolidays.
+    /// Constructor for usage from class GermanHolidays.
     /// </summary>
     /// <param name="id">HolidayId</param>
     /// <param name="type">HolidayType</param>

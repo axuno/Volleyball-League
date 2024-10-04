@@ -1,21 +1,36 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using System.Collections.ObjectModel;
+using Microsoft.Extensions.Logging;
 
 namespace TournamentManager.Importers.ExcludeDates;
 
 public class GermanHolidayImporter : IExcludeDateImporter
 {
-    private readonly string? _specialHolidaysXmlFile;
+    private readonly ICollection<string> _specialHolidaysXmlFiles;
     private readonly Predicate<Axuno.Tools.GermanHoliday> _holidayFilter;
     private readonly Axuno.Tools.DateAndTime.TimeZoneConverter _timeZoneConverter;
     private readonly ILogger<GermanHolidayImporter> _logger;
 
-    public GermanHolidayImporter(string? specialHolidaysXmlFile, Predicate<Axuno.Tools.GermanHoliday> holidayFilter, Axuno.Tools.DateAndTime.TimeZoneConverter timeZoneConverter,
+    public GermanHolidayImporter(Predicate<Axuno.Tools.GermanHoliday> holidayFilter, Axuno.Tools.DateAndTime.TimeZoneConverter timeZoneConverter,
         ILogger<GermanHolidayImporter> logger)
     {
-        _specialHolidaysXmlFile = specialHolidaysXmlFile;
+        _specialHolidaysXmlFiles = new Collection<string>();
         _holidayFilter = holidayFilter;
         _timeZoneConverter = timeZoneConverter;
         _logger = logger;
+    }
+
+    public GermanHolidayImporter(ICollection<string> specialHolidaysXmlFiles, Predicate<Axuno.Tools.GermanHoliday> holidayFilter, Axuno.Tools.DateAndTime.TimeZoneConverter timeZoneConverter,
+        ILogger<GermanHolidayImporter> logger) : this(holidayFilter, timeZoneConverter, logger)
+    {
+        _specialHolidaysXmlFiles = specialHolidaysXmlFiles;
+    }
+
+    public GermanHolidayImporter(string specialHolidaysXmlFile, Predicate<Axuno.Tools.GermanHoliday> holidayFilter, Axuno.Tools.DateAndTime.TimeZoneConverter timeZoneConverter,
+        ILogger<GermanHolidayImporter> logger) : this(holidayFilter, timeZoneConverter, logger)
+    {
+        _specialHolidaysXmlFiles = string.IsNullOrEmpty(specialHolidaysXmlFile)
+            ? Array.Empty<string>()
+            : new Collection<string> { specialHolidaysXmlFile };
     }
 
     public IEnumerable<ExcludeDateRecord> Import(DateTimePeriod fromToTimePeriod)
@@ -42,11 +57,11 @@ public class GermanHolidayImporter : IExcludeDateImporter
 
             // Loading custom holidays expects that German holiday are already in the list,
             // because otherwise the "Replace" command will not succeed
-            if (!string.IsNullOrEmpty(_specialHolidaysXmlFile))
+            foreach (var file in _specialHolidaysXmlFiles)
             {
                 // The holidays file must be imported **for each year**
-                currentYearHolidays.Load(_specialHolidaysXmlFile);
-                _logger.LogDebug("Holidays from file '{Filename}' loaded. Now counts {HolidaysCount} for year {Year}", _specialHolidaysXmlFile, currentYearHolidays.Count, currentYear);
+                currentYearHolidays.Load(file);
+                _logger.LogDebug("Holidays from file '{Filename}' loaded. Now counts {HolidaysCount} for year {Year}", _specialHolidaysXmlFiles, currentYearHolidays.Count, currentYear);
             }
 
             holidays.AddRange(currentYearHolidays.GetFiltered(_holidayFilter));
@@ -58,9 +73,11 @@ public class GermanHolidayImporter : IExcludeDateImporter
 
     private IEnumerable<ExcludeDateRecord> Map(List<Axuno.Tools.GermanHoliday> holidays, DateTimePeriod dateLimits)
     {
-        // sort short date ranges before big ranges
-        var holidayGroups = holidays.ConsecutiveRanges()
-            .OrderBy(tuple => tuple.From.Date).ThenBy(tuple => (tuple.To - tuple.From).Days);
+        // sort short date ranges before big ranges after consecutive ranges are calculated
+        var holidayGroups =
+            holidays.ConsecutiveRanges()
+            .OrderBy(tuple => tuple.From.Date)
+            .ThenBy(tuple => (tuple.To - tuple.From).Days);
 
         foreach (var holidayGroup in holidayGroups)
         {
