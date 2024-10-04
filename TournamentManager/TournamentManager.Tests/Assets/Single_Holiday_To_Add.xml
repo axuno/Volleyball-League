@@ -1,0 +1,12 @@
+﻿<?xml version='1.0' encoding="UTF-8" standalone='yes'?>
+<Holidays>
+    <Holiday Action="add" Id="Neujahr">
+        <Type>Public</Type>
+        <Name>Sample New Year</Name>
+        <DateFrom>2024-01-01</DateFrom>
+        <DateTo>2024-01-01</DateTo>
+        <PublicHolidayStateIds>
+            <StateId>Bayern</StateId>
+        </PublicHolidayStateIds>
+    </Holiday>
+</Holidays>

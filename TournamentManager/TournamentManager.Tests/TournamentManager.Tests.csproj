@@ -22,6 +22,12 @@
     <ProjectReference Include="..\TournamentManager\TournamentManager.csproj" />
   </ItemGroup>
   <ItemGroup>
+    <None Update="Assets\Single_Holiday_To_Remove.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Assets\Single_Holiday_To_Add.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="Assets\Custom_Holidays_Sample.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

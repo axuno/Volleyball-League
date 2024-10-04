@@ -135,10 +135,10 @@ public class GermanHolidays : List<GermanHoliday>
         int tA, tB, tC, tD, tE; // tables A to E
 
         var firstDigits = Year / 100;
-        var remainding19 = Year % 19;
+        var remainder19 = Year % 19;
 
         // Calculate Paschal Full Moon
-        var temp = (firstDigits - 15) / 2 + 202 - 11 * remainding19;
+        var temp = (firstDigits - 15) / 2 + 202 - 11 * remainder19;
         switch (firstDigits)
         {
             case 21:
@@ -168,7 +168,7 @@ public class GermanHolidays : List<GermanHoliday>
         tA = temp + 21;
         if (temp == 29)
             tA -= 1;
-        if (temp == 28 && remainding19 > 10)
+        if (temp == 28 && remainder19 > 10)
             tA -= 1;
 
         // Calculate next Sunday
@@ -206,7 +206,7 @@ public class GermanHolidays : List<GermanHoliday>
     /// <returns>Advent date</returns>
     private DateTime GetAdventDate(int num)
     {
-        if (num < 1 || num > 4)
+        if (num is < 1 or > 4)
             throw new InvalidOperationException("Only Advents 1 to 4 are allowed.");
 
         // 4th Advent is the latest Sunday before 25th December
@@ -294,7 +294,7 @@ public class GermanHolidays : List<GermanHoliday>
 
         switch (holidayId)
         {
-            // general public holidays, are those where all federal states have the same public holidays defined
+            // national holidays, are those where all federal states have the same public holidays defined
             case Id.Neujahr:
             case Id.KarFreitag:
             case Id.OsterSonntag:
@@ -458,6 +458,12 @@ public class GermanHolidays : List<GermanHoliday>
 
         ValidateDateRange(action, dateFrom, dateTo);
 
+        var dateIsSet = dateFrom != DateTime.MinValue && dateTo != DateTime.MinValue;
+        if (holidayId.HasValue && !dateIsSet && Exists(h => h.Id == holidayId))
+        {
+            dateFrom = dateTo = this[holidayId.Value]!.CalcDateFunc();
+        }
+
         while (dateFrom <= dateTo)
         {
             var tmpDateFrom = dateFrom; // no capture of modified closure
@@ -508,7 +514,7 @@ public class GermanHolidays : List<GermanHoliday>
     {
         if (!holidayId.HasValue || this[holidayId.Value] == null)
             throw new InvalidOperationException("Holiday to replace not found.");
-
+        
         var existingHoliday = this[holidayId.Value]!;
 
         // Replace the existing holiday with the new one

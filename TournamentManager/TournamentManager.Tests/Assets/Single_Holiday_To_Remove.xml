@@ -1,0 +1,8 @@
+﻿<?xml version='1.0' encoding="UTF-8" standalone='yes'?>
+<Holidays>
+    <Holiday Action="remove" Id="Neujahr">
+        <Type>Public</Type>
+        <DateFrom>2024-01-01</DateFrom>
+        <DateTo>2024-01-01</DateTo>
+    </Holiday>
+</Holidays>
