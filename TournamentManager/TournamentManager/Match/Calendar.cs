@@ -13,34 +13,14 @@ public class Calendar
 
     public Calendar()
     {
-        _calendar.ProductId = "TournamentManager/Ical.Net";
+        _calendar.ProductId = "TournamentManager/Ical.Net"; // Does not appear in output
 
-        //Organizer = new Organizer() { CommonName = "TournamentManager", Value = new Uri("mailto:noreply@tournamentmanager")};
-
-        // Does not work well:
-        //_calendar.AddTimeZone(new VTimeZone("Europe/Berlin")); // TzId string NodaTime is aware of
+        // Don't use this: Organizer = new Organizer() { CommonName = "TournamentManager", Value = new Uri("mailto:noreply@tournamentmanager")};
+        // Does not work well: _calendar.AddTimeZone(new VTimeZone("Europe/Berlin"));
 
         FirstAlarm = new TimeSpan(-7, 0, 0, 0, 0);
         SecondAlarm = new TimeSpan(-1, 0, 0, 0, 0);
     }
-
-    protected string ProductId
-    {
-        set
-        {
-            _calendar.ProductId = value;
-        }
-
-        get
-        {
-            return _calendar.ProductId;
-        }
-    }
-
-    /*
-    public Organizer Organizer
-    { get; set; }
-    */
 
     /// <summary>
     /// The name of the calendar. Will be used by calendar clients. Default: Tournament Calendar 
@@ -94,7 +74,7 @@ public class Calendar
     /// <returns>Returns a <see cref="Ical.Net.Calendar"/> instance.</returns>
     public Calendar CreateEvents(List<CalendarRow> matches)
     {
-        //_calendar.Method = "PUBLISH";     // Matches.RealStart.HasValue ? "CANCEL" : "REQUEST";
+        // Don't set Calendar.Method to "PUBLISH"
         if (matches.Count > 1)
         {
             _calendar.AddProperty("NAME", Name);
@@ -105,7 +85,6 @@ public class Calendar
         {
             var evt = _calendar.Create<CalendarEvent>();
                 
-            //evt.Organizer = Organizer;
             evt.Summary = Summary;
             evt.Location = $"{match.VenueName}, {match.VenueStreet}, {match.VenuePostalCode} {match.VenueCity}";
             evt.Description = !string.IsNullOrWhiteSpace(DescriptionOpponentsFormat)
@@ -152,7 +131,7 @@ public class Calendar
                     }
                 );
             }
-            // _iCal.Events.Add(evt);  // this would double entries!!
+            // Adding 'evt' to Events would cause double entries
         }
         return this;
     }
@@ -217,7 +196,7 @@ public class Calendar
                     }
                 );
             }
-            // _iCal.Events.Add(evt);  // this would add double entries
+            // Adding 'evt' to Events would cause double entries
         }
         return this;
     }
