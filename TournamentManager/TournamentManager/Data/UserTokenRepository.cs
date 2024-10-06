@@ -25,7 +25,7 @@ public class UserTokenRepository
                 select token).FirstOrDefaultAsync(cancellationToken);
 
         if (result != null)
-            _logger.LogDebug("User Id {userId}: Token {tokenName} found for {loginProvider}", userId, name,
+            _logger.LogDebug("User Id {UserId}: Token {TokenName} found for {LoginProvider}", userId, name,
                 loginProvider);
 
         return result;

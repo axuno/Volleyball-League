@@ -629,15 +629,15 @@ public static class LeagueStartup
             var folderName = Path.Combine(environment.WebRootPath, folder);
             if (!Directory.Exists(folderName))
             {
-                logger.LogInformation("Folder '{folderName}' does not exist.", folderName);
+                logger.LogInformation("Folder '{FolderName}' does not exist.", folderName);
                 try
                 {
                     Directory.CreateDirectory(folderName);
-                    logger.LogInformation("Folder '{folderName}' created.", folderName);
+                    logger.LogInformation("Folder '{FolderName}' created.", folderName);
                 }
                 catch (Exception e)
                 {
-                    logger.LogError(e, "Folder '{folderName}': Does not exist and could not be created.", folderName);
+                    logger.LogError(e, "Folder '{FolderName}': Does not exist and could not be created.", folderName);
                 }
             }
         }

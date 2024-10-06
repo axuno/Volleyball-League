@@ -37,7 +37,7 @@ public class BackgroundQueue : IBackgroundQueue
 
         TaskItems.Enqueue(taskItem);
         _signal.Release(); // increase the semaphore count for each item
-        _logger.LogDebug("Number of queued TaskItems is {taskItemCount}", _signal.CurrentCount);
+        _logger.LogDebug("Number of queued TaskItems is {TaskItemCount}", _signal.CurrentCount);
     }
 
     /// <summary>
@@ -46,7 +46,7 @@ public class BackgroundQueue : IBackgroundQueue
     /// <returns>Returns the next <see cref="IBackgroundTask"/> from the queue.</returns>
     public IBackgroundTask DequeueTask()
     {
-        if (TaskItems.TryDequeue(out var nextTaskItem)) 
+        if (TaskItems.TryDequeue(out var nextTaskItem))
             return nextTaskItem;
 
         _logger.LogDebug("No TaskItem could be dequeued.");
@@ -72,20 +72,17 @@ public class BackgroundQueue : IBackgroundQueue
         }
         catch (Exception e) when (e is TaskCanceledException || e is OperationCanceledException)
         {
-            _logger.LogError(e, $"Task canceled when executing a {nameof(IBackgroundTask)}.");
             // _onException will deliberately not be called
             throw;
         }
         catch (Exception e) when (e is TimeoutException)
         {
-            _logger.LogError(e, $"Task timed out.");
-            _onException?.Invoke(e);
+            _onException.Invoke(e);
             throw;
         }
         catch (Exception e)
         {
-            _logger.LogError(e, $"Exception when executing a {nameof(IBackgroundTask)}. ");
-            _onException?.Invoke(e);
+            _onException.Invoke(e);
             throw;
         }
         finally

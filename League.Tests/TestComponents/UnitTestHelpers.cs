@@ -82,7 +82,7 @@ public class UnitTestHelpers
 
     public RoleStore GetRoleStore()
     {
-        return new RoleStore(_tenantContext, new NullLogger<UserStore>(), new UpperInvariantLookupNormalizer(), new Mock<MultiLanguageIdentityErrorDescriber>(null!).Object);
+        return new League.Identity.RoleStore(_tenantContext, new NullLogger<League.Identity.RoleStore>(), new UpperInvariantLookupNormalizer(), new Mock<MultiLanguageIdentityErrorDescriber>(null!).Object);
     }
 
     public ServiceProvider GetStandardServiceProvider()

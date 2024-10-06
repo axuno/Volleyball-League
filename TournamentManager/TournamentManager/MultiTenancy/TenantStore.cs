@@ -31,8 +31,7 @@ public class TenantStore : AbstractTenantStore<ITenantContext>
         }
         catch (Exception e)
         {
-            Logger.LogCritical("Loading tenant configurations failed. {Exception}", e);
-            throw;
+            throw new InvalidOperationException("Loading tenant configurations failed.", e);
         }
     }
 }

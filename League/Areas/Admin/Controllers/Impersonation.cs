@@ -15,11 +15,11 @@ namespace League.Areas.Admin.Controllers;
 [Route(TenantRouteConstraint.Template + "/[area]/[controller]")]
 public class Impersonation : AbstractController
 {
-    private readonly ILogger<Language> _logger;
+    private readonly ILogger<Impersonation> _logger;
     private readonly SignInManager<ApplicationUser> _signInManager;
     private readonly ITenantContext _tenantContext;
 
-    public Impersonation(SignInManager<ApplicationUser> signInManager, ITenantContext tenantContext, ILogger<Language> logger)
+    public Impersonation(SignInManager<ApplicationUser> signInManager, ITenantContext tenantContext, ILogger<Impersonation> logger)
     {
         _signInManager = signInManager;
         _tenantContext = tenantContext;
@@ -65,7 +65,7 @@ public class Impersonation : AbstractController
 
         // impersonate the target user
         await _signInManager.Context.SignInAsync(IdentityConstants.ApplicationScheme, targetClaimsPrincipal);
-        _logger.LogInformation("User '{user}' now impersonates user '{targetUser}'.",
+        _logger.LogInformation("User '{User}' now impersonates user '{TargetUser}'.",
             currentUser.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value,
             targetClaimsPrincipal?.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value);
 

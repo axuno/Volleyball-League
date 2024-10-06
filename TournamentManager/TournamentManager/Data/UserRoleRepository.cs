@@ -23,7 +23,7 @@ public class UserRoleRepository
         var result = await (from ur in metaData.IdentityUserRole
             where ur.UserId == userId
             select ur.IdentityRole).ToListAsync(cancellationToken);
-        _logger.LogDebug("{roleCount} found for {userId}", result.Count, userId);
+        _logger.LogDebug("{RoleCount} found for {UserId}", result.Count, userId);
 
         return result;
     }

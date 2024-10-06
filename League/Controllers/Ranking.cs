@@ -63,7 +63,7 @@ public class Ranking : AbstractController
 
             if (model.Tournament == null)
             {
-                _logger.LogError("{name} '{id}' does not exist. User ID '{currentUser}'.", nameof(_tenantContext.TournamentContext.MatchPlanTournamentId), _tenantContext.TournamentContext.MatchResultTournamentId, GetCurrentUserId());
+                _logger.LogError("{Name} '{Id}' does not exist. User ID '{CurrentUser}'.", nameof(_tenantContext.TournamentContext.MatchPlanTournamentId), _tenantContext.TournamentContext.MatchResultTournamentId, GetCurrentUserId());
                 return NotFound();
             }
 
@@ -93,8 +93,8 @@ public class Ranking : AbstractController
         }
         catch (Exception e)
         {
-            _logger.LogError(e, $"Error when creating the {nameof(AllTimeTournament)} table");
-            throw;
+            _logger.LogError(e, "Error when creating the {AllTimeTournament} table", nameof(AllTimeTournament));
+            return NotFound();
         }
     }
 
@@ -114,8 +114,8 @@ public class Ranking : AbstractController
         }
         catch (Exception e)
         {
-            _logger.LogError(e, $"Error when creating the {nameof(AllTimeTeam)} table");
-            throw;
+            _logger.LogError(e, "Error when creating the {AllTimeTeam} table", nameof(AllTimeTeam));
+            return NotFound();
         }
     }
 

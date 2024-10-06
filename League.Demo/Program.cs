@@ -57,7 +57,6 @@ public class Program
         catch (Exception e)
         {
             logger.Fatal(e, "Application stopped after Exception.");
-            throw;
         }
         finally
         {

@@ -61,7 +61,7 @@ public class Contact : AbstractController
         }
 
         SendEmail(model);
-        _logger.LogDebug("Mail sent: {@model}", model);
+        _logger.LogDebug("Mail sent: {Model}", model);
 
         return _tenantContext.IsDefault
             ? RedirectToRoute(RouteNames.GeneralContactConfirmation)

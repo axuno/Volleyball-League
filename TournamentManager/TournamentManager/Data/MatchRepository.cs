@@ -208,7 +208,7 @@ public class MatchRepository
         matches.ForEach(m =>
         {
             _logger.LogDebug(
-                "{methodName}: {date} MatchId={matchId}, HomeTeamId={homeTeamId}, GuestTeamId={guestTeamId}",
+                "{MethodName}: {Date} MatchId={MatchId}, HomeTeamId={HomeTeamId}, GuestTeamId={GuestTeamId}",
                 nameof(AreTeamsBusyAsync),
                 onlyUseDatePart
                     ? match.PlannedStart?.ToString("'Date='yyyy-MM-dd")
@@ -354,7 +354,7 @@ public class MatchRepository
         }
         catch (Exception e)
         {
-            _logger.LogError(e, "Error saving in transaction: MatchId={matchId}", matchEntity.Id);
+            _logger.LogError(e, "Error saving in transaction: MatchId={MatchId}", matchEntity.Id);
 
             if (da.IsTransactionInProgress)
                 da.Rollback();

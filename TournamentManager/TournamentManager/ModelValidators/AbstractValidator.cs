@@ -210,7 +210,7 @@ public abstract class AbstractValidator<TModel, TData, TFactId>
             fact.Success = factResult.Success;
             fact.Message = factResult.Message;
             fact.IsChecked = true;
-            Logger.LogTrace("Fact '{factId}': {factSuccess}", id, fact.Success);
+            Logger.LogTrace("Fact '{FactId}': {FactSuccess}", id, fact.Success);
         }
         catch (Exception e)
         {
@@ -218,7 +218,7 @@ public abstract class AbstractValidator<TModel, TData, TFactId>
             fact.IsChecked = true;
             fact.Message = string.Empty;
             fact.Exception = e;
-            Logger.LogError(e, "Fact '{factId}': {factSuccess}", id, fact.Success);
+            Logger.LogError(e, "Fact '{FactId}': {FactSuccess}", id, fact.Success);
         }
 
         return fact;

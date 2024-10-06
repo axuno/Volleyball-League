@@ -69,9 +69,9 @@ public class UserClaimStoreTests
             _appDb.DbContext.CommandTimeOut = 2;
             // new claim
             var claim = new Claim("type", "value", "valueType", "issuer");
-            Assert.ThrowsAsync<ORMQueryExecutionException>(async () => await _store.AddClaimsAsync(_user, new[] { claim }, CancellationToken.None));
-            Assert.ThrowsAsync<ORMQueryExecutionException>(async () => await _store.RemoveClaimsAsync(_user, new[] { claim }, CancellationToken.None));
-            Assert.ThrowsAsync<ORMQueryExecutionException>(async () => await _store.ReplaceClaimAsync(_user, claim, claim, CancellationToken.None));
+            Assert.ThrowsAsync<InvalidOperationException>(async () => await _store.AddClaimsAsync(_user, new[] { claim }, CancellationToken.None));
+            Assert.ThrowsAsync<InvalidOperationException>(async () => await _store.RemoveClaimsAsync(_user, new[] { claim }, CancellationToken.None));
+            Assert.ThrowsAsync<InvalidOperationException>(async () => await _store.ReplaceClaimAsync(_user, claim, claim, CancellationToken.None));
             da.Rollback("transaction1");
         }
         _appDb.DbContext.CommandTimeOut = currentTimeOut;
@@ -148,10 +148,10 @@ public class UserClaimStoreTests
         var claim = new Claim(Constants.ClaimType.ManagesTeam, _team.Id.ToString());
         await _store.AddClaimsAsync(_user, new[] { claim }, CancellationToken.None);
         // non-existent team should throw
-        Assert.ThrowsAsync<ArgumentException>(() => _store.AddClaimsAsync(_user,
+        Assert.ThrowsAsync<InvalidOperationException>(() => _store.AddClaimsAsync(_user,
             new [] {new Claim(Constants.ClaimType.ManagesTeam, "0")}, CancellationToken.None));
         // not implemented claim - should throw
-        Assert.ThrowsAsync<NotImplementedException>(() => _store.AddClaimsAsync(_user,
+        Assert.ThrowsAsync<InvalidOperationException>(() => _store.AddClaimsAsync(_user,
             new [] { new Claim(Constants.ClaimType.NotImplementedClaim, _team.Id.ToString()) }, CancellationToken.None));
 
         // same manager claim again - should not be added
@@ -165,10 +165,10 @@ public class UserClaimStoreTests
         claims = await _store.GetClaimsAsync(_user, CancellationToken.None);
         Assert.That(claims.FirstOrDefault(c => c.Type == claim.Type && c.Value == claim.Value), Is.EqualTo(null));
         // non-existent team should throw
-        Assert.ThrowsAsync<ArgumentException>(() => _store.RemoveClaimsAsync(_user,
+        Assert.ThrowsAsync<InvalidOperationException>(() => _store.RemoveClaimsAsync(_user,
             new [] { new Claim(Constants.ClaimType.ManagesTeam, "0") }, CancellationToken.None));
         // not implemented claim - should throw
-        Assert.ThrowsAsync<NotImplementedException>(() => _store.RemoveClaimsAsync(_user,
+        Assert.ThrowsAsync<InvalidOperationException>(() => _store.RemoveClaimsAsync(_user,
             new [] { new Claim(Constants.ClaimType.NotImplementedClaim, _team.Id.ToString()) }, CancellationToken.None));
 
         // replace manager should fail
@@ -229,14 +229,14 @@ public class UserClaimStoreTests
     {
         // Programmatic claims cannot be stored
         var claim = new Claim(Constants.ClaimType.ImpersonatedByUser, "123", "valueType", "issuer");
-        Assert.ThrowsAsync<ArgumentException>(() => _store.AddClaimsAsync(_user, new []{claim}, CancellationToken.None));
+        Assert.ThrowsAsync<InvalidOperationException>(() => _store.AddClaimsAsync(_user, new []{claim}, CancellationToken.None));
 
         // Programmatic claims cannot be replaced
         Assert.ThrowsAsync<ArgumentException>(() => _store.ReplaceClaimAsync(_user, claim, new Claim("type", "value"), CancellationToken.None));
         Assert.ThrowsAsync<ArgumentException>(() => _store.ReplaceClaimAsync(_user, new Claim("type", "value"), claim, CancellationToken.None));
 
         // Programmatic claims cannot be removed
-        Assert.ThrowsAsync<ArgumentException>(() => _store.RemoveClaimsAsync(_user, new []{ claim }, CancellationToken.None));
+        Assert.ThrowsAsync<InvalidOperationException>(() => _store.RemoveClaimsAsync(_user, new []{ claim }, CancellationToken.None));
     }
 
     #endregion

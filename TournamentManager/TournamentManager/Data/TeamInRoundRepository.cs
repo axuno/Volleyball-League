@@ -33,7 +33,7 @@ public class TeamInRoundRepository
         var result = (IList<TeamInRoundEntity>) await da.FetchQueryAsync<TeamInRoundEntity>(
             q, cancellationToken);
 
-        _logger.LogDebug("{teamCount} team(s) found", result.Count);
+        _logger.LogDebug("{TeamCount} team(s) found", result.Count);
 
         return result;
     }

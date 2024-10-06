@@ -28,7 +28,7 @@ public class ClientAbortMiddleware : IMiddleware
         catch (Exception ex) when (ex is TaskCanceledException or SqlException && context.RequestAborted.IsCancellationRequested)
         {
             // Log the exception and stop the request queue.
-            _logger.LogWarning("Request aborted by client: '{exception}'. Processing stops.", ex.GetType().ToString());
+            _logger.LogWarning(ex, "Request aborted by client. Processing stops.");
         }
     }
 }

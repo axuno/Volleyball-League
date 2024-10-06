@@ -41,12 +41,12 @@ public class ExcelImporter : IExcludeDateImporter
     public IEnumerable<ExcludeDateRecord> Import(DateTimePeriod fromToTimePeriod)
     {
         var xlFile = new FileInfo(_xlPathAndFileName);
-        _logger.LogDebug("Opening Excel file '{excelFile}'", _xlPathAndFileName);
+        _logger.LogDebug("Opening Excel file '{ExcelFile}'", _xlPathAndFileName);
         using var package = new ExcelPackage(xlFile);
 
         var worksheet = package.Workbook.Worksheets.First();
-        _logger.LogDebug("Using the first worksheet, '{worksheetName}'", worksheet.Name);
-        _logger.LogDebug("Date limits are {dateStart} - {dateEnd}", fromToTimePeriod.Start, fromToTimePeriod.End);
+        _logger.LogDebug("Using the first worksheet, '{WorksheetName}'", worksheet.Name);
+        _logger.LogDebug("Date limits are {DateStart} - {DateEnd}", fromToTimePeriod.Start, fromToTimePeriod.End);
         var row = 0;
 
         while (true)
@@ -61,7 +61,7 @@ public class ExcelImporter : IExcludeDateImporter
             if (!(worksheet.Cells[row, 1].Value is DateTime from && worksheet.Cells[row, 2].Value is DateTime to) ||
                 row > 1000)
             {
-                _logger.LogDebug("Import finished with worksheet row {rowNo}", row - 1);
+                _logger.LogDebug("Import finished with worksheet row {RowNo}", row - 1);
                 yield break;
             }
 
@@ -79,13 +79,13 @@ public class ExcelImporter : IExcludeDateImporter
 
             if (!fromToTimePeriod.Overlaps(new DateTimePeriod(from, to)))
             {
-                _logger.LogDebug("UTC Dates {from} - {to} are out of limits", from, to);
+                _logger.LogDebug("UTC Dates {From} - {To} are out of limits", from, to);
                 continue;
             }
 
             var reason = worksheet.Cells[row, 3].Value as string ?? string.Empty;
             yield return new ExcludeDateRecord(new DateTimePeriod(from, to), reason);
-            _logger.LogDebug("Imported UTC {from} - {to} ({reason})", from, to, reason);
+            _logger.LogDebug("Imported UTC {From} - {To} ({Reason})", from, to, reason);
         }
     }
 }

@@ -11,11 +11,11 @@ namespace League.Identity;
 public class RoleStore : IRoleStore<ApplicationRole>, IRoleClaimStore<ApplicationRole>
 {
     private readonly IAppDb _appDb;
-    private readonly ILogger<UserStore> _logger;
+    private readonly ILogger<RoleStore> _logger;
     private readonly ILookupNormalizer _keyNormalizer;
     private readonly IdentityErrorDescriber _identityErrorDescriber;
 
-    public RoleStore(ITenantContext tenantContext, ILogger<UserStore> logger, ILookupNormalizer keyNormalizer, IdentityErrorDescriber identityErrorDescriber)
+    public RoleStore(ITenantContext tenantContext, ILogger<RoleStore> logger, ILookupNormalizer keyNormalizer, IdentityErrorDescriber identityErrorDescriber)
     {
         _appDb = tenantContext.DbContext.AppDb;
         _logger = logger;
@@ -44,9 +44,9 @@ public class RoleStore : IRoleStore<ApplicationRole>, IRoleClaimStore<Applicatio
             await _appDb.GenericRepository.SaveEntityAsync(roleEntity, true, false, cancellationToken);
             role.Id = roleEntity.Id;
         }
-        catch (Exception)
+        catch (Exception e)
         {
-            _logger.LogError("Role name '{roleName}' could not be created", role.Name);
+            _logger.LogError(e,"Role name '{RoleName}' could not be created", role.Name);
             return IdentityResult.Failed(_identityErrorDescriber.DefaultError());
         }
 
@@ -83,7 +83,7 @@ public class RoleStore : IRoleStore<ApplicationRole>, IRoleClaimStore<Applicatio
         }
         catch (Exception e)
         {
-            _logger.LogError(e, "Role id '{roleId}' could not be updated", role.Id);
+            _logger.LogError(e, "Role id '{RoleId}' could not be updated", role.Id);
             return IdentityResult.Failed(_identityErrorDescriber.DefaultError());
         }
 
@@ -104,9 +104,9 @@ public class RoleStore : IRoleStore<ApplicationRole>, IRoleClaimStore<Applicatio
                 return IdentityResult.Success;
             }
         }
-        catch (Exception)
+        catch (Exception e)
         {
-            _logger.LogError("Role id '{roleId}' could not be removed", role.Id);
+            _logger.LogError(e, "Role id '{RoleId}' could not be removed", role.Id);
         }
 
         return IdentityResult.Failed(_identityErrorDescriber.DefaultError());
@@ -217,8 +217,7 @@ public class RoleStore : IRoleStore<ApplicationRole>, IRoleClaimStore<Applicatio
         }
         catch (Exception e)
         {
-            _logger.LogError(e, "Error adding role claim type '{claimType}' to role id '{roleId}'", claim.Type, role.Id);
-            throw;
+            throw new InvalidOperationException($"Error adding role claim type '{claim.Type}' to role id '{role.Id}'", e);
         }
     }
 
@@ -244,8 +243,7 @@ public class RoleStore : IRoleStore<ApplicationRole>, IRoleClaimStore<Applicatio
         }
         catch (Exception e)
         {
-            _logger.LogError(msg, e);
-            throw;
+            throw new InvalidOperationException(msg, e);
         }
     }
 

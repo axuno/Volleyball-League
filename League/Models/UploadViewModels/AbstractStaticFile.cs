@@ -34,12 +34,12 @@ public abstract class AbstractStaticFile
         {
             await using var outStream = new FileStream(fullFilePath, FileMode.Create);
             await formFile.CopyToAsync(outStream, cancellationToken);
+            _logger.LogDebug("{File} saved", fullFilePath);
             return Path.GetFileName(fullFilePath);
         }
         catch (Exception e)
         {
-            _logger.LogError(e, "File '{path}' could not be saved", fullFilePath);
-            throw;
+            throw new InvalidOperationException($"File '{fullFilePath}' could not be saved", e);
         }
     }
 #pragma warning disable CA3003
@@ -58,11 +58,11 @@ public abstract class AbstractStaticFile
             try
             {
                 File.Delete(fileInfo.FullName);
+                _logger.LogDebug("Obsolete {File} deleted", fileInfo.FullName);
             }
             catch (Exception e)
             {
-                _logger.LogError(e, "File '{filename}' could not be deleted", fileInfo.FullName);
-                throw;
+                throw new InvalidOperationException($"File '{fileInfo.FullName}' could not be deleted", e);
             }
         }
     }
@@ -80,11 +80,11 @@ public abstract class AbstractStaticFile
             try
             {
                 File.Delete(fileInfo.FullName);
+                _logger.LogDebug("Most recent file {File} deleted", fileInfo.FullName);
             }
             catch (Exception e)
             {
-                _logger.LogError(e, "File '{fileName}' could not be deleted", fileInfo.FullName);
-                throw;
+                throw new InvalidOperationException($"File '{fileInfo.FullName}' could not be deleted", e);
             }
         }
     }

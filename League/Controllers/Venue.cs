@@ -252,7 +252,7 @@ public class Venue : AbstractController
         if (!geoResponse.Success)
         {
             _logger.LogError(geoResponse.Exception,
-                "{modelName} failed. Response status text: {statusText}",
+                "{ModelName} failed. Response status text: {StatusText}",
                 $"{nameof(VenueEditModel)}.{nameof(VenueEditModel.TrySetGeoLocation)}()",
                 geoResponse.StatusText);
         }

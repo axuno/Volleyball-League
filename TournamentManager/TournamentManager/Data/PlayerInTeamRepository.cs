@@ -27,7 +27,7 @@ public class PlayerInTeamRepository
             where pit.TeamId == teamId
             select pit.User).ToListAsync(cancellationToken);
 
-        _logger.LogDebug("{count} player(s) found for team id {teamId}", result.Count, teamId);
+        _logger.LogDebug("{Count} player(s) found for team id {TeamId}", result.Count, teamId);
 
         return result;
     }
@@ -41,7 +41,7 @@ public class PlayerInTeamRepository
             where pit.UserId == userId
             select pit.TeamId).ToListAsync(cancellationToken);
 
-        _logger.LogDebug("{userId} team(s) found for user id {count}", userId, result.Count);
+        _logger.LogDebug("{UserId} team(s) found for user id: {Count}", userId, result.Count);
 
         return result;
     }
@@ -54,7 +54,7 @@ public class PlayerInTeamRepository
         var result = await (from pit in metaData.PlayerInTeam
             select pit.User).ToListAsync(cancellationToken);
 
-        _logger.LogDebug("{count} player(s) found", result.Count);
+        _logger.LogDebug("{Count} player(s) found", result.Count);
 
         return result;
     }

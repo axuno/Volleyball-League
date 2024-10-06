@@ -39,7 +39,7 @@ public class StringTrimmingModelBinder : IModelBinder
 
         var trimmedValue = valueProviderResult.FirstValue?.Trim();
         bindingContext.Result = ModelBindingResult.Success(trimmedValue);
-        _logger.LogDebug("Value after trimming any white-space from '{originalValue}': {newValue} ", valueProviderResult.FirstValue, trimmedValue);
+        _logger.LogDebug("Value after trimming any white-space from '{OriginalValue}': {NewValue} ", valueProviderResult.FirstValue, trimmedValue);
         return Task.CompletedTask;
     }
 }

@@ -47,14 +47,14 @@ internal class AvailableMatchDates
             await _appDb.ExcludedMatchDateRepository.GetExcludedMatchDatesAsync(
                 _tenantContext.TournamentContext.MatchPlanTournamentId, cancellationToken));
 
-        _logger.LogDebug("{count} excluded match dates loaded from storage", _excludedMatchDates.Count);
+        _logger.LogDebug("{Count} excluded match dates loaded from storage", _excludedMatchDates.Count);
 
         _availableDatesFromDb.Clear();
         _availableDatesFromDb.AddRange(
             await _appDb.AvailableMatchDateRepository.GetAvailableMatchDatesAsync(
                 _tenantContext.TournamentContext.MatchPlanTournamentId, cancellationToken));
 
-        _logger.LogDebug("{count} available match dates loaded from storage", _availableDatesFromDb.Count);
+        _logger.LogDebug("{Count} available match dates loaded from storage", _availableDatesFromDb.Count);
 
         _generatedAvailableDates.Clear();
     }
@@ -104,7 +104,7 @@ internal class AvailableMatchDates
                 new DateTimePeriod(matchDateTimeUtc, matchDateTimeUtc.Add(plannedDuration)),
                 team.VenueId!.Value, tournamentMatches);
 
-        _logger.LogDebug("Venue '{venueId}' is available for '{matchDateTimeUtc}': {isAvailable}", team.VenueId, matchDateTimeUtc, isAvailable);
+        _logger.LogDebug("Venue '{VenueId}' is available for '{MatchDateTimeUtc}': {IsAvailable}", team.VenueId, matchDateTimeUtc, isAvailable);
 
         return isAvailable;
     }

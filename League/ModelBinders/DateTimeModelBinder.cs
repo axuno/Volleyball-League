@@ -54,12 +54,12 @@ public class DateTimeModelBinder : IModelBinder
 
         if (!TryParseDateTime(valueAsString, out var dateTime))
         {
-            _logger.LogDebug("Could not bind model '{modelName}' to value '{valueAsString}', falling back to {fallbackBinder}", bindingContext.ModelName, valueAsString, nameof(SimpleTypeModelBinder));
+            _logger.LogDebug("Could not bind model '{ModelName}' to value '{ValueAsString}', falling back to {fallbackBinder}", bindingContext.ModelName, valueAsString, nameof(SimpleTypeModelBinder));
             return _fallbackBinder.BindModelAsync(bindingContext);
         }
 
         bindingContext.Result = ModelBindingResult.Success(dateTime);
-        _logger.LogDebug("Parsed string '{originalValue}': {dateTime} ", valueAsString, dateTime);
+        _logger.LogDebug("Parsed string '{OriginalValue}': {DateTime} ", valueAsString, dateTime);
         return Task.CompletedTask;
     }
 

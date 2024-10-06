@@ -89,7 +89,7 @@ public class Cron : AbstractController
         }
         catch (AggregateException e)
         {
-            _logger.LogCritical("Failure invoking automail urls. {exception}", e);
+            _logger.LogCritical(e, "Failure invoking automail Urls.");
         }
             
         return Ok(results);
@@ -227,7 +227,7 @@ public class Cron : AbstractController
                 routeValues, scheme: Uri.UriSchemeHttps) ?? string.Empty;
 
             var result = await httpClient.GetAsync(url);
-            _logger.LogInformation("Get request for url '{url}' completed.", url);
+            _logger.LogInformation("Get request for url '{Url}' completed.", url);
             return new InvocationResult
             {
                 Success = true, Url = url,
