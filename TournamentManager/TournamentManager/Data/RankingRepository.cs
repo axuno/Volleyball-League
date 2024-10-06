@@ -36,7 +36,6 @@ public class RankingRepository
 
         try
         {
-            // Todo: TournamentId is defined via the Round - remove TournamentId from the Ranking table. View RankingList does not depend on TournamentId already.
             var tournamentId = await GetTournamentIdOfRoundAsync(roundId, cancellationToken);
 
             // Fetch existing ranking entities for the round for deletion

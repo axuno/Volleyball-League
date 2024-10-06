@@ -546,9 +546,6 @@ public class Match : AbstractController
 
         ModelState.Clear();
 
-        // Todo: This business logic should rather go into settings
-        //_tenantContext.TournamentContext.FixtureRuleSet.PlannedMatchTimeMustStayInCurrentLegBoundaries = model.Tournament.IsPlanningMode;
-
         if (!await model.ValidateAsync(
                 new FixtureValidator(match, (_tenantContext, _timeZoneConverter, model.PlannedMatch), DateTime.UtcNow),
                 ModelState))
@@ -772,8 +769,6 @@ public class Match : AbstractController
 
     private void SendResultNotification(in MatchEntity match, bool isResultRemoved)
     {
-        // Todo: Should we check whether an existing result was changed?
-
         var smt = _sendMailTask.CreateNewInstance();
         smt.SetMessageCreator(new ResultEnteredCreator
         {
