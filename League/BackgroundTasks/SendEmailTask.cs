@@ -2,6 +2,7 @@
 using Axuno.TextTemplating;
 using League.Emailing.Creators;
 using League.Templates.Email.Localization;
+using MailMergeLib;
 using MailMergeLib.AspNet;
 using TournamentManager.MultiTenancy;
 
@@ -53,7 +54,7 @@ public class SendEmailTask : IBackgroundTask
     {
         _mailMessageCreator = mailMessageCreator;
     }
-        
+
     /// <summary>
     /// Invokes the <see cref="IMailMessageCreator"/> and sends the mail messages.
     /// </summary>
@@ -69,18 +70,22 @@ public class SendEmailTask : IBackgroundTask
             {
                 await _mailMergeService.Sender.SendAsync(mmm, null);
             }
-            catch (Exception e) when (e is TaskCanceledException || e is OperationCanceledException)
+            catch (Exception e) when (e is TaskCanceledException)
             {
-                _logger.LogError(e, "Sending mail canceled. {recipients}\nSubject: {subject}\nMessage: {message}",
-                    mmm.MailMergeAddresses, mmm.Subject, mmm.PlainText);
                 _mailMergeService.Sender.SendCancel();
-                throw;
+                throw new TaskCanceledException(
+                    $"Sending mail canceled. {mmm.MailMergeAddresses}\nSubject: {mmm.Subject}\nMessage: {mmm.PlainText}", e, cancellationToken);
+            }
+            catch (Exception e) when (e is OperationCanceledException)
+            {
+                _mailMergeService.Sender.SendCancel();
+                throw new OperationCanceledException(
+                    $"Sending mail canceled. {mmm.MailMergeAddresses}\nSubject: {mmm.Subject}\nMessage: {mmm.PlainText}", e, cancellationToken);
             }
             catch (Exception e)
             {
-                _logger.LogError(e, "Mail sender failure. {recipients}\nSubject: {subject}\nMessage: {message}",
-                    mmm.MailMergeAddresses, mmm.Subject, mmm.PlainText);
-                throw;
+                throw new MailMergeMessage.MailMergeMessageException(
+                    $"Mail sender failure. {mmm.MailMergeAddresses}\nSubject: {mmm.Subject}\nMessage: {mmm.PlainText}", new []{e}, null);
             }
         }
     }

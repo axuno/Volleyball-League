@@ -43,12 +43,12 @@ public class TimeOnlyModelBinder : IModelBinder
 
         if (!TryParseTimeOnly(valueAsString, out var time))
         {
-            _logger.LogDebug("Could not bind model '{modelName}' to value '{valueAsString}', falling back to {fallbackBinder}", bindingContext.ModelName, valueAsString, nameof(SimpleTypeModelBinder));
+            _logger.LogDebug("Could not bind model '{ModelName}' to value '{ValueAsString}', falling back to {fallbackBinder}", bindingContext.ModelName, valueAsString, nameof(SimpleTypeModelBinder));
             return _fallbackBinder.BindModelAsync(bindingContext);
         }
 
         bindingContext.Result = ModelBindingResult.Success(time);
-        _logger.LogDebug("Parsed string '{originalValue}': {timeSpan} ", valueAsString, time);
+        _logger.LogDebug("Parsed string '{OriginalValue}': {TimeSpan} ", valueAsString, time);
         return Task.CompletedTask;
     }
 

@@ -184,11 +184,11 @@ public class UserRepository
 
         if (count == 1)
         {
-            _logger.LogInformation("Sign-in date for user id '{userId}' updated.", user.Id);
+            _logger.LogInformation("Sign-in date for user id '{UserId}' updated.", user.Id);
         }
         else
         {
-            _logger.LogError("Sign-in date for user id '{userId}' could not be updated.", user.Id);
+            _logger.LogError("Sign-in date for user id '{UserId}' could not be updated.", user.Id);
         }
 
         return count == 1;

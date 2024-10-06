@@ -126,8 +126,8 @@ public class UserLoginStoreTests
                 $"SELECT 1 FROM [{_appDb.DbContext.Schema}].[{da.GetPersistentTableName(new IdentityUserLoginEntity())}] WITH (TABLOCKX)");
             // Trying to update will fail because the table is locked
             _appDb.DbContext.CommandTimeOut = 2;
-            Assert.ThrowsAsync<ORMQueryExecutionException>(async () => await _store.AddLoginAsync(GetNewUser(), GetUserLoginInfo() , CancellationToken.None));
-            Assert.ThrowsAsync<ORMQueryExecutionException>(async () => await _store.RemoveLoginAsync(GetNewUser(), "x", "y", CancellationToken.None));
+            Assert.ThrowsAsync<InvalidOperationException>(async () => await _store.AddLoginAsync(GetNewUser(), GetUserLoginInfo() , CancellationToken.None));
+            Assert.ThrowsAsync<InvalidOperationException>(async () => await _store.RemoveLoginAsync(GetNewUser(), "x", "y", CancellationToken.None));
             da.Rollback("transaction1");
         }
         _appDb.DbContext.CommandTimeOut = currentTimeOut;

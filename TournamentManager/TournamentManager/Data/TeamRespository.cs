@@ -89,7 +89,7 @@ public class TeamRepository
         using var da = _dbContext.GetNewAdapter();
         await da.FetchEntityCollectionAsync(qp, cancellationToken);
 
-        _logger.LogDebug("{teamCount} found for {tournamentId}", tir.Count, tournament.Id);
+        _logger.LogDebug("{TeamCount} found for {TournamentId}", tir.Count, tournament.Id);
 
         return tir;
     }

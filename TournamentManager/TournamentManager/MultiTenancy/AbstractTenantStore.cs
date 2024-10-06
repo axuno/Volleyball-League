@@ -72,7 +72,7 @@ public class AbstractTenantStore<T> : ITenantStore<T> where T: class, ITenantCon
     public bool TryAddTenant(T tenant)
     {
         var success = Tenants.TryAdd(tenant.Identifier, tenant);
-        Logger.LogTrace("Tenant with {tenant} '{tenantIdentifier}' {successMsg}.", nameof(tenant.Identifier), tenant.Identifier,  success ? "added" : "failed to add");
+        Logger.LogTrace("Tenant with {Tenant} '{TenantIdentifier}' {SuccessMsg}.", nameof(tenant.Identifier), tenant.Identifier,  success ? "added" : "failed to add");
         return success;
     }
         
@@ -84,7 +84,7 @@ public class AbstractTenantStore<T> : ITenantStore<T> where T: class, ITenantCon
     public bool TryRemoveTenant(string identifier)
     {
         var success = Tenants.TryRemove(identifier, out _);
-        Logger.LogTrace("Tenant with {name} '{identifier}' {successMsg}.", nameof(identifier), identifier, success ? "removed" : "failed to remove");
+        Logger.LogTrace("Tenant with {Name} '{Identifier}' {SuccessMsg}.", nameof(identifier), identifier, success ? "removed" : "failed to remove");
         return success;
     }
 
@@ -103,7 +103,7 @@ public class AbstractTenantStore<T> : ITenantStore<T> where T: class, ITenantCon
             newTenant.Identifier = identifier;
             success = Tenants.TryUpdate(identifier, newTenant, currentTenant);
         }
-        Logger.LogTrace("Tenant with {name} '{identifier}' {successMsg}.", nameof(identifier), identifier, success ? "updated" : "failed to update");
+        Logger.LogTrace("Tenant with {Name} '{Identifier}' {SuccessMsg}.", nameof(identifier), identifier, success ? "updated" : "failed to update");
         return success;
     }
         

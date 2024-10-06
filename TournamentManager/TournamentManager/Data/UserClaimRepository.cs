@@ -24,7 +24,7 @@ public class UserClaimRepository
             where uc.UserId == userId
             select uc).ToListAsync(cancellationToken);
 
-        _logger.LogDebug("{claimsCount} found", result.Count);
+        _logger.LogDebug("{ClaimsCount} found", result.Count);
 
         return result;
     }

@@ -95,7 +95,7 @@ public class UserStore : IUserStore<ApplicationUser>, IUserEmailStore<Applicatio
         }
         catch (Exception e)
         {
-            _logger.LogError(e, "Account for user id {userId} could not be deleted", user.Id);
+            _logger.LogError(e, "Account for user id {UWserId} could not be deleted", user.Id);
             return IdentityResult.Failed(_identityErrorDescriber.DefaultError());
         }
     }
@@ -414,10 +414,7 @@ public class UserStore : IUserStore<ApplicationUser>, IUserEmailStore<Applicatio
 
         if (Constants.RoleName.GetTeamRelatedRoles().Contains(roleName))
         {
-            var msg = $"The role name '{roleName}' cannot be added explicitly.";
-
-            _logger.LogError(msg);
-            throw new InvalidOperationException(msg);
+            throw new InvalidOperationException($"The role name '{roleName}' cannot be added explicitly.");
         }
 
         bool success;
@@ -428,13 +425,12 @@ public class UserStore : IUserStore<ApplicationUser>, IUserEmailStore<Applicatio
         }
         catch (Exception e)
         {
-            _logger.LogError(exceptionMsg, e);
+            _logger.LogError(e, exceptionMsg);
             success = false;
         }
             
         if (!success)
         {
-            _logger.LogError(exceptionMsg);
             throw new InvalidOperationException(exceptionMsg);
         }
     }
@@ -449,9 +445,7 @@ public class UserStore : IUserStore<ApplicationUser>, IUserEmailStore<Applicatio
 
         if (Constants.RoleName.GetTeamRelatedRoles().Contains(roleName))
         {
-            var msg = $"The role name '{roleName}' cannot be removed explicitly.";
-            _logger.LogError(msg);
-            throw new InvalidOperationException(msg);
+            throw new InvalidOperationException($"The role name '{roleName}' cannot be removed explicitly.");
         }
 
         bool success;
@@ -462,13 +456,12 @@ public class UserStore : IUserStore<ApplicationUser>, IUserEmailStore<Applicatio
         }
         catch(Exception e)
         {
-            _logger.LogError(exceptionMsg, e);
+            _logger.LogError(e, exceptionMsg);
             success = false;
         }
 
         if (!success)
         {
-            _logger.LogError(exceptionMsg);
             throw new InvalidOperationException(exceptionMsg);
         }
     }
@@ -482,7 +475,7 @@ public class UserStore : IUserStore<ApplicationUser>, IUserEmailStore<Applicatio
         if (userEntity == null)
         {
             var ex = new ArgumentException($"User id '{user.Id}' does not exist");
-            _logger.LogError(ex.Message, ex);
+            _logger.LogError(ex, ex.Message);
             throw ex;
         }
 
@@ -601,7 +594,7 @@ public class UserStore : IUserStore<ApplicationUser>, IUserEmailStore<Applicatio
                 if (Constants.ClaimType.GetProgrammaticClaimTypes().Contains(claim.Type))
                 {
                     var ex = new ArgumentException($"Programmatic claim type '{claim.Type}' cannot be stored.");
-                    _logger.LogError(ex.Message, ex);
+                    _logger.LogError(ex, ex.Message);
                     throw ex;
                 }
 
@@ -619,9 +612,7 @@ public class UserStore : IUserStore<ApplicationUser>, IUserEmailStore<Applicatio
         }
         catch (Exception e)
         {
-            var msg = $"Claim types '{string.Join(", ", claims.Select(c => c.Type))}' could not be added";
-            _logger.LogError(msg, e);
-            throw;
+            throw new InvalidOperationException($"Claim types '{string.Join(", ", claims.Select(c => c.Type))}' could not be added", e);
         }
     }
 
@@ -632,7 +623,7 @@ public class UserStore : IUserStore<ApplicationUser>, IUserEmailStore<Applicatio
         if (!exists)
         {
             var ex = new ArgumentException($"Claim type '{claim.Type}': Team Id '{claim.Value}' does not exist");
-            _logger.LogError(ex.Message, ex);
+            _logger.LogError(ex, ex.Message);
             throw ex;
         }
 
@@ -652,7 +643,7 @@ public class UserStore : IUserStore<ApplicationUser>, IUserEmailStore<Applicatio
                 return;
             default:
                 var ex = new NotImplementedException(errorMsg);
-                _logger.LogError(errorMsg, ex);
+                _logger.LogError(ex, errorMsg);
                 throw ex;
         }
     }
@@ -678,9 +669,7 @@ public class UserStore : IUserStore<ApplicationUser>, IUserEmailStore<Applicatio
         if (Constants.ClaimType.GetProgrammaticClaimTypes().Contains(claim.Type)
             || Constants.ClaimType.GetProgrammaticClaimTypes().Contains(newClaim.Type))
         {
-            var ex = new ArgumentException($"Programmatic claim types cannot be replaced or stored. Current claim type: '{claim.Type}'. New claim type: '{newClaim.Type}'");
-            _logger.LogError(ex.Message, ex);
-            throw ex;
+            throw new ArgumentException($"Programmatic claim types cannot be replaced or stored. Current claim type: '{claim.Type}'. New claim type: '{newClaim.Type}'");
         }
 
         try
@@ -703,9 +692,7 @@ public class UserStore : IUserStore<ApplicationUser>, IUserEmailStore<Applicatio
         }
         catch (Exception e)
         {
-            var msg = $"Claim type {claim.Type} could not be replaced";
-            _logger.LogError(msg, e);
-            throw;
+            throw new InvalidOperationException($"Claim type {claim.Type} could not be replaced", e);
         }
     }
 
@@ -736,7 +723,7 @@ public class UserStore : IUserStore<ApplicationUser>, IUserEmailStore<Applicatio
                 if (Constants.ClaimType.GetProgrammaticClaimTypes().Contains(claim.Type))
                 {
                     var ex = new ArgumentException($"Programmatic claim type '{claim.Type}' cannot be removed.");
-                    _logger.LogError(ex.Message, ex);
+                    _logger.LogError(ex, ex.Message);
                     throw ex;
                 }
 
@@ -747,9 +734,7 @@ public class UserStore : IUserStore<ApplicationUser>, IUserEmailStore<Applicatio
         }
         catch (Exception e)
         {
-            var msg = $"Claim types '{string.Join(", ", claims.Select(c => c.Type))}' could not be removed";
-            _logger.LogError(msg, e);
-            throw;
+            throw new InvalidOperationException($"Claim types '{string.Join(", ", claims.Select(c => c.Type))}' could not be removed", e);
         }
     }
 
@@ -796,7 +781,7 @@ public class UserStore : IUserStore<ApplicationUser>, IUserEmailStore<Applicatio
                 default:
                     var errorMsg = $"Claim type '{claim.Type}' with value '{teamId}' could not be processed";
                     var e = new NotImplementedException(errorMsg);
-                    _logger.LogError(errorMsg, e);
+                    _logger.LogError(e, errorMsg);
                     throw e;
             }
         }
@@ -851,9 +836,7 @@ public class UserStore : IUserStore<ApplicationUser>, IUserEmailStore<Applicatio
         }
         catch (Exception e)
         {
-            var msg = $"LoginInfo for provider '{login.LoginProvider}' and user id '{user.Id}' could not be added";
-            _logger.LogError(msg, e);
-            throw;
+            throw new InvalidOperationException($"LoginInfo for provider '{login.LoginProvider}' and user id '{user.Id}' could not be added", e);
         }
     }
 
@@ -876,9 +859,7 @@ public class UserStore : IUserStore<ApplicationUser>, IUserEmailStore<Applicatio
         }
         catch (Exception e)
         {
-            var msg = $"LoginInfo for provider '{loginProvider}' and user id '{user.Id}' could not be removed";
-            _logger.LogError(msg, e);
-            throw;
+            throw new InvalidOperationException($"LoginInfo for provider '{loginProvider}' and user id '{user.Id}' could not be removed", e);
         }
     }
 
@@ -957,9 +938,7 @@ public class UserStore : IUserStore<ApplicationUser>, IUserEmailStore<Applicatio
         }
         catch (Exception e)
         {
-            var msg = $"AuthenticationToken with name '{name}' for provider '{loginProvider}' and user id '{user.Id}' could not be set";
-            _logger.LogError(msg, e);
-            throw;
+            throw new InvalidOperationException($"AuthenticationToken with name '{name}' for provider '{loginProvider}' and user id '{user.Id}' could not be set", e);
         }
     }
 
@@ -980,14 +959,12 @@ public class UserStore : IUserStore<ApplicationUser>, IUserEmailStore<Applicatio
             var userTokenEntity = new IdentityUserTokenEntity(loginProvider, name, user.Id);
             if (!await _appDb.GenericRepository.DeleteEntityAsync(userTokenEntity, cancellationToken))
             {
-                _logger.LogError(msg);
                 throw new InvalidOperationException(msg);
             }
         }
         catch (Exception e)
         {
-            _logger.LogError(msg, e);
-            throw;
+            throw new InvalidOperationException(msg, e);
         }
     }
 

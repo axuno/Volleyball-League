@@ -8,7 +8,7 @@ namespace League.Controllers;
 public class Error : AbstractController
 {
     private readonly ILogger _logger;
-    private readonly ILogger _notFoundLogger;
+    private readonly ILogger _loggerNotFound; //NOSONAR
     private readonly IStringLocalizer<Error> _localizer;
     private readonly ITenantContext _tenantContext;
 
@@ -17,7 +17,7 @@ public class Error : AbstractController
         _logger = logger;
         _tenantContext = tenantContext;
         _localizer = localizer;
-        _notFoundLogger = loggerFactory.CreateLogger(nameof(League) + ".NotFound");
+        _loggerNotFound = loggerFactory.CreateLogger(nameof(League) + ".NotFound");
     }
 
     [Route("{id?}")]
@@ -40,7 +40,7 @@ public class Error : AbstractController
         {
             viewModel.OrigPath = exceptionFeature?.Path;
             viewModel.Exception = exceptionFeature?.Error;
-            _logger.LogError(viewModel.Exception, "Path: {origPath}", viewModel.OrigPath);
+            _logger.LogError(viewModel.Exception, "Path: {OrigPath}", viewModel.OrigPath);
         }
         else
         {
@@ -48,7 +48,7 @@ public class Error : AbstractController
                 .Get<Microsoft.AspNetCore.Diagnostics.IStatusCodeReExecuteFeature>()?.OriginalPath ?? string.Empty;
 
             if (Response.StatusCode == 404)
-                _notFoundLogger.LogInformation("{NotFound}", new {Status = Response.StatusCode, Ip = HttpContext.Connection.RemoteIpAddress?.ToString() ?? "127.0.0.1", Path = viewModel.OrigPath});
+                _loggerNotFound.LogInformation("{NotFound}", new {Status = Response.StatusCode, Ip = HttpContext.Connection.RemoteIpAddress?.ToString() ?? "127.0.0.1", Path = viewModel.OrigPath});
             else
                 _logger.LogWarning("StatusCode: {StatusCode}, Path: {OrigPath}", Response.StatusCode, viewModel.OrigPath);
         }

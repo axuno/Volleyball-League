@@ -12,6 +12,7 @@ namespace TournamentManager.DI;
 /// </remarks>
 public class PhoneNumberService
 {
+    private const string PhoneNumberLiteral = "{PhoneNumber}"; // used for logging
     private readonly PhoneNumbers.PhoneNumberUtil _fnu;
     private static readonly object Locker = new();
     private readonly ILogger _logger = AppLogging.CreateLogger<PhoneNumber>();
@@ -41,7 +42,7 @@ public class PhoneNumberService
             }
             catch (Exception e)
             {
-                _logger.LogDebug(e, "{@phoneNumber}", phoneNumber);
+                _logger.LogDebug(e, PhoneNumberLiteral, phoneNumber);
                 return false;
             }
         }
@@ -72,7 +73,7 @@ public class PhoneNumberService
             }
             catch (Exception e)
             {
-                _logger.LogDebug(e, "{@phoneNumber}", phoneNumber);
+                _logger.LogDebug(e, PhoneNumberLiteral, phoneNumber);
                 return phoneNumber;
             }
         }
@@ -96,7 +97,7 @@ public class PhoneNumberService
             }
             catch (Exception e)
             {
-                _logger.LogDebug(e, "{@phoneNumber}", phoneNumber);
+                _logger.LogDebug(e, PhoneNumberLiteral, phoneNumber);
                 return phoneNumber;
             }
         }
@@ -120,7 +121,7 @@ public class PhoneNumberService
             }
             catch (Exception e)
             {
-                _logger.LogDebug(e, "{@phoneNumber}", phoneNumber);
+                _logger.LogDebug(e, PhoneNumberLiteral, phoneNumber);
                 return "tel:" + phoneNumber;
             }
         }

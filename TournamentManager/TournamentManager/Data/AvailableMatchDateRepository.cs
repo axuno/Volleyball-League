@@ -35,7 +35,7 @@ public class AvailableMatchDateRepository
         };
         await da.FetchEntityCollectionAsync(qp, cancellationToken);
 
-        _logger.LogDebug("Fetched {count} available match dates for tournament {tournamentId}.", available.Count, tournamentId);
+        _logger.LogDebug("Fetched {Count} available match dates for tournament {TournamentId}.", available.Count, tournamentId);
 
         return available;
     }
@@ -73,7 +73,7 @@ public class AvailableMatchDateRepository
                 filterAvailable, cancellationToken);
         }
 
-        _logger.LogDebug("Deleted {deleted} available match dates for tournament {tournamentId}.", deleted, tournamentId);
+        _logger.LogDebug("Deleted {Deleted} available match dates for tournament {TournamentId}.", deleted, tournamentId);
 
         return deleted;
     }

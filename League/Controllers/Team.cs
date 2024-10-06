@@ -1,5 +1,4 @@
-﻿using System.Security.Claims;
-using League.Components;
+﻿using League.Components;
 using League.Helpers;
 using League.Models.TeamViewModels;
 using League.Models.UploadViewModels;
@@ -59,7 +58,7 @@ public class Team : AbstractController
 
         if (model.Tournament == null)
         {
-            _logger.LogError("{teamTournamentId} '{id}' does not exist", nameof(_tenantContext.TournamentContext.TeamTournamentId), _tenantContext.TournamentContext.TeamTournamentId);
+            _logger.LogError("{TeamTournamentId} '{Td}' does not exist", nameof(_tenantContext.TournamentContext.TeamTournamentId), _tenantContext.TournamentContext.TeamTournamentId);
             return NotFound();
         }
 
@@ -202,7 +201,7 @@ public class Team : AbstractController
                 cancellationToken));
 
             if (team.TeamInRounds.Count > 1)
-                _logger.LogError("Teams ID {teamId} belongs to {roundsCount} rounds for tournament ID {tournamentId}", team.Id,
+                _logger.LogError("Teams ID {TeamId} belongs to {RoundsCount} rounds for tournament ID {TournamentId}", team.Id,
                     team.TeamInRounds.Count, _tenantContext.TournamentContext.TeamTournamentId);
         }
 
@@ -249,7 +248,7 @@ public class Team : AbstractController
         catch (Exception e)
         {
             TempData.Put<MyTeamMessageModel.MyTeamMessage>(nameof(MyTeamMessageModel.MyTeamMessage), new MyTeamMessageModel.MyTeamMessage { AlertType = SiteAlertTagHelper.AlertType.Danger, MessageId = MyTeamMessageModel.MessageId.TeamDataFailure});
-            _logger.LogError(e, "Error saving team id '{teamId}'", model.Team.IsNew ? "new" : model.Team.Id.ToString());
+            _logger.LogError(e, "Error saving team id '{TeamId}'", model.Team.IsNew ? "new" : model.Team.Id.ToString());
             return JsonResponseRedirect(TenantLink.Action(nameof(MyTeam), nameof(Team),new { id = team.Id }));
         }
 
@@ -347,7 +346,7 @@ public class Team : AbstractController
         }
         catch (Exception e)
         {
-            _logger.LogError(e, "Failed to save selected venue for team id {teamId}, venue id {venueId}", model.TeamId, model.VenueId);
+            _logger.LogError(e, "Failed to save selected venue for team id {TeamId}, venue id {VSenueId}", model.TeamId, model.VenueId);
         }
             
         return JsonResponseRedirect(TenantLink.Action(nameof(MyTeam), nameof(Team), new { model.TeamId }));

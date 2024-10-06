@@ -55,7 +55,7 @@ internal class MatchCreator<TP, TR> where TP : struct, IEquatable<TP> where TR :
         if (Participants.Count < 3 && refereeType == RefereeType.OtherFromRound)
             throw new ArgumentOutOfRangeException(nameof(refereeType), refereeType,@"Round-robin system with referee from round requires at least 3 participants.");
 
-        _logger.LogDebug("Creating combinations for {participantCount} participants.", Participants.Count);
+        _logger.LogDebug("Creating combinations for {ParticipantCount} participants.", Participants.Count);
 
         _maxNumOfCombinations = Participants.Count * (Participants.Count - 1) / 2;
         CombinationsPerLeg = Participants.Count - 1;

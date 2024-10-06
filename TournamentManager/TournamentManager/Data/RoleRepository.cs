@@ -51,7 +51,7 @@ public class RoleRepository
             where roleName.Equals(r.Name, StringComparison.InvariantCultureIgnoreCase)
             select r).FirstOrDefaultAsync(cancellationToken);
 
-        _logger.LogDebug("{roleName} exists: {trueFalse}", roleName, result != null);
+        _logger.LogDebug("{RoleName} exists: {trueOrFalse}", roleName, result != null);
         return result != null;
     }
 

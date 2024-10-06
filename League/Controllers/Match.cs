@@ -307,7 +307,7 @@ public class Match : AbstractController
         catch (Exception e)
         {
             _logger.LogError(e, "Building {Model} failed for MatchId '{MatchId}'", nameof(EnterResultViewModel), id);
-            throw;
+            return Forbid();
         }
     }
 
@@ -379,7 +379,7 @@ public class Match : AbstractController
         catch (Exception e)
         {
             _logger.LogError(e, "Building {Model} failed for MatchId '{ModelId}'. User ID '{CurrentUser}'", nameof(EnterResultViewModel), model?.Id, GetCurrentUserId());
-            throw;
+            return Forbid();
         }
 
         try

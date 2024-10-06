@@ -67,7 +67,7 @@ public class Upload : AbstractController
         else
         {
             // shouldn't be the case
-            _logger.LogError("Photo file for team id '{teamId}' not found", id);
+            _logger.LogError("Photo file for team id '{TeamId}' not found", id);
             model.PhotoFileUrl = null;
         }
 
@@ -134,7 +134,7 @@ public class Upload : AbstractController
         }
         catch (Exception e)
         {
-            _logger.LogError(e, "File for team id '{teamId}' could not be stored", teamId);
+            _logger.LogError(e, "File for team id '{TeamId}' could not be stored", teamId);
             Response.StatusCode = 409;
             return Json(new {error = _localizer["Uploaded file could not be processed"].Value});
         }

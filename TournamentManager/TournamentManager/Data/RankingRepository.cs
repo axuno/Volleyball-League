@@ -86,12 +86,10 @@ public class RankingRepository
         }
         catch (Exception e)
         {
-            _logger.LogError(e, "Error updating Ranking in transaction: RoundId={roundId}", roundId);
-
             if (da.IsTransactionInProgress)
                 da.Rollback();
 
-            throw;
+            throw new InvalidOperationException($"Error updating Ranking in transaction: RoundId={roundId}", e);
         }
     }
 

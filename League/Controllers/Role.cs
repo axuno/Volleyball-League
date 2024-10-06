@@ -79,7 +79,7 @@ public class Role : AbstractController
             (await _tenantContext.DbContext.AppDb.ManagerOfTeamRepository.GetManagerIdsOfTeamAsync(model.TeamId,
                 cancellationToken)).Count <= 1)
         {
-            _logger.LogInformation("Rejected to remove last claim '{claimType}' for team id '{teamId}' and user id {userId}",
+            _logger.LogInformation("Rejected to remove last claim '{ClaimType}' for team id '{TeamId}' and user id {userId}",
                 model.ClaimType, model.TeamId, model.UserId);
             return JsonResponseRedirect(SetCannotRemoveLastTeamManagerReturnResult(model.ReturnUrl, model.TeamId));
         }
@@ -95,7 +95,7 @@ public class Role : AbstractController
             }
             catch (Exception e)
             {
-                _logger.LogError(e, "Failed to remove claim '{claimType}' for team id '{teamId}' and user id {userId}", model.ClaimType, model.TeamId, model.UserId);
+                _logger.LogError(e, "Failed to remove claim '{ClaimType}' for team id '{TeamId}' and user id {UserId}", model.ClaimType, model.TeamId, model.UserId);
                 return JsonResponseRedirect(SetAdjustedReturnResult(nameof(Remove), model.ReturnUrl, model.TeamId, false));
             }
         }
@@ -157,7 +157,7 @@ public class Role : AbstractController
             }
             catch (Exception e)
             {
-                _logger.LogError(e, "Failed to add claim '{claimType}' for team id '{teamId}' and user id '{userId}'", model.ClaimType, model.TeamId, newTeamMember.Id);
+                _logger.LogError(e, "Failed to add claim '{ClaimType}' for team id '{TeamId}' and user id '{UserId}'", model.ClaimType, model.TeamId, newTeamMember.Id);
             }
         }
         else

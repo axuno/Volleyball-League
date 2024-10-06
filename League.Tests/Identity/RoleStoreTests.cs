@@ -131,8 +131,8 @@ public class RoleStoreTests
             _appDb.DbContext.CommandTimeOut = 2;
             // new claim
             var claim = new Claim(Constants.ClaimType.ManagesTeam, "y", "z");
-            Assert.ThrowsAsync<ORMQueryExecutionException>(() => _roleStore.AddClaimAsync(role, claim, CancellationToken.None));
-            Assert.ThrowsAsync<ORMQueryExecutionException>(() => _roleStore.RemoveClaimAsync(role, claim, CancellationToken.None));
+            Assert.ThrowsAsync<InvalidOperationException>(() => _roleStore.AddClaimAsync(role, claim, CancellationToken.None));
+            Assert.ThrowsAsync<InvalidOperationException>(() => _roleStore.RemoveClaimAsync(role, claim, CancellationToken.None));
             da.Rollback("transaction1");
         }
         _appDb.DbContext.CommandTimeOut = currentTimeOut;

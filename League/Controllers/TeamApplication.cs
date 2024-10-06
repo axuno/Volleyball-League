@@ -84,7 +84,7 @@ public class TeamApplication : AbstractController
 
         if (model.Tournament == null)
         {
-            _logger.LogError("{name} '{id}' does not exist", nameof(_tenantContext.TournamentContext.ApplicationTournamentId), _tenantContext.TournamentContext.ApplicationTournamentId);
+            _logger.LogError("{Name} '{Id}' does not exist", nameof(_tenantContext.TournamentContext.ApplicationTournamentId), _tenantContext.TournamentContext.ApplicationTournamentId);
             return NotFound();
         }
 
@@ -244,7 +244,7 @@ public class TeamApplication : AbstractController
                 cancellationToken));
 
             if (teamEntity.TeamInRounds.Count > 1)
-                _logger.LogError("Teams ID {teamId} belongs to {rounds} rounds for tournament ID {tournamentId}", teamEntity.Id,
+                _logger.LogError("Teams ID {TeamId} belongs to {Rounds} rounds for tournament ID {TournamentId}", teamEntity.Id,
                     teamEntity.TeamInRounds.Count, _tenantContext.TournamentContext.ApplicationTournamentId);
         }
 
@@ -498,8 +498,8 @@ public class TeamApplication : AbstractController
             }
             catch (Exception e)
             {
-                _logger.LogError(e, "{entityName} with ID {teamInRoundId} for team ID {teamId} not found", nameof(TeamInRoundEntity), sessionModel.TeamInRound!.Id, sessionModel.TeamInRound.TeamId);
-                throw;
+                _logger.LogError(e, "{EntityName} with ID {TeamInRoundId} for team ID {TeamId} not found", nameof(TeamInRoundEntity), sessionModel.TeamInRound!.Id, sessionModel.TeamInRound.TeamId);
+                NotFound();
             }
                 
             sessionModel.TeamInRound.MapFormFieldsToEntity(teamInRoundEntity);
@@ -683,7 +683,7 @@ public class TeamApplication : AbstractController
         if (!geoResponse.Success)
         {
             _logger.LogError(geoResponse.Exception,
-                "{methodName} failed. Response status text: {statusText}",
+                "{MethodName} failed. Response status text: {StatusText}",
                 $"{nameof(VenueEditModel)}.{nameof(VenueEditModel.TrySetGeoLocation)}()",
                 geoResponse.StatusText);
         }
@@ -739,7 +739,7 @@ public class TeamApplication : AbstractController
         }
         catch (Exception e)
         {
-            _logger.LogError(e, "Could not restore '{model}' from session", nameof(ApplicationSessionModel));
+            _logger.LogError(e, "Could not restore '{Model}' from session", nameof(ApplicationSessionModel));
             return await GetNewSessionModel(cancellationToken);
         }
     }
