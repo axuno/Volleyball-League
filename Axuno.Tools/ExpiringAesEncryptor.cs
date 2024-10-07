@@ -137,7 +137,7 @@ public class ExpiringAesEncryptor<T> where T : class
     }
 
     /// <summary>
-    /// Gets or set the System.Security.Cryptography.SymmetricAlgorithm.IV initalization vector (UTF8 is used. Characters exceeding 8 bytes are truncated, less will be filled.)
+    /// Gets or set the <see cref="SymmetricAlgorithm.IV"/> initialization vector (UTF8 is used. Characters exceeding 8 bytes are truncated, less will be filled.)
     /// </summary>
     public string IV
     {
@@ -228,9 +228,9 @@ public class ExpiringAesEncryptor<T> where T : class
             var longAsBytesLength = BitConverter.GetBytes((long) 0).Length;
 
             // first 8 bytes are the startOn ticks
-            result.StartsOn = new DateTime(BitConverter.ToInt64(output, 0));
+            result.StartsOn = new DateTime(BitConverter.ToInt64(output, 0), DateTimeKind.Unspecified);
             // next 8 bytes are the expiresOn ticks
-            result.ExpiresOn = new DateTime(BitConverter.ToInt64(output, longAsBytesLength));
+            result.ExpiresOn = new DateTime(BitConverter.ToInt64(output, longAsBytesLength), DateTimeKind.Unspecified);
 				
             // The string starts after byte 16
             result.RawText = _utf8Encoding.GetString(output, longAsBytesLength * 2, output.Length - longAsBytesLength * 2);

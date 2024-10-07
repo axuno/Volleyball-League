@@ -108,7 +108,7 @@ public abstract class AbstractStaticFile
 
         return long.TryParse(fileInfo.Name[(tickIndex + DateTimeTicksMarker.Length)..], NumberStyles.Any,
             null, out var ticks)
-            ? (fileInfo.Name, new DateTime(ticks))
+            ? (fileInfo.Name, new DateTime(ticks, DateTimeKind.Utc))
             : (fileInfo.Name, fileInfo.LastWriteTimeUtc);
     }
 }
