@@ -76,7 +76,7 @@ public class CustomMainNavigationNodeBuilder : MainNavigationNodeBuilder
             InsertTopNavigationNode(info, "Top_Teams");
         }
 
-        InsertTopNavigationNode(home, NavigationNodes.First().Key);
+        InsertTopNavigationNode(home, NavigationNodes[0].Key);
 
         #endregion
     }

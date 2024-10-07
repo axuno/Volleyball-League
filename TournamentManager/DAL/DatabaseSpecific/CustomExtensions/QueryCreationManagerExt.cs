@@ -32,7 +32,7 @@ internal class QueryCreationManagerExt : SD.LLBLGen.Pro.ORMSupportClasses.Adapte
     /// <returns>Returns the source table name an <see cref="IEntity2"/> belongs to in the persistent storage.</returns>
     public string GetPersistentTableName(IEntity2 entity)
     {
-        var i = GetFieldPersistenceInfo(entity.PrimaryKeyFields.First());
+        var i = GetFieldPersistenceInfo(entity.PrimaryKeyFields[0]);
         return i.SourceObjectName;
     }
 }

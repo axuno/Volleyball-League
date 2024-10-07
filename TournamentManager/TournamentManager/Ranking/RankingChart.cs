@@ -191,7 +191,7 @@ public class RankingChart
                 lineSeries.Points.Add(new DataPoint(i, teamRankingHistory.Last().Number));
             }
 
-            var teamName = _teams.FirstOrDefault(t => t.TeamId == lastRank.TeamId).TeamName;
+            var teamName = _teams.Find(t => t.TeamId == lastRank.TeamId).TeamName;
             if (string.IsNullOrEmpty(teamName)) teamName = "?";
             lineSeries.Title = teamName;
             model.Series.Add(lineSeries);

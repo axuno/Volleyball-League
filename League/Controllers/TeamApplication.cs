@@ -156,7 +156,7 @@ public class TeamApplication : AbstractController
     public async Task<IActionResult> EditTeam(long teamId, CancellationToken cancellationToken)
     {
         var teamSelectModel = await GetTeamSelectModel(cancellationToken);
-        if (teamSelectModel.TeamsManagedByUser.All(t => t.TeamId != teamId))
+        if (teamSelectModel.TeamsManagedByUser.TrueForAll(t => t.TeamId != teamId))
         {
             return Redirect(TenantLink.Action(nameof(SelectTeam))!);
         }
@@ -269,7 +269,7 @@ public class TeamApplication : AbstractController
 
         if (teamEntity.TeamInRounds.Any())
         {
-            var tir = teamEntity.TeamInRounds.First();
+            var tir = teamEntity.TeamInRounds[0];
             sessionModel.TeamInRound!.MapEntityToFormFields(tir);
             sessionModel.TeamInRoundIsSet = true;
         }
@@ -493,7 +493,7 @@ public class TeamApplication : AbstractController
                     teamInRoundEntity =
                         (await _appDb.TeamInRoundRepository.GetTeamInRoundAsync(
                             new PredicateExpression(TeamInRoundFields.Id == sessionModel.TeamInRound.Id),
-                            cancellationToken)).First();
+                            cancellationToken))[0];
                 }
             }
             catch (Exception e)
@@ -757,7 +757,7 @@ public class TeamApplication : AbstractController
         {
             // Nothing to do, if the current user is already manager of this team
             var mot = (await _appDb.ManagerOfTeamRepository.GetManagerOfTeamEntitiesAsync(new PredicateExpression(ManagerOfTeamFields.TeamId == teamEntity.Id), 
-                cancellationToken)).FirstOrDefault(u => u.UserId == GetCurrentUserId());
+                cancellationToken)).Find(u => u.UserId == GetCurrentUserId());
             if (mot == null)
             {
                 mot = teamEntity.ManagerOfTeams.AddNew();

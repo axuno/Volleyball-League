@@ -35,7 +35,7 @@ public class ConfirmTeamApplicationCreator : IMailMessageCreator
         var roundWithType = (await tenantContext.DbContext.AppDb.RoundRepository.GetRoundsWithTypeAsync(
             new PredicateExpression(
                 RoundFields.TournamentId == tenantContext.TournamentContext.ApplicationTournamentId &
-                RoundFields.Id == Parameters.RoundId), cancellationToken)).First();
+                RoundFields.Id == Parameters.RoundId), cancellationToken))[0];
 
         var teamUserRoundInfos = await tenantContext.DbContext.AppDb.TeamRepository.GetTeamUserRoundInfosAsync(
             new PredicateExpression(TeamUserRoundFields.TeamId == Parameters.TeamId &

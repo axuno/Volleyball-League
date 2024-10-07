@@ -37,10 +37,10 @@ public partial class UserEntity
     public bool IsPlayer => PlayerInTeams.Any();
 
     [XmlIgnore]
-    public bool DataCompleteAsManager => (new[] {FirstName, LastName, PhoneNumber, Email}).All(s => !string.IsNullOrWhiteSpace(s));
+    public bool DataCompleteAsManager => (new List<string> {FirstName, LastName, PhoneNumber, Email}).TrueForAll(s => !string.IsNullOrWhiteSpace(s));
 
     [XmlIgnore]
-    public bool DataCompleteAsPerson => (new[] { FirstName, LastName, Email }).All(s => !string.IsNullOrWhiteSpace(s));
+    public bool DataCompleteAsPerson => (new List<string> { FirstName, LastName, Email }).TrueForAll(s => !string.IsNullOrWhiteSpace(s));
 
     protected override void OnSetValue(int fieldIndex, object valueToSet, out bool cancel)
     {

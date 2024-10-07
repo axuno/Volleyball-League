@@ -190,7 +190,7 @@ internal class MatchScheduler
                 VenueId = datesFound[index] != null
                     ? datesFound[index]!.VenueId
                     // take over the venue stored in the team entity (may also be null!)
-                    : _tournament.Rounds[_tournament.Rounds.FindMatches(RoundFields.Id == roundLeg.RoundId).First()]
+                    : _tournament.Rounds[_tournament.Rounds.FindMatches(RoundFields.Id == roundLeg.RoundId)[0]]
                         .TeamCollectionViaTeamInRound.First(t => t.Id == combination.Home).VenueId,
                 RoundId = round.Id,
                 IsComplete = false,

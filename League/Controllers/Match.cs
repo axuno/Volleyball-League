@@ -363,7 +363,7 @@ public class Match : AbstractController
             if (permissionValidator.GetFailedFacts().Count != 0)
             {
                 return View(ViewNames.Match.EnterResultNotAllowed,
-                    (model.Tournament, permissionValidator.GetFailedFacts().First().Message));
+                    (model.Tournament, permissionValidator.GetFailedFacts()[0].Message));
             }
 
             model.MapFormFieldsToEntity();

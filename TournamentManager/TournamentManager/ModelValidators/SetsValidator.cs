@@ -131,7 +131,7 @@ public sealed class SetsValidator : AbstractValidator<IList<SetEntity>, (ITenant
 
             if (Data.Rules.MatchRule.BestOf && Data.Rules.MatchRule.MaxNumOfSets() == Model.Count)
             {
-                factResult.Success = Model.Last().IsTieBreak;
+                factResult.Success = Model[^1].IsTieBreak;
             }
 
             return Task.FromResult(factResult);

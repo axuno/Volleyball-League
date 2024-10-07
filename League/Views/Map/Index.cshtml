@@ -2,7 +2,7 @@
 @model League.Models.MapViewModels.MapModel
 @inject IViewLocalizer Localizer
 @{ ViewData["Title"] = Localizer["Venues"].Value + " - " + Model.Tournament?.Name;}
-        @if (!Model.Venues.Any(v => v is { Latitude: not null, Longitude: not null }))
+        @if (!Model.Venues.Exists(v => v is { Latitude: not null, Longitude: not null }))
         {
             <div class="row">
                 <div class="col-12 pb-2">
@@ -21,7 +21,7 @@
         <h2 class="h2">@ViewData["Title"]</h2>
         @if (Model.IsSingleValue)
         {
-            var venue = Model.Venues.First();
+            var venue = Model.Venues[0];
             <h3 class="h3"><i class="fas fa-map-marker-alt"></i> @venue.VenueName</h3>
             <hr class="mb-4" />
         }

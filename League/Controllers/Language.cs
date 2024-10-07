@@ -62,7 +62,7 @@ public class Language : Controller
         }
 
         // Preferred browser language is equal to language selected with query string
-        if (languages.Length == 0 || languages.First().StartsWith(requestCulture.Name, StringComparison.InvariantCultureIgnoreCase))
+        if (languages.Length == 0 || languages[0].StartsWith(requestCulture.Name, StringComparison.InvariantCultureIgnoreCase))
         {
             Response.Cookies.Delete(cookieProvider.CookieName);
             Response.Cookies.Append(cookieProvider.CookieName, string.Empty, new CookieOptions

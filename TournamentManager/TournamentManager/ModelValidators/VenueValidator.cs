@@ -112,7 +112,7 @@ public class VenueValidator : AbstractValidator<VenueEntity, (GoogleGeo.GeoRespo
                 new FactResult
                 {
                     Message = VenueValidatorResource.AddressFieldsAreSet,
-                    Success = new[] {Model.PostalCode, Model.City, Model.Street}.All(f => !string.IsNullOrWhiteSpace(f))
+                    Success = new List<string> {Model.PostalCode, Model.City, Model.Street}.TrueForAll(f => !string.IsNullOrWhiteSpace(f))
                 })
         };
     }

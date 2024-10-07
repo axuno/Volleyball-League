@@ -35,7 +35,7 @@ public class TeamEditModel
             if (TeamEntity!.TeamInRounds.Any())
             {
                 // Only the RoundId is updated, but not the TeamNameForRound!
-                TeamEntity.TeamInRounds.First().RoundId = Round.SelectedRoundId.Value;
+                TeamEntity.TeamInRounds[0].RoundId = Round.SelectedRoundId.Value;
             }
             else
             {

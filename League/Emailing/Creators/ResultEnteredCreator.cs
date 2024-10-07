@@ -42,10 +42,10 @@ public class ResultEnteredCreator : IMailMessageCreator
                 .And(TeamUserRoundFields.TournamentId == tenantContext.TournamentContext.MatchResultTournamentId)),
             cancellationToken);
 
-        var username = teamUserRoundInfos.FirstOrDefault(tur => tur.UserId == Parameters.ChangedByUserId)?.CompleteName;
+        var username = teamUserRoundInfos.Find(tur => tur.UserId == Parameters.ChangedByUserId)?.CompleteName;
         // User is not a team member, maybe an admin
         username ??= (await tenantContext.DbContext.AppDb.UserRepository.FindUserAsync(
-                    new PredicateExpression(UserFields.Id == Parameters.ChangedByUserId), 1, cancellationToken)).First()
+                    new PredicateExpression(UserFields.Id == Parameters.ChangedByUserId), 1, cancellationToken))[0]
                 .CompleteName;
 
         var model = new ResultEnteredModel

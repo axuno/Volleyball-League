@@ -48,10 +48,10 @@ public class ChangeFixtureCreator : IMailMessageCreator
                 .And(TeamUserRoundFields.TournamentId == tenantContext.TournamentContext.MatchPlanTournamentId)),
             cancellationToken);
 
-        model.Username = teamUserRoundInfos.FirstOrDefault(tur => tur.UserId == Parameters.ChangedByUserId)?.CompleteName;
+        model.Username = teamUserRoundInfos.Find(tur => tur.UserId == Parameters.ChangedByUserId)?.CompleteName;
         // User is not a team member, maybe an admin
         model.Username ??= (await tenantContext.DbContext.AppDb.UserRepository.FindUserAsync(
-                new PredicateExpression(UserFields.Id == Parameters.ChangedByUserId), 1, cancellationToken)).First()
+                new PredicateExpression(UserFields.Id == Parameters.ChangedByUserId), 1, cancellationToken))[0]
             .CompleteName;
             
         var plainTextContent = await renderer.RenderAsync(Templates.Email.TemplateName.ChangeFixtureTxt, model,
