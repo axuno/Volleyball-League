@@ -67,7 +67,7 @@
     </div>
     <div class="row">
         <div class="mb-3 col-12 col-md-6">
-            <form asp-controller="@nameof(TeamApplication)" asp-action="@nameof(TeamApplication.Confirm)" asp-route-tenant="@tenantUrlSegment" method="post" role="form" novalidate>
+            <form asp-controller="@nameof(TeamApplication)" asp-action="@nameof(TeamApplication.Confirm)" asp-route-tenant="@tenantUrlSegment" method="post" novalidate>
                 @if (Model.SessionModel.VenueIsSet == ApplicationSessionModel.TeamVenueSetKind.NoVenue)
                 {
                     <a asp-controller="@nameof(TeamApplication)" asp-action="@nameof(TeamApplication.SelectVenue)" asp-route-tenant="@tenantUrlSegment" class="btn btn-secondary d-inline-block">@Localizer["Back"]</a>

@@ -53,10 +53,10 @@
         {
             <div class="tab-pane@{if (r.RoundId == activeRoundId) {<text> show active</text>}}" id="tab-@(r.RoundId)" role="tabpanel">
                 <div class="text-success">@r.RoundTypeDescription</div>
-                <div id="team-filter-@r.RoundId" class="team-filter my-2 d-none" data-bs-toggle="tooltip" title="@Localizer["Remove filter for team"]" tabindex="0">
+                <button type="button" id="team-filter-@r.RoundId" class="team-filter my-2 d-none" data-bs-toggle="tooltip" title="@Localizer["Remove filter for team"]" tabindex="0">
                     <i class="fas fa-1x fa-times-circle me-2"></i>
                     <span class="badge bg-dark"></span>
-                </div>
+                </button>
                 <div class="rounded table-responsive" style="min-height: 13rem">@* min height assures dropdowns are not clipped *@
                     <table class="table table-sm" aria-describedby="@tableDescriptionId">
                         <thead class="rounded">
@@ -207,6 +207,7 @@
         .team-filter { cursor: pointer;}
         .filter-link { /* javascript only */ }
         .leg-change { padding: 0; margin:0}
+        button[id^="team-filter-"] { background: none; border: 0; }
         @(resultCssClass)
         @(contextMenuCssClass)
         @(dateCssClass)

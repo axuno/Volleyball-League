@@ -10,7 +10,7 @@
 <!-- Modal -->
 <modal id="change-email" title="@Localizer["Change Additional Phone Number"].Value" tabindex="-1">
     <modal-body>
-        <form asp-controller="@nameof(Manage)" asp-action="@nameof(Manage.EditPhoneNumber2)" asp-route-tenant="@tenantUrlSegment" method="post" role="form" novalidate>
+        <form asp-controller="@nameof(Manage)" asp-action="@nameof(Manage.EditPhoneNumber2)" asp-route-tenant="@tenantUrlSegment" method="post" novalidate>
             <site-validation-summary show="All"></site-validation-summary>
             <input name="IsValid" type="hidden" value="@ViewData.ModelState.IsValid.ToString()" />
             <div class="mb-3">

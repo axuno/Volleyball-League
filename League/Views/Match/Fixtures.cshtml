@@ -77,10 +77,10 @@
         {
             <div class="tab-pane@{if (r.RoundId == activeRoundId) {<text> show active</text>}}" id="tab-@(r.RoundId)" role="tabpanel">
                 <div class="text-success">@r.RoundTypeDescription</div>
-                <div id="team-filter-@r.RoundId" class="team-filter my-2 d-none" data-bs-toggle="tooltip" title="@Localizer["Remove filter for team"]" style="display: none" tabindex="0">
+                <button type="button" id="team-filter-@r.RoundId" class="team-filter my-2 d-none" data-bs-toggle="tooltip" title="@Localizer["Remove filter for team"]" tabindex="0">
                     <i class="fas fa-1x fa-times-circle me-2"></i>
                     <span class="badge bg-dark"></span>
-                </div>
+                </button>
                 <div class="rounded table-responsive" style="min-height: 13rem">@* min height assures dropdowns are not clipped *@
                     <table class="table table-sm" aria-describedby="@tableDescriptionId">
                         <thead class="rounded">
@@ -117,7 +117,7 @@
                                                 </a>
                                                 <div class="dropdown-menu shadow-lg" role="menu">
                                                     <a href="#" tabindex="0" data-round-id="@match.RoundId" data-team-name="@match.HomeTeamNameForRound" class="dropdown-item filter-link">@Localizer["Filter fixtures for this team"]</a>
-                                                    <a href="#" tabindex="0" class="dropdown-item" onclick="this.href='@(TenantLink.Action(nameof(League.Controllers.Match.ReportSheet), nameof(League.Controllers.Match), new{ id = match.Id })!)';">@Localizer["Print match report sheet"]</a>
+                                                    <a asp-action="@nameof(League.Controllers.Match.ReportSheet)" asp-controller="@nameof(League.Controllers.Match)" asp-route-tenant="@tenantUrlSegment" asp-route-id=@match.Id tabindex="0" class="dropdown-item">@Localizer["Print match report sheet"]</a>
                                                     <a asp-action=@nameof(League.Controllers.Match.EditFixture) asp-controller=@nameof(League.Controllers.Match) asp-route-tenant="@tenantUrlSegment" asp-route-id=@match.Id tabindex="0" class="dropdown-item"
                                                        site-authorize-resource site-resource=@ToMatchEntity(match)
                                                        site-requirement=@League.Authorization.MatchOperations.ChangeFixture>@Localizer["Edit fixture"]</a>
@@ -133,7 +133,7 @@
                                                 </a>
                                                 <div class="dropdown-menu shadow-lg" role="menu">
                                                     <a href="#" tabindex="0" data-round-id="@match.RoundId" data-team-name="@match.GuestTeamNameForRound" class="dropdown-item filter-link">@Localizer["Filter fixtures for this team"]</a>
-                                                    <a href="#" tabindex="0" class="dropdown-item" onclick="this.href='@(TenantLink.Action(nameof(League.Controllers.Match.ReportSheet), nameof(League.Controllers.Match), new{ id = match.Id })!)';">@Localizer["Print match report sheet"]</a>
+                                                    <a asp-action="@nameof(League.Controllers.Match.ReportSheet)" asp-controller="@nameof(League.Controllers.Match)" asp-route-tenant="@tenantUrlSegment" asp-route-id=@match.Id tabindex="0" class="dropdown-item">@Localizer["Print match report sheet"]</a>
                                                     <a asp-action=@nameof(League.Controllers.Match.EditFixture) asp-controller=@nameof(League.Controllers.Match) asp-route-tenant="@tenantUrlSegment" asp-route-id=@match.Id tabindex="0" class="dropdown-item"
                                                        site-authorize-resource site-resource=@ToMatchEntity(match)
                                                        site-requirement=@League.Authorization.MatchOperations.ChangeFixture>@Localizer["Edit fixture"]</a>
@@ -179,6 +179,7 @@
         .team-filter { cursor: pointer;}
         .filter-link { /* javascript only */ }
         .leg-change { padding: 0; margin:0}
+        button[id^="team-filter-"] { background: none; border: 0; }
         @(venueCssClass)
         .venue > div {max-width: calc(45 * 1vw)}
         @(contextMenuCssClass)
