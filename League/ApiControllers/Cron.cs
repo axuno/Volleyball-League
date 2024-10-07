@@ -116,7 +116,7 @@ public class Cron : AbstractController
         }
             
         // Strip hours, minutes, seconds
-        cronDateTime = new DateTime(cronDateTime.Year, cronDateTime.Month, cronDateTime.Day);
+        cronDateTime = new DateTime(cronDateTime.Year, cronDateTime.Month, cronDateTime.Day, 0, 0, 0, DateTimeKind.Utc);
 
         var formattedDate = cronDateTime.ToString("d", CultureInfo.InvariantCulture);
         if (forceDate || !HasAlreadyRun(cronDateTime))

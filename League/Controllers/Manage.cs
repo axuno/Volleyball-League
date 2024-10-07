@@ -707,7 +707,7 @@ public class Manage : AbstractController
     {
         var deadline = DateTime.UtcNow.Add(_dataProtectionTokenProviderOptions.Value.TokenLifespan);
         // round down to full hours
-        deadline = new DateTime(deadline.Year, deadline.Month, deadline.Day, deadline.Hour, 0, 0);
+        deadline = new DateTime(deadline.Year, deadline.Month, deadline.Day, deadline.Hour, 0, 0, DateTimeKind.Utc);
         var code = (await _userManager.GenerateChangeEmailTokenAsync(user, newEmail)).Base64UrlEncode();
 
         _sendEmailTask.SetMessageCreator(new ChangePrimaryUserEmailCreator
