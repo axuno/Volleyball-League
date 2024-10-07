@@ -150,7 +150,7 @@ public static class LeagueStartup
         }.LoadTenants();
 
         var tenants = store.GetTenants().Values.ToList();
-        if (!tenants.Any(t => t.IsDefault)) throw new InvalidOperationException("No default tenant configuration found.");
+        if (!tenants.Exists(t => t.IsDefault)) throw new InvalidOperationException("No default tenant configuration found.");
         tenants.ForEach(t =>
         {
             if (string.IsNullOrWhiteSpace(t.DbContext.ConnectionString))

@@ -127,6 +127,6 @@ public class TeamRepository
 
         using var da = _dbContext.GetNewAdapter();
         var teamNames = await da.FetchQueryAsync<string>(new QueryFactory().Create().Select(() => TeamFields.Name.ToValue<string>()).Where(TeamFields.Id != teamEntity.Id), cancellationToken);
-        return teamNames.FirstOrDefault(tn => Sanitize(tn).Equals(Sanitize(teamEntity.Name)));
+        return teamNames.Find(tn => Sanitize(tn).Equals(Sanitize(teamEntity.Name)));
     }
 }

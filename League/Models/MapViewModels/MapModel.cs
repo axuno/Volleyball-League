@@ -46,7 +46,7 @@ public class MapModel
     {
         var locationJsObject = new StringBuilder("\n");
 
-        if (!Venues.Any(v => v.Longitude.HasValue && v.Latitude.HasValue))
+        if (!Venues.Exists(v => v is { Longitude: not null, Latitude: not null }))
             return;
             
         MaxLongitude = Venues.Max(l => l.Longitude)?.ToString("###.########", System.Globalization.CultureInfo.InvariantCulture);

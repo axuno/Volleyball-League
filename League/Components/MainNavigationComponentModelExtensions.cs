@@ -13,7 +13,7 @@ public static class MainNavigationComponentModelExtensions
     /// <returns></returns>
     public static bool HasVisibleChildNodes(this MainNavigationComponentModel.NavigationNode node)
     {
-        return node.ChildNodes.Any(childNode => childNode.ShouldShow());
+        return node.ChildNodes.Exists(childNode => childNode.ShouldShow());
     }
 
     /// <summary>
@@ -104,7 +104,7 @@ public static class MainNavigationComponentModelExtensions
     /// <returns><see langref="true"/> if the node is visible and the node url is not null.</returns>
     public static bool ShouldShow(this MainNavigationComponentModel.NavigationNode? node)
     {
-        return node != null && (node.IsVisible && node.Url != null || node.ChildNodes.Any(n => n.ShouldShow()));
+        return node != null && (node is { IsVisible: true, Url: not null } || node.ChildNodes.Exists(n => n.ShouldShow()));
     }
 
     /// <summary>

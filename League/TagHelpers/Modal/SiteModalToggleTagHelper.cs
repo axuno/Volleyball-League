@@ -23,6 +23,6 @@ public class SiteModalToggleTagHelper : TagHelper
     public override void Process(TagHelperContext context, TagHelperOutput output)
     {
         output.Attributes.SetAttribute("data-bs-toggle", "modal");
-        output.Attributes.SetAttribute("data-bs-target", ToggleModal != null && ToggleModal.StartsWith("#") ? ToggleModal : $"#{ToggleModal}");
+        output.Attributes.SetAttribute("data-bs-target", ToggleModal != null && ToggleModal.StartsWith('#') ? ToggleModal : $"#{ToggleModal}");
     }
 }

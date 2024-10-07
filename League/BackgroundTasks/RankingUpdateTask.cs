@@ -132,7 +132,7 @@ public class RankingUpdateTask : IBackgroundTask
                 /***** Ranking table update *****/
 
                 // without played matches, neither ranking nor chart can be generated
-                if (matchesPlayed.All(mp => mp.RoundId != roundId))
+                if (matchesPlayed.TrueForAll(mp => mp.RoundId != roundId))
                 {
                     // Remove an existing ranking list for the round
                     await TenantContext.DbContext.AppDb.RankingRepository.ReplaceAsync(new RankingList(), roundId, cancellationToken);

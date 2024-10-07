@@ -101,7 +101,7 @@ public class FixtureValidator : AbstractValidator<MatchEntity, (ITenantContext T
                 ? (await Data.TenantContext.DbContext.AppDb.VenueRepository.GetOccupyingMatchesAsync(
                     Model.VenueId.Value, new DateTimePeriod(Model.PlannedStart, Model.PlannedEnd),
                     Data.TenantContext.TournamentContext.MatchPlanTournamentId, cancellationToken))
-                .FirstOrDefault(m => m.Id != Model.Id)
+                .Find(m => m.Id != Model.Id)
                 : null;
 
             return new FactResult
@@ -146,8 +146,8 @@ public class FixtureValidator : AbstractValidator<MatchEntity, (ITenantContext T
             if (!Model.VenueId.HasValue || !Model.PlannedStart.HasValue) return _successResult;
             await LoadTeamsInMatch(cancellationToken);
                         
-            var homeTeam = _teamsInMatch.FirstOrDefault(m => m.Id == Model.HomeTeamId);
-            var guestTeam = _teamsInMatch.FirstOrDefault(m => m.Id == Model.GuestTeamId);
+            var homeTeam = _teamsInMatch.Find(m => m.Id == Model.HomeTeamId);
+            var guestTeam = _teamsInMatch.Find(m => m.Id == Model.GuestTeamId);
             var plannedStartDayOfWeek = (int?) Model.PlannedStart.Value.DayOfWeek;
 
             if (homeTeam?.MatchDayOfWeek == null || guestTeam?.MatchDayOfWeek == null) return _successResult;
@@ -213,7 +213,7 @@ public class FixtureValidator : AbstractValidator<MatchEntity, (ITenantContext T
                 {
                     Message = string.Format(FixtureValidatorResource.ResourceManager.GetString(
                             nameof(FactId.PlannedStartTeamsAreNotBusy)) ?? string.Empty,
-                        Data.PlannedMatch.HomeTeamId == busyTeams.First()
+                        Data.PlannedMatch.HomeTeamId == busyTeams[0]
                             ? Data.PlannedMatch.HomeTeamNameForRound
                             : Data.PlannedMatch.GuestTeamNameForRound),
                     Success = busyTeams.Length == 0

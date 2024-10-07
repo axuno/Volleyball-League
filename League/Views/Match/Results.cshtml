@@ -28,7 +28,7 @@
     var rounds = Model.CompletedMatches
         .GroupBy(m => m.RoundName, (key, m) => new { RoundName = key, RoundId = m.First().RoundId, RoundDescription = m.First().RoundDescription, RoundTypeDescription = m.First().RoundTypeDescription })
         .OrderBy(m => m.RoundName).ToList();
-    var useRecentRoundCookie = !(Model.ActiveRoundId.HasValue && rounds.Any(r => r.RoundId == Model.ActiveRoundId));
+    var useRecentRoundCookie = !(Model.ActiveRoundId.HasValue && rounds.Exists(r => r.RoundId == Model.ActiveRoundId));
     if (useRecentRoundCookie) { activeRoundId = rounds.FirstOrDefault()?.RoundId ?? 0; }
     MatchEntity ToMatchEntity(CompletedMatchRow cmr)
     {
@@ -171,7 +171,7 @@
                     </table>
                 </div>
                 @{
-                    if (Model.CompletedMatches.Any(m => m.RoundId == r.RoundId && m.IsOverruled))
+                    if (Model.CompletedMatches.Exists(m => m.RoundId == r.RoundId && m.IsOverruled))
                     {
                         <div class="text-muted">
                             @(overruled) = @Localizer["Awarded points were adjusted manually"].

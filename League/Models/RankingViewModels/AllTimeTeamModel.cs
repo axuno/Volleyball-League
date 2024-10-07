@@ -17,7 +17,7 @@ public class AllTimeTeamModel
 
     public (string TeamName, string ClubName) GetSelectedTeam()
     {
-        var rankRow = RankingList.FirstOrDefault(rl => rl.TeamId == SelectedTeamId);
+        var rankRow = RankingList.Find(rl => rl.TeamId == SelectedTeamId);
         if (rankRow == null) return (string.Empty, string.Empty);
 
         return (rankRow.TeamName, rankRow.ClubName);
