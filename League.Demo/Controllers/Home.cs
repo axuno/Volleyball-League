@@ -18,10 +18,8 @@ public class Home : League.Controllers.AbstractController
     [HttpGet]
     public IActionResult Index()
     {
-        if (Request.Cookies.TryGetValue(CookieNames.MostRecentTenant, out var urlSegmentValue) && _tenantStore.GetTenants().Any(sl => sl.Value.SiteContext.UrlSegmentValue == urlSegmentValue))
-        {
-            if (!string.IsNullOrEmpty(urlSegmentValue)) return Redirect($"/{urlSegmentValue}");
-        }
+        if (Request.Cookies.TryGetValue(CookieNames.MostRecentTenant, out var urlSegmentValue)
+            && _tenantStore.GetTenants().Any(sl => sl.Value.SiteContext.UrlSegmentValue == urlSegmentValue) && !string.IsNullOrEmpty(urlSegmentValue)) return Redirect($"/{urlSegmentValue}");
 
         return Redirect(Url.Action(nameof(Welcome), nameof(Home))!);
     }

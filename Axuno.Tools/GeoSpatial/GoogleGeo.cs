@@ -12,7 +12,7 @@ namespace Axuno.Tools.GeoSpatial;
 public class GoogleGeo
 {
     /// <summary>
-    /// The location type returned by the Google geo coding API.
+    /// The location type returned by the Google geocoding API.
     /// </summary>
     public enum LocationType
     {
@@ -154,11 +154,10 @@ public class GoogleGeo
                 geoResponse.Found = false;
                 geoResponse.Success = true;
                 return geoResponse;
-            case "INVALID_REQUEST":
-            case "REQUEST_DENIED":
-            case "OVER_DAILY_LIMIT":
-            case "OVER_QUERY_LIMIT":
-            case "UNKNOWN_ERROR":
+            /*
+             * INVALID_REQUEST, REQUEST_DENIED, OVER_DAILY_LIMIT, OVER_QUERY_LIMIT, UNKNOWN_ERROR
+             * are handled by default
+             */
             default:
                 geoResponse.Success = false;
                 geoResponse.Found = false;

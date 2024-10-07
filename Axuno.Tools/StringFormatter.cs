@@ -1,6 +1,6 @@
 ﻿namespace Axuno.Tools;
 
-public class StringFormatter
+public static class StringFormatter
 {
     /// <summary>
     /// Converts a list string with valid characters into its group representation.
@@ -34,7 +34,7 @@ public class StringFormatter
         var length = chars.Count;
         var groups = new List<string>();
 
-        for (var i = 0; i < length; i++)
+        for (var i = 0; i < length;)
         {
             var firstChar = chars[i];
 
@@ -62,7 +62,7 @@ public class StringFormatter
                     : string.Format($"{firstChar}-{lastChar}")); // alphanumeric sequence
             }
 
-            i = k - 1;
+            i = k;
         }
         return groups;
     }

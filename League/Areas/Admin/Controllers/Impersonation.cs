@@ -52,14 +52,14 @@ public class Impersonation : AbstractController
         var currentUser = User;
         var targetUser = await _signInManager.UserManager.FindByIdAsync(id.ToString());
 
-        if (targetUser == null) return RedirectToLocal("/" + _tenantContext.SiteContext.UrlSegmentValue);
+        if (targetUser == null) return RedirectToLocal($"/{_tenantContext.SiteContext.UrlSegmentValue}");
 
         var targetClaimsPrincipal = await _signInManager.CreateUserPrincipalAsync(targetUser);
         if (targetClaimsPrincipal is { Identity: ClaimsIdentity targetClaimsIdentity })
         {
             targetClaimsIdentity.AddClaim(new Claim(Constants.ClaimType.ImpersonatedByUser, User.Claims.First(x => x.Type == ClaimTypes.NameIdentifier).Value));
         }
-            
+
         // sign out the current user
         await _signInManager.SignOutAsync();
 
@@ -69,7 +69,7 @@ public class Impersonation : AbstractController
             currentUser.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value,
             targetClaimsPrincipal?.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value);
 
-        return RedirectToLocal("/" + _tenantContext.SiteContext.UrlSegmentValue);
+        return RedirectToLocal($"/{_tenantContext.SiteContext.UrlSegmentValue}");
     }
 
     [HttpGet("[action]")]
@@ -89,7 +89,7 @@ public class Impersonation : AbstractController
             await _signInManager.SignOutAsync();
         }
 
-        return RedirectToLocal("/" + _tenantContext.SiteContext.UrlSegmentValue);
+        return RedirectToLocal($"/{_tenantContext.SiteContext.UrlSegmentValue}");
     }
 
     private IActionResult RedirectToLocal(string returnUrl)

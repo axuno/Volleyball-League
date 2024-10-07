@@ -60,70 +60,6 @@ public sealed partial class Location : IEquatable<Location>, IFormattable, IXmlS
     /// <summary>Gets the longitude of the coordinate.</summary>
     public Longitude Longitude { get; private set; }
 
-    /// <summary>
-    ///     Determines whether this instance and another specified Location object
-    ///     have the same value.
-    /// </summary>
-    /// <param name="other">The Location to compare to this instance.</param>
-    /// <returns>
-    ///     true if the value of the value parameter is the same as this instance;
-    ///     otherwise, false.
-    /// </returns>
-    public bool Equals(Location? other)
-    {
-        if (other is null) return false;
-
-        return Altitude.Equals(other.Altitude) && Latitude.Equals(other.Latitude) &&
-               Longitude.Equals(other.Longitude);
-    }
-
-    /// <summary>
-    ///     Formats the value of the current instance using the specified format.
-    /// </summary>
-    /// <param name="format">
-    ///     The format to use or null to use the default format (see
-    ///     <see cref="Angle.ToString(string, IFormatProvider)" />).
-    /// </param>
-    /// <param name="formatProvider">
-    ///     The provider to use to format the value or null to use the format
-    ///     information from the current locale setting of the operating system.
-    /// </param>
-    /// <returns>
-    ///     The value of the current instance in the specified format.
-    /// </returns>
-    /// <exception cref="ArgumentException">format is unknown.</exception>
-    public string ToString(string? format, IFormatProvider? formatProvider)
-    {
-        if (string.IsNullOrEmpty(format)) format = "DMS";
-        formatProvider ??= CultureInfo.CurrentCulture;
-
-        var builder = new StringBuilder();
-        if (format == "ISO")
-        {
-            builder.Append(Latitude.ToString("ISO", null));
-            builder.Append(Longitude.ToString("ISO", null));
-            if (Altitude != null)
-                builder.AppendFormat(CultureInfo.InvariantCulture, "{0:+0.###;-0.###}", Altitude.Value);
-            builder.Append('/');
-        }
-        else
-        {
-            var parsed = Angle.ParseFormatString(format);
-
-            builder.Append(Latitude.ToString(format, formatProvider));
-            builder.Append(' ');
-            builder.Append(Longitude.ToString(format, formatProvider));
-            if (Altitude != null)
-            {
-                builder.Append(' ');
-                builder.Append(Angle.GetString(Altitude.Value, 1, parsed.Item2, formatProvider));
-                builder.Append('m');
-            }
-        }
-
-        return builder.ToString();
-    }
-
     /// <summary>This method is reserved and should not be used.</summary>
     /// <returns>This method always returns null.</returns>
     /// <remarks>
@@ -240,6 +176,23 @@ public sealed partial class Location : IEquatable<Location>, IFormattable, IXmlS
     public override bool Equals(object? obj)
     {
         return Equals(obj as Location);
+    }
+
+    /// <summary>
+    ///     Determines whether this instance and another specified Location object
+    ///     have the same value.
+    /// </summary>
+    /// <param name="other">The Location to compare to this instance.</param>
+    /// <returns>
+    ///     true if the value of the value parameter is the same as this instance;
+    ///     otherwise, false.
+    /// </returns>
+    public bool Equals(Location? other)
+    {
+        if (other is null) return false;
+
+        return Altitude.Equals(other.Altitude) && Latitude.Equals(other.Latitude) &&
+               Longitude.Equals(other.Longitude);
     }
 
     /// <summary>Returns the hash code for this instance.</summary>
@@ -383,6 +336,53 @@ public sealed partial class Location : IEquatable<Location>, IFormattable, IXmlS
     public override string ToString()
     {
         return ToString(null, null);
+    }
+
+    /// <summary>
+    ///     Formats the value of the current instance using the specified format.
+    /// </summary>
+    /// <param name="format">
+    ///     The format to use or null to use the default format (see
+    ///     <see cref="Angle.ToString(string, IFormatProvider)" />).
+    /// </param>
+    /// <param name="formatProvider">
+    ///     The provider to use to format the value or null to use the format
+    ///     information from the current locale setting of the operating system.
+    /// </param>
+    /// <returns>
+    ///     The value of the current instance in the specified format.
+    /// </returns>
+    /// <exception cref="ArgumentException">format is unknown.</exception>
+    public string ToString(string? format, IFormatProvider? formatProvider)
+    {
+        if (string.IsNullOrEmpty(format)) format = "DMS";
+        formatProvider ??= CultureInfo.CurrentCulture;
+
+        var builder = new StringBuilder();
+        if (format == "ISO")
+        {
+            builder.Append(Latitude.ToString("ISO", null));
+            builder.Append(Longitude.ToString("ISO", null));
+            if (Altitude != null)
+                builder.AppendFormat(CultureInfo.InvariantCulture, "{0:+0.###;-0.###}", Altitude.Value);
+            builder.Append('/');
+        }
+        else
+        {
+            var parsed = Angle.ParseFormatString(format);
+
+            builder.Append(Latitude.ToString(format, formatProvider));
+            builder.Append(' ');
+            builder.Append(Longitude.ToString(format, formatProvider));
+            if (Altitude != null)
+            {
+                builder.Append(' ');
+                builder.Append(Angle.GetString(Altitude.Value, 1, parsed.Item2, formatProvider));
+                builder.Append('m');
+            }
+        }
+
+        return builder.ToString();
     }
 
     /// <summary>Converts the string into a Location.</summary>

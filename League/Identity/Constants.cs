@@ -5,12 +5,12 @@ namespace League.Identity;
 /// <summary>
 /// Class for <see cref="League.Identity"/> constants.
 /// </summary>
-public class Constants
+public static class Constants
 {
     /// <summary>
     /// Constants which are used as identity roles.
     /// </summary>
-    public class RoleName
+    public static class RoleName
     {
         /// <summary>
         /// Role name for <see ref="Player"/>s.
@@ -61,7 +61,7 @@ public class Constants
     /// <summary>
     /// Constants which are used as identity roles.
     /// </summary>
-    public class ClaimType
+    public static class ClaimType
     {
         public const string ManagesTeam = nameof(ManagesTeam);
         public const string PlaysInTeam = nameof(PlaysInTeam);

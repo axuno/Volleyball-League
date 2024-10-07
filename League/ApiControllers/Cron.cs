@@ -109,8 +109,9 @@ public class Cron : AbstractController
         if(!IsAuthorized(key)) return Unauthorized("Incorrect authorization key");
             
         var forceDate = referenceDate?.EndsWith('!') ?? false;
+        var formatProvider = new DateTimeFormatInfo { ShortDatePattern = "yyyy-MM-dd" };
 
-        if (referenceDate == null || !DateTime.TryParse(referenceDate.TrimEnd('!'), out var cronDateTime))
+        if (referenceDate == null || !DateTime.TryParse(referenceDate.TrimEnd('!'), formatProvider, out var cronDateTime))
         {
             cronDateTime = DateTime.UtcNow;
         }

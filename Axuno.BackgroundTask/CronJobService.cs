@@ -13,6 +13,7 @@ namespace Axuno.BackgroundTask;
 public abstract class CronJobService : IHostedService, IDisposable
 {
     private System.Timers.Timer? _timer;
+    private bool _isDisposing;
     private readonly CronExpression _expression;
     private readonly TimeZoneInfo _timeZoneInfo;
 
@@ -72,9 +73,22 @@ public abstract class CronJobService : IHostedService, IDisposable
         await Task.CompletedTask;
     }
 
-    public virtual void Dispose()
+    protected virtual void Dispose(bool disposing)
     {
-        _timer?.Dispose();
+        if (!_isDisposing)
+        {
+            if (disposing)
+            {
+                _timer?.Dispose();
+            }
+
+            _isDisposing = true;
+        }
+    }
+
+    public void Dispose()
+    {
+        Dispose(disposing: true);
         GC.SuppressFinalize(this);
     }
 }

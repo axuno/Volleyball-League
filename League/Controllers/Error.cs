@@ -38,8 +38,8 @@ public class Error : AbstractController
 
         if (exceptionFeature?.Error != null)
         {
-            viewModel.OrigPath = exceptionFeature?.Path;
-            viewModel.Exception = exceptionFeature?.Error;
+            viewModel.OrigPath = exceptionFeature.Path;
+            viewModel.Exception = exceptionFeature.Error;
             _logger.LogError(viewModel.Exception, "Path: {OrigPath}", viewModel.OrigPath);
         }
         else

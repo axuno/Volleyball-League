@@ -110,8 +110,10 @@ public class ConcurrentBackgroundQueueService : BackgroundService
                 stoppingToken.ThrowIfCancellationRequested();
 
                 using var taskCancellation = CancellationTokenSource.CreateLinkedTokenSource(stoppingToken);
-                var task = (TaskQueue?.RunTaskAsync(taskListReference.Dequeue(), taskCancellation.Token)) ??
-                           throw new NullReferenceException($"{nameof(TaskQueue)} cannot be null here.");
+                if (TaskQueue == null)
+                    throw new InvalidOperationException($"{nameof(TaskQueue)} must not be null.");
+
+                var task = TaskQueue.RunTaskAsync(taskListReference.Dequeue(), taskCancellation.Token);
 
                 if (task.Exception != null)
                     throw task.Exception;

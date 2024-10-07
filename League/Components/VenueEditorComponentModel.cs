@@ -11,6 +11,7 @@ public class VenueEditorComponentModel
     public long? Id { get; set; }
 
     [HiddenInput]
+    [Required]
     public bool IsNew { get; set; }
         
     [Required(AllowEmptyStrings = false, ErrorMessageResourceName = nameof(DataAnnotationResource.PropertyValueRequired), ErrorMessageResourceType = typeof(DataAnnotationResource))]
@@ -45,6 +46,7 @@ public class VenueEditorComponentModel
     /// <see langword="true"/>, if <see cref="Longitude"/> and <see cref="Latitude"/> fields will be shown, else <see langword="false"/>.
     /// </summary>
     [HiddenInput]
+    [Required]
     public bool ShowLatLng { get; set; }
 
     [Display(Name = "Longitude")]

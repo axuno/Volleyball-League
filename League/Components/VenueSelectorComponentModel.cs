@@ -5,7 +5,7 @@ namespace League.Components;
 public class VenueSelectorComponentModel
 {
     [Flags]
-    public enum Criteria
+    public enum Criteria // NOSONAR
     {
         /// <summary>
         /// Show all venues.

@@ -4,4 +4,6 @@
 /// Necessary dummy class to group and locate resource files (.resx)
 /// </summary>
 public class MultiLanguageIdentityErrorDescriberResource
-{ }
+{
+    // Necessary dummy class to group and locate resource files (.resx)
+}

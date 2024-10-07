@@ -40,7 +40,7 @@ public class ChangeFixtureCreator : IMailMessageCreator
                 .FirstOrDefault()
         };
             
-        if (model.Fixture is null) throw new InvalidOperationException($"No fixture found for match id '{Parameters.MatchId}'");;
+        if (model.Fixture is null) throw new InvalidOperationException($"No fixture found for match id '{Parameters.MatchId}'");
 
         var teamUserRoundInfos = await tenantContext.DbContext.AppDb.TeamRepository.GetTeamUserRoundInfosAsync(
             new PredicateExpression((TeamUserRoundFields.TeamId == model.Fixture.HomeTeamId |

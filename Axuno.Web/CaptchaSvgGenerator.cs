@@ -194,11 +194,15 @@ public class CaptchaSvgGenerator : IDisposable
     }
 
 #pragma warning disable CA1822
-    private void Dispose(bool disposing)
+#pragma warning disable S2325
+    protected void Dispose(bool disposing)
     {
         if (disposing)
-        { }
+        {
+            // nothing to dispose
+        }
     }
+#pragma warning restore S2325
 #pragma warning restore CA1822
 
     private void SetDimensions(int width, int height)

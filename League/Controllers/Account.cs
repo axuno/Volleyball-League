@@ -83,6 +83,9 @@ public class Account : AbstractController
 
     #endregion
 
+    private const string ReturnUrl = nameof(ReturnUrl);
+    private const string NoAccountFoundForCredentials = "No account found for these credentials.";
+
     public Account(
         SignInManager<ApplicationUser> signInManager,
         IStringLocalizer<Account> localizer,
@@ -111,7 +114,7 @@ public class Account : AbstractController
     [AllowAnonymous]
     public IActionResult SignIn(string? returnUrl = null)
     {
-        ViewData["ReturnUrl"] = returnUrl;
+        ViewData[ReturnUrl] = returnUrl;
         return View();
     }
 
@@ -120,7 +123,7 @@ public class Account : AbstractController
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> SignIn(SignInViewModel model, string? returnUrl = null)
     {
-        ViewData["ReturnUrl"] = returnUrl;
+        ViewData[ReturnUrl] = returnUrl;
         if (!ModelState.IsValid) return View(model);
             
         ApplicationUser? user = null;
@@ -134,7 +137,7 @@ public class Account : AbstractController
         if (user == null)
         {
             _logger.LogInformation("No account found for '{User}'.", model.EmailOrUsername);
-            ModelState.AddModelError(string.Empty, _localizer["No account found for these credentials."].Value);
+            ModelState.AddModelError(string.Empty, _localizer[NoAccountFoundForCredentials].Value);
             return View(model);
         }
 
@@ -143,7 +146,7 @@ public class Account : AbstractController
         if (result.Succeeded)
         {
             _logger.LogInformation("User Id '{UserId}' signed in.", user.Id);
-            return RedirectToLocal(returnUrl ?? "/" + _tenantContext.SiteContext.UrlSegmentValue);
+            return RedirectToLocal(returnUrl ?? $"/{_tenantContext.SiteContext.UrlSegmentValue}");
         }
 
         if (result.IsLockedOut || result.IsNotAllowed)
@@ -161,7 +164,7 @@ public class Account : AbstractController
 
         // PasswordSignIn failed
         _logger.LogInformation("Wrong password for '{User}'.", model.EmailOrUsername);
-        ModelState.AddModelError(string.Empty, _localizer["No account found for these credentials."].Value);
+        ModelState.AddModelError(string.Empty, _localizer[NoAccountFoundForCredentials].Value);
         return View(model);
     }
 
@@ -178,7 +181,7 @@ public class Account : AbstractController
     [AllowAnonymous]
     public IActionResult CreateAccount(string? returnUrl = null)
     {
-        ViewData["ReturnUrl"] = returnUrl;
+        ViewData[ReturnUrl] = returnUrl;
         return View();
     }
 
@@ -187,7 +190,7 @@ public class Account : AbstractController
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> CreateAccount(CreateAccountViewModel model, string? returnUrl = null)
     {
-        ViewData["ReturnUrl"] = returnUrl;
+        ViewData[ReturnUrl] = returnUrl;
 
         if (model.Captcha != HttpContext.Session.GetString(CaptchaSvgGenerator.CaptchaSessionKeyName))
         {
@@ -221,7 +224,7 @@ public class Account : AbstractController
         // Note: We check, whether the email is available only during POST
         var model = new RegisterViewModel {Email = email};
 
-        ViewData["ReturnUrl"] = returnUrl;
+        ViewData[ReturnUrl] = returnUrl;
         return View(model); 
     }
 
@@ -230,7 +233,7 @@ public class Account : AbstractController
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Register(RegisterViewModel model, CancellationToken cancellationToken, string? returnUrl = null)
     {
-        ViewData["ReturnUrl"] = returnUrl;
+        ViewData[ReturnUrl] = returnUrl;
 
         if (!_dataProtector.TryDecrypt(model.Code?.Base64UrlDecode() ?? string.Empty, out var email, out var expiration))
         {
@@ -324,7 +327,7 @@ public class Account : AbstractController
                 await _signInManager.UpdateExternalAuthenticationTokensAsync(info);
 
                 _logger.LogInformation("User signed-in in with login provider '{LoginProvider}'.", info.LoginProvider);
-                return RedirectToLocal(returnUrl ?? "/" + _tenantContext.SiteContext.UrlSegmentValue);
+                return RedirectToLocal(returnUrl ?? $"/{_tenantContext.SiteContext.UrlSegmentValue}");
             }
 
             if (result.IsLockedOut || result.IsNotAllowed)
@@ -334,7 +337,7 @@ public class Account : AbstractController
             }
         }
 
-        ViewData["ReturnUrl"] = returnUrl;
+        ViewData[ReturnUrl] = returnUrl;
         ViewData["LoginProvider"] = info.LoginProvider;
         var model = CreateExternalSignInConfirmationViewModelAsync(info.Principal);
 
@@ -348,7 +351,7 @@ public class Account : AbstractController
     {
         if (!ModelState.IsValid)
         {
-            ViewData["ReturnUrl"] = returnUrl;
+            ViewData[ReturnUrl] = returnUrl;
             return View(model);
         }
 
@@ -392,7 +395,7 @@ public class Account : AbstractController
                 // email is flagged as confirmed if local email and external email are equal
                 if (user.EmailConfirmed)
                 {
-                    return RedirectToLocal(returnUrl ?? "/" + _tenantContext.SiteContext.UrlSegmentValue);
+                    return RedirectToLocal(returnUrl ?? $"/{_tenantContext.SiteContext.UrlSegmentValue}");
                 }
 
                 return Redirect(TenantLink.Action(nameof(Message), nameof(Account),
@@ -402,7 +405,7 @@ public class Account : AbstractController
 
         AddErrors(result);
 
-        ViewData["ReturnUrl"] = returnUrl;
+        ViewData[ReturnUrl] = returnUrl;
         return View(model);
     }
 
@@ -430,7 +433,7 @@ public class Account : AbstractController
         if (user == null || (!await _signInManager.UserManager.IsEmailConfirmedAsync(user) && _signInManager.UserManager.Options.SignIn.RequireConfirmedEmail))
         {
             _logger.LogInformation("No account found for '{User}'.", model.EmailOrUsername);
-            ModelState.AddModelError(string.Empty, _localizer["No account found for these credentials."]);
+            ModelState.AddModelError(string.Empty, _localizer[NoAccountFoundForCredentials]);
             await Task.Delay(5000);
             return View(model);
         }
@@ -477,7 +480,7 @@ public class Account : AbstractController
         if (user == null)
         {
             _logger.LogInformation("No account found for '{User}'.", model.EmailOrUsername);
-            ModelState.AddModelError(string.Empty, _localizer["No account found for these credentials."]);
+            ModelState.AddModelError(string.Empty, _localizer[NoAccountFoundForCredentials]);
             await Task.Delay(5000);
             return View();
         }
@@ -529,7 +532,7 @@ public class Account : AbstractController
         }
 
         _logger.LogWarning("Undefined {MessageType}: '{MessageText}'", nameof(MessageType), messageTypeText);
-        return RedirectToLocal("/" + _tenantContext.SiteContext.UrlSegmentValue);
+        return RedirectToLocal($"/{_tenantContext.SiteContext.UrlSegmentValue}");
     }
 
     private async Task<bool> IsExternalLoginStoredAsync(ExternalLoginInfo info)
@@ -612,8 +615,7 @@ public class Account : AbstractController
             user.FirstName = user.Nickname = info.Principal.Claims.FirstOrDefault(c => c.Type == ClaimTypes.GivenName)?.Value ?? string.Empty;
             user.LastName = info.Principal.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Surname)?.Value ?? string.Empty;
             // ClaimTypes.Gender is mostly not available from social logins
-            // We don't set the gender and let the database set its default value
-            // user.Gender = info.Principal.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Gender)?.Value;
+            // We don't set the gender and let the database set its default value using Principal.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Gender)?.Value
             requiresUpdate = true;
         }
 

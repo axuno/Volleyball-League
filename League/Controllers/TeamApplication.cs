@@ -193,14 +193,11 @@ public class TeamApplication : AbstractController
             sessionModel.Team.MapEntityToFormFields(teamEntity);
         }
 
-        if (!teamEntity.IsNew)
+        if (!teamEntity.IsNew && !(await _authorizationService.AuthorizeAsync(User, new TeamEntity(teamEntity.Id),
+                Authorization.TeamOperations.SignUpForSeason)).Succeeded)
         {
-            if (!(await _authorizationService.AuthorizeAsync(User, new TeamEntity(teamEntity.Id),
-                    Authorization.TeamOperations.SignUpForSeason)).Succeeded)
-            {
-                return Redirect(GeneralLink.GetPathByAction(nameof(Error.AccessDenied), nameof(Error),
-                    new { ReturnUrl = TenantLink.Action(nameof(EditTeam), nameof(TeamApplication)) })!);
-            }
+            return Redirect(GeneralLink.GetPathByAction(nameof(Error.AccessDenied), nameof(Error),
+                new { ReturnUrl = TenantLink.Action(nameof(EditTeam), nameof(TeamApplication)) })!);
         }
 
         var teamEditModel = new TeamEditModel

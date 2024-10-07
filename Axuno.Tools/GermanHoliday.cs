@@ -3,7 +3,7 @@ namespace Axuno.Tools;
 /// <summary>
 /// This class represents a German holiday.
 /// </summary>
-public class GermanHoliday
+public class GermanHoliday : IEqualityComparer<GermanHoliday>
 {
     /// <summary>
     /// CTOR.
@@ -119,5 +119,36 @@ public class GermanHoliday
     {
         // ReSharper disable NonReadonlyMemberInGetHashCode
         return HashCode.Combine(Id, (int) Type, Name, PublicHolidayStateIds, CalcDateFunc);
+    }
+
+    bool IEqualityComparer<GermanHoliday>.Equals(GermanHoliday? x, GermanHoliday? y)
+    {
+        if (ReferenceEquals(x, y))
+        {
+            return true;
+        }
+
+        if (x is null || y is null)
+        {
+            return false;
+        }
+
+        return x.Id == y.Id && x.Type == y.Type && x.Name == y.Name &&
+               x.PublicHolidayStateIds.SequenceEqual(y.PublicHolidayStateIds) &&
+               x.CalcDateFunc == y.CalcDateFunc;
+    }
+
+    int IEqualityComparer<GermanHoliday>.GetHashCode(GermanHoliday obj)
+    {
+        unchecked
+        {
+            var hash = 17;
+            hash = hash * 23 + obj.Id.GetHashCode();
+            hash = hash * 23 + (int)obj.Type;
+            hash = hash * 23 + obj.Name.GetHashCode();
+            hash = hash * 23 + obj.PublicHolidayStateIds.GetHashCode();
+            hash = hash * 23 + obj.CalcDateFunc.GetHashCode();
+            return hash;
+        }
     }
 }

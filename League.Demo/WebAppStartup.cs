@@ -83,7 +83,6 @@ public static class WebAppStartup
         app.UseHttpsRedirection();
 
         // DO NOT add the default endpoints! => Url.Action(...) could produce Urls violating attribute routes
-        // and e.g. showing wrong navigation links:
-        // app.UseEndpoints(endpoints => { endpoints.MapControllerRoute(name: "default", pattern: "{controller=Home}/{action=Index}/{id?}"); });
+        // and e.g. showing wrong navigation links like 'app.UseEndpoints(endpoints => { endpoints.MapControllerRoute(name: "default", pattern: "{controller=Home}/{action=Index}/{id?}"); });'
     }
 }
