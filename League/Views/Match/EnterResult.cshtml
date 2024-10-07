@@ -57,7 +57,7 @@
             <a asp-action="@nameof(League.Controllers.Match.OverruleResult)" asp-controller="@nameof(League.Controllers.Match)" asp-route-tenant="@TenantContext.SiteContext.UrlSegmentValue" asp-route-id="@Model.Id" class="btn btn-secondary">@Localizer["Enable overruling"]</a>
         }
     </div>
-    <form method="post" role="form" novalidate>
+    <form method="post" novalidate>
         <site-validation-summary show="All" warning="@Model.IsWarning"></site-validation-summary>
         <input name="IsValid" type="hidden" value="@ViewData.ModelState.IsValid.ToString()" />
         <input hidden="hidden" asp-for="Id" />

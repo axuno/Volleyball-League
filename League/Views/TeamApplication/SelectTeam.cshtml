@@ -14,7 +14,7 @@
     <h2 id="@tableDescriptionId" class="h2">@ViewData["Title"]</h2>
     <hr class="mb-2" />
     @* Form with only 1 input field can be submitted with enter key. So we have to prevent default submit behavior and trigger a click on saveBtn *@
-    <form asp-controller="@nameof(TeamApplication)" asp-action="@nameof(TeamApplication.SelectTeam)" asp-route-tenant="@tenantUrlSegment" method="post" role="form" novalidate>
+    <form asp-controller="@nameof(TeamApplication)" asp-action="@nameof(TeamApplication.SelectTeam)" asp-route-tenant="@tenantUrlSegment" method="post" novalidate>
         <site-validation-summary show="All" unique-error-text="true"></site-validation-summary>
         <div class="row">
             <div class="mb-3 col-12 col-md-8">

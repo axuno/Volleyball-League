@@ -31,7 +31,7 @@
     <partial name="@nameof(League.Views.ViewNames.Team._MyTeamMessagesPartial)" />
     @if (Model.TeamVenueRoundInfos.Count > 1)
     {
-        <ul class="nav nav-tabs mb-3" id="team-tabs" role="tablist">
+        <ul class="nav nav-tabs mb-3" id="team-tabs" role="tablist"><!-- //NOSONAR -->
             @foreach (var team in Model.TeamVenueRoundInfos)
             {
                 <li class="nav-item"><a id="team-@team.TeamId" class="nav-link py-1@{if (team.TeamId == Model.ActiveTeamId){<text> active</text>}}" data-bs-toggle="tab" href="#tab-@(team.TeamId)" role="tab" aria-controls="@team.TeamName">@team.TeamName</a></li>

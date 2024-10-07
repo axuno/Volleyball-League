@@ -15,7 +15,7 @@
 <div class="mb-0 pb-1">
     <h2 class="h2">@ViewData["Title"]</h2>
     <div>
-        <form asp-controller="@nameof(League.Areas.Admin.Controllers.Impersonation)" asp-action="@nameof(League.Areas.Admin.Controllers.Impersonation.Index)" asp-route-tenant="@tenantRoute" method="get" role="form" novalidate>
+        <form asp-controller="@nameof(League.Areas.Admin.Controllers.Impersonation)" asp-action="@nameof(League.Areas.Admin.Controllers.Impersonation.Index)" asp-route-tenant="@tenantRoute" method="get" novalidate>
             <div class="mb-3">
                 <label for="search" class="form-label">@Localizer["Find by email, first/last/nick name"]</label>
                 <input id="search" name="search" required="required" class="form-control" value="@search" aria-describedby="searchHelpBlock" />
