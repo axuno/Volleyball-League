@@ -31,7 +31,7 @@ public class ContactFormCreator : IMailMessageCreator
     {
         if (Parameters.ContactForm is null)
         {
-            throw new ArgumentNullException(nameof(Parameters.ContactForm), "One or more required parameters are null");
+            throw new InvalidOperationException($"Required parameters {nameof(Parameters.ContactForm)} is null");
         }
 
         var model = new {Form = Parameters.ContactForm};

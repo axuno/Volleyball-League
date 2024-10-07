@@ -14,7 +14,7 @@ namespace League.WebApp.ViewComponents;
 public class CustomMainNavigationNodeBuilder : MainNavigationNodeBuilder
 {
     /// <inheritdoc />
-    public CustomMainNavigationNodeBuilder(TenantStore tenantStore, ITenantContext tenantContext, IAuthorizationService authorizationService, TenantLink tenantUrlHelper, IStringLocalizer<CustomMainNavigationNodeBuilder> localizer, ILogger<MainNavigationNodeBuilder> logger) : base(tenantStore, tenantContext, authorizationService, tenantUrlHelper, localizer, logger)
+    public CustomMainNavigationNodeBuilder(TenantStore tenantStore, ITenantContext tenantContext, IAuthorizationService authorizationService, TenantLink tenantUrlHelper, IStringLocalizer<CustomMainNavigationNodeBuilder> localizer, ILogger<CustomMainNavigationNodeBuilder> logger) : base(tenantStore, tenantContext, authorizationService, tenantUrlHelper, localizer, logger)
     { }
 
     /// <inheritdoc />

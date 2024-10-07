@@ -42,7 +42,7 @@ public class Role : AbstractController
             TeamId = tid,
             UserId = uid,
             UserName = un,
-            ClaimType = Identity.Constants.ClaimType.ManagesTeam.ToLowerInvariant() == roleName?.ToLowerInvariant()
+            ClaimType = Identity.Constants.ClaimType.ManagesTeam.Equals(roleName, StringComparison.InvariantCultureIgnoreCase)
                 ? Identity.Constants.ClaimType.ManagesTeam
                 : Identity.Constants.ClaimType.PlaysInTeam,
             ReturnUrl = Url.IsLocalUrl(returnUrl) ? returnUrl : _defaultReturnUrl
@@ -79,7 +79,7 @@ public class Role : AbstractController
             (await _tenantContext.DbContext.AppDb.ManagerOfTeamRepository.GetManagerIdsOfTeamAsync(model.TeamId,
                 cancellationToken)).Count <= 1)
         {
-            _logger.LogInformation("Rejected to remove last claim '{ClaimType}' for team id '{TeamId}' and user id {userId}",
+            _logger.LogInformation("Rejected to remove last claim '{ClaimType}' for team id '{TeamId}' and user id {UserId}",
                 model.ClaimType, model.TeamId, model.UserId);
             return JsonResponseRedirect(SetCannotRemoveLastTeamManagerReturnResult(model.ReturnUrl, model.TeamId));
         }

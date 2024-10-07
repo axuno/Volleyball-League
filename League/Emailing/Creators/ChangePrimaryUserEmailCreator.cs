@@ -34,7 +34,7 @@ public class ChangePrimaryUserEmailCreator : IMailMessageCreator
         if (Parameters.Email is null || Parameters.NewEmail is null || Parameters.CallbackUrl is null ||
             Parameters.DeadlineUtc is null)
         {
-            throw new ArgumentNullException(nameof(Parameters), "One or more required parameters are null");
+            throw new InvalidOperationException($"One or more required parameters of {nameof(Parameters)} are null");
         }
             
         {

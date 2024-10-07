@@ -33,6 +33,7 @@ public class DelayedFileSystemWatcher : IDisposable
     private ArrayList _events = new();
 
     private int _consolidationInterval = 1000; // initial value in milliseconds
+    private bool _isDisposing;
     private readonly System.Timers.Timer _timer;
 
     #region *** Delegate to FileSystemWatcher ***
@@ -204,15 +205,6 @@ public class DelayedFileSystemWatcher : IDisposable
     }
 
     /// <summary>
-    /// Releases the unmanaged resources used by the <see cref="FileSystemWatcher"/> and optionally releases the managed resources.
-    /// </summary>
-    public void Dispose()
-    {
-        _fileSystemWatcher.Dispose();
-        _timer.Dispose();
-    }
-
-    /// <summary>
     /// Ends the initialization of a <see cref="FileSystemWatcher"/> used on a form or used by another component. The initialization occurs at run time.
     /// </summary>
     public void EndInit()
@@ -270,7 +262,7 @@ public class DelayedFileSystemWatcher : IDisposable
     /// </summary>
     /// <param name="changeType">The <see cref="System.IO.WatcherChangeTypes" /> to watch for.</param>
     /// <returns>A <see cref="WaitForChangedResult"/> that contains specific information on the change that occurred.</returns>
-    public WaitForChangedResult WaitForChanged(WatcherChangeTypes changeType)
+    public WaitForChangedResult WaitForChanged(WatcherChangeTypes changeType) // NOSONAR
     {
         throw new NotImplementedException();
     }
@@ -282,7 +274,7 @@ public class DelayedFileSystemWatcher : IDisposable
     /// <param name="changeType">The System.IO.WatcherChangeTypes to watch for.</param>
     /// <param name="timeout">The time (in milliseconds) to wait before timing out.</param>
     /// <returns>A <see cref="System.IO.WaitForChangedResult"/> that contains specific information on the change that occurred.</returns>
-    public WaitForChangedResult WaitForChanged(WatcherChangeTypes changeType, int timeout)
+    public WaitForChangedResult WaitForChanged(WatcherChangeTypes changeType, int timeout) // NOSONAR
     {
         throw new NotImplementedException();
     }
@@ -397,7 +389,7 @@ public class DelayedFileSystemWatcher : IDisposable
         }
     }
 
-    private bool ShouldRaiseEvent(DelayedEvent current)
+    private static bool ShouldRaiseEvent(DelayedEvent current)
     {
         if (current.Args.ChangeType is WatcherChangeTypes.Created or WatcherChangeTypes.Changed)
         {
@@ -415,7 +407,7 @@ public class DelayedFileSystemWatcher : IDisposable
         return true;
     }
 
-    private void DelayEvent(DelayedEvent? current)
+    private static void DelayEvent(DelayedEvent? current)
     {
         if (current != null)
         {
@@ -461,10 +453,29 @@ public class DelayedFileSystemWatcher : IDisposable
                     case WatcherChangeTypes.All:
                         break;
                     default:
-                        throw new ArgumentOutOfRangeException();
+                        throw new ArgumentOutOfRangeException($"{dequeuedInvent.Args.ChangeType} is not defined in {nameof(WatcherChangeTypes)}.");
                 }
         }
     }
-
     #endregion
+
+    protected virtual void Dispose(bool disposing)
+    {
+        if (!_isDisposing)
+        {
+            if (disposing)
+            {
+                _fileSystemWatcher.Dispose();
+                _timer.Dispose();
+            }
+
+            _isDisposing = true;
+        }
+    }
+
+    public void Dispose()
+    {
+        Dispose(disposing: true);
+        GC.SuppressFinalize(this);
+    }
 }

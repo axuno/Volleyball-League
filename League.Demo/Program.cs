@@ -7,6 +7,11 @@ namespace League.WebApp;
 
 public class Program
 {
+    /// <summary>
+    /// Program cannot be made static.
+    /// </summary>
+    protected Program(){}
+
     public static async Task Main(string[] args)
     {
         // NLog: set up the logger first to catch all errors

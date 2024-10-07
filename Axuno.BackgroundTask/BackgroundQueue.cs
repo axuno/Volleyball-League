@@ -115,7 +115,7 @@ public class BackgroundQueue : IBackgroundQueue
         // - Either the original task completed, so we need to cancel the delay task.
         // - Or the timeout expired, so we need to cancel the original task.
         // Canceling will not affect a task, that is already completed.
-        timeoutCancellation.Cancel();
+        await timeoutCancellation.CancelAsync();
         if (completedTask == originalTask)
         {
             // original task completed
@@ -124,7 +124,7 @@ public class BackgroundQueue : IBackgroundQueue
         else
         {
             // timeout
-            throw new TimeoutException();
+            throw new TimeoutException($"Tasked timed out after {timeout.TotalMilliseconds}ms.");
         }
     }
 }

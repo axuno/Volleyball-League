@@ -5,7 +5,7 @@ namespace Axuno.Tools.GeoSpatial;
 /// <summary>
 /// Stores an angle and allows conversion to different formats.
 /// </summary>
-public class Angle : IComparable<Angle>, IEquatable<Angle>, IFormattable
+public class Angle : IComparable<Angle>, IEquatable<Angle>, IFormattable, IEqualityComparer<Angle>
 {
     /// <summary>
     /// Initializes a new instance of the Angle class.
@@ -471,14 +471,11 @@ public class Angle : IComparable<Angle>, IEquatable<Angle>, IFormattable
     protected static void ValidateRange(string parameter, double value, double min, double max)
     {
         // Need to check for double.NaN, double.PositiveInfinity and
-        // double.NegativeInfinity, which all have strange behavoir with
+        // double.NegativeInfinity, which all have strange behavior with
         // the normal comparison operators.
-        if (!double.IsNaN(value) && !double.IsInfinity(value))
+        if (!double.IsNaN(value) && !double.IsInfinity(value) && min <= value && (value <= max))
         {
-            if (min <= value && (value <= max))
-            {
-                return; // Don't throw
-            }
+            return; // Don't throw
         }
 
         var message = string.Format(
@@ -508,5 +505,25 @@ public class Angle : IComparable<Angle>, IEquatable<Angle>, IFormattable
 
         // Both the types are derived, return true if they are different
         return angleType != type;
+    }
+
+    public bool Equals(Angle? x, Angle? y)
+    {
+        if (ReferenceEquals(x, y))
+        {
+            return true;
+        }
+
+        if (ReferenceEquals(x, null) || ReferenceEquals(y, null))
+        {
+            return false;
+        }
+
+        return x.Radians.Equals(y.Radians);
+    }
+
+    public int GetHashCode(Angle obj)
+    {
+        return obj.Radians.GetHashCode();
     }
 }

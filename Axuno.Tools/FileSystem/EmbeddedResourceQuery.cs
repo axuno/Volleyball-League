@@ -73,7 +73,6 @@ public class EmbeddedResourceQuery : IEmbeddedResourceQuery
     {
         foreach (var assembly in _assemblyNames.Keys)
         {
-            var x = assembly.GetFiles();
             var resourceNames = GetResourceNames(assembly);
             foreach (var resourceName in resourceNames)
             {

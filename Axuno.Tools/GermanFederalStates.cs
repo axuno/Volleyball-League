@@ -20,7 +20,7 @@ public sealed class GermanFederalState
 
 public sealed class GermanFederalStates : Collection<GermanFederalState>
 {
-    public enum Id : int
+    public enum Id
     {
         BadenWuerttemberg,
         Bayern,

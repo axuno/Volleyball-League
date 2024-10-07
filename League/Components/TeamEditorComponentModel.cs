@@ -8,8 +8,10 @@ namespace League.Components;
 public class TeamEditorComponentModel
 {
     [HiddenInput]
+    [Required]
     public long Id { get; set; }
     [HiddenInput]
+    [Required]
     public bool IsNew { get; set; }
     [Display(Name = "Team name")]
     [Required(AllowEmptyStrings = false, ErrorMessageResourceName = nameof(DataAnnotationResource.PropertyValueRequired), ErrorMessageResourceType = typeof(DataAnnotationResource))]

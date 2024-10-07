@@ -129,7 +129,7 @@ public class Manage : AbstractController
                 return JsonResponseRedirect(TenantLink.Action(nameof(Index), nameof(Manage)));
             }
             AddErrors(result);
-            //return View(model);
+            
             return PartialView(ViewNames.Manage._ChangeUsernameModalPartial, model);
         }
 

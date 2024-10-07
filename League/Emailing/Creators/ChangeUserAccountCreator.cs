@@ -34,7 +34,7 @@ public class ChangeUserAccountCreator : IMailMessageCreator
             Parameters.TemplateNameTxt is null || Parameters.TemplateNameHtml is null ||
             Parameters.DeadlineUtc is null)
         {
-            throw new ArgumentNullException(nameof(Parameters), "One or more required parameters are null");
+            throw new InvalidOperationException($"One or more required parameters of {nameof(Parameters)} are null");
         }
             
         var model = new ChangeUserAccountModel()

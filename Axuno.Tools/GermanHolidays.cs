@@ -395,21 +395,21 @@ public class GermanHolidays : List<GermanHoliday>
         }
     }
 
-    private Id? GetHolidayId(XElement holiday)
+    private static Id? GetHolidayId(XElement holiday)
     {
         if (holiday.Attribute("Id") != null && Enum.TryParse<Id>(holiday.Attribute("Id")?.Value, true, out var id))
             return id;
         return null;
     }
 
-    private ActionType GetActionType(XElement holiday)
+    private static ActionType GetActionType(XElement holiday)
     {
         if (Enum.TryParse<ActionType>(holiday.Attribute("Action")?.Value, true, out var action))
             return action;
         return ActionType.Merge;
     }
 
-    private (DateTime, DateTime) GetDateRange(XElement holiday)
+    private static (DateTime, DateTime) GetDateRange(XElement holiday)
     {
         var dateFrom = DateTime.MinValue;
         var dateTo = DateTime.MinValue;
@@ -426,19 +426,19 @@ public class GermanHolidays : List<GermanHoliday>
         return (dateFrom, dateTo);
     }
 
-    private Type GetHolidayType(XElement holiday)
+    private static Type GetHolidayType(XElement holiday)
     {
         if (Enum.TryParse<Type>(holiday.Element("Type")?.Value, true, out var type))
             return type;
         throw new InvalidOperationException("Missing or invalid holiday type.");
     }
 
-    private List<GermanFederalStates.Id> GetStateIds(XElement holiday)
+    private static List<GermanFederalStates.Id> GetStateIds(XElement holiday)
     {
         var stateIds = new List<GermanFederalStates.Id>();
 
         var publicHolidayStateIds = holiday.Element("PublicHolidayStateIds");
-        if (publicHolidayStateIds != null && publicHolidayStateIds.HasElements)
+        if (publicHolidayStateIds is { HasElements: true })
         {
             stateIds.AddRange(publicHolidayStateIds.Elements().Select(stateId =>
                 Enum.Parse<GermanFederalStates.Id>(stateId.Value, true)));
@@ -489,7 +489,7 @@ public class GermanHolidays : List<GermanHoliday>
         }
     }
 
-    private void ValidateDateRange(ActionType action, DateTime dateFrom, DateTime dateTo)
+    private static void ValidateDateRange(ActionType action, DateTime dateFrom, DateTime dateTo)
     {
         if (action != ActionType.Replace && (dateFrom == DateTime.MinValue || dateTo == DateTime.MinValue))
             throw new InvalidOperationException("Missing 'date from' and/or 'date to' in XML data.");

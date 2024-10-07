@@ -42,7 +42,6 @@ public class BackgroundQueueService : BackgroundService
             catch (Exception e) when (e is TaskCanceledException || e is OperationCanceledException)
             {
                 _logger.LogError(e, $"{nameof(BackgroundQueueService)} canceled.");
-                //break;
                 return;
             }
             catch (Exception e)

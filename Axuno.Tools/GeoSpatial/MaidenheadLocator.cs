@@ -27,7 +27,7 @@ namespace Axuno.Tools.GeoSpatial;
 ///     |       |       |       |       |       |
 ///     0       +10     +20     +30     +40     +50      minutes
 /// </remarks>
-public class MaidenheadLocator
+public static class MaidenheadLocator
 {
     // Default timeout for regular expressions
     private static int _regExTimeout = 1000;
