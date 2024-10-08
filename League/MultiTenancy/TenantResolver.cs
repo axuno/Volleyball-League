@@ -61,8 +61,8 @@ public class TenantResolver
             new CookieOptions
             {
                 Path = "/",
-                HttpOnly = false,
-                Secure = false,
+                HttpOnly = true,
+                Secure = true,
                 SameSite = SameSiteMode.Lax,
                 Expires = DateTimeOffset.Now.AddYears(1),
                 IsEssential = true

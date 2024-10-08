@@ -69,7 +69,11 @@ public class Language : Controller
             Response.Cookies.Delete(cookieProvider.CookieName);
             Response.Cookies.Append(cookieProvider.CookieName, string.Empty, new CookieOptions
             {
-                Expires = DateTime.UtcNow.AddDays(-1), IsEssential = true, SameSite = SameSiteMode.Lax
+                Secure = true,
+                Expires = DateTime.UtcNow.AddDays(-1),
+                IsEssential = true,
+                HttpOnly = true,
+                SameSite = SameSiteMode.Lax
             });
                 
             return RedirectToLocal(returnUrl);
@@ -81,7 +85,11 @@ public class Language : Controller
             cookieValue,
             new CookieOptions
             {
-                Expires = DateTimeOffset.UtcNow.AddYears(1), IsEssential = true, SameSite = SameSiteMode.Lax
+                Secure = true,
+                Expires = DateTimeOffset.UtcNow.AddYears(1),
+                IsEssential = true,
+                HttpOnly = true,
+                SameSite = SameSiteMode.Lax
             });
 
         return RedirectToLocal(returnUrl);
