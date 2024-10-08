@@ -32,6 +32,8 @@ public class Language : Controller
     [HttpGet("")]
     public IActionResult Index(string? culture, string? uiCulture, string? returnUrl)
     {
+        if (!ModelState.IsValid) return BadRequest();
+
         returnUrl ??= "/";
         // QueryStringRequestCultureProvider processes arguments and requires one of both
         if (culture == null && uiCulture == null)

@@ -79,6 +79,8 @@ public class Ranking : AbstractController
     [HttpGet("all-time/tournament/{id?}")]
     public async Task<IActionResult> AllTimeTournament(long?id, CancellationToken cancellationToken)
     {
+        if (!ModelState.IsValid) id = null;
+
         try
         {
             var rankingList = await GetRankingListCached(cancellationToken);
@@ -101,6 +103,8 @@ public class Ranking : AbstractController
     [HttpGet("all-time/team/{id?}")]
     public async Task<IActionResult> AllTimeTeam(long? id, CancellationToken cancellationToken)
     {
+        if (!ModelState.IsValid) id = null;
+
         try
         {
             var rankingList = await GetRankingListCached(cancellationToken);

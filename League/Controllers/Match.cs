@@ -119,6 +119,8 @@ public class Match : AbstractController
     [HttpGet("[action]")]
     public async Task<IActionResult> Calendar(long id, CancellationToken cancellationToken)
     {
+        if (!ModelState.IsValid) return NoContent();
+
         var matches = await _appDb.MatchRepository.GetMatchCalendarAsync(_tenantContext.TournamentContext.MatchPlanTournamentId, id, null, null, cancellationToken);
         if (matches.Count != 1) return NoContent();
 
@@ -163,6 +165,8 @@ public class Match : AbstractController
     [HttpGet("[action]")]
     public async Task<IActionResult> PublicCalendar(long? team, long? round, CancellationToken cancellationToken)
     {
+        if (!ModelState.IsValid) return NoContent();
+
         var matches = await _appDb.MatchRepository.GetMatchCalendarAsync(_tenantContext.TournamentContext.MatchPlanTournamentId, null, team, round, cancellationToken);
         if (matches.Count == 0) return NoContent();
 
@@ -241,6 +245,8 @@ public class Match : AbstractController
     [HttpGet("overrule-result/{id:long}")]
     public async Task<IActionResult> OverruleResult(long id, CancellationToken cancellationToken)
     {
+        if (!ModelState.IsValid) return Forbid();
+
         var match = await _appDb.MatchRepository.GetMatchWithSetsAsync(id, cancellationToken);
         if (!(await _authorizationService.AuthorizeAsync(User, match, Authorization.MatchOperations.OverruleResult)).Succeeded)
         {
@@ -261,6 +267,8 @@ public class Match : AbstractController
     [HttpGet("enter-result/{id:long}")]
     public async Task<IActionResult> EnterResult(long id, CancellationToken cancellationToken)
     {
+        if (!ModelState.IsValid) return Forbid();
+
         try
         {
             var match = await _appDb.MatchRepository.GetMatchWithSetsAsync(id, cancellationToken);
@@ -322,6 +330,8 @@ public class Match : AbstractController
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> EnterResult([FromForm] EnterResultViewModel? model, CancellationToken cancellationToken)
     {
+        if (!ModelState.IsValid) return NotFound();
+
         MatchEntity? match;
         try
         {
@@ -427,8 +437,7 @@ public class Match : AbstractController
     public async Task<IActionResult> RemoveResult([FromForm] EnterResultViewModel? model,
         CancellationToken cancellationToken)
     {
-        ArgumentNullException.ThrowIfNull(model);
-        ArgumentNullException.ThrowIfNull(model.Id);
+        if (!ModelState.IsValid || model?.Id is null) return NotFound();
 
         try
         {
@@ -467,6 +476,8 @@ public class Match : AbstractController
     [HttpGet("edit-fixture/{id:long}")]
     public async Task<IActionResult> EditFixture(long id, CancellationToken cancellationToken)
     {
+        if (!ModelState.IsValid) return NotFound();
+
         var model = new EditFixtureViewModel(await GetPlannedMatchFromDatabase(id, cancellationToken), _timeZoneConverter)
         {
             Tournament = await GetPlanTournament(cancellationToken)
@@ -505,6 +516,8 @@ public class Match : AbstractController
     {
         // [FromBody] => 'content-type': 'application/json'
         // [FromForm] => 'content-type': 'application/x-www-form-urlencoded'
+
+        if (!ModelState.IsValid) return NotFound();
 
         model = new EditFixtureViewModel(await GetPlannedMatchFromDatabase(model.Id, cancellationToken), _timeZoneConverter)
         {

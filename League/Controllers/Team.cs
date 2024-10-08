@@ -69,6 +69,8 @@ public class Team : AbstractController
     [HttpGet("my-team/{id:long?}")]
     public async Task<IActionResult> MyTeam(long? id, CancellationToken cancellationToken)
     {
+        if (!ModelState.IsValid) return Redirect(TenantLink.Action(nameof(MyTeam), nameof(Team), new { id = default(long?) })!);
+
         // make sure that any changes are immediately reflected in the user's application cookie
         var appUser = await _signInManager.UserManager.GetUserAsync(User);
         if (appUser != null)
@@ -126,6 +128,8 @@ public class Team : AbstractController
     [HttpGet("{id:long}")]
     public async Task<IActionResult> Single(long id, CancellationToken cancellationToken)
     {
+        if (!ModelState.IsValid) return NotFound();
+
         var model = new TeamSingleModel(_timeZoneConverter)
         {
             Tournament = await _appDb.TournamentRepository.GetTournamentAsync(
@@ -154,6 +158,8 @@ public class Team : AbstractController
     [HttpGet("[action]/{teamId:long}")]
     public async Task<IActionResult> Edit(long teamId, CancellationToken cancellationToken)
     {
+        if (!ModelState.IsValid) return NotFound();
+
         var team = await _appDb.TeamRepository.GetTeamEntityAsync(new PredicateExpression(TeamFields.Id == teamId), cancellationToken);
         if (team == null)
         {
@@ -180,8 +186,10 @@ public class Team : AbstractController
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Edit([FromForm] TeamEditModel model, CancellationToken cancellationToken)
     {
+        if (!ModelState.IsValid) return NotFound();
+
         TeamEntity? team = null;
-        if (model.Team != null && !model.Team.IsNew)
+        if (model.Team is { IsNew: false })
         {
             team = await _appDb.TeamRepository.GetTeamEntityAsync(new PredicateExpression(TeamFields.Id == model.Team.Id), cancellationToken);
             if (team == null)
@@ -259,6 +267,8 @@ public class Team : AbstractController
     [HttpGet("[action]/{tid}")]
     public async Task<IActionResult> ChangeVenue(long tid, CancellationToken cancellationToken)
     {
+        if (!ModelState.IsValid) return NotFound();
+
         var teamEntity = await
             _appDb.TeamRepository.GetTeamEntityAsync(new PredicateExpression(TeamFields.Id == tid),
                 cancellationToken);
@@ -273,6 +283,8 @@ public class Team : AbstractController
     [HttpGet("[action]/{tid}")]
     public async Task<IActionResult> SelectVenue(long tid, string returnUrl, CancellationToken cancellationToken)
     {
+        if (!ModelState.IsValid) return NotFound();
+
         var teamEntity = await
             _appDb.TeamRepository.GetTeamEntityAsync(new PredicateExpression(TeamFields.Id == tid),
                 cancellationToken);
@@ -304,6 +316,9 @@ public class Team : AbstractController
     public async Task<IActionResult> SelectVenue([FromForm][Bind("TeamId, VenueId")] TeamVenueSelectModel model, CancellationToken cancellationToken)
     {
         // model binding is not case-sensitive
+
+        if (!ModelState.IsValid) return JsonResponseRedirect(Url.Action(nameof(Error.AccessDenied), nameof(Error),
+            new { ReturnUrl = TenantLink.Action(nameof(MyTeam), nameof(Team)) }));
 
         var teamEntity = await
             _appDb.TeamRepository.GetTeamEntityAsync(new PredicateExpression(TeamFields.Id == model.TeamId),

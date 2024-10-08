@@ -30,6 +30,8 @@ public class Impersonation : AbstractController
     [HttpGet("")]
     public async Task<IActionResult> Index(string search, int limit = 20)
     {
+        if (!ModelState.IsValid) return BadRequest();
+
         limit = Math.Abs(limit);
         var users = new List<UserEntity>();
         if (!string.IsNullOrWhiteSpace(search))
@@ -49,6 +51,8 @@ public class Impersonation : AbstractController
     [HttpGet("[action]/{id}")]
     public async Task<IActionResult> Start(long id)
     {
+        if (!ModelState.IsValid) return BadRequest();
+
         var currentUser = User;
         var targetUser = await _signInManager.UserManager.FindByIdAsync(id.ToString());
 

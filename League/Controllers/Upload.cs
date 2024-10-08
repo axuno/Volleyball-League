@@ -35,6 +35,8 @@ public class Upload : AbstractController
     [HttpGet("team-photo/{id:long}")]
     public async Task<IActionResult> TeamPhoto(long id, CancellationToken cancellationToken)
     {
+        if (!ModelState.IsValid) return NotFound();
+
         if (!(await _authorizationService.AuthorizeAsync(User, new TeamEntity(id),
                 Authorization.TeamOperations.ChangePhoto)).Succeeded)
         {
@@ -78,6 +80,8 @@ public class Upload : AbstractController
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> TeamPhoto([FromForm] IFormFile file, [FromForm] long teamId, CancellationToken cancellationToken)
     {
+        if (!ModelState.IsValid) return Forbid();
+
         if (!(await _authorizationService.AuthorizeAsync(User, new TeamEntity(teamId),
                 Authorization.TeamOperations.ChangePhoto)).Succeeded)
         {
@@ -148,6 +152,8 @@ public class Upload : AbstractController
     [HttpGet("remove-team-photo/{id:long}")]
     public async Task<IActionResult> RemoveTeamPhoto(long id)
     {
+        if (!ModelState.IsValid) return Forbid();
+
         if (!(await _authorizationService.AuthorizeAsync(User, new TeamEntity(id),
                 Authorization.TeamOperations.ChangePhoto)).Succeeded)
         {

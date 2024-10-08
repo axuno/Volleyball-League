@@ -189,6 +189,8 @@ public class Manage : AbstractController
     [HttpGet("[action]/{id}")]
     public async Task<IActionResult> ConfirmNewPrimaryEmail(string id, string code, string e)
     {
+        if (!ModelState.IsValid) return BadRequest();
+
         var user = await _userManager.FindByIdAsync(id);
         if (user == null)
         {
@@ -609,7 +611,7 @@ public class Manage : AbstractController
     public async Task<IActionResult> RemoveLogin(RemoveLoginViewModel account)
     {
         var user = await GetCurrentUserAsync();
-        if (user != null)
+        if (ModelState.IsValid && user != null)
         {
             var result = await _userManager.RemoveLoginAsync(user, account.LoginProvider, account.ProviderKey);
             if (result.Succeeded)
@@ -629,6 +631,8 @@ public class Manage : AbstractController
     [ValidateAntiForgeryToken]
     public IActionResult LinkLogin(string provider)
     {
+        if (!ModelState.IsValid) return BadRequest();
+
         // Request a redirect to the external login provider to link a login for the current user
         var redirectUrl = TenantLink.Action(nameof(LinkLoginCallback), nameof(Manage));
         var properties = _signInManager.ConfigureExternalAuthenticationProperties(provider, redirectUrl, _userManager.GetUserId(User));
@@ -639,7 +643,7 @@ public class Manage : AbstractController
     public async Task<ActionResult> LinkLoginCallback()
     {
         var user = await GetCurrentUserAsync();
-        if (user == null)
+        if (!ModelState.IsValid || user == null)
         {
             TempData.Put<ManageMessage>(nameof(ManageMessage), new ManageMessage { AlertType = SiteAlertTagHelper.AlertType.Danger, MessageId = MessageId.AddLoginFailure });
             return Redirect(GeneralLink.GetUriByAction(HttpContext, nameof(Index))!);
