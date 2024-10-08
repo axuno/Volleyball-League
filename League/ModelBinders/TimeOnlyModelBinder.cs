@@ -12,6 +12,7 @@ public class TimeOnlyModelBinder : IModelBinder
 {
     private readonly IModelBinder _fallbackBinder;
     private readonly ILogger<TimeOnlyModelBinder> _logger;
+    private const int RegexTimeout = 300;
 
     private const DateTimeStyles _dateTimeStyles = DateTimeStyles.AllowWhiteSpaces | DateTimeStyles.AllowLeadingWhite | DateTimeStyles.AllowTrailingWhite;
 
@@ -56,8 +57,8 @@ public class TimeOnlyModelBinder : IModelBinder
     {
         if (text != null)
         {
-            text = Regex.Replace(text, "([^0-9]|^)([0-9])([0-9]{2})([^0-9]|$)", "$1$2:$3$4");
-            text = Regex.Replace(text, "^[0-9]$", "0$0");
+            text = Regex.Replace(text, "([^0-9]|^)([0-9])([0-9]{2})([^0-9]|$)", "$1$2:$3$4", RegexOptions.Compiled, TimeSpan.FromMilliseconds(RegexTimeout));
+            text = Regex.Replace(text, "^[0-9]$", "0$0", RegexOptions.Compiled, TimeSpan.FromMilliseconds(RegexTimeout));
 
             foreach (var format in _formats)
             {
@@ -67,7 +68,7 @@ public class TimeOnlyModelBinder : IModelBinder
                 return true;
             }
         }
-        
+
         time = TimeOnly.MinValue;
         return false;
     }
