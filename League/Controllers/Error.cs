@@ -24,6 +24,8 @@ public class Error : AbstractController
     [HttpGet]
     public IActionResult Index(string? id)
     {
+        if (!ModelState.IsValid) return BadRequest();
+
         ViewBag.TitleTagText = $"{_tenantContext.OrganizationContext.ShortName} - {_localizer["Error"]}";
         id ??= string.Empty;
         id = id.Trim();
@@ -64,6 +66,8 @@ public class Error : AbstractController
     [HttpGet]
     public IActionResult AccessDenied(string returnUrl)
     {
+        if (!ModelState.IsValid) return View(Views.ViewNames.Error.AccessDenied);
+
         ViewData["ReturnUrl"] = returnUrl;
         return View(Views.ViewNames.Error.AccessDenied);
     }

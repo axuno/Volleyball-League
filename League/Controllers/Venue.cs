@@ -41,6 +41,8 @@ public class Venue : AbstractController
     [HttpGet("[action]/{id:long}")]
     public async Task<IActionResult> Edit(long id, string returnUrl, CancellationToken cancellationToken)
     {
+        if (!ModelState.IsValid) return BadRequest();
+
         var venueEntity = (await _appDb.VenueRepository.GetVenuesAsync(
             new PredicateExpression(VenueFields.Id == id),
             cancellationToken)).FirstOrDefault();
@@ -67,6 +69,8 @@ public class Venue : AbstractController
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Edit([FromForm] VenueEditModel model, CancellationToken cancellationToken)
     {
+        if (!ModelState.IsValid) return BadRequest();
+
         var venueEntity = (await _appDb.VenueRepository.GetVenuesAsync(
             new PredicateExpression(VenueFields.Id == model.Venue?.Id),
             cancellationToken)).FirstOrDefault();
@@ -122,6 +126,8 @@ public class Venue : AbstractController
     [HttpGet("[action]/{tid:long?}")]
     public async Task<IActionResult> Create(long? tid, string returnUrl, CancellationToken cancellationToken)
     {
+        if (!ModelState.IsValid) return BadRequest();
+
         TeamEntity? teamEntity = null;
         if (tid.HasValue)
         {
@@ -146,6 +152,8 @@ public class Venue : AbstractController
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Create([FromForm] VenueEditModel model, CancellationToken cancellationToken)
     {
+        if (!ModelState.IsValid) return BadRequest();
+
         TeamEntity? teamEntity = null;
         if (model.TeamId.HasValue)
         {

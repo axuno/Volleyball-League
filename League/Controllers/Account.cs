@@ -114,6 +114,8 @@ public class Account : AbstractController
     [AllowAnonymous]
     public IActionResult SignIn(string? returnUrl = null)
     {
+        if (!ModelState.IsValid) return BadRequest();
+
         ViewData[ReturnUrl] = returnUrl;
         return View();
     }
@@ -181,8 +183,10 @@ public class Account : AbstractController
     [AllowAnonymous]
     public IActionResult CreateAccount(string? returnUrl = null)
     {
+        if (!ModelState.IsValid) return BadRequest();
+
         ViewData[ReturnUrl] = returnUrl;
-        return View();
+        return View(); // return the view to create a new account
     }
 
     [HttpPost("create")]
@@ -216,6 +220,8 @@ public class Account : AbstractController
     [AllowAnonymous]
     public IActionResult Register(string? code = null, string? returnUrl = null)
     {
+        if (!ModelState.IsValid) return BadRequest();
+
         if (!_dataProtector.TryDecrypt(code?.Base64UrlDecode() ?? string.Empty, out var email, out var expiration))
         {
             return Redirect(TenantLink.Action(nameof(Message), nameof(Account), new { messageTypeText = MessageType.ConfirmEmailError })!);
@@ -295,6 +301,8 @@ public class Account : AbstractController
     [ValidateAntiForgeryToken]
     public IActionResult ExternalSignIn(string provider, string? returnUrl = null)
     {
+        if (!ModelState.IsValid) return BadRequest();
+
         // Request a redirect to the external login provider.
         var redirectUrl = TenantLink.Action(nameof(ExternalSignInCallback), nameof(Account), new { ReturnUrl = returnUrl });
         var properties = _signInManager.ConfigureExternalAuthenticationProperties(provider, redirectUrl);
@@ -306,7 +314,7 @@ public class Account : AbstractController
     [AllowAnonymous]
     public async Task<IActionResult> ExternalSignInCallback(string? returnUrl = null, string? remoteError = null)
     {
-        if (remoteError != null)
+        if (remoteError != null || !ModelState.IsValid)
         {
             _logger.LogInformation("{Method} failed. Remote error was supplied.", nameof(ExternalSignInCallback));
             return SocialMediaSignInFailure(_localizer["Failed to sign-in with the social network account"].Value + $" ({remoteError})");
@@ -447,6 +455,8 @@ public class Account : AbstractController
     [AllowAnonymous]
     public IActionResult ResetPassword(string? code = null)
     {
+        if (!ModelState.IsValid) return BadRequest();
+
         var model = new ResetPasswordViewModel {Code = code};
         if (code == null)
         {
@@ -460,7 +470,7 @@ public class Account : AbstractController
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> ResetPassword(ResetPasswordViewModel model)
     {
-        if (model.Code == null)
+        if (!ModelState.IsValid || model.Code is null)
         {
             return Redirect(TenantLink.Action(nameof(ResetPassword), nameof(Account))!);
         }
@@ -510,6 +520,8 @@ public class Account : AbstractController
     [AllowAnonymous]
     public IActionResult Message(string messageTypeText)
     {
+        if (!ModelState.IsValid) return BadRequest();
+
         if (Enum.TryParse(messageTypeText, true, out MessageType messageType))
         {
             switch (messageType)

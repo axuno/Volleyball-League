@@ -34,6 +34,8 @@ public class TenantContent : League.Controllers.AbstractController
     [HttpGet]
     public IActionResult Index(string category = "home", string topic = "index")
     {
+        if (!ModelState.IsValid) return BadRequest();
+
         // Note: Indicate the current controller-specific tenant directory with the "./" prefix
         var view = $"./{_tenantContext.SiteContext.FolderName}/{category}_{topic}";
         var result = _viewEngine.FindView(_actionContext, view, false);

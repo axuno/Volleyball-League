@@ -48,6 +48,8 @@ public class Map : AbstractController
     [HttpGet]
     public async Task<IActionResult> Venue(long id, CancellationToken cancellationToken)
     {
+        if (!ModelState.IsValid) return NotFound();
+
         var venue = (await _appDb.VenueRepository.GetVenueTeamRowsAsync(
             new PredicateExpression(VenueTeamFields.VenueId == id & VenueTeamFields.TournamentId == _tenantContext.TournamentContext.MapTournamentId), cancellationToken)).FirstOrDefault();
 

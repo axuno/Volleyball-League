@@ -37,6 +37,8 @@ public class Role : AbstractController
     public async Task<IActionResult> Remove(string roleName, long uid, long tid, string un,
         string returnUrl, CancellationToken cancellationToken)
     {
+        if (!ModelState.IsValid) return BadRequest();
+
         var model = new RoleRemoveModel
         {
             TeamId = tid,
@@ -62,6 +64,9 @@ public class Role : AbstractController
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Remove([FromForm] RoleRemoveModel model, CancellationToken cancellationToken)
     {
+        if (!ModelState.IsValid) return JsonResponseRedirect(Url.Action(nameof(Error.AccessDenied), nameof(Error),
+            new { _defaultReturnUrl }));
+
         model.ClaimType = Identity.Constants.ClaimType.ManagesTeam.ToLowerInvariant() ==
                           model.ClaimType?.ToLowerInvariant()
             ? Identity.Constants.ClaimType.ManagesTeam
@@ -106,6 +111,9 @@ public class Role : AbstractController
     [HttpGet("[action]/{tid:long}")]
     public async Task<IActionResult> Add(long tid, string returnUrl, CancellationToken cancellationToken)
     {
+        if (!ModelState.IsValid) return JsonResponseRedirect(Url.Action(nameof(Error.AccessDenied), nameof(Error),
+            new { _defaultReturnUrl }));
+
         var model = new RoleAddModel
         {
             TeamId = tid,
