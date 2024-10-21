@@ -32,7 +32,6 @@ Volleyball League is an open source sports platform that brings everything neces
     <PackageReference Include="libphonenumber-csharp" Version="8.13.47" />
     <PackageReference Include="NLog.Extensions.Logging" Version="5.3.14" />
     <PackageReference Include="System.Data.SqlClient" Version="4.8.6" />
-    <PackageReference Include="System.Text.Json" Version="8.0.5" />
     <PackageReference Include="YAXLib" Version="4.3.0" />
   </ItemGroup>
   <ItemGroup>
