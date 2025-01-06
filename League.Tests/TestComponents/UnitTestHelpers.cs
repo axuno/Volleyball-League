@@ -61,7 +61,7 @@ public class UnitTestHelpers
     {
         RuntimeConfiguration.ConfigureDQE<SD.LLBLGen.Pro.DQE.SqlServer.SQLServerDQEConfiguration>(c => c
             .SetTraceLevel(System.Diagnostics.TraceLevel.Verbose)
-            .AddDbProviderFactory(typeof(System.Data.SqlClient.SqlClientFactory)));
+            .AddDbProviderFactory(typeof(Microsoft.Data.SqlClient.SqlClientFactory)));
 
         RuntimeConfiguration.Tracing.SetTraceLevel("ORMPersistenceExecution", System.Diagnostics.TraceLevel.Verbose);
         RuntimeConfiguration.Tracing.SetTraceLevel("ORMPlainSQLQueryExecution", System.Diagnostics.TraceLevel.Verbose);

@@ -17,21 +17,22 @@ Volleyball League is an open source sports platform that brings everything neces
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="EPPlus" Version="7.4.1" />
+    <PackageReference Include="EPPlus" Version="7.5.2" />
+    <PackageReference Include="Microsoft.Data.SqlClient" Version="5.2.2" />
     <PackageReference Include="NLog" Version="5.3.4" />
-    <PackageReference Include="NuGetizer" Version="1.2.3">
+    <PackageReference Include="NuGetizer" Version="1.2.4">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="OxyPlot.Core" Version="2.2.0" />
     <PackageReference Include="OxyPlot.SkiaSharp" Version="2.2.0" />
-    <PackageReference Include="PuppeteerSharp" Version="20.0.2" />
+    <PackageReference Include="PuppeteerSharp" Version="20.0.5" />
     <PackageReference Include="System.Reflection.TypeExtensions" Version="4.7.0" />
     <!-- Replace original Ical.Net v4.2.0 with more up-to-date fork -->
     <PackageReference Include="Ical.Net" Version="4.3.1" />
-    <PackageReference Include="libphonenumber-csharp" Version="8.13.47" />
-    <PackageReference Include="NLog.Extensions.Logging" Version="5.3.14" />
-    <PackageReference Include="System.Data.SqlClient" Version="4.8.6" />
+    <PackageReference Include="libphonenumber-csharp" Version="8.13.52" />
+    <PackageReference Include="NLog.Extensions.Logging" Version="5.3.15" />
+    <PackageReference Include="System.Data.SqlClient" Version="4.9.0" />
     <PackageReference Include="YAXLib" Version="4.3.0" />
   </ItemGroup>
   <ItemGroup>
