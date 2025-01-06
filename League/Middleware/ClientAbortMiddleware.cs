@@ -25,7 +25,7 @@ public class ClientAbortMiddleware : IMiddleware
         // If the cancellation token has not been requested,
         // it means that the exception was caused by the client closing the connection.
         // Note: SqlException with message "Operation cancelled by user may throw, too, but rarely.
-        catch (Exception ex) when (ex is TaskCanceledException or SqlException && context.RequestAborted.IsCancellationRequested)
+        catch (Exception ex) when (ex is TaskCanceledException or Microsoft.Data.SqlClient.SqlException && context.RequestAborted.IsCancellationRequested)
         {
             // Log the exception and stop the request queue.
             _logger.LogWarning(ex, "Request aborted by client. Processing stops.");

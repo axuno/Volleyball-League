@@ -62,13 +62,13 @@ public static class LeagueStartup
         {
             RuntimeConfiguration.ConfigureDQE<SD.LLBLGen.Pro.DQE.SqlServer.SQLServerDQEConfiguration>(c => c
                 .SetTraceLevel(TraceLevel.Off)
-                .AddDbProviderFactory(typeof(System.Data.SqlClient.SqlClientFactory)));
+                .AddDbProviderFactory(typeof(Microsoft.Data.SqlClient.SqlClientFactory)));
         }
         else
         {
             RuntimeConfiguration.ConfigureDQE<SD.LLBLGen.Pro.DQE.SqlServer.SQLServerDQEConfiguration>(c => c
                 .SetTraceLevel(TraceLevel.Verbose)
-                .AddDbProviderFactory(typeof(System.Data.SqlClient.SqlClientFactory)));
+                .AddDbProviderFactory(typeof(Microsoft.Data.SqlClient.SqlClientFactory)));
 
             RuntimeConfiguration.Tracing.SetTraceLevel("ORMPersistenceExecution", TraceLevel.Verbose);
             RuntimeConfiguration.Tracing.SetTraceLevel("ORMPlainSQLQueryExecution", TraceLevel.Verbose);
