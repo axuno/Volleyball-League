@@ -1,4 +1,5 @@
-﻿using League.Routing;
+﻿using System.Diagnostics.CodeAnalysis;
+using League.Routing;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.ViewEngines;
@@ -32,16 +33,42 @@ public class TenantContent : League.Controllers.AbstractController
 
     [Route("{category=home}/{topic=index}")]
     [HttpGet]
-    public IActionResult Index(string category = "home", string topic = "index")
+    [SuppressMessage("Security", "CA3003:Review code for file path injection vulnerabilities", Justification = "Parameters are validated and sanitized.")]
+    public async Task<IActionResult> Index(string category = "home", string topic = "index")
     {
         if (!ModelState.IsValid) return BadRequest();
 
-        // Note: Indicate the current controller-specific tenant directory with the "./" prefix
-        var view = $"./{_tenantContext.SiteContext.FolderName}/{category}_{topic}";
-        var result = _viewEngine.FindView(_actionContext, view, false);
-        if(!result.Success) return NotFound();
-            
-        // give the full absolute view path as argument, so searching the view won't run a second time
-        return View(result.View.Path);
+        // Validate and sanitize the category and topic parameters
+        if (string.IsNullOrWhiteSpace(category) || string.IsNullOrWhiteSpace(topic) ||
+            category.Contains("..") || topic.Contains("..") ||
+            category.IndexOfAny(Path.GetInvalidFileNameChars()) >= 0 ||
+            topic.IndexOfAny(Path.GetInvalidFileNameChars()) >= 0)
+        {
+            return BadRequest("Invalid category or topic.");
+        }
+
+        var webHostEnvironment = (IWebHostEnvironment)_actionContext.HttpContext.RequestServices.GetService(typeof(IWebHostEnvironment))!;
+        var path = Path.Combine(webHostEnvironment.WebRootPath, "tenant-content", _tenantContext.SiteContext.FolderName, $"{category}_{topic}.html");
+
+        if (!System.IO.File.Exists(path)) return NotFound();
+        try
+        {
+            var html = await System.IO.File.ReadAllTextAsync(path);
+            return View("Index", html);
+        }
+        catch (Exception e)
+        {
+            try
+            {
+                await Task.Delay(1000);
+                
+                var html = await System.IO.File.ReadAllTextAsync(path);
+                return View("Index", html);
+            }
+            catch (Exception exception)
+            {
+                return NotFound();
+            }
+        }
     }
 }
