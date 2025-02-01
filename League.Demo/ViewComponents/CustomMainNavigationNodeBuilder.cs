@@ -1,4 +1,5 @@
 ﻿using League.Components;
+using League.Controllers;
 using League.MultiTenancy;
 using League.WebApp.Controllers;
 using Microsoft.AspNetCore.Authorization;

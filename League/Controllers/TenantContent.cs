@@ -1,34 +1,26 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using League.Routing;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.ViewEngines;
 using TournamentManager.MultiTenancy;
 
-namespace League.WebApp.Controllers;
+namespace League.Controllers;
 
 /// <summary>
 /// This controller is able to return any tenant-specific content from <see cref="Scriban"/> templates.
 /// </summary>
 [Route(TenantRouteConstraint.Template)]
-public class TenantContent : League.Controllers.AbstractController
+public class TenantContent : AbstractController
 {
-    // Note:
-    // We cannot search a view by 'File.Exists' because this won't work with precompiled views.
-    // ViewEngine.FindView will get
-    // -> precompiled views
-    // -> view files (.cshtml) in case razor runtime compilation is on
-    // -> localized view files (e.g.: .de.cshtml) depending on request culture
-    // -> view files could also come from other providers, not only PhysicalFileProvider
-    private readonly ICompositeViewEngine _viewEngine;
-    private readonly ActionContext _actionContext;
     private readonly ITenantContext _tenantContext;
+    private readonly IWebHostEnvironment _webHostEnvironment;
+    private readonly ILogger<TenantContent> _logger;
 
-    public TenantContent(ICompositeViewEngine viewEngine, IActionContextAccessor actionContextAccessor, ITenantContext tenantContext)
+    public TenantContent(IWebHostEnvironment webHostEnvironment, ITenantContext tenantContext, ILogger<TenantContent> logger)
     {
-        _viewEngine = viewEngine;
-        _actionContext = actionContextAccessor.ActionContext!;
+        _webHostEnvironment = webHostEnvironment;
         _tenantContext = tenantContext;
+        _logger = logger;
     }
 
     [Route("{category=home}/{topic=index}")]
@@ -44,29 +36,30 @@ public class TenantContent : League.Controllers.AbstractController
             category.IndexOfAny(Path.GetInvalidFileNameChars()) >= 0 ||
             topic.IndexOfAny(Path.GetInvalidFileNameChars()) >= 0)
         {
+            _logger.LogWarning("Invalid category or topic: {category}, {topic}", category, topic);
             return BadRequest("Invalid category or topic.");
         }
 
-        var webHostEnvironment = (IWebHostEnvironment)_actionContext.HttpContext.RequestServices.GetService(typeof(IWebHostEnvironment))!;
-        var path = Path.Combine(webHostEnvironment.WebRootPath, "tenant-content", _tenantContext.SiteContext.FolderName, $"{category}_{topic}.html");
+        var path = Path.Combine(_webHostEnvironment.WebRootPath, "tenant-content", _tenantContext.SiteContext.FolderName, $"{category}_{topic}.html");
 
         if (!System.IO.File.Exists(path)) return NotFound();
         try
         {
             var html = await System.IO.File.ReadAllTextAsync(path);
-            return View("Index", html);
+            return View(nameof(Index), html);
         }
-        catch (Exception e)
+        catch
         {
             try
             {
                 await Task.Delay(1000);
                 
                 var html = await System.IO.File.ReadAllTextAsync(path);
-                return View("Index", html);
+                return View(nameof(Index), html);
             }
-            catch (Exception exception)
+            catch(Exception ex)
             {
+                _logger.LogError(ex, "Error reading tenant content file: {path}", path);
                 return NotFound();
             }
         }
