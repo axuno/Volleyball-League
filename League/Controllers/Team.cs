@@ -367,7 +367,7 @@ public class Team : AbstractController
         return JsonResponseRedirect(TenantLink.Action(nameof(MyTeam), nameof(Team), new { model.TeamId }));
     }
 
-    private IList<long> GetUserClaimTeamIds()
+    private List<long> GetUserClaimTeamIds()
     {
         var teamIds = new HashSet<long>();
             

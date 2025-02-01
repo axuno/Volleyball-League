@@ -14,8 +14,15 @@ namespace League.WebApp.ViewComponents;
 /// </summary>
 public class CustomMainNavigationNodeBuilder : MainNavigationNodeBuilder
 {
-    /// <inheritdoc />
-    public CustomMainNavigationNodeBuilder(TenantStore tenantStore, ITenantContext tenantContext, IAuthorizationService authorizationService, TenantLink tenantUrlHelper, IStringLocalizer<CustomMainNavigationNodeBuilder> localizer, ILogger<CustomMainNavigationNodeBuilder> logger) : base(tenantStore, tenantContext, authorizationService, tenantUrlHelper, localizer, logger)
+    /// <summary>
+    /// Builds the standard league main navigation nodes
+    /// plus individual nodes
+    /// </summary>
+    /// <remarks>
+    /// This MainNavigationNodeBuilder uses the resources from the base class for localization.
+    /// </remarks>
+    public CustomMainNavigationNodeBuilder(TenantStore tenantStore, ITenantContext tenantContext, IAuthorizationService authorizationService, TenantLink tenantUrlHelper, IStringLocalizer<MainNavigationNodeBuilder> localizer, ILogger<CustomMainNavigationNodeBuilder> logger)
+        : base(tenantStore, tenantContext, authorizationService, tenantUrlHelper, localizer, logger)
     { }
 
     /// <inheritdoc />
@@ -25,59 +32,61 @@ public class CustomMainNavigationNodeBuilder : MainNavigationNodeBuilder
         await base.CreateStandardNavigationNodes();
             
         // The views must exist in "~/Views/TenantContent/"
-        // and named with $"./{_tenantContext.SiteContext.FolderName}/{category}_{topic}"
+        // and named with $"./{_tenantContext.SiteContext.FolderName}/{topic}"
 
-        #region ** Home **
-        var home = TenantContext.IsDefault
+        #region ** Home Node **
+        var homeNode = TenantContext.IsDefault
             ? new MainNavigationComponentModel.NavigationNode
             {
+                Key = "Home_League",
                 Text = string.Empty,
                 Url =  TenantLink.Action(nameof(Home.Welcome), nameof(Home)),
-                IconCssClass = "fas fa-1x fa-home", Key = "Home_League"
+                IconCssClass = "fas fa-1x fa-home"
             }
             : new MainNavigationComponentModel.NavigationNode
             {
+                Key = "Home_Tenant",
                 Text = string.Empty, 
                 Url = "/" + TenantContext.SiteContext.UrlSegmentValue,
-                IconCssClass = "fas fa-1x fa-home", Key = "Home_Tenant"
+                IconCssClass = "fas fa-1x fa-home"
             };
 
         #endregion
 
-        #region ** Info **
-        var info = new MainNavigationComponentModel.NavigationNode
+        #region ** Tenant Node **
+        var tenantNode = new MainNavigationComponentModel.NavigationNode
         {
-            Key = "Top_Info",
+            Key = "Top_Tenant",
             Text = Localizer["Info"],
             Url = TenantLink.Action(nameof(TenantContent.Index),
                 nameof(TenantContent),
-                new { category = "info", content = string.Empty })
+                new { topic = string.Empty })
         };
-        info.ChildNodes.AddRange(new []
-        {
+        tenantNode.ChildNodes.AddRange(
+        [
             new MainNavigationComponentModel.NavigationNode
             {
-                Key = "Info_RuleOfGame",
+                Key = "Tenant_RuleOfGame",
                 Text = Localizer["Rule of game"],
                 Url = TenantLink.Action(nameof(TenantContent.Index), nameof(TenantContent),
-                    new { category = "info", topic = "ruleofgame" })
+                    new { topic = "rule-of-game" })
             },
             new MainNavigationComponentModel.NavigationNode
             {
-                Key = "Info_News",
+                Key = "Tenant_News",
                 Text = Localizer["News"],
                 Url = TenantLink.Action(nameof(TenantContent.Index), nameof(TenantContent),
-                    new { category = "info", topic = "news"})
+                    new { topic = "news" })
             }
-        });
+        ]);
             
         if (!TenantContext.IsDefault)
         {
             // Insert the individual node before the Top_Teams node
-            InsertTopNavigationNode(info, "Top_Teams");
+            InsertTopNavigationNode(tenantNode, "Top_Teams");
         }
 
-        InsertTopNavigationNode(home, NavigationNodes[0].Key);
+        InsertTopNavigationNode(homeNode, NavigationNodes[0].Key);
 
         #endregion
     }

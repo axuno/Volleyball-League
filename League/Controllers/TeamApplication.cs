@@ -564,7 +564,7 @@ public class TeamApplication : AbstractController
         }
     }
 
-    private IList<long> GetUserClaimTeamIds(IList<string> claimTypes)
+    private List<long> GetUserClaimTeamIds(IList<string> claimTypes)
     {
         var teamIds = new HashSet<long>();
             
