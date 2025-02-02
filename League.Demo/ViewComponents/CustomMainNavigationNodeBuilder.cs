@@ -19,9 +19,12 @@ public class CustomMainNavigationNodeBuilder : MainNavigationNodeBuilder
     /// plus individual nodes
     /// </summary>
     /// <remarks>
-    /// This MainNavigationNodeBuilder uses the resources from the base class for localization.
+    /// <see cref="CustomMainNavigationNodeBuilder"/> uses the resources from the base <see cref="MainNavigationNodeBuilder"/> for localization.
     /// </remarks>
-    public CustomMainNavigationNodeBuilder(TenantStore tenantStore, ITenantContext tenantContext, IAuthorizationService authorizationService, TenantLink tenantUrlHelper, IStringLocalizer<MainNavigationNodeBuilder> localizer, ILogger<CustomMainNavigationNodeBuilder> logger)
+    public CustomMainNavigationNodeBuilder(TenantStore tenantStore, ITenantContext tenantContext,
+        IAuthorizationService authorizationService, TenantLink tenantUrlHelper,
+        IStringLocalizer<MainNavigationNodeBuilder> localizer, // base is important
+        ILogger<CustomMainNavigationNodeBuilder> logger)
         : base(tenantStore, tenantContext, authorizationService, tenantUrlHelper, localizer, logger)
     { }
 
@@ -30,11 +33,9 @@ public class CustomMainNavigationNodeBuilder : MainNavigationNodeBuilder
     {
         // Create the standard league navigation
         await base.CreateStandardNavigationNodes();
-            
-        // The views must exist in "~/Views/TenantContent/"
-        // and named with $"./{_tenantContext.SiteContext.FolderName}/{topic}"
 
         #region ** Home Node **
+
         var homeNode = TenantContext.IsDefault
             ? new MainNavigationComponentModel.NavigationNode
             {
@@ -54,6 +55,7 @@ public class CustomMainNavigationNodeBuilder : MainNavigationNodeBuilder
         #endregion
 
         #region ** Tenant Node **
+
         var tenantNode = new MainNavigationComponentModel.NavigationNode
         {
             Key = "Top_Tenant",
