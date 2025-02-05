@@ -9,7 +9,7 @@ public interface IMainNavigationNodeBuilder
     /// Gets the <see cref="MainNavigationComponentModel.NavigationNode"/>s.
     /// </summary>
     /// <returns>The <see cref="MainNavigationComponentModel.NavigationNode"/>s</returns>
-    List<MainNavigationComponentModel.NavigationNode> GetNavigationNodes();
+    Task<List<MainNavigationComponentModel.NavigationNode>> GetNavigationNodes();
 
     /// <summary>
     /// Inserts a <see cref="MainNavigationComponentModel.NavigationNode"/> at the position of the <see cref="MainNavigationComponentModel.NavigationNode"/> with the given <see cref="MainNavigationComponentModel.NavigationNode.Key"/> name.

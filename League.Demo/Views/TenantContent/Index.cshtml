@@ -1,9 +1,0 @@
-﻿@using League.Helpers
-@using TournamentManager.MultiTenancy
-@model string
-@inject ITenantContext TenantContext
-@{
-        ViewData.Title(TenantContext.OrganizationContext.Name);
-        ViewData.Description(TenantContext.OrganizationContext.Description);
-}
-@Html.Raw(Model)

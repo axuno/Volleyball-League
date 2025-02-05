@@ -19,9 +19,11 @@ public class Home : League.Controllers.AbstractController
     public IActionResult Index()
     {
         if (Request.Cookies.TryGetValue(CookieNames.MostRecentTenant, out var urlSegmentValue)
-            && _tenantStore.GetTenants().Any(sl => sl.Value.SiteContext.UrlSegmentValue == urlSegmentValue) && !string.IsNullOrEmpty(urlSegmentValue)) return Redirect($"/{urlSegmentValue}");
+            && _tenantStore.GetTenants().Any(sl => sl.Value.SiteContext.UrlSegmentValue == urlSegmentValue) &&
+            !string.IsNullOrEmpty(urlSegmentValue))
+            return Redirect($"/{urlSegmentValue}");
 
-        return Redirect(Url.Action(nameof(Welcome), nameof(Home))!);
+        return View("Welcome");
     }
 
     [Route("/[action]")]

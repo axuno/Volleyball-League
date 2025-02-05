@@ -62,16 +62,7 @@
     <footer class="container-fluid rounded site py-1 mb-4">
         <div class="d-flex flex-row">
             <div class="text-center w-100">
-                @{
-                    if (TenantContext.IsDefault)
-                    {
-                        <a asp-route="@RouteNames.GeneralContact" class="d-inline-block me-4">@Localizer["Contact"]</a>
-                    }
-                    else
-                    {
-                        <a asp-route="@RouteNames.TenantContact" asp-route-tenant="@TenantContext.SiteContext.UrlSegmentValue" class="d-inline-block me-4">@Localizer["Contact"]</a>
-                    }
-                }
+                <a asp-route="@RouteNames.GeneralContact" class="d-inline-block me-4">@Localizer["Contact"]</a>
                 <a asp-action="@nameof(Home.LegalDisclosure)" asp-controller="@nameof(Home)" class="d-inline-block me-4">@Localizer["Legal Disclosure"]</a>
                 <a asp-action="@nameof(Home.Privacy)" asp-controller="@nameof(Home)" class="d-inline-block me-4">@Localizer["Privacy"]</a>
                 <a asp-action="@nameof(Home.PictureCredits)" asp-controller="@nameof(Home)" class="d-inline-block me-4">@Localizer["Picture Credits"]</a>

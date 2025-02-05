@@ -2,6 +2,7 @@
 using League.Authorization;
 using League.Controllers;
 using League.MultiTenancy;
+using League.Routing;
 using TournamentManager.MultiTenancy;
 
 namespace League.Components;
@@ -56,8 +57,8 @@ public class MainNavigationNodeBuilder : IMainNavigationNodeBuilder
     /// </summary>
     protected readonly IStringLocalizer<MainNavigationNodeBuilder> Localizer;
         
-    // To ensure that nodes can be only added once
-    private bool _standardNavigationNodesAdded;
+    // To ensure that nodes can be only created once
+    private bool _areNavigationNodesCreated;
 
     /// <summary>
     /// CTOR.
@@ -79,7 +80,7 @@ public class MainNavigationNodeBuilder : IMainNavigationNodeBuilder
         Logger = logger;
         NavigationNodes = new List<MainNavigationComponentModel.NavigationNode>();
         Localizer = localizer;
-        _standardNavigationNodesAdded = false;
+        _areNavigationNodesCreated = false;
     }
         
     /// <inheritdoc/>
@@ -104,13 +105,15 @@ public class MainNavigationNodeBuilder : IMainNavigationNodeBuilder
     }
 
     /// <inheritdoc/>
-    public List<MainNavigationComponentModel.NavigationNode> GetNavigationNodes()
+    public async Task<List<MainNavigationComponentModel.NavigationNode>> GetNavigationNodes()
     {
-        if (_standardNavigationNodesAdded) return NavigationNodes;
+        // If nodes are already created, return them
+        if (_areNavigationNodesCreated) return NavigationNodes;
             
-        CreateStandardNavigationNodes().Wait();
-        _standardNavigationNodesAdded = true;
+        await CreateStandardNavigationNodes();
+        await CreateTenantNavigationNodes();
 
+        _areNavigationNodesCreated = true;
         return NavigationNodes;
     }
         
@@ -121,18 +124,19 @@ public class MainNavigationNodeBuilder : IMainNavigationNodeBuilder
     protected virtual async Task CreateStandardNavigationNodes()
     {
         #region ** Leagues **
+
         var leagues = new MainNavigationComponentModel.NavigationNode
         {
             ParentNode = null,
             Key = "Top_Leagues",
-            Text = Localizer["League"], Url = "/#" 
+            Text = Localizer["Leagues"], Url = "/#" 
         };
 
         leagues.ChildNodes.Add(new MainNavigationComponentModel.NavigationNode
             {Text = Localizer["Home"], Url = "/welcome", Key = "League_Welcome"});
 
         leagues.ChildNodes.Add(new MainNavigationComponentModel.NavigationNode
-            { Text = Localizer["League Overview"], Url = "/overview", Key = "League_Overview" });
+            { Text = Localizer["Leagues Overview"], Url = "/overview", Key = "League_Overview" });
 
         leagues.ChildNodes.Add(new MainNavigationComponentModel.NavigationNode
             { Text = "Separator", Key = "League_Separator" });
@@ -151,10 +155,22 @@ public class MainNavigationNodeBuilder : IMainNavigationNodeBuilder
                     });
             }
         }
-        
+
         #endregion
-            
-        #region ** Team Infos **
+
+        #region ** Plattform Home Node **
+
+        var homeNode = new MainNavigationComponentModel.NavigationNode
+        {
+            Key = "League_Home",
+            Text = string.Empty,
+            Url = "/",
+            IconCssClass = "fas fa-1x fa-home"
+        };
+
+        #endregion
+
+        #region ** Team Nodes **
 
         var teamInfos = new MainNavigationComponentModel.NavigationNode
         {
@@ -198,7 +214,7 @@ public class MainNavigationNodeBuilder : IMainNavigationNodeBuilder
         });
         #endregion
 
-        #region ** Match Overview **
+        #region ** Match Nodes **
         var teamOverview = new MainNavigationComponentModel.NavigationNode
         {
             ParentNode = null,
@@ -329,7 +345,7 @@ public class MainNavigationNodeBuilder : IMainNavigationNodeBuilder
         {
             NavigationNodes.AddRange(new List<MainNavigationComponentModel.NavigationNode>(new[]
             {
-                leagues, 
+                homeNode, leagues, 
                 new MainNavigationComponentModel.NavigationNode {Key = "RightAlignSeparator"}, 
             }));
         }
@@ -337,10 +353,82 @@ public class MainNavigationNodeBuilder : IMainNavigationNodeBuilder
         {
             NavigationNodes.AddRange(new List<MainNavigationComponentModel.NavigationNode>(new[]
             {
-                leagues, teamInfos, teamOverview, rankingTables,
+                homeNode, leagues, teamInfos, teamOverview, rankingTables,
                 new MainNavigationComponentModel.NavigationNode {Key = "RightAlignSeparator"}, 
                 account
             }));
         }
+
+        Logger.LogTrace($"League tenant list of {nameof(MainNavigationComponentModel.NavigationNode)}s created.");
+    }
+
+    protected virtual async Task CreateTenantNavigationNodes()
+    {
+        #region ** Tenant Nodes **
+
+        var contentProvider = HttpContext.RequestServices.GetRequiredService<ITenantContentProvider>();
+        var contentItems = await contentProvider.GetContentItems(TenantContext);
+
+        var homeItem = contentItems.FirstOrDefault(ci => ci.Topic.Equals("home", StringComparison.InvariantCultureIgnoreCase));
+        if (homeItem == null || string.IsNullOrEmpty(homeItem.MenuTitel))
+        {
+            Logger.LogError("No home content item found for tenant {Tenant}", TenantContext.Identifier);
+            return;
+        }
+
+        var tenantTopNode = new MainNavigationComponentModel.NavigationNode
+        {
+            Key = "Top_Tenant",
+            Text = Localizer[homeItem.MenuTitel],
+            Url = TenantLink.Action(nameof(TenantContent.Home),
+                nameof(TenantContent),
+                // if topic is empty, the default topic "home" will be displayed
+                new { topic = string.Empty })
+        };
+
+        tenantTopNode.ChildNodes.Add(new MainNavigationComponentModel.NavigationNode
+        {
+            Key = "Home_TenantStart",
+            Text = Localizer["Home"],
+            Url = TenantLink.Action(nameof(TenantContent.Home),
+                nameof(TenantContent),
+                new { topic = "home" })
+        });
+
+        // "home" is the tenant top node and must not be displayed in the menu again
+        foreach (var contentItem in contentItems
+                     .Where(i => !i.Topic.Equals("home", StringComparison.InvariantCultureIgnoreCase)
+                            && i.IsVisible())
+                     .OrderBy(i => i.Position))
+        {
+            if (contentItem.MenuTitel == null || string.IsNullOrEmpty(contentItem.Topic)) continue;
+            var childNode = new MainNavigationComponentModel.NavigationNode
+            {
+                Key = $"Tenant_{contentItem.MenuTitel}",
+                Text = Localizer[contentItem.MenuTitel],
+                Url = TenantLink.Action(nameof(TenantContent.Home), nameof(TenantContent),
+                    new { topic = contentItem.Topic })
+            };
+            tenantTopNode.ChildNodes.Add(childNode);
+        }
+
+
+        tenantTopNode.ChildNodes.Add(new MainNavigationComponentModel.NavigationNode
+        {
+            Key = "Tenant_Contact",
+            Text = Localizer["Contact"],
+            Url = TenantLink.LinkGenerator.GetPathByName(RouteNames.TenantContact, new { tenant = TenantContext.SiteContext.UrlSegmentValue }),
+            IconCssClass = "fas fa-1x fa-home"
+        });
+
+        if (!TenantContext.IsDefault)
+        {
+            // Insert the individual node before the Top_Teams node
+            InsertTopNavigationNode(tenantTopNode, "Top_Teams");
+        }
+
+        #endregion
+
+        Logger.LogTrace($"Tenant list of {nameof(MainNavigationComponentModel.NavigationNode)}s created.");
     }
 }

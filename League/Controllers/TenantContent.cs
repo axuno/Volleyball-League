@@ -1,4 +1,6 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using League.Helpers;
+using League.MultiTenancy;
 using League.Routing;
 using TournamentManager.MultiTenancy;
 
@@ -11,20 +13,27 @@ namespace League.Controllers;
 public class TenantContent : AbstractController
 {
     private readonly ITenantContext _tenantContext;
-    private readonly IWebHostEnvironment _webHostEnvironment;
+    private readonly ITenantContentProvider _contentProvider;
     private readonly ILogger<TenantContent> _logger;
 
-    public TenantContent(IWebHostEnvironment webHostEnvironment, ITenantContext tenantContext, ILogger<TenantContent> logger)
+    public TenantContent(ITenantContext tenantContext, ITenantContentProvider contentProvider, ILogger<TenantContent> logger)
     {
-        _webHostEnvironment = webHostEnvironment;
         _tenantContext = tenantContext;
+        _contentProvider = contentProvider;
         _logger = logger;
     }
 
-    [Route("{topic=index}")]
+    [Route("")]
+    [HttpGet]
+    public async Task<IActionResult> Home()
+    {
+        return await GetView("home");
+    }
+
+    [Route("{topic}")]
     [HttpGet]
     [SuppressMessage("Security", "CA3003:Review code for file path injection vulnerabilities", Justification = "Parameters are validated and sanitized.")]
-    public async Task<IActionResult> Index(string topic = "index")
+    public async Task<IActionResult> Home(string topic)
     {
         if (!ModelState.IsValid) return BadRequest();
 
@@ -37,28 +46,45 @@ public class TenantContent : AbstractController
             return BadRequest("Invalid topic.");
         }
 
-        var path = Path.Combine(_webHostEnvironment.WebRootPath, "tenant-content", _tenantContext.SiteContext.FolderName, $"{topic}.html");
+        return await GetView(topic);
+    }
 
-        if (!System.IO.File.Exists(path)) return NotFound();
-        try
+    private async Task<IActionResult> GetView(string topic)
+    {
+        var contentItem = await _contentProvider.GetContentItem(_tenantContext, topic);
+        string? html = null;
+
+        if (contentItem is { ReadHtmlContentAsync: not null })
         {
-            var html = await System.IO.File.ReadAllTextAsync(path);
-            return View(nameof(Index), html);
-        }
-        catch
-        {
-            try
+            const int maxAttempts = 3;
+            const int delay = 250;
+
+            for (var attempt = 0; attempt < maxAttempts; attempt++)
             {
-                await Task.Delay(1000);
-                
-                var html = await System.IO.File.ReadAllTextAsync(path);
-                return View(nameof(Index), html);
-            }
-            catch(Exception ex)
-            {
-                _logger.LogError(ex, "Error reading tenant content file: {Path}", path);
-                return NotFound();
+                try
+                {
+                    html = await contentItem.ReadHtmlContentAsync();
+                    break; // Exit the loop if the read is successful
+                }
+                catch (Exception ex)
+                {
+                    // Might occur if the file is locked by another process, e.g. when it is being written to.
+                    _logger.LogError(ex, "Error reading HTML content for topic: {Topic}, attempt: {Attempt}", topic, attempt + 1);
+                    if (attempt < maxAttempts - 1)
+                    {
+                        await Task.Delay(delay);
+                    }
+                }
             }
         }
+
+        if (html == null) return NotFound();
+
+        ViewData.Title(contentItem!.PageTitel ?? _tenantContext.OrganizationContext.ShortName);
+        ViewData.Description(contentItem.Description ?? _tenantContext.OrganizationContext.Description);
+        ViewData["LastModified"] = contentItem.LastModified.ToString("yyyy-MM-ddTHH:mm:ssK");
+        ViewData["Date"] = contentItem.PubDate.ToString("yyyy-MM-ddTHH:mm:ssK");
+
+        return View(nameof(Home), html);
     }
 }

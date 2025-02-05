@@ -1,1 +1,0 @@
-This folder contains the content files for the tenant.
