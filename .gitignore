@@ -272,4 +272,4 @@ paket-files/
 # But don't ignore these directories
 !/League.Demo/wwwroot/images/
 !/League.Demo/wwwroot/teamphoto/
-
+!/League.Demo/wwwroot/pages/

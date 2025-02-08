@@ -23,12 +23,12 @@ public class MainNavigation : ViewComponent
     /// Creates the model for the component and renders it.
     /// </summary>
     /// <returns>The <see cref="IViewComponentResult"/>.</returns>
-    public IViewComponentResult Invoke()
+    public async Task<IViewComponentResult> InvokeAsync()
     {
         var model = new MainNavigationComponentModel();
-        model.TopNavigationNodes.AddRange(_mainNavigationNodeBuilder.GetNavigationNodes());
+        model.TopNavigationNodes.AddRange(await _mainNavigationNodeBuilder.GetNavigationNodes());
         _logger.LogDebug($"{nameof(MainNavigation)} created");
-            
+
         return View(model);
     }
 }

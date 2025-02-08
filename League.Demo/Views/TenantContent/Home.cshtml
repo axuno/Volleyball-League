@@ -1,0 +1,20 @@
+﻿@using League.Helpers
+@using TournamentManager.MultiTenancy
+@model string
+@inject ITenantContext TenantContext
+@{
+        ViewData.Title();
+        ViewData.Description();
+}
+@Html.Raw(Model)
+@section meta
+{   
+    @if (ViewData["date"] != null)
+    {    
+    <meta name="date" content="@ViewData["Date"]"> 
+    }
+    @if (ViewData["lastModified"] != null)
+    {
+    <meta name="last-modified" content="@ViewData["LastModified"]">
+    }
+}

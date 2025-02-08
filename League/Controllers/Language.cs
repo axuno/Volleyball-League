@@ -95,7 +95,7 @@ public class Language : Controller
         return RedirectToLocal(returnUrl);
     }
 
-    private IActionResult RedirectToLocal(string returnUrl)
+    private RedirectResult RedirectToLocal(string returnUrl)
     {
         returnUrl = WebUtility.UrlDecode(returnUrl);
         if (Url.IsLocalUrl(returnUrl))

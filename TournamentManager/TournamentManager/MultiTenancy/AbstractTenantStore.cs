@@ -29,7 +29,7 @@ public class AbstractTenantStore<T> : ITenantStore<T> where T: class, ITenantCon
     /// Gets a list of <typeparamref name="T"/>.
     /// </summary>
     /// <returns>Returns a list of <typeparamref name="T"/> tenant configurations.</returns>
-    public IReadOnlyDictionary<string, T> GetTenants()
+    public virtual IReadOnlyDictionary<string, T> GetTenants()
     {
         return Tenants;
     }
@@ -38,7 +38,7 @@ public class AbstractTenantStore<T> : ITenantStore<T> where T: class, ITenantCon
     /// Gets the <see cref="ITenantContext"/> configuration for the tenant with the specified <paramref name="identifier"/>.
     /// </summary>
     /// <returns>Returns the <see cref="ITenantContext"/> configuration for the tenant with the specified <paramref name="identifier"/> or <see langword="null"/> if it could not be found.</returns>
-    public ITenantContext? GetTenantByIdentifier(string identifier)
+    public virtual ITenantContext? GetTenantByIdentifier(string identifier)
     {
         return Tenants.TryGetValue(identifier, out var tenant) ? tenant : null;
     }
@@ -48,7 +48,7 @@ public class AbstractTenantStore<T> : ITenantStore<T> where T: class, ITenantCon
     /// Neither <paramref name="urlSegmentValue"/> nor the <see cref="SiteContext.UrlSegmentValue"/> may be <see langword="null"/> or whitespace.
     /// </summary>
     /// <returns>Returns the <see cref="ITenantContext"/> configuration for the tenant with the specified <paramref name="urlSegmentValue"/> if found, or <see langword="null"/> if not found.</returns>
-    public ITenantContext? GetTenantByUrlSegment(string urlSegmentValue)
+    public virtual ITenantContext? GetTenantByUrlSegment(string urlSegmentValue)
     {
         return Tenants.Values.FirstOrDefault(t =>
             !string.IsNullOrWhiteSpace(t.SiteContext.UrlSegmentValue) && !string.IsNullOrWhiteSpace(urlSegmentValue) &&
@@ -59,7 +59,7 @@ public class AbstractTenantStore<T> : ITenantStore<T> where T: class, ITenantCon
     /// Gets the default <see cref="ITenantContext"/> configuration (i.e. <see cref="ITenant.IsDefault"/> is <see langword="true"/>).
     /// </summary>
     /// <returns>Returns the default <see cref="ITenantContext"/> configuration (i.e. <see cref="ITenant.IsDefault"/> is <see langword="true"/>) if found, or <seealso langword="null"/> if not found.</returns>
-    public ITenantContext? GetDefaultTenant()
+    public virtual ITenantContext? GetDefaultTenant()
     {
         return Tenants.Values.FirstOrDefault(t => t.IsDefault);
     }
@@ -69,7 +69,7 @@ public class AbstractTenantStore<T> : ITenantStore<T> where T: class, ITenantCon
     /// </summary>
     /// <param name="tenant">The <typeparamref name="T"/> to add.</param>
     /// <returns>Returns <see langword="true"/>, if the <see cref="ITenant"/> was added, or <see langword="false"/> if the <see cref="ITenant.Identifier"/> already exists in the <see cref="TenantStore"/>.</returns>
-    public bool TryAddTenant(T tenant)
+    public virtual bool TryAddTenant(T tenant)
     {
         var success = Tenants.TryAdd(tenant.Identifier, tenant);
         Logger.LogTrace("Tenant with {Tenant} '{TenantIdentifier}' {SuccessMsg}.", nameof(tenant.Identifier), tenant.Identifier,  success ? "added" : "failed to add");
@@ -81,7 +81,7 @@ public class AbstractTenantStore<T> : ITenantStore<T> where T: class, ITenantCon
     /// </summary>
     /// <param name="identifier">The <see cref="ITenant.Identifier"/> to remove.</param>
     /// <returns>Returns <see langword="true"/>, if the <see cref="ITenant"/> was removed, or <see langword="false"/> if the <see cref="ITenant.Identifier"/> was not found in the <see cref="TenantStore"/>.</returns>
-    public bool TryRemoveTenant(string identifier)
+    public virtual bool TryRemoveTenant(string identifier)
     {
         var success = Tenants.TryRemove(identifier, out _);
         Logger.LogTrace("Tenant with {Name} '{Identifier}' {SuccessMsg}.", nameof(identifier), identifier, success ? "removed" : "failed to remove");
@@ -94,7 +94,7 @@ public class AbstractTenantStore<T> : ITenantStore<T> where T: class, ITenantCon
     /// <param name="identifier">The <see cref="ITenant.Identifier"/> to remove.</param>
     /// <param name="newTenant">The new <typeparamref name="T"/> instances.</param>
     /// <returns>Returns <see langword="true"/>, if the <see cref="ITenant"/> was updated, or <see langword="false"/> if the <see cref="ITenant.Identifier"/> was not found in the <see cref="TenantStore"/>.</returns>
-    public bool TryUpdateTenant(string identifier, T newTenant)
+    public virtual bool TryUpdateTenant(string identifier, T newTenant)
     {
         var success = false;
         if (Tenants.TryGetValue(identifier, out var currentTenant))

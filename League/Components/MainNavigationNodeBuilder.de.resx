@@ -138,14 +138,14 @@
   <data name="Home" xml:space="preserve">
     <value>Startseite</value>
   </data>
-  <data name="Info" xml:space="preserve">
-    <value>Info</value>
+  <data name="My League" xml:space="preserve">
+    <value>Meine Liga</value>
   </data>
-  <data name="League" xml:space="preserve">
-    <value>Liga</value>
+  <data name="Leagues" xml:space="preserve">
+    <value>Ligen</value>
   </data>
-  <data name="League Overview" xml:space="preserve">
-    <value>Liga-Übersicht</value>
+  <data name="Leagues Overview" xml:space="preserve">
+    <value>Ligen-Übersicht</value>
   </data>
   <data name="Manage account" xml:space="preserve">
     <value>Konto verwalten</value>
@@ -159,14 +159,8 @@
   <data name="My team" xml:space="preserve">
     <value>Mein Team</value>
   </data>
-  <data name="News" xml:space="preserve">
-    <value>Aktuelles</value>
-  </data>
   <data name="Register team for next season" xml:space="preserve">
     <value>Team für nächste Saison anmelden</value>
-  </data>
-  <data name="Rule of game" xml:space="preserve">
-    <value>Spielordnung</value>
   </data>
   <data name="Sign in" xml:space="preserve">
     <value>Anmelden</value>
@@ -188,5 +182,14 @@
   </data>
   <data name="Volleyball League" xml:space="preserve">
     <value>Volleyball-Liga</value>
+  </data>
+  <data name="News" xml:space="preserve">
+    <value>Aktuelles</value>
+  </data>
+  <data name="Rule of game" xml:space="preserve">
+    <value>Spielordnung</value>
+  </data>
+  <data name="Contact" xml:space="preserve">
+    <value>Kontakt</value>
   </data>
 </root>

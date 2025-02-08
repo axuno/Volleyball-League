@@ -1,5 +1,5 @@
 using League.Components;
-using League.WebApp.ViewComponents;
+using League.MultiTenancy;
 using Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation;
 using Microsoft.Extensions.FileProviders;
 
@@ -22,9 +22,10 @@ public static class WebAppStartup
         {
             options.RedirectStatusCode = Microsoft.AspNetCore.Http.StatusCodes.Status301MovedPermanently;
         });
-            
+
         // Add custom navigation menu items to the League default navigation system
-        services.AddScoped<IMainNavigationNodeBuilder, CustomMainNavigationNodeBuilder>();
+        services.AddScoped<IMainNavigationNodeBuilder, MainNavigationNodeBuilder>();
+        services.AddSingleton<ITenantContentProvider, TenantContentProvider>();
 
         // Add runtime compilation. It is enough to define this in the app which consumes the League RCL.
         if (environment.IsDevelopment())

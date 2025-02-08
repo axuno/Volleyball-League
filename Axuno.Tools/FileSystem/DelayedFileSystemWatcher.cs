@@ -395,10 +395,9 @@ public class DelayedFileSystemWatcher : IDisposable
         {
             try
             {
-                using var stream = File.Open(current.Args.FullPath, FileMode.Open, FileAccess.Read, FileShare.None);
-                return true;
+                return File.Exists(current.Args.FullPath) || Directory.Exists(current.Args.FullPath);
             }
-            catch (IOException)
+            catch (Exception)
             {
                 return false;
             }

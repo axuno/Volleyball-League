@@ -15,13 +15,13 @@
         if (!node.HasVisibleChildNodes())
         {
             <li class="nav-item">
-                <a class="@Model.GetClass(Context, node, "nav-link", "active", true)" href="@Url.Content(node.Url!)">@Html.Raw(node.GetIcon())@node.Text</a>
+                <a class="@(await Model.GetClassAsync(Context, node, "nav-link", "active", true))" href="@Url.Content(node.Url!)">@Html.Raw(node.GetIcon())@node.Text</a>
             </li>
         }
         else
         {
             <li class="nav-item dropdown">
-                <a class="@Model.GetClass(Context, node, "nav-link dropdown-toggle", "active", true)" data-bs-toggle="dropdown" href="@Url.Content(node.Url!)">
+                <a class="@(await Model.GetClassAsync(Context, node, "nav-link dropdown-toggle", "active", true))" data-bs-toggle="dropdown" href="@Url.Content(node.Url!)">
                     @Html.Raw(node.GetIcon())@node.Text
                 </a>
                 <partial name="@League.Views.ViewNames.Shared.NavigationNodeChildDropdownPartial" model="(Model, node)" />
