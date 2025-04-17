@@ -75,7 +75,6 @@ The default database names are `TestOrg` and `OtherOrg`. You may change these na
   
 ## Thanks!
 
-We would like to thank [JetBrains](https://www.jetbrains.com/?from=Volleyball-League) for supporting the project with free licenses of their fantastic tools ReSharper and DotCover.
+We would like to thank [JetBrains](https://www.jetbrains.com/) for supporting the project with free licenses of their fantastic tools.
 
-<img src="https://raw.githubusercontent.com/axuno/Volleyball-League/main/jetbrains.svg" alt="JetBrains" width="100" />
- 
+![JetBrains logo](https://resources.jetbrains.com/storage/products/company/brand/logos/jetbrains.svg)
