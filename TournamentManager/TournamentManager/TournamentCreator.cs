@@ -77,6 +77,7 @@ public class TournamentCreator
     /// <exception cref="InvalidOperationException"></exception>
     public async Task<bool> CreateNewFromSourceTournament(CopyTournamentArgs copyArgs, CancellationToken cancellationToken)
     {
+        _modifiedOn = copyArgs.ModifiedOn;
         if (copyArgs.SetSourceTournamentCompleted) await SetTournamentCompleted(copyArgs.SourceTournamentId, cancellationToken);
 
         var (sourceTournament, targetTournament) = await CopyTournament(copyArgs, cancellationToken);
@@ -160,6 +161,7 @@ public class TournamentCreator
     /// <returns>The <paramref name="targetTournament"/> <see cref="TournamentEntity"/> with rounds and round legs added.</returns>
     internal async Task<bool> CopyRoundsWithLegsToTarget(CopyTournamentArgs args, TournamentEntity targetTournament, CancellationToken cancellationToken)
     {
+        _modifiedOn = args.ModifiedOn;
         // get the round IDs of the SOURCE tournament
         var sourceRoundIds = await _appDb.TournamentRepository.GetTournamentRoundIdsAsync(args.SourceTournamentId, cancellationToken);
         
@@ -300,6 +302,7 @@ public class TournamentCreator
 
         foreach (var round in tournament.Rounds)
         {
+            round.ModifiedOn = _modifiedOn;
             await SetRoundCompleted(round, cancellationToken);
         }
 
