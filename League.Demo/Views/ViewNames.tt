@@ -63,10 +63,11 @@ void CreateAreas(string areaPath)
 }
 #>
 <#
+    System.Diagnostics.Debugger.Break(); // To debug in VS2022 select "Debug T4 Templase"
     var serviceProvider = this.Host as IServiceProvider;
     var dte = serviceProvider.GetService(typeof(EnvDTE.DTE)) as EnvDTE.DTE;
     var solutionDirectory = System.IO.Path.GetDirectoryName(dte.Solution.FullName);
-    var viewsFolderPath = Path.Combine(solutionDirectory, "LeagueDemo\\Views\\");
+    var viewsFolderPath = Path.Combine(solutionDirectory, "League.Demo\\Views\\");
     //var areaFolderPath = Path.Combine(solutionDirectory, "League\\Areas\\");
 #>
 /* 
@@ -76,11 +77,10 @@ void CreateAreas(string areaPath)
  */
  #pragma warning disable CS1591
 
-namespace LeagueDemo.Views
+namespace League.WebApp.Views;
+
+public class ViewNames
 {
-    public class ViewNames
-    {
-<# ProcessFiles(viewsFolderPath, true, 2); #>
+<# ProcessFiles(viewsFolderPath, true, 1); #>
 <# //CreateAreas(areaFolderPath);#>
-    }
 }
