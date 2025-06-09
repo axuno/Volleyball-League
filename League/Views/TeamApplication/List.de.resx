@@ -141,7 +141,7 @@
   <data name="Closing date" xml:space="preserve">
     <value>Anmeldeschluss</value>
   </data>
-  <data name="We are currently outside the registration period." xml:space="preserve">
-    <value>Wir befinden uns derzeit außerhalb der Anmeldefrist.</value>
+  <data name="We are currently outside the registration period" xml:space="preserve">
+    <value>Wir befinden uns derzeit außerhalb der Anmeldefrist</value>
   </data>
 </root>
