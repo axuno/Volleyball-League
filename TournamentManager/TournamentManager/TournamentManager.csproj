@@ -18,7 +18,7 @@ Volleyball League is an open source sports platform that brings everything neces
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="EPPlus" Version="8.0.5" />
-    <PackageReference Include="Microsoft.Data.SqlClient" Version="5.2.2" />
+    <PackageReference Include="Microsoft.Data.SqlClient" Version="6.0.2" />
     <PackageReference Include="NLog" Version="5.3.4" />
     <PackageReference Include="NuGetizer" Version="1.2.4">
       <PrivateAssets>all</PrivateAssets>
