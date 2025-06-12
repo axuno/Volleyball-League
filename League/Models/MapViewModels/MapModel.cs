@@ -61,14 +61,15 @@ public class MapModel
             var teamsOfVenue = Venues.Where(v => v.VenueId == venue.VenueId).ToList();
             foreach (var tov in teamsOfVenue)
             {
-                teamDescription.AppendFormat("{0} ({1})<br />", tov.TeamName, tov.TeamClubName).Replace("()", string.Empty); // remove () if ClubName is empty
+                teamDescription.AppendFormat("{0} ({1})<br />", tov.TeamName.Replace('\"', '\''), tov.TeamClubName.Replace('\"', '\'')).Replace("()", string.Empty); // remove () if ClubName is empty
             }
             teamDescription.Remove(teamDescription.Length - 6, 6);  // remove last <br />
 
+            // quotes are replaced with apostrophes to prevent issues JSON parsing the string
             var venueDescription =
-                $"<b>{venue.VenueName}</b><br />{venue.Street}<br />{venue.PostalCode} {venue.City}<br /><br /><b>Team{(teamsOfVenue.Count > 1 ? "s" : string.Empty)}:</b><br />";
+                $"<b>{venue.VenueName.Replace('\"', '\'')}</b><br />{venue.Street.Replace('\"', '\'')}<br />{venue.PostalCode.Replace('\"', '\'')} {venue.City.Replace('\"', '\'')}<br /><br /><b>Team{(teamsOfVenue.Count > 1 ? "s" : string.Empty)}:</b><br />";
 
-            if (venue.Latitude.HasValue && venue.Longitude.HasValue)
+            if (venue is { Latitude: not null, Longitude: not null })
             {
                 var teamsCount = teamsOfVenue.Count;
                 locationJsObject.AppendFormat(_format,
@@ -79,7 +80,7 @@ public class MapModel
             }
         }
 
-        Locations = locationJsObject.ToString().TrimEnd(new[] { ',', '\n' });
+        Locations = locationJsObject.ToString().TrimEnd(',', '\n');
     }
 
     public string? Locations { get; set; }
