@@ -20,7 +20,7 @@ public class ExcelImporter : IExcludeDateImporter
     /// <param name="logger"></param>
     public ExcelImporter(string xlPathAndFileName, Axuno.Tools.DateAndTime.TimeZoneConverter timeZoneConverter, ILogger<ExcelImporter> logger)
     {
-        ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+        ExcelPackage.License.SetNonCommercialOrganization("GitHub Repository axuno Volleyball-League");
         _xlPathAndFileName = xlPathAndFileName;
         _timeZoneConverter = timeZoneConverter;
         _logger = logger;
