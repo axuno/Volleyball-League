@@ -30,16 +30,16 @@ public class MapModel
     {
         var venue = Venues.FirstOrDefault();
 
-        if (venue?.Latitude == null || venue?.Longitude == null)
+        if (venue?.Latitude == null || venue.Longitude == null)
             return;
 			
         Locations = string.Format(_format,
-            venue.Latitude.Value.ToString("###.########", System.Globalization.CultureInfo.InvariantCulture),
-            venue.Longitude.Value.ToString("###.########", System.Globalization.CultureInfo.InvariantCulture),
-            $"{venue.VenueName}, {venue.City}",
-            $"<b>{venue.VenueName}</b><br />{venue.Street}<br />{venue.PostalCode} {venue.City}<br />");
+            venue.Latitude.Value.ToString("###.########", CultureInfo.InvariantCulture),
+            venue.Longitude.Value.ToString("###.########", CultureInfo.InvariantCulture),
+            $"{ToJs(venue.VenueName)}, {ToJs(venue.City)}",
+            $"<b>{ToJs(venue.VenueName)}</b><br />{ToJs(venue.Street)}<br />{ToJs(venue.PostalCode)} {ToJs(venue.City)}<br />");
 
-        Locations = Locations.TrimEnd(new[] { ',', '\n' });
+        Locations = Locations.TrimEnd(',', '\n');
     }
 
     private void PrepareAllVenues()
@@ -61,27 +61,30 @@ public class MapModel
             var teamsOfVenue = Venues.Where(v => v.VenueId == venue.VenueId).ToList();
             foreach (var tov in teamsOfVenue)
             {
-                teamDescription.AppendFormat("{0} ({1})<br />", tov.TeamName.Replace('\"', '\''), tov.TeamClubName.Replace('\"', '\'')).Replace("()", string.Empty); // remove () if ClubName is empty
+                teamDescription.AppendFormat("{0} ({1})<br />", ToJs(tov.TeamName), ToJs(tov.TeamClubName)).Replace("()", string.Empty); // remove () if ClubName is empty
             }
             teamDescription.Remove(teamDescription.Length - 6, 6);  // remove last <br />
 
-            // quotes are replaced with apostrophes to prevent issues JSON parsing the string
             var venueDescription =
-                $"<b>{venue.VenueName.Replace('\"', '\'')}</b><br />{venue.Street.Replace('\"', '\'')}<br />{venue.PostalCode.Replace('\"', '\'')} {venue.City.Replace('\"', '\'')}<br /><br /><b>Team{(teamsOfVenue.Count > 1 ? "s" : string.Empty)}:</b><br />";
+                $"<b>{ToJs(venue.VenueName)}</b><br />{ToJs(venue.Street)}<br />{ToJs(venue.PostalCode)} {ToJs(venue.City)}<br /><br /><b>Team{(teamsOfVenue.Count > 1 ? "s" : string.Empty)}:</b><br />";
 
             if (venue is { Latitude: not null, Longitude: not null })
             {
                 var teamsCount = teamsOfVenue.Count;
                 locationJsObject.AppendFormat(_format,
-                    venue.Latitude.Value.ToString("###.########", System.Globalization.CultureInfo.InvariantCulture),
-                    venue.Longitude.Value.ToString("###.########", System.Globalization.CultureInfo.InvariantCulture),
-                    $"{venue.VenueName}, {venue.City} - {teamsCount} Team{(teamsCount > 1 ? "s" : string.Empty)}",
+                    venue.Latitude.Value.ToString("###.########", CultureInfo.InvariantCulture),
+                    venue.Longitude.Value.ToString("###.########", CultureInfo.InvariantCulture),
+                    $"{ToJs(venue.VenueName)}, {ToJs(venue.City)} - {teamsCount} Team{(teamsCount > 1 ? "s" : string.Empty)}",
                     venueDescription + teamDescription);
             }
         }
 
         Locations = locationJsObject.ToString().TrimEnd(',', '\n');
+        return;
     }
+
+    private static string ToJs(string input)
+        => System.Text.Json.JsonSerializer.Serialize(input)[1..^1];
 
     public string? Locations { get; set; }
     public string? MaxLongitude { get; set; }
