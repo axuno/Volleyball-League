@@ -182,7 +182,7 @@ public class TournamentCreator
             if (args.CopyTeamsFromSource)
                 await CopyTeamsInRound(sourceRoundId, targetRound, args, cancellationToken);
 
-            _logger.LogDebug("Target Round {RoundId} contains {TeamCount} teams.", targetRound.Id, targetRound.TeamInRounds.Count);
+            _logger.LogDebug("Target Round '{RoundName}' contains {TeamCount} teams.", targetRound.Name, targetRound.TeamInRounds.Count);
         }
 
         _logger.LogDebug("Target tournament contains {RoundCount} rounds.", targetTournament.Rounds.Count);
