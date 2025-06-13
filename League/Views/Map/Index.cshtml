@@ -1,21 +1,23 @@
 ﻿@using Microsoft.AspNetCore.Mvc.Localization
 @model League.Models.MapViewModels.MapModel
 @inject IViewLocalizer Localizer
-@{ ViewData["Title"] = Localizer["Venues"].Value + " - " + Model.Tournament?.Name;}
-        @if (!Model.Venues.Exists(v => v is { Latitude: not null, Longitude: not null }))
-        {
-            <div class="row">
-                <div class="col-12 pb-2">
-                    <h2 class="h2">@ViewData["Title"]</h2>
-                    <div class="mb-0 pb-1">
-                        <site-alert type="Info" icon="fas fa-map-marker-alt" icon-size-class="fa-3x">
-                            <h4 class="h4">@Localizer["There are no venue details available at this time"].</h4>
-                        </site-alert>
-                    </div>
-                </div>
+@{
+    ViewData["Title"] = Localizer["Venues"].Value + " - " + Model.Tournament?.Name;
+}
+@if (!Model.Venues.Exists(v => v is { Latitude: not null, Longitude: not null }))
+{
+    <div class="row">
+        <div class="col-12 pb-2">
+            <h2 class="h2">@ViewData["Title"]</h2>
+            <div class="mb-0 pb-1">
+                <site-alert type="Info" icon="fas fa-map-marker-alt" icon-size-class="fa-3x">
+                    <h4 class="h4">@Localizer["There are no venue details available at this time"].</h4>
+                </site-alert>
             </div>
-            return;
-        }
+        </div>
+    </div>
+    return;
+}
 <div class="row">
     <div class="col-12 pb-2">
         <h2 class="h2">@ViewData["Title"]</h2>
@@ -63,6 +65,7 @@
             height: 600px;
             color: black;
         }
+
         #map-canvas b {
             font-weight: bold !important;
         }
@@ -74,67 +77,37 @@
 }
 @section scripts
 {
-    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=@(Model.GoogleConfiguration!.WebApiKey)"></script>
-    <script type="text/javascript">
-        //<![CDATA[
-        window.google = window.google || {};
-        google.maps = google.maps || {};
-        var map;
-        var infoWindow;
-        var Locations = [@Html.Raw(Model.Locations)];
+<script>
+//<![CDATA[
 
-        function initializeSingleVenue() {
-            var mapOptions = {
-                zoom: 15,
-                center: new google.maps.LatLng(Locations[0].Lat, Locations[0].Lng),
-                mapTypeId: google.maps.MapTypeId.ROADMAP
-            }
+    /* global google */
 
-            map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
-            infoWindow = new google.maps.InfoWindow();
-            setMapMarkers();
-        }
-
-        function initializeMultiVenues() {
-            var mapOptions = {
-                zoom: 10,
-                mapTypeId: google.maps.MapTypeId.TERRAIN
-            };
-
-            map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
-            infoWindow = new google.maps.InfoWindow();
-
-            var northEast = new google.maps.LatLng(@Model.MaxLatitude, @Model.MaxLongitude);
-            var southWest = new google.maps.LatLng(@Model.MinLatitude, @Model.MinLongitude);
-            var bounds = new google.maps.LatLngBounds(southWest, northEast);
-            // fitBound overrides mapOptions 'zoom' and 'center'
-            map.fitBounds(bounds);
-            setMapMarkers();
-        }
+    // Google Maps async callback
+    function mapInitializer() {
+        const locations = [@Html.Raw(Model.Locations)];
+        let map, infoWindow;
 
         function setMapMarkers() {
-            var marker;
-            for (let i in Locations) {
-                var venue = new google.maps.LatLng(Locations[i].Lat, Locations[i].Lng);
+            let marker;
+            locations.forEach(location => {
+                const venue = new google.maps.LatLng(location.Lat, location.Lng);
 
                 marker = new google.maps.Marker({
                     position: venue,
                     map: map,
-                    title: Locations[i].title,
+                    title: location.title,
                     icon: 'https://www.google.com/intl/en_us/mapfiles/ms/icons/blue-dot.png'
                 });
 
-                attachMessageWindow(marker, Locations[i].Descr);
-            }
-            if (Locations.length === 1) {
-                infoWindow.setContent(Locations[0].Descr);
+                attachMessageWindow(marker, location.Descr);
+            });
+            if (locations.length === 1) {
+                infoWindow.setContent(locations[0].Descr);
                 infoWindow.open(map, marker);
             }
         }
 
         function attachMessageWindow(marker, text) {
-            // uncomment to get an InfoWindow per marker click
-            // var infoWindow = new google.maps.InfoWindow({ content: text });
             google.maps.event.addListener(marker,
                 'click',
                 function() {
@@ -143,18 +116,31 @@
                 });
         }
 
-        document.addEventListener('DOMContentLoaded', function () {
-            @{
-                if (Model.IsSingleValue)
-                {
-                    <text>initializeSingleVenue();</text>
-                }
-                else
-                {
-                    <text>initializeMultiVenues();</text>
-                }
-            }
-        });
-    //]]>
-    </script>
+        if (@Model.IsSingleValue.ToString().ToLower()) {
+            const mapOptions = {
+                zoom: 15,
+                center: new google.maps.LatLng(locations[0].Lat, locations[0].Lng),
+                mapTypeId: google.maps.MapTypeId.ROADMAP
+            };
+            map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
+            infoWindow = new google.maps.InfoWindow();
+            setMapMarkers();
+        } else {
+            const mapOptions = {
+                zoom: 10,
+                mapTypeId: google.maps.MapTypeId.TERRAIN
+            };
+            map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
+            infoWindow = new google.maps.InfoWindow();
+
+            const northEast = new google.maps.LatLng(@Model.MaxLatitude, @Model.MaxLongitude);
+            const southWest = new google.maps.LatLng(@Model.MinLatitude, @Model.MinLongitude);
+            const bounds = new google.maps.LatLngBounds(southWest, northEast);
+            map.fitBounds(bounds);
+            setMapMarkers();
+        }
+    }
+//]]>
+</script>
+<script async referrerpolicy="strict-origin-when-cross-origin" src="https://maps.googleapis.com/maps/api/js?key=@(Model.GoogleConfiguration!.WebApiKey)&callback=mapInitializer&loading=async"></script>
 }
