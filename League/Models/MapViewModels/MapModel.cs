@@ -80,7 +80,6 @@ public class MapModel
         }
 
         Locations = locationJsObject.ToString().TrimEnd(',', '\n');
-        return;
     }
 
     private static string ToJs(string input)
