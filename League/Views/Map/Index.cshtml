@@ -66,13 +66,13 @@
             color: black;
         }
 
-        #map-canvas b {
-            font-weight: bold !important;
-        }
+            #map-canvas b {
+                font-weight: bold !important;
+            }
 
-        #map-canvas > div {
-            padding: .5em;
-        }
+            #map-canvas > div {
+                padding: .5em;
+            }
     </style>
 }
 @section scripts
@@ -82,55 +82,74 @@
 
     /* global google */
 
-    // Google Maps async callback
-    function mapInitializer() {
+    @* // Google Maps async callback *@
+    window.mapInitializer = async function() {
         const locations = [@Html.Raw(Model.Locations)];
         let map, infoWindow;
 
-        function setMapMarkers() {
-            let marker;
-            locations.forEach(location => {
-                const venue = new google.maps.LatLng(location.Lat, location.Lng);
+        @* Destructure the necessary libraries from the Google Maps API *@
+        @* ReSharper disable once InconsistentNaming *@
+        const { Map: MapLib } = await google.maps.importLibrary('maps');
+        @* ReSharper disable once InconsistentNaming *@
+        const { AdvancedMarkerElement: MarkerLib } = await google.maps.importLibrary('marker');
 
-                marker = new google.maps.Marker({
-                    position: venue,
-                    map: map,
-                    title: location.title,
-                    icon: 'https://www.google.com/intl/en_us/mapfiles/ms/icons/blue-dot.png'
+        function setMapMarkers() {
+            let lastMarker; @* // To keep track of the last marker for single location scenario *@
+            locations.forEach(locationData => {
+                const venuePosition = new google.maps.LatLng(locationData.Lat, locationData.Lng);
+
+                const pin = new google.maps.marker.PinElement({
+                    background: '#1976d2',
+                    borderColor: '#0d47a1',
+                    glyphColor: '#fff'
                 });
 
-                attachMessageWindow(marker, location.Descr);
+                @* // Create AdvancedMarkerElement *@
+                const marker = new MarkerLib({
+                    map: map,
+                    position: venuePosition,
+                    title: locationData.title,
+                    content: pin.element @* // custom HTML can be used here for custom icons *@
+                });
+
+                attachMessageWindow(marker, locationData.Descr);
+                lastMarker = marker;
             });
-            if (locations.length === 1) {
+
+            if (locations.length === 1 && lastMarker) {
                 infoWindow.setContent(locations[0].Descr);
-                infoWindow.open(map, marker);
+                @* // For AdvancedMarkerElement, InfoWindow.open can take the map and marker directly *@
+                @* // Open the infoWindow for the last marker *@
+                infoWindow.open(map, lastMarker);
             }
         }
 
         function attachMessageWindow(marker, text) {
-            google.maps.event.addListener(marker,
-                'click',
-                function() {
-                    infoWindow.setContent(text);
-                    infoWindow.open(map, marker);
-                });
+            @* // Use 'gmp-click' for AdvancedMarkerElement *@
+            marker.addListener('gmp-click', function() {
+                infoWindow.setContent(text);
+                @* // For AdvancedMarkerElement, InfoWindow.open can take the map and marker directly *@
+                infoWindow.open(map, marker);
+            });
         }
 
         if (@Model.IsSingleValue.ToString().ToLower()) {
             const mapOptions = {
                 zoom: 15,
                 center: new google.maps.LatLng(locations[0].Lat, locations[0].Lng),
-                mapTypeId: google.maps.MapTypeId.ROADMAP
+                mapId: '@Model.GoogleConfiguration!.MapId', @* // Required for Advanced Markers, can be 'DEMO_MAP_ID' *@
+                mapTypeId: google.maps.MapTypeId.ROADMAP @* // mapTypeId is less relevant if mapId is used for vector maps *@
             };
-            map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
+            map = new MapLib(document.getElementById('map-canvas'), mapOptions);
             infoWindow = new google.maps.InfoWindow();
             setMapMarkers();
         } else {
             const mapOptions = {
                 zoom: 10,
-                mapTypeId: google.maps.MapTypeId.TERRAIN
+                mapId: '@Model.GoogleConfiguration!.MapId', @* // Required for Advanced Markers, can be 'DEMO_MAP_ID' *@
+                mapTypeId: google.maps.MapTypeId.TERRAIN  @*// mapTypeId is less relevant if mapId is used for vector maps *@
             };
-            map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
+            map = new MapLib(document.getElementById('map-canvas'), mapOptions);
             infoWindow = new google.maps.InfoWindow();
 
             const northEast = new google.maps.LatLng(@Model.MaxLatitude, @Model.MaxLongitude);
