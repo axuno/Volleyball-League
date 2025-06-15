@@ -7,7 +7,7 @@ namespace League.Models.MapViewModels;
 
 public class MapModel
 {
-    private const string _format = "{{ Lat: {0}, Lng: {1}, title: \"{2}\", Descr: \"{3}\" }},\n";
+    private const string Format = "{{ Lat: {0}, Lng: {1}, title: \"{2}\", Descr: \"{3}\" }},\n";
 
     public MapModel()
     {
@@ -33,7 +33,7 @@ public class MapModel
         if (venue?.Latitude == null || venue.Longitude == null)
             return;
 			
-        Locations = string.Format(_format,
+        Locations = string.Format(Format,
             venue.Latitude.Value.ToString("###.########", CultureInfo.InvariantCulture),
             venue.Longitude.Value.ToString("###.########", CultureInfo.InvariantCulture),
             $"{ToJs(venue.VenueName)}, {ToJs(venue.City)}",
@@ -71,7 +71,7 @@ public class MapModel
             if (venue is { Latitude: not null, Longitude: not null })
             {
                 var teamsCount = teamsOfVenue.Count;
-                locationJsObject.AppendFormat(_format,
+                locationJsObject.AppendFormat(Format,
                     venue.Latitude.Value.ToString("###.########", CultureInfo.InvariantCulture),
                     venue.Longitude.Value.ToString("###.########", CultureInfo.InvariantCulture),
                     $"{ToJs(venue.VenueName)}, {ToJs(venue.City)} - {teamsCount} Team{(teamsCount > 1 ? "s" : string.Empty)}",
