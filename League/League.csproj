@@ -224,6 +224,11 @@ Localizations for English and German are included. The library is in operation o
     </ItemGroup>
     <ItemGroup>
         <EmbeddedResource Include="Templates\Email\**\*.tpl" />
+        <!-- Stop automatically copying wwwroot files to the output directory -->
+        <Content Remove="wwwroot\**\*.*" />
+        <!-- All wwwroot files only exist as embedded resource -->
+        <!-- Add FileProvider = new EmbeddedFileProvider(assembly, "League.wwwroot") -->
+        <EmbeddedResource Include="wwwroot\**\*.*" />
     </ItemGroup>
     <ItemGroup>
         <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
