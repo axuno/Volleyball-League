@@ -1,9 +1,19 @@
 ﻿#region ** Usings **
 
+using System.Diagnostics;
+using System.Reflection;
+using Axuno.BackgroundTask;
+using Axuno.VirtualFileSystem;
 using JSNLog;
+using League.BackgroundTasks;
+using League.Caching;
+using League.ConfigurationPoco;
+using League.Emailing;
 using League.Identity;
 using League.ModelBinders;
+using League.MultiTenancy;
 using League.Routing;
+using League.TextTemplatingModule;
 using MailMergeLib;
 using MailMergeLib.AspNet;
 using MailMergeLib.MessageStore;
@@ -12,24 +22,15 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.DataProtection.AuthenticatedEncryption;
 using Microsoft.AspNetCore.DataProtection.AuthenticatedEncryption.ConfigurationModel;
-
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.Net.Http.Headers;
 using SD.LLBLGen.Pro.ORMSupportClasses;
-using System.Diagnostics;
-using Axuno.BackgroundTask;
-using Axuno.VirtualFileSystem;
-using League.BackgroundTasks;
-using League.Caching;
-using League.ConfigurationPoco;
-using League.Emailing;
-using League.MultiTenancy;
 using TournamentManager.DI;
 using TournamentManager.MultiTenancy;
-using League.TextTemplatingModule;
 
 #endregion
 
@@ -677,6 +678,17 @@ public static class LeagueStartup
                 };
             }
         });
+
+        // The EmbeddedFileProvider is used to serve static files from the League Razor Class Library.
+        // Register after UseStaticFiles to give wwwroot files precedence over embedded files.
+        var assembly = Assembly.GetExecutingAssembly();
+        app.UseStaticFiles(new StaticFileOptions
+        {
+            // The embedded files are located in the "League.wwwroot" namespace of the assembly
+            FileProvider = new EmbeddedFileProvider(assembly, "League.wwwroot"),
+            RequestPath = ""
+        });
+
         #endregion
 
         app.UseCookiePolicy();
