@@ -14,10 +14,13 @@ public class RoundSelectorComponentModel
     public IList<RoundEntity> RoundWithTypeList { get; set; } = new List<RoundEntity>();
 
     /// <summary>
-    /// This is the key for a "not specified" round. If this value is null, "not specified" cannot be selected
+    /// If the <see cref="SelectedRoundId"/> is <see langword="null"/> and
+    /// <see cref="EnforceExplicitSelection"/> is <see langword="true"/>,
+    /// the selection dropdown will display &quot;Please select...&quot;,
+    /// until a value from the list is selected.
     /// </summary>
     [BindNever]
-    public long? RoundNotSpecifiedKey { get; set; }
+    public bool EnforceExplicitSelection { get; set; }
 
     /// <summary>
     /// Gets or sets the ID which should be shown as selected.

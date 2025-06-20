@@ -593,7 +593,7 @@ public class TeamApplication : AbstractController
 
         return new RoundSelectorComponentModel
         {
-            RoundNotSpecifiedKey = null,
+            EnforceExplicitSelection = true,
             SelectedRoundId = tir?.RoundId,
             ShowSelector = await _appDb.MatchRepository.GetMatchCountAsync(
                 new PredicateExpression(
