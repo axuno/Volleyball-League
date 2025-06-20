@@ -1,8 +1,6 @@
 ﻿@using League.Components
 @using League.Controllers
-@using League.TagHelpers
 @using Microsoft.AspNetCore.Mvc.Localization
-@using Microsoft.AspNetCore.Mvc.TagHelpers
 @using TournamentManager.MultiTenancy
 @using System.Globalization
 @inject IViewLocalizer Localizer
@@ -46,6 +44,8 @@
 {
     <script type="text/javascript" src="~/lib/tempus-dominus/tempus-dominus.all.min.js" asp-append-version="true"></script>
     <script type="text/javascript">
+        document.getElementById('@Html.IdFor(m => m.Round!.SelectedRoundId)').focus();
+
         const locale = '@(CultureInfo.CurrentCulture.ToString())';
         const parentLocale = '@(CultureInfo.CurrentCulture.Parent.TwoLetterISOLanguageName)';
         const hourCycle = '@(CultureInfo.CurrentCulture.DateTimeFormat.ShortTimePattern.Contains("t") ? 12 : 24)';

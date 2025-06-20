@@ -12,6 +12,9 @@
         {
             <label asp-for="SelectedRoundId" class="form-label"></label>
             <select asp-for="SelectedRoundId" class="form-select d-block col-7" style="min-width: max-content !important" title="@Localizer["Please select a round"]...">
+                <option value="" selected="@(Model.SelectedRoundId == null && Model.EnforceExplicitSelection ? "selected" : null)" disabled hidden>
+                    @Localizer["Please select a round"]...
+                </option>
                 @foreach (var rwt in Model.RoundWithTypeList)
                 {
                     if (rwt.Id == Model.SelectedRoundId)
@@ -22,10 +25,6 @@
                     {
                         <option value="@rwt.Id">@rwt.Description&nbsp;&nbsp;(@rwt.RoundType.Description)</option>
                     }
-                }
-                @if (Model.RoundNotSpecifiedKey.HasValue)
-                {
-                    <option value="@Model.RoundNotSpecifiedKey">@Localizer["Not specified"]</option>
                 }
             </select>
         }

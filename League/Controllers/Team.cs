@@ -388,7 +388,7 @@ public class Team : AbstractController
             .FirstOrDefault();
         return new RoundSelectorComponentModel
         {
-            RoundNotSpecifiedKey = null,
+            EnforceExplicitSelection = false,
             SelectedRoundId = tir?.RoundId,
             ShowSelector = await _appDb.MatchRepository.GetMatchCountAsync(
                 new PredicateExpression(
