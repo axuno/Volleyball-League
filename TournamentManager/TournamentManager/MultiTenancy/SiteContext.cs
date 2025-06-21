@@ -1,4 +1,6 @@
-﻿namespace TournamentManager.MultiTenancy;
+﻿using System.Collections.ObjectModel;
+
+namespace TournamentManager.MultiTenancy;
 
 /// <summary>
 /// Provides site-specific data.
@@ -44,11 +46,10 @@ public class SiteContext : ISiteContext
     /// </summary>
     [YAXLib.Attributes.YAXComment("If true, the site will not be shown in the navigation menu.")]
     public bool HideInMenu { get; set; }
-    /// <summary>
-    /// Email contact details.
-    /// </summary>
-    [YAXLib.Attributes.YAXComment("Email contact details.")]
-    public Email Email { get; set; } = new();
+
+    /// <inhertitdoc/>
+    [YAXLib.Attributes.YAXComment("Recipients for generated emails.")]
+    public Collection<MailAddress> MailAddresses { get; set; } = new();
 
     /// <summary>
     /// Notifications sent before and after matches.
@@ -56,56 +57,45 @@ public class SiteContext : ISiteContext
     [YAXLib.Attributes.YAXComment("Notifications sent before and after matches.")]
     public MatchNotifications MatchNotifications { get; set; } = new();
 }
-    
+
 /// <summary>
-/// Email contact details for an organization.
+/// Category of email address.
 /// </summary>
-public class Email
+public enum MailKind
 {
-    /// <summary>
-    /// "From" mailbox address for the contact form
-    /// </summary>
-    [YAXLib.Attributes.YAXComment("\"From\" mailbox address for the contact form\"")]
-    public MailAddress ContactFrom { get; set; } = new();
-    /// <summary>
-    /// "To" mailbox address for the contact form
-    /// </summary>
-    [YAXLib.Attributes.YAXComment("\"To\" mailbox address for the contact form")]
-    public MailAddress ContactTo { get; set; } = new();
-    /// <summary>
-    /// General "To" mailbox address for emails generated programmatically
-    /// </summary>
-    [YAXLib.Attributes.YAXComment("General \"To\" mailbox address for emails generated programmatically")]
-    public MailAddress GeneralTo { get; set; } = new();
-    /// <summary>
-    /// General "From" mailbox address for emails generated programmatically
-    /// </summary>
-    [YAXLib.Attributes.YAXComment("General \"From\" mailbox address for emails generated programmatically")]
-    public MailAddress GeneralFrom { get; set; } = new();
-    /// <summary>
-    /// General "BCC" mailbox address for emails generated programmatically
-    /// </summary>
-    [YAXLib.Attributes.YAXComment("General \"BCC\" mailbox address for emails generated programmatically")]
-    public MailAddress GeneralBcc { get; set; } = new();
+    None,
+    ContactFrom,
+    ContactTo,
+    GeneralFrom,
+    GeneralTo,
+    GeneralBcc
 }
 
 /// <summary>
 /// Email display name and address.
 /// </summary>
+[YAXLib.Attributes.YAXSerializeAs(nameof(MailAddress))]
 public class MailAddress
 {
     /// <summary>
-    /// The display name of a recipient.
+    /// The kind of email address.
     /// </summary>
-    [YAXLib.Attributes.YAXComment("The display name of a recipient.")]
-    public string DisplayName { get; set; } = string.Empty;
+    [YAXLib.Attributes.YAXAttributeForClass]
+    public MailKind Kind { get; set; } = MailKind.None;
 
     /// <summary>
     /// The email address of a recipient.
     /// </summary>
-    [YAXLib.Attributes.YAXComment("The email address of a recipient.")]
+    [YAXLib.Attributes.YAXAttributeForClass]
     public string Address { get; set; } = string.Empty;
+
+    /// <summary>
+    /// The display name of a recipient.
+    /// </summary>
+    [YAXLib.Attributes.YAXAttributeForClass]
+    public string DisplayName { get; set; } = string.Empty;
 }
+
 
 /// <summary>
 /// Notifications sent before and after matches.
@@ -130,3 +120,4 @@ public class MatchNotifications
     [YAXLib.Attributes.YAXComment("Number of days to remind 2nd time for missing match results. 0 for none, positive number of days.")]
     public int DaysForMatchResultReminder2 { get; set; } = 0;
 }
+

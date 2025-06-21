@@ -2,85 +2,70 @@
 
 namespace TournamentManager.MultiTenancy;
 
-/// <summary>
-/// The class contains all configuration data for a tournament.
-/// </summary>
+/// <inheritdoc cref="ITournamentContext"/>
 [YAXLib.Attributes.YAXComment("Configuration data for a tournament")]
 public class TournamentContext : ITournamentContext
 {
-    /// <summary>
-    /// Gets or sets the <see cref="ITenant"/> this context refers to.
-    /// </summary>
+    /// <inheritdoc/>
     [YAXLib.Attributes.YAXDontSerialize]
     public ITenant? Tenant { get; set; }
-        
-    /// <summary>
-    /// The ID of the tournament which will be used for new teams' applications.
-    /// </summary>
+
+    /// <inheritdoc/>
     [YAXLib.Attributes.YAXComment("The ID of the tournament which will be used for new teams' applications")]
     public long ApplicationTournamentId { get; set; }
 
-    /// <summary>
-    /// Return true, if teams' applications are allowed, otherwise false.
-    /// </summary>
-    [YAXLib.Attributes.YAXComment("True, if teams' applications are allowed, otherwise false")]
-    public bool ApplicationAllowed { get; set; }
-        
-    /// <summary>
-    /// The deadline for new teams' applications.
-    /// </summary>
-    [YAXLib.Attributes.YAXComment("The deadline for new teams' applications")]
-    public DateTime ApplicationDeadline { get; set; }
+    /// <inheritdoc/>
+    [YAXLib.Attributes.YAXComment(
+        """
+        The UTC date from which teams' applications are allowed.
+        Format: 'yyyy-MM-dd HH:mm:ss' or 'MM/dd/yyyy HH:mm:ss'
+        """)]
+    public DateTime ApplicationStart { get; set; }
 
-    /// <summary>
-    /// The ID of the tournament which will be used for to display maps.
-    /// </summary>
+    /// <inheritdoc/>
+    [YAXLib.Attributes.YAXComment(
+        """
+        The UTC deadline for new teams' applications.
+        Format: 'yyyy-MM-dd HH:mm:ss' or 'MM/dd/yyyy HH:mm:ss'
+        """)]
+    public DateTime ApplicationEnd { get; set; }
+
+    /// <inheritdoc/>
     [YAXLib.Attributes.YAXComment("The ID of the tournament which will be used for to display maps")]
     public long MapTournamentId { get; set; }
-        
-    /// <summary>
-    /// The ID of the tournament which will be used to display team data.
-    /// </summary>
+
+    /// <inheritdoc/>
     [YAXLib.Attributes.YAXComment("The ID of the tournament which will be used to display team data")]
     public long TeamTournamentId { get; set; }
-        
-    /// <summary>
-    /// The ID of the tournament which will be used to display the match plan.
-    /// </summary>
+
+    /// <inheritdoc/>
     [YAXLib.Attributes.YAXComment("The ID of the tournament which will be used to display the match plan")]
     public long MatchPlanTournamentId { get; set; }
-        
-    /// <summary>
-    /// The ID of the tournament which will be used to display match results and tables.
-    /// </summary>
+
+    /// <inheritdoc/>
     [YAXLib.Attributes.YAXComment("The ID of the tournament which will be used to display match results and tables")]
     public long MatchResultTournamentId { get; set; }
 
-    /// <summary>
-    /// A set of rules for creating and editing fixtures.
-    /// </summary>
+    /// <inheritdoc/>
     [YAXLib.Attributes.YAXComment("The rules which apply for creating and editing fixtures")]
     public FixtureRuleSet FixtureRuleSet { get; set; } = new();
 
-    /// <summary>
-    ///	The max. number of days after RealStart where results may be changed. Negative value means 'unlimited'.
-    /// </summary>
+    /// <inheritdoc/>
     [YAXLib.Attributes.YAXComment("The max. number of days after RealStart where results may be changed. Negative value means 'unlimited'")]
     public int MaxDaysForResultCorrection { get; set; }
 
-    /// <summary>
-    /// Rules for team master data
-    /// </summary>
+    /// <inheritdoc/>
     [YAXLib.Attributes.YAXComment("The rules which apply for creating and editing team data")]
     public TeamRules TeamRuleSet { get; set; } = new();
 
-    /// <summary>
-    /// Rules for referee master data.
-    /// </summary>
+    /// <inheritdoc/>
     [YAXLib.Attributes.YAXComment("Rules for referee master data")]
     public RefereeRules RefereeRuleSet { get; set; } = new();
 }
 
+/// <summary>
+/// A set of rules for creating and editing fixtures.
+/// </summary>
 public class FixtureRuleSet
 {
     /// <summary>
@@ -136,14 +121,14 @@ public class FixtureRuleSet
 public class RegularMatchStartTime
 {
     /// <summary>
-    /// Earliest start time for a match.
+    /// Earliest start time for a match (in local time).
     /// </summary>
-    [YAXLib.Attributes.YAXComment("Earliest start time for a match")]
+    [YAXLib.Attributes.YAXComment("Earliest start time for a match (in local time)")]
     public TimeSpan MinDayTime { get; set; } = new(0,18,0,0);
     /// <summary>
-    /// Latest start time for a match.
+    /// Latest start time for a match (in local time).
     /// </summary>
-    [YAXLib.Attributes.YAXComment("Latest start time for a match")]
+    [YAXLib.Attributes.YAXComment("Latest start time for a match (in local time)")]
     public TimeSpan MaxDayTime { get; set; } = new(0, 21,0,0);
 }
 
@@ -220,9 +205,10 @@ public class HomeVenue
     /// If <see langword="true"/>, the <see cref="HomeVenue"/> must be set, i.e. cannot be null/unspecified.
     /// If <see langword="false"/>, when auto-creating fixtures the team will only have away-matches (is always the guest team).
     /// </summary>
-    [YAXLib.Attributes.YAXComment("""
-                                  If true, the HomeVenue must be set, i.e. cannot be null/unspecified.
-                                  If false, when auto-creating fixtures the team will only have away-matches (i.e. is always the guest team).
-                                  """)]
+    [YAXLib.Attributes.YAXComment(
+          """
+          If true, the HomeVenue must be set, i.e. cannot be null/unspecified.
+          If false, when auto-creating fixtures the team will only have away-matches (i.e. is always the guest team).
+          """)]
     public bool MustBeSet { get; set; } = true;
 }

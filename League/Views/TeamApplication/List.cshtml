@@ -16,10 +16,10 @@
         <h2 id="@tableDescriptionId" class="h2">@ViewData["Title"]</h2>
         <hr class="mb-4" />
         <partial name="@nameof(League.Views.ViewNames.TeamApplication._TeamApplicationMessagesPartial)" />
-        @if (TenantContext.TournamentContext.ApplicationAllowed)
+        @if (DateTime.UtcNow >= TenantContext.TournamentContext.ApplicationStart && DateTime.UtcNow < TenantContext.TournamentContext.ApplicationEnd)
         {
             <a asp-controller="@nameof(League.Controllers.TeamApplication)" asp-action="@nameof(League.Controllers.TeamApplication.Start)" asp-route-tenant="@tenantUrlSegment" class="btn btn-primary mb-2">@Localizer["Register team now"]</a>
-            <span class="ms-5 text-success">@(Localizer["Closing date"]): @Model.TimeZoneConverter.ToZonedTime(TenantContext.TournamentContext.ApplicationDeadline)?.DateTimeOffset.DateTime.ToShortDateString()</span>
+            <span class="ms-5 text-success">@(Localizer["Closing date"]): @Model.TimeZoneConverter.ToZonedTime(TenantContext.TournamentContext.ApplicationEnd)?.DateTimeOffset.DateTime.ToShortDateString()</span>
         }
         else
         {

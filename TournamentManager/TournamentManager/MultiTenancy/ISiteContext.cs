@@ -1,4 +1,6 @@
-﻿namespace TournamentManager.MultiTenancy;
+﻿using System.Collections.ObjectModel;
+
+namespace TournamentManager.MultiTenancy;
 
 public interface ISiteContext
 {
@@ -41,8 +43,8 @@ public interface ISiteContext
     /// <summary>
     /// Email contact details for an organization.
     /// </summary>
-    Email Email { get; set; }
-        
+    Collection<MailAddress> MailAddresses { get; set; }
+
     /// <summary>
     /// Notifications sent before and after matches.
     /// </summary>

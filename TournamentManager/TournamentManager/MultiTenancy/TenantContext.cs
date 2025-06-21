@@ -81,7 +81,7 @@ public class TenantContext : ITenantContext
     /// </summary>
     [YAXLib.Attributes.YAXDontSerialize]
     public string Filename { get; set; } = string.Empty;
-        
+
     /// <summary>
     /// Provides site-specific data.
     /// </summary>

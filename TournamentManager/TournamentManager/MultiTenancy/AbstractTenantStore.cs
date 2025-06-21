@@ -40,7 +40,7 @@ public class AbstractTenantStore<T> : ITenantStore<T> where T: class, ITenantCon
     /// <returns>Returns the <see cref="ITenantContext"/> configuration for the tenant with the specified <paramref name="identifier"/> or <see langword="null"/> if it could not be found.</returns>
     public virtual ITenantContext? GetTenantByIdentifier(string identifier)
     {
-        return Tenants.TryGetValue(identifier, out var tenant) ? tenant : null;
+        return Tenants.GetValueOrDefault(identifier);
     }
 
     /// <summary>
