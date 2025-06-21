@@ -154,7 +154,7 @@ public class TenantContentProviderTests
         {
         }
 
-        public IReadOnlyDictionary<string, ITenantContext> GetTenants()
+        public new IReadOnlyDictionary<string, ITenantContext> GetTenants()
         {
             var tenants = new Dictionary<string, ITenantContext>
             {

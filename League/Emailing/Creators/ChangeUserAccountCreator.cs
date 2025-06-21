@@ -51,7 +51,7 @@ public class ChangeUserAccountCreator : IMailMessageCreator
             mailMergeMessage.EnableFormatter = false;
             mailMergeMessage.Subject = Parameters.Subject; // already localized
                 
-            mailMergeMessage.MailMergeAddresses.Add(new MailMergeAddress(MailAddressType.From, tenantContext.SiteContext.Email.GeneralFrom.DisplayName, tenantContext.SiteContext.Email.GeneralFrom.Address));
+            mailMergeMessage.MailMergeAddresses.Add(MailKind.GeneralFrom, tenantContext);
             mailMergeMessage.MailMergeAddresses.Add(new MailMergeAddress(MailAddressType.To, Parameters.Email));
 
             mailMergeMessage.PlainText = await renderer.RenderAsync(Parameters.TemplateNameTxt, model,

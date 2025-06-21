@@ -94,7 +94,7 @@ public class ConcurrentBackgroundQueueServiceTests
         Assert.Multiple(() =>
         {
             Assert.That(itemCounter, Is.EqualTo(expected));
-            Assert.That(typeof(AmbiguousImplementationException), Is.EqualTo(ExceptionFromBackgroundQueue?.GetType()));
+            Assert.That(ExceptionFromBackgroundQueue?.GetType(), Is.EqualTo(typeof(AmbiguousImplementationException)));
         });
     }
         

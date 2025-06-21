@@ -1,7 +1,7 @@
 ﻿namespace TournamentManager.MultiTenancy;
 
 /// <summary>
-/// The class contains all configuration data for a tournament.
+/// Contains all configuration data for a tournament.
 /// </summary>
 public interface ITournamentContext
 {
@@ -16,14 +16,14 @@ public interface ITournamentContext
     long ApplicationTournamentId { get; set; }
 
     /// <summary>
-    /// Return true, if teams' applications are allowed, otherwise false.
+    /// The date from which teams' applications are allowed.
     /// </summary>
-    bool ApplicationAllowed { get; set; }
+    DateTime ApplicationStart { get; set; }
 
     /// <summary>
     /// The deadline for new teams' applications.
     /// </summary>
-    DateTime ApplicationDeadline { get; set; }
+    DateTime ApplicationEnd { get; set; }
 
     /// <summary>
     /// The ID of the tournament which will be used for to display maps.
