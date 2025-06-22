@@ -13,9 +13,9 @@ internal static class MailMergeAddressCollectionExtensions
         // Map MailKind to MailMergeAddressType
         var addressType = mailKind switch
         {
-            MailKind.GeneralFrom or MailKind.ContactFrom => MailAddressType.From,
-            MailKind.GeneralTo or MailKind.ContactTo => MailAddressType.To,
-            MailKind.GeneralBcc => MailAddressType.Bcc,
+            MailKind.AutoMailFrom or MailKind.ContactFrom => MailAddressType.From,
+            MailKind.AutoMailTo or MailKind.ContactTo => MailAddressType.To,
+            MailKind.AutoMailBcc => MailAddressType.Bcc,
             _ => MailAddressType.To // Default fallback
         };
 

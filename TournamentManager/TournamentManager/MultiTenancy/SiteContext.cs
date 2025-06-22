@@ -66,9 +66,9 @@ public enum MailKind
     None,
     ContactFrom,
     ContactTo,
-    GeneralFrom,
-    GeneralTo,
-    GeneralBcc
+    AutoMailFrom,
+    AutoMailTo,
+    AutoMailBcc
 }
 
 /// <summary>
