@@ -199,6 +199,12 @@
                                                 <a data-bs-toggle="collapse" href="#user-@userInfo.UserId" aria-expanded="false" class="d-inline-block collapsed">
                                                     <i class="fas fa-user"></i><span class="username d-inline-block ms-2 me-2">@userInfo.CompleteNameWithNickName</span>
                                                     <i class="fas fa-chevron-left pull-end text-success"></i>
+                                                    @{
+                                                        if (userInfo.IsManager && string.IsNullOrEmpty(userInfo.PhoneNumber))
+                                                        {
+                                                            <span class="text-danger ps-5">⚠ @Localizer["Missing primary phone number"].Value</span>
+                                                        }
+                                                    }
                                                 </a>
                                             </div>
                                             <div id="user-@userInfo.UserId" class="collapse mb-2 ms-5">

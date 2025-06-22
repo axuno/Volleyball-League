@@ -150,4 +150,7 @@
   <data name="Last update" xml:space="preserve">
     <value>Letzte Änderung</value>
   </data>
+  <data name="You're a team contact - please add" xml:space="preserve">
+    <value>Du bist Teamkontakt - bitte angeben</value>
+  </data>
 </root>

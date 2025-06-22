@@ -63,7 +63,17 @@
     </ul>
     <ul class="list-inline g-0">
         <li class="list-inline-item col-12 text-success col-md-3">@(Metadata.GetDisplayName<EditPhoneViewModel>(nameof(EditPhoneViewModel.PhoneNumber)))</li>
-        <li class="list-inline-item col-12 col-md-7">@Html.Raw(string.IsNullOrEmpty(Model.ApplicationUser.PhoneNumber) ? Localizer["[Not set]"].Value : Model.ApplicationUser.PhoneNumber)</li>
+        <li class="list-inline-item col-12 col-md-7">
+            @Html.Raw(string.IsNullOrEmpty(Model.ApplicationUser.PhoneNumber) 
+                ? Localizer["[Not set]"].Value 
+                : Model.ApplicationUser.PhoneNumber)
+            @{
+                if (string.IsNullOrEmpty(Model.ApplicationUser.PhoneNumber) && Model.IsTeamManager)
+                {
+                    <span class="text-danger ps-2">⚠ @Localizer["You're a team contact - please add"].Value</span>
+                }
+            }
+        </li>
         <li class="list-inline-item col-12 col-md-auto"><button type="button" site-toggle-modal-ajax site-data-url="@TenantLink.Action(nameof(Manage.EditPhoneNumber), nameof(Manage))" class="btn btn-sm btn-primary">@Localizer["Edit"]</button></li>
     </ul>
     <ul class="list-inline g-0">

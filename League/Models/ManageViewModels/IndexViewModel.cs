@@ -13,6 +13,7 @@ public class IndexViewModel
 
     public ApplicationUser? ApplicationUser { get; set; }
     public bool HasPassword { get; set; }
+    public bool IsTeamManager { get; set; }
     public IList<UserLoginInfo> Logins { get; set; } = new List<UserLoginInfo>();
     public ManageMessage? ManageMessage { get; set; }
 }
