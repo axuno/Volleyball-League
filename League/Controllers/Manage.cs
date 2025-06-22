@@ -69,11 +69,13 @@ public class Manage : AbstractController
         {
             return Redirect(TenantLink.Action(nameof(Account.SignIn), nameof(Account))!);
         }
-            
+        var claims = await _userManager.GetClaimsAsync(user);
+
         var model = new IndexViewModel(_timeZoneConverter)
         {
             ApplicationUser = user,
             HasPassword = await _userManager.HasPasswordAsync(user),
+            IsTeamManager = claims.Any(c => c.Type.Equals(Constants.ClaimType.ManagesTeam, StringComparison.InvariantCultureIgnoreCase)),
             Logins = await _userManager.GetLoginsAsync(user),
             ManageMessage = TempData.Get<ManageMessage>(nameof(ManageMessage))
         };
@@ -82,7 +84,7 @@ public class Manage : AbstractController
             _regionInfo.TwoLetterISORegionName);
         model.ApplicationUser.PhoneNumber2 = _phoneNumberService.Format(model.ApplicationUser.PhoneNumber2,
             _regionInfo.TwoLetterISORegionName);
-
+        
         return View(model);
     }
 

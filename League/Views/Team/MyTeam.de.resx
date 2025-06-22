@@ -138,6 +138,9 @@
   <data name="Last update" xml:space="preserve">
     <value>Letzte Änderung</value>
   </data>
+  <data name="Missing primary phone number" xml:space="preserve">
+    <value>Primäre Telefonnummer fehlt</value>
+  </data>
   <data name="My Team" xml:space="preserve">
     <value>Mein Team</value>
   </data>
