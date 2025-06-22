@@ -138,4 +138,7 @@
   <data name="Save" xml:space="preserve">
     <value>Speichern</value>
   </data>
+  <data name="none" xml:space="preserve">
+    <value>keine</value>
+  </data>
 </root>

@@ -141,4 +141,7 @@
   <data name="to" xml:space="preserve">
     <value>an</value>
   </data>
+  <data name="none" xml:space="preserve">
+    <value>keine</value>
+  </data>
 </root>

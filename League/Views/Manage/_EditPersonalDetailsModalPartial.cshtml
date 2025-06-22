@@ -10,9 +10,10 @@
     {
         var genderList = new List<SelectListItem>
         {
-            new SelectListItem { Value = string.Empty, Text = Localizer["Please choose"].Value },
-            new SelectListItem { Value = "f", Text = Localizer["Mrs."].Value },
-            new SelectListItem { Value = "m", Text = Localizer["Mr."].Value }
+            new() { Value = string.Empty, Text = Localizer["Please choose"].Value, Disabled = true, Selected = true },
+            new() { Value = "f", Text = Localizer["Mrs."].Value },
+            new() { Value = "m", Text = Localizer["Mr."].Value },
+            new() { Value = "u", Text = Localizer["none"].Value }
         };
         return genderList;
     }
