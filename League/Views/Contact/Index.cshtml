@@ -9,9 +9,13 @@
 #pragma warning disable CS8321 // This method is actually used in this view
     List<SelectListItem> GenderList()
     {
-        return new List<SelectListItem> {new() {Value = string.Empty, Text = Localizer["Please choose"].Value}, 
-            new() {Value = "f", Text = Localizer["Mrs."].Value}, 
-            new() {Value = "m", Text = Localizer["Mr."].Value}};
+        return
+        [
+            new() { Value = string.Empty, Text = Localizer["Please choose"].Value, Disabled = true, Selected = true },
+            new() { Value = "f", Text = Localizer["Mrs."].Value },
+            new() { Value = "m", Text = Localizer["Mr."].Value },
+            new() { Value = "u", Text = Localizer["none"].Value }
+        ];
     }
 #pragma warning restore CS8321
 }
