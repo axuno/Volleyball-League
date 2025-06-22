@@ -71,7 +71,7 @@ public class ConfirmTeamApplicationCreator : IMailMessageCreator
                 ? localizer["Confirmation of the team registration"].Value
                 : localizer["Update of team registration"].Value;
 
-            mailMergeMessage.MailMergeAddresses.Add(MailKind.GeneralFrom, tenantContext);
+            mailMergeMessage.MailMergeAddresses.Add(MailKind.AutoMailFrom, tenantContext);
             mailMergeMessage.MailMergeAddresses.Add(new MailMergeAddress(MailAddressType.To,
                 $"{tur.CompleteName}, Team '{tur.TeamName}'", tur.Email));
             if (!string.IsNullOrEmpty(tur.Email2))
@@ -82,8 +82,8 @@ public class ConfirmTeamApplicationCreator : IMailMessageCreator
 
             if (model.IsRegisteringUser)
             {
-                // Send registration info also to league administration
-                mailMergeMessage.MailMergeAddresses.Add(MailKind.GeneralBcc, tenantContext);
+                mailMergeMessage.MailMergeAddresses.Add(MailKind.AutoMailTo, tenantContext);
+                mailMergeMessage.MailMergeAddresses.Add(MailKind.AutoMailBcc, tenantContext);
             }
 
             mailMergeMessage.PlainText = await renderer.RenderAsync(Templates.Email.TemplateName.ConfirmTeamApplicationTxt, model,

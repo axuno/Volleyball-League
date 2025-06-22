@@ -68,7 +68,7 @@ public class ChangeFixtureCreator : IMailMessageCreator
         {
             var mailMergeMessage = mailMergeService.CreateStandardMessage();
             mailMergeMessage.EnableFormatter = false;
-            mailMergeMessage.MailMergeAddresses.Add(MailKind.GeneralFrom, tenantContext);
+            mailMergeMessage.MailMergeAddresses.Add(MailKind.AutoMailFrom, tenantContext);
 
             foreach (var tur in recipients)
             {
@@ -89,9 +89,9 @@ public class ChangeFixtureCreator : IMailMessageCreator
                         $"{tur.CompleteName}", tur.Email2));
                 }
             }
-                
-            // Send registration info also to league administration
-            mailMergeMessage.MailMergeAddresses.Add(MailKind.GeneralBcc, tenantContext);
+
+            mailMergeMessage.MailMergeAddresses.Add(MailKind.AutoMailTo, tenantContext);
+            mailMergeMessage.MailMergeAddresses.Add(MailKind.AutoMailBcc, tenantContext);
             mailMergeMessage.PlainText = plainTextContent;
 
             yield return mailMergeMessage;
