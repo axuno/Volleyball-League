@@ -10,9 +10,13 @@
     var loginProvider = ViewData["LoginProvider"]!;
     List<SelectListItem> GenderList()
     {
-        return new List<SelectListItem> {new() {Value = string.Empty, Text = Localizer["Please choose"].Value},
-            new() {Value = "f", Text = Localizer["Mrs."].Value},
-            new() {Value = "m", Text = Localizer["Mr."].Value}};
+        return
+        [
+            new() { Value = string.Empty, Text = Localizer["Please choose"].Value, Disabled = true, Selected = true },
+            new() { Value = "f", Text = Localizer["Mrs."].Value },
+            new() { Value = "m", Text = Localizer["Mr."].Value },
+            new() { Value = "u", Text = Localizer["none"].Value }
+        ];
     }
 }
 <h2 class="h2">@(Localizer.GetHtml("Associate your <strong>{0}</strong> account", loginProvider)).</h2>

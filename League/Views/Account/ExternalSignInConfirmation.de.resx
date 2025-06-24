@@ -138,6 +138,9 @@
   <data name="Mrs." xml:space="preserve">
     <value>Frau</value>
   </data>
+  <data name="none" xml:space="preserve">
+    <value>keine</value>
+  </data>
   <data name="Please choose" xml:space="preserve">
     <value>Bitte auswählen</value>
   </data>

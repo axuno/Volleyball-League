@@ -26,6 +26,10 @@ public class TeamRepository
             new QueryFactory().TeamVenueRound.Where(filter), cancellationToken);
     }
 
+    /// <summary>
+    /// Gets team with players, managers, the team in round mapping, and the round.
+    /// Abandoned teams (without players or managers) are excluded.
+    /// </summary>
     public virtual async Task<List<TeamUserRoundRow>> GetTeamUserRoundInfosAsync(IPredicateExpression filter, CancellationToken cancellationToken)
     {
         using var da = _dbContext.GetNewAdapter();
@@ -33,6 +37,42 @@ public class TeamRepository
             new QueryFactory().TeamUserRound.Where(filter), cancellationToken);
     }
 
+    /// <summary>
+    /// Gets the latests tournament a team has participated, along with other
+    /// information about the round the team was playing.
+    /// <remarks>
+    /// <list type="bullet">
+    /// <item>For each team in a tournament, it is checked if that team does NOT participate in the "next" tournament (as defined by NextTournamentId).</item>
+    /// <item>If the team does participate in the next tournament, the current row is excluded.</item>
+    /// <item>This way we get the latest tournament a team has played in.</item>
+    /// </list>
+    /// <code>
+    /// -- SQL Query to get the latest tournament a team has played in
+    /// 
+    /// WITH TeamTournaments AS (
+    ///   SELECT
+    ///     t.Id AS TeamId,
+    ///     r.TournamentId
+    ///   FROM TeamInRound tir
+    ///     JOIN Team t ON tir.TeamId = t.Id
+    ///     JOIN Round r ON tir.RoundId = r.Id
+    /// )
+    /// SELECT
+    ///   tt.TournamentId,
+    ///   tt.TeamId
+    /// FROM TeamTournaments tt
+    /// WHERE NOT EXISTS (
+    ///   SELECT 1
+    ///   FROM TeamInRound tir2
+    ///     JOIN Round r2 ON tir2.RoundId = r2.Id
+    ///     JOIN Tournament t2 ON r2.TournamentId = t2.Id
+    ///   WHERE tir2.TeamId = tt.TeamId
+    ///     AND t2.Id = (SELECT NextTournamentId FROM Tournament WHERE Id = tt.TournamentId)
+    /// )
+    /// GROUP BY tt.TeamId, tt.TournamentId
+    /// </code>
+    /// </remarks>
+    /// </summary>
     public virtual async Task<List<LatestTeamTournamentRow>> GetLatestTeamTournamentAsync(IPredicateExpression filter, CancellationToken cancellationToken)
     {
         using var da = _dbContext.GetNewAdapter();

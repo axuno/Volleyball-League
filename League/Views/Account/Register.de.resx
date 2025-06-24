@@ -150,4 +150,7 @@
   <data name="The name your team mates are using" xml:space="preserve">
     <value>Der Name den die MitspielerInnen im Team verwenden</value>
   </data>
+  <data name="none" xml:space="preserve">
+    <value>keine</value>
+  </data>
 </root>
