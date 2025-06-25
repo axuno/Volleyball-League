@@ -33,6 +33,7 @@ public class InternetCalendarImporterTests
         var icsFilePath = Path.Combine(TestContext.CurrentContext.TestDirectory, "Assets", "School_Holidays_Bavaria_2024.ics");
 
         var encoding = Encoding.UTF8;
+        // Test with a stream
         var iCalendarStream = new MemoryStream(encoding.GetBytes(File.ReadAllText(icsFilePath, Encoding.UTF8)))
         {
             Position = 0

@@ -124,7 +124,10 @@
                                                     <a asp-action=@nameof(League.Controllers.Match.EnterResult) asp-controller=@nameof(League.Controllers.Match) asp-route-tenant="@tenantUrlSegment" asp-route-id=@match.Id tabindex="0" class="dropdown-item"
                                                        site-authorize-resource site-resource="@ToMatchEntity(match)"
                                                        site-requirement="@League.Authorization.MatchOperations.EnterResult">@Localizer["Enter match result"]</a>
-                                                    <a asp-action=@nameof(League.Controllers.Match.Calendar) asp-Controller=@nameof(League.Controllers.Match) asp-route-tenant="@tenantUrlSegment" asp-route-id=@match.Id tabindex="0" class="dropdown-item">@Localizer["Save match to calendar"]</a>
+                                                    @if (match is { PlannedStart: not null, PlannedEnd: not null })
+                                                    {
+                                                        <a asp-action=@nameof(League.Controllers.Match.Calendar) asp-Controller=@nameof(League.Controllers.Match) asp-route-tenant="@tenantUrlSegment" asp-route-id=@match.Id tabindex="0" class="dropdown-item">@Localizer["Save match to calendar"]</a>
+                                                    }
                                                 </div>
                                             </div>
                                             <div class="dropdown">
@@ -140,7 +143,10 @@
                                                     <a asp-action=@nameof(League.Controllers.Match.EnterResult) asp-controller=@nameof(League.Controllers.Match) asp-route-tenant="@tenantUrlSegment" asp-route-id=@match.Id tabindex="0" class="dropdown-item"
                                                        site-authorize-resource site-resource="@ToMatchEntity(match)"
                                                        site-requirement="@League.Authorization.MatchOperations.EnterResult">@Localizer["Enter match result"]</a>
-                                                    <a asp-action=@nameof(League.Controllers.Match.Calendar) asp-Controller=@nameof(League.Controllers.Match) asp-route-tenant="@tenantUrlSegment" asp-route-id=@match.Id tabindex="0" class="dropdown-item">@Localizer["Save match to calendar"]</a>
+                                                    @if (match is { PlannedStart: not null, PlannedEnd: not null })
+                                                    {
+                                                        <a asp-action=@nameof(League.Controllers.Match.Calendar) asp-Controller=@nameof(League.Controllers.Match) asp-route-tenant="@tenantUrlSegment" asp-route-id=@match.Id tabindex="0" class="dropdown-item">@Localizer["Save match to calendar"]</a>
+                                                    }
                                                 </div>
                                             </div>
                                         </td>

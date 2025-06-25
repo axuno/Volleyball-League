@@ -135,18 +135,11 @@ public class Match : AbstractController
                 DescriptionFooter = "\n" + _tenantContext.OrganizationContext.Name + "\n" + _tenantContext.OrganizationContext.HomepageUrl
             };
             var stream = new MemoryStream();
-            // RFC5545 sect. 3.4.1: iCal default charset is UTF8.
-            // Important: no Byte Order Mark (BOM) for Android, Google, Apple
-            var encoding = new UTF8Encoding(false);
-            matches.ForEach(m =>
-            {
-                // convert to local time
-                m.PlannedStart = _timeZoneConverter.ToZonedTime(m.PlannedStart)?.DateTimeOffset.DateTime;
-                m.PlannedEnd = _timeZoneConverter.ToZonedTime(m.PlannedEnd)?.DateTimeOffset.DateTime;
-            });
-            calendar.CreateEvents(matches).Serialize(stream, encoding); 
-            stream.Seek(0, SeekOrigin.Begin); 
-            return File(stream, $"text/calendar; charset={encoding.HeaderName}", $"Match_{matches[0].PlannedStart?.ToString("yyyy-MM-dd") ?? string.Empty}_{Guid.NewGuid():N}.ics");
+
+            // match date/times have DateTimeKind.Unspecified but are in UTC
+            calendar.CreateEvents(matches, "UTC").Serialize(stream); // stream is UTF8 without BOM by default
+            stream.Seek(0, SeekOrigin.Begin);
+            return File(stream, $"text/calendar; charset={Encoding.UTF8.WebName}", $"Match_{matches[0].PlannedStart?.ToString("yyyy-MM-dd") ?? string.Empty}_{Guid.NewGuid():N}.ics");
         }
         catch (Exception e)
         {
@@ -181,18 +174,11 @@ public class Match : AbstractController
                 DescriptionFooter = "\n" + _tenantContext.OrganizationContext.Name + "\n" + _tenantContext.OrganizationContext.HomepageUrl
             };
             var stream = new MemoryStream();
-            // RFC5545 sect. 3.4.1: iCal default charset is UTF8.
-            // Important: no Byte Order Mark (BOM) for Android, Google, Apple
-            var encoding = new UTF8Encoding(false);
-            matches.ForEach(m =>
-            {
-                // convert to local time
-                m.PlannedStart = _timeZoneConverter.ToZonedTime(m.PlannedStart)?.DateTimeOffset.DateTime;
-                m.PlannedEnd = _timeZoneConverter.ToZonedTime(m.PlannedEnd)?.DateTimeOffset.DateTime;
-            });
-            calendar.CreateEvents(matches).Serialize(stream, encoding);
+
+            // match date/times have DateTimeKind.Unspecified but are in UTC
+            calendar.CreateEvents(matches, "UTC").Serialize(stream); // stream is UTF8 without BOM by default
             stream.Seek(0, SeekOrigin.Begin);
-            return File(stream, $"text/calendar; charset={encoding.HeaderName}", $"Match_{Guid.NewGuid():N}.ics");
+            return File(stream, $"text/calendar; charset={Encoding.UTF8.WebName}", $"Match_{Guid.NewGuid():N}.ics");
         }
         catch (Exception e)
         {
