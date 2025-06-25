@@ -13,10 +13,7 @@ public class Calendar
 
     public Calendar()
     {
-        _calendar.ProductId = "TournamentManager/Ical.Net"; // Does not appear in output
-
         // Don't use this: Organizer = new Organizer() { CommonName = "TournamentManager", Value = new Uri("mailto:noreply@tournamentmanager")};
-        // Does not work well: _calendar.AddTimeZone(new VTimeZone("Europe/Berlin"));
 
         FirstAlarm = new TimeSpan(-7, 0, 0, 0, 0);
         SecondAlarm = new TimeSpan(-1, 0, 0, 0, 0);
@@ -71,8 +68,9 @@ public class Calendar
     /// Creates a calendar event for the matches.
     /// </summary>
     /// <param name="matches">The matches to use for the calendar events.</param>
+    /// <param name="tzId">The timezone Id.</param>
     /// <returns>Returns a <see cref="Ical.Net.Calendar"/> instance.</returns>
-    public Calendar CreateEvents(List<CalendarRow> matches)
+    public Calendar CreateEvents(List<CalendarRow> matches, string tzId)
     {
         // Don't set Calendar.Method to "PUBLISH"
         if (matches.Count > 1)
@@ -83,6 +81,9 @@ public class Calendar
             
         foreach (var match in matches)
         {
+            if (match.PlannedStart == null || match.PlannedEnd == null)
+                throw new InvalidOperationException("PlannedStart and PlannedEnd must not be null for calendar events.");
+
             var evt = _calendar.Create<CalendarEvent>();
                 
             evt.Summary = Summary;
@@ -96,13 +97,12 @@ public class Calendar
                     match.VenueLongitude.Value.ToString(System.Globalization.CultureInfo.InvariantCulture));
             evt.Description += "\n" + DescriptionFooter;
             evt.Sequence = (int)match.ChangeSerial;
-            evt.Start = new CalDateTime(value: match.PlannedStart ?? throw new InvalidOperationException($"{nameof(match.PlannedStart)} must not be null"));
-            evt.End = new CalDateTime(value: match.PlannedEnd ?? throw new InvalidOperationException($"{nameof(match.PlannedEnd)} must not be null"));
+            evt.Start = new CalDateTime(value: match.PlannedStart.Value, tzId);
+            evt.End = new CalDateTime(value: match.PlannedEnd.Value, tzId);
             // evt.Created = new CalDateTime(match.ModifiedOn);
-            evt.LastModified = new CalDateTime(match.ModifiedOn);
-            evt.DtStamp = new CalDateTime(DateTime.Now);
+            evt.LastModified = new CalDateTime(match.ModifiedOn, "UTC");
+            evt.DtStamp = new CalDateTime(DateTime.UtcNow);
 
-            evt.IsAllDay = false;
             evt.Uid = string.Format(UidFormat, match.Id);
             evt.Status = EventStatus.Confirmed;
             evt.Class = "PRIVATE";
@@ -112,20 +112,20 @@ public class Calendar
             if (WithAlarms)
             {
                 // first alarm
-                evt.Alarms.Add(new Alarm()
+                evt.Alarms.Add(new Alarm
                     {
                         // Note: "Duration" property does NOT mean the length of the alarm ringing
-                        // but the TimeSpan before the event!
-                        Trigger = new Trigger(FirstAlarm),
+                        // but the time span before the event!
+                        Trigger = new Trigger { Duration = Duration.FromTimeSpanExact(FirstAlarm) },
                         Action = AlarmAction.Display,
                         Summary = evt.Summary
                     }
                 );
 
                 // second alarm
-                evt.Alarms.Add(new Alarm()
+                evt.Alarms.Add(new Alarm
                     {
-                        Trigger = new Trigger(SecondAlarm),
+                        Trigger = new Trigger { Duration = Duration.FromTimeSpanExact(SecondAlarm) },
                         Action = AlarmAction.Display,
                         Summary = evt.Summary
                     }
@@ -139,7 +139,10 @@ public class Calendar
     /// <summary>
     /// Creates a public calendar with events for the matches.
     /// </summary>
-    /// <param name="matches">The matches to use for the calendar events.</param>
+    /// <param name="matches">
+    /// The matches to use for the calendar events.
+    /// Date/time values must be in UTC.
+    /// </param>
     /// <returns>Returns a <see cref="Ical.Net.Calendar"/> instance.</returns>
     public Calendar CreatePublicCalendar(List<CalendarRow> matches)
     {
@@ -151,6 +154,9 @@ public class Calendar
 
         foreach (var match in matches)
         {
+            if (match.PlannedStart == null || match.PlannedEnd == null)
+                throw new InvalidOperationException("PlannedStart and PlannedEnd must not be null for calendar events.");
+
             var evt = _calendar.Create<CalendarEvent>();
 
             evt.Summary = Summary;
@@ -164,13 +170,12 @@ public class Calendar
                     match.VenueLongitude.Value.ToString(System.Globalization.CultureInfo.InvariantCulture));
             evt.Description += "\n" + DescriptionFooter;
             evt.Sequence = (int)match.ChangeSerial;
-            evt.Start = new CalDateTime(value: match.PlannedStart ?? throw new InvalidOperationException($"{nameof(match.PlannedStart)} must not be null"));
-            evt.End = new CalDateTime(value: match.PlannedEnd ?? throw new InvalidOperationException($"{nameof(match.PlannedEnd)} must not be null"));
+            evt.Start = new CalDateTime(value: match.PlannedStart.Value, "UTC");
+            evt.End = new CalDateTime(value: match.PlannedEnd.Value, "UTC");
             // evt.Created = new CalDateTime(match.ModifiedOn);
-            evt.LastModified = new CalDateTime(match.ModifiedOn);
-            evt.DtStamp = new CalDateTime(DateTime.Now);
+            evt.LastModified = new CalDateTime(match.ModifiedOn, "UTC");
+            evt.DtStamp = new CalDateTime(DateTime.UtcNow);
 
-            evt.IsAllDay = false;
             evt.Uid = string.Format(UidFormat, match.Id);
             evt.Class = "PUBLIC";
 
@@ -179,10 +184,10 @@ public class Calendar
                 // first alarm
                 evt.Alarms.Add(new Alarm()
                     {
-                        // Note: "Duration" property does NOT mean the length of the alarm ringing
-                        // but the TimeSpan before the event!
-                        Trigger = new Trigger(FirstAlarm),
-                        Action = AlarmAction.Display,
+                    // Note: "Duration" property does NOT mean the length of the alarm ringing
+                    // but the time span before the event!
+                    Trigger = new Trigger { Duration = Duration.FromTimeSpanExact(FirstAlarm) },
+                    Action = AlarmAction.Display,
                         Summary = evt.Summary
                     }
                 );
@@ -190,8 +195,8 @@ public class Calendar
                 // second alarm
                 evt.Alarms.Add(new Alarm()
                     {
-                        Trigger = new Trigger(SecondAlarm),
-                        Action = AlarmAction.Display,
+                    Trigger = new Trigger { Duration = Duration.FromTimeSpanExact(SecondAlarm) },
+                    Action = AlarmAction.Display,
                         Summary = evt.Summary
                     }
                 );
@@ -203,24 +208,41 @@ public class Calendar
 
     public override string ToString()
     {
-        var serializer = new CalendarSerializer(new SerializationContext());
-        return serializer.SerializeToString(_calendar);
+        return new CalendarSerializer().SerializeToString(_calendar)!;
     }
 
-    public void Serialize(string filename, Encoding encoding)
+    /// <summary>
+    /// Serializes the calendar to a file.
+    /// </summary>
+    /// <param name="filename">The name of the file to write the calendar to.</param>
+    /// <param name="encoding">
+    /// RFC5545 sect. 3.4.1: iCal default charset is UTF8.
+    /// The encoding to use for the calendar text. If <c>null</c>, UTF-8 without BOM is used.
+    /// Important: no Byte Order Mark (BOM) for Android, Google, Apple
+    /// </param>
+    public void Serialize(string filename, Encoding? encoding = null)
     {
-        var serializer = new CalendarSerializer(new SerializationContext());
+        encoding ??= new UTF8Encoding(false);
         var ms = new MemoryStream();
-        serializer.Serialize(_calendar, ms, encoding);
+        new CalendarSerializer().Serialize(_calendar, ms, encoding);
         ms.Seek(0, SeekOrigin.Begin);
         var fs = File.Create(filename);
         ms.CopyTo(fs);
         fs.Close();
     }
 
-    public void Serialize(Stream stream, Encoding encoding)
+    /// <summary>
+    /// Serializes the calendar to a <see cref="Stream"/>.
+    /// </summary>
+    /// <param name="stream">The <see cref="Stream"/> to write the calendar to. The stream must be writable.</param>
+    /// <param name="encoding">
+    /// RFC5545 sect. 3.4.1: iCal default charset is UTF8.
+    /// The encoding to use for the calendar text. If <c>null</c>, UTF-8 without BOM is used.
+    /// Important: no Byte Order Mark (BOM) for Android, Google, Apple
+    /// </param>
+    public void Serialize(Stream stream, Encoding? encoding = null)
     {
-        var serializer = new CalendarSerializer(new SerializationContext());
-        serializer.Serialize(_calendar, stream, encoding);
+        encoding ??= new UTF8Encoding(false);
+        new CalendarSerializer().Serialize(_calendar, stream, encoding);
     }
 }
