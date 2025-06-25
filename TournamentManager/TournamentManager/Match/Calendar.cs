@@ -78,61 +78,12 @@ public class Calendar
             _calendar.AddProperty("NAME", Name);
             _calendar.AddProperty("X-WR-CALNAME", Name);
         }
-            
+
         foreach (var match in matches)
         {
-            if (match.PlannedStart == null || match.PlannedEnd == null)
-                throw new InvalidOperationException("PlannedStart and PlannedEnd must not be null for calendar events.");
-
-            var evt = _calendar.Create<CalendarEvent>();
-                
-            evt.Summary = Summary;
-            evt.Location = $"{match.VenueName}, {match.VenueStreet}, {match.VenuePostalCode} {match.VenueCity}";
-            evt.Description = !string.IsNullOrWhiteSpace(DescriptionOpponentsFormat)
-                ? string.Format(DescriptionOpponentsFormat, match.HomeTeamNameForRound, match.GuestTeamNameForRound)
-                : string.Empty;
-            if (match is { VenueLongitude: not null, VenueLatitude: not null } && !string.IsNullOrWhiteSpace(DescriptionGoogleMapsFormat))
-                evt.Description += "\n" + string.Format(DescriptionGoogleMapsFormat,
-                    match.VenueLatitude.Value.ToString(System.Globalization.CultureInfo.InvariantCulture),
-                    match.VenueLongitude.Value.ToString(System.Globalization.CultureInfo.InvariantCulture));
-            evt.Description += "\n" + DescriptionFooter;
-            evt.Sequence = (int)match.ChangeSerial;
-            evt.Start = new CalDateTime(value: match.PlannedStart.Value, tzId);
-            evt.End = new CalDateTime(value: match.PlannedEnd.Value, tzId);
-            // evt.Created = new CalDateTime(match.ModifiedOn);
-            evt.LastModified = new CalDateTime(match.ModifiedOn, "UTC");
-            evt.DtStamp = new CalDateTime(DateTime.UtcNow);
-
-            evt.Uid = string.Format(UidFormat, match.Id);
-            evt.Status = EventStatus.Confirmed;
-            evt.Class = "PRIVATE";
-            evt.Transparency = "OPAQUE";
-            evt.AddProperty("X-MICROSOFT-CDO-BUSYSTATUS", "BUSY");
-               
-            if (WithAlarms)
-            {
-                // first alarm
-                evt.Alarms.Add(new Alarm
-                    {
-                        // Note: "Duration" property does NOT mean the length of the alarm ringing
-                        // but the time span before the event!
-                        Trigger = new Trigger { Duration = Duration.FromTimeSpanExact(FirstAlarm) },
-                        Action = AlarmAction.Display,
-                        Summary = evt.Summary
-                    }
-                );
-
-                // second alarm
-                evt.Alarms.Add(new Alarm
-                    {
-                        Trigger = new Trigger { Duration = Duration.FromTimeSpanExact(SecondAlarm) },
-                        Action = AlarmAction.Display,
-                        Summary = evt.Summary
-                    }
-                );
-            }
-            // Adding 'evt' to Events would cause double entries
+            AddCalendarEvent(match, tzId, "PRIVATE");
         }
+
         return this;
     }
 
@@ -154,56 +105,58 @@ public class Calendar
 
         foreach (var match in matches)
         {
-            if (match.PlannedStart == null || match.PlannedEnd == null)
-                throw new InvalidOperationException("PlannedStart and PlannedEnd must not be null for calendar events.");
-
-            var evt = _calendar.Create<CalendarEvent>();
-
-            evt.Summary = Summary;
-            evt.Location = $"{match.VenueName}, {match.VenueStreet}, {match.VenuePostalCode} {match.VenueCity}";
-            evt.Description = !string.IsNullOrWhiteSpace(DescriptionOpponentsFormat)
-                ? string.Format(DescriptionOpponentsFormat, match.HomeTeamNameForRound, match.GuestTeamNameForRound)
-                : string.Empty;
-            if (match is { VenueLongitude: not null, VenueLatitude: not null } && !string.IsNullOrWhiteSpace(DescriptionGoogleMapsFormat))
-                evt.Description += "\n" + string.Format(DescriptionGoogleMapsFormat,
-                    match.VenueLatitude.Value.ToString(System.Globalization.CultureInfo.InvariantCulture),
-                    match.VenueLongitude.Value.ToString(System.Globalization.CultureInfo.InvariantCulture));
-            evt.Description += "\n" + DescriptionFooter;
-            evt.Sequence = (int)match.ChangeSerial;
-            evt.Start = new CalDateTime(value: match.PlannedStart.Value, "UTC");
-            evt.End = new CalDateTime(value: match.PlannedEnd.Value, "UTC");
-            // evt.Created = new CalDateTime(match.ModifiedOn);
-            evt.LastModified = new CalDateTime(match.ModifiedOn, "UTC");
-            evt.DtStamp = new CalDateTime(DateTime.UtcNow);
-
-            evt.Uid = string.Format(UidFormat, match.Id);
-            evt.Class = "PUBLIC";
-
-            if (WithAlarms)
-            {
-                // first alarm
-                evt.Alarms.Add(new Alarm()
-                    {
-                    // Note: "Duration" property does NOT mean the length of the alarm ringing
-                    // but the time span before the event!
-                    Trigger = new Trigger { Duration = Duration.FromTimeSpanExact(FirstAlarm) },
-                    Action = AlarmAction.Display,
-                        Summary = evt.Summary
-                    }
-                );
-
-                // second alarm
-                evt.Alarms.Add(new Alarm()
-                    {
-                    Trigger = new Trigger { Duration = Duration.FromTimeSpanExact(SecondAlarm) },
-                    Action = AlarmAction.Display,
-                        Summary = evt.Summary
-                    }
-                );
-            }
-            // Adding 'evt' to Events would cause double entries
+            AddCalendarEvent(match, "UTC", "PUBLIC");
         }
+
         return this;
+    }
+
+    private void AddCalendarEvent(CalendarRow match, string tzId, string eventClass)
+    {
+        if (match.PlannedStart == null || match.PlannedEnd == null)
+            throw new InvalidOperationException("PlannedStart and PlannedEnd must not be null for calendar events.");
+
+        var evt = _calendar.Create<CalendarEvent>();
+
+        evt.Summary = Summary;
+        evt.Location = $"{match.VenueName}, {match.VenueStreet}, {match.VenuePostalCode} {match.VenueCity}";
+        evt.Description = !string.IsNullOrWhiteSpace(DescriptionOpponentsFormat)
+            ? string.Format(DescriptionOpponentsFormat, match.HomeTeamNameForRound, match.GuestTeamNameForRound)
+            : string.Empty;
+        if (match is { VenueLongitude: not null, VenueLatitude: not null } &&
+            !string.IsNullOrWhiteSpace(DescriptionGoogleMapsFormat))
+            evt.Description += "\n" + string.Format(DescriptionGoogleMapsFormat,
+                match.VenueLatitude.Value.ToString(System.Globalization.CultureInfo.InvariantCulture),
+                match.VenueLongitude.Value.ToString(System.Globalization.CultureInfo.InvariantCulture));
+        evt.Description += "\n" + DescriptionFooter;
+        evt.Sequence = (int) match.ChangeSerial;
+        evt.Start = new CalDateTime(value: match.PlannedStart.Value, tzId);
+        evt.End = new CalDateTime(value: match.PlannedEnd.Value, tzId);
+        evt.LastModified = new CalDateTime(match.ModifiedOn, "UTC");
+        evt.DtStamp = new CalDateTime(DateTime.UtcNow);
+
+        evt.Uid = string.Format(UidFormat, match.Id);
+        evt.Class = eventClass;
+        if (eventClass == "PRIVATE")
+            evt.Status = EventStatus.Confirmed;
+
+        evt.AddProperty("X-MICROSOFT-CDO-BUSYSTATUS", "BUSY");
+
+        if (WithAlarms)
+        {
+            evt.Alarms.Add(new Alarm
+            {
+                Trigger = new Trigger { Duration = Duration.FromTimeSpanExact(FirstAlarm) },
+                Action = AlarmAction.Display,
+                Summary = evt.Summary
+            });
+            evt.Alarms.Add(new Alarm
+            {
+                Trigger = new Trigger { Duration = Duration.FromTimeSpanExact(SecondAlarm) },
+                Action = AlarmAction.Display,
+                Summary = evt.Summary
+            });
+        }
     }
 
     public override string ToString()
@@ -211,6 +164,9 @@ public class Calendar
         return new CalendarSerializer().SerializeToString(_calendar)!;
     }
 
+    /// <summary>
+    /// Serializes the calendar to a file.
+    /// </summary>
     /// <summary>
     /// Serializes the calendar to a file.
     /// </summary>
