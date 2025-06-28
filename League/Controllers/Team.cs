@@ -237,7 +237,7 @@ public class Team : AbstractController
             , cancellationToken);
 
         // The team name for an active tournament won't be changed
-        if (tournament is { IsPlanningMode: true })
+        if (tournament != null && await IsPlanningMode(tournament, cancellationToken))
         {
             foreach (var tir in model.TeamEntity.TeamInRounds)
             {
@@ -405,5 +405,24 @@ public class Team : AbstractController
         model.MapEntityToFormFields(team);
         model.HtmlFieldPrefix = nameof(TeamEditModel.Team);
         return model;
+    }
+
+    /// <summary>
+    /// Determines whether the tournament is in planning mode at the current date/time:
+    /// <para/>
+    /// Gets the minimum StartDateTime of the RoundLeg entity across all Rounds of a Tournament
+    /// and subtracts the number of notification days before the next match from it.
+    /// The current date/time must be before this value to be in planning mode.
+    /// </summary>
+    /// <param name="tournament">The <see cref="TournamentEntity"/> to test for planning mode.</param>
+    /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
+    /// <returns><see langword="true"/> if the tournament has started on the specified date; otherwise, <see langword="false"/>.</returns>
+    private async Task<bool> IsPlanningMode(TournamentEntity tournament, CancellationToken cancellationToken)
+    {
+        return await _appDb.RoundRepository
+            .GetRoundStartAsync(tournament.Id, cancellationToken)
+            .ContinueWith(
+                t => DateTime.UtcNow < t.Result.AddDays(-_tenantContext.SiteContext.MatchNotifications.DaysBeforeNextMatch),
+                TaskContinuationOptions.OnlyOnRanToCompletion);
     }
 }

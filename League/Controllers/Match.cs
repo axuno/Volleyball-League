@@ -281,14 +281,19 @@ public class Match : AbstractController
             var model = await GetEnterResultViewModel(match, cancellationToken);
             model.IsOverruling = overrule;
 
-            var permissionValidator = new MatchResultPermissionValidator(match, (_tenantContext, (model.Tournament!.IsPlanningMode, model.Round!.IsComplete, DateTime.UtcNow)));
+            var permissionValidator = new MatchResultPermissionValidator(match,
+                (_tenantContext,
+                    (await IsPlanningMode(model.Tournament!, cancellationToken), model.Round!.IsComplete,
+                        DateTime.UtcNow)));
             if (userCanOverrule)
             {
                 // Disable the deadline check, if the user is allowed to overrule results
-                permissionValidator.Facts.First(f =>
-                                           f.Id == MatchResultPermissionValidator.FactId.CurrentDateIsBeforeResultCorrectionDeadline)
+                permissionValidator.Facts
+                    .First(f =>
+                        f.Id == MatchResultPermissionValidator.FactId.CurrentDateIsBeforeResultCorrectionDeadline)
                     .Enabled = false;
             }
+
             await permissionValidator.CheckAsync(cancellationToken);
             if (permissionValidator.GetFailedFacts().Count != 0)
             {
@@ -349,7 +354,10 @@ public class Match : AbstractController
             }
 
             // Check for active tournament and round, deadline for corrections
-            var permissionValidator = new MatchResultPermissionValidator(match, (_tenantContext, (model.Tournament!.IsPlanningMode, model.Round!.IsComplete, DateTime.UtcNow)));
+            var permissionValidator = new MatchResultPermissionValidator(match,
+                (_tenantContext,
+                    (await IsPlanningMode(model.Tournament!, cancellationToken), model.Round!.IsComplete,
+                        DateTime.UtcNow)));
             // Disable the deadline check, if the user is allowed to overrule results
             if (isAuthorizedToOverrule)
                 permissionValidator.Facts.First(f =>
@@ -560,7 +568,7 @@ public class Match : AbstractController
         {
             fixtureMessage.ChangeSuccess = await _appDb.GenericRepository.SaveEntityAsync(match, false, false, cancellationToken);
             _logger.LogInformation("Fixture for match id {MatchId} updated successfully for user ID '{CurrentUserId}'", match.Id, GetCurrentUserId());
-            if (fixtureIsChanged && !model.Tournament.IsPlanningMode) SendFixtureNotification(match.Id);
+            if (fixtureIsChanged && !await IsPlanningMode(model.Tournament, cancellationToken)) SendFixtureNotification(match.Id);
         }
         catch (Exception e)
         {
@@ -802,5 +810,24 @@ public class Match : AbstractController
         return (returnUrl == TenantLink.Action(nameof(Results), nameof(Match))
             ? TenantLink.Action(nameof(Results), nameof(Match)) // editing a result is exceptional
             : TenantLink.Action(nameof(Fixtures), nameof(Match))) ?? string.Empty; // coming from fixtures is normal
+    }
+
+    /// <summary>
+    /// Determines whether the tournament is in planning mode at the current date/time:
+    /// <para/>
+    /// Gets the minimum StartDateTime of the RoundLeg entity across all Rounds of a Tournament
+    /// and subtracts the number of notification days before the next match from it.
+    /// The current date/time must be before this value to be in planning mode.
+    /// </summary>
+    /// <param name="tournament">The <see cref="TournamentEntity"/> to test for planning mode.</param>
+    /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
+    /// <returns><see langword="true"/> if the tournament has started on the specified date; otherwise, <see langword="false"/>.</returns>
+    private async Task<bool> IsPlanningMode(TournamentEntity tournament, CancellationToken cancellationToken)
+    {
+        return await _appDb.RoundRepository
+            .GetRoundStartAsync(tournament.Id, cancellationToken)
+            .ContinueWith(
+                t => DateTime.UtcNow < t.Result.AddDays(-_tenantContext.SiteContext.MatchNotifications.DaysBeforeNextMatch),
+                TaskContinuationOptions.OnlyOnRanToCompletion);
     }
 }

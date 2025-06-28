@@ -39,6 +39,42 @@ public class RoundRepository
         return round;
     }
 
+    /// <summary>
+    /// Gets the minimum StartDateTime of the RoundLeg entity for a Round.
+    /// </summary>
+    public virtual async Task<DateTime> GetRoundStartAsync(long roundId, CancellationToken cancellationToken)
+    {
+        var filter = new PredicateExpression(RoundFields.Id == roundId);
+        return await GetMinRoundLegAsync(filter, cancellationToken);
+    }
+
+    /// <summary>
+    /// Gets the minimum StartDateTime of the RoundLeg entity across all Rounds of a Tournament.
+    /// </summary>
+    public virtual async Task<DateTime> GetTournamentStartAsync(long tournamentId, CancellationToken cancellationToken)
+    {
+        var filter = new PredicateExpression(RoundFields.TournamentId == tournamentId);
+        return await GetMinRoundLegAsync(filter, cancellationToken);
+    }
+
+    /// <summary>
+    /// Gets the minimum StartDateTime of the RoundLeg entity based on the provided filter.
+    /// </summary>
+    private async Task<DateTime> GetMinRoundLegAsync(IPredicateExpression filter, CancellationToken cancellationToken)
+    {
+        using var da = _dbContext.GetNewAdapter();
+
+        var qf = new QueryFactory();
+        var q = qf.Create()
+            .From(qf.RoundLeg.InnerJoin(qf.Round).On(RoundLegFields.RoundId == RoundFields.Id)
+                .InnerJoin(qf.Tournament).On(RoundFields.TournamentId == TournamentFields.Id))
+            .Where(filter)
+            .Select(() => RoundLegFields.StartDateTime.Min().ToValue<DateTime?>());
+        
+        // Execute the query to fetch the results.
+        return await da.FetchScalarAsync<DateTime>(q, cancellationToken);
+    }
+
     public virtual async Task<List<RoundLegPeriodRow>> GetRoundLegPeriodAsync(IPredicateExpression filter,
         CancellationToken cancellationToken)
     {

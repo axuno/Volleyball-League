@@ -249,9 +249,10 @@ namespace TournamentManager.DAL.EntityClasses
 			set { SetValue((int)TournamentFieldIndex.IsComplete, value); }
 		}
 
-		/// <summary>The IsPlanningMode property of the Entity Tournament<br/><br/></summary>
-		/// <remarks>Mapped on  table field: "Tournament"."IsPlanningMode".<br/>Table field type characteristics (type, precision, scale, length): Bit, 0, 0, 0.<br/>Table field behavior characteristics (is nullable, is PK, is identity): false, false, false</remarks>
-		public virtual System.Boolean IsPlanningMode
+        /// <summary>The IsPlanningMode property of the Entity Tournament<br/><br/></summary>
+        /// <remarks>Mapped on  table field: "Tournament"."IsPlanningMode".<br/>Table field type characteristics (type, precision, scale, length): Bit, 0, 0, 0.<br/>Table field behavior characteristics (is nullable, is PK, is identity): false, false, false</remarks>
+        [Obsolete("This property has been replaced with 'IsPlanningMode(TournamentEntity, CancellationToken)' will be removed in a future version.", true)]
+        public virtual System.Boolean IsPlanningMode
 		{
 			get { return (System.Boolean)GetValue((int)TournamentFieldIndex.IsPlanningMode, true); }
 			set { SetValue((int)TournamentFieldIndex.IsPlanningMode, value); }
