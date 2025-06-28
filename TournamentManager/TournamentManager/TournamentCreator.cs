@@ -122,23 +122,15 @@ public class TournamentCreator
         {
             _logger.LogWarning("Safety checks disabled.");
         }
-        else
+        else if (sourceTournament.NextTournamentId.HasValue)
         {
-            if (sourceTournament.IsPlanningMode)
-            {
-                throw new InvalidOperationException($"Source tournament {sourceTournament.Id} is in planning mode.");
-            }
-
-            if (sourceTournament.NextTournamentId.HasValue)
-            {
-                throw new InvalidOperationException($"Source tournament {sourceTournament.Id} has already a next tournament.");
-            }
+            throw new InvalidOperationException(
+                $"Source tournament {sourceTournament.Id} has already a next tournament.");
         }
 
         // Create the target tournament
         var targetTournament = new TournamentEntity
         {
-            IsPlanningMode = true,
             Name = copyArgs.TargetName,
             Description = copyArgs.TargetDescription,
             TypeId = sourceTournament.TypeId,
