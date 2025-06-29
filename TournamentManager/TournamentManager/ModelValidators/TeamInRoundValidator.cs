@@ -27,7 +27,7 @@ public class TeamInRoundValidator : AbstractValidator<TeamInRoundEntity, (ITenan
         return new Fact<FactId>
         {
             Id = FactId.RoundBelongsToTournament,
-            FieldNames = new[] {nameof(Model.RoundId)},
+            FieldNames = [nameof(Model.RoundId)],
             Enabled = true,
             Type = FactType.Critical,
             CheckAsync = FactResult
@@ -37,7 +37,7 @@ public class TeamInRoundValidator : AbstractValidator<TeamInRoundEntity, (ITenan
         {
             var roundWithTypeList = await Data.TenantContext.DbContext.AppDb.RoundRepository.GetRoundsWithTypeAsync(
                 new PredicateExpression(RoundFields.TournamentId == Data.TouramentId),
-                cancellationToken);
+                cancellationToken).ConfigureAwait(false);
 
             if (roundWithTypeList.Exists(round => round.Id == Model.RoundId))
             {
@@ -50,7 +50,7 @@ public class TeamInRoundValidator : AbstractValidator<TeamInRoundEntity, (ITenan
                         
             var tournament =
                 await Data.TenantContext.DbContext.AppDb.TournamentRepository.GetTournamentAsync(new PredicateExpression(TournamentFields.Id == Data.TouramentId),
-                    cancellationToken);
+                    cancellationToken).ConfigureAwait(false);
 
             return new FactResult
             {

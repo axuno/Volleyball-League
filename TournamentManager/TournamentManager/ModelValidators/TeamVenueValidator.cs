@@ -27,7 +27,7 @@ public class TeamVenueValidator : AbstractValidator<TeamEntity, ITenantContext, 
         return new Fact<FactId>
         {
             Id = FactId.VenueIsValid,
-            FieldNames = new[] {nameof(Model.VenueId)},
+            FieldNames = [nameof(Model.VenueId)],
             Enabled = Model.VenueId.HasValue,
             Type = FactType.Critical,
             CheckAsync = async (cancellationToken) => new FactResult {
@@ -35,7 +35,7 @@ public class TeamVenueValidator : AbstractValidator<TeamEntity, ITenantContext, 
                     nameof(FactId.VenueIsValid)) ?? string.Empty,
                 Success = Model.VenueId.HasValue &&
                           await Data.DbContext.AppDb.VenueRepository.IsValidVenueIdAsync(Model.VenueId,
-                              cancellationToken)
+                              cancellationToken).ConfigureAwait(false)
             }
         };
     }
@@ -45,7 +45,7 @@ public class TeamVenueValidator : AbstractValidator<TeamEntity, ITenantContext, 
         return new Fact<FactId>
         {
             Id = FactId.VenueIsSetIfRequired,
-            FieldNames = new[] {nameof(Model.VenueId)},
+            FieldNames = [nameof(Model.VenueId)],
             Enabled = true,
             Type = FactType.Critical,
             CheckAsync = (cancellationToken) => Task.FromResult(

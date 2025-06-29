@@ -11,7 +11,7 @@ namespace TournamentManager.ModelValidators;
 
 public class FixtureValidator : AbstractValidator<MatchEntity, (ITenantContext TenantContext, Axuno.Tools.DateAndTime.TimeZoneConverter TimeZoneConverter, PlannedMatchRow PlannedMatch), FixtureValidator.FactId>
 {
-    private List<TeamEntity> _teamsInMatch = new();
+    private List<TeamEntity> _teamsInMatch = [];
     private readonly FactResult _successResult = new() { Message = string.Empty, Success = true };
 
     public enum FactId
@@ -44,7 +44,7 @@ public class FixtureValidator : AbstractValidator<MatchEntity, (ITenantContext T
         _teamsInMatch = await Data.TenantContext.DbContext.AppDb.TeamRepository.GetTeamEntitiesAsync(
             new PredicateExpression(TeamFields.Id == Model.HomeTeamId |
                                     TeamFields.Id == Model.GuestTeamId),
-            cancellationToken);
+            cancellationToken).ConfigureAwait(false);
     }
 
     private void CreateFacts()
@@ -66,7 +66,7 @@ public class FixtureValidator : AbstractValidator<MatchEntity, (ITenantContext T
         return new Fact<FactId>
         {
             Id = FactId.PlannedVenueIsRegisteredVenueOfTeam,
-            FieldNames = new[] { nameof(Model.VenueId) },
+            FieldNames = [nameof(Model.VenueId)],
             Enabled = true,
             Type = FactType.Warning,
             CheckAsync = FactResult
@@ -74,7 +74,7 @@ public class FixtureValidator : AbstractValidator<MatchEntity, (ITenantContext T
 
         async Task<FactResult> FactResult(CancellationToken cancellationToken)
         {
-            await LoadTeamsInMatch(cancellationToken);
+            await LoadTeamsInMatch(cancellationToken).ConfigureAwait(false);
             return new FactResult
             {
                 Message = FixtureValidatorResource.ResourceManager.GetString(
@@ -90,7 +90,7 @@ public class FixtureValidator : AbstractValidator<MatchEntity, (ITenantContext T
         return new Fact<FactId>
         {
             Id = FactId.PlannedVenueNotOccupiedWithOtherMatch,
-            FieldNames = new[] { nameof(Model.VenueId) },
+            FieldNames = [nameof(Model.VenueId)],
             Type = FactType.Warning,
             CheckAsync = FactResult
         };
@@ -99,8 +99,9 @@ public class FixtureValidator : AbstractValidator<MatchEntity, (ITenantContext T
         {
             var otherMatch = Model.VenueId.HasValue
                 ? (await Data.TenantContext.DbContext.AppDb.VenueRepository.GetOccupyingMatchesAsync(
-                    Model.VenueId.Value, new DateTimePeriod(Model.PlannedStart, Model.PlannedEnd),
-                    Data.TenantContext.TournamentContext.MatchPlanTournamentId, cancellationToken))
+                        Model.VenueId.Value, new DateTimePeriod(Model.PlannedStart, Model.PlannedEnd),
+                        Data.TenantContext.TournamentContext.MatchPlanTournamentId, cancellationToken)
+                    .ConfigureAwait(false))
                 .Find(m => m.Id != Model.Id)
                 : null;
 
@@ -118,14 +119,15 @@ public class FixtureValidator : AbstractValidator<MatchEntity, (ITenantContext T
         return new Fact<FactId>
         {
             Id = FactId.PlannedVenueIsSet,
-            FieldNames = new[] { nameof(Model.VenueId) },
+            FieldNames = [nameof(Model.VenueId)],
             Enabled = Data.TenantContext.TournamentContext.FixtureRuleSet.PlannedVenueMustBeSet,
             Type = FactType.Critical,
             CheckAsync = async (cancellationToken) => 
                 new FactResult
                 {
                     Message = FixtureValidatorResource.ResourceManager.GetString(nameof(FactId.PlannedVenueIsSet)) ?? string.Empty,
-                    Success = Model.VenueId.HasValue && await Data.TenantContext.DbContext.AppDb.VenueRepository.IsValidVenueIdAsync(Model.VenueId.Value, cancellationToken)
+                    Success = Model.VenueId.HasValue
+                              && await Data.TenantContext.DbContext.AppDb.VenueRepository.IsValidVenueIdAsync(Model.VenueId.Value, cancellationToken).ConfigureAwait(false)
                 }
         };
     }
@@ -135,7 +137,7 @@ public class FixtureValidator : AbstractValidator<MatchEntity, (ITenantContext T
         return new Fact<FactId>
         {
             Id = FactId.PlannedStartWeekdayIsTeamWeekday,
-            FieldNames = new[] { nameof(Model.PlannedStart) },
+            FieldNames = [nameof(Model.PlannedStart)],
             Enabled = true,
             Type = FactType.Warning,
             CheckAsync = FactResult
@@ -144,7 +146,7 @@ public class FixtureValidator : AbstractValidator<MatchEntity, (ITenantContext T
         async Task<FactResult> FactResult(CancellationToken cancellationToken)
         {
             if (!Model.VenueId.HasValue || !Model.PlannedStart.HasValue) return _successResult;
-            await LoadTeamsInMatch(cancellationToken);
+            await LoadTeamsInMatch(cancellationToken).ConfigureAwait(false);
                         
             var homeTeam = _teamsInMatch.Find(m => m.Id == Model.HomeTeamId);
             var guestTeam = _teamsInMatch.Find(m => m.Id == Model.GuestTeamId);
@@ -195,7 +197,7 @@ public class FixtureValidator : AbstractValidator<MatchEntity, (ITenantContext T
         return new Fact<FactId>
         {
             Id = FactId.PlannedStartTeamsAreNotBusy,
-            FieldNames = new[] { nameof(Model.PlannedStart) },
+            FieldNames = [nameof(Model.PlannedStart)],
             Enabled = true,
             Type = FactType.Error,
             CheckAsync = FactResult
@@ -205,8 +207,9 @@ public class FixtureValidator : AbstractValidator<MatchEntity, (ITenantContext T
         {
             var busyTeams = Model.PlannedStart.HasValue
                 ? await Data.TenantContext.DbContext.AppDb.MatchRepository.AreTeamsBusyAsync(
-                    Model, Data.TenantContext.TournamentContext.FixtureRuleSet.UseOnlyDatePartForTeamFreeBusyTimes, Data.TenantContext.TournamentContext.MatchPlanTournamentId, cancellationToken)
-                : Array.Empty<long>();
+                    Model, Data.TenantContext.TournamentContext.FixtureRuleSet.UseOnlyDatePartForTeamFreeBusyTimes,
+                    Data.TenantContext.TournamentContext.MatchPlanTournamentId, cancellationToken).ConfigureAwait(false)
+                : [];
 
             return busyTeams.Length > 0
                 ? new FactResult
@@ -227,7 +230,7 @@ public class FixtureValidator : AbstractValidator<MatchEntity, (ITenantContext T
         return new Fact<FactId>
         {
             Id = FactId.PlannedStartWithinDesiredTimeRange,
-            FieldNames = new[] { nameof(Model.PlannedStart) },
+            FieldNames = [nameof(Model.PlannedStart)],
             Enabled = true, // set time range to 24h to always succeed the test
             Type = FactType.Warning,
             CheckAsync = (cancellationToken) => Task.FromResult(
@@ -247,7 +250,7 @@ public class FixtureValidator : AbstractValidator<MatchEntity, (ITenantContext T
         return new Fact<FactId>
         {
             Id = FactId.PlannedStartWithinRoundLegs,
-            FieldNames = new[] { nameof(Model.PlannedStart) },
+            FieldNames = [nameof(Model.PlannedStart)],
             Enabled = true,
             Type = FactType.Error,
             CheckAsync = FactResult
@@ -257,7 +260,8 @@ public class FixtureValidator : AbstractValidator<MatchEntity, (ITenantContext T
         {
             var round =
                 await Data.TenantContext.DbContext.AppDb.RoundRepository.GetRoundWithLegsAsync(Model.RoundId,
-                    cancellationToken) ?? throw new InvalidOperationException($"Round Id '{Model.RoundId}' not found.");
+                    cancellationToken).ConfigureAwait(false) ??
+                throw new InvalidOperationException($"Round Id '{Model.RoundId}' not found.");
 
             if (!Model.PlannedStart.HasValue || round.RoundLegs.Count == 0) {
                 return _successResult;
@@ -308,7 +312,7 @@ public class FixtureValidator : AbstractValidator<MatchEntity, (ITenantContext T
         return new Fact<FactId>
         {
             Id = FactId.PlannedStartIsFutureDate,
-            FieldNames = new[] { nameof(Model.PlannedStart) },
+            FieldNames = [nameof(Model.PlannedStart)],
             Enabled = true,
             Type = FactType.Warning,
             CheckAsync = (cancellationToken) => Task.FromResult(
@@ -325,7 +329,7 @@ public class FixtureValidator : AbstractValidator<MatchEntity, (ITenantContext T
         return new Fact<FactId>
         {
             Id = FactId.PlannedStartNotExcluded,
-            FieldNames = new[] { nameof(Model.PlannedStart) },
+            FieldNames = [nameof(Model.PlannedStart)],
             Enabled = Data.TenantContext.TournamentContext.FixtureRuleSet.CheckForExcludedMatchDateTime,
             Type = FactType.Warning,
             CheckAsync = FactResult
@@ -337,7 +341,8 @@ public class FixtureValidator : AbstractValidator<MatchEntity, (ITenantContext T
             // MatchEntity.RoundId, MatchEntity.HomeTeamId, MatchEntity.GuestTeam must be set for the check to work
             var excluded =
                 await Data.TenantContext.DbContext.AppDb.ExcludedMatchDateRepository.GetExcludedMatchDateAsync(Model,
-                    Data.TenantContext.TournamentContext.MatchPlanTournamentId, cancellationToken);
+                    Data.TenantContext.TournamentContext.MatchPlanTournamentId,
+                    cancellationToken).ConfigureAwait(false);
 
             if (excluded == null)
             {
@@ -364,7 +369,7 @@ public class FixtureValidator : AbstractValidator<MatchEntity, (ITenantContext T
         return new Fact<FactId>
         {
             Id = FactId.PlannedStartIsSet,
-            FieldNames = new []{ nameof(Model.PlannedStart) },
+            FieldNames = [nameof(Model.PlannedStart)],
             Enabled = Data.TenantContext.TournamentContext.FixtureRuleSet.PlannedMatchDateTimeMustBeSet,
             Type = FactType.Critical,
             CheckAsync = (cancellationToken) => Task.FromResult(

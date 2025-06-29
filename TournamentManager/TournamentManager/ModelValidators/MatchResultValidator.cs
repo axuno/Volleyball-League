@@ -72,8 +72,8 @@ public sealed class MatchResultValidator : AbstractValidator<MatchEntity, (ITena
             // One ball point lasts for about 33 seconds (average over 1,024 matches with 169,845 ball points in 92,186 minutes)
             // https://volleyball.de/nc/news/details/datum/2011/05/27/zahlenspiele-1025-spiele-dauerten-64-tage-und-26-minuten/
             Id = FactId.RealMatchDurationIsPlausible,
-            FieldNames = new[] { nameof(Model.RealStart), nameof(Model.RealEnd) },
-            Enabled = default,
+            FieldNames = [nameof(Model.RealStart), nameof(Model.RealEnd)],
+            Enabled = false,
             Type = FactType.Warning,
             CheckAsync = (cancellationToken) => FactResult()
         };
@@ -101,8 +101,8 @@ public sealed class MatchResultValidator : AbstractValidator<MatchEntity, (ITena
         return new Fact<FactId>
         {
             Id = FactId.RealMatchDateEqualsFixture,
-            FieldNames = new[] { nameof(Model.RealStart), nameof(Model.RealEnd) },
-            Enabled = default,
+            FieldNames = [nameof(Model.RealStart), nameof(Model.RealEnd)],
+            Enabled = false,
             Type = FactType.Warning,
             CheckAsync = (cancellationToken) => Task.FromResult(
                 new FactResult
@@ -119,15 +119,15 @@ public sealed class MatchResultValidator : AbstractValidator<MatchEntity, (ITena
         return new Fact<FactId>
         {
             Id = FactId.SetsValidatorSuccessful,
-            FieldNames = new[] { string.Empty },
-            Enabled = default,
+            FieldNames = [string.Empty],
+            Enabled = false,
             Type = FactType.Critical,
-            CheckAsync = async (cancellationToken) => await FactResult()
+            CheckAsync = async (cancellationToken) => await FactResult().ConfigureAwait(false)
         };
 
         async Task<FactResult> FactResult()
         {
-            await SetsValidator.CheckAsync(CancellationToken.None);
+            await SetsValidator.CheckAsync(CancellationToken.None).ConfigureAwait(false);
 
             return new FactResult
             {
@@ -143,13 +143,13 @@ public sealed class MatchResultValidator : AbstractValidator<MatchEntity, (ITena
         return new Fact<FactId>
         {
             Id = FactId.RealMatchDateWithinRoundLegs,
-            FieldNames = new[] {nameof(Model.RealStart), nameof(Model.RealEnd) },
-            Enabled = default,
+            FieldNames = [nameof(Model.RealStart), nameof(Model.RealEnd)],
+            Enabled = false,
             Type = FactType.Error,
             CheckAsync = FactResult
         };
 
-    async Task<FactResult> FactResult(CancellationToken cancellationToken)
+        async Task<FactResult> FactResult(CancellationToken cancellationToken)
         {
             var successResult = new FactResult
             {
@@ -158,8 +158,9 @@ public sealed class MatchResultValidator : AbstractValidator<MatchEntity, (ITena
             };
 
             var round =
-                await Data.TenantContext.DbContext.AppDb.RoundRepository.GetRoundWithLegsAsync(Model.RoundId,
-                    cancellationToken) ?? throw new InvalidOperationException($"Round Id '{Model.RoundId}' not found.");
+                await Data.TenantContext.DbContext.AppDb.RoundRepository
+                    .GetRoundWithLegsAsync(Model.RoundId, cancellationToken).ConfigureAwait(false)
+                ?? throw new InvalidOperationException($"Round Id '{Model.RoundId}' not found.");
 
             if (!Model.RealStart.HasValue || !Model.RealEnd.HasValue || round.RoundLegs.Count == 0)
             {
@@ -198,8 +199,8 @@ public sealed class MatchResultValidator : AbstractValidator<MatchEntity, (ITena
         return new Fact<FactId>
         {
             Id = FactId.RealMatchDateTodayOrBefore,
-            FieldNames = new[] { nameof(Model.RealStart), nameof(Model.RealEnd) },
-            Enabled = default,
+            FieldNames = [nameof(Model.RealStart), nameof(Model.RealEnd)],
+            Enabled = false,
             Type = FactType.Error,
             CheckAsync = (cancellationToken) => Task.FromResult(
                 new FactResult
@@ -215,8 +216,8 @@ public sealed class MatchResultValidator : AbstractValidator<MatchEntity, (ITena
         return new Fact<FactId>
         {
             Id = FactId.RealMatchDateIsSet,
-            FieldNames = new[] { nameof(Model.RealStart), nameof(Model.RealEnd) },
-            Enabled = default,
+            FieldNames = [nameof(Model.RealStart), nameof(Model.RealEnd)],
+            Enabled = false,
             Type = FactType.Critical,
             CheckAsync = (cancellationToken) => Task.FromResult(
                 new FactResult
@@ -232,8 +233,8 @@ public sealed class MatchResultValidator : AbstractValidator<MatchEntity, (ITena
         return new Fact<FactId>
         {
             Id = FactId.MatchPointsAreValid,
-            FieldNames = new[] { nameof(Model.HomePoints), nameof(Model.GuestPoints) },
-            Enabled = default,
+            FieldNames = [nameof(Model.HomePoints), nameof(Model.GuestPoints)],
+            Enabled = false,
             Type = FactType.Critical,
             CheckAsync = (cancellationToken) =>
             {
@@ -247,7 +248,8 @@ public sealed class MatchResultValidator : AbstractValidator<MatchEntity, (ITena
                 }.Distinct().ToList();
 
                 return Task.FromResult(
-                    new FactResult {
+                    new FactResult
+                    {
                         Message = string.Format(MatchResultValidatorResource.ResourceManager.GetString(
                                                     nameof(FactId.MatchPointsAreValid)) ??
                                                 string.Empty, string.Join(',', allowed)),

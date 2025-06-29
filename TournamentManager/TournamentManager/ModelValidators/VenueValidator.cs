@@ -39,7 +39,7 @@ public class VenueValidator : AbstractValidator<VenueEntity, (GoogleGeo.GeoRespo
         return new Fact<FactId>
         {
             Id = FactId.NotExistingGeoLocation,
-            FieldNames = new[] { nameof(Model.Name) },
+            FieldNames = [nameof(Model.Name)],
             Enabled = Data.GeoResponse is { Success: true, Found: true },
             Type = FactType.Warning,
             CheckAsync = cancellationToken => FactResult()
@@ -71,7 +71,7 @@ public class VenueValidator : AbstractValidator<VenueEntity, (GoogleGeo.GeoRespo
         return new Fact<FactId>
         {
             Id = FactId.LocationIsPrecise,
-            FieldNames = new[] { nameof(Model.PostalCode), nameof(Model.City), nameof(Model.Street) },
+            FieldNames = [nameof(Model.PostalCode), nameof(Model.City), nameof(Model.Street)],
             Enabled = Data.GeoResponse is { Success: true, Found: true },
             Type = FactType.Warning,
             CheckAsync = (cancellationToken) => Task.FromResult(
@@ -88,7 +88,7 @@ public class VenueValidator : AbstractValidator<VenueEntity, (GoogleGeo.GeoRespo
         return new Fact<FactId>
         {
             Id = FactId.CanBeLocated,
-            FieldNames = new[] { nameof(Model.PostalCode), nameof(Model.City), nameof(Model.Street) },
+            FieldNames = [nameof(Model.PostalCode), nameof(Model.City), nameof(Model.Street)],
             Enabled = Data.GeoResponse.Success,
             Type = FactType.Warning,
             CheckAsync = (cancellationToken) => Task.FromResult(
@@ -105,7 +105,7 @@ public class VenueValidator : AbstractValidator<VenueEntity, (GoogleGeo.GeoRespo
         return new Fact<FactId>
         {
             Id = FactId.AddressFieldsAreSet,
-            FieldNames = new[] { nameof(Model.PostalCode), nameof(Model.City), nameof(Model.Street) },
+            FieldNames = [nameof(Model.PostalCode), nameof(Model.City), nameof(Model.Street)],
             Enabled = true,
             Type = FactType.Error,
             CheckAsync = (cancellationToken) => Task.FromResult(
@@ -122,7 +122,7 @@ public class VenueValidator : AbstractValidator<VenueEntity, (GoogleGeo.GeoRespo
         return new Fact<FactId>
         {
             Id = FactId.NameIsSet,
-            FieldNames = new[] { nameof(Model.Name) },
+            FieldNames = [nameof(Model.Name)],
             Enabled = true,
             Type = FactType.Error,
             CheckAsync = (cancellationToken) => Task.FromResult(

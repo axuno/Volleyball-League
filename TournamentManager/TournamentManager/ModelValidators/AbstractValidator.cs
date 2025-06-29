@@ -165,7 +165,7 @@ public abstract class AbstractValidator<TModel, TData, TFactId>
     /// <summary>
     /// Gets the <see cref="HashSet{T}"/> of <see cref="Facts"/> for the validator.
     /// </summary>
-    public HashSet<Fact<TFactId>> Facts { get; } = new();
+    public HashSet<Fact<TFactId>> Facts { get; } = [];
 
     /// <summary>
     /// Get all facts of a certain <see cref="FactType"/>.

@@ -34,7 +34,7 @@ public class TeamValidator : AbstractValidator<TeamEntity, ITenantContext, TeamV
         return new Fact<FactId>
         {
             Id = FactId.MatchTimeWithinRange,
-            FieldNames = new[] {nameof(Model.MatchTime)},
+            FieldNames = [nameof(Model.MatchTime)],
             Enabled = Data.TournamentContext.TeamRuleSet.HomeMatchTime.MustBeSet,
             Type = FactType.Warning,
             CheckAsync = (cancellationToken) => Task.FromResult(
@@ -57,7 +57,7 @@ public class TeamValidator : AbstractValidator<TeamEntity, ITenantContext, TeamV
         return new Fact<FactId>
         {
             Id = FactId.DayOfWeekWithinRange,
-            FieldNames = new[] {nameof(Model.MatchDayOfWeek)},
+            FieldNames = [nameof(Model.MatchDayOfWeek)],
             Enabled = Data.TournamentContext.TeamRuleSet.HomeMatchTime is { IsEditable: true, MustBeSet: true },
             Type = Data.TournamentContext.TeamRuleSet.HomeMatchTime.ErrorIfNotInDaysOfWeekRange
                 ? FactType.Error
@@ -81,7 +81,7 @@ public class TeamValidator : AbstractValidator<TeamEntity, ITenantContext, TeamV
         return new Fact<FactId>
         {
             Id = FactId.MatchDayOfWeekAndTimeIsSet,
-            FieldNames = new[] {nameof(Model.MatchDayOfWeek), nameof(Model.MatchTime)},
+            FieldNames = [nameof(Model.MatchDayOfWeek), nameof(Model.MatchTime)],
             Enabled = Data.TournamentContext.TeamRuleSet.HomeMatchTime is { IsEditable: true },
             Type = FactType.Critical,
             CheckAsync = (cancellationToken) => Task.FromResult(
@@ -100,7 +100,7 @@ public class TeamValidator : AbstractValidator<TeamEntity, ITenantContext, TeamV
         return new Fact<FactId>
         {
             Id = FactId.TeamNameIsUnique,
-            FieldNames = new[] { nameof(Model.Name) },
+            FieldNames = [nameof(Model.Name)],
             Enabled = !string.IsNullOrEmpty(Model.Name),
             Type = FactType.Critical,
             CheckAsync = FactResult
@@ -108,7 +108,8 @@ public class TeamValidator : AbstractValidator<TeamEntity, ITenantContext, TeamV
 
         async Task<FactResult> FactResult(CancellationToken cancellationToken)
         {
-            var teamName = await Data.DbContext.AppDb.TeamRepository.TeamNameExistsAsync(Model, cancellationToken);
+            var teamName = await Data.DbContext.AppDb.TeamRepository.TeamNameExistsAsync(Model, cancellationToken)
+                .ConfigureAwait(false);
             return new FactResult
             {
                 Message = string.Format(TeamValidatorResource.ResourceManager.GetString(
@@ -123,7 +124,7 @@ public class TeamValidator : AbstractValidator<TeamEntity, ITenantContext, TeamV
         return new Fact<FactId>
         {
             Id = FactId.TeamNameIsSet,
-            FieldNames = new[] { nameof(Model.Name) },
+            FieldNames = [nameof(Model.Name)],
             Enabled = true,
             Type = FactType.Critical,
             CheckAsync = (cancellationToken) => Task.FromResult(

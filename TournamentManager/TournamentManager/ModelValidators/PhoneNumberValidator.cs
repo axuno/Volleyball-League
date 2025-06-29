@@ -25,7 +25,7 @@ public class PhoneNumberValidator : AbstractValidator<string, (PhoneNumberServic
         return new Fact<FactId>
         {
             Id = FactId.NumberIsValid,
-            FieldNames = new[] {"PhoneNumber"},
+            FieldNames = ["PhoneNumber"],
             Enabled = true,
             Type = FactType.Critical,
             CheckAsync = (cancellationToken) => Task.FromResult(
