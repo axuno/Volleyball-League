@@ -64,7 +64,7 @@ Localizations for English and German are included. The library is in operation o
         <Using Include="Microsoft.Extensions.Options" />
     </ItemGroup>
     <ItemGroup>
-        <PackageReference Include="Axuno.TextTemplating" Version="2.1.0" />
+        <PackageReference Include="Axuno.TextTemplating" Version="3.0.0" />
         <PackageReference Include="JSNLog" Version="3.0.3" />
         <PackageReference Include="MailMergeLib" Version="5.12.3" />
         <PackageReference Include="Microsoft.AspNetCore.Authentication.Facebook" Version="8.0.17" />
