@@ -1,5 +1,5 @@
 {{~ d = ndate.to_zoned_time model.Fixture.PlannedStart ~}}
-Hallo VolleyballerInnen,
+Hallo Volleyballerinnen, hallo Volleyballer, 
 hier ist Euer nächster Spieltag in der {{ org_ctx.ShortName }}:
 
 Begegnung:       {{ model.Fixture.HomeTeamNameForRound }} - {{ model.Fixture.GuestTeamNameForRound }}

@@ -84,10 +84,10 @@ public class EmailTemplateTests
             Assert.DoesNotThrowAsync(async () =>
             {
                 text = await _renderer.RenderAsync(TemplateName.ConfirmNewPrimaryEmailTxt, m, cultureName);
-                Console.WriteLine($"*** {TemplateName.ConfirmNewPrimaryEmailTxt} ***");
+                Console.WriteLine($@"*** {TemplateName.ConfirmNewPrimaryEmailTxt} ***");
                 Console.WriteLine(text);
                 html = await _renderer.RenderAsync(TemplateName.ConfirmNewPrimaryEmailHtml, m, cultureName);
-                Console.WriteLine($"*** {TemplateName.ConfirmNewPrimaryEmailHtml} ***");
+                Console.WriteLine($@"*** {TemplateName.ConfirmNewPrimaryEmailHtml} ***");
                 Console.WriteLine(html);
             } );
 
@@ -127,7 +127,7 @@ public class EmailTemplateTests
                         UrlToEditApplication = "https://volleyball-liga.de/augsburg",
                     }, cultureName
                 );
-                Console.WriteLine($"*** {TemplateName.ConfirmTeamApplicationTxt} ***");
+                Console.WriteLine($@"*** {TemplateName.ConfirmTeamApplicationTxt} ***");
                 Console.WriteLine(text);
             });
 
@@ -157,7 +157,7 @@ public class EmailTemplateTests
             Assert.DoesNotThrowAsync(async () =>
             {
                 text = await _renderer.RenderAsync(TemplateName.ContactFormTxt, m, cultureName);
-                Console.WriteLine($"*** {TemplateName.ContactFormTxt} ***");
+                Console.WriteLine($@"*** {TemplateName.ContactFormTxt} ***");
                 Console.WriteLine(text);
             } );
 
@@ -195,7 +195,7 @@ public class EmailTemplateTests
             Assert.DoesNotThrowAsync(async () =>
             {
                 text = await _renderer.RenderAsync(TemplateName.ChangeFixtureTxt, m, cultureName);
-                Console.WriteLine($"*** {TemplateName.ChangeFixtureTxt} ***");
+                Console.WriteLine($@"*** {TemplateName.ChangeFixtureTxt} ***");
                 Console.WriteLine(text);
             } );
 
@@ -223,10 +223,10 @@ public class EmailTemplateTests
             Assert.DoesNotThrowAsync(async () =>
             {
                 text = await _renderer.RenderAsync(TemplateName.NotifyCurrentPrimaryEmailTxt, m, cultureName);
-                Console.WriteLine($"*** {TemplateName.NotifyCurrentPrimaryEmailTxt} ***");
+                Console.WriteLine($@"*** {TemplateName.NotifyCurrentPrimaryEmailTxt} ***");
                 Console.WriteLine(text);
                 html = await _renderer.RenderAsync(TemplateName.NotifyCurrentPrimaryEmailHtml, m, cultureName);
-                Console.WriteLine($"*** {TemplateName.NotifyCurrentPrimaryEmailTxt} ***");
+                Console.WriteLine($@"*** {TemplateName.NotifyCurrentPrimaryEmailTxt} ***");
                 Console.WriteLine(html);
             } );
 
@@ -254,10 +254,10 @@ public class EmailTemplateTests
             Assert.DoesNotThrowAsync(async () =>
             {
                 text = await _renderer.RenderAsync(TemplateName.PasswordResetTxt, m, cultureName);
-                Console.WriteLine($"*** {TemplateName.PasswordResetTxt} ***");
+                Console.WriteLine($@"*** {TemplateName.PasswordResetTxt} ***");
                 Console.WriteLine(text);
                 html = await _renderer.RenderAsync(TemplateName.PasswordResetHtml, m, cultureName);
-                Console.WriteLine($"*** {TemplateName.PasswordResetHtml} ***");
+                Console.WriteLine($@"*** {TemplateName.PasswordResetHtml} ***");
                 Console.WriteLine(html);
             } );
             Assert.That(text, Does.Contain(L("Here is your password recovery code", cultureName)));
@@ -283,10 +283,10 @@ public class EmailTemplateTests
             Assert.DoesNotThrowAsync(async () =>
             {
                 text = await _renderer.RenderAsync(TemplateName.PleaseConfirmEmailTxt, m, cultureName);
-                Console.WriteLine($"*** {TemplateName.PleaseConfirmEmailTxt} ***");
+                Console.WriteLine($@"*** {TemplateName.PleaseConfirmEmailTxt} ***");
                 Console.WriteLine(text);
                 html = await _renderer.RenderAsync(TemplateName.PleaseConfirmEmailHtml, m, cultureName);
-                Console.WriteLine($"*** {TemplateName.PleaseConfirmEmailHtml} ***");
+                Console.WriteLine($@"*** {TemplateName.PleaseConfirmEmailHtml} ***");
                 Console.WriteLine(html);
             } );
 
@@ -325,12 +325,11 @@ public class EmailTemplateTests
                 ChangeSerial = 7
             }
         };
-        m.Match.Sets.AddRange(new []
-        {
+        m.Match.Sets.AddRange([
             new TournamentManager.DAL.EntityClasses.SetEntity {HomeBallPoints = 25, GuestBallPoints = 1, HomeSetPoints = 1, GuestSetPoints = 0},
             new TournamentManager.DAL.EntityClasses.SetEntity {HomeBallPoints = 25, GuestBallPoints = 2, HomeSetPoints = 1, GuestSetPoints = 0},
             new TournamentManager.DAL.EntityClasses.SetEntity {HomeBallPoints = 25, GuestBallPoints = 3, HomeSetPoints = 1, GuestSetPoints = 0}
-        });
+        ]);
             
         string text = string.Empty, html = string.Empty;
             
@@ -379,12 +378,11 @@ public class EmailTemplateTests
                 ChangeSerial = 7
             }
         };
-        m.Match.Sets.AddRange(new[]
-        {
+        m.Match.Sets.AddRange([
             new TournamentManager.DAL.EntityClasses.SetEntity {HomeBallPoints = 25, GuestBallPoints = 1, HomeSetPoints = 1, GuestSetPoints = 0},
             new TournamentManager.DAL.EntityClasses.SetEntity {HomeBallPoints = 25, GuestBallPoints = 2, HomeSetPoints = 1, GuestSetPoints = 0},
             new TournamentManager.DAL.EntityClasses.SetEntity {HomeBallPoints = 25, GuestBallPoints = 3, HomeSetPoints = 1, GuestSetPoints = 0}
-        });
+        ]);
 
         string text = string.Empty, html = string.Empty;
 
@@ -438,7 +436,7 @@ public class EmailTemplateTests
             Assert.DoesNotThrowAsync(async () =>
             {
                 text = await _renderer.RenderAsync(TemplateName.AnnounceNextMatchTxt, m, cultureName);
-                Console.WriteLine($"*** {TemplateName.AnnounceNextMatchTxt} ***");
+                Console.WriteLine($@"*** {TemplateName.AnnounceNextMatchTxt} ***");
                 Console.WriteLine(text);
             } );
 
@@ -470,7 +468,7 @@ public class EmailTemplateTests
             Assert.DoesNotThrowAsync(async () =>
             {
                 text = await _renderer.RenderAsync(TemplateName.RemindMatchResultTxt, m, cultureName);
-                Console.WriteLine($"*** {TemplateName.RemindMatchResultTxt} ***");
+                Console.WriteLine($@"*** {TemplateName.RemindMatchResultTxt} ***");
                 Console.WriteLine(text);
             } );
 
@@ -502,7 +500,7 @@ public class EmailTemplateTests
             Assert.DoesNotThrowAsync(async () =>
             {
                 text = await _renderer.RenderAsync(TemplateName.UrgeMatchResultTxt, m, cultureName);
-                Console.WriteLine($"*** {TemplateName.UrgeMatchResultTxt} ***");
+                Console.WriteLine($@"*** {TemplateName.UrgeMatchResultTxt} ***");
                 Console.WriteLine(text);
             } );
 
