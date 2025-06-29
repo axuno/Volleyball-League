@@ -80,8 +80,8 @@ public sealed class SingleSetValidator : AbstractValidator<SetEntity, (ITenantCo
         return new Fact<FactId>
         {
             Id = FactId.TieBreakWinReachedWithTwoPlusPointsAhead,
-            FieldNames = new[] {nameof(Model.HomeBallPoints), nameof(Model.GuestBallPoints)},
-            Enabled = default,
+            FieldNames = [nameof(Model.HomeBallPoints), nameof(Model.GuestBallPoints)],
+            Enabled = false,
             Type = FactType.Error,
             CheckAsync = (cancellationToken) => FactResult()
         };
@@ -149,8 +149,8 @@ public sealed class SingleSetValidator : AbstractValidator<SetEntity, (ITenantCo
         return new Fact<FactId>
         {
             Id = FactId.TieBreakWinReachedWithOnePointAhead,
-            FieldNames = new[] {nameof(Model.HomeBallPoints), nameof(Model.GuestBallPoints)},
-            Enabled = default,
+            FieldNames = [nameof(Model.HomeBallPoints), nameof(Model.GuestBallPoints)],
+            Enabled = false,
             Type = FactType.Error,
             CheckAsync = (cancellationToken) => FactResult()
         };
@@ -188,8 +188,8 @@ public sealed class SingleSetValidator : AbstractValidator<SetEntity, (ITenantCo
         return new Fact<FactId>
         {
             Id = FactId.RegularWinReachedWithTwoPlusPointsAhead,
-            FieldNames = new[] {nameof(Model.HomeBallPoints), nameof(Model.GuestBallPoints)},
-            Enabled = default,
+            FieldNames = [nameof(Model.HomeBallPoints), nameof(Model.GuestBallPoints)],
+            Enabled = false,
             Type = FactType.Error,
             CheckAsync = (cancellationToken) => FactResult()
         };
@@ -258,8 +258,8 @@ public sealed class SingleSetValidator : AbstractValidator<SetEntity, (ITenantCo
         return new Fact<FactId>
         {
             Id = FactId.RegularWinReachedWithOnePointAhead,
-            FieldNames = new[] {nameof(Model.HomeBallPoints), nameof(Model.GuestBallPoints)},
-            Enabled = default,
+            FieldNames = [nameof(Model.HomeBallPoints), nameof(Model.GuestBallPoints)],
+            Enabled = false,
             Type = FactType.Error,
             CheckAsync = (cancellationToken) => FactResult()
         };
@@ -297,8 +297,8 @@ public sealed class SingleSetValidator : AbstractValidator<SetEntity, (ITenantCo
         return new Fact<FactId>
         {
             Id = FactId.NumOfPointsToWinReached,
-            FieldNames = new[] {nameof(Model.HomeBallPoints), nameof(Model.GuestBallPoints)},
-            Enabled = default,
+            FieldNames = [nameof(Model.HomeBallPoints), nameof(Model.GuestBallPoints)],
+            Enabled = false,
             Type = FactType.Error,
             CheckAsync = (cancellationToken) => Task.FromResult(
                 Model.IsTieBreak
@@ -328,8 +328,8 @@ public sealed class SingleSetValidator : AbstractValidator<SetEntity, (ITenantCo
         return new Fact<FactId>
         {
             Id = FactId.TieIsAllowed,
-            FieldNames = new[] {nameof(Model.HomeBallPoints), nameof(Model.GuestBallPoints)},
-            Enabled = default,
+            FieldNames = [nameof(Model.HomeBallPoints), nameof(Model.GuestBallPoints)],
+            Enabled = false,
             Type = FactType.Error,
             CheckAsync = (cancellationToken) => FactResult()
         };
@@ -367,8 +367,8 @@ public sealed class SingleSetValidator : AbstractValidator<SetEntity, (ITenantCo
         return new Fact<FactId>
         {
             Id = FactId.BallPointsNotNegative,
-            FieldNames = new[] {nameof(Model.HomeBallPoints), nameof(Model.GuestBallPoints)},
-            Enabled = default,
+            FieldNames = [nameof(Model.HomeBallPoints), nameof(Model.GuestBallPoints)],
+            Enabled = false,
             Type = FactType.Critical,
             CheckAsync = (cancellationToken) => Task.FromResult(
                 new FactResult
@@ -385,8 +385,8 @@ public sealed class SingleSetValidator : AbstractValidator<SetEntity, (ITenantCo
         return new Fact<FactId>
         {
             Id = FactId.SetPointsAreValid,
-            FieldNames = new[] { nameof(Model.HomeSetPoints), nameof(Model.GuestSetPoints) },
-            Enabled = default,
+            FieldNames = [nameof(Model.HomeSetPoints), nameof(Model.GuestSetPoints)],
+            Enabled = false,
             Type = FactType.Critical,
             CheckAsync = (cancellationToken) =>
             {

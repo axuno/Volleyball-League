@@ -31,7 +31,7 @@ public class MatchResultPermissionValidator : AbstractValidator<MatchEntity, (IT
         return new Fact<FactId>
         {
             Id = FactId.CurrentDateIsBeforeResultCorrectionDeadline,
-            FieldNames = new[] { string.Empty },
+            FieldNames = [string.Empty],
             Enabled = true,
             Type = FactType.Critical,
             CheckAsync = (cancellationToken) => FactResult()
@@ -70,7 +70,7 @@ public class MatchResultPermissionValidator : AbstractValidator<MatchEntity, (IT
         return new Fact<FactId>
         {
             Id = FactId.RoundIsStillRunning,
-            FieldNames = new[] { string.Empty },
+            FieldNames = [string.Empty],
             Enabled = true,
             Type = FactType.Critical,
             CheckAsync = (cancellationToken) => Task.FromResult(
@@ -88,7 +88,7 @@ public class MatchResultPermissionValidator : AbstractValidator<MatchEntity, (IT
         return new Fact<FactId>
         {
             Id = FactId.TournamentIsInActiveMode,
-            FieldNames = new[] {string.Empty},
+            FieldNames = [string.Empty],
             Enabled = true,
             Type = FactType.Critical,
             CheckAsync = (cancellationToken) => Task.FromResult(
