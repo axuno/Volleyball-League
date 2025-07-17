@@ -141,7 +141,7 @@ public class Match : AbstractController
             stream.Seek(0, SeekOrigin.Begin);
 
             var filename = $"Match_{matches[0].PlannedStart?.ToString("yyyy-MM-dd") ?? string.Empty}_{Guid.NewGuid():N}.ics";
-            Response.Headers.Append("Content-Disposition", $"inline; filename=\"{filename}\"");
+            Response.Headers.Append("Content-Disposition", $"attachment; filename=\"{filename}\"");
             Response.Headers.Append("X-Content-Type-Options", "nosniff");
 
             // Content-Disposition is only used with FileStreamResult(...), not with File(...)
