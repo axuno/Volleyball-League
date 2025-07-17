@@ -139,7 +139,13 @@ public class Match : AbstractController
             // match date/times have DateTimeKind.Unspecified but are in UTC
             calendar.CreateEvents(matches, "UTC").Serialize(stream); // stream is UTF8 without BOM by default
             stream.Seek(0, SeekOrigin.Begin);
-            return File(stream, $"text/calendar; charset={Encoding.UTF8.WebName}", $"Match_{matches[0].PlannedStart?.ToString("yyyy-MM-dd") ?? string.Empty}_{Guid.NewGuid():N}.ics");
+
+            var filename = $"Match_{matches[0].PlannedStart?.ToString("yyyy-MM-dd") ?? string.Empty}_{Guid.NewGuid():N}.ics";
+            Response.Headers.Append("Content-Disposition", $"inline; filename=\"{filename}\"");
+            Response.Headers.Append("X-Content-Type-Options", "nosniff");
+
+            // Content-Disposition is only used with FileStreamResult(...), not with File(...)
+            return new FileStreamResult(stream, "text/calendar; charset=utf-8");
         }
         catch (Exception e)
         {
