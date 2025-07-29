@@ -831,7 +831,7 @@ public class Match : AbstractController
     private async Task<bool> IsPlanningMode(TournamentEntity tournament, CancellationToken cancellationToken)
     {
         return await _appDb.RoundRepository
-            .GetRoundStartAsync(tournament.Id, cancellationToken)
+            .GetTournamentStartAsync(tournament.Id, cancellationToken)
             .ContinueWith(
                 t => DateTime.UtcNow < t.Result.AddDays(-_tenantContext.SiteContext.MatchNotifications.DaysBeforeNextMatch),
                 TaskContinuationOptions.OnlyOnRanToCompletion);
