@@ -12,13 +12,14 @@
 {{ L "We wish you much success and good luck." ~}}
 {{ if org_ctx.Bank.ShowBankDetailsInConfirmationEmail && model.IsRegisteringUser }}
 
-    {{~ padright = [ L "Amount", L "Recipient", L "IBAN", L "BIC", L "Bank name" ] | array.map "size" | array.sort | array.last ~}}
+    {{~ padright = [ L "Amount", L "Recipient", L "IBAN", L "BIC", L "Bank name", L "Reference ID" ] | array.map "size" | array.sort | array.last ~}}
     {{~ L "Please transfer the participation fee to the following bank account:" }}
     {{~ L "Amount" | string.pad_right padright }}: {{ org_ctx.Bank.Amount }} {{ org_ctx.Bank.Currency }}
     {{~ L "Recipient" | string.pad_right padright }}: {{ org_ctx.Bank.Recipient }}
     {{~ L "IBAN" | string.pad_right padright }}: {{ org_ctx.Bank.Iban }}
     {{~ L "BIC" | string.pad_right padright }}: {{ org_ctx.Bank.Bic }}
     {{~ L "Bank name" | string.pad_right padright }}: {{org_ctx.Bank.BankName }}
+    {{~ L "Reference ID" }}: {{ model.BankTransferId }}
 
     {{~ L "Thank you." }}
 {{ end }}
