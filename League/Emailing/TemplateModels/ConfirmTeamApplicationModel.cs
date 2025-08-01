@@ -17,6 +17,10 @@ public class ConfirmTeamApplicationModel
     public string RoundTypeDescription { get; set; } = string.Empty;
     public string TeamName { get; set; } = string.Empty;
     /// <summary>
+    /// The ID that should be used for the bank transfer to pay the registration fee.
+    /// </summary>
+    public string BankTransferId { get; set; } = string.Empty;
+    /// <summary>
     /// If <see langword="true"/>, specific content for the registering person is shown.
     /// </summary>
     public bool IsRegisteringUser { get; set; }

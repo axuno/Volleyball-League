@@ -121,6 +121,7 @@ public class EmailTemplateTests
                         RoundDescription = "Round description",
                         RoundTypeDescription = "6 ladies",
                         TeamName = "Team name",
+                        BankTransferId = "A3-T45-U67",
                         RegisteredByName = "Registered-by-name",
                         RegisteredByEmail = "email@registered-by.net",
                         IsRegisteringUser = isRegisteringUser,
@@ -134,7 +135,11 @@ public class EmailTemplateTests
             Assert.That(text, Does.Contain(L("Sporting greetings", cultureName)));
                     
             if(isRegisteringUser) Assert.That(text.Contains("Link", StringComparison.CurrentCultureIgnoreCase));
-            if(isRegisteringUser && showBank) Assert.That(text.Contains("Bank", StringComparison.CurrentCultureIgnoreCase) && text.Contains(_tenantContext.OrganizationContext.Bank.Amount.ToString(CultureInfo.GetCultureInfo(cultureName))));
+            if (isRegisteringUser && showBank)
+            {
+                Assert.That(text.Contains("Bank", StringComparison.CurrentCultureIgnoreCase) && text.Contains(_tenantContext.OrganizationContext.Bank.Amount.ToString(CultureInfo.GetCultureInfo(cultureName))));
+                Assert.That(text, Does.Contain(L("Reference ID", cultureName)));
+            }
         });
     }
         

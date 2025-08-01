@@ -53,7 +53,8 @@ public class ConfirmTeamApplicationCreator : IMailMessageCreator
             RegisteredByName = registeredBy.CompleteName,
             RegisteredByEmail = registeredBy.Email,
             TeamName = teamUserRoundInfos.First(tur => tur.TeamId == Parameters.TeamId).TeamNameForRound,
-            TournamentName = tournament!.Name,
+            BankTransferId = $"A{tournament!.Id}-T{Parameters.TeamId}-U{registeredBy.UserId}",
+            TournamentName = tournament.Name,
             RoundDescription = roundWithType.Description,
             RoundTypeDescription = roundWithType.RoundType.Description,
             UrlToEditApplication = Parameters.UrlToEditApplication
