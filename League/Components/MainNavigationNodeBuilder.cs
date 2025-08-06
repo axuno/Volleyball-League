@@ -372,7 +372,11 @@ public class MainNavigationNodeBuilder : IMainNavigationNodeBuilder
         var homeItem = contentItems.FirstOrDefault(ci => ci.Topic.Equals("home", StringComparison.InvariantCultureIgnoreCase));
         if (homeItem == null || string.IsNullOrEmpty(homeItem.MenuTitel))
         {
-            Logger.LogError("No home content item found for tenant {Tenant}", TenantContext.Identifier);
+            if (TenantContext.IsDefault)
+                Logger.LogInformation("No home content item found for default tenant {Tenant}", TenantContext.Identifier);
+            else
+                Logger.LogError("No home content item found for tenant {Tenant}", TenantContext.Identifier);
+
             return;
         }
 
