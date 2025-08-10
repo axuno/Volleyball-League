@@ -204,7 +204,7 @@ public class Role : AbstractController
                     MessageId = isSuccess ? MyTeamMessageModel.MessageId.MemberRemoveSuccess : MyTeamMessageModel.MessageId.MemberRemoveFailure
                 });
 
-            return TenantLink.Action(nameof(Team.MyTeam), nameof(Team)) ?? string.Empty;
+            return TenantLink.Action(nameof(Team.MyTeam), nameof(Team), new { id = teamId }) ?? string.Empty;
         }
 
         return returnUrl;

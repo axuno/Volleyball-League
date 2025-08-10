@@ -1,8 +1,8 @@
-using TournamentManager.DAL.EntityClasses;
-using TournamentManager.DAL.HelperClasses;
-using SD.LLBLGen.Pro.ORMSupportClasses;
 using System.Collections.ObjectModel;
 using Microsoft.Extensions.Logging;
+using SD.LLBLGen.Pro.ORMSupportClasses;
+using TournamentManager.DAL.EntityClasses;
+using TournamentManager.DAL.HelperClasses;
 using TournamentManager.MultiTenancy;
 
 namespace TournamentManager.Plan;
@@ -85,6 +85,17 @@ internal class MatchScheduler
     private async Task ScheduleFixturesForRound(RoundEntity round, bool keepExisting,
         CancellationToken cancellationToken)
     {
+        switch (round.TeamInRounds.Count)
+        {
+            case 0:
+                _logger.LogWarning("Round '{RoundName}' has no teams. No fixtures will be generated for this round.", round.Name);
+                return;
+            case 1:
+                // Fail early if there is only one team in the round
+                throw new InvalidOperationException(
+                    $"Round '{round.Name}' has only 1 team. Cannot generate fixtures.");
+        }
+        
         await LoadEntitiesAsync(cancellationToken);
 
         if (await _appDb.MatchRepository.AnyCompleteMatchesExistAsync(round, cancellationToken))
@@ -357,10 +368,10 @@ internal class MatchScheduler
 
         return matchDates.Count switch {
             // We can't proceed without any match dates found
-            0 => new List<AvailableMatchDateEntity?>(),
+            0 => [],
             // Only 1 match date found, so optimization is not possible
             // and FindBestDate() would throw an exception
-            1 => new List<AvailableMatchDateEntity?> { matchDates[0][0] },
+            1 => [matchDates[0][0]],
             _ => FindBestDatePerCombination(matchDates)
         };
     }
