@@ -170,7 +170,7 @@ public class Team : AbstractController
                 Authorization.TeamOperations.EditTeam)).Succeeded)
         {
             return JsonResponseRedirect(Url.Action(nameof(Error.AccessDenied), nameof(Error),
-                new { ReturnUrl = TenantLink.Action(nameof(MyTeam), nameof(Team)) }));
+                new { ReturnUrl = TenantLink.Action(nameof(MyTeam), nameof(Team), new { id = default(long?) }) }));
         }
 
         var model = new TeamEditModel
@@ -201,7 +201,7 @@ public class Team : AbstractController
                     Authorization.TeamOperations.EditTeam)).Succeeded)
             {
                 return JsonResponseRedirect(Url.Action(nameof(Error.AccessDenied), nameof(Error),
-                    new {ReturnUrl = TenantLink.Action(nameof(MyTeam), nameof(Team))}));
+                    new {ReturnUrl = TenantLink.Action(nameof(MyTeam), nameof(Team), new { id = default(long?) }) }));
             }
 
             team.TeamInRounds.AddRange(await _appDb.TeamInRoundRepository.GetTeamInRoundAsync(
@@ -257,7 +257,7 @@ public class Team : AbstractController
         {
             TempData.Put<MyTeamMessageModel.MyTeamMessage>(nameof(MyTeamMessageModel.MyTeamMessage), new MyTeamMessageModel.MyTeamMessage { AlertType = SiteAlertTagHelper.AlertType.Danger, MessageId = MyTeamMessageModel.MessageId.TeamDataFailure});
             _logger.LogError(e, "Error saving team id '{TeamId}'", model.Team.IsNew ? "new" : model.Team.Id.ToString());
-            return JsonResponseRedirect(TenantLink.Action(nameof(MyTeam), nameof(Team),new { id = team.Id }));
+            return JsonResponseRedirect(TenantLink.Action(nameof(MyTeam), nameof(Team), new { id = team.Id }));
         }
 
         // We never should come this far
@@ -281,7 +281,7 @@ public class Team : AbstractController
     }
 
     [HttpGet("[action]/{tid}")]
-    public async Task<IActionResult> SelectVenue(long tid, string returnUrl, CancellationToken cancellationToken)
+    public async Task<IActionResult> SelectVenue(long tid, string? returnUrl, CancellationToken cancellationToken)
     {
         if (!ModelState.IsValid) return NotFound();
 
@@ -306,7 +306,7 @@ public class Team : AbstractController
                 TournamentId = _tenantContext.TournamentContext.TeamTournamentId, TeamId = teamEntity.Id, VenueId = teamEntity.VenueId,
                 ReturnUrl = (Url.IsLocalUrl(returnUrl)
                     ? returnUrl
-                    : TenantLink.Action(nameof(MyTeam), nameof(Team))) ?? string.Empty
+                    : TenantLink.Action(nameof(MyTeam), nameof(Team), new { id = teamEntity.Id })) ?? string.Empty
             }
         );
     }
@@ -318,7 +318,7 @@ public class Team : AbstractController
         // model binding is not case-sensitive
 
         if (!ModelState.IsValid) return JsonResponseRedirect(Url.Action(nameof(Error.AccessDenied), nameof(Error),
-            new { ReturnUrl = TenantLink.Action(nameof(MyTeam), nameof(Team)) }));
+            new { ReturnUrl = TenantLink.Action(nameof(MyTeam), nameof(Team), new { id = default(long?) }) }));
 
         var teamEntity = await
             _appDb.TeamRepository.GetTeamEntityAsync(new PredicateExpression(TeamFields.Id == model.TeamId),
@@ -334,7 +334,7 @@ public class Team : AbstractController
                 Authorization.TeamOperations.EditTeam)).Succeeded)
         {
             return JsonResponseRedirect(Url.Action(nameof(Error.AccessDenied), nameof(Error),
-                new { ReturnUrl = TenantLink.Action(nameof(MyTeam), nameof(Team), new { model.TeamId }) }));
+                new { ReturnUrl = TenantLink.Action(nameof(MyTeam), nameof(Team), new { id = default(long?) }) }));
         }
 
         model.TournamentId = _tenantContext.TournamentContext.TeamTournamentId;
@@ -364,7 +364,7 @@ public class Team : AbstractController
             _logger.LogError(e, "Failed to save selected venue for team id {TeamId}, venue id {VSenueId}", model.TeamId, model.VenueId);
         }
             
-        return JsonResponseRedirect(TenantLink.Action(nameof(MyTeam), nameof(Team), new { model.TeamId }));
+        return JsonResponseRedirect(TenantLink.Action(nameof(MyTeam), nameof(Team), new { id = model.TeamId }));
     }
 
     private List<long> GetUserClaimTeamIds()

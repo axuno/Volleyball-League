@@ -19,6 +19,21 @@ internal class MatchSchedulerTests
     private readonly TournamentEntity? _tournamentEntityForMatchScheduler = ScheduleHelper.GetTournament();
 
     [Test]
+    public void RoundWithOnlyOneParticipant_ShouldThrow()
+    {
+        var participants = _tournamentEntityForMatchScheduler!.Rounds.First().TeamCollectionViaTeamInRound;
+        // Remove all but one participant
+        while (participants.Count > 1)
+        {
+            participants.RemoveAt(0);
+        }
+        var scheduler = GetMatchSchedulerInstance();
+
+        Assert.That(del: async () => await scheduler.ScheduleFixturesForTournament(false, CancellationToken.None),
+    Throws.InvalidOperationException.With.Message.EqualTo("Round-robin system requires at least 2 participants."));
+    }
+
+    [Test]
     public void Generate_Schedule_Should_Succeed()
     {
         EntityCollection<MatchEntity> matches = new(); 
