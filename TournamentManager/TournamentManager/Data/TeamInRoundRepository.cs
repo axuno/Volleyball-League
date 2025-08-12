@@ -37,4 +37,20 @@ public class TeamInRoundRepository
 
         return result;
     }
+
+    /// <summary>
+    /// Gets the number of <see cref="TeamInRoundEntity"/>s matching the filter criteria.
+    /// </summary>
+    /// <param name="filter">The filter <see cref="IPredicateExpression"/> may contain <see cref="TeamInRoundFields"/> and <see cref="RoundFields"/>.</param>
+    /// <param name="cancellationToken"></param>
+    /// <returns>The number of <see cref="TeamInRoundEntity"/>s matching the filter criteria.</returns>
+    public virtual async Task<int> CountAsync(IPredicate filter, CancellationToken cancellationToken)
+    {
+        using var da = _dbContext.GetNewAdapter();
+        var qf = new QueryFactory();
+        var q = qf.TeamInRound.Select(TeamInRoundFields.Id).Where(filter).CountRow();
+        var count = await da.FetchScalarAsync<int?>(qf.Create().Select(q), cancellationToken);
+
+        return count ?? 0;
+    }
 }

@@ -331,7 +331,7 @@ public class TournamentCreator
     /// <exception cref="InvalidOperationException">Throws an exception if any match of the tournament is not completed yet.</exception>
     public async Task SetTournamentCompleted(long tournamentId, DateTime modifiedOn, CancellationToken cancellationToken)
     {
-        if (!await _appDb.MatchRepository.AllMatchesCompletedAsync(new TournamentEntity(tournamentId), cancellationToken))
+        if (!await _appDb.MatchRepository.AllMatchesCompletedAsync(tournamentId, cancellationToken))
         {
             var ex = new InvalidOperationException($@"Tournament {tournamentId} contains incomplete matches.");
             _logger.LogError(ex,@"Tournament {TournamentId} contains incomplete matches.", tournamentId);
