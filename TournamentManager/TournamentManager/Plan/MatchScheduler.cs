@@ -85,7 +85,9 @@ internal class MatchScheduler
     private async Task ScheduleFixturesForRound(RoundEntity round, bool keepExisting,
         CancellationToken cancellationToken)
     {
-        switch (round.TeamInRounds.Count)
+        var teamCount = await _appDb.TeamInRoundRepository
+            .CountAsync(new PredicateExpression(TeamInRoundFields.RoundId == round.Id), cancellationToken); 
+        switch (teamCount)
         {
             case 0:
                 _logger.LogWarning("Round '{RoundName}' has no teams. No fixtures will be generated for this round.", round.Name);

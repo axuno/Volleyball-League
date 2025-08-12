@@ -1,4 +1,5 @@
 using System.Data;
+using System.Text;
 using Microsoft.Extensions.Logging;
 using SD.LLBLGen.Pro.LinqSupportClasses;
 using SD.LLBLGen.Pro.ORMSupportClasses;
@@ -10,6 +11,7 @@ using TournamentManager.DAL.HelperClasses;
 using TournamentManager.DAL.Linq;
 using TournamentManager.DAL.TypedViewClasses;
 using TournamentManager.MultiTenancy;
+using static SkiaSharp.HarfBuzz.SKShaper;
 
 namespace TournamentManager.Data;
 
@@ -255,15 +257,17 @@ public class MatchRepository
     public virtual async Task<bool> AnyCompleteMatchesExistAsync(long tournamentId, CancellationToken cancellationToken)
     {
         using var da = _dbContext.GetNewAdapter();
-        var metaData = new LinqMetaData(da);
-        if ((await (from matchEntity in metaData.Match
-                where matchEntity.Round.TournamentId == tournamentId && matchEntity.IsComplete
-                select matchEntity.Id).Take(1).ToListAsync(cancellationToken)).Count != 0)
-        {
-            return true;
-        }
+        var qf = new QueryFactory();
+        var q = qf.Create()
+            .Select(MatchFields.Id.Count())
+            .From(qf.Match.InnerJoin(qf.Round)
+                .On(MatchFields.RoundId == RoundFields.Id))
+            .Where(RoundFields.TournamentId == tournamentId & MatchFields.IsComplete == true);
+        
+        var count = await da.FetchScalarAsync<int>(q, cancellationToken);
+        _logger.LogDebug("{Count} completed matches found for tournament id {TournamentId}", count, tournamentId);
 
-        return false;
+        return count != 0;
     }
 
     /// <summary>
@@ -276,34 +280,35 @@ public class MatchRepository
     public virtual async Task<bool> AnyCompleteMatchesExistAsync(RoundEntity round, CancellationToken cancellationToken)
     {
         using var da = _dbContext.GetNewAdapter();
-        var metaData = new LinqMetaData(da);
-        if ((await (from matchEntity in metaData.Match
-                where matchEntity.Round.Id == round.Id && matchEntity.IsComplete
-                select matchEntity.Id).Take(1).ToListAsync(cancellationToken)).Count != 0)
-        {
-            return true;
-        }
+        var qf = new QueryFactory();
+        var q = qf.Create()
+            .Select(MatchFields.Id.Count())
+            .Where(MatchFields.RoundId == round.Id & MatchFields.IsComplete == true);
 
-        return false;
+        var count = await da.FetchScalarAsync<int>(q, cancellationToken);
+        _logger.LogDebug("{Count} completed matches found for round id {RoundId}", count, round.Id);
+
+        return count != 0;
     }
 
     /// <summary>
     /// Find out whether all matches of a tournament with a given ID are completed
     /// </summary>
     /// <returns>Returns true if all matches are completed, else false.</returns>
-    public virtual async Task<bool> AllMatchesCompletedAsync(TournamentEntity tournament, CancellationToken cancellationToken)
+    public virtual async Task<bool> AllMatchesCompletedAsync(long tournamentId, CancellationToken cancellationToken)
     {
         using var da = _dbContext.GetNewAdapter();
-        var metaData = new LinqMetaData(da);
+        var qf = new QueryFactory();
+        var q = qf.Create()
+            .Select(MatchFields.Id.Count())
+            .From(qf.Match.InnerJoin(qf.Round)
+                .On(MatchFields.RoundId == RoundFields.Id))
+            .Where(RoundFields.TournamentId == tournamentId & MatchFields.IsComplete == false);
 
-        if ((await (from matchEntity in metaData.Match
-                where matchEntity.Round.TournamentId == tournament.Id && !matchEntity.IsComplete
-                select matchEntity.Id).Take(1).ToListAsync(cancellationToken)).Count == 0)
-        {
-            return true;
-        }
+        var count = await da.FetchScalarAsync<int>(q, cancellationToken);
+        _logger.LogDebug("{Count} not completed matches found for tournament id {TournamentId}", count, tournamentId);
 
-        return false;
+        return count == 0;
     }
 
     /// <summary>
@@ -313,16 +318,15 @@ public class MatchRepository
     public virtual async Task<bool> AllMatchesCompletedAsync(RoundEntity round, CancellationToken cancellationToken)
     {
         using var da = _dbContext.GetNewAdapter();
-        var metaData = new LinqMetaData(da);
+        var qf = new QueryFactory();
+        var q = qf.Create()
+            .Select(MatchFields.Id.Count())
+            .Where(MatchFields.RoundId == round.Id & MatchFields.IsComplete == false);
 
-        if (( await (from matchEntity in metaData.Match
-                where matchEntity.Round.Id == round.Id && !matchEntity.IsComplete
-                select matchEntity.Id).Take(1).ToListAsync(cancellationToken)).Count == 0)
-        {
-            return true;
-        }
+        var count = await da.FetchScalarAsync<int>(q, cancellationToken);
+        _logger.LogDebug("{Count} not completed matches found for round id {RoundId}", count, round.Id);
 
-        return false;
+        return count == 0;
     }
 
     /// <summary>
