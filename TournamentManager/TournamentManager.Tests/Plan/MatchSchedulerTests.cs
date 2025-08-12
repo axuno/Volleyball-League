@@ -200,6 +200,19 @@ internal class MatchSchedulerTests
 
         #endregion
 
+        #region ** TeamInRoundRepository mocks setup **
+
+        var teamInRoundRepositoryMock = TestMocks.GetRepo<TeamInRoundRepository>();
+        teamInRoundRepositoryMock.Setup(rep =>
+                rep.CountAsync(It.IsAny<PredicateExpression>(), It.IsAny<CancellationToken>()))
+            .Returns((PredicateExpression _, CancellationToken cancellationToken) =>
+            {
+                return Task.FromResult(10);
+            });
+        appDbMock.Setup(a => a.TeamInRoundRepository).Returns(teamInRoundRepositoryMock.Object);
+
+        #endregion
+
         // Build complete TenantContext mock
         var dbContextMock = TestMocks.GetDbContextMock();
         dbContextMock.SetupAppDb(appDbMock);
