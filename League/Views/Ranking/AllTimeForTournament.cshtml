@@ -159,13 +159,16 @@
                 return new bootstrap.Tooltip(tooltipTriggerEl);
             });
             
-            document.getElementById('btn-more-tournaments').addEventListener('click', function(e) {
-                [].forEach.call(document.querySelectorAll('#tournament-list > .btn'), function (el) {
-                    el.classList.remove('d-none');
+            const btn = document.getElementById('btn-more-tournaments');
+            if (btn) { // May not exist if there are 5 or fewer tournaments
+                btn.addEventListener('click', function(e) {
+                    document.querySelectorAll('#tournament-list > .btn').forEach(function (el) {
+                        el.classList.remove('d-none');
+                    });
+                    btn.classList.add('d-none');
+                    e.preventDefault();
                 });
-                document.querySelector('#btn-more-tournaments').classList.add('d-none');
-                e.preventDefault();
-            });
+            }
         });
         //]]>
     </script>
