@@ -13,7 +13,7 @@ namespace TournamentManager.HtmlToPdfConverter;
 /// The class to create PDF files from HTML content.
 /// For converting HTML to PDF, it uses either a Browser command line or <see cref="PuppeteerSharp"/>.
 /// </summary>
-public class HtmlToPdfConverter : IDisposable
+public sealed class HtmlToPdfConverter : IDisposable
 {
     private readonly string _pathToBrowser;
     private readonly string _tempFolder;
@@ -123,9 +123,12 @@ public class HtmlToPdfConverter : IDisposable
         {
             Headless = true,
             Browser = (PuppeteerSharp.SupportedBrowser) BrowserKind,
-            // Alternative: --use-cmd-decoder=validating 
-            Args = new[]  // Chromium-based browsers require using a sandboxed browser for PDF generation, unless sandbox is disabled
-                { "--no-sandbox", "--disable-gpu", "--allow-file-access-from-files", "--disable-extensions", "--use-cmd-decoder=passthrough" },
+            // Alternative: --use-cmd-decoder=validating
+            // Chromium-based browsers require using a sandboxed browser for PDF generation, unless sandbox is disabled
+            Args = ["--no-sandbox", "--disable-gpu",
+                "--allow-file-access-from-files", "--disable-extensions",
+                "--use-cmd-decoder=passthrough"
+            ],
             ExecutablePath = _pathToBrowser,
             UserDataDir = _tempFolder,
             Timeout = 5000,
@@ -205,32 +208,33 @@ public class HtmlToPdfConverter : IDisposable
         return tempFolder;
     }
 
-    private void DeleteTempPathFolder()
+    private bool TryDeleteTempPathFolder()
     {
-        // Delete folder in TempPath
-        if (!Directory.Exists(_tempFolder)) return;
-        Directory.Delete(_tempFolder, true);
+        try
+        {
+            // Delete folder in TempPath
+            if (!Directory.Exists(_tempFolder)) return false;
+            Directory.Delete(_tempFolder, true);
+            return true;
+        }
+        catch (Exception e)
+        {
+            _logger.LogInformation(e, "Error trying to delete temporary folder {Folder}", _tempFolder);
+            return false;
+        }
     }
 
-    protected virtual void Dispose(bool disposing)
+    private void Dispose(bool disposing)
     {
         if (_isDisposing || !disposing) return;
         _isDisposing = true;
 
-        try
-        {
-            DeleteTempPathFolder();
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Error disposing {HtmlToPdfConverter}", nameof(HtmlToPdfConverter));
-        }
+        _ = TryDeleteTempPathFolder();
     }
 
     public void Dispose()
     {
         Dispose(true);
-        GC.SuppressFinalize(this);
     }
 }
 
