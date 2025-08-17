@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Microsoft.AspNetCore.Mvc.Razor;
+﻿using Microsoft.AspNetCore.Mvc.Razor;
 
 namespace League.Views;
 
@@ -16,33 +13,32 @@ namespace League.Views;
 /// </code>
 public class LeagueViewLocationExpander : IViewLocationExpander
 {
-    private readonly List<string> _tenantSearchPaths = new();
-
     public void PopulateValues(ViewLocationExpanderContext context)
     {
-        // just provides additional data incorporated into the cache key used for the location value
         context.Values["customviewlocation"] = nameof(LeagueViewLocationExpander);
-            
+    }
+
+    public IEnumerable<string> ExpandViewLocations(ViewLocationExpanderContext context, IEnumerable<string> viewLocations)
+    {
+        var tenantSearchPaths = new List<string>();
+
         try
         {
-            var tenantContext = (TournamentManager.MultiTenancy.ITenantContext)context.ActionContext.HttpContext.RequestServices.GetService(typeof(TournamentManager.MultiTenancy.ITenantContext))!;
-            _tenantSearchPaths.Clear();
+            var tenantContext = (TournamentManager.MultiTenancy.ITenantContext)
+                context.ActionContext.HttpContext.RequestServices.GetService(typeof(TournamentManager.MultiTenancy.ITenantContext))!;
+
             if (!tenantContext.IsDefault)
             {
-                _tenantSearchPaths.AddRange(new[]
-                {
-                    $"/Views/{{1}}/{tenantContext.SiteContext.FolderName}/{{0}}.cshtml",
-                });
+                tenantSearchPaths.Add($"/Views/{{1}}/{tenantContext.SiteContext.FolderName}/{{0}}.cshtml");
             }
         }
         catch
         {
             // SiteContext cannot be resolved
         }
-    }
 
-    public IEnumerable<string> ExpandViewLocations(ViewLocationExpanderContext context, IEnumerable<string> viewLocations)
-    {
-        return _tenantSearchPaths.Union(viewLocations); // in order to replace all existing locations, leave "Union" away.
+        // Concat avoids modifying the original collection
+        return tenantSearchPaths.Concat(viewLocations);
     }
 }
+
