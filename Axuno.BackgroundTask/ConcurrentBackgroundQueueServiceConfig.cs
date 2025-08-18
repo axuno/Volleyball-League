@@ -37,7 +37,7 @@ public class ConcurrentBackgroundQueueServiceConfig
 
         set
         {
-            _pollQueueDelay = value == default ? TimeSpan.FromMilliseconds(100) : value;
+            _pollQueueDelay = value == TimeSpan.Zero ? TimeSpan.FromMilliseconds(100) : value;
         }
     }
 }
