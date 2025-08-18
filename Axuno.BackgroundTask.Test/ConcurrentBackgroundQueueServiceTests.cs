@@ -29,16 +29,18 @@ public class ConcurrentBackgroundQueueServiceTests
     private ServiceProvider CreateServiceProvider()
     {
         var services = new ServiceCollection();
-        services.AddSingleton<ILogger<BackgroundQueue>>(new NUnitLogger<BackgroundQueue> {LogLevel = LogLevel.Trace});
+        services.AddSingleton<ILogger<BackgroundQueue>>(new NUnitLogger<BackgroundQueue> { LogLevel = LogLevel.Trace });
         services.AddSingleton<ILogger<ConcurrentBackgroundQueueService>>(new NUnitLogger<ConcurrentBackgroundQueueService> { LogLevel = LogLevel.Trace });
         services.Configure<BackgroundQueueConfig>(config => config.OnException = e => ExceptionFromBackgroundQueue = e);
         services.AddSingleton<IBackgroundQueue, BackgroundQueue>();
+        // Add test IHostApplicationLifetime implementation
+        services.AddSingleton<IHostApplicationLifetime, TestHostApplicationLifetime>();
 
         /*  Instead of AddHostedService<ConcurrentBackgroundQueueService>() we could also use:
          *  services.AddSingleton<ConcurrentBackgroundQueueService>();
          *  and in the tests:
          *  serviceProvider.GetRequiredService<ConcurrentBackgroundQueueService>(); */
-        services.Configure<ConcurrentBackgroundQueueServiceConfig>(options => {});
+        services.Configure<ConcurrentBackgroundQueueServiceConfig>(options => { });
         services.AddConcurrentBackgroundQueueService();
 
         return services.BuildServiceProvider();
@@ -55,13 +57,17 @@ public class ConcurrentBackgroundQueueServiceTests
 
         var queue = _serviceProvider!.GetRequiredService<IBackgroundQueue>();
         var bgTaskSvc = _serviceProvider!.GetRequiredService<IHostedService>();
-        // will create enough tasks to exceed the maximum number of parallel tasks
         for (var i = 1; i < 10; i++)
         {
             var cnt = i;
-            queue.QueueTask(new BgTsk(async cancellationToken => { await Task.Delay(100 * (cnt % 2 + 1), cancellationToken); Interlocked.Increment(ref itemCounter); Console.WriteLine($"Task {cnt} completed."); }));
+            queue.QueueTask(new BgTsk(async cancellationToken =>
+            {
+                await Task.Delay(100 * (cnt % 2 + 1), cancellationToken);
+                Interlocked.Increment(ref itemCounter);
+                Console.WriteLine($"Task {cnt} completed.");
+            }));
         }
-        var expected = queue.Count; 
+        var expected = queue.Count;
         var task = bgTaskSvc.StartAsync(cts.Token);
         while (itemCounter < (abortBeforeCompletion ? 4 : expected))
         {
@@ -97,7 +103,7 @@ public class ConcurrentBackgroundQueueServiceTests
             Assert.That(ExceptionFromBackgroundQueue?.GetType(), Is.EqualTo(typeof(AmbiguousImplementationException)));
         });
     }
-        
+
     [Test]
     public async Task Tasks_Throwing_OperationCanceledException_And_Canceling()
     {
@@ -126,8 +132,13 @@ public class ConcurrentBackgroundQueueServiceTests
         var queue = _serviceProvider!.GetRequiredService<IBackgroundQueue>();
         var bgTaskSvc = _serviceProvider!.GetRequiredService<IHostedService>();
         var task = bgTaskSvc.StartAsync(cts.Token);
-            
-        queue.QueueTask(new BgTsk(async cancellationToken => { Interlocked.Increment(ref itemCounter); await Task.Delay(1000, cancellationToken); }){Timeout = TimeSpan.FromMilliseconds(1) });
+
+        queue.QueueTask(new BgTsk(async cancellationToken =>
+            {
+                Interlocked.Increment(ref itemCounter);
+                await Task.Delay(1000, cancellationToken);
+            })
+            { Timeout = TimeSpan.FromMilliseconds(1) });
         queue.QueueTask(new BgTsk(cancellationToken => { Interlocked.Increment(ref itemCounter); return Task.CompletedTask; }));
         await Task.Delay(500, cts.Token);
         await bgTaskSvc.StopAsync(cts.Token);
@@ -140,12 +151,13 @@ public class ConcurrentBackgroundQueueServiceTests
     {
         var cts = new CancellationTokenSource();
 
-        var bgTaskSvc = (ConcurrentBackgroundQueueService) _serviceProvider!.GetRequiredService<IHostedService>();
+        var bgTaskSvc = (ConcurrentBackgroundQueueService)_serviceProvider!.GetRequiredService<IHostedService>();
         await bgTaskSvc.StartAsync(cts.Token);
 
-        // Set the backing field for the Config property by reflection
-        // in order to make the service throw
-        bgTaskSvc.GetType().GetField($"<{nameof(ConcurrentBackgroundQueueService.Config)}>" + "k__BackingField", BindingFlags.NonPublic | BindingFlags.Instance)?.SetValue(bgTaskSvc, null);
+        bgTaskSvc.GetType()
+            .GetField($"<{nameof(ConcurrentBackgroundQueueService.Config)}>" + "k__BackingField",
+                BindingFlags.NonPublic | BindingFlags.Instance)
+            ?.SetValue(bgTaskSvc, null);
         Assert.That(bgTaskSvc.Config, Is.Null);
     }
 
@@ -156,7 +168,50 @@ public class ConcurrentBackgroundQueueServiceTests
 
         await bgTaskSvc.StartAsync(CancellationToken.None);
         await Task.Delay(100, CancellationToken.None);
-            
+
         Assert.DoesNotThrowAsync(() => bgTaskSvc.StopAsync(CancellationToken.None));
+    }
+
+    [Test]
+    public async Task ApplicationLifetime_Flags_Set_On_Stop()
+    {
+        var hosted = (ConcurrentBackgroundQueueService) _serviceProvider!.GetRequiredService<IHostedService>();
+        var lifetime = (TestHostApplicationLifetime) _serviceProvider!.GetRequiredService<IHostApplicationLifetime>();
+
+        // Start service
+        await hosted.StartAsync(CancellationToken.None);
+
+        // Reflect private fields
+        var stoppingField = typeof(ConcurrentBackgroundQueueService).GetField("_applicationStopping",
+            BindingFlags.NonPublic | BindingFlags.Instance);
+        var stoppedField = typeof(ConcurrentBackgroundQueueService).GetField("_applicationStopped",
+            BindingFlags.NonPublic | BindingFlags.Instance);
+        Assert.That(stoppingField, Is.Not.Null);
+        Assert.That(stoppedField, Is.Not.Null);
+
+        // Initially false
+        Assert.That((bool) stoppingField!.GetValue(hosted)!, Is.False);
+        Assert.That((bool) stoppedField!.GetValue(hosted)!, Is.False);
+
+        // Trigger lifetime stop (TestHostApplicationLifetime sets both tokens)
+        lifetime.StopApplication();
+
+        // Wait until flags set or timeout
+        var sw = System.Diagnostics.Stopwatch.StartNew();
+        while (sw.Elapsed < TimeSpan.FromSeconds(1))
+        {
+            if ((bool) stoppingField.GetValue(hosted)! && (bool) stoppedField.GetValue(hosted)!)
+                break;
+            await Task.Delay(10);
+        }
+
+        // Assert flags set
+        Assert.That((bool) stoppingField.GetValue(hosted)!, Is.True,
+            "_applicationStopping should be true after StopApplication()");
+        Assert.That((bool) stoppedField.GetValue(hosted)!, Is.True,
+            "_applicationStopped should be true after StopApplication()");
+
+        // Now stop service normally
+        await hosted.StopAsync(CancellationToken.None);
     }
 }
