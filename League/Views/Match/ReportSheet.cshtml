@@ -287,9 +287,9 @@
                     </div>
                     @for (var points = 1; points < 31; points++)
                     {
-                        <div class="row">
-                            <div class="col-6 border-right@(ballPointsToWin[i - 1] == points ? " dotted-line" : string.Empty)">@points</div>
-                            <div class="col-6 border-right@(ballPointsToWin[i - 1] == points ? " dotted-line" : string.Empty)">@points</div>
+                        <div class="row@(ballPointsToWin[i - 1] == points ? " dotted-line" : string.Empty)">
+                            <div class="col-6 border-right">@points</div>
+                            <div class="col-6 border-right">@points</div>
                         </div>
                     }
                 </div>
