@@ -4,7 +4,7 @@ public interface IBackgroundQueue
 {
     void QueueTask(IBackgroundTask taskItem);
 
-    IBackgroundTask DequeueTask();
+    Task<IBackgroundTask> DequeueTaskAsync(CancellationToken token);
 
     Task RunTaskAsync(IBackgroundTask task, CancellationToken cancellationToken);
 

@@ -44,13 +44,16 @@ public class BackgroundQueue : IBackgroundQueue
     /// De-queues the next <see cref="IBackgroundTask"/> from the queue.
     /// </summary>
     /// <returns>Returns the next <see cref="IBackgroundTask"/> from the queue.</returns>
-    public IBackgroundTask DequeueTask()
+    public async Task<IBackgroundTask> DequeueTaskAsync(CancellationToken token)
     {
-        if (TaskItems.TryDequeue(out var nextTaskItem))
-            return nextTaskItem;
-
-        _logger.LogDebug("No TaskItem could be dequeued.");
-        return new BackgroundTaskEmpty();
+        await _signal.WaitAsync(token).ConfigureAwait(false); // consume one permit produced by QueueTask
+        while (true)
+        {
+            if (TaskItems.TryDequeue(out var task))
+                return task;
+            // Rare race: wait again for a real item
+            await _signal.WaitAsync(token).ConfigureAwait(false);
+        }
     }
 
     /// <summary>
@@ -65,8 +68,6 @@ public class BackgroundQueue : IBackgroundQueue
 
         try
         {
-            await _signal.WaitAsync(cancellationToken);
-
             await CancelAfterAsync(task.RunAsync, task.Timeout, cancellationToken);
             _logger.LogDebug("Task completed.");
         }

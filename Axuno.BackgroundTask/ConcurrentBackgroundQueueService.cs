@@ -49,7 +49,7 @@ public class ConcurrentBackgroundQueueService : BackgroundService
                 if (!CanProcess())
                     continue;
 
-                var started = StartAvailableTasks(stoppingToken);
+                var started = await StartAvailableTasks(stoppingToken);
 
                 if (started > 0)
                 {
@@ -96,7 +96,7 @@ public class ConcurrentBackgroundQueueService : BackgroundService
         return Volatile.Read(ref _concurrentTaskCount) < Config.MaxConcurrentCount;
     }
 
-    private int StartAvailableTasks(CancellationToken stoppingToken)
+    private async Task<int> StartAvailableTasks(CancellationToken stoppingToken)
     {
         if (TaskQueue == null)
             return 0;
@@ -107,12 +107,12 @@ public class ConcurrentBackgroundQueueService : BackgroundService
 
         var started = 0;
 
-        while (capacity > 0 && TaskQueue.Count > 0)
+        while (capacity > 0 && TaskQueue.Count > 0 && !stoppingToken.IsCancellationRequested)
         {
             IBackgroundTask taskItem;
             try
             {
-                taskItem = TaskQueue.DequeueTask();
+                taskItem = await TaskQueue.DequeueTaskAsync(stoppingToken);
             }
             catch (Exception ex)
             {
@@ -142,9 +142,6 @@ public class ConcurrentBackgroundQueueService : BackgroundService
                     throw new InvalidOperationException($"{nameof(TaskQueue)} must not be null when starting a task.");
 
                 await TaskQueue.RunTaskAsync(taskItem, stoppingToken).ConfigureAwait(false);
-                _logger.LogDebug("{Service} task completed. Active={Active}", //NOSONAR
-                    nameof(ConcurrentBackgroundQueueService),
-                    Volatile.Read(ref _concurrentTaskCount));
             }
             catch (OperationCanceledException) when (!stoppingToken.IsCancellationRequested)
             {
@@ -170,7 +167,9 @@ public class ConcurrentBackgroundQueueService : BackgroundService
             }
             finally
             {
-                Interlocked.Decrement(ref _concurrentTaskCount);
+                var remaining = Interlocked.Decrement(ref _concurrentTaskCount);
+                _logger.LogDebug("{Service} task finished. Active={Active}",
+                    nameof(ConcurrentBackgroundQueueService), remaining);
             }
         }
     }
