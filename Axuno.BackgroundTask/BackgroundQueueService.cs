@@ -48,7 +48,7 @@ public class BackgroundQueueService : BackgroundService
                     continue;
 
                 _logger.LogDebug("Dequeuing task item.");
-                var taskItemReference = TaskQueue.DequeueTask();
+                var taskItemReference = await TaskQueue.DequeueTaskAsync(stoppingToken);
 
                 try
                 {

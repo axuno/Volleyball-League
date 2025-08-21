@@ -47,7 +47,7 @@ public class BackgroundQueueTests
             
         Assert.Multiple(() =>
         {
-            Assert.ThrowsAsync<TimeoutException>(async () => await queue.RunTaskAsync(queue.DequeueTask(), CancellationToken.None));
+            Assert.ThrowsAsync<TimeoutException>(async () => await queue.RunTaskAsync(await queue.DequeueTaskAsync(CancellationToken.None), CancellationToken.None));
             Assert.That(ExceptionFromBackgroundQueue is TimeoutException, Is.True);
         });
 
