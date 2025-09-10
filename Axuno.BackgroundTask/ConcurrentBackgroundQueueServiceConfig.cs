@@ -6,11 +6,11 @@
 public class ConcurrentBackgroundQueueServiceConfig
 {
     private TimeSpan _pollQueueDelay = TimeSpan.FromMilliseconds(100);
-    private int _maxConcurrentCount = 5;
+    private int _maxConcurrentCount = 50;
 
     /// <summary>
     /// Gets or sets the maximum number of tasks executed concurrently.
-    /// Defaults to 5.
+    /// Defaults to 50.
     /// </summary>
     public int MaxConcurrentCount
     {
@@ -21,7 +21,7 @@ public class ConcurrentBackgroundQueueServiceConfig
 
         set
         {
-            _maxConcurrentCount = value > 0 ? value : 5;
+            _maxConcurrentCount = value > 0 ? value : 50;
         }
     }
     /// <summary>
