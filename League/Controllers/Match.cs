@@ -833,7 +833,8 @@ public class Match : AbstractController
         return await _appDb.RoundRepository
             .GetTournamentStartAsync(tournament.Id, cancellationToken)
             .ContinueWith(
-                t => DateTime.UtcNow < t.Result.AddDays(-_tenantContext.SiteContext.MatchNotifications.DaysBeforeNextMatch),
+                // MatchNotifications.DaysBeforeNextMatch is a negative number or zero
+                t => DateTime.UtcNow < t.Result.AddDays(_tenantContext.SiteContext.MatchNotifications.DaysBeforeNextMatch),
                 TaskContinuationOptions.OnlyOnRanToCompletion);
     }
 }
