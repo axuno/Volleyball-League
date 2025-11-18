@@ -7,7 +7,7 @@ Grunt tasks: https://gruntjs.com/configuring-tasks
 console.log(`Node ${process.version}`); // node version
 module.exports = function (grunt) {
     'use strict';
-    const sass = require('node-sass'); // used in grunt-sass options, must be included in package.json
+    const sass = require('sass'); // used in grunt-sass options, must be included in package.json
 
     grunt.loadNpmTasks('grunt-sass');
     grunt.loadNpmTasks('@lodder/grunt-postcss'); // grunt-postcss is retired, use @lodder/grunt-postcss
@@ -24,7 +24,7 @@ module.exports = function (grunt) {
             options: {
                 implementation: sass,
                 sourceMap: false, // Create source map
-                outputStyle: 'nested' // Minify output with "compressed"
+                outputStyle: 'expanded' // Minify output with "compressed"
             },
             dist: {
                 files: {
