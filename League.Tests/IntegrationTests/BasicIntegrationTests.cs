@@ -2,29 +2,34 @@
 using Microsoft.AspNetCore.TestHost;
 using NUnit.Framework;
 
-namespace League.Tests;
+namespace League.Tests.IntegrationTests;
 
+/// <summary>
+/// Integration tests using League.Demo.Program as the host application.
+/// </summary>
 [TestFixture]
 public class BasicIntegrationTests
 {
-    private readonly WebApplicationFactory<League.WebApp.Program> _factory;
+    private WebApplicationFactory<WebApp.Program>? _factory;
 
-    [OneTimeTearDown]
-    public void DisposeWebApplicationFactory()
+    [OneTimeSetUp]
+    public void Setup()
     {
-        _factory.Dispose();
+        // Create a test factory using League.Demo.Program as the host
+        _factory = UnitTestHelpers.GetLeagueTestApplicationFactory<WebApp.Program>()
+            .WithWebHostBuilder(builder =>
+            {
+                builder.ConfigureTestServices(services =>
+                {
+                    // Add test-specific service overrides here if needed
+                });
+            });
     }
 
-    public BasicIntegrationTests()
+    [OneTimeTearDown]
+    public void TearDown()
     {
-        _factory = new WebApplicationFactory<League.WebApp.Program>()
-                .WithWebHostBuilder(
-                    builder =>
-                    {
-                        builder.ConfigureTestServices(services =>
-                        {
-                        });
-                    });
+        _factory?.Dispose();
     }
 
     [TestCase("/")]
@@ -33,7 +38,8 @@ public class BasicIntegrationTests
     public async Task Get_EndpointsReturnSuccessAndCorrectContentType(string url)
     {
         // Arrange
-        var client = _factory.CreateClient();
+        Assert.That(_factory, Is.Not.Null, "WebApplicationFactory must be initialized");
+        var client = _factory!.CreateClient();
 
         // Act
         var response = await client.GetAsync(url);

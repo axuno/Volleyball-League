@@ -4,9 +4,8 @@ using League.Caching;
 using League.Identity;
 using League.Tests.TestComponents;
 using League.TextTemplatingModule;
-using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Localization;
@@ -82,7 +81,7 @@ public class UnitTestHelpers
 
     public RoleStore GetRoleStore()
     {
-        return new League.Identity.RoleStore(_tenantContext, new NullLogger<League.Identity.RoleStore>(), new UpperInvariantLookupNormalizer(), new Mock<MultiLanguageIdentityErrorDescriber>(null!).Object);
+        return new RoleStore(_tenantContext, new NullLogger<League.Identity.RoleStore>(), new UpperInvariantLookupNormalizer(), new Mock<MultiLanguageIdentityErrorDescriber>(null!).Object);
     }
 
     public ServiceProvider GetStandardServiceProvider()
@@ -118,11 +117,11 @@ public class UnitTestHelpers
                 "Europe/Berlin", CultureInfo.CurrentCulture))
             .AddTransient<ITenantContext>(sp => tenantContext)
             .AddTextTemplatingModule(vfs =>
-                {
-                    // The complete Templates folder is embedded in the project file
-                    vfs.FileSets.AddEmbedded<LeagueTemplateRenderer>(nameof(League) + ".Templates");
-                    // To use physical files: vfs.FileSets.AddPhysical(Path.Combine(Directory.GetCurrentDirectory(), "Templates"));
-                },
+            {
+                // The complete Templates folder is embedded in the project file
+                vfs.FileSets.AddEmbedded<LeagueTemplateRenderer>(nameof(League) + ".Templates");
+                // To use physical files: vfs.FileSets.AddPhysical(Path.Combine(Directory.GetCurrentDirectory(), "Templates"));
+            },
                 locOpt =>
                 {
                 },
@@ -134,7 +133,7 @@ public class UnitTestHelpers
             .BuildServiceProvider();
     }
 
-    public static ServiceProvider GetReportSheetCacheServiceProvider(ITenantContext tenantContext, IWebHostEnvironment webHostEnvironment, IEnumerable<KeyValuePair<string,string?>> browserPath)
+    public static ServiceProvider GetReportSheetCacheServiceProvider(ITenantContext tenantContext, Microsoft.AspNetCore.Hosting.IWebHostEnvironment webHostEnvironment, IEnumerable<KeyValuePair<string, string?>> browserPath)
     {
         return new ServiceCollection()
             .AddLogging(builder =>
@@ -153,28 +152,44 @@ public class UnitTestHelpers
                 return c;
             })
             .AddTransient<ITenantContext>(sp => tenantContext)
-            .AddTransient<IWebHostEnvironment>(sp => webHostEnvironment)
+            .AddTransient<Microsoft.AspNetCore.Hosting.IWebHostEnvironment>(sp => webHostEnvironment)
             .AddTransient<ReportSheetCache>()
             .AddLocalization()
             .BuildServiceProvider();
     }
 
-
-    public static TestServer GetLeagueTestServer()
+    /// <summary>
+    /// Creates a test application factory for integration testing with .NET 10.
+    /// Requires a Program class from the host application.
+    /// </summary>
+    /// <typeparam name="T">The Program class entry point of the application being tested.</typeparam>
+    /// <returns>WebApplicationFactory configured for testing.</returns>
+    public static WebApplicationFactory<T> GetLeagueTestApplicationFactory<T>()
+        where T : class
     {
-        var server = new TestServer(new Microsoft.AspNetCore.Hosting.WebHostBuilder());
+        return new WebApplicationFactory<T>();
+    }
 
-        return server;
+    /// <summary>
+    /// Creates an HttpClient for testing via WebApplicationFactory.
+    /// </summary>
+    /// <typeparam name="TProgram">The Program class entry point of the application being tested.</typeparam>
+    /// <returns>HttpClient connected to the test server.</returns>
+    public static HttpClient GetLeagueTestHttpClient<TProgram>()
+        where TProgram : class
+    {
+        var factory = GetLeagueTestApplicationFactory<TProgram>();
+        return factory.CreateClient();
     }
 
     private void HowToUseServices()
     {
         var logger = (Microsoft.Extensions.Logging.ILogger) GetStandardServiceProvider().GetRequiredService(typeof(ILogger<UnitTestHelpers>));
         logger.LogError("error");
-        var localizer = (IStringLocalizer)GetStandardServiceProvider().GetRequiredService(typeof(IStringLocalizer<League.Controllers.Account>));
+        var localizer = (IStringLocalizer) GetStandardServiceProvider().GetRequiredService(typeof(IStringLocalizer<League.Controllers.Account>));
         _ = localizer["This is your password recovery key"].Value;
 
-        var mlLoc = new MultiLanguageIdentityErrorDescriber((IStringLocalizer<MultiLanguageIdentityErrorDescriberResource>)GetStandardServiceProvider().GetRequiredService(typeof(IStringLocalizer<MultiLanguageIdentityErrorDescriberResource>)));
+        var mlLoc = new MultiLanguageIdentityErrorDescriber((IStringLocalizer<MultiLanguageIdentityErrorDescriberResource>) GetStandardServiceProvider().GetRequiredService(typeof(IStringLocalizer<MultiLanguageIdentityErrorDescriberResource>)));
         _ = mlLoc.ConcurrencyFailure().Description;
     }
 }

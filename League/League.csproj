@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
     <PropertyGroup>
         <Product>Volleyball-League</Product>
-        <TargetFramework>net8.0</TargetFramework>
+        <TargetFramework>net10.0</TargetFramework>
         <AssemblyName>League</AssemblyName>
         <RootNamespace>League</RootNamespace>
         <UserSecretsId>ceea2bf6-8147-49b9-be85-26fca01f9ed3</UserSecretsId>
@@ -67,16 +67,16 @@ Localizations for English and German are included. The library is in operation o
         <PackageReference Include="Axuno.TextTemplating" Version="3.0.0" />
         <PackageReference Include="JSNLog" Version="3.0.3" />
         <PackageReference Include="MailMergeLib" Version="5.13.0" />
-        <PackageReference Include="Microsoft.AspNetCore.Authentication.Facebook" Version="8.0.22" />
-        <PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="8.0.22" />
-        <PackageReference Include="Microsoft.AspNetCore.Authentication.MicrosoftAccount" Version="8.0.22" />
-        <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="8.0.22" />
+        <PackageReference Include="Microsoft.AspNetCore.Authentication.Facebook" Version="10.0.1" />
+        <PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="10.0.1" />
+        <PackageReference Include="Microsoft.AspNetCore.Authentication.MicrosoftAccount" Version="10.0.1" />
+        <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="10.0.1" />
         <PackageReference Include="Microsoft.DotNet.PlatformAbstractions" Version="3.1.6" />
         <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="9.0.0" />
+        <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="10.0.1" />
         <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
         <PackageReference Include="NLog" Version="5.5.1" />
         <PackageReference Include="NLog.Web.AspNetCore" Version="5.5.0" />
@@ -86,9 +86,7 @@ Localizations for English and German are included. The library is in operation o
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
         <PackageReference Include="StackifyMiddleware" Version="3.3.3.4767" />
-        <PackageReference Include="System.Net.Http" Version="4.3.4" />
-        <PackageReference Include="System.Security.Cryptography.Xml" Version="10.0.0" />
-        <PackageReference Include="System.Text.RegularExpressions" Version="4.3.1" />
+        <PackageReference Include="System.Security.Cryptography.Xml" Version="10.0.1" />
     </ItemGroup>
     <ItemGroup>
         <DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="2.0.3" />

@@ -22,7 +22,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.DataProtection.AuthenticatedEncryption;
 using Microsoft.AspNetCore.DataProtection.AuthenticatedEncryption.ConfigurationModel;
-using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Microsoft.AspNetCore.Mvc.Abstractions;
 using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.AspNetCore.WebUtilities;
@@ -174,10 +174,13 @@ public static class LeagueStartup
         services.Configure<IISOptions>(options => { });
 
         services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-        services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
         // Make UrlHelper injectable to any component in the HttpContext
         services.AddScoped<IUrlHelper>(sp => {
-            var actionContext = sp.GetRequiredService<IActionContextAccessor>().ActionContext!;
+            var httpContextAccessor = sp.GetRequiredService<IHttpContextAccessor>();
+            var actionContext = new ActionContext(
+                httpContextAccessor.HttpContext!,
+                httpContextAccessor.HttpContext!.GetRouteData(),
+                new ActionDescriptor());
             var factory = sp.GetRequiredService<IUrlHelperFactory>();
             return factory.GetUrlHelper(actionContext);
         });

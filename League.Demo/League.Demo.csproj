@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
   <PropertyGroup>
     <Product>League.Demo</Product>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
     <NeutralLanguage>en</NeutralLanguage>
     <!-- With dotnet, add parameter: -p:SatelliteResourceLanguages="""en;de""" -->
     <SatelliteResourceLanguages>en;de</SatelliteResourceLanguages>

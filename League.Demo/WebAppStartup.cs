@@ -40,15 +40,6 @@ public static class WebAppStartup
 
             // If you want to enable runtime compilation for other view components, you can use the following code:
             services.AddMvc().AddRazorRuntimeCompilation();
-
-            // Add runtime compilation for the League RCL
-            services.Configure<MvcRazorRuntimeCompilationOptions>(options =>
-            {
-                var leagueLibraryPath = Path.GetFullPath(
-                    Path.Combine(environment.ContentRootPath, "..", nameof(League)));
-
-                options.FileProviders.Add(new PhysicalFileProvider(leagueLibraryPath));
-            });
         }
     }
 

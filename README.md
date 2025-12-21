@@ -1,15 +1,13 @@
-![Logo](logo-volleyball-league_100x100.png)
+![Logo](https://raw.githubusercontent.com/axuno/Volleyball-League/refs/heads/main/logo-volleyball-league_100x100.png)
 
 # Volleyball League Platform Library
 
 [![GitHub release (latest by date including pre-releases)](https://img.shields.io/github/v/release/axuno/volleyball-league?include_prereleases)](https://github.com/axuno/Volleyball-League/releases)  [![build](https://github.com/axuno/Volleyball-League/workflows/build/badge.svg)](https://github.com/axuno/Volleyball-League/actions?query=workflow%3Abuild)  [![GitHub](https://img.shields.io/github/license/axuno/volleyball-league)](https://github.com/axuno/Volleyball-League/blob/main/LICENSE)
 
 ## What is it?
-Volleyball League is a platform that brings everything necessary to organize and to run a league.
-This is the 4th generation of the software developed over the last 20 years and a complete re-write.
 
-## Any questions?
-[![Join the chat at https://gitter.im/axuno/volleyball-league](https://badges.gitter.im/axuno/volleyball-league.svg)](https://gitter.im/axuno/volleyball-league?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+Volleyball League is a platform that brings everything necessary to organize and to run a league.
+This is the 5th generation of the software developed over the past 25 years and a major re-write.
 
 ## Features
 
@@ -36,9 +34,9 @@ This is the 4th generation of the software developed over the last 20 years and 
  
  ## Technology
  
-  * ASP.NET 8.0 web-development framework
+  * ASP.NET 10.0 web-development framework
   * C# programming language
-  * Microsoft SQL-Server 2019+ database is currently implemented. [See supported databases](https://www.llblgen.com/Pages/specifications.aspx)
+  * Microsoft SQL-Server 2022+ database is currently implemented. [See supported databases](https://www.llblgen.com/Pages/specifications.aspx)
   * Integrates Bootstrap 5
   * Using plain vanilla javascript (no dependency on jQuery)
 
