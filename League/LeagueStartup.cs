@@ -177,9 +177,14 @@ public static class LeagueStartup
         // Make UrlHelper injectable to any component in the HttpContext
         services.AddScoped<IUrlHelper>(sp => {
             var httpContextAccessor = sp.GetRequiredService<IHttpContextAccessor>();
+            if (httpContextAccessor.HttpContext is null)
+            {
+                throw new InvalidOperationException(
+                    "HttpContext is not available. IUrlHelper can only be resolved within an active HTTP request context.");
+            }
             var actionContext = new ActionContext(
-                httpContextAccessor.HttpContext!,
-                httpContextAccessor.HttpContext!.GetRouteData(),
+                httpContextAccessor.HttpContext,
+                httpContextAccessor.HttpContext.GetRouteData(),
                 new ActionDescriptor());
             var factory = sp.GetRequiredService<IUrlHelperFactory>();
             return factory.GetUrlHelper(actionContext);

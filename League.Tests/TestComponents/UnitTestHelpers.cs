@@ -174,11 +174,12 @@ public class UnitTestHelpers
     /// Creates an HttpClient for testing via WebApplicationFactory.
     /// </summary>
     /// <typeparam name="TProgram">The Program class entry point of the application being tested.</typeparam>
+    /// <param name="factory">The WebApplicationFactory used to create the client. The caller is responsible for disposing this factory.</param>
     /// <returns>HttpClient connected to the test server.</returns>
-    public static HttpClient GetLeagueTestHttpClient<TProgram>()
+    public static HttpClient GetLeagueTestHttpClient<TProgram>(out WebApplicationFactory<TProgram> factory)
         where TProgram : class
     {
-        var factory = GetLeagueTestApplicationFactory<TProgram>();
+        factory = GetLeagueTestApplicationFactory<TProgram>();
         return factory.CreateClient();
     }
 
