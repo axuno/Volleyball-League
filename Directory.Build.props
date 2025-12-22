@@ -7,9 +7,9 @@
         <Copyright>Copyright 2011-$(CurrentYear) axuno gGmbH</Copyright>
         <RepositoryUrl>https://github.com/axuno/Volleyball-League</RepositoryUrl>
         <PublishRepositoryUrl>true</PublishRepositoryUrl>
-        <Version>8.3.1</Version>
-        <FileVersion>8.3.1</FileVersion>
-        <AssemblyVersion>8.0.0.0</AssemblyVersion> <!--only update AssemblyVersion with major releases -->
+        <Version>9.0.0</Version>
+        <FileVersion>9.0.0</FileVersion>
+        <AssemblyVersion>9.0.0.0</AssemblyVersion> <!--only update AssemblyVersion with major releases -->
         <LangVersion>latest</LangVersion>
         <Nullable>enable</Nullable>
         <EnableNETAnalyzers>true</EnableNETAnalyzers>
