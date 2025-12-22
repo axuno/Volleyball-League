@@ -78,8 +78,9 @@ Localizations for English and German are included. The library is in operation o
         </PackageReference>
         <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="10.0.1" />
         <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
-        <PackageReference Include="NLog" Version="5.5.1" />
-        <PackageReference Include="NLog.Web.AspNetCore" Version="5.5.0" />
+        <PackageReference Include="NLog" Version="6.0.7" />
+        <PackageReference Include="NLog.Targets.Trace" Version="6.0.3" />
+        <PackageReference Include="NLog.Web.AspNetCore" Version="6.1.0" />
         <PackageReference Include="NuGetizer" Version="1.4.6">
             <PrivateAssets>all</PrivateAssets>
             <PackEmbeddedResource>true</PackEmbeddedResource>
@@ -235,6 +236,17 @@ Localizations for English and German are included. The library is in operation o
         <!-- Exclude resource from package as content files -->
         <Content Remove="Properties\launchSettings.json" />
         <None Include="Properties\launchSettings.json" />
+    </ItemGroup>
+    <ItemGroup>
+      <Content Update="Configuration\NLog.Development.config">
+        <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      </Content>
+      <Content Update="Configuration\NLog.Internal.config">
+        <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      </Content>
+      <Content Update="Configuration\NLog.Production.config">
+        <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      </Content>
     </ItemGroup>
     <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
         <TypeScriptTarget>ES5</TypeScriptTarget>
