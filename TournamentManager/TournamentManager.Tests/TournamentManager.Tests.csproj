@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
     <NeutralLanguage>en</NeutralLanguage>
     <ImplicitUsings>enable</ImplicitUsings>
     <NoWarn>$(NoWarn);NETSDK1206</NoWarn>

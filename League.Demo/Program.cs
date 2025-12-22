@@ -25,7 +25,7 @@ public class Program
             
         try
         {
-            logger.Trace($"Configuration of {nameof(Microsoft.AspNetCore.WebHost)} starting.");
+            logger.Trace($"Configuration of {nameof(WebApplicationBuilder)} starting.");
             logger.Info($"This app runs as {(Environment.Is64BitProcess ? "64-bit" : "32-bit")} process.\n\n");
 
             var builder = SetupBuilder(args);
