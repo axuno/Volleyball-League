@@ -73,6 +73,9 @@ public static class LeagueStartup
 
             RuntimeConfiguration.Tracing.SetTraceLevel("ORMPersistenceExecution", TraceLevel.Verbose);
             RuntimeConfiguration.Tracing.SetTraceLevel("ORMPlainSQLQueryExecution", TraceLevel.Verbose);
+
+            // Log trace with NLog
+            Trace.Listeners.Add(new NLog.NLogTraceListener());
         }
     }
 
@@ -80,14 +83,11 @@ public static class LeagueStartup
     /// This method MUST be called from the derived class.
     /// It is used to add required <see cref="League"/> services to the service container.
     /// </summary>
-    public static void ConfigureServices(WebApplicationBuilder builder, ILoggerFactory loggerFactory)
+    public static void ConfigureServices(WebApplicationBuilder builder)
     {
         var configuration = builder.Configuration;
         var environment = builder.Environment;
         var services = builder.Services;
-
-        // Allow TournamentManager to make use of Microsoft.Extensions.Logging
-        TournamentManager.AppLogging.Configure(loggerFactory);
 
         // Add services required for using options.
         services.AddOptions();
@@ -607,12 +607,14 @@ public static class LeagueStartup
     /// It is used to configure the <see cref="League"/> Razor Class Library.
     /// </summary>
     /// <param name="app"></param>
-    /// <param name="loggerFactory"></param>
-    public static void Configure(WebApplication app, ILoggerFactory loggerFactory)
+    public static void Configure(WebApplication app)
     {
+        var loggerFactory = app.Services.GetRequiredService<ILoggerFactory>();
         var environment = app.Environment;
-
         var configuration = app.Configuration;
+
+        // Allow TournamentManager to make use of Microsoft.Extensions.Logging
+        TournamentManager.AppLogging.Configure(loggerFactory);
 
         #region *** Logging ***
 
@@ -622,12 +624,9 @@ public static class LeagueStartup
         var jsNLogConfiguration =
             new JsnlogConfiguration
             {
-                loggers = new List<Logger>
-                {
-                    new() { name = "JsLogger" }
-                }
+                loggers = [new Logger { name = "JsLogger" }]
             };
-        app.UseJSNLog(new LoggingAdapter(loggerFactory), jsNLogConfiguration);
+        app.UseJSNLog(loggerFactory, jsNLogConfiguration);
 
         #endregion
 

@@ -1,7 +1,5 @@
 using League.Components;
 using League.MultiTenancy;
-using Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation;
-using Microsoft.Extensions.FileProviders;
 
 namespace League.WebApp;
 
@@ -13,14 +11,14 @@ public static class WebAppStartup
     /// <summary>
     /// The method gets called by <see cref="Program"/> at startup, BEFORE building the app is completed.
     /// </summary>
-    public static void ConfigureServices(WebApplicationBuilder builder, ILoggerFactory loggerFactory)
+    public static void ConfigureServices(WebApplicationBuilder builder)
     {
         var services = builder.Services;
         var environment = builder.Environment;
 
         services.AddHttpsRedirection(options =>
         {
-            options.RedirectStatusCode = Microsoft.AspNetCore.Http.StatusCodes.Status301MovedPermanently;
+            options.RedirectStatusCode = StatusCodes.Status301MovedPermanently;
         });
 
         // Add custom navigation menu items to the League default navigation system
@@ -46,7 +44,7 @@ public static class WebAppStartup
     /// <summary>
     /// The method gets called by <see cref="Program"/> at startup, AFTER building the app is completed.
     /// </summary>
-    public static void Configure(WebApplication app, ILoggerFactory loggerFactory)
+    public static void Configure(WebApplication app)
     {
         var env = app.Environment;
 
