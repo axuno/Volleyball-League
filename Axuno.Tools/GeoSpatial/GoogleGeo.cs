@@ -119,15 +119,15 @@ public class GoogleGeo
         }
         catch (Exception e)
         {
-            return new GeoResponse { Success = false, StatusText = string.Empty, Exception = e };
+            return new() { Success = false, StatusText = string.Empty, Exception = e };
         }
     }
 
     private static async Task<HttpResponseMessage> CallServerApi(HttpClient client, string country, string address, string apiKey)
     {
-        client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/xml"));
+        client.DefaultRequestHeaders.Accept.Add(new("application/xml"));
         client.BaseAddress =
-            new Uri(
+            new(
                 $"https://maps.googleapis.com/maps/api/geocode/xml?address={HttpUtility.UrlEncode(address)}&components=country:{country}&key={apiKey}");
         return await client.GetAsync(client.BaseAddress);        }
 
@@ -138,7 +138,7 @@ public class GoogleGeo
 
         if (!geoResponse.Success) return geoResponse;
 
-        geoResponse.XmlDocument = new XmlDocument();
+        geoResponse.XmlDocument = new();
         geoResponse.XmlDocument.LoadXml(await httpResponse.Content.ReadAsStringAsync());
         geoResponse.StatusText = geoResponse.XmlDocument.SelectSingleNode(statusNode)?.InnerText;
 
@@ -200,9 +200,9 @@ public class GoogleGeo
                 return geoResponse;
         }
 
-        geoResponse.GeoLocation.Latitude = new Latitude(Angle.FromDegrees(double.Parse(latNode.InnerText,
+        geoResponse.GeoLocation.Latitude = new(Angle.FromDegrees(double.Parse(latNode.InnerText,
             CultureInfo.InvariantCulture.NumberFormat)));
-        geoResponse.GeoLocation.Longitude = new Longitude(Angle.FromDegrees(double.Parse(lngNode.InnerText,
+        geoResponse.GeoLocation.Longitude = new(Angle.FromDegrees(double.Parse(lngNode.InnerText,
             CultureInfo.InvariantCulture.NumberFormat)));
 
         return geoResponse;

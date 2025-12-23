@@ -58,7 +58,7 @@ internal class ExcludeMatchDates
         var excludedDates = new EntityCollection<ExcludeMatchDateEntity>();
 
         _logger.LogDebug("Importing excluded dates from {MinDate} to {MaxDate} for tournament {TournamentId}.", minDate, maxDate, tournamentId);
-        foreach (var record in importer.Import(new DateTimePeriod(minDate, maxDate)))
+        foreach (var record in importer.Import(new(minDate, maxDate)))
         {
             var entity = record.ToExcludeMatchDateEntity();
             entity.TournamentId = tournamentId;

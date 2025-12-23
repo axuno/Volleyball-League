@@ -105,7 +105,7 @@ public class Angle : IComparable<Angle>, IEquatable<Angle>, IFormattable, IEqual
     /// <returns>A new Angle representing the specified value.</returns>
     public static Angle FromRadians(double radians)
     {
-        return new Angle(radians);
+        return new(radians);
     }
 
     /// <summary>
@@ -119,7 +119,7 @@ public class Angle : IComparable<Angle>, IEquatable<Angle>, IFormattable, IEqual
     /// <exception cref="ArgumentNullException">angle is null.</exception>
     public static Angle Negate(Angle angle)
     {
-        return new Angle(angle.Radians * -1);
+        return new(angle.Radians * -1);
     }
 
     /// <summary>

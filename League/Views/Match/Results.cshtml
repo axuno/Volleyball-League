@@ -32,7 +32,7 @@
     if (useRecentRoundCookie) { activeRoundId = rounds.FirstOrDefault()?.RoundId ?? 0; }
     MatchEntity ToMatchEntity(CompletedMatchRow cmr)
     {
-        return new MatchEntity { Id = cmr.Id, HomeTeamId = cmr.HomeTeamId, GuestTeamId = cmr.GuestTeamId, VenueId = cmr.VenueId };
+        return new() { Id = cmr.Id, HomeTeamId = cmr.HomeTeamId, GuestTeamId = cmr.GuestTeamId, VenueId = cmr.VenueId };
     }
 }
 <div class="mb-0 pb-1">

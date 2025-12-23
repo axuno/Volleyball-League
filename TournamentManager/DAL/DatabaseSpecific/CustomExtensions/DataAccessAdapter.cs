@@ -16,7 +16,7 @@ public partial class DataAccessAdapter
     /// <returns></returns>
     protected override QueryCreationManager CreateQueryCreationManager(IPersistenceInfoProvider persistenceInfoProvider)
     {
-        _queryCreationManager = new QueryCreationManagerExt(this, persistenceInfoProvider);
+        _queryCreationManager = new(this, persistenceInfoProvider);
         return _queryCreationManager;
     }
 

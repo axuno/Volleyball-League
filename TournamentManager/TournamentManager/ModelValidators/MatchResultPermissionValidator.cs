@@ -28,7 +28,7 @@ public class MatchResultPermissionValidator : AbstractValidator<MatchEntity, (IT
 
     private Fact<FactId> CurrentDateIsBeforeResultCorrectionDeadline()
     {
-        return new Fact<FactId>
+        return new()
         {
             Id = FactId.CurrentDateIsBeforeResultCorrectionDeadline,
             FieldNames = [string.Empty],
@@ -67,7 +67,7 @@ public class MatchResultPermissionValidator : AbstractValidator<MatchEntity, (IT
 
     private Fact<FactId> RoundIsStillRunning()
     {
-        return new Fact<FactId>
+        return new()
         {
             Id = FactId.RoundIsStillRunning,
             FieldNames = [string.Empty],
@@ -85,7 +85,7 @@ public class MatchResultPermissionValidator : AbstractValidator<MatchEntity, (IT
 
     private Fact<FactId> TournamentIsInActiveMode()
     {
-        return new Fact<FactId>
+        return new()
         {
             Id = FactId.TournamentIsInActiveMode,
             FieldNames = [string.Empty],

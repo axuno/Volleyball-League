@@ -90,7 +90,7 @@ public class GermanHolidayImporter : IExcludeDateImporter
             // Swap if needed
             if (from > to) (from, to) = (to, from);
 
-            yield return new ExcludeDateRecord(new DateTimePeriod(from, to), holidayGroup.Name);
+            yield return new(new(from, to), holidayGroup.Name);
         }
     }
 }

@@ -36,7 +36,8 @@ internal class RankingTestUtilities
         var completeMatches = new List<MatchCompleteRawRow>();
         foreach (var match in matches)
         {
-            completeMatches.Add(new MatchCompleteRawRow {
+            completeMatches.Add(new()
+            {
                 Id = match.Id,
                 HomeTeamId = match.HomeTeamId,
                 GuestTeamId = match.GuestTeamId,
@@ -55,7 +56,8 @@ internal class RankingTestUtilities
 
     public static MatchRuleEntity GetMatchRule_NoTieBreakRule()
     {
-        return new MatchRuleEntity {
+        return new()
+        {
             BestOf = true,
             NumOfSets = 3,
             PointsMatchWon = 3,
@@ -67,7 +69,8 @@ internal class RankingTestUtilities
 
     public static MatchRuleEntity GetMatchRule_TieBreakRule()
     {
-        return new MatchRuleEntity {
+        return new()
+        {
             BestOf = true,
             NumOfSets = 3,
             PointsMatchWon = 3,
@@ -81,7 +84,8 @@ internal class RankingTestUtilities
 
     public static SetRuleEntity GetSetRule()
     {
-        return new SetRuleEntity {
+        return new()
+        {
             NumOfPointsToWinRegular = 25,
             NumOfPointsToWinTiebreak = 15,
             PointsDiffToWinRegular = 2,

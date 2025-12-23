@@ -6,7 +6,7 @@
     <!-- With dotnet, add parameter: -p:SatelliteResourceLanguages="""en;de""" -->
     <SatelliteResourceLanguages>en;de</SatelliteResourceLanguages>
     <ImplicitUsings>enable</ImplicitUsings>
-    <NoWarn>$(NoWarn);NETSDK1206</NoWarn>
+    <NoWarn>$(NoWarn)</NoWarn>
   </PropertyGroup>
   <ItemGroup>
     <InternalsVisibleTo Include="League.Tests" />

@@ -34,7 +34,7 @@ public class Venue : AbstractController
         _authorizationService = authorizationService;
         _regionInfo = regionInfo;
         _logger = logger;
-        _googleConfig = new GoogleConfiguration();
+        _googleConfig = new();
         configuration.Bind(nameof(GoogleConfiguration), _googleConfig);
     }
 
@@ -107,7 +107,7 @@ public class Venue : AbstractController
         }
 
         if (!await model.ValidateAsync(
-                new VenueValidator(model.VenueEntity!, (geoResponse, model.VenuesForDistance)),
+                new(model.VenueEntity!, (geoResponse, model.VenuesForDistance)),
                 ModelState,
                 cancellationToken))
         {
@@ -132,7 +132,7 @@ public class Venue : AbstractController
         if (tid.HasValue)
         {
             teamEntity =
-                await _appDb.TeamRepository.GetTeamEntityAsync(new PredicateExpression(TeamFields.Id == tid.Value),
+                await _appDb.TeamRepository.GetTeamEntityAsync(new(TeamFields.Id == tid.Value),
                     cancellationToken);
                 
             if (teamEntity == null) return NotFound();
@@ -143,7 +143,7 @@ public class Venue : AbstractController
             return Forbid();
         }
             
-        var model = GetEditModel(true, new VenueEntity(), teamEntity, returnUrl);
+        var model = GetEditModel(true, new(), teamEntity, returnUrl);
 
         return View(Views.ViewNames.Venue.EditVenue, model);
     }
@@ -158,7 +158,7 @@ public class Venue : AbstractController
         if (model.TeamId.HasValue)
         {
             teamEntity =
-                await _appDb.TeamRepository.GetTeamEntityAsync(new PredicateExpression(TeamFields.Id == model.TeamId.Value),
+                await _appDb.TeamRepository.GetTeamEntityAsync(new(TeamFields.Id == model.TeamId.Value),
                     cancellationToken);
                 
             if (teamEntity == null) return NotFound();
@@ -169,7 +169,7 @@ public class Venue : AbstractController
             return Forbid();
         }
 
-        model = GetEditModel(true, new VenueEntity(), teamEntity, model.ReturnUrl);
+        model = GetEditModel(true, new(), teamEntity, model.ReturnUrl);
 
         model.Venue.MapEntityToFormFields(model.VenueEntity!);
 
@@ -189,7 +189,7 @@ public class Venue : AbstractController
 
         if (!await model.ValidateAsync(
                 // with parameter geoResponse == NULL, there is no geo validation
-                new VenueValidator(model.VenueEntity!, (geoResponse, model.VenuesForDistance)),
+                new(model.VenueEntity!, (geoResponse, model.VenuesForDistance)),
                 ModelState,
                 cancellationToken))
         {
@@ -229,7 +229,7 @@ public class Venue : AbstractController
         if (method.Equals(nameof(Edit)) && returnUrl.Contains(TenantLink.Action(nameof(Team.MyTeam), nameof(Team)) ?? string.Empty))
         {
             TempData.Put<MyTeamMessageModel.MyTeamMessage>(nameof(MyTeamMessageModel.MyTeamMessage),
-                new MyTeamMessageModel.MyTeamMessage
+                new()
                 {
                     AlertType = isSuccess ? SiteAlertTagHelper.AlertType.Success : SiteAlertTagHelper.AlertType.Danger,
                     MessageId = isSuccess ? MyTeamMessageModel.MessageId.VenueEditSuccess : MyTeamMessageModel.MessageId.VenueEditFailure
@@ -241,7 +241,7 @@ public class Venue : AbstractController
         if (method.Equals(nameof(Create)) && returnUrl.Contains(TenantLink.Action(nameof(Team.MyTeam), nameof(Team)) ?? string.Empty))
         {
             TempData.Put<MyTeamMessageModel.MyTeamMessage>(nameof(MyTeamMessageModel.MyTeamMessage),
-                new MyTeamMessageModel.MyTeamMessage
+                new()
                 {
                     AlertType = isSuccess ? SiteAlertTagHelper.AlertType.Success : SiteAlertTagHelper.AlertType.Danger,
                     MessageId = isSuccess ? MyTeamMessageModel.MessageId.VenueCreateSuccess : MyTeamMessageModel.MessageId.VenueCreateFailure
@@ -284,13 +284,14 @@ public class Venue : AbstractController
 
     private VenueEditModel GetEditModel(bool isNew, VenueEntity venueEntity, TeamEntity? teamEntity, string returnUrl)
     {
-        return new VenueEditModel
+        return new()
         {
             TeamsUsingTheVenue = Array.Empty<string>(),
             TeamId = teamEntity?.Id,
             ForTeamName = teamEntity?.Name,
             ReturnUrl = Url.IsLocalUrl(returnUrl) ? returnUrl : _defaultReturnUrl,
-            Venue = new VenueEditorComponentModel {
+            Venue = new()
+            {
                 IsNew = isNew,
                 HtmlFieldPrefix = nameof(VenueEditModel.Venue),
                 ShowLatLng = User.IsInRole(League.Identity.Constants.RoleName.SystemManager) ||

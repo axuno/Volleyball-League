@@ -6,7 +6,7 @@ namespace Axuno.Tools.FileSystem.Tests;
 [TestFixture]
 public class EmbeddedResourceQueryTests
 {
-    private readonly EmbeddedResourceQuery _sut = new(new[] { typeof(EmbeddedResourceQueryTests).Assembly });
+    private readonly EmbeddedResourceQuery _sut = new([typeof(EmbeddedResourceQueryTests).Assembly]);
 
     [Test]
     public void CanReadEmbeddedResource_Without_PreLoading()
@@ -16,7 +16,7 @@ public class EmbeddedResourceQueryTests
         using var stream = sut.Read(assembly, "FileSystem.Data.my-json-file.json");
 
         var jsonDocument = JsonDocument.Parse(stream!);
-        Assert.That(jsonDocument.RootElement.GetProperty("data").GetBoolean(), Is.EqualTo(true));
+        Assert.That(jsonDocument.RootElement.GetProperty("data").GetBoolean(), Is.True);
     }
 
     [TestCase("FileSystem.Data.my-json-file.json")]
@@ -26,7 +26,7 @@ public class EmbeddedResourceQueryTests
         await using var stream = _sut.Read<EmbeddedResourceQueryTests>(resource);
 
         var jsonDocument = await JsonDocument.ParseAsync(stream!);
-        Assert.That(jsonDocument.RootElement.GetProperty("data").GetBoolean(), Is.EqualTo(true));
+        Assert.That(jsonDocument.RootElement.GetProperty("data").GetBoolean(), Is.True);
     }
 
     [TestCase("FileSystem.Data.my-json-file.json")]
@@ -37,7 +37,7 @@ public class EmbeddedResourceQueryTests
         await using var stream = _sut.Read(assembly, resource);
 
         var jsonDocument = await JsonDocument.ParseAsync(stream!);
-        Assert.That(jsonDocument.RootElement.GetProperty("data").GetBoolean(), Is.EqualTo(true));
+        Assert.That(jsonDocument.RootElement.GetProperty("data").GetBoolean(), Is.True);
     }
 
     [TestCase("FileSystem.Data.my-json-file.json")]
@@ -47,7 +47,7 @@ public class EmbeddedResourceQueryTests
         await using var stream = _sut.Read("Axuno.Tools.Tests", resource);
 
         var jsonDocument = await JsonDocument.ParseAsync(stream!);
-        Assert.That(jsonDocument.RootElement.GetProperty("data").GetBoolean(), Is.EqualTo(true));
+        Assert.That(jsonDocument.RootElement.GetProperty("data").GetBoolean(), Is.True);
     }
 
     [Test]

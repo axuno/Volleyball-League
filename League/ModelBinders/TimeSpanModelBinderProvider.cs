@@ -21,8 +21,7 @@ public class TimeSpanModelBinderProvider : IModelBinderProvider
     /// <returns>Returns a <see cref="TimeSpanModelBinder" /></returns>
     public IModelBinder? GetBinder(ModelBinderProviderContext context)
     {
-        if (context == null)
-            throw new ArgumentNullException(nameof(context));
+        ArgumentNullException.ThrowIfNull(context);
 
         return context.Metadata.ModelType == typeof(TimeSpan) || context.Metadata.ModelType == typeof(TimeSpan?)
             ? new TimeSpanModelBinder(context.Services.GetRequiredService<ILoggerFactory>())

@@ -15,11 +15,11 @@ public class SetEntityExtensionTests
         var set = new SetEntity { HomeBallPoints = homeBallPts, GuestBallPoints = guestBallPts };
         var setRule = new SetRuleEntity { PointsSetWon = 3, PointsSetLost = 1, PointsSetTie = 2 };
         set.CalculateSetPoints(setRule);
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(set.HomeSetPoints, Is.EqualTo(expectedHomeSetPts));
             Assert.That(set.GuestSetPoints, Is.EqualTo(expectedGuestSetPts));
-        });
+        }
     }
 
     [TestCase(25, 1, 5, 4)]
@@ -29,12 +29,12 @@ public class SetEntityExtensionTests
     {
         var set = new SetEntity { HomeBallPoints = homeBallPts, GuestBallPoints = guestBallPts, IsTieBreak = true, IsOverruled = false };
         set.Overrule(homeBallPts, guestBallPts, homeSetPts, guestSetPts);
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(set.HomeSetPoints, Is.EqualTo(homeSetPts));
             Assert.That(set.GuestSetPoints, Is.EqualTo(guestSetPts));
             Assert.That(set.IsTieBreak, Is.False);
             Assert.That(set.IsOverruled, Is.True);
-        });
+        }
     }
 }

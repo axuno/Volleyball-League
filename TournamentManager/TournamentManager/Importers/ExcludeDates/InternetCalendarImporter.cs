@@ -12,7 +12,7 @@ public class InternetCalendarImporter : IExcludeDateImporter
     public InternetCalendarImporter(Stream iCalendarStream, System.Text.Encoding streamEncoding, string defaultTimeZoneId, ILogger<InternetCalendarImporter> logger)
     {
         iCalendarStream.Position = 0;
-        _iCalendarStreamReader = new StreamReader(iCalendarStream, streamEncoding);
+        _iCalendarStreamReader = new(iCalendarStream, streamEncoding);
         _defaultTimeZoneId = defaultTimeZoneId;
         _logger = logger;
     }
@@ -24,7 +24,7 @@ public class InternetCalendarImporter : IExcludeDateImporter
         {
             Position = 0
         };
-        _iCalendarStreamReader = new StreamReader(iCalendarStream, encoding);
+        _iCalendarStreamReader = new(iCalendarStream, encoding);
         _defaultTimeZoneId = defaultTimeZoneId;
         _logger = logger;
     }
@@ -64,13 +64,13 @@ public class InternetCalendarImporter : IExcludeDateImporter
         if (calendarEvent.Start == null)
             throw new ArgumentException(@$"Could not create {nameof(ExcludeDateRecord)} from {nameof(Ical.Net.CalendarComponents.CalendarEvent)} Start={calendarEvent.Start}, End={calendarEvent.End}, Name={calendarEvent.Description}", nameof(calendarEvent));
 
-        calendarEvent.Start = calendarEvent.Start.TzId is null ? new CalDateTime(calendarEvent.Start.Date, calendarEvent.Start.Time, _defaultTimeZoneId) : calendarEvent.Start;
+        calendarEvent.Start = calendarEvent.Start.TzId is null ? new(calendarEvent.Start.Date, calendarEvent.Start.Time, _defaultTimeZoneId) : calendarEvent.Start;
         var start = calendarEvent.Start.AsUtc;
 
         DateTime end;
         if (calendarEvent.End != null)
         {
-            calendarEvent.End = calendarEvent.End.TzId is null ? new CalDateTime(calendarEvent.End.Date, calendarEvent.End.Time, _defaultTimeZoneId) : calendarEvent.Start;
+            calendarEvent.End = calendarEvent.End.TzId is null ? new(calendarEvent.End.Date, calendarEvent.End.Time, _defaultTimeZoneId) : calendarEvent.Start;
             end = calendarEvent.End.AsUtc.AddSeconds(-1);
         }
         else
@@ -79,6 +79,6 @@ public class InternetCalendarImporter : IExcludeDateImporter
         // Swap if necessary
         if (start > end) (start, end) = (end, start);
 
-        return new ExcludeDateRecord(new DateTimePeriod(start, end), calendarEvent.Summary ?? string.Empty);
+        return new(new(start, end), calendarEvent.Summary ?? string.Empty);
     }
 }

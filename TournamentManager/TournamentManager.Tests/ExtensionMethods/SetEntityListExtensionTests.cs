@@ -17,11 +17,11 @@ public class SetEntityListExtensionTests
         var setRule = new SetRuleEntity { PointsSetWon = 3, PointsSetLost = 1, PointsSetTie = 2 };
         var matchRule = new MatchRuleEntity { BestOf = false, NumOfSets = 3 };
         sets.CalculateSetPoints(setRule, matchRule);
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(expectedHomeSetPts, Is.EqualTo(sets.GetSetPoints().Home));
             Assert.That(expectedGuestSetPts, Is.EqualTo(sets.GetSetPoints().Guest));
-        });
+        }
     }
 
     [TestCase("25:1 1:25 25:1", 7, 5, true)]
@@ -34,12 +34,12 @@ public class SetEntityListExtensionTests
         var setRule = new SetRuleEntity { PointsSetWon = 3, PointsSetLost = 1, PointsSetTie = 0 };
         var matchRule = new MatchRuleEntity { BestOf = true, NumOfSets = 2 };
         sets.CalculateSetPoints(setRule, matchRule);
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(expectedHomeSetPts, Is.EqualTo(sets.GetSetPoints().Home));
             Assert.That(expectedGuestSetPts, Is.EqualTo(sets.GetSetPoints().Guest));
             Assert.That(expectedTieBreak, Is.EqualTo(sets.Last().IsTieBreak));
-        });
+        }
     }
 
     [Test]
@@ -67,13 +67,13 @@ public class SetEntityListExtensionTests
     {
         var set = new SetEntity {IsTieBreak = true} ;
         set.Overrule(homeBallPts, guestBallPts, homeSetPts, guestSetPts);
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(homeSetPts, Is.EqualTo(set.HomeSetPoints));
             Assert.That(guestSetPts, Is.EqualTo(set.GuestSetPoints));
             Assert.That(set.IsTieBreak, Is.False); // reset by overrule
             Assert.That(set.IsOverruled, Is.True); // set by overrule
-        });
+        }
     }
 
     [TestCase("25:1 25:1 25:1", 3, 0)]
@@ -82,12 +82,12 @@ public class SetEntityListExtensionTests
     public void Get_Sets_Won(string setResults, int expectedWonHome, int expectedWonGuest)
     {
         var sets = new List<SetEntity> { { -1, setResults } };
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(expectedWonHome, Is.EqualTo(sets.GetSetsWon().Home));
             Assert.That(expectedWonGuest, Is.EqualTo(sets.GetSetsWon().Guest));
             Assert.That(expectedWonHome > expectedWonGuest ? expectedWonHome : expectedWonGuest, Is.EqualTo(sets.MaxBestOf()));
-        });
+        }
     }
 
     [TestCase("0:0 0:0 0:0", 0)]

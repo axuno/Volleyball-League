@@ -14,7 +14,7 @@ public class TeamSingleModel
 
     public TeamVenueRoundRow? TeamVenueRoundInfo { get; set; }
 
-    public List<TeamUserRoundRow> TeamUserRoundInfos { get; set; } = new();
+    public List<TeamUserRoundRow> TeamUserRoundInfos { get; set; } = [];
 
     public bool ShowContactInfos { get; set; }
 

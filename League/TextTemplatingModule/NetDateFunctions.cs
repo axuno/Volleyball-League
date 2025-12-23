@@ -273,12 +273,12 @@ public class NetDateTimeFunctions : ScriptObject, IScriptCustomFunction
 
     public ScriptParameterInfo GetParameterInfo(int index)
     {
-        return new ScriptParameterInfo(typeof(object), "parameter" + index);
+        return new(typeof(object), "parameter" + index);
     }
 
     private ValueTask<object?> InvokeAsync(TemplateContext context, ScriptNode callerContext, ScriptArray arguments, ScriptBlockStatement blockStatement)
     {
-        return new ValueTask<object?>(Invoke(context, callerContext, arguments, blockStatement));
+        return new(Invoke(context, callerContext, arguments, blockStatement));
     }
 
     private void CreateImportFunctions()

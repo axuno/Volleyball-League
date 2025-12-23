@@ -51,7 +51,7 @@ public class TeamApplication : AbstractController
         _tenantContext = tenantContext;
         _timeZoneConverter = timeZoneConverter;
         _regionInfo = regionInfo;
-        _googleConfig = new GoogleConfiguration();
+        _googleConfig = new();
         configuration.Bind(nameof(GoogleConfiguration), _googleConfig);
         _queue = queue;
         _sendEmailTask = sendEmailTask;
@@ -73,7 +73,7 @@ public class TeamApplication : AbstractController
         var model = new ApplicationListModel(_timeZoneConverter)
         {
             Tournament = await _appDb.TournamentRepository.GetTournamentAsync(
-                new PredicateExpression(TournamentFields.Id == _tenantContext.TournamentContext.ApplicationTournamentId), 
+                new(TournamentFields.Id == _tenantContext.TournamentContext.ApplicationTournamentId), 
                 cancellationToken),
             TournamentRoundTeams = await _appDb.TeamRepository.GetLatestTeamTournamentAsync(new PredicateExpression(LatestTeamTournamentFields.TournamentId == _tenantContext.TournamentContext.ApplicationTournamentId), cancellationToken)
         };
@@ -177,7 +177,7 @@ public class TeamApplication : AbstractController
 
         if (sessionModel.Team!.IsNew)
         {
-            sessionModel.Team = GetTeamEditorComponentModel(new TeamEntity());
+            sessionModel.Team = GetTeamEditorComponentModel(new());
             sessionModel.TeamIsSet = false;
             sessionModel.TeamInRoundIsSet = false;
         }
@@ -187,7 +187,7 @@ public class TeamApplication : AbstractController
         if (!sessionModel.Team.IsNew && !sessionModel.TeamIsSet)
         {
             teamEntity = await _appDb.TeamRepository.GetTeamEntityAsync(
-                new PredicateExpression(TeamFields.Id == sessionModel.Team.Id),
+                new(TeamFields.Id == sessionModel.Team.Id),
                 cancellationToken);
             if (teamEntity == null) return Redirect(TenantLink.Action(nameof(SelectTeam))!);
             sessionModel.Team.MapEntityToFormFields(teamEntity);
@@ -223,7 +223,7 @@ public class TeamApplication : AbstractController
         TeamEntity? teamEntity = null;
         if (teamEditModel.Team is { IsNew: false })
         {
-            teamEntity = await _appDb.TeamRepository.GetTeamEntityAsync(new PredicateExpression(TeamFields.Id == teamEditModel.Team.Id), cancellationToken);
+            teamEntity = await _appDb.TeamRepository.GetTeamEntityAsync(new(TeamFields.Id == teamEditModel.Team.Id), cancellationToken);
             if (teamEntity == null)
             {
                 return Redirect(TenantLink.Action(nameof(SelectTeam))!);
@@ -245,7 +245,7 @@ public class TeamApplication : AbstractController
                     teamEntity.TeamInRounds.Count, _tenantContext.TournamentContext.ApplicationTournamentId);
         }
 
-        teamEntity ??= new TeamEntity();
+        teamEntity ??= new();
 
         teamEditModel.TeamEntity = teamEntity;
         teamEditModel.Round = await GetRoundSelectorComponentModel(teamEntity, cancellationToken);
@@ -259,7 +259,7 @@ public class TeamApplication : AbstractController
         teamEditModel.MapFormFieldsToEntity();
         ModelState.Clear();
 
-        if (!await teamEditModel.ValidateAsync(new TeamValidator(teamEditModel.TeamEntity, _tenantContext), _tenantContext.TournamentContext.ApplicationTournamentId, ModelState, cancellationToken))
+        if (!await teamEditModel.ValidateAsync(new(teamEditModel.TeamEntity, _tenantContext), _tenantContext.TournamentContext.ApplicationTournamentId, ModelState, cancellationToken))
         {
             return View(Views.ViewNames.TeamApplication.EditTeam, teamEditModel);
         }
@@ -293,7 +293,7 @@ public class TeamApplication : AbstractController
         if (!sessionModel.Team!.IsNew)
         {
             teamEntity = await _appDb.TeamRepository.GetTeamEntityAsync(
-                new PredicateExpression(TeamFields.Id == sessionModel.Team.Id),
+                new(TeamFields.Id == sessionModel.Team.Id),
                 cancellationToken);
             if (teamEntity == null) return Redirect(TenantLink.Action(nameof(SelectTeam))!);
         }
@@ -323,13 +323,13 @@ public class TeamApplication : AbstractController
         if (!sessionModel.Team!.IsNew)
         {
             var teamEntity = await _appDb.TeamRepository.GetTeamEntityAsync(
-                new PredicateExpression(TeamFields.Id == sessionModel.Team.Id),
+                new(TeamFields.Id == sessionModel.Team.Id),
                 cancellationToken);
             if (teamEntity == null) return Redirect(TenantLink.Action(nameof(SelectTeam))!);
         }
 
         selectVenueModel.TournamentId = sessionModel.PreviousTournamentId ?? _tenantContext.TournamentContext.ApplicationTournamentId;
-        var teamValidator = new TeamVenueValidator(new TeamEntity { VenueId = selectVenueModel.VenueId }, _tenantContext);
+        var teamValidator = new TeamVenueValidator(new() { VenueId = selectVenueModel.VenueId }, _tenantContext);
 
         if (!await TeamVenueSelectModel.ValidateAsync(teamValidator, ModelState, cancellationToken))
         {
@@ -361,7 +361,7 @@ public class TeamApplication : AbstractController
 
         if (isNew.HasValue && isNew.Value)
         {
-            sessionModel.Venue = GetVenueEditorComponentModel(new VenueEntity());
+            sessionModel.Venue = GetVenueEditorComponentModel(new());
             sessionModel.VenueIsSet = TeamVenueSetKind.NewVenue;
         }
 
@@ -434,7 +434,7 @@ public class TeamApplication : AbstractController
         }
 
         if (!await venueEditModel.ValidateAsync(
-                new VenueValidator(venueEditModel.VenueEntity!, (geoResponse, venueEditModel.VenuesForDistance)),
+                new(venueEditModel.VenueEntity!, (geoResponse, venueEditModel.VenuesForDistance)),
                 ModelState,
                 cancellationToken))
         {
@@ -456,7 +456,7 @@ public class TeamApplication : AbstractController
         SaveModelToSession(sessionModel);
 
         var roundWithType = (await _appDb.RoundRepository.GetRoundsWithTypeAsync(
-            new PredicateExpression(RoundFields.Id == sessionModel.TeamInRound!.RoundId), cancellationToken)).FirstOrDefault();
+            new(RoundFields.Id == sessionModel.TeamInRound!.RoundId), cancellationToken)).FirstOrDefault();
 
         if (roundWithType == null)
         {
@@ -500,7 +500,7 @@ public class TeamApplication : AbstractController
             }
                 
             sessionModel.TeamInRound.MapFormFieldsToEntity(teamInRoundEntity);
-            teamInRoundEntity.Team = new TeamEntity();
+            teamInRoundEntity.Team = new();
             sessionModel.Team!.MapFormFieldsToEntity(teamInRoundEntity.Team);
             // An EXISTING venue MUST be set by its ID, otherwise no venue will be stored for the Team
             if(!sessionModel.Venue!.IsNew) teamInRoundEntity.Team.VenueId = sessionModel.Venue.Id;
@@ -508,7 +508,7 @@ public class TeamApplication : AbstractController
             if (sessionModel.VenueIsSet is TeamVenueSetKind.NewVenue or TeamVenueSetKind.ExistingVenue)
             {
                 // Add a new venue, or take over changes to an existing venue
-                teamInRoundEntity.Team.Venue = new VenueEntity();
+                teamInRoundEntity.Team.Venue = new();
                 sessionModel.Venue.MapFormFieldsToEntity(teamInRoundEntity.Team.Venue);
             }
 
@@ -523,7 +523,7 @@ public class TeamApplication : AbstractController
                 HttpContext.Session.Remove(TeamApplicationSessionName);
                 TempData.Put<TeamApplicationMessageModel.TeamApplicationMessage>(
                     nameof(TeamApplicationMessageModel.TeamApplicationMessage),
-                    new TeamApplicationMessageModel.TeamApplicationMessage
+                    new()
                     {
                         AlertType = SiteAlertTagHelper.AlertType.Success,
                         MessageId = TeamApplicationMessageModel.MessageId.ApplicationSuccess
@@ -555,7 +555,7 @@ public class TeamApplication : AbstractController
             HttpContext.Session.Remove(TeamApplicationSessionName);
             TempData.Put<TeamApplicationMessageModel.TeamApplicationMessage>(
                 nameof(TeamApplicationMessageModel.TeamApplicationMessage),
-                new TeamApplicationMessageModel.TeamApplicationMessage
+                new()
                 {
                     AlertType = SiteAlertTagHelper.AlertType.Danger,
                     MessageId = TeamApplicationMessageModel.MessageId.ApplicationFailure
@@ -591,12 +591,12 @@ public class TeamApplication : AbstractController
                 .FirstOrDefault();
         }
 
-        return new RoundSelectorComponentModel
+        return new()
         {
             EnforceExplicitSelection = true,
             SelectedRoundId = tir?.RoundId,
             ShowSelector = await _appDb.MatchRepository.GetMatchCountAsync(
-                new PredicateExpression(
+                new(
                     RoundFields.TournamentId == _tenantContext.TournamentContext.ApplicationTournamentId),
                 cancellationToken) == 0,
             TournamentId = _tenantContext.TournamentContext.ApplicationTournamentId,
@@ -632,7 +632,7 @@ public class TeamApplication : AbstractController
     private async Task<ApplicationSelectTeamModel> GetTeamSelectModel(CancellationToken cancellationToken)
     {
         var tournament = await _appDb.TournamentRepository.GetTournamentAsync(
-            new PredicateExpression(TournamentFields.Id == _tenantContext.TournamentContext.ApplicationTournamentId),
+            new(TournamentFields.Id == _tenantContext.TournamentContext.ApplicationTournamentId),
             cancellationToken);
 
         if (tournament == null)
@@ -645,9 +645,9 @@ public class TeamApplication : AbstractController
         {
             TournamentName = tournament.Name
         };
-        var managerTeamIds = GetUserClaimTeamIds(new[] {Identity.Constants.ClaimType.ManagesTeam});
+        var managerTeamIds = GetUserClaimTeamIds([Identity.Constants.ClaimType.ManagesTeam]);
 
-        if (managerTeamIds.Any())
+        if (managerTeamIds.Count != 0)
         {
             teamSelectModel.TeamsManagedByUser = (await _appDb.TeamRepository.GetLatestTeamTournamentAsync(new PredicateExpression(LatestTeamTournamentFields.TeamId.In(managerTeamIds)),
                 cancellationToken)).OrderByDescending(t => t.TournamentId).ThenBy(t => t.TeamName).ToList();
@@ -663,7 +663,7 @@ public class TeamApplication : AbstractController
 
     private VenueEditModel GetVenueEditModel(VenueEntity venueEntity, TeamEntity? teamEntity, IList<string> teamsUsingTheVenue)
     {
-        return new VenueEditModel
+        return new()
         {
             TeamsUsingTheVenue = teamsUsingTheVenue,
             TeamId = teamEntity?.Id,
@@ -698,7 +698,7 @@ public class TeamApplication : AbstractController
     {
         // Get the application tournament and its predecessor (if any)
         var teamApplicationTournament = await _appDb.TournamentRepository.GetTournamentAsync(
-            new PredicateExpression(TournamentFields.Id == _tenantContext.TournamentContext.ApplicationTournamentId),
+            new(TournamentFields.Id == _tenantContext.TournamentContext.ApplicationTournamentId),
             cancellationToken);
         if (teamApplicationTournament == null)
         {
@@ -707,14 +707,14 @@ public class TeamApplication : AbstractController
         }
 
         var previousTournament = await _appDb.TournamentRepository.GetTournamentAsync(
-            new PredicateExpression(TournamentFields.NextTournamentId == _tenantContext.TournamentContext.ApplicationTournamentId),
+            new(TournamentFields.NextTournamentId == _tenantContext.TournamentContext.ApplicationTournamentId),
             cancellationToken);
         
-        return new ApplicationSessionModel
+        return new()
         {
-            TeamInRound = new TeamInRoundModel {IsNew = true},
-            Team = new TeamEditorComponentModel {HtmlFieldPrefix = nameof(ApplicationSessionModel.Team), IsNew = true},
-            Venue = new VenueEditorComponentModel {HtmlFieldPrefix = nameof(ApplicationSessionModel.Venue), IsNew = true},
+            TeamInRound = new() {IsNew = true},
+            Team = new() {HtmlFieldPrefix = nameof(ApplicationSessionModel.Team), IsNew = true},
+            Venue = new() {HtmlFieldPrefix = nameof(ApplicationSessionModel.Venue), IsNew = true},
             TournamentName = teamApplicationTournament.Name,
             PreviousTournamentId = previousTournament?.Id
         };
@@ -753,7 +753,7 @@ public class TeamApplication : AbstractController
         else
         {
             // Nothing to do, if the current user is already manager of this team
-            var mot = (await _appDb.ManagerOfTeamRepository.GetManagerOfTeamEntitiesAsync(new PredicateExpression(ManagerOfTeamFields.TeamId == teamEntity.Id), 
+            var mot = (await _appDb.ManagerOfTeamRepository.GetManagerOfTeamEntitiesAsync(new(ManagerOfTeamFields.TeamId == teamEntity.Id), 
                 cancellationToken)).Find(u => u.UserId == GetCurrentUserId());
             if (mot == null)
             {

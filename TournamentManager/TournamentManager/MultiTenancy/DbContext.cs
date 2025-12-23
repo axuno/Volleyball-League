@@ -78,12 +78,12 @@ public class DbContext : IDbContext
                 // could also be overwritten with string.Empty. In this case, the default Schema
                 // and the database from the connection string would be used.
                 CatalogNameOverwrites =
-                    new CatalogNameOverwriteHashtable(new Dictionary<string, string> { { "*", Catalog } })
+                    new(new Dictionary<string, string> { { "*", Catalog } })
                     {
                         CatalogNameUsageSetting = CatalogNameUsage.ForceName
                     },
                 SchemaNameOverwrites =
-                    new SchemaNameOverwriteHashtable(new Dictionary<string, string> { { "*", Schema } })
+                    new(new Dictionary<string, string> { { "*", Schema } })
                     {
                         SchemaNameUsageSetting = SchemaNameUsage.ForceName
                     }

@@ -108,11 +108,11 @@ public class BackgroundQueueServiceTests
 
         await hosted.StopAsync(cts.Token);
 
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(itemCounter, Is.EqualTo(expected));
             Assert.That(ExceptionFromBackgroundQueue?.GetType(), Is.EqualTo(typeof(AmbiguousImplementationException)));
-        });
+        }
     }
 
     [Test]

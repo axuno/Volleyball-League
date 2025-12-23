@@ -10,7 +10,7 @@ namespace League.ModelBinders;
 /// </summary>
 public class StringTrimmingModelBinder : IModelBinder
 {
-    private readonly IModelBinder _fallbackBinder;
+    private readonly SimpleTypeModelBinder _fallbackBinder;
     private readonly ILogger<DateTimeModelBinder> _logger;
 
     /// <summary>

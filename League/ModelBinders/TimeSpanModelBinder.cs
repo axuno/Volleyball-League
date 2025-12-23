@@ -10,14 +10,14 @@ namespace League.ModelBinders;
 /// </summary>
 public class TimeSpanModelBinder : IModelBinder
 {
-    private readonly IModelBinder _fallbackBinder;
+    private readonly SimpleTypeModelBinder _fallbackBinder;
     private readonly ILogger<TimeSpanModelBinder> _logger;
     private const int RegexTimeout = 300;
 
     private const DateTimeStyles _dateTimeStyles = DateTimeStyles.AllowWhiteSpaces | DateTimeStyles.AllowLeadingWhite | DateTimeStyles.AllowTrailingWhite;
 
-    private readonly string[] _formats = 
-    {
+    private readonly string[] _formats =
+    [
         // 24-hour clock 
         "HH:mm:ss", "HH.mm.ss", "HHmmss",
         "HH:mm", "HH.mm", "HHmm", "HH",
@@ -26,7 +26,7 @@ public class TimeSpanModelBinder : IModelBinder
         "hh:mm:sstt", "hh.mm.sstt", "hhmmsstt",
         "hh:mmtt", "hh.mmtt", "hhmmtt", "hhtt",
         "h:mmtt", "h.mmtt", "hmmtt", "htt"
-    };
+    ];
     
     public TimeSpanModelBinder(ILoggerFactory loggerFactory)
     {

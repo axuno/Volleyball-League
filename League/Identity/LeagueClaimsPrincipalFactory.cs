@@ -41,10 +41,10 @@ public class LeagueClaimsPrincipalFactory : UserClaimsPrincipalFactory<Applicati
         // add custom claims
         if (claimPrincipal.Identity is ClaimsIdentity claimsIdentity)
         {
-            if (!string.IsNullOrEmpty(user.Email)) claimsIdentity.AddClaim(new Claim(ClaimTypes.Email, user.Email));
-            if (!string.IsNullOrEmpty(user.Gender)) claimsIdentity.AddClaim(new Claim(ClaimTypes.Gender, user.Gender));
-            if (!string.IsNullOrEmpty(user.FirstName)) claimsIdentity.AddClaim(new Claim(ClaimTypes.GivenName, user.FirstName));
-            if (!string.IsNullOrEmpty(user.LastName)) claimsIdentity.AddClaim(new Claim(ClaimTypes.Surname, user.LastName));
+            if (!string.IsNullOrEmpty(user.Email)) claimsIdentity.AddClaim(new(ClaimTypes.Email, user.Email));
+            if (!string.IsNullOrEmpty(user.Gender)) claimsIdentity.AddClaim(new(ClaimTypes.Gender, user.Gender));
+            if (!string.IsNullOrEmpty(user.FirstName)) claimsIdentity.AddClaim(new(ClaimTypes.GivenName, user.FirstName));
+            if (!string.IsNullOrEmpty(user.LastName)) claimsIdentity.AddClaim(new(ClaimTypes.Surname, user.LastName));
         }
 
         return claimPrincipal;

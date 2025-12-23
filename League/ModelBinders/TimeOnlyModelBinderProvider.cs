@@ -21,8 +21,7 @@ public class TimeOnlyModelBinderProvider : IModelBinderProvider
     /// <returns>Returns a <see cref="TimeOnlyModelBinder" /></returns>
     public IModelBinder? GetBinder(ModelBinderProviderContext context)
     {
-        if (context == null)
-            throw new ArgumentNullException(nameof(context));
+        ArgumentNullException.ThrowIfNull(context);
 
         return context.Metadata.ModelType == typeof(TimeOnly) || context.Metadata.ModelType == typeof(TimeOnly?)
             ? new TimeOnlyModelBinder(context.Services.GetRequiredService<ILoggerFactory>())

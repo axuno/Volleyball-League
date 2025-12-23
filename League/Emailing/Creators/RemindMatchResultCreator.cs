@@ -79,12 +79,12 @@ public class RemindMatchResult : IMailMessageCreator
                         }
                     }
                         
-                    mailMergeMessage.MailMergeAddresses.Add(new MailMergeAddress(MailAddressType.To,
+                    mailMergeMessage.MailMergeAddresses.Add(new(MailAddressType.To,
                         $"{tur.CompleteName}", tur.Email));    
                         
                     if (!string.IsNullOrEmpty(tur.Email2))
                     {
-                        mailMergeMessage.MailMergeAddresses.Add(new MailMergeAddress(MailAddressType.CC,
+                        mailMergeMessage.MailMergeAddresses.Add(new(MailAddressType.CC,
                             $"{tur.CompleteName}", tur.Email2));
                     }
                 }

@@ -43,7 +43,7 @@ public class RazorViewToStringRenderer
             view,
             new ViewDataDictionary<TModel>(
                 metadataProvider: new EmptyModelMetadataProvider(),
-                modelState: new ModelStateDictionary())
+                modelState: new())
             {
                 Model = model
             },
@@ -51,7 +51,7 @@ public class RazorViewToStringRenderer
                 actionContext.HttpContext,
                 _tempDataProvider),
             output,
-            new HtmlHelperOptions());
+            new());
 
         await view.RenderAsync(viewContext);
 
@@ -83,6 +83,6 @@ public class RazorViewToStringRenderer
     private ActionContext GetActionContext()
     {
         var httpContext = new DefaultHttpContext {RequestServices = _serviceProvider};
-        return new ActionContext(httpContext, new RouteData(), new ActionDescriptor { DisplayName = nameof(RazorViewToStringRenderer) });
+        return new(httpContext, new(), new() { DisplayName = nameof(RazorViewToStringRenderer) });
     }
 }

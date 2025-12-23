@@ -31,7 +31,7 @@ public class TeamValidator : AbstractValidator<TeamEntity, ITenantContext, TeamV
 
     private Fact<FactId> MatchTimeWithinRange()
     {
-        return new Fact<FactId>
+        return new()
         {
             Id = FactId.MatchTimeWithinRange,
             FieldNames = [nameof(Model.MatchTime)],
@@ -54,7 +54,7 @@ public class TeamValidator : AbstractValidator<TeamEntity, ITenantContext, TeamV
 
     private Fact<FactId> DayOfWeekWithinRange()
     {
-        return new Fact<FactId>
+        return new()
         {
             Id = FactId.DayOfWeekWithinRange,
             FieldNames = [nameof(Model.MatchDayOfWeek)],
@@ -78,7 +78,7 @@ public class TeamValidator : AbstractValidator<TeamEntity, ITenantContext, TeamV
 
     private Fact<FactId> MatchDayOfWeekAndTimeIsSet()
     {
-        return new Fact<FactId>
+        return new()
         {
             Id = FactId.MatchDayOfWeekAndTimeIsSet,
             FieldNames = [nameof(Model.MatchDayOfWeek), nameof(Model.MatchTime)],
@@ -97,7 +97,7 @@ public class TeamValidator : AbstractValidator<TeamEntity, ITenantContext, TeamV
 
     private Fact<FactId> TeamNameIsUnique()
     {
-        return new Fact<FactId>
+        return new()
         {
             Id = FactId.TeamNameIsUnique,
             FieldNames = [nameof(Model.Name)],
@@ -110,7 +110,7 @@ public class TeamValidator : AbstractValidator<TeamEntity, ITenantContext, TeamV
         {
             var teamName = await Data.DbContext.AppDb.TeamRepository.TeamNameExistsAsync(Model, cancellationToken)
                 .ConfigureAwait(false);
-            return new FactResult
+            return new()
             {
                 Message = string.Format(TeamValidatorResource.ResourceManager.GetString(
                     nameof(FactId.TeamNameIsUnique)) ?? string.Empty, teamName),
@@ -121,7 +121,7 @@ public class TeamValidator : AbstractValidator<TeamEntity, ITenantContext, TeamV
 
     private Fact<FactId> TeamNameIsSet()
     {
-        return new Fact<FactId>
+        return new()
         {
             Id = FactId.TeamNameIsSet,
             FieldNames = [nameof(Model.Name)],

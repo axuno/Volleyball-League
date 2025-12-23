@@ -23,7 +23,7 @@ public class FixtureValidatorTests
     {
         #region *** TimeZoneConverter ***
 
-        _data.TimeZoneConverter = new Axuno.Tools.DateAndTime.TimeZoneConverter("Europe/Berlin", _culture);
+        _data.TimeZoneConverter = new("Europe/Berlin", _culture);
 
         #endregion
 
@@ -38,7 +38,7 @@ public class FixtureValidatorTests
             (long venueId, DateTimePeriod searchPeriod, long tournamentId, CancellationToken cancellationToken) =>
                 Task.FromResult(venueId % 2 == 0
                     ? new List<PlannedMatchRow>()
-                    : new List<PlannedMatchRow>(new[] {new PlannedMatchRow {Id = 1, VenueId = venueId}})));
+                    : [new() {Id = 1, VenueId = venueId}]));
         appDbMock.Setup(a => a.VenueRepository).Returns(venueRepoMock.Object);
 
         var matchRepoMock = TestMocks.GetRepo<MatchRepository>();
@@ -46,7 +46,7 @@ public class FixtureValidatorTests
                 rep.AreTeamsBusyAsync(It.IsAny<MatchEntity>(), It.IsAny<bool>(), It.IsAny<long>(), It.IsAny<CancellationToken>()))
             .Returns((MatchEntity match, bool onlyDatePart, long tournamentId, CancellationToken cancellationToken) =>
                 Task.FromResult(match.Id % 2 == 0 || !match.PlannedStart.HasValue
-                    ? Array.Empty<long>() 
+                    ? [] 
                     : new[] { match.HomeTeamId }));
         appDbMock.Setup(a => a.MatchRepository).Returns(matchRepoMock.Object);
             
@@ -99,10 +99,10 @@ public class FixtureValidatorTests
                     var roundEntity = new RoundEntity {Id = roundId, Name="RoundName", Description = "RoundDescription", NumOfLegs = 2};
                     for (var i = 0; i < roundEntity.NumOfLegs; i++)
                     {
-                        roundEntity.RoundLegs.Add(new RoundLegEntity
+                        roundEntity.RoundLegs.Add(new()
                         {
-                            Id = i, SequenceNo = i + 1, StartDateTime = new DateTime(2020, 9 + i, 1),
-                            EndDateTime = new DateTime(2020, 9 + i, 20), RoundId = roundEntity.Id
+                            Id = i, SequenceNo = i + 1, StartDateTime = new(2020, 9 + i, 1),
+                            EndDateTime = new(2020, 9 + i, 20), RoundId = roundEntity.Id
                         });
                     }
 
@@ -124,15 +124,15 @@ public class FixtureValidatorTests
     public void All_Ids_Have_A_Check_Function()
     {
         var match = new MatchEntity();
-        _data.TenantConext.TournamentContext.FixtureRuleSet = new FixtureRuleSet();
+        _data.TenantConext.TournamentContext.FixtureRuleSet = new();
         var fv = new FixtureValidator(match, _data, DateTime.UtcNow);
 
-        var enums = Enum.GetNames(typeof(FixtureValidator.FactId)).ToList();
+        var enums = Enum.GetNames<FixtureValidator.FactId>().ToList();
         foreach (var e in enums)
         {
             var fact = fv.Facts.First(f => f.Id.Equals(Enum.Parse<FixtureValidator.FactId>(e)));
             Console.WriteLine(fact.Id);
-            Assert.That(fact.CheckAsync, Is.Not.EqualTo(null));
+            Assert.That(fact.CheckAsync, Is.Not.Null);
         }
     }
 
@@ -144,16 +144,16 @@ public class FixtureValidatorTests
     public async Task PlannedStart_MustBeSet(DateTime? plannedStart, bool plannedMatchTimeMustBeSet, bool expected)
     {
         var match = new MatchEntity { PlannedStart = plannedStart};
-        _data.TenantConext.TournamentContext.FixtureRuleSet = new FixtureRuleSet { PlannedMatchDateTimeMustBeSet = plannedMatchTimeMustBeSet};
+        _data.TenantConext.TournamentContext.FixtureRuleSet = new() { PlannedMatchDateTimeMustBeSet = plannedMatchTimeMustBeSet};
         var fv = new FixtureValidator(match, _data, DateTime.UtcNow);
 
         var factResult = await fv.CheckAsync(FixtureValidator.FactId.PlannedStartIsSet, CancellationToken.None);
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(factResult.Enabled, Is.EqualTo(_data.TenantConext.TournamentContext.FixtureRuleSet.PlannedMatchDateTimeMustBeSet));
             Assert.That(!factResult.Enabled || factResult.Success, Is.EqualTo(expected));
             Assert.That(factResult.Exception, Is.Null);
-        });
+        }
     }
 
     [Test]
@@ -163,8 +163,8 @@ public class FixtureValidatorTests
     public async Task PlannedStart_Is_Future_Date(DateTime? plannedStart, bool expected)
     {
         var match = new MatchEntity {PlannedStart = plannedStart};
-        _data.TenantConext.TournamentContext.FixtureRuleSet = new FixtureRuleSet();
-        var fv = new FixtureValidator(match, _data, new DateTime(2019, 06, 30, 19, 00, 00));
+        _data.TenantConext.TournamentContext.FixtureRuleSet = new();
+        var fv = new FixtureValidator(match, _data, new(2019, 06, 30, 19, 00, 00));
         var factResult = await fv.CheckAsync(FixtureValidator.FactId.PlannedStartIsFutureDate, CancellationToken.None);
         Assert.That(factResult.Success, Is.EqualTo(expected));
     }
@@ -180,18 +180,18 @@ public class FixtureValidatorTests
         // Note: While PlannedStart is treated as UTC, MinStart and MaxStart are in local time
 
         var match = new MatchEntity();
-        _data.TenantConext.TournamentContext.FixtureRuleSet = new FixtureRuleSet { PlannedMatchDateTimeMustBeSet = plannedMatchTimeMustBeSet, RegularMatchStartTime = new RegularMatchStartTime { MinDayTime = minStart, MaxDayTime = maxStart } };
+        _data.TenantConext.TournamentContext.FixtureRuleSet = new() { PlannedMatchDateTimeMustBeSet = plannedMatchTimeMustBeSet, RegularMatchStartTime = new() { MinDayTime = minStart, MaxDayTime = maxStart } };
         var fv = new FixtureValidator(match, _data, DateTime.UtcNow);
 
         match.PlannedStart = plannedStart;
         var factResult = await fv.CheckAsync(FixtureValidator.FactId.PlannedStartWithinDesiredTimeRange, CancellationToken.None);
 
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(factResult.Success && factResult.Message.Contains(_data.TenantConext.TournamentContext.FixtureRuleSet
                     .RegularMatchStartTime.MinDayTime.ToShortTimeString()), Is.EqualTo(expected));
             Assert.That(factResult.Exception, Is.Null);
-        });
+        }
     }
 
     [Test]
@@ -207,7 +207,7 @@ public class FixtureValidatorTests
     [TestCase("2020-10-30 17:00:00", true, false)]
     public async Task PlannedStart_Within_Leg_Time_Limits(DateTime? plannedStart, bool dateWithLegBoundaries, bool expected)
     {
-        _data.TenantConext.TournamentContext.FixtureRuleSet = new FixtureRuleSet { PlannedMatchTimeMustStayInCurrentLegBoundaries = dateWithLegBoundaries };
+        _data.TenantConext.TournamentContext.FixtureRuleSet = new() { PlannedMatchTimeMustStayInCurrentLegBoundaries = dateWithLegBoundaries };
         var match = new MatchEntity
         {
             Id = 1,
@@ -221,11 +221,11 @@ public class FixtureValidatorTests
         var fv = new FixtureValidator(match, _data, DateTime.UtcNow);
         var factResult = await fv.CheckAsync(FixtureValidator.FactId.PlannedStartWithinRoundLegs, CancellationToken.None);
 
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(factResult.Success, Is.EqualTo(expected));
             Assert.That(factResult.Exception, Is.Null);
-        });
+        }
     }
 
     [Test]
@@ -235,7 +235,7 @@ public class FixtureValidatorTests
     [TestCase(null, 101, false, true)]
     public async Task PlannedStart_Teams_Are_Not_Busy(DateTime? plannedStart, long matchId, bool onlyDatePart, bool expected)
     {
-        _data.TenantConext.TournamentContext.FixtureRuleSet = new FixtureRuleSet { UseOnlyDatePartForTeamFreeBusyTimes = onlyDatePart };
+        _data.TenantConext.TournamentContext.FixtureRuleSet = new() { UseOnlyDatePartForTeamFreeBusyTimes = onlyDatePart };
         var match = new MatchEntity
         {
             Id = matchId, PlannedStart = plannedStart,
@@ -243,7 +243,7 @@ public class FixtureValidatorTests
             HomeTeamId = 123,
             GuestTeamId = 987
         };
-        _data.PlannedMatch = new PlannedMatchRow
+        _data.PlannedMatch = new()
         {
             // needed, because ...NameForRound is not part of the MatchEntity
             HomeTeamNameForRound = match.HomeTeamId.ToString(),
@@ -254,14 +254,14 @@ public class FixtureValidatorTests
 
         var factResult = await fv.CheckAsync(FixtureValidator.FactId.PlannedStartTeamsAreNotBusy, CancellationToken.None);
 
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(factResult.Success, Is.EqualTo(expected));
             if (!expected)
                 Assert.That(factResult.Message.Contains(match.HomeTeamId.ToString()) ||
                               factResult.Message.Contains(match.GuestTeamId.ToString()), Is.True);
             Assert.That(factResult.Exception, Is.Null);
-        });
+        }
     }
 
     [Test]
@@ -274,7 +274,7 @@ public class FixtureValidatorTests
     public async Task PlannedStart_Is_Excluded_MatchDate(DateTime? plannedStart, long matchId, bool onlyDatePart, bool expected)
     {
         Thread.CurrentThread.CurrentCulture = _culture;
-        _data.TenantConext.TournamentContext.FixtureRuleSet = new FixtureRuleSet { UseOnlyDatePartForTeamFreeBusyTimes = onlyDatePart };
+        _data.TenantConext.TournamentContext.FixtureRuleSet = new() { UseOnlyDatePartForTeamFreeBusyTimes = onlyDatePart };
         var match = new MatchEntity
         {
             Id = matchId,
@@ -287,7 +287,7 @@ public class FixtureValidatorTests
 
         var factResult = await fv.CheckAsync(FixtureValidator.FactId.PlannedStartNotExcluded, CancellationToken.None);
 
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(factResult.Success, Is.EqualTo(expected));
             Assert.That(factResult.Success || factResult.Message.Contains(ExcludedDateReason), Is.True);
@@ -295,7 +295,7 @@ public class FixtureValidatorTests
             Assert.That(factResult.Success || onlyDatePart ||
                           StringContainsTimeSeparatorBetweenApostrophes(factResult.Message, _culture), Is.True);
             Assert.That(factResult.Exception, Is.Null);
-        });
+        }
     }
 
     [Test]
@@ -313,7 +313,7 @@ public class FixtureValidatorTests
     [TestCase(1, 2, "2020-06-15 18:00:00", null, true)]
     public async Task PlannedStart_Is_Team_Weekday(long homeTeam, long guestTeam, DateTime? plannedStart, long? venueId, bool expected)
     {
-        _data.TenantConext.TournamentContext.FixtureRuleSet = new FixtureRuleSet();
+        _data.TenantConext.TournamentContext.FixtureRuleSet = new();
         var match = new MatchEntity { Id = 9999, HomeTeamId = homeTeam, GuestTeamId = guestTeam, PlannedStart = plannedStart, VenueId = venueId};
         var fv = new FixtureValidator(match, _data, DateTime.UtcNow);
         var factResult = await fv.CheckAsync(FixtureValidator.FactId.PlannedStartWeekdayIsTeamWeekday, CancellationToken.None);
@@ -341,14 +341,14 @@ public class FixtureValidatorTests
     public void Planned_Venue_Is_Set(long? venueId, bool expected)
     {
         var match = new MatchEntity { VenueId = venueId };
-        _data.TenantConext.TournamentContext.FixtureRuleSet = new FixtureRuleSet { PlannedVenueMustBeSet = true};
+        _data.TenantConext.TournamentContext.FixtureRuleSet = new() { PlannedVenueMustBeSet = true};
         var fv = new FixtureValidator(match, _data, DateTime.UtcNow);
         var factResult = fv.CheckAsync(FixtureValidator.FactId.PlannedVenueIsSet, CancellationToken.None).Result;
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(factResult.Success, Is.EqualTo(expected));
             Assert.That(factResult.Exception, Is.Null);
-        });
+        }
     }
 
     [Test]
@@ -358,15 +358,15 @@ public class FixtureValidatorTests
     public void Planned_Venue_Not_Occupied(long? venueId, bool expected)
     {
         var match = new MatchEntity {Id = 2, VenueId = venueId};
-        _data.TenantConext.TournamentContext.FixtureRuleSet = new FixtureRuleSet { PlannedVenueMustBeSet = false };
+        _data.TenantConext.TournamentContext.FixtureRuleSet = new() { PlannedVenueMustBeSet = false };
         var fv = new FixtureValidator(match, _data, DateTime.UtcNow);
         var factResult = fv.CheckAsync(FixtureValidator.FactId.PlannedVenueNotOccupiedWithOtherMatch, CancellationToken.None).Result;
 
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(factResult.Success, Is.EqualTo(expected));
             Assert.That(factResult.Exception, Is.Null);
-        });
+        }
     }
 
     [Test]
@@ -375,7 +375,7 @@ public class FixtureValidatorTests
     [TestCase(1, 2, 333, false)]
     public void Planned_Venue_Is_Registered_For_A_Team(long homeTeam, long guestTeam, long venueId, bool expected)
     {
-        _data.TenantConext.TournamentContext.FixtureRuleSet = new FixtureRuleSet();
+        _data.TenantConext.TournamentContext.FixtureRuleSet = new();
         var match = new MatchEntity { Id = 9999, HomeTeamId = homeTeam, GuestTeamId = guestTeam, VenueId = venueId};
         var fv = new FixtureValidator(match, _data, DateTime.UtcNow);
         var factResult = fv.CheckAsync(FixtureValidator.FactId.PlannedVenueIsRegisteredVenueOfTeam, CancellationToken.None).Result;
@@ -385,8 +385,8 @@ public class FixtureValidatorTests
     [Test]
     public void FieldName_Of_Facts()
     {
-        _data.TenantConext.TournamentContext.FixtureRuleSet = new FixtureRuleSet();
-        var fv = new FixtureValidator(new MatchEntity(), _data, DateTime.UtcNow);
+        _data.TenantConext.TournamentContext.FixtureRuleSet = new();
+        var fv = new FixtureValidator(new(), _data, DateTime.UtcNow);
 
         foreach (var fact in fv.Facts)
         {

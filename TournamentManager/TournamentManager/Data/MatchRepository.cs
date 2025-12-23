@@ -189,7 +189,7 @@ public class MatchRepository
             .AddWithAnd(RoundFields.TournamentId == tournamentId)
             .AddWithAnd(
                 onlyUseDatePart
-                    ? new PredicateExpression(MatchFields.PlannedStart.Date()
+                    ? new(MatchFields.PlannedStart.Date()
                         .Between(match.PlannedStart?.Date, match.PlannedEnd?.Date).Or(MatchFields.PlannedEnd
                             .Date().Between(match.PlannedStart?.Date, match.PlannedEnd?.Date)))
                     : new PredicateExpression(MatchFields.PlannedStart
@@ -449,7 +449,7 @@ public class MatchRepository
 
         foreach (var setEntity in matchEntity.Sets)
         {
-            clone.Sets.Add(new SetEntity
+            clone.Sets.Add(new()
             {
                 Id = setEntity.Id,
                 MatchId = setEntity.MatchId,

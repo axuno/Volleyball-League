@@ -15,7 +15,7 @@ namespace League.MultiTenancy;
 public class TenantLink
 {
     // Perf: Reuse the RouteValueDictionary across multiple calls of Action for this UrlHelper
-    private readonly RouteValueDictionary _routeValueDictionary = new();
+    private readonly RouteValueDictionary _routeValueDictionary = [];
 
     /// <summary>
     /// Gets the <see cref="ISiteContext"/>.

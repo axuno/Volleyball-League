@@ -92,6 +92,6 @@ public class MapModel
     public string? MinLatitude { get; set; }
     public bool IsSingleValue => Venues.Count == 1;
     public TournamentEntity? Tournament { get; set; }
-    public List<VenueTeamRow> Venues { get; set; } = new();
+    public List<VenueTeamRow> Venues { get; set; } = [];
     public GoogleConfiguration? GoogleConfiguration { get; set; }
 }

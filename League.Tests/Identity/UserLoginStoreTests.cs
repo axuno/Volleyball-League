@@ -49,7 +49,7 @@ public class UserLoginStoreTests
 
     private ApplicationUser GetNewUser()
     {
-        return new ApplicationUser
+        return new()
         {
             Name = _testUser.Name,
             UserName = _testUser.UserName,
@@ -69,7 +69,7 @@ public class UserLoginStoreTests
 
     private static UserLoginInfo GetUserLoginInfo()
     {
-        return new UserLoginInfo("provider", "providerKey", "displayName");
+        return new("provider", "providerKey", "displayName");
     }
 
     private async Task<ApplicationUser> CreateNewUser()
@@ -87,24 +87,24 @@ public class UserLoginStoreTests
         Assert.DoesNotThrowAsync(() => _store.AddLoginAsync(user, login, CancellationToken.None));
 
         var userByLogin = await _store.FindByLoginAsync(login.LoginProvider, login.ProviderKey, CancellationToken.None);
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(userByLogin, Is.Not.Null);
             Assert.That(user.Id, Is.EqualTo(userByLogin.Id));
-        });
+        }
 
         var login2 = new UserLoginInfo("provider2", "providerKey2", "displayName2");
         Assert.DoesNotThrowAsync(() => _store.AddLoginAsync(user, login2, CancellationToken.None));
 
         var logins = await _store.GetLoginsAsync(user, CancellationToken.None);
         Assert.That(logins, Has.Count.EqualTo(2));
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(logins.First(l => l.LoginProvider == login.LoginProvider).ProviderKey, Is.EqualTo(login.ProviderKey));
             Assert.That(logins.First(l => l.LoginProvider == login.LoginProvider).ProviderDisplayName, Is.EqualTo(login.ProviderDisplayName));
             Assert.That(logins.First(l => l.LoginProvider == login2.LoginProvider).ProviderKey, Is.EqualTo(login2.ProviderKey));
             Assert.That(logins.First(l => l.LoginProvider == login2.LoginProvider).ProviderDisplayName, Is.EqualTo(login2.ProviderDisplayName));
-        });
+        }
 
         Assert.DoesNotThrowAsync(() => _store.RemoveLoginAsync(user, login.LoginProvider, login.ProviderKey, CancellationToken.None));
         userByLogin = await _store.FindByLoginAsync(login.LoginProvider, login.ProviderKey, CancellationToken.None);

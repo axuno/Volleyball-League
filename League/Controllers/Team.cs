@@ -49,10 +49,10 @@ public class Team : AbstractController
         var model = new TeamListModel(_timeZoneConverter)
         {
             Tournament = await _appDb.TournamentRepository.GetTournamentAsync(
-                new PredicateExpression(TournamentFields.Id == _tenantContext.TournamentContext.TeamTournamentId)
+                new(TournamentFields.Id == _tenantContext.TournamentContext.TeamTournamentId)
                 , cancellationToken),
             RoundsWithTeams = await _appDb.RoundRepository.GetRoundsWithTeamsAsync(
-                new PredicateExpression(RoundTeamFields.TournamentId == _tenantContext.TournamentContext.TeamTournamentId),
+                new(RoundTeamFields.TournamentId == _tenantContext.TournamentContext.TeamTournamentId),
                 cancellationToken)
         };
 
@@ -103,14 +103,14 @@ public class Team : AbstractController
         if (teamUserRoundInfos.Count == 0)
         {
             return View(Views.ViewNames.Team.MyTeamNotFound, await _appDb.TournamentRepository.GetTournamentAsync(
-                new PredicateExpression(TournamentFields.Id == _tenantContext.TournamentContext.TeamTournamentId)
+                new(TournamentFields.Id == _tenantContext.TournamentContext.TeamTournamentId)
                 , cancellationToken));
         }
 
         var model = new MyTeamShowModel(_timeZoneConverter)
         {
             Tournament = await _appDb.TournamentRepository.GetTournamentAsync(
-                new PredicateExpression(TournamentFields.Id == _tenantContext.TournamentContext.TeamTournamentId)
+                new(TournamentFields.Id == _tenantContext.TournamentContext.TeamTournamentId)
                 , cancellationToken),
             TeamUserRoundInfos = teamUserRoundInfos,
             TeamVenueRoundInfos = await _appDb.TeamRepository.GetTeamVenueRoundInfoAsync(
@@ -118,7 +118,7 @@ public class Team : AbstractController
                     .AddWithAnd(TeamVenueRoundFields.TeamId.In(userTeamIds)), cancellationToken),
             ActiveTeamId = id ?? teamUserRoundInfos.Max(tur => tur.TeamId),
             TeamPhotoStaticFile =
-                new TeamPhotoStaticFile(_webHostEnvironment, _tenantContext, new NullLogger<TeamPhotoStaticFile>())
+                new(_webHostEnvironment, _tenantContext, new NullLogger<TeamPhotoStaticFile>())
         };
         model.ActiveTeamId = model.TeamVenueRoundInfos.Max(tvr => tvr.TeamId);
 
@@ -133,7 +133,7 @@ public class Team : AbstractController
         var model = new TeamSingleModel(_timeZoneConverter)
         {
             Tournament = await _appDb.TournamentRepository.GetTournamentAsync(
-                new PredicateExpression(TournamentFields.Id == _tenantContext.TournamentContext.TeamTournamentId)
+                new(TournamentFields.Id == _tenantContext.TournamentContext.TeamTournamentId)
                 , cancellationToken),
             TeamVenueRoundInfo = (await _appDb.TeamRepository.GetTeamVenueRoundInfoAsync(
                     new PredicateExpression(TeamVenueRoundFields.TournamentId == _tenantContext.TournamentContext.TeamTournamentId &
@@ -160,7 +160,7 @@ public class Team : AbstractController
     {
         if (!ModelState.IsValid) return NotFound();
 
-        var team = await _appDb.TeamRepository.GetTeamEntityAsync(new PredicateExpression(TeamFields.Id == teamId), cancellationToken);
+        var team = await _appDb.TeamRepository.GetTeamEntityAsync(new(TeamFields.Id == teamId), cancellationToken);
         if (team == null)
         {
             return NotFound();
@@ -191,7 +191,7 @@ public class Team : AbstractController
         TeamEntity? team = null;
         if (model.Team is { IsNew: false })
         {
-            team = await _appDb.TeamRepository.GetTeamEntityAsync(new PredicateExpression(TeamFields.Id == model.Team.Id), cancellationToken);
+            team = await _appDb.TeamRepository.GetTeamEntityAsync(new(TeamFields.Id == model.Team.Id), cancellationToken);
             if (team == null)
             {
                 return NotFound();
@@ -213,7 +213,7 @@ public class Team : AbstractController
                     team.TeamInRounds.Count, _tenantContext.TournamentContext.TeamTournamentId);
         }
 
-        team ??= new TeamEntity();
+        team ??= new();
 
         model.TeamEntity = team;
         model.Round = await GetRoundSelectorComponentModel(team, cancellationToken);
@@ -227,13 +227,13 @@ public class Team : AbstractController
         model.MapFormFieldsToEntity();
         ModelState.Clear();
 
-        if (!await model.ValidateAsync(new TeamValidator(model.TeamEntity, _tenantContext), _tenantContext.TournamentContext.TeamTournamentId, ModelState, cancellationToken))
+        if (!await model.ValidateAsync(new(model.TeamEntity, _tenantContext), _tenantContext.TournamentContext.TeamTournamentId, ModelState, cancellationToken))
         {
             return PartialView(Views.ViewNames.Team._EditTeamModalPartial, model);
         }
 
         var tournament = await _appDb.TournamentRepository.GetTournamentAsync(
-            new PredicateExpression(TournamentFields.Id == _tenantContext.TournamentContext.TeamTournamentId)
+            new(TournamentFields.Id == _tenantContext.TournamentContext.TeamTournamentId)
             , cancellationToken);
 
         // The team name for an active tournament won't be changed
@@ -249,13 +249,13 @@ public class Team : AbstractController
         {
             if (await _appDb.GenericRepository.SaveEntityAsync(model.TeamEntity, false, true, cancellationToken))
             {
-                TempData.Put<MyTeamMessageModel.MyTeamMessage>(nameof(MyTeamMessageModel.MyTeamMessage), new MyTeamMessageModel.MyTeamMessage { AlertType = SiteAlertTagHelper.AlertType.Success, MessageId = MyTeamMessageModel.MessageId.TeamDataSuccess });
+                TempData.Put<MyTeamMessageModel.MyTeamMessage>(nameof(MyTeamMessageModel.MyTeamMessage), new() { AlertType = SiteAlertTagHelper.AlertType.Success, MessageId = MyTeamMessageModel.MessageId.TeamDataSuccess });
                 return JsonResponseRedirect(TenantLink.Action(nameof(MyTeam), nameof(Team), new { id = team.Id}));
             }
         }
         catch (Exception e)
         {
-            TempData.Put<MyTeamMessageModel.MyTeamMessage>(nameof(MyTeamMessageModel.MyTeamMessage), new MyTeamMessageModel.MyTeamMessage { AlertType = SiteAlertTagHelper.AlertType.Danger, MessageId = MyTeamMessageModel.MessageId.TeamDataFailure});
+            TempData.Put<MyTeamMessageModel.MyTeamMessage>(nameof(MyTeamMessageModel.MyTeamMessage), new() { AlertType = SiteAlertTagHelper.AlertType.Danger, MessageId = MyTeamMessageModel.MessageId.TeamDataFailure});
             _logger.LogError(e, "Error saving team id '{TeamId}'", model.Team.IsNew ? "new" : model.Team.Id.ToString());
             return JsonResponseRedirect(TenantLink.Action(nameof(MyTeam), nameof(Team), new { id = team.Id }));
         }
@@ -270,7 +270,7 @@ public class Team : AbstractController
         if (!ModelState.IsValid) return NotFound();
 
         var teamEntity = await
-            _appDb.TeamRepository.GetTeamEntityAsync(new PredicateExpression(TeamFields.Id == tid),
+            _appDb.TeamRepository.GetTeamEntityAsync(new(TeamFields.Id == tid),
                 cancellationToken);
         if (teamEntity == null)
         {
@@ -286,7 +286,7 @@ public class Team : AbstractController
         if (!ModelState.IsValid) return NotFound();
 
         var teamEntity = await
-            _appDb.TeamRepository.GetTeamEntityAsync(new PredicateExpression(TeamFields.Id == tid),
+            _appDb.TeamRepository.GetTeamEntityAsync(new(TeamFields.Id == tid),
                 cancellationToken);
         if (teamEntity == null)
         {
@@ -321,12 +321,12 @@ public class Team : AbstractController
             new { ReturnUrl = TenantLink.Action(nameof(MyTeam), nameof(Team), new { id = default(long?) }) }));
 
         var teamEntity = await
-            _appDb.TeamRepository.GetTeamEntityAsync(new PredicateExpression(TeamFields.Id == model.TeamId),
+            _appDb.TeamRepository.GetTeamEntityAsync(new(TeamFields.Id == model.TeamId),
                 cancellationToken);
 
         if (teamEntity == null)
         {
-            TempData.Put<MyTeamMessageModel.MyTeamMessage>(nameof(MyTeamMessageModel.MyTeamMessage), new MyTeamMessageModel.MyTeamMessage { AlertType = SiteAlertTagHelper.AlertType.Danger, MessageId = MyTeamMessageModel.MessageId.TeamDataFailure});
+            TempData.Put<MyTeamMessageModel.MyTeamMessage>(nameof(MyTeamMessageModel.MyTeamMessage), new() { AlertType = SiteAlertTagHelper.AlertType.Danger, MessageId = MyTeamMessageModel.MessageId.TeamDataFailure});
             return JsonResponseRedirect(TenantLink.Action(nameof(MyTeam), nameof(Team), new { model.TeamId }));
         }
 
@@ -346,13 +346,13 @@ public class Team : AbstractController
             return PartialView(Views.ViewNames.Team._SelectVenueModalPartial, model);
         }
             
-        TempData.Put<MyTeamMessageModel.MyTeamMessage>(nameof(MyTeamMessageModel.MyTeamMessage), new MyTeamMessageModel.MyTeamMessage { AlertType = SiteAlertTagHelper.AlertType.Danger, MessageId = MyTeamMessageModel.MessageId.VenueSelectFailure });
+        TempData.Put<MyTeamMessageModel.MyTeamMessage>(nameof(MyTeamMessageModel.MyTeamMessage), new() { AlertType = SiteAlertTagHelper.AlertType.Danger, MessageId = MyTeamMessageModel.MessageId.VenueSelectFailure });
         try
         {
             teamEntity.VenueId = model.VenueId;
             if(await _appDb.GenericRepository.SaveEntityAsync(teamEntity, false, false, cancellationToken))
             {
-                TempData.Put<MyTeamMessageModel.MyTeamMessage>(nameof(MyTeamMessageModel.MyTeamMessage), new MyTeamMessageModel.MyTeamMessage { AlertType = SiteAlertTagHelper.AlertType.Success, MessageId = MyTeamMessageModel.MessageId.VenueSelectSuccess});
+                TempData.Put<MyTeamMessageModel.MyTeamMessage>(nameof(MyTeamMessageModel.MyTeamMessage), new() { AlertType = SiteAlertTagHelper.AlertType.Success, MessageId = MyTeamMessageModel.MessageId.VenueSelectSuccess});
             }
             else
             {
@@ -386,12 +386,12 @@ public class Team : AbstractController
                 new PredicateExpression(TeamInRoundFields.TeamId == team.Id &
                                         RoundFields.TournamentId == _tenantContext.TournamentContext.TeamTournamentId), cancellationToken))
             .FirstOrDefault();
-        return new RoundSelectorComponentModel
+        return new()
         {
             EnforceExplicitSelection = false,
             SelectedRoundId = tir?.RoundId,
             ShowSelector = await _appDb.MatchRepository.GetMatchCountAsync(
-                new PredicateExpression(
+                new(
                     RoundFields.TournamentId == _tenantContext.TournamentContext.TeamTournamentId),
                 cancellationToken) == 0,
             TournamentId = _tenantContext.TournamentContext.TeamTournamentId,

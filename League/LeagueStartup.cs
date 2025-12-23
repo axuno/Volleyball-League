@@ -108,15 +108,15 @@ public static class LeagueStartup
             .SetApplicationName(environment.ApplicationName)
             .SetDefaultKeyLifetime(TimeSpan.FromDays(360))
             .PersistKeysToFileSystem(
-                new DirectoryInfo(Path.Combine(environment.ContentRootPath, "DataProtectionKeys")))
-            .UseCryptographicAlgorithms(new AuthenticatedEncryptorConfiguration()
+                new(Path.Combine(environment.ContentRootPath, "DataProtectionKeys")))
+            .UseCryptographicAlgorithms(new()
             {
                 EncryptionAlgorithm = EncryptionAlgorithm.AES_256_CBC,
                 ValidationAlgorithm = ValidationAlgorithm.HMACSHA256
             });
 
         // register the multi purpose DataProtector
-        services.AddSingleton(typeof(League.DataProtection.DataProtector));
+        services.AddSingleton<DataProtection.DataProtector>();
 
         #endregion
 
@@ -133,8 +133,8 @@ public static class LeagueStartup
         services.AddSingleton<RegionInfo>(regionInfo);
 
         // The default culture of this app is "en". Supported cultures: en, de
-        CultureInfo.DefaultThreadCurrentCulture = new CultureInfo(configuration.GetSection("CultureInfo:Culture").Value ?? $"en-{regionInfo.TwoLetterISORegionName}");
-        CultureInfo.DefaultThreadCurrentUICulture = new CultureInfo(configuration.GetSection("CultureInfo:UiCulture").Value ?? $"en-{regionInfo.TwoLetterISORegionName}");
+        CultureInfo.DefaultThreadCurrentCulture = new(configuration.GetSection("CultureInfo:Culture").Value ?? $"en-{regionInfo.TwoLetterISORegionName}");
+        CultureInfo.DefaultThreadCurrentUICulture = new(configuration.GetSection("CultureInfo:UiCulture").Value ?? $"en-{regionInfo.TwoLetterISORegionName}");
 
         // DO NOT USE `options => options.ResourcesPath = "..."` because then resource files in other locations won't be recognized (e.g. resx in the same folder as the controller class)
         services.AddLocalization();
@@ -185,7 +185,7 @@ public static class LeagueStartup
             var actionContext = new ActionContext(
                 httpContextAccessor.HttpContext,
                 httpContextAccessor.HttpContext.GetRouteData(),
-                new ActionDescriptor());
+                new());
             var factory = sp.GetRequiredService<IUrlHelperFactory>();
             return factory.GetUrlHelper(actionContext);
         });
@@ -219,7 +219,7 @@ public static class LeagueStartup
             {
                 options.AppId = socialLogins.Facebook.AppId;
                 options.AppSecret = socialLogins.Facebook.AppSecret;
-                options.CallbackPath = new PathString("/signin-facebook"); // this path is used by the middleware only, no route necessary
+                options.CallbackPath = new("/signin-facebook"); // this path is used by the middleware only, no route necessary
                 // add the facebook picture url as an additional claim
                 options.ClaimActions.MapJsonKey("urn:facebook:picture", "picture", "picture.data.url");
                 options.SaveTokens = true;
@@ -243,7 +243,7 @@ public static class LeagueStartup
             {
                 options.ClientId = socialLogins.Google.ClientId;
                 options.ClientSecret = socialLogins.Google.ClientSecret;
-                options.CallbackPath = new PathString("/signin-google"); // this path is used by the middleware only, no route necessary
+                options.CallbackPath = new("/signin-google"); // this path is used by the middleware only, no route necessary
                 options.ClaimActions.MapJsonKey("urn:google:picture", "picture", "url"); ;
                 options.SaveTokens = true;
                 options.CorrelationCookie.Name = ".CorrAuth.League";
@@ -266,7 +266,7 @@ public static class LeagueStartup
             {
                 options.ClientId = socialLogins.Microsoft.ClientId;
                 options.ClientSecret = socialLogins.Microsoft.ClientSecret;
-                options.CallbackPath = new PathString("/signin-microsoft"); // this path is used by the middleware only, no route necessary
+                options.CallbackPath = new("/signin-microsoft"); // this path is used by the middleware only, no route necessary
                 options.SaveTokens = true;
                 options.CorrelationCookie.Name = ".CorrAuth.League";
                 options.Events.OnRemoteFailure = context =>
@@ -310,18 +310,28 @@ public static class LeagueStartup
 
         #region *** Authorization ***
 
-        services.AddAuthorization(options =>
-        {
+        services.AddAuthorizationBuilder()
             // Used on controller method level
-            options.AddPolicy(Authorization.PolicyName.MatchPolicy, policy => policy.RequireRole(Identity.Constants.RoleName.SystemManager, Identity.Constants.RoleName.TournamentManager, Identity.Constants.RoleName.TeamManager));
+            .AddPolicy(Authorization.PolicyName.MatchPolicy,
+                policy => policy.RequireRole(Identity.Constants.RoleName.SystemManager,
+                    Identity.Constants.RoleName.TournamentManager, Identity.Constants.RoleName.TeamManager))
             // Used on controller method level
-            options.AddPolicy(Authorization.PolicyName.OverruleResultPolicy, policy => policy.RequireRole(Identity.Constants.RoleName.SystemManager, Identity.Constants.RoleName.TournamentManager, Identity.Constants.RoleName.TeamManager));
+            .AddPolicy(Authorization.PolicyName.OverruleResultPolicy,
+                policy => policy.RequireRole(Identity.Constants.RoleName.SystemManager,
+                    Identity.Constants.RoleName.TournamentManager, Identity.Constants.RoleName.TeamManager))
             // Used in team views
-            options.AddPolicy(Authorization.PolicyName.SeeTeamContactsPolicy, policy => policy.RequireRole(Identity.Constants.RoleName.SystemManager, Identity.Constants.RoleName.TournamentManager, Identity.Constants.RoleName.TeamManager, Identity.Constants.RoleName.Player));
+            .AddPolicy(Authorization.PolicyName.SeeTeamContactsPolicy,
+                policy => policy.RequireRole(Identity.Constants.RoleName.SystemManager,
+                    Identity.Constants.RoleName.TournamentManager, Identity.Constants.RoleName.TeamManager,
+                    Identity.Constants.RoleName.Player))
             // Used for my team views
-            options.AddPolicy(Authorization.PolicyName.MyTeamPolicy, policy => policy.RequireRole(Identity.Constants.RoleName.SystemManager, Identity.Constants.RoleName.TournamentManager, Identity.Constants.RoleName.TeamManager, Identity.Constants.RoleName.Player));
-            options.AddPolicy(Authorization.PolicyName.MyTeamAdminPolicy, policy => policy.RequireRole(Identity.Constants.RoleName.SystemManager, Identity.Constants.RoleName.TournamentManager));
-        });
+            .AddPolicy(Authorization.PolicyName.MyTeamPolicy,
+                policy => policy.RequireRole(Identity.Constants.RoleName.SystemManager,
+                    Identity.Constants.RoleName.TournamentManager, Identity.Constants.RoleName.TeamManager,
+                    Identity.Constants.RoleName.Player))
+            .AddPolicy(Authorization.PolicyName.MyTeamAdminPolicy,
+                policy => policy.RequireRole(Identity.Constants.RoleName.SystemManager,
+                    Identity.Constants.RoleName.TournamentManager));
 
         // Handler for match date, venue and result authorization
         services.AddSingleton<IAuthorizationHandler, Authorization.MatchAuthorizationHandler>();
@@ -347,15 +357,17 @@ public static class LeagueStartup
 
         services.ConfigureApplicationCookie(options =>
         {
+            const string signInPath = "/account/sign-in";
+
             // Cookie settings
             options.Cookie.HttpOnly = true;
             options.Cookie.IsEssential = true;
             options.CookieManager = new LeagueCookieManager();
             options.Cookie.Name = ".Auth"; // will be set by LeagueCookieManager
             options.Cookie.Path = "/"; // may be set by LeagueCookieManager
-            options.LoginPath = new PathString("/account/sign-in");
-            options.LogoutPath = new PathString("/account/sign-in");
-            options.AccessDeniedPath = new PathString("/error/access-denied");
+            options.LoginPath = new(signInPath);
+            options.LogoutPath = new(signInPath);
+            options.AccessDeniedPath = new("/error/access-denied");
             options.Cookie.SameSite = Microsoft.AspNetCore.Http.SameSiteMode.Lax; // don't use Strict here
             options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
             options.ExpireTimeSpan = TimeSpan.FromDays(30);
@@ -397,15 +409,17 @@ public static class LeagueStartup
 
         services.ConfigureExternalCookie(options =>
         {
+            const string signInPath = "/account/sign-in";
+
             options.Cookie.HttpOnly = true;
             options.Cookie.IsEssential = true;
             // MUST use the default options.CookieManager: After callback from social login, tenant url segment will not be set,
             // because the CallbackPath from the provider will be sth. like "/signin-facebook" with cookie path to the same path.
             options.Cookie.Name = ".ExtAuth.League";
             options.Cookie.Path = "/";
-            options.LoginPath = new PathString("/account/sign-in");
-            options.LogoutPath = new PathString("/account/sign-in");
-            options.AccessDeniedPath = new PathString("/account/access-denied");
+            options.LoginPath = new(signInPath);
+            options.LogoutPath = new(signInPath);
+            options.AccessDeniedPath = new("/account/access-denied");
             options.Cookie.SameSite = Microsoft.AspNetCore.Http.SameSiteMode.Lax; // don't use Strict here
             options.ExpireTimeSpan = TimeSpan.FromDays(30);
             options.SlidingExpiration = true;
@@ -471,7 +485,7 @@ public static class LeagueStartup
         #region ** Phone number service **
 
         services.AddSingleton<TournamentManager.DI.PhoneNumberService>(sp =>
-            new PhoneNumberService(PhoneNumbers.PhoneNumberUtil.GetInstance()));
+            new(PhoneNumbers.PhoneNumberUtil.GetInstance()));
 
         #endregion
 
@@ -505,7 +519,7 @@ public static class LeagueStartup
 
             services.Configure<RequestLocalizationOptions>(options =>
             {
-                options.DefaultRequestCulture = new RequestCulture(CultureInfo.DefaultThreadCurrentCulture);
+                options.DefaultRequestCulture = new(CultureInfo.DefaultThreadCurrentCulture);
                 // Formatting numbers, dates, etc.
                 options.SupportedCultures = supportedCultures;
                 // UI strings that we have localized.
@@ -519,7 +533,7 @@ public static class LeagueStartup
                 var cookieProvider = options.RequestCultureProviders
                     .OfType<CookieRequestCultureProvider>()
                     .FirstOrDefault();
-                if (cookieProvider != null) cookieProvider.CookieName = ".PreferredLanguage";
+                cookieProvider?.CookieName = ".PreferredLanguage";
             });
         }
 
@@ -624,7 +638,7 @@ public static class LeagueStartup
         var jsNLogConfiguration =
             new JsnlogConfiguration
             {
-                loggers = [new Logger { name = "JsLogger" }]
+                loggers = [new() { name = "JsLogger" }]
             };
         app.UseJSNLog(loggerFactory, jsNLogConfiguration);
 
@@ -661,7 +675,7 @@ public static class LeagueStartup
             OnPrepareResponse = ctx =>
             {
                 var headers = ctx.Context.Response.GetTypedHeaders();
-                headers.CacheControl = new CacheControlHeaderValue
+                headers.CacheControl = new()
                 {
                     Public = true,
                     MaxAge = TimeSpan.FromHours(1)
@@ -678,7 +692,7 @@ public static class LeagueStartup
             OnPrepareResponse = ctx =>
             {
                 var headers = ctx.Context.Response.GetTypedHeaders();
-                headers.CacheControl = new CacheControlHeaderValue
+                headers.CacheControl = new()
                 {
                     Public = true,
                     MaxAge = TimeSpan.FromHours(1)

@@ -17,8 +17,7 @@ public class DateOnlyModelBinderProvider : IModelBinderProvider
     /// <inheritdoc/>
     public IModelBinder? GetBinder(ModelBinderProviderContext context)
     {
-        if (context == null)
-            throw new ArgumentNullException(nameof(context));
+        ArgumentNullException.ThrowIfNull(context);
 
         return context.Metadata.ModelType == typeof(DateOnly) || context.Metadata.ModelType == typeof(DateOnly?)
             ? new DateOnlyModelBinder(context.Services.GetRequiredService<ILoggerFactory>())

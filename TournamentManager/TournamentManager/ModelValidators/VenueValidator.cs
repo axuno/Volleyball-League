@@ -36,7 +36,7 @@ public class VenueValidator : AbstractValidator<VenueEntity, (GoogleGeo.GeoRespo
 
     private Fact<FactId> NotExistingGeoLocation()
     {
-        return new Fact<FactId>
+        return new()
         {
             Id = FactId.NotExistingGeoLocation,
             FieldNames = [nameof(Model.Name)],
@@ -68,7 +68,7 @@ public class VenueValidator : AbstractValidator<VenueEntity, (GoogleGeo.GeoRespo
 
     private Fact<FactId> LocationIsPrecise()
     {
-        return new Fact<FactId>
+        return new()
         {
             Id = FactId.LocationIsPrecise,
             FieldNames = [nameof(Model.PostalCode), nameof(Model.City), nameof(Model.Street)],
@@ -85,7 +85,7 @@ public class VenueValidator : AbstractValidator<VenueEntity, (GoogleGeo.GeoRespo
 
     private Fact<FactId> CanBeLocated()
     {
-        return new Fact<FactId>
+        return new()
         {
             Id = FactId.CanBeLocated,
             FieldNames = [nameof(Model.PostalCode), nameof(Model.City), nameof(Model.Street)],
@@ -102,7 +102,7 @@ public class VenueValidator : AbstractValidator<VenueEntity, (GoogleGeo.GeoRespo
 
     private Fact<FactId> AddressFieldsAreSet()
     {
-        return new Fact<FactId>
+        return new()
         {
             Id = FactId.AddressFieldsAreSet,
             FieldNames = [nameof(Model.PostalCode), nameof(Model.City), nameof(Model.Street)],
@@ -119,7 +119,7 @@ public class VenueValidator : AbstractValidator<VenueEntity, (GoogleGeo.GeoRespo
 
     private Fact<FactId> NameIsSet()
     {
-        return new Fact<FactId>
+        return new()
         {
             Id = FactId.NameIsSet,
             FieldNames = [nameof(Model.Name)],

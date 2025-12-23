@@ -212,7 +212,7 @@ public class Account : AbstractController
             return View(model);
         }
 
-        await SendCodeByEmail(new ApplicationUser {Email = model.Email}, EmailPurpose.PleaseConfirmEmail);
+        await SendCodeByEmail(new() {Email = model.Email}, EmailPurpose.PleaseConfirmEmail);
         return Redirect(TenantLink.Action(nameof(Message), nameof(Account), new { messageTypeText = MessageType.PleaseConfirmEmail })!);
     }
 
@@ -501,11 +501,9 @@ public class Account : AbstractController
         }
             
         var invalidCode = result.Errors.FirstOrDefault(e => e.Code == _signInManager.UserManager.ErrorDescriber.InvalidToken().Code);
-        if (invalidCode != null)
-            invalidCode.Description =
-                _localizer[
-                        "The password reset code is invalid. Please make sure to use the link we sent unchanged, and only once."]
-                    .Value;
+        invalidCode?.Description = _localizer[
+                "The password reset code is invalid. Please make sure to use the link we sent unchanged, and only once."]
+            .Value;
 
         AddErrors(result);
         return View();
@@ -585,7 +583,7 @@ public class Account : AbstractController
 
     private static ExternalSignConfirmationViewModel CreateExternalSignInConfirmationViewModelAsync(ClaimsPrincipal principal)
     {
-        return new ExternalSignConfirmationViewModel
+        return new()
         {
             Email = principal.FindFirstValue(ClaimTypes.Email) ?? string.Empty,
             Gender = string.Empty,
@@ -660,7 +658,7 @@ public class Account : AbstractController
         string code;
         var deadline = DateTime.UtcNow.Add(_dataProtectionTokenProviderOptions.Value.TokenLifespan);
         // round down to full hours
-        deadline = new DateTime(deadline.Year, deadline.Month, deadline.Day, deadline.Hour, 0, 0, DateTimeKind.Utc);
+        deadline = new(deadline.Year, deadline.Month, deadline.Day, deadline.Hour, 0, 0, DateTimeKind.Utc);
             
         switch (purpose)
         {

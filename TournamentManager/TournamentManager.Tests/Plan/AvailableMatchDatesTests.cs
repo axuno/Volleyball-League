@@ -21,19 +21,19 @@ internal class AvailableMatchDatesTests
         var tournamentLeg = tournament.Rounds.First().RoundLegs.First();
         var matches = new EntityCollection<MatchEntity>();
 
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(del: async () => await availableDates.GenerateNewAsync(tournament.Rounds[0], matches, CancellationToken.None), Throws.Nothing);
             Assert.That(availableDates.GetGeneratedAndManualAvailableMatchDateDays(tournamentLeg), Has.Count.EqualTo(87));
-            Assert.That(availableDates.GetGeneratedAndManualAvailableMatchDates(1, new DateTimePeriod(tournamentLeg.StartDateTime, tournamentLeg.EndDateTime), null), Has.Count.EqualTo(17));
-        });
+            Assert.That(availableDates.GetGeneratedAndManualAvailableMatchDates(1, new(tournamentLeg.StartDateTime, tournamentLeg.EndDateTime), null), Has.Count.EqualTo(17));
+        }
     }
 
     [Test]
     public async Task Clearing_Available_Dates_Should_Succeed()
     {
         var availableDates = GetAvailableMatchDatesInstance();
-        Assert.That(await availableDates.ClearAsync(MatchDateClearOption.All, CancellationToken.None), Is.EqualTo(0));
+        Assert.That(await availableDates.ClearAsync(MatchDateClearOption.All, CancellationToken.None), Is.Zero);
     }
 
     private static AvailableMatchDates GetAvailableMatchDatesInstance()

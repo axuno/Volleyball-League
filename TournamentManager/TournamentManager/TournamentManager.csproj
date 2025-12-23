@@ -8,7 +8,8 @@
     <Version>6.2.0</Version>
     <FileVersion>6.2.0</FileVersion>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <NoWarn>$(NoWarn);1591;NETSDK1206</NoWarn>
+    <!-- CA5362 looks like a bug in code analyzer -->
+    <NoWarn>$(NoWarn);1591;AD0001;CA5362</NoWarn>
     <Description>TournamentManager is the backend for Volleyball League.
 Volleyball League is an open source sports platform that brings everything necessary to organize and to run a league.
         </Description>

@@ -49,7 +49,7 @@ public class SiteContext : ISiteContext
 
     /// <inhertitdoc/>
     [YAXLib.Attributes.YAXComment("Recipients for generated emails.")]
-    public Collection<MailAddress> MailAddresses { get; set; } = new();
+    public Collection<MailAddress> MailAddresses { get; set; } = [];
 
     /// <summary>
     /// Notifications sent before and after matches.

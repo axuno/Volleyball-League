@@ -7,7 +7,7 @@ public class LeagueCookieManager : ICookieManager
 {
     #region Private Members
 
-    private readonly ICookieManager _concreteManager;
+    private readonly ChunkingCookieManager _concreteManager;
  
     #endregion
 

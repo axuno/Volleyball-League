@@ -42,8 +42,8 @@ public class FixtureValidator : AbstractValidator<MatchEntity, (ITenantContext T
     private async Task LoadTeamsInMatch(CancellationToken cancellationToken)
     {
         _teamsInMatch = await Data.TenantContext.DbContext.AppDb.TeamRepository.GetTeamEntitiesAsync(
-            new PredicateExpression(TeamFields.Id == Model.HomeTeamId |
-                                    TeamFields.Id == Model.GuestTeamId),
+            new(TeamFields.Id == Model.HomeTeamId |
+                TeamFields.Id == Model.GuestTeamId),
             cancellationToken).ConfigureAwait(false);
     }
 
@@ -63,7 +63,7 @@ public class FixtureValidator : AbstractValidator<MatchEntity, (ITenantContext T
 
     private Fact<FactId> PlannedVenueIsRegisteredVenueOfTeam()
     {
-        return new Fact<FactId>
+        return new()
         {
             Id = FactId.PlannedVenueIsRegisteredVenueOfTeam,
             FieldNames = [nameof(Model.VenueId)],
@@ -75,7 +75,7 @@ public class FixtureValidator : AbstractValidator<MatchEntity, (ITenantContext T
         async Task<FactResult> FactResult(CancellationToken cancellationToken)
         {
             await LoadTeamsInMatch(cancellationToken).ConfigureAwait(false);
-            return new FactResult
+            return new()
             {
                 Message = FixtureValidatorResource.ResourceManager.GetString(
                     nameof(FactId.PlannedVenueIsRegisteredVenueOfTeam)) ?? string.Empty,
@@ -87,7 +87,7 @@ public class FixtureValidator : AbstractValidator<MatchEntity, (ITenantContext T
 
     private Fact<FactId> PlannedVenueNotOccupiedWithOtherMatch()
     {
-        return new Fact<FactId>
+        return new()
         {
             Id = FactId.PlannedVenueNotOccupiedWithOtherMatch,
             FieldNames = [nameof(Model.VenueId)],
@@ -99,13 +99,13 @@ public class FixtureValidator : AbstractValidator<MatchEntity, (ITenantContext T
         {
             var otherMatch = Model.VenueId.HasValue
                 ? (await Data.TenantContext.DbContext.AppDb.VenueRepository.GetOccupyingMatchesAsync(
-                        Model.VenueId.Value, new DateTimePeriod(Model.PlannedStart, Model.PlannedEnd),
+                        Model.VenueId.Value, new(Model.PlannedStart, Model.PlannedEnd),
                         Data.TenantContext.TournamentContext.MatchPlanTournamentId, cancellationToken)
                     .ConfigureAwait(false))
                 .Find(m => m.Id != Model.Id)
                 : null;
 
-            return new FactResult
+            return new()
             {
                 Message = string.Format(FixtureValidatorResource.ResourceManager.GetString(
                     nameof(FactId.PlannedVenueNotOccupiedWithOtherMatch)) ?? string.Empty, otherMatch?.HomeTeamNameForRound, otherMatch?.GuestTeamNameForRound),
@@ -116,14 +116,14 @@ public class FixtureValidator : AbstractValidator<MatchEntity, (ITenantContext T
 
     private Fact<FactId> PlannedVenueIsSet()
     {
-        return new Fact<FactId>
+        return new()
         {
             Id = FactId.PlannedVenueIsSet,
             FieldNames = [nameof(Model.VenueId)],
             Enabled = Data.TenantContext.TournamentContext.FixtureRuleSet.PlannedVenueMustBeSet,
             Type = FactType.Critical,
             CheckAsync = async (cancellationToken) => 
-                new FactResult
+                new()
                 {
                     Message = FixtureValidatorResource.ResourceManager.GetString(nameof(FactId.PlannedVenueIsSet)) ?? string.Empty,
                     Success = Model.VenueId.HasValue
@@ -134,7 +134,7 @@ public class FixtureValidator : AbstractValidator<MatchEntity, (ITenantContext T
 
     private Fact<FactId> PlannedStartWeekdayIsTeamWeekday()
     {
-        return new Fact<FactId>
+        return new()
         {
             Id = FactId.PlannedStartWeekdayIsTeamWeekday,
             FieldNames = [nameof(Model.PlannedStart)],
@@ -166,7 +166,7 @@ public class FixtureValidator : AbstractValidator<MatchEntity, (ITenantContext T
                 homeTeam.MatchDayOfWeek
                 && Model.VenueId == homeTeam.VenueId)
             {
-                return new FactResult
+                return new()
                 {
                     Message = string.Format(FixtureValidatorResource.ResourceManager.GetString(
                             nameof(FactId.PlannedStartWeekdayIsTeamWeekday)) ?? string.Empty,
@@ -179,7 +179,7 @@ public class FixtureValidator : AbstractValidator<MatchEntity, (ITenantContext T
                 guestTeam.MatchDayOfWeek
                 && Model.VenueId == guestTeam.VenueId)
             {
-                return new FactResult
+                return new()
                 {
                     Message = string.Format(FixtureValidatorResource.ResourceManager.GetString(
                             nameof(FactId.PlannedStartWeekdayIsTeamWeekday)) ?? string.Empty,
@@ -194,7 +194,7 @@ public class FixtureValidator : AbstractValidator<MatchEntity, (ITenantContext T
 
     private Fact<FactId> PlannedStartTeamsAreNotBusy()
     {
-        return new Fact<FactId>
+        return new()
         {
             Id = FactId.PlannedStartTeamsAreNotBusy,
             FieldNames = [nameof(Model.PlannedStart)],
@@ -212,7 +212,7 @@ public class FixtureValidator : AbstractValidator<MatchEntity, (ITenantContext T
                 : [];
 
             return busyTeams.Length > 0
-                ? new FactResult
+                ? new()
                 {
                     Message = string.Format(FixtureValidatorResource.ResourceManager.GetString(
                             nameof(FactId.PlannedStartTeamsAreNotBusy)) ?? string.Empty,
@@ -227,7 +227,7 @@ public class FixtureValidator : AbstractValidator<MatchEntity, (ITenantContext T
 
     private Fact<FactId> PlannedStartWithinDesiredTimeRange()
     {
-        return new Fact<FactId>
+        return new()
         {
             Id = FactId.PlannedStartWithinDesiredTimeRange,
             FieldNames = [nameof(Model.PlannedStart)],
@@ -247,7 +247,7 @@ public class FixtureValidator : AbstractValidator<MatchEntity, (ITenantContext T
 
     private Fact<FactId> PlannedStartWithinRoundLegs()
     {
-        return new Fact<FactId>
+        return new()
         {
             Id = FactId.PlannedStartWithinRoundLegs,
             FieldNames = [nameof(Model.PlannedStart)],
@@ -298,7 +298,7 @@ public class FixtureValidator : AbstractValidator<MatchEntity, (ITenantContext T
                 displayPeriods = displayPeriods[..^joinWith.Length];
             }
 
-            return new FactResult
+            return new()
             {
                 Message = string.Format(FixtureValidatorResource.ResourceManager.GetString(
                     nameof(FactId.PlannedStartWithinRoundLegs)) ?? string.Empty, round.Description, displayPeriods),
@@ -309,7 +309,7 @@ public class FixtureValidator : AbstractValidator<MatchEntity, (ITenantContext T
 
     private Fact<FactId> PlannedStartIsFutureDate()
     {
-        return new Fact<FactId>
+        return new()
         {
             Id = FactId.PlannedStartIsFutureDate,
             FieldNames = [nameof(Model.PlannedStart)],
@@ -326,7 +326,7 @@ public class FixtureValidator : AbstractValidator<MatchEntity, (ITenantContext T
 
     private Fact<FactId> PlannedStartNotExcluded()
     {
-        return new Fact<FactId>
+        return new()
         {
             Id = FactId.PlannedStartNotExcluded,
             FieldNames = [nameof(Model.PlannedStart)],
@@ -351,7 +351,7 @@ public class FixtureValidator : AbstractValidator<MatchEntity, (ITenantContext T
                         
             var zonedPlannedStart = Data.TimeZoneConverter.ToZonedTime(Model.PlannedStart)?.DateTimeOffset.DateTime;
 
-            return new FactResult
+            return new()
             {
                 Message = string.Format(FixtureValidatorResource.ResourceManager.GetString(
                         nameof(FactId.PlannedStartNotExcluded)) ?? string.Empty,
@@ -366,7 +366,7 @@ public class FixtureValidator : AbstractValidator<MatchEntity, (ITenantContext T
 
     private Fact<FactId> PlannedStartIsSet()
     {
-        return new Fact<FactId>
+        return new()
         {
             Id = FactId.PlannedStartIsSet,
             FieldNames = [nameof(Model.PlannedStart)],

@@ -10,10 +10,10 @@ public class ValidatorTests
     {
         public SimplisticValidator(string m, long l) : base(m, l)
         {
-            Facts.Add(new Fact<int>
+            Facts.Add(new()
             {
                 Id = 1,
-                FieldNames = new []{ m + 1 },
+                FieldNames = [m + 1],
                 Type = FactType.Critical,
                 Enabled = true,
                 CheckAsync = (cancellationToken) => Task.FromResult(
@@ -25,10 +25,10 @@ public class ValidatorTests
 
             });
 
-            Facts.Add(new Fact<int>
+            Facts.Add(new()
             {
                 Id = 2,
-                FieldNames = new[] { m + 2 },
+                FieldNames = [m + 2],
                 Type = FactType.Error,
                 Enabled = true,
                 CheckAsync = (cancellationToken) => Task.FromResult(
@@ -40,10 +40,10 @@ public class ValidatorTests
 
             });
 
-            Facts.Add(new Fact<int>
+            Facts.Add(new()
             {
                 Id = 3,
-                FieldNames = new[] { m + 3 },
+                FieldNames = [m + 3],
                 Type = FactType.Warning,
                 Enabled = false,
                 CheckAsync = (cancellationToken) => Task.FromResult(
@@ -76,11 +76,11 @@ public class ValidatorTests
         var fact = sv.Facts.First();
         var oldType = fact.Type;
         fact.Type = oldType == FactType.Error ? FactType.Warning : FactType.Error;
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(fact.Type, Is.Not.EqualTo(oldType));
             Assert.That(fact.FieldNames.Count(), Is.EqualTo(1));
-        });
+        }
     }
 
     [Test]
@@ -121,13 +121,13 @@ public class ValidatorTests
         Assert.That(result, Has.Count.EqualTo(1));
 
         var firstResult = result[0];
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(firstResult.Type, Is.EqualTo(FactType.Critical));
-            Assert.That(firstResult.Success, Is.EqualTo(false));
+            Assert.That(firstResult.Success, Is.False);
             Assert.That(result.Count != sv.Facts.Count && firstResult.Message == "error " + sv.Model &&
                           firstResult.Enabled && firstResult.Id == 1 && firstResult.IsChecked, Is.True);
-        });
+        }
     }
 
     [Test]
@@ -139,13 +139,13 @@ public class ValidatorTests
         Assert.That(result, Has.Count.EqualTo(1));
 
         var firstResult = result[0];
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(firstResult.Type, Is.EqualTo(FactType.Error));
-            Assert.That(firstResult.Success, Is.EqualTo(false));
+            Assert.That(firstResult.Success, Is.False);
             Assert.That(result.Count != sv.Facts.Count && firstResult.Message == "error " + sv.Model &&
-                          firstResult.Enabled && firstResult.Id == 2 && firstResult.IsChecked, Is.True);
-        });
+                        firstResult is { Enabled: true, Id: 2, IsChecked: true }, Is.True);
+        }
     }
 
     [Test]
@@ -156,14 +156,14 @@ public class ValidatorTests
         var result = sv.CheckAsync(CancellationToken.None).Result;
         Assert.That(result, Has.Count.EqualTo(sv.Facts.Count));
 
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(result.Count(f => !f.Success && f.Type == FactType.Warning), Is.EqualTo(1));
             Assert.That(result.Count(f => f.Type == FactType.Critical), Is.EqualTo(1));
             Assert.That(result.Count(f => f.Type == FactType.Error), Is.EqualTo(1));
 
             Assert.That(sv.GetFailedFacts(), Has.Count.EqualTo(1));
-        });
+        }
     }
 
     [Test]

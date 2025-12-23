@@ -108,8 +108,8 @@ public partial class Location
                 return null;
 
             if (altitude != null)
-                return new Location(new Latitude(latitude), new Longitude(longitude), altitude.Value);
-            return new Location(new Latitude(latitude), new Longitude(longitude));
+                return new(new(latitude), new(longitude), altitude.Value);
+            return new(new(latitude), new(longitude));
         }
 
         private static double MakeSameSign(double source, double value)

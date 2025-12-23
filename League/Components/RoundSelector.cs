@@ -30,7 +30,7 @@ public class RoundSelector : ViewComponent
         try
         {
             model.RoundWithTypeList =
-                (await _appDb.RoundRepository.GetRoundsWithTypeAsync(new PredicateExpression(RoundFields.TournamentId == model.TournamentId), CancellationToken.None)).OrderBy(l => l.RoundType.Name).ThenBy(l => l.Name).ToList();
+                (await _appDb.RoundRepository.GetRoundsWithTypeAsync(new(RoundFields.TournamentId == model.TournamentId), CancellationToken.None)).OrderBy(l => l.RoundType.Name).ThenBy(l => l.Name).ToList();
 
             return model;
         }

@@ -25,5 +25,5 @@ public class PersonalDetailsViewModel
     [Display(Name = "Nickname")]
     public string? Nickname { get; set; }
 
-    public static char[] Genders => new[] {'u', 'f', 'm'};
+    public static char[] Genders => ['u', 'f', 'm'];
 }

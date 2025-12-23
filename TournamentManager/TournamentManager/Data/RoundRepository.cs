@@ -97,7 +97,7 @@ public class RoundRepository
 
     public virtual async Task<EntityCollection<RoundEntity>> GetRoundsOfTeamAsync(long? teamId, CancellationToken cancellationToken)
     {
-        if (!teamId.HasValue) return new EntityCollection<RoundEntity>();
+        if (!teamId.HasValue) return [];
 
         using var da = _dbContext.GetNewAdapter();
         var rounds = await (from tir in new LinqMetaData(da).TeamInRound
@@ -105,7 +105,7 @@ public class RoundRepository
             orderby tir.RoundId
             select tir.Round).ToListAsync(cancellationToken);
 
-        return new EntityCollection<RoundEntity>(rounds);
+        return new(rounds);
     }
  
     public virtual async Task<List<RoundTeamRow>> GetRoundsWithTeamsAsync(PredicateExpression filter, CancellationToken cancellationToken)

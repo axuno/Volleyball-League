@@ -24,7 +24,7 @@ Localizations for English and German are included. The library is in operation o
         <SatelliteResourceLanguages>en;de</SatelliteResourceLanguages>
         <ImplicitUsings>enable</ImplicitUsings>
         <!-- AD0001 warning comes from depreciated Microsoft.AspNetCore.Mvc.Analyzers (transitive reference) -->
-    <NoWarn>$(NoWarn);AD0001;NETSDK1206</NoWarn>
+        <NoWarn>$(NoWarn);AD0001</NoWarn>
     </PropertyGroup>
     <PropertyGroup>
         <AddRazorSupportForMvc>true</AddRazorSupportForMvc>
@@ -91,6 +91,11 @@ Localizations for English and German are included. The library is in operation o
     </ItemGroup>
     <ItemGroup>
         <DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="2.0.3" />
+    </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="10.0.101">
+            <PrivateAssets>all</PrivateAssets>
+        </PackageReference>
     </ItemGroup>
     <ItemGroup>
         <ProjectReference Include="..\Axuno.BackgroundTask\Axuno.BackgroundTask.csproj" />

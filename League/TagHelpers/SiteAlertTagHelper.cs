@@ -61,7 +61,7 @@ public class SiteAlertTagHelper : TagHelper
 
         set
         {
-            if ((uint) value > Enum.GetNames(typeof(AlertType)).Length - 1)
+            if ((uint) value > Enum.GetNames<AlertType>().Length - 1)
             {
                 throw new InvalidOperationException(@$"Undefined {nameof(AlertType)} value");
             }

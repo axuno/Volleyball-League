@@ -15,8 +15,8 @@ public class Calendar
     {
         // Don't use this: Organizer = new Organizer() { CommonName = "TournamentManager", Value = new Uri("mailto:noreply@tournamentmanager")};
 
-        FirstAlarm = new TimeSpan(-7, 0, 0, 0, 0);
-        SecondAlarm = new TimeSpan(-1, 0, 0, 0, 0);
+        FirstAlarm = new(-7, 0, 0, 0, 0);
+        SecondAlarm = new(-1, 0, 0, 0, 0);
     }
 
     /// <summary>
@@ -130,10 +130,10 @@ public class Calendar
                 match.VenueLongitude.Value.ToString(System.Globalization.CultureInfo.InvariantCulture));
         evt.Description += "\n" + DescriptionFooter;
         evt.Sequence = (int) match.ChangeSerial;
-        evt.Start = new CalDateTime(value: match.PlannedStart.Value, tzId);
-        evt.End = new CalDateTime(value: match.PlannedEnd.Value, tzId);
-        evt.LastModified = new CalDateTime(match.ModifiedOn, "UTC");
-        evt.DtStamp = new CalDateTime(DateTime.UtcNow);
+        evt.Start = new(value: match.PlannedStart.Value, tzId);
+        evt.End = new(value: match.PlannedEnd.Value, tzId);
+        evt.LastModified = new(match.ModifiedOn, "UTC");
+        evt.DtStamp = new(DateTime.UtcNow);
 
         evt.Uid = string.Format(UidFormat, match.Id);
         evt.Class = eventClass;
@@ -144,15 +144,15 @@ public class Calendar
 
         if (WithAlarms)
         {
-            evt.Alarms.Add(new Alarm
+            evt.Alarms.Add(new()
             {
-                Trigger = new Trigger { Duration = Duration.FromTimeSpanExact(FirstAlarm) },
+                Trigger = new() { Duration = Duration.FromTimeSpanExact(FirstAlarm) },
                 Action = AlarmAction.Display,
                 Summary = evt.Summary
             });
-            evt.Alarms.Add(new Alarm
+            evt.Alarms.Add(new()
             {
-                Trigger = new Trigger { Duration = Duration.FromTimeSpanExact(SecondAlarm) },
+                Trigger = new() { Duration = Duration.FromTimeSpanExact(SecondAlarm) },
                 Action = AlarmAction.Display,
                 Summary = evt.Summary
             });

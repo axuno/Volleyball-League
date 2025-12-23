@@ -12,7 +12,7 @@ namespace League.Models.MatchViewModels;
 
 public class EnterResultViewModel
 {
-    private readonly IStringLocalizer<EnterResultViewModel> _localizer;
+    private readonly StringLocalizer<EnterResultViewModel> _localizer;
     private readonly int _maxNumberOfSets;
 
     public EnterResultViewModel()
@@ -27,7 +27,7 @@ public class EnterResultViewModel
         Tournament = tournament ?? throw new ArgumentNullException(nameof(tournament));
         Round = round ?? throw new ArgumentNullException(nameof(round));
         Match = match ?? throw new ArgumentNullException(nameof(match));
-        Opponent = new Opponent(
+        Opponent = new(
             teamInRound.FirstOrDefault(o => o.TeamId == match.HomeTeamId)?.TeamNameForRound ?? throw new ArgumentNullException(nameof(teamInRound)),
             teamInRound.FirstOrDefault(o => o.TeamId == match.GuestTeamId)?.TeamNameForRound ?? throw new ArgumentNullException(nameof(teamInRound))); ;
         TimeZoneConverter = timeZoneConverter ?? throw new ArgumentNullException(nameof(timeZoneConverter));
@@ -42,7 +42,7 @@ public class EnterResultViewModel
         var options = Microsoft.Extensions.Options.Options.Create(new LocalizationOptions());
         var factory = new ResourceManagerStringLocalizerFactory(options, Microsoft.Extensions.Logging.Abstractions.NullLoggerFactory.Instance);
         // Note: The resource is also used by System.ComponentModel.DataAnnotations
-        return new StringLocalizer<EnterResultViewModel>(factory);
+        return new(factory);
     }
 
     public void MapEntityToFormFields()
@@ -67,15 +67,15 @@ public class EnterResultViewModel
         // Add sets from storage to form fields
         foreach (var set in Match.Sets)
         {
-            BallPoints.Add(new PointResult(set.HomeBallPoints, set.GuestBallPoints));
-            SetPoints.Add(new PointResult(set.HomeSetPoints, set.GuestSetPoints));
+            BallPoints.Add(new(set.HomeBallPoints, set.GuestBallPoints));
+            SetPoints.Add(new(set.HomeSetPoints, set.GuestSetPoints));
         }
 
         // Add empty ball/set points to form fields
         while (BallPoints.Count < _maxNumberOfSets)
         {
-            BallPoints.Add(new PointResult(default, default(int?)));
-            SetPoints.Add(new PointResult(default, default(int?)));
+            BallPoints.Add(new(default, default(int?)));
+            SetPoints.Add(new(default, default(int?)));
         }
 
         HomePoints = Match.HomePoints;
@@ -153,7 +153,7 @@ public class EnterResultViewModel
     [MaxLength(2000)]
     public string? Remarks { get; set; }
 
-    public List<PointResult> BallPoints { get; set; } = new();
+    public List<PointResult> BallPoints { get; set; } = [];
 
     #region * Overruling *
 
@@ -166,7 +166,7 @@ public class EnterResultViewModel
     /// <summary>
     /// Show, form fields if <see cref="IsOverruling"/> is <c>true</c>.
     /// </summary>
-    public List<PointResult> SetPoints { get; set; } = new();
+    public List<PointResult> SetPoints { get; set; } = [];
 
     /// <summary>
     /// Show field for home match points, if <see cref="IsOverruling"/> is <c>true</c>.

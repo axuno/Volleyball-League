@@ -68,7 +68,7 @@ public class SiteAuthorizeTagHelper : TagHelper, IAuthorizeData
     ///<inheritdoc />
     public override async Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
     {
-        var policy = await AuthorizationPolicy.CombineAsync(_policyProvider, new[] { this });
+        var policy = await AuthorizationPolicy.CombineAsync(_policyProvider, [this]);
         var authenticateResult = await _policyEvaluator.AuthenticateAsync(policy!, _httpContextAccessor.HttpContext!);
         output.Attributes.RemoveAll(TagHelperAttributeName);  // remove tag helper's attribute
 

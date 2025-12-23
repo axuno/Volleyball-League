@@ -9,15 +9,13 @@ public sealed class Longitude : Angle
 {
     /// <summary>Initializes a new instance of the Longitude class.</summary>
     /// <param name="angle">The angle of the longitude.</param>
-    /// <exception cref="ArgumentNullException">angle is null.</exception>
     /// <exception cref="ArgumentOutOfRangeException">
     /// angle is greater than 180 degrees or less than -180 degrees.
     /// </exception>
-    public Longitude(Angle angle)
+    public Longitude(Angle? angle)
         : this((angle ?? new Angle(0)).Radians) // Prevent null reference access, we'll validate later
     {
-        if (angle == null) throw new ArgumentNullException(nameof(angle));
-        ValidateRange("angle", angle.Radians, -Math.PI, Math.PI);
+        ValidateRange("angle", Radians, -Math.PI, Math.PI);
     }
 
     private Longitude(double radians)
@@ -43,7 +41,7 @@ public sealed class Longitude : Angle
     public static new Longitude FromDegrees(double degrees)
     {
         ValidateRange("degrees", degrees, -180, 180);
-        return new Longitude(Angle.FromDegrees(degrees).Radians);
+        return new(Angle.FromDegrees(degrees).Radians);
     }
 
     /// <summary>
@@ -61,7 +59,7 @@ public sealed class Longitude : Angle
         var angle = Angle.FromDegrees(degrees, minutes);
         ValidateRange("angle", angle.TotalDegrees, -180, 180);
 
-        return new Longitude(angle.Radians);
+        return new(angle.Radians);
     }
 
     /// <summary>
@@ -80,7 +78,7 @@ public sealed class Longitude : Angle
         var angle = Angle.FromDegrees(degrees, minutes, seconds);
         ValidateRange("angle", angle.TotalDegrees, -180, 180);
 
-        return new Longitude(angle.Radians);
+        return new(angle.Radians);
     }
 
     /// <summary>Creates a new Longitude from an amount in radians.</summary>
@@ -92,7 +90,7 @@ public sealed class Longitude : Angle
     public static new Longitude FromRadians(double radians)
     {
         ValidateRange(nameof(radians), radians, -Math.PI, Math.PI);
-        return new Longitude(radians);
+        return new(radians);
     }
 
     /// <summary>

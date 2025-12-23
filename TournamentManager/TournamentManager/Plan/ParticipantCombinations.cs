@@ -13,7 +13,7 @@ internal class ParticipantCombinations<TP, TR> : Collection<ParticipantCombinati
     /// The <see cref="DateTimePeriod"/>s per turn.
     /// This is used by <see cref="MatchScheduler"/> to set the desired <see cref="DateTimePeriod"/> per turn.
     /// </summary>
-    public Dictionary<int, DateTimePeriod?> TurnDateTimePeriods { get; } = new();
+    public Dictionary<int, DateTimePeriod?> TurnDateTimePeriods { get; } = [];
 
     /// <summary>
     /// Gets the list of unique turns of the <see cref="ParticipantCombination{TP,TR}"/> collection.

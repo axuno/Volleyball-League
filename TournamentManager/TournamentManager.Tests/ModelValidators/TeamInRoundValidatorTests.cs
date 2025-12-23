@@ -30,7 +30,8 @@ public class TeamInRoundValidatorTests
             {
                 var tournamentId = (long)((FieldCompareValuePredicate)filter[0].Contents).Value;
 
-                return Task.FromResult(new List<RoundEntity>(new []{ new RoundEntity{Id = 1, Name = "Round 1", TournamentId = tournamentId }, new RoundEntity { Id = 2, Name = "Round 2", TournamentId = tournamentId } }));
+                return Task.FromResult(new List<RoundEntity>([new() {Id = 1, Name = "Round 1", TournamentId = tournamentId }, new() { Id = 2, Name = "Round 2", TournamentId = tournamentId }
+                ]));
             });
         appDbMock.Setup(a => a.RoundRepository).Returns(roundsRepoMock.Object);
 
@@ -60,9 +61,9 @@ public class TeamInRoundValidatorTests
     [TestCase(2, 4, false)] // RoundId 4 does not belong to any tournament
     public async Task TeamInRound_RoundId_Should_Belong_To_Tournament(long teamTournamentId, long teamInRoundRoundId, bool expected)
     {
-        var tournament = await _appDb.TournamentRepository.GetTournamentAsync(new PredicateExpression(TournamentFields.Id == teamTournamentId), CancellationToken.None);
-        var rounds = await _appDb.RoundRepository.GetRoundsWithTypeAsync(
-            new PredicateExpression(RoundFields.TournamentId == teamTournamentId), CancellationToken.None);
+        var tournament = await _appDb.TournamentRepository.GetTournamentAsync(new(TournamentFields.Id == teamTournamentId), CancellationToken.None);
+        _ = await _appDb.RoundRepository.GetRoundsWithTypeAsync(
+            new(RoundFields.TournamentId == teamTournamentId), CancellationToken.None);
 
         var team = new TeamInRoundEntity {TeamId = 1, RoundId = teamInRoundRoundId };
 
@@ -70,12 +71,12 @@ public class TeamInRoundValidatorTests
         var tv = new TeamInRoundValidator(team, (_tenantContext, teamTournamentId));
 
         var factResult = await tv.CheckAsync(TeamInRoundValidator.FactId.RoundBelongsToTournament, CancellationToken.None);
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(factResult.Enabled, Is.True);
             Assert.That(factResult.Success, Is.EqualTo(expected));
             if (!factResult.Success) Assert.That( factResult.Message, Does.Contain(tournament!.Description));
             Assert.That(factResult.Exception, Is.Null);
-        });
+        }
     }
 }

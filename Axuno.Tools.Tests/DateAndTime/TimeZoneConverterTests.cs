@@ -46,7 +46,7 @@ public class TimeZoneConverterTests
         var convertedDateTime = GetTimeZoneConverter("de-DE").ToZonedTime(utcDateTime)!;
 
         // Assert
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(convertedDateTime.DateTimeOffset.DateTime, Is.EqualTo(expectedDateTime));
             Assert.That(convertedDateTime.TimeZoneId, Is.EqualTo("Europe/Berlin"));
@@ -59,7 +59,7 @@ public class TimeZoneConverterTests
             Assert.That(convertedDateTime.IsDaylightSavingTime, Is.False);
             Assert.That(convertedDateTime.DateTimeOffset.Offset, Is.EqualTo(new TimeSpan(0, 1, 0, 0)));
             Assert.That(convertedDateTime.BaseUtcOffset, Is.EqualTo(new TimeSpan(0, 1, 0, 0)));
-        });
+        }
     }
 
     [Test]
@@ -73,7 +73,7 @@ public class TimeZoneConverterTests
         var convertedDateTime = GetTimeZoneConverter("de-DE").ToZonedTime(utcDateTime)!;
 
         // Assert
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(convertedDateTime.DateTimeOffset.DateTime, Is.EqualTo(expectedDateTime));
             Assert.That(convertedDateTime.Name, Is.EqualTo("Mitteleuropäische Sommerzeit"));
@@ -81,7 +81,7 @@ public class TimeZoneConverterTests
             Assert.That(convertedDateTime.IsDaylightSavingTime, Is.True);
             Assert.That(convertedDateTime.DateTimeOffset.Offset, Is.EqualTo(new TimeSpan(0, 2, 0, 0)));
             Assert.That(convertedDateTime.BaseUtcOffset, Is.EqualTo(new TimeSpan(0, 1, 0, 0)));
-        });
+        }
     }
 
     [Test]

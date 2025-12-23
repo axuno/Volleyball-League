@@ -104,7 +104,8 @@ public static class SetEntityListExtensions
             if(ballPoint.Home is null || ballPoint.Guest is null)
                 continue;
 
-            setList.Add(new SetEntity {
+            setList.Add(new()
+            {
                 MatchId = matchId,
                 SequenceNo = ++sequenceNo,
                 HomeBallPoints = ballPoint.Home.Value,
@@ -128,13 +129,14 @@ public static class SetEntityListExtensions
         for (var index = 0; index < ballPoints.Count; index++)
         {
             var ballPoint = ballPoints[index];
-            var setPoint = index < setPoints.Count ? setPoints[index] : new PointResult();
+            var setPoint = index < setPoints.Count ? setPoints[index] : new();
             // This should not happen after validation
             if (ballPoint.Home is null || ballPoint.Guest is null ||
                 setPoint.Home is null || setPoint.Guest is null)
                 continue;
 
-            setList.Add(new SetEntity {
+            setList.Add(new()
+            {
                 MatchId = matchId,
                 SequenceNo = ++sequenceNo,
                 HomeBallPoints = ballPoint.Home.Value,

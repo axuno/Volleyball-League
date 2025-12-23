@@ -24,7 +24,7 @@ public class BackgroundQueue : IBackgroundQueue
         _onException = config.Value.OnException;
         _logger = logger;
         // https://docs.microsoft.com/en-us/dotnet/api/system.threading.semaphoreslim?view=netstandard-2.0
-        _signal = new SemaphoreSlim(0);
+        _signal = new(0);
     }
 
     /// <summary>

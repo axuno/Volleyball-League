@@ -36,14 +36,15 @@ internal partial class RankComparer
             c) The difference of ball points (won minus lost)
             d) The direct comparison of the matches of teams which are equal in the difference of ball points won and lost.
             """;
-        Comparisons = new List<ComparisonDelegate<Rank, Rank, int>> {
+        Comparisons =
+        [
             SortDownTeamsWithNoMatchesPlayed,
             SortDownMatchesWithNoPoints,
             MatchPointsDifferenceDecides, // a)
             SetPointsDifferenceDecides, // b)
             BallPointsDifferenceDecides, // c)
-            DirectComparisonOfTeamsDecides // d)
-        };
+            DirectComparisonOfTeamsDecides
+        ];
     }
 
     /// <summary>
@@ -63,7 +64,8 @@ internal partial class RankComparer
             e) The number of ball points won
             f) The direct comparison of the matches of teams which are equal in "ball points won".
             """;
-        Comparisons = new List<ComparisonDelegate<Rank, Rank, int>> {
+        Comparisons =
+        [
             SortDownTeamsWithNoMatchesPlayed,
             SortDownMatchesWithNoPoints,
             MatchPointsWonDecide, // a)
@@ -71,8 +73,8 @@ internal partial class RankComparer
             SetsWonDecide, // c)
             BallPointsDifferenceDecides, // d)
             BallPointsWonDecide, // e)
-            DirectComparisonOfTeamsDecides // f)
-        };
+            DirectComparisonOfTeamsDecides
+        ];
     }
 
     /// <summary>
@@ -94,15 +96,16 @@ internal partial class RankComparer
             e) The direct comparison of the matches of teams which are equal in "ball points ratio".
             """;
 
-        Comparisons = new List<ComparisonDelegate<Rank, Rank, int>> {
+        Comparisons =
+        [
             SortDownTeamsWithNoMatchesPlayed,
             SortDownMatchesWithNoPoints,
             MatchPointsWonDecide, // a)
             MatchesWonDecide, // b)
             SetPointsRatioDecides, // c)
             BallPointsRatioDecides, // d)
-            DirectComparisonOfTeamsDecides // e)
-        };
+            DirectComparisonOfTeamsDecides
+        ];
     }
 
     /// <summary>
@@ -140,7 +143,8 @@ internal partial class RankComparer
             f) The direct comparison of the matches of teams which are equal in "ball points won".
             """;
 
-        Comparisons = new List<ComparisonDelegate<Rank, Rank, int>> {
+        Comparisons =
+        [
             SortDownTeamsWithNoMatchesPlayed,
             SortDownMatchesWithNoPoints,
             MatchPointsWonDecide, // a)
@@ -148,7 +152,7 @@ internal partial class RankComparer
             SetsWonDecide, // c)
             BallPointsDifferenceDecides, // d)
             BallPointsWonDecide, // e)
-            DirectComparisonOfTeamsDecides // f)
-        };
+            DirectComparisonOfTeamsDecides
+        ];
     }
 }

@@ -19,7 +19,8 @@ public sealed class SetsValidator : AbstractValidator<IList<SetEntity>, (ITenant
 
     private static readonly Dictionary<MatchValidationMode, Dictionary<FactId, bool>> ModeConfiguration = new() {
         {
-            MatchValidationMode.Default, new Dictionary<FactId, bool> {
+            MatchValidationMode.Default, new()
+            {
                 { FactId.AllSetsAreValid, true },
                 { FactId.MinAndMaxOfSetsPlayed, true },
                 { FactId.BestOfMinAndMaxOfSetsPlayed, true },
@@ -28,7 +29,8 @@ public sealed class SetsValidator : AbstractValidator<IList<SetEntity>, (ITenant
             }
         },
         {
-            MatchValidationMode.Overrule, new Dictionary<FactId, bool> {
+            MatchValidationMode.Overrule, new()
+            {
                 { FactId.AllSetsAreValid, true },
                 { FactId.MinAndMaxOfSetsPlayed, false },
                 { FactId.BestOfMinAndMaxOfSetsPlayed, false },
@@ -60,7 +62,7 @@ public sealed class SetsValidator : AbstractValidator<IList<SetEntity>, (ITenant
 
     private Fact<FactId> BestOfNoMatchAfterBestOfReached()
     {
-        return new Fact<FactId>
+        return new()
         {
             Id = FactId.BestOfNoMatchAfterBestOfReached,
             FieldNames = [nameof(MatchEntity.Sets)],
@@ -111,7 +113,7 @@ public sealed class SetsValidator : AbstractValidator<IList<SetEntity>, (ITenant
 
     private Fact<FactId> BestOfRequiredTieBreakPlayed()
     {
-        return new Fact<FactId>
+        return new()
         {
             Id = FactId.BestOfRequiredTieBreakPlayed,
             FieldNames = [nameof(MatchEntity.Sets)],
@@ -141,7 +143,7 @@ public sealed class SetsValidator : AbstractValidator<IList<SetEntity>, (ITenant
 
     private Fact<FactId> AllSetsAreValid()
     {
-        return new Fact<FactId>
+        return new()
         {
             Id = FactId.AllSetsAreValid,
             FieldNames = [nameof(MatchEntity.Sets)],
@@ -164,7 +166,7 @@ public sealed class SetsValidator : AbstractValidator<IList<SetEntity>, (ITenant
                 }
             }
 
-            return new FactResult
+            return new()
             {
                 Message = SetsValidatorResource.ResourceManager.GetString(
                     nameof(FactId.AllSetsAreValid)) ?? string.Empty,
@@ -175,7 +177,7 @@ public sealed class SetsValidator : AbstractValidator<IList<SetEntity>, (ITenant
 
     private Fact<FactId> BestOfMinAndMaxOfSetsPlayed()
     {
-        return new Fact<FactId>
+        return new()
         {
             Id = FactId.BestOfMinAndMaxOfSetsPlayed,
             FieldNames = [nameof(MatchEntity.Sets)],
@@ -194,7 +196,7 @@ public sealed class SetsValidator : AbstractValidator<IList<SetEntity>, (ITenant
 
     private Fact<FactId> MinAndMaxOfSetsPlayed()
     {
-        return new Fact<FactId>
+        return new()
         {
             Id = FactId.MinAndMaxOfSetsPlayed,
             FieldNames = [nameof(MatchEntity.Sets)],

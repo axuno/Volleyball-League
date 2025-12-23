@@ -8,22 +8,70 @@ namespace TournamentManager.Tests.ExtensionMethods;
 [TestFixture]
 public class MatchEntityListExtensionTests
 {
-    private readonly List<MatchEntity> _matches = new()
-    {
-        new MatchEntity {Id = 1, HomeTeamId = 1, GuestTeamId = 2, PlannedStart = DateTime.UtcNow.AddDays(-1), PlannedEnd = DateTime.UtcNow.AddDays(-1).AddHours(2), VenueId = 1},
-        new MatchEntity {Id = 2, HomeTeamId = 1, GuestTeamId = 3, PlannedStart = DateTime.UtcNow.AddDays(-1), PlannedEnd = DateTime.UtcNow.AddDays(-1).AddHours(2), VenueId = 1},
-        new MatchEntity {Id = 3, HomeTeamId = 2, GuestTeamId = 3, PlannedStart = DateTime.UtcNow.AddDays(-1), PlannedEnd = DateTime.UtcNow.AddDays(-1).AddHours(2), VenueId = 1},
-        new MatchEntity {Id = 4, HomeTeamId = 1, GuestTeamId = 4, PlannedStart = DateTime.UtcNow.AddDays(-1), PlannedEnd = DateTime.UtcNow.AddDays(-1).AddHours(2), VenueId = 1},
-        new MatchEntity {Id = 5, HomeTeamId = 4, GuestTeamId = 2, PlannedStart = DateTime.UtcNow.AddDays(-1), PlannedEnd = DateTime.UtcNow.AddDays(-1).AddHours(2), VenueId = 1},
-        new MatchEntity {Id = 6, HomeTeamId = 3, GuestTeamId = 4, PlannedStart = DateTime.UtcNow.AddDays(-1), PlannedEnd = DateTime.UtcNow.AddDays(-1).AddHours(2), VenueId = 1},
-        new MatchEntity {Id = 7, HomeTeamId = 1, GuestTeamId = 5, PlannedStart = DateTime.UtcNow.AddDays(-1), PlannedEnd = DateTime.UtcNow.AddDays(-1).AddHours(2), VenueId = 1},
-        new MatchEntity {Id = 8, HomeTeamId = 2, GuestTeamId = 5, PlannedStart = DateTime.UtcNow.AddDays(-1), PlannedEnd = DateTime.UtcNow.AddDays(-1).AddHours(2), VenueId = 1},
-        new MatchEntity {Id = 9, HomeTeamId = 3, GuestTeamId = 5, PlannedStart = DateTime.UtcNow.AddDays(-1), PlannedEnd = DateTime.UtcNow.AddDays(-1).AddHours(2), VenueId = 1},
-        new MatchEntity {Id = 10, HomeTeamId = 4, GuestTeamId = 5, PlannedStart = DateTime.UtcNow.AddDays(-1), PlannedEnd = DateTime.UtcNow.AddDays(-1).AddHours(2), VenueId = 1},
-        new MatchEntity {Id = 11, HomeTeamId = 10, GuestTeamId = 11, PlannedStart = null, PlannedEnd = null, VenueId = null},
-        new MatchEntity {Id = 12, HomeTeamId = 12, GuestTeamId = 10, PlannedStart = null, PlannedEnd = DateTime.UtcNow, VenueId = null},
-        new MatchEntity {Id = 13, HomeTeamId = 11, GuestTeamId = 13, PlannedStart = DateTime.UtcNow, PlannedEnd = null, VenueId = null}
-    };
+    private readonly List<MatchEntity> _matches =
+    [
+        new()
+        {
+            Id = 1, HomeTeamId = 1, GuestTeamId = 2, PlannedStart = DateTime.UtcNow.AddDays(-1),
+            PlannedEnd = DateTime.UtcNow.AddDays(-1).AddHours(2), VenueId = 1
+        },
+        new()
+        {
+            Id = 2, HomeTeamId = 1, GuestTeamId = 3, PlannedStart = DateTime.UtcNow.AddDays(-1),
+            PlannedEnd = DateTime.UtcNow.AddDays(-1).AddHours(2), VenueId = 1
+        },
+        new()
+        {
+            Id = 3, HomeTeamId = 2, GuestTeamId = 3, PlannedStart = DateTime.UtcNow.AddDays(-1),
+            PlannedEnd = DateTime.UtcNow.AddDays(-1).AddHours(2), VenueId = 1
+        },
+        new()
+        {
+            Id = 4, HomeTeamId = 1, GuestTeamId = 4, PlannedStart = DateTime.UtcNow.AddDays(-1),
+            PlannedEnd = DateTime.UtcNow.AddDays(-1).AddHours(2), VenueId = 1
+        },
+        new()
+        {
+            Id = 5, HomeTeamId = 4, GuestTeamId = 2, PlannedStart = DateTime.UtcNow.AddDays(-1),
+            PlannedEnd = DateTime.UtcNow.AddDays(-1).AddHours(2), VenueId = 1
+        },
+        new()
+        {
+            Id = 6, HomeTeamId = 3, GuestTeamId = 4, PlannedStart = DateTime.UtcNow.AddDays(-1),
+            PlannedEnd = DateTime.UtcNow.AddDays(-1).AddHours(2), VenueId = 1
+        },
+        new()
+        {
+            Id = 7, HomeTeamId = 1, GuestTeamId = 5, PlannedStart = DateTime.UtcNow.AddDays(-1),
+            PlannedEnd = DateTime.UtcNow.AddDays(-1).AddHours(2), VenueId = 1
+        },
+        new()
+        {
+            Id = 8, HomeTeamId = 2, GuestTeamId = 5, PlannedStart = DateTime.UtcNow.AddDays(-1),
+            PlannedEnd = DateTime.UtcNow.AddDays(-1).AddHours(2), VenueId = 1
+        },
+        new()
+        {
+            Id = 9, HomeTeamId = 3, GuestTeamId = 5, PlannedStart = DateTime.UtcNow.AddDays(-1),
+            PlannedEnd = DateTime.UtcNow.AddDays(-1).AddHours(2), VenueId = 1
+        },
+        new()
+        {
+            Id = 10, HomeTeamId = 4, GuestTeamId = 5, PlannedStart = DateTime.UtcNow.AddDays(-1),
+            PlannedEnd = DateTime.UtcNow.AddDays(-1).AddHours(2), VenueId = 1
+        },
+        new() { Id = 11, HomeTeamId = 10, GuestTeamId = 11, PlannedStart = null, PlannedEnd = null, VenueId = null },
+        new()
+        {
+            Id = 12, HomeTeamId = 12, GuestTeamId = 10, PlannedStart = null, PlannedEnd = DateTime.UtcNow,
+            VenueId = null
+        },
+        new()
+        {
+            Id = 13, HomeTeamId = 11, GuestTeamId = 13, PlannedStart = DateTime.UtcNow, PlannedEnd = null,
+            VenueId = null
+        }
+    ];
 
     [TestCase(1, -1, 0, false, 0)]
     [TestCase(1, -1, 5, false, 3)]

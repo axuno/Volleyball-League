@@ -34,7 +34,7 @@ public abstract class CronJobService : IHostedService, IDisposable
         if (next.HasValue)
         {
             var delay = next.Value - DateTimeOffset.Now;
-            _timer = new System.Timers.Timer(delay.TotalMilliseconds);
+            _timer = new(delay.TotalMilliseconds);
             _timer.Elapsed += async (sender, args) =>
             {
                 // reset and dispose timer

@@ -24,7 +24,7 @@ public class TeamInRoundValidator : AbstractValidator<TeamInRoundEntity, (ITenan
 
     private Fact<FactId> RoundBelongsToTournament()
     {
-        return new Fact<FactId>
+        return new()
         {
             Id = FactId.RoundBelongsToTournament,
             FieldNames = [nameof(Model.RoundId)],
@@ -36,12 +36,12 @@ public class TeamInRoundValidator : AbstractValidator<TeamInRoundEntity, (ITenan
         async Task<FactResult> FactResult(CancellationToken cancellationToken)
         {
             var roundWithTypeList = await Data.TenantContext.DbContext.AppDb.RoundRepository.GetRoundsWithTypeAsync(
-                new PredicateExpression(RoundFields.TournamentId == Data.TouramentId),
+                new(RoundFields.TournamentId == Data.TouramentId),
                 cancellationToken).ConfigureAwait(false);
 
             if (roundWithTypeList.Exists(round => round.Id == Model.RoundId))
             {
-                return new FactResult
+                return new()
                 {
                     Message = TeamInRoundValidatorResource.RoundBelongsToTournament,
                     Success = true
@@ -49,10 +49,10 @@ public class TeamInRoundValidator : AbstractValidator<TeamInRoundEntity, (ITenan
             }
                         
             var tournament =
-                await Data.TenantContext.DbContext.AppDb.TournamentRepository.GetTournamentAsync(new PredicateExpression(TournamentFields.Id == Data.TouramentId),
+                await Data.TenantContext.DbContext.AppDb.TournamentRepository.GetTournamentAsync(new(TournamentFields.Id == Data.TouramentId),
                     cancellationToken).ConfigureAwait(false);
 
-            return new FactResult
+            return new()
             {
                 Message = string.Format(
                     TeamInRoundValidatorResource.RoundBelongsToTournament ?? string.Empty,

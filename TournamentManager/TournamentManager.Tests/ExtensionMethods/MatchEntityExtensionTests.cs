@@ -82,7 +82,8 @@ public class MatchEntityExtensionTests
 
     private static MatchRuleEntity GetMatchRule_NoTieBreakRule()
     {
-        return new MatchRuleEntity {
+        return new()
+        {
             BestOf = true,
             NumOfSets = 3,
             PointsMatchWon = 3,
@@ -93,7 +94,8 @@ public class MatchEntityExtensionTests
 
     private static MatchRuleEntity GetMatchRule_TieBreakRule()
     {
-        return new MatchRuleEntity {
+        return new()
+        {
             BestOf = true,
             NumOfSets = 3,
             PointsMatchWon = 3,
@@ -106,7 +108,8 @@ public class MatchEntityExtensionTests
 
     private static SetRuleEntity GetSetRule()
     {
-        return new SetRuleEntity {
+        return new()
+        {
             NumOfPointsToWinRegular = 25,
             NumOfPointsToWinTiebreak = 15,
             PointsDiffToWinRegular = 2,

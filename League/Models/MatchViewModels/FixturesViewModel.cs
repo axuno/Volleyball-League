@@ -14,7 +14,7 @@ public class FixturesViewModel
 
     public TournamentEntity? Tournament { get; set; }
 
-    public List<PlannedMatchRow> PlannedMatches { get; set; } = new();
+    public List<PlannedMatchRow> PlannedMatches { get; set; } = [];
 
     public long? ActiveRoundId { get; set; }
 

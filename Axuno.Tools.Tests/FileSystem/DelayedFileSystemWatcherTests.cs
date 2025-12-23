@@ -10,7 +10,7 @@ namespace Axuno.Tools.FileSystem.Tests
         private FileSystemWatcher GetFileSystemWatcher()
         {
             _directoryToWatch ??= CreateTempPathFolder();
-            return new FileSystemWatcher(_directoryToWatch)
+            return new(_directoryToWatch)
             {
                 IncludeSubdirectories = false, EnableRaisingEvents = true
             };
@@ -23,7 +23,7 @@ namespace Axuno.Tools.FileSystem.Tests
             switch (filterType)
             {
                 default:
-                    return new DelayedFileSystemWatcher
+                    return new()
                     {
                         Path = _directoryToWatch, NotifyFilter = NotifyFilters.LastWrite | NotifyFilters.CreationTime | NotifyFilters.FileName,
                         IncludeSubdirectories = false, EnableRaisingEvents = true, ConsolidationInterval = 1,
@@ -37,12 +37,12 @@ namespace Axuno.Tools.FileSystem.Tests
                     watcher.Filters.Add("*.*");
                     return watcher;
                 case 3:
-                    return new DelayedFileSystemWatcher(_directoryToWatch, "*.*")
+                    return new(_directoryToWatch, "*.*")
                     {
                         IncludeSubdirectories = false, EnableRaisingEvents = true, ConsolidationInterval = 1
                     };
                 case 4:
-                    return new DelayedFileSystemWatcher(_directoryToWatch, new [] {"*.*"})
+                    return new(_directoryToWatch, ["*.*"])
                     {
                         IncludeSubdirectories = false, EnableRaisingEvents = true, ConsolidationInterval = 1
                     };
@@ -76,11 +76,11 @@ namespace Axuno.Tools.FileSystem.Tests
             await File.WriteAllTextAsync(Path.Combine(_directoryToWatch!, Path.GetRandomFileName()), "Any text");
             await Task.Delay(100); // must be higher than ConsolidationInterval
 
-            Assert.Multiple(() =>
+            using (Assert.EnterMultipleScope())
             {
                 Assert.That(watcherEventCount, Is.EqualTo(1));
                 Assert.That(delayedEventCount, Is.EqualTo(1));
-            });
+            }
         }
 
         [Test]
@@ -114,11 +114,11 @@ namespace Axuno.Tools.FileSystem.Tests
             
             await Task.Delay(100); // must be higher than ConsolidationInterval
 
-            Assert.Multiple(() =>
+            using (Assert.EnterMultipleScope())
             {
                 Assert.That(watcherEventCount, Is.EqualTo(1));
                 Assert.That(delayedEventCount, Is.EqualTo(1));
-            });
+            }
         }
 
         [Test]
@@ -160,12 +160,12 @@ namespace Axuno.Tools.FileSystem.Tests
 
             await Task.Delay(500); // must be higher than ConsolidationInterval
 
-            Assert.Multiple(() =>
+            using (Assert.EnterMultipleScope())
             {
                 Assert.That(watcherEventCount, Is.EqualTo(6));
                 // Multiple events of the same type are consolidated per file
                 Assert.That(delayedEventCount, Is.EqualTo(2));
-            });
+            }
         }
 
         [Test]
@@ -202,11 +202,11 @@ namespace Axuno.Tools.FileSystem.Tests
             File.Delete(filename);
             await Task.Delay(100); // must be higher than ConsolidationInterval
 
-            Assert.Multiple(() =>
+            using (Assert.EnterMultipleScope())
             {
                 Assert.That(watcherEventCount, Is.EqualTo(1));
                 Assert.That(delayedEventCount, Is.EqualTo(1));
-            });
+            }
         }
 
         [Test]
@@ -246,11 +246,11 @@ namespace Axuno.Tools.FileSystem.Tests
             await File.AppendAllTextAsync(filename, "3");
             await Task.Delay(500); // must be higher than ConsolidationInterval
 
-            Assert.Multiple(() =>
+            using (Assert.EnterMultipleScope())
             {
                 Assert.That(watcherEventCount, Is.EqualTo(3));
                 Assert.That(delayedEventCount, Is.EqualTo(1));
-            });
+            }
         }
 
         private static string CreateTempPathFolder()

@@ -43,7 +43,7 @@ public class SendEmailTask : IBackgroundTask
     /// <returns>Return new <see cref="SendEmailTask"/> instance initialized like after dependency injection</returns>
     public SendEmailTask CreateNewInstance()
     {
-        return new SendEmailTask(_mailMergeService, _renderer, _tenantContext, _localizer, _logger) {Timeout = Timeout};
+        return new(_mailMergeService, _renderer, _tenantContext, _localizer, _logger) {Timeout = Timeout};
     }
         
     /// <summary>
@@ -85,7 +85,8 @@ public class SendEmailTask : IBackgroundTask
             catch (Exception e)
             {
                 throw new MailMergeMessage.MailMergeMessageException(
-                    $"Mail sender failure. {mmm.MailMergeAddresses}\nSubject: {mmm.Subject}\nMessage: {mmm.PlainText}", new []{e}, null);
+                    $"Mail sender failure. {mmm.MailMergeAddresses}\nSubject: {mmm.Subject}\nMessage: {mmm.PlainText}",
+                    [e], null);
             }
         }
     }

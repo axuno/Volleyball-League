@@ -150,8 +150,7 @@ public sealed class HtmlToPdfConverter : IDisposable
 
         try
         {
-            return await page.PdfDataAsync(new PuppeteerSharp.PdfOptions
-            { Scale = 1.0M, Format = PuppeteerSharp.Media.PaperFormat.A4 }).ConfigureAwait(false);
+            return await page.PdfDataAsync(new() { Scale = 1.0M, Format = PuppeteerSharp.Media.PaperFormat.A4 }).ConfigureAwait(false);
         }
         catch (Exception ex)
         {

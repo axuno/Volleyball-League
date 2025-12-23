@@ -17,7 +17,7 @@ public class MatchResultValidatorTests
     {
         #region *** TimeZoneConverter ***
 
-        _data.TimeZoneConverter = new Axuno.Tools.DateAndTime.TimeZoneConverter("Europe/Berlin", System.Globalization.CultureInfo.GetCultureInfo("en-US"));
+        _data.TimeZoneConverter = new("Europe/Berlin", System.Globalization.CultureInfo.GetCultureInfo("en-US"));
 
         #endregion
 
@@ -33,12 +33,12 @@ public class MatchResultValidatorTests
                     var roundEntity = new RoundEntity { Id = roundId, Name = "RoundName", Description = "RoundDescription", NumOfLegs = 2 };
                     for (var i = 0; i < roundEntity.NumOfLegs; i++)
                     {
-                        roundEntity.RoundLegs.Add(new RoundLegEntity
+                        roundEntity.RoundLegs.Add(new()
                         {
                             Id = i,
                             SequenceNo = i + 1,
-                            StartDateTime = new DateTime(2020, 9 + i, 1),
-                            EndDateTime = new DateTime(2020, 9 + i, 20),
+                            StartDateTime = new(2020, 9 + i, 1),
+                            EndDateTime = new(2020, 9 + i, 20),
                             RoundId = roundEntity.Id
                         });
                     }
@@ -64,12 +64,12 @@ public class MatchResultValidatorTests
         var set = new MatchEntity();
         var sv = new MatchResultValidator(set, _data, MatchValidationMode.Default);
 
-        var enums = Enum.GetNames(typeof(MatchResultValidator.FactId)).ToList();
+        var enums = Enum.GetNames<MatchResultValidator.FactId>().ToList();
         foreach (var e in enums)
         {
             var fact = sv.Facts.First(f => f.Id.Equals(Enum.Parse<MatchResultValidator.FactId>(e)));
             Console.WriteLine(fact.Id);
-            Assert.That(fact.CheckAsync, Is.Not.EqualTo(null));
+            Assert.That(fact.CheckAsync, Is.Not.Null);
         }
     }
 
@@ -98,13 +98,13 @@ public class MatchResultValidatorTests
         var mv = new MatchResultValidator(match, (_data.TenantContext, _data.TimeZoneConverter, (matchRule, setRule)), MatchValidationMode.Default);
         await mv.CheckAsync(MatchResultValidator.FactId.SetsValidatorSuccessful, CancellationToken.None);
         var factResult = mv.GetFailedFacts().First(f => f.Id == MatchResultValidator.FactId.SetsValidatorSuccessful);
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(mv.SetsValidator.SingleSetErrors, Is.Empty);
             Assert.That(mv.SetsValidator.GetFailedFacts().First().Id, Is.EqualTo(SetsValidator.FactId.BestOfRequiredTieBreakPlayed));
             Assert.That(factResult.Success, Is.False);
             Assert.That(factResult.Exception, Is.Null);
-        });
+        }
     }
 
     [Test]
@@ -131,13 +131,13 @@ public class MatchResultValidatorTests
 
         var mv = new MatchResultValidator(match, (_data.TenantContext, _data.TimeZoneConverter, (matchRule, setRule)), MatchValidationMode.Default);
         var factResult = await mv.CheckAsync(MatchResultValidator.FactId.SetsValidatorSuccessful, CancellationToken.None);
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(mv.GetFailedFacts(), Is.Empty);
             Assert.That(mv.SetsValidator.SingleSetErrors, Is.Empty);
             Assert.That(factResult.Success, Is.True);
             Assert.That(factResult.Exception, Is.Null);
-        });
+        }
     }
 
     [TestCase("2020-09-01 20:00:00", false)]
@@ -160,7 +160,7 @@ public class MatchResultValidatorTests
         var mv = new MatchResultValidator(match, _data, MatchValidationMode.Default);
         await mv.CheckAsync(MatchResultValidator.FactId.RealMatchDateWithinRoundLegs, CancellationToken.None);
         var factResults = mv.GetFailedFacts();
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             if (fails)
             {
@@ -172,7 +172,7 @@ public class MatchResultValidatorTests
                 Assert.That(factResults, Is.Empty);
             }
                 
-        });
+        }
     }
 
     [Test]
@@ -192,12 +192,12 @@ public class MatchResultValidatorTests
         var mv = new MatchResultValidator(match, _data, MatchValidationMode.Default);
         await mv.CheckAsync(MatchResultValidator.FactId.RealMatchDateIsSet, CancellationToken.None);
         var factResults = mv.GetFailedFacts();
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(factResults, Has.Count.EqualTo(1));
             Assert.That(factResults.First().Id, Is.EqualTo(MatchResultValidator.FactId.RealMatchDateIsSet));
             Assert.That(factResults.First().Message, Is.Not.Null);
-        });
+        }
     }
 
     [Test]
@@ -218,12 +218,12 @@ public class MatchResultValidatorTests
         var mv = new MatchResultValidator(match, _data, MatchValidationMode.Default) { Today = today };
         await mv.CheckAsync(MatchResultValidator.FactId.RealMatchDateTodayOrBefore, CancellationToken.None);
         var factResults = mv.GetFailedFacts();
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(factResults, Has.Count.EqualTo(1));
             Assert.That(factResults.First().Id, Is.EqualTo(MatchResultValidator.FactId.RealMatchDateTodayOrBefore));
             Assert.That(factResults.First().Message, Is.Not.Null);
-        });
+        }
     }
 
     [Test]
@@ -246,13 +246,13 @@ public class MatchResultValidatorTests
         var mv = new MatchResultValidator(match, _data, MatchValidationMode.Default);
         await mv.CheckAsync(MatchResultValidator.FactId.RealMatchDateEqualsFixture, CancellationToken.None);
         var factResults = mv.GetFailedFacts();
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(factResults, Has.Count.EqualTo(1));
             Assert.That(factResults.First().Id, Is.EqualTo(MatchResultValidator.FactId.RealMatchDateEqualsFixture));
             Assert.That(factResults.First().Message, Is.Not.Null);
             Assert.That(factResults.First().Type, Is.EqualTo(FactType.Warning));
-        });
+        }
     }
 
     [TestCase(180, true)]
@@ -288,13 +288,13 @@ public class MatchResultValidatorTests
 
         if (shouldFail)
         {
-            Assert.Multiple(() =>
+            using (Assert.EnterMultipleScope())
             {
                 Assert.That(factResults, Has.Count.EqualTo(1));
                 Assert.That(factResults.First().Id, Is.EqualTo(MatchResultValidator.FactId.RealMatchDurationIsPlausible));
                 Assert.That(factResults.First().Message, Is.Not.Null);
                 Assert.That(factResults.First().Type, Is.EqualTo(FactType.Warning));
-            });
+            }
         }
         else
         {
@@ -311,7 +311,7 @@ public class MatchResultValidatorTests
     public async Task Valid_Match_Points_Should_Pass_Validation(int? home, int? guest)
     {
         var data = _data;
-        data.Rules.MatchRule = new MatchRuleEntity
+        data.Rules.MatchRule = new()
         {
             BestOf = true, NumOfSets = 3, PointsMatchLost = 0, PointsMatchTie = 1, PointsMatchWon = 2,
             PointsMatchLostAfterTieBreak = 3, PointsMatchWonAfterTieBreak = 4
@@ -336,7 +336,7 @@ public class MatchResultValidatorTests
     public async Task Invalid_Match_Points_Should_Fail_To_Validate(int? home, int? guest)
     {
         var data = _data;
-        data.Rules.MatchRule = new MatchRuleEntity
+        data.Rules.MatchRule = new()
         {
             BestOf = true, NumOfSets = 3, PointsMatchLost = 0, PointsMatchTie = 1, PointsMatchWon = 2,
             PointsMatchLostAfterTieBreak = 3, PointsMatchWonAfterTieBreak = 4
@@ -351,19 +351,19 @@ public class MatchResultValidatorTests
         var mv = new MatchResultValidator(match, data, MatchValidationMode.Overrule);
         await mv.CheckAsync(MatchResultValidator.FactId.MatchPointsAreValid, CancellationToken.None);
         var factResults = mv.GetFailedFacts();
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(factResults, Has.Count.EqualTo(1));
             Assert.That(factResults.First().Id, Is.EqualTo(MatchResultValidator.FactId.MatchPointsAreValid));
             Assert.That(factResults.First().Message, Is.Not.Null.And.Contains("0,1,2,3,4"));
             Assert.That(factResults.First().Type, Is.EqualTo(FactType.Critical));
-        });
+        }
     }
 
     [Test]
     public void Check_FieldName_Of_Facts()
     {
-        var mv = new MatchResultValidator(new MatchEntity(), _data, MatchValidationMode.Default);
+        var mv = new MatchResultValidator(new(), _data, MatchValidationMode.Default);
 
         foreach (var fact in mv.Facts)
         {

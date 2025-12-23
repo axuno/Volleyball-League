@@ -58,7 +58,7 @@ public class TenantResolver
         _httpContext.Response.Cookies.Append(
             CookieNames.MostRecentTenant,
             tenant.SiteContext.UrlSegmentValue,
-            new CookieOptions
+            new()
             {
                 Path = "/",
                 HttpOnly = true,

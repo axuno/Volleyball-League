@@ -47,20 +47,20 @@ public class VenueSelectorComponentModel
     /// <summary>
     /// The list of all venues.
     /// </summary>
-    public List<VenueEntity> AllVenues { get; set; } = new();
+    public List<VenueEntity> AllVenues { get; set; } = [];
 
     /// <summary>
     /// The list of venues belonging to a list of team ids that was a parameter for this component.
     /// </summary>
-    public List<VenueEntity> VenuesOfTeams { get; set; } = new();
+    public List<VenueEntity> VenuesOfTeams { get; set; } = [];
 
     /// <summary>
     /// The list of active venues to select for this fixture.
     /// </summary>
-    public List<VenueEntity> ActiveVenues { get; set; } = new();
+    public List<VenueEntity> ActiveVenues { get; set; } = [];
 
     /// <summary>
     /// The list of unused venues to select for this fixture.
     /// </summary>
-    public List<VenueEntity> UnusedVenues { get; set; } = new();
+    public List<VenueEntity> UnusedVenues { get; set; } = [];
 }

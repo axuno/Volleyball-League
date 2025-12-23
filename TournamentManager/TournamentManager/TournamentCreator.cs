@@ -55,7 +55,7 @@ public class TournamentCreator
     /// <returns>The singleton instance of the <see cref="TournamentCreator"/> class.</returns>
     public static TournamentCreator Instance(IAppDb appDb, ILogger<TournamentCreator> logger)
     {
-        _instance ??= new TournamentCreator(appDb, logger);
+        _instance ??= new(appDb, logger);
         return _instance;
     }
 
@@ -115,7 +115,7 @@ public class TournamentCreator
     {
         var sourceTournament =
             await _appDb.TournamentRepository.GetTournamentAsync(
-                new PredicateExpression(TournamentFields.Id == copyArgs.SourceTournamentId), CancellationToken.None)
+                new(TournamentFields.Id == copyArgs.SourceTournamentId), CancellationToken.None)
             ?? throw new InvalidOperationException($"'{copyArgs.SourceTournamentId}' not found.");
 
         if(copyArgs.DisableChecks)
@@ -201,7 +201,7 @@ public class TournamentCreator
 
     private RoundEntity CreateTargetRound(RoundEntity sourceRound, TournamentEntity targetTournament, CopyTournamentArgs args)
     {
-        return new RoundEntity
+        return new()
         {
             Tournament = targetTournament, // this adds the round to the target tournament
             Name = sourceRound.Name,

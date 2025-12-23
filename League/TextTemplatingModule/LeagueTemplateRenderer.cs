@@ -63,8 +63,8 @@ public class LeagueTemplateRenderer : TemplateRenderer
         baseContext.StrictVariables = true;  // Note: has no effect for child members
         baseContext.MemberRenamer = member => member.Name; // Use .NET object without changing the cases
         // will be called if the member of an object could not be found:
-        baseContext.TryGetMember = (TemplateContext context, SourceSpan span, object target, string member,
-            out object value) =>
+        baseContext.TryGetMember = (context, span, target, member,
+            out value) =>
         {
             switch (MemberNotFoundAction)
             {
@@ -87,7 +87,7 @@ public class LeagueTemplateRenderer : TemplateRenderer
         // will be called if the variable could not be found from any scope
         baseContext. 
                 TryGetVariable =
-            (TemplateContext context, SourceSpan span, ScriptVariable variable, out object value) =>
+            (context, span, variable, out value) =>
             {
                 switch (VariableNotFoundAction)
                 {

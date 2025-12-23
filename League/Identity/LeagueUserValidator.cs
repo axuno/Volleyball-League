@@ -53,7 +53,7 @@ public class LeagueUserValidator<TUser> : IUserValidator<TUser> where TUser : Ap
         return errors.Count > 0 ? IdentityResult.Failed(errors.ToArray()) : IdentityResult.Success;
     }
 
-    private async Task ValidateUserName(UserManager<TUser> manager, TUser user, ICollection<IdentityError> errors)
+    private async Task ValidateUserName(UserManager<TUser> manager, TUser user, List<IdentityError> errors)
     {
         var userName = await manager.GetUserNameAsync(user);
 

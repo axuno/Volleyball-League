@@ -24,13 +24,14 @@ public class TeamVenueValidator : AbstractValidator<TeamEntity, ITenantContext, 
 
     private Fact<FactId> VenueIsValid()
     {
-        return new Fact<FactId>
+        return new()
         {
             Id = FactId.VenueIsValid,
             FieldNames = [nameof(Model.VenueId)],
             Enabled = Model.VenueId.HasValue,
             Type = FactType.Critical,
-            CheckAsync = async (cancellationToken) => new FactResult {
+            CheckAsync = async (cancellationToken) => new()
+            {
                 Message = TeamVenueValidatorResource.ResourceManager.GetString(
                     nameof(FactId.VenueIsValid)) ?? string.Empty,
                 Success = Model.VenueId.HasValue &&
@@ -42,7 +43,7 @@ public class TeamVenueValidator : AbstractValidator<TeamEntity, ITenantContext, 
 
     private Fact<FactId> VenueIsSetIfRequired()
     {
-        return new Fact<FactId>
+        return new()
         {
             Id = FactId.VenueIsSetIfRequired,
             FieldNames = [nameof(Model.VenueId)],

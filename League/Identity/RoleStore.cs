@@ -25,8 +25,7 @@ public class RoleStore : IRoleStore<ApplicationRole>, IRoleClaimStore<Applicatio
 
     public async Task<IdentityResult> CreateAsync(ApplicationRole role, CancellationToken cancellationToken)
     {
-        if (role == null)
-            throw new ArgumentNullException(nameof(role));
+        ArgumentNullException.ThrowIfNull(role);
 
         if (!Constants.RoleName.GetAllRoleValues<string>().Contains(role.Name))
         {
@@ -55,8 +54,7 @@ public class RoleStore : IRoleStore<ApplicationRole>, IRoleClaimStore<Applicatio
 
     public async Task<IdentityResult> UpdateAsync(ApplicationRole role, CancellationToken cancellationToken)
     {
-        if (role == null)
-            throw new ArgumentNullException(nameof(role));
+        ArgumentNullException.ThrowIfNull(role);
 
         if (!Constants.RoleName.GetAllRoleValues<string>().Contains(role.Name))
         {
@@ -92,8 +90,7 @@ public class RoleStore : IRoleStore<ApplicationRole>, IRoleClaimStore<Applicatio
 
     public async Task<IdentityResult> DeleteAsync(ApplicationRole role, CancellationToken cancellationToken)
     {
-        if (role == null)
-            throw new ArgumentNullException(nameof(role));
+        ArgumentNullException.ThrowIfNull(role);
 
         cancellationToken.ThrowIfCancellationRequested();
 
@@ -124,7 +121,7 @@ public class RoleStore : IRoleStore<ApplicationRole>, IRoleClaimStore<Applicatio
         var roleEntity = await _appDb.RoleRepository.GetRoleByIdAsync(id, cancellationToken);
         if (roleEntity == null) return null;
 
-        return new ApplicationRole {Id = roleEntity.Id, Name = roleEntity.Name};
+        return new() {Id = roleEntity.Id, Name = roleEntity.Name};
     }
 
     /// <summary>
@@ -132,19 +129,17 @@ public class RoleStore : IRoleStore<ApplicationRole>, IRoleClaimStore<Applicatio
     /// </summary>
     public async Task<ApplicationRole> FindByNameAsync(string normalizedRoleName, CancellationToken cancellationToken)
     {
-        if (normalizedRoleName == null)
-            throw new ArgumentNullException(nameof(normalizedRoleName));
+        ArgumentNullException.ThrowIfNull(normalizedRoleName);
 
         var roleEntity = await _appDb.RoleRepository.GetRoleByNameAsync(normalizedRoleName, cancellationToken);
         if (roleEntity == null) return null;
 
-        return new ApplicationRole { Id = roleEntity.Id, Name = roleEntity.Name };
+        return new() { Id = roleEntity.Id, Name = roleEntity.Name };
     }
 #nullable enable annotations
     public Task<string?> GetNormalizedRoleNameAsync(ApplicationRole role, CancellationToken cancellationToken)
     {
-        if (role == null)
-            throw new ArgumentNullException(nameof(role));
+        ArgumentNullException.ThrowIfNull(role);
 
         return Task.FromResult<string?>(_keyNormalizer.NormalizeName(role.Name));
     }
@@ -156,8 +151,7 @@ public class RoleStore : IRoleStore<ApplicationRole>, IRoleClaimStore<Applicatio
 
     public Task<string> GetRoleIdAsync(ApplicationRole role, CancellationToken cancellationToken)
     {
-        if (role == null)
-            throw new ArgumentNullException(nameof(role));
+        ArgumentNullException.ThrowIfNull(role);
 
         return Task.FromResult(role.Id.ToString());
     }
@@ -182,8 +176,7 @@ public class RoleStore : IRoleStore<ApplicationRole>, IRoleClaimStore<Applicatio
 
     public async Task<IList<Claim>> GetClaimsAsync(ApplicationRole role, CancellationToken cancellationToken = default)
     {
-        if (role == null)
-            throw new ArgumentNullException(nameof(role));
+        ArgumentNullException.ThrowIfNull(role);
 
         var claimEntities = await _appDb.RoleRepository.GetRoleClaimsAsync(role.Id, cancellationToken);
         return claimEntities.Select(claimEntity => new Claim(claimEntity.ClaimType, claimEntity.ClaimValue, claimEntity.ValueType, claimEntity.Issuer)).ToList();
@@ -191,11 +184,9 @@ public class RoleStore : IRoleStore<ApplicationRole>, IRoleClaimStore<Applicatio
 
     public async Task AddClaimAsync(ApplicationRole role, Claim claim, CancellationToken cancellationToken = default)
     {
-        if (role == null)
-            throw new ArgumentNullException(nameof(role));
+        ArgumentNullException.ThrowIfNull(role);
 
-        if (claim == null)
-            throw new ArgumentNullException(nameof(claim));
+        ArgumentNullException.ThrowIfNull(claim);
 
         try
         {
@@ -211,7 +202,7 @@ public class RoleStore : IRoleStore<ApplicationRole>, IRoleClaimStore<Applicatio
             // do nothing if the new claim already exists
             if (existingClaims.Any(c => c.ClaimType == claim.Type && c.ClaimValue == claim.Value)) return;
 
-            roleEntity.IdentityRoleClaims.Add(new IdentityRoleClaimEntity { ClaimType = claim.Type, ClaimValue = claim.Value, ValueType = claim.ValueType, Issuer = claim.Issuer });
+            roleEntity.IdentityRoleClaims.Add(new() { ClaimType = claim.Type, ClaimValue = claim.Value, ValueType = claim.ValueType, Issuer = claim.Issuer });
 
             await _appDb.GenericRepository.SaveEntityAsync(roleEntity, false, true, cancellationToken);
         }
@@ -223,11 +214,9 @@ public class RoleStore : IRoleStore<ApplicationRole>, IRoleClaimStore<Applicatio
 
     public async Task RemoveClaimAsync(ApplicationRole role, Claim claim, CancellationToken cancellationToken = default)
     {
-        if (role == null)
-            throw new ArgumentNullException(nameof(role));
+        ArgumentNullException.ThrowIfNull(role);
 
-        if (claim == null)
-            throw new ArgumentNullException(nameof(claim));
+        ArgumentNullException.ThrowIfNull(claim);
 
         var msg = $"Error removing role claim type '{claim.Type}' from role id '{role.Id}'";
         try

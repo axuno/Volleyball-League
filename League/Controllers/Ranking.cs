@@ -55,7 +55,7 @@ public class Ranking : AbstractController
             var model = new RankingListModel
             {
                 Tournament =
-                    await _appDb.TournamentRepository.GetTournamentAsync(new PredicateExpression(TournamentFields.Id == _tenantContext.TournamentContext.MatchResultTournamentId),
+                    await _appDb.TournamentRepository.GetTournamentAsync(new(TournamentFields.Id == _tenantContext.TournamentContext.MatchResultTournamentId),
                         cancellationToken),
                 RankingList = rankingList,
                 ChartFileInfos = GetChartFileInfos(rankingList.Select(rl => rl.RoundId).Distinct())
@@ -142,7 +142,7 @@ public class Ranking : AbstractController
         if (rankingList != null) return rankingList;
 
         _logger.LogError("Could not get or create round leg periods");
-        return new List<RankingListRow>();
+        return [];
     }
 
     private async Task<List<RoundLegPeriodRow>> GetRoundLegPeriodsCached(List<RankingListRow> rankingList, CancellationToken cancellationToken)
@@ -164,7 +164,7 @@ public class Ranking : AbstractController
         if (roundLegPeriods != null) return roundLegPeriods;
 
         _logger.LogError("Could not get or create round leg periods");
-        return new List<RoundLegPeriodRow>();
+        return [];
     }
 
     private Dictionary<long, FileInfo> GetChartFileInfos(IEnumerable<long> roundIds)

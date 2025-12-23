@@ -42,26 +42,26 @@ public sealed class GermanFederalStates : Collection<GermanFederalState>
 
     public GermanFederalStates()
     {
-        Add(new GermanFederalState(Id.BadenWuerttemberg, "BW", "Baden-Württemberg"));
-        Add(new GermanFederalState(Id.Bayern, "BY", "Bayern"));
-        Add(new GermanFederalState(Id.Berlin, "BE", "Berlin"));
-        Add(new GermanFederalState(Id.Brandenburg, "BB", "Brandenburg"));
-        Add(new GermanFederalState(Id.Bremen, "BR", "Bremen"));
-        Add(new GermanFederalState(Id.Hamburg, "HH", "Hamburg"));
-        Add(new GermanFederalState(Id.Hessen, "HE", "Hessen"));
-        Add(new GermanFederalState(Id.MecklenburgVorpommern, "MV", "Mecklenburg-Vorpommern"));
-        Add(new GermanFederalState(Id.Niedersachsen, "NI", "Niedersachsen"));
-        Add(new GermanFederalState(Id.NordrheinWestfalen, "NW", "Nordrhein-Westfalen"));
-        Add(new GermanFederalState(Id.RheinlandPfalz, "RP", "Rheinland-Pfalz"));
-        Add(new GermanFederalState(Id.Saarland, "SL", "Saarland"));
-        Add(new GermanFederalState(Id.Sachsen, "SN", "Sachsen"));
-        Add(new GermanFederalState(Id.SachsenAnhalt, "ST", "Sachsen-Anhalt"));
-        Add(new GermanFederalState(Id.SchleswigHolstein, "SH", "Schleswig-Holstein"));
-        Add(new GermanFederalState(Id.Thueringen, "TH", "Thüringen"));
+        Add(new(Id.BadenWuerttemberg, "BW", "Baden-Württemberg"));
+        Add(new(Id.Bayern, "BY", "Bayern"));
+        Add(new(Id.Berlin, "BE", "Berlin"));
+        Add(new(Id.Brandenburg, "BB", "Brandenburg"));
+        Add(new(Id.Bremen, "BR", "Bremen"));
+        Add(new(Id.Hamburg, "HH", "Hamburg"));
+        Add(new(Id.Hessen, "HE", "Hessen"));
+        Add(new(Id.MecklenburgVorpommern, "MV", "Mecklenburg-Vorpommern"));
+        Add(new(Id.Niedersachsen, "NI", "Niedersachsen"));
+        Add(new(Id.NordrheinWestfalen, "NW", "Nordrhein-Westfalen"));
+        Add(new(Id.RheinlandPfalz, "RP", "Rheinland-Pfalz"));
+        Add(new(Id.Saarland, "SL", "Saarland"));
+        Add(new(Id.Sachsen, "SN", "Sachsen"));
+        Add(new(Id.SachsenAnhalt, "ST", "Sachsen-Anhalt"));
+        Add(new(Id.SchleswigHolstein, "SH", "Schleswig-Holstein"));
+        Add(new(Id.Thueringen, "TH", "Thüringen"));
 
 #if DEBUG
         // Make sure every state in enum GermanFederalStateId is handled in this collection
-        foreach (Id stateId in Enum.GetValues(typeof(Id)))
+        foreach (var stateId in Enum.GetValues<Id>())
         {
             try
             {

@@ -17,17 +17,17 @@ internal class ExcludeDateRecordTests
         );
 
         var record = new ExcludeDateRecord {
-            Period = new DateTimePeriod(dateTime, dateTime.AddDays(1)),
+            Period = new(dateTime, dateTime.AddDays(1)),
             Reason = "Any reason"
         };
 
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(record.Period.Start, Is.EqualTo(expected));
             Assert.That(record.Period.End, Is.EqualTo(expected.AddDays(1)));
             Assert.That(record.Reason, Is.EqualTo("Any reason"));
             Assert.That(record.ToString(), Is.EqualTo($"{expected:yyyy-MM-dd HH:mm:ss} - {expected.AddDays(1):yyyy-MM-dd HH:mm:ss}: Any reason"));
-        });
+        }
     }
 
     [Test]
@@ -37,18 +37,18 @@ internal class ExcludeDateRecordTests
 
         var record = new ExcludeDateRecord
         {
-            Period = new DateTimePeriod(dateTime, dateTime.AddDays(1)),
+            Period = new(dateTime, dateTime.AddDays(1)),
             Reason = "Any reason"
         };
 
         var excludeMatchDate = record.ToExcludeMatchDateEntity();
 
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(excludeMatchDate.DateFrom, Is.EqualTo(dateTime));
             Assert.That(excludeMatchDate.DateTo, Is.EqualTo(dateTime.AddDays(1)));
             Assert.That(excludeMatchDate.Reason, Is.EqualTo("Any reason"));
-        });
+        }
     }
 
     [Test]
@@ -58,7 +58,7 @@ internal class ExcludeDateRecordTests
 
         var record = new ExcludeDateRecord
         {
-            Period = new DateTimePeriod(dateTime, dateTime),
+            Period = new(dateTime, dateTime),
             Reason = ""
         };
 

@@ -10,7 +10,6 @@ public sealed class Latitude : Angle
 {
     /// <summary>Initializes a new instance of the Latitude class.</summary>
     /// <param name="angle">The angle of the latitude.</param>
-    /// <exception cref="ArgumentNullException">angle is null.</exception>
     /// <exception cref="ArgumentOutOfRangeException">
     /// angle is greater than 90 degrees or less than -90 degrees.
     /// </exception>
@@ -40,7 +39,7 @@ public sealed class Latitude : Angle
     public static new Latitude FromDegrees(double degrees)
     {
         ValidateRange("degrees", degrees, -90, 90);
-        return new Latitude(Angle.FromDegrees(degrees).Radians);
+        return new(Angle.FromDegrees(degrees).Radians);
     }
 
     /// <summary>
@@ -58,7 +57,7 @@ public sealed class Latitude : Angle
         var angle = Angle.FromDegrees(degrees, minutes);
         ValidateRange("angle", angle.TotalDegrees, -90, 90);
 
-        return new Latitude(angle.Radians);
+        return new(angle.Radians);
     }
 
     /// <summary>
@@ -77,7 +76,7 @@ public sealed class Latitude : Angle
         var angle = Angle.FromDegrees(degrees, minutes, seconds);
         ValidateRange("angle", angle.TotalDegrees, -90, 90);
 
-        return new Latitude(angle.Radians);
+        return new(angle.Radians);
     }
 
     /// <summary>Creates a new Latitude from an amount in radians.</summary>
@@ -89,7 +88,7 @@ public sealed class Latitude : Angle
     public static new Latitude FromRadians(double radians)
     {
         ValidateRange("radians", radians, -Math.PI / 2.0, Math.PI / 2.0);
-        return new Latitude(radians);
+        return new(radians);
     }
 
     /// <summary>
