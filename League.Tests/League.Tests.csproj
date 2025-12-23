@@ -10,7 +10,7 @@
     <PackageReference Include="FluentAssertions" Version="8.8.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.0.1" />
     <PackageReference Include="NUnit" Version="4.4.0" />
-    <PackageReference Include="NUnit3TestAdapter" Version="5.2.0">
+    <PackageReference Include="NUnit3TestAdapter" Version="6.0.1">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
@@ -21,7 +21,7 @@
     <PackageReference Include="Microsoft.AspNetCore.TestHost" Version="10.0.1" />
     <PackageReference Include="Moq" Version="4.20.72" />
     <PackageReference Include="ObjectsComparer" Version="1.4.1" />
-    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.14.0" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.15.0" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\League.Demo\League.Demo.csproj" />
