@@ -16,8 +16,8 @@ internal class MatchCreator<TP, TR> where TP : struct, IEquatable<TP> where TR :
     private readonly ITenantContext _tenantContext;
     private readonly ILogger<MatchCreator<TP, TR>> _logger;
     private int _maxNumOfCombinations;
-    private readonly ParticipantCombinations<TP, TR> _participantCombinationsFirstLeg = new();
-    private readonly ParticipantCombinations<TP, TR> _participantCombinationsReturnLeg = new();
+    private readonly ParticipantCombinations<TP, TR> _participantCombinationsFirstLeg = [];
+    private readonly ParticipantCombinations<TP, TR> _participantCombinationsReturnLeg = [];
 
     /// <summary>
     /// Constructor.
@@ -105,7 +105,7 @@ internal class MatchCreator<TP, TR> where TP : struct, IEquatable<TP> where TR :
 
         foreach (var match in _participantCombinationsFirstLeg)
         {
-            _participantCombinationsReturnLeg.Add(new ParticipantCombination<TP, TR>(match.Turn, match.Guest, match.Home, (TR?) (object?) refereeAssigner.GetReferee((match.Turn, match.Guest, match.Home))));
+            _participantCombinationsReturnLeg.Add(new(match.Turn, match.Guest, match.Home, (TR?) (object?) refereeAssigner.GetReferee((match.Turn, match.Guest, match.Home))));
         }
     }
 
@@ -129,5 +129,5 @@ internal class MatchCreator<TP, TR> where TP : struct, IEquatable<TP> where TR :
     /// <summary>
     /// Gets the participants.
     /// </summary>
-    public Collection<TP> Participants { get; private set; } = new();
+    public Collection<TP> Participants { get; private set; } = [];
 }

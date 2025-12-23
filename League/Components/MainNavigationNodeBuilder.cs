@@ -78,7 +78,7 @@ public class MainNavigationNodeBuilder : IMainNavigationNodeBuilder
         TenantLink = tenantLink;
         HttpContext = tenantLink.HttpContext;
         Logger = logger;
-        NavigationNodes = new List<MainNavigationComponentModel.NavigationNode>();
+        NavigationNodes = [];
         Localizer = localizer;
         _areNavigationNodesCreated = false;
     }
@@ -132,21 +132,18 @@ public class MainNavigationNodeBuilder : IMainNavigationNodeBuilder
             Text = Localizer["Leagues"], Url = "/#" 
         };
 
-        leagues.ChildNodes.Add(new MainNavigationComponentModel.NavigationNode
-            {Text = Localizer["Home"], Url = "/welcome", Key = "League_Welcome"});
+        leagues.ChildNodes.Add(new() {Text = Localizer["Home"], Url = "/welcome", Key = "League_Welcome"});
 
-        leagues.ChildNodes.Add(new MainNavigationComponentModel.NavigationNode
-            { Text = Localizer["Leagues Overview"], Url = "/overview", Key = "League_Overview" });
+        leagues.ChildNodes.Add(new() { Text = Localizer["Leagues Overview"], Url = "/overview", Key = "League_Overview" });
 
-        leagues.ChildNodes.Add(new MainNavigationComponentModel.NavigationNode
-            { Text = "Separator", Key = "League_Separator" });
+        leagues.ChildNodes.Add(new() { Text = "Separator", Key = "League_Separator" });
 
         foreach (var tenant in TenantStore.GetTenants().Values.OrderBy(t => t.SiteContext.Position))
         {
             if (!string.IsNullOrEmpty(tenant.Identifier) && !tenant.SiteContext.HideInMenu)
             {
                 leagues.ChildNodes.Add(
-                    new MainNavigationComponentModel.NavigationNode
+                    new()
                     {
                         ParentNode = leagues,
                         Key = "League_" + tenant.Identifier,
@@ -179,9 +176,8 @@ public class MainNavigationNodeBuilder : IMainNavigationNodeBuilder
             Text = Localizer["Teams"],
             Url = TenantLink.Action(nameof(Team.Index), nameof(Team))
         };
-        teamInfos.ChildNodes.AddRange(new []
-        {
-            new MainNavigationComponentModel.NavigationNode
+        teamInfos.ChildNodes.AddRange([
+            new()
             {
                 ParentNode = teamInfos,
                 Key = "Teams_MyTeam",
@@ -190,28 +186,28 @@ public class MainNavigationNodeBuilder : IMainNavigationNodeBuilder
                 IsVisible = (await AuthorizationService.AuthorizeAsync(UserClaimsPrincipal, PolicyName.MyTeamPolicy)).Succeeded
                     || (await AuthorizationService.AuthorizeAsync(UserClaimsPrincipal, PolicyName.MyTeamAdminPolicy)).Succeeded
             },
-            new MainNavigationComponentModel.NavigationNode
+            new()
             {
                 ParentNode = teamInfos,
                 Key = "Teams_Application",
                 Text = Localizer["Register team for next season"],
                 Url = TenantLink.Action(nameof(TeamApplication.List), nameof(TeamApplication))
             },
-            new MainNavigationComponentModel.NavigationNode
+            new()
             {
                 ParentNode = teamInfos,
                 Key = "Teams_Contact",
                 Text = Localizer["Contact teams"],
                 Url = TenantLink.Action(nameof(Team.List), nameof(Team))
             },
-            new MainNavigationComponentModel.NavigationNode
+            new()
             {
                 ParentNode = teamInfos,
                 Key = "Teams_Map",
                 Text = Localizer["Geographical spread"],
                 Url = TenantLink.Action(nameof(Map.Index), nameof(Map))
             }
-        });
+        ]);
         #endregion
 
         #region ** Match Nodes **
@@ -222,23 +218,22 @@ public class MainNavigationNodeBuilder : IMainNavigationNodeBuilder
             Text = Localizer["Matches"],
             Url = TenantLink.Action(nameof(Match.Index), nameof(Match))
         };
-        teamOverview.ChildNodes.AddRange(new[]
-        {
-            new MainNavigationComponentModel.NavigationNode
+        teamOverview.ChildNodes.AddRange([
+            new()
             {
                 ParentNode = teamOverview,
                 Key = "Matches_Fixtures",
                 Text = Localizer["Fixtures"],
                 Url = TenantLink.Action(nameof(Match.Fixtures), nameof(Match))
             },
-            new MainNavigationComponentModel.NavigationNode
+            new()
             {
                 ParentNode = teamOverview,
                 Key = "Matches_Results",
                 Text = Localizer["Match results"],
                 Url = TenantLink.Action(nameof(Match.Results), nameof(Match))
             }
-        });
+        ]);
         #endregion
             
         #region ** Ranking tables **
@@ -249,23 +244,22 @@ public class MainNavigationNodeBuilder : IMainNavigationNodeBuilder
             Text = Localizer["Tables"],
             Url = TenantLink.Action(nameof(Ranking.Index), nameof(Ranking))
         };
-        rankingTables.ChildNodes.AddRange(new[]
-        {
-            new MainNavigationComponentModel.NavigationNode
+        rankingTables.ChildNodes.AddRange([
+            new()
             {
                 ParentNode = rankingTables,
                 Key = "Ranking_Table",
                 Text = Localizer["Current season"],
                 Url = TenantLink.Action(nameof(Ranking.Table), nameof(Ranking))
             },
-            new MainNavigationComponentModel.NavigationNode
+            new()
             {
                 ParentNode = rankingTables,
                 Key = "Ranking_AllTimeTable",
                 Text = Localizer["All-time tables"],
                 Url = TenantLink.Action(nameof(Ranking.AllTimeTournament), nameof(Ranking))
             }
-        });
+        ]);
         #endregion
             
         #region ** Account **
@@ -274,7 +268,7 @@ public class MainNavigationNodeBuilder : IMainNavigationNodeBuilder
 
         if (UserClaimsPrincipal.Identity is { IsAuthenticated: true })
         {
-            account = new MainNavigationComponentModel.NavigationNode
+            account = new()
             {
                 ParentNode = null,
                 Key = "Top_Account",
@@ -283,34 +277,33 @@ public class MainNavigationNodeBuilder : IMainNavigationNodeBuilder
                 IconCssClass = "fas fa-1x fa-user-check",
                 CssClass = "dropdown-menu-end"
             };
-            account.ChildNodes.AddRange(new []
-            {
-                new MainNavigationComponentModel.NavigationNode
+            account.ChildNodes.AddRange([
+                new()
                 {
                     ParentNode = account,
                     Key = "Account_Auth_Manage",
                     Text = Localizer["Manage account"],
                     Url = TenantLink.Action(nameof(Manage.Index), nameof(Manage))
                 },
-                new MainNavigationComponentModel.NavigationNode
+                new()
                 {
                     ParentNode = account,
                     Key = "Account_Auth_SignIn",
                     Text = Localizer["Sign in with other account"],
                     Url = TenantLink.Action(nameof(Account.SignIn), nameof(Account))
                 },
-                new MainNavigationComponentModel.NavigationNode
+                new()
                 {
                     ParentNode = account,
                     Key = "Account_Auth_SignOut",
                     Text = Localizer["Sign out"],
                     Url = TenantLink.Action(nameof(Account.SignOut), nameof(Account))
                 }
-            });
+            ]);
         }
         else
         {
-            account = new MainNavigationComponentModel.NavigationNode
+            account = new()
             {
                 ParentNode = null,
                 Key = "Top_Account",
@@ -319,23 +312,22 @@ public class MainNavigationNodeBuilder : IMainNavigationNodeBuilder
                 IconCssClass = "fas fa-user-plus",
                 CssClass = "dropdown-menu-end"
             };
-            account.ChildNodes.AddRange(new[]
-            {
-                new MainNavigationComponentModel.NavigationNode
+            account.ChildNodes.AddRange([
+                new()
                 {
                     ParentNode = account,
                     Key = "Account_Anonymous_SignIn",
                     Text = Localizer["Sign in"],
                     Url = TenantLink.Action(nameof(Account.SignIn), nameof(Account))
                 },
-                new MainNavigationComponentModel.NavigationNode
+                new()
                 {
                     ParentNode = account,
                     Key = "Account_Anonymous_Create",
                     Text = Localizer["Create account"],
                     Url = TenantLink.Action(nameof(Account.CreateAccount), nameof(Account))
                 }
-            });
+            ]);
         }
         #endregion
 
@@ -343,20 +335,18 @@ public class MainNavigationNodeBuilder : IMainNavigationNodeBuilder
 
         if (TenantContext.IsDefault)
         {
-            NavigationNodes.AddRange(new List<MainNavigationComponentModel.NavigationNode>(new[]
-            {
+            NavigationNodes.AddRange(new List<MainNavigationComponentModel.NavigationNode>([
                 homeNode, leagues, 
-                new MainNavigationComponentModel.NavigationNode {Key = "RightAlignSeparator"}, 
-            }));
+                new() {Key = "RightAlignSeparator"}
+            ]));
         }
         else
         {
-            NavigationNodes.AddRange(new List<MainNavigationComponentModel.NavigationNode>(new[]
-            {
+            NavigationNodes.AddRange(new List<MainNavigationComponentModel.NavigationNode>([
                 homeNode, leagues, teamInfos, teamOverview, rankingTables,
-                new MainNavigationComponentModel.NavigationNode {Key = "RightAlignSeparator"}, 
+                new() {Key = "RightAlignSeparator"}, 
                 account
-            }));
+            ]));
         }
 
         Logger.LogTrace($"League tenant list of {nameof(MainNavigationComponentModel.NavigationNode)}s created.");
@@ -390,7 +380,7 @@ public class MainNavigationNodeBuilder : IMainNavigationNodeBuilder
                 new { topic = string.Empty })
         };
 
-        tenantTopNode.ChildNodes.Add(new MainNavigationComponentModel.NavigationNode
+        tenantTopNode.ChildNodes.Add(new()
         {
             Key = "Home_TenantStart",
             Text = Localizer["Home"],
@@ -417,7 +407,7 @@ public class MainNavigationNodeBuilder : IMainNavigationNodeBuilder
         }
 
 
-        tenantTopNode.ChildNodes.Add(new MainNavigationComponentModel.NavigationNode
+        tenantTopNode.ChildNodes.Add(new()
         {
             Key = "Tenant_Contact",
             Text = Localizer["Contact"],

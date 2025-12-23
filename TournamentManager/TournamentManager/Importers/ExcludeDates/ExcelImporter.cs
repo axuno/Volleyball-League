@@ -77,14 +77,14 @@ public class ExcelImporter : IExcludeDateImporter
             from = _timeZoneConverter.ToUtc(from);
             to = _timeZoneConverter.ToUtc(to);
 
-            if (!fromToTimePeriod.Overlaps(new DateTimePeriod(from, to)))
+            if (!fromToTimePeriod.Overlaps(new(from, to)))
             {
                 _logger.LogDebug("UTC Dates {From} - {To} are out of limits", from, to);
                 continue;
             }
 
             var reason = worksheet.Cells[row, 3].Value as string ?? string.Empty;
-            yield return new ExcludeDateRecord(new DateTimePeriod(from, to), reason);
+            yield return new(new(from, to), reason);
             _logger.LogDebug("Imported UTC {From} - {To} ({Reason})", from, to, reason);
         }
     }

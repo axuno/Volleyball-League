@@ -117,7 +117,7 @@ public class Cron : AbstractController
         }
             
         // Strip hours, minutes, seconds
-        cronDateTime = new DateTime(cronDateTime.Year, cronDateTime.Month, cronDateTime.Day, 0, 0, 0, DateTimeKind.Utc);
+        cronDateTime = new(cronDateTime.Year, cronDateTime.Month, cronDateTime.Day, 0, 0, 0, DateTimeKind.Utc);
 
         var formattedDate = cronDateTime.ToString("d", CultureInfo.InvariantCulture);
         if (forceDate || !HasAlreadyRun(cronDateTime))
@@ -229,7 +229,7 @@ public class Cron : AbstractController
 
             var result = await httpClient.GetAsync(url);
             _logger.LogInformation("Get request for url '{Url}' completed.", url);
-            return new InvocationResult
+            return new()
             {
                 Success = true, Url = url,
                 QueuingResult =
@@ -243,11 +243,10 @@ public class Cron : AbstractController
             _logger.LogError(e, message, url);
             var now = DateTime.UtcNow;
                 
-            return new InvocationResult
+            return new()
             {
                 Success = true, Url = url,
-                QueuingResult = new QueuingResult
-                    {Success = false, ReferenceDate = new DateTime(now.Year, now.Month, now.Day, 0,0,0, now.Kind), Message = $"Error after sending get request for url '{url}'" },
+                QueuingResult = new() {Success = false, ReferenceDate = new(now.Year, now.Month, now.Day, 0,0,0, now.Kind), Message = $"Error after sending get request for url '{url}'" },
                 // depth of inner exceptions could lead to JSON serialization exception, so create a new one
                 Exception = new InvalidOperationException(e.Message){Source = e.Source} 
             };

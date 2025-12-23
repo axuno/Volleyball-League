@@ -18,13 +18,13 @@ internal class AvailableMatchDates
     private readonly ILogger<AvailableMatchDates> _logger;
 
     // available match dates from database
-    private readonly EntityCollection<AvailableMatchDateEntity> _availableDatesFromDb = new();
+    private readonly EntityCollection<AvailableMatchDateEntity> _availableDatesFromDb = [];
 
     // programmatically generated available match dates
-    private readonly EntityCollection<AvailableMatchDateEntity> _generatedAvailableDates = new();
+    private readonly EntityCollection<AvailableMatchDateEntity> _generatedAvailableDates = [];
 
     // excluded dates
-    private readonly EntityCollection<ExcludeMatchDateEntity> _excludedMatchDates = new();
+    private readonly EntityCollection<ExcludeMatchDateEntity> _excludedMatchDates = [];
 
     internal AvailableMatchDates(ITenantContext tenantContext,
         Axuno.Tools.DateAndTime.TimeZoneConverter timeZoneConverter, ILogger<AvailableMatchDates> logger)
@@ -101,7 +101,7 @@ internal class AvailableMatchDates
         var isAvailable = IsDateWithinRoundLegDateTime(roundLeg, matchDateTimeUtc)
             && !IsExcludedDate(matchDateTimeUtc, roundLeg.RoundId, team.Id)
             && !IsVenueOccupiedByMatch(
-                new DateTimePeriod(matchDateTimeUtc, matchDateTimeUtc.Add(plannedDuration)),
+                new(matchDateTimeUtc, matchDateTimeUtc.Add(plannedDuration)),
                 team.VenueId!.Value, tournamentMatches);
 
         _logger.LogDebug("Venue '{VenueId}' is available for '{MatchDateTimeUtc}': {IsAvailable}", team.VenueId, matchDateTimeUtc, isAvailable);

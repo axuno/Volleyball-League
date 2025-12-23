@@ -54,7 +54,7 @@ public class RankingRepository
             // Create ranking entities
             foreach (var rank in rankingList)
             {
-                rankingColl.Add(new RankingEntity
+                rankingColl.Add(new()
                 {
                     TournamentId = tournamentId,
                     RoundId = roundId,

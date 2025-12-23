@@ -12,7 +12,7 @@ public class EmbeddedResourceQuery : IEmbeddedResourceQuery
     /// <summary>
     /// Creates a new instance of <see cref="EmbeddedResourceQuery"/>.
     /// </summary>
-    public EmbeddedResourceQuery() : this(Array.Empty<Assembly>())
+    public EmbeddedResourceQuery() : this([])
     {
     }
 
@@ -22,7 +22,7 @@ public class EmbeddedResourceQuery : IEmbeddedResourceQuery
     /// <param name="assembliesToPreLoad"></param>
     public EmbeddedResourceQuery(IEnumerable<Assembly> assembliesToPreLoad)
     {
-        _assemblyNames = new Dictionary<Assembly, string>();
+        _assemblyNames = [];
         foreach (var assembly in assembliesToPreLoad)
         {
             TryAddAssemblySimpleName(assembly);

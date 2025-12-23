@@ -22,7 +22,7 @@ namespace League.Tests;
 public class UnitTestHelpers
 {
     private ServiceProvider? _serviceProvider;
-    private readonly ITenantContext _tenantContext;
+    private readonly TenantContext _tenantContext;
     private readonly string _configPath;
 
     public UnitTestHelpers()
@@ -76,12 +76,12 @@ public class UnitTestHelpers
 
     public UserStore GetUserStore()
     {
-        return new UserStore(_tenantContext, new NullLogger<UserStore>(), new UpperInvariantLookupNormalizer(), new Mock<MultiLanguageIdentityErrorDescriber>(null!).Object);
+        return new(_tenantContext, new NullLogger<UserStore>(), new UpperInvariantLookupNormalizer(), new Mock<MultiLanguageIdentityErrorDescriber>(null!).Object);
     }
 
     public RoleStore GetRoleStore()
     {
-        return new RoleStore(_tenantContext, new NullLogger<League.Identity.RoleStore>(), new UpperInvariantLookupNormalizer(), new Mock<MultiLanguageIdentityErrorDescriber>(null!).Object);
+        return new(_tenantContext, new NullLogger<League.Identity.RoleStore>(), new UpperInvariantLookupNormalizer(), new Mock<MultiLanguageIdentityErrorDescriber>(null!).Object);
     }
 
     public ServiceProvider GetStandardServiceProvider()
@@ -167,7 +167,7 @@ public class UnitTestHelpers
     public static WebApplicationFactory<T> GetLeagueTestApplicationFactory<T>()
         where T : class
     {
-        return new WebApplicationFactory<T>();
+        return new();
     }
 
     /// <summary>

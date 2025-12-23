@@ -8,7 +8,7 @@ internal interface IRankComparer : IComparer<Rank>
     /// <summary>
     /// The <see cref="TournamentManager.Ranking.RankComparison"/> used by the comparer.
     /// </summary>
-    public RankComparison RankComparison { get; }
+    RankComparison RankComparison { get; }
 
     /// <summary>
     /// The description how the comparer works.

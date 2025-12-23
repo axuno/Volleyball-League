@@ -23,7 +23,7 @@ public class TenantConfigWatcher
     /// <param name="typeFilter">The filter for file names that are watched, e.g. "*.config"</param>
     public TenantConfigWatcher(ITenantStore<ITenantContext> tenantStore, string configPath, string typeFilter)
     {
-        _tenantFileWatcher = new DelayedFileSystemWatcher(configPath, typeFilter)
+        _tenantFileWatcher = new(configPath, typeFilter)
             { ConsolidationInterval = 1000, EnableRaisingEvents = true };
         _tenantStore = tenantStore;
 

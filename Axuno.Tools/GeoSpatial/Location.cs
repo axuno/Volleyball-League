@@ -146,7 +146,7 @@ public sealed partial class Location : IEquatable<Location>, IFormattable, IXmlS
     /// <exception cref="ArgumentNullException">point is null.</exception>
     public double Distance(Location point)
     {
-        if (point == null) throw new ArgumentNullException(nameof(point));
+        ArgumentNullException.ThrowIfNull(point);
 
         var lat1 = Latitude.Radians;
         var lon1 = Longitude.Radians;
@@ -222,7 +222,7 @@ public sealed partial class Location : IEquatable<Location>, IFormattable, IXmlS
     /// <remarks>The ante meridian is not considered.</remarks>
     public Location GetPoint(double distance, Angle? radial)
     {
-        if (radial == null) throw new ArgumentNullException(nameof(radial));
+        ArgumentNullException.ThrowIfNull(radial);
 
         var lat = Latitude.Radians;
         var lon = Longitude.Radians;
@@ -238,7 +238,7 @@ public sealed partial class Location : IEquatable<Location>, IFormattable, IXmlS
 
         var radialLon = (lon + atan + Math.PI) % (2 * Math.PI) - Math.PI;
 
-        return new Location(
+        return new(
             Latitude.FromRadians(radialLat),
             Longitude.FromRadians(radialLon));
     }
@@ -317,7 +317,7 @@ public sealed partial class Location : IEquatable<Location>, IFormattable, IXmlS
     public static Location Parse(string value, LocationStyles style = LocationStyles.None,
         IFormatProvider? provider = null)
     {
-        if (value == null) throw new ArgumentNullException(nameof(value));
+        ArgumentNullException.ThrowIfNull(value);
 
         if (TryParse(value, style, provider, out var output)) return output!;
         throw new FormatException();

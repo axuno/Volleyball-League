@@ -303,7 +303,7 @@ internal partial class RankComparer : IRankComparer
         if (!_directCompareRankingInProgress && x.MatchesPlayed > 0 && y.MatchesPlayed > 0)
         {
             _directCompareRankingInProgress = true;
-            var directCompareRanking = Ranking.GetList(new[] { x.TeamId, y.TeamId }, UpperDateLimit);
+            var directCompareRanking = Ranking.GetList([x.TeamId, y.TeamId], UpperDateLimit);
             _directCompareRankingInProgress = false;
 
             if (directCompareRanking[0].TeamId == x.TeamId)

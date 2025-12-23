@@ -78,8 +78,8 @@ public class RankingChart
     /// Gets the list of colors used for the lines in the chart from rank 1 (first in the list) to rank 10 (last) as ARGB integer.
     /// Only 20 colors are defined, all others will be rendered in gray.
     /// </summary>
-    public static readonly uint[] LineColors = 
-    {
+    public static readonly uint[] LineColors =
+    [
         // 10 best
         OxyColors.Red.ToUint(), OxyColors.Green.ToUint(), OxyColors.Orange.ToUint(), 
         OxyColors.Blue.ToUint(), OxyColors.Magenta.ToUint(), OxyColors.Gray.ToUint(), 
@@ -90,7 +90,7 @@ public class RankingChart
         OxyColors.DarkCyan.ToUint(), OxyColors.DarkOrchid.ToUint(), OxyColors.LightPink.ToUint(), 
         OxyColors.Goldenrod.ToUint(), OxyColors.HotPink.ToUint(), OxyColors.Purple.ToUint(), 
         OxyColors.SlateGray.ToUint()
-    };
+    ];
 
     /// <summary>
     /// Gets the settings for creating the chart.
@@ -182,13 +182,13 @@ public class RankingChart
             // add data points for completed matches
             foreach (var rank in teamRankingHistory)
             {
-                lineSeries.Points.Add(new DataPoint(count++, rank.Number));
+                lineSeries.Points.Add(new(count++, rank.Number));
             }
 
             // add data points for uncompleted matches
             for (var i = count; i <= model.Axes[0].AbsoluteMaximum; i++)
             {
-                lineSeries.Points.Add(new DataPoint(i, teamRankingHistory.Last().Number));
+                lineSeries.Points.Add(new(i, teamRankingHistory.Last().Number));
             }
 
             var teamName = _teams.Find(t => t.TeamId == lastRank.TeamId).TeamName;

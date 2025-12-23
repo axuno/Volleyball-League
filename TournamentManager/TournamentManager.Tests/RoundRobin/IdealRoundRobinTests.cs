@@ -82,11 +82,11 @@ internal class IdealRoundRobinTests
                 participantsWithConsecutiveHomeGuestMatches.Add(participant);
             }
 
-            Assert.Multiple(() =>
+            using (Assert.EnterMultipleScope())
             {
                 Assert.That(maxConsecutiveHomeGuest.HomeCount, Is.LessThanOrEqualTo(numOfParticipants % 2 == 0 ? 2 : 1));
                 Assert.That(maxConsecutiveHomeGuest.GuestCount, Is.LessThanOrEqualTo(numOfParticipants % 2 == 0 ? 2 : 1));
-            });
+            }
         }
 
         // Only even number of participants may have consecutive home/guest matches

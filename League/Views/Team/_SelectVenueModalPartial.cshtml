@@ -11,7 +11,7 @@
     <modal-body class="pb-0">
         @{ ValueTuple<long, IList<long>, VenueSelectorComponentModel.Criteria, VenueSelectorComponentModel.Criteria, long?> componentModel =
                  (Model.TournamentId,
-                     new List<long>(new[] { Model.TeamId }),
+                     new List<long>([Model.TeamId]),
                      (!TenantContext.TournamentContext.TeamRuleSet.HomeVenue.MustBeSet ? VenueSelectorComponentModel.Criteria.NotSpecified : 0) |
                      VenueSelectorComponentModel.Criteria.VenuesOfTeams | VenueSelectorComponentModel.Criteria.Active | VenueSelectorComponentModel.Criteria.Unused,
                      VenueSelectorComponentModel.Criteria.VenuesOfTeams | VenueSelectorComponentModel.Criteria.Active | VenueSelectorComponentModel.Criteria.Unused,

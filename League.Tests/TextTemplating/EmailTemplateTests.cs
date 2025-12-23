@@ -25,7 +25,7 @@ public class EmailTemplateTests
 {
     private readonly ServiceProvider _services;
     private readonly LeagueTemplateRenderer _renderer;
-    private readonly ITenantContext _tenantContext;
+    private readonly TenantContext _tenantContext;
     private readonly IStringLocalizer<EmailResource> _localizer;
 
     public EmailTemplateTests()
@@ -35,7 +35,7 @@ public class EmailTemplateTests
             OrganizationContext =
             {
                 Name = "League Long Name", ShortName = "Short Name",
-                Bank = new BankDetails
+                Bank = new()
                 {
                     ShowBankDetailsInConfirmationEmail = true, Amount = (decimal) 12.34, Currency = "Euro",
                     BankName = "The Bank Name",
@@ -56,7 +56,7 @@ public class EmailTemplateTests
 
     private string L(string toTranslate, string cultureName)
     {
-        using var cs = new CultureSwitcher(new CultureInfo(cultureName), new CultureInfo(cultureName));
+        using var cs = new CultureSwitcher(new(cultureName), new(cultureName));
         return _localizer[toTranslate];
     }
 
@@ -79,7 +79,7 @@ public class EmailTemplateTests
         };
             
         string text = string.Empty, html = string.Empty;
-        Assert.Multiple( ()  =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.DoesNotThrowAsync(async () =>
             {
@@ -93,7 +93,7 @@ public class EmailTemplateTests
 
             Assert.That(text, Does.Contain(L("Change your primary email address", cultureName)));
             Assert.That(html, Does.Contain(L("Change your primary email address", cultureName)));
-        });
+        }
     }
         
     [Test]
@@ -108,7 +108,7 @@ public class EmailTemplateTests
     public void ConfirmTeamApplication_Test(string cultureName, bool showBank, bool isRegisteringUser)
     {
         string text = string.Empty, html = string.Empty;
-        Assert.Multiple( ()  =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.DoesNotThrowAsync(async () =>
             {
@@ -140,7 +140,7 @@ public class EmailTemplateTests
                 Assert.That(text.Contains("Bank", StringComparison.CurrentCultureIgnoreCase) && text.Contains(_tenantContext.OrganizationContext.Bank.Amount.ToString(CultureInfo.GetCultureInfo(cultureName))));
                 Assert.That(text, Does.Contain(L("Reference ID", cultureName)));
             }
-        });
+        }
     }
         
     [Test]
@@ -157,7 +157,7 @@ public class EmailTemplateTests
         Console.WriteLine();
             
         string text = string.Empty, html = string.Empty;
-        Assert.Multiple( ()  =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.DoesNotThrowAsync(async () =>
             {
@@ -167,7 +167,7 @@ public class EmailTemplateTests
             } );
 
             Assert.That(text, Does.Contain(L("Mr.", cultureName)));
-        });
+        }
     }
         
     [Test]
@@ -184,7 +184,7 @@ public class EmailTemplateTests
         var m = new ChangeFixtureModel
         {
             Username = "Changed-by-name",
-            Fixture = new TournamentManager.DAL.TypedViewClasses.PlannedMatchRow
+            Fixture = new()
             {
                 Id = 9876, ChangeSerial = 2,
                 RoundDescription = "Round descr.", HomeTeamNameForRound = "Home Team Name",
@@ -195,7 +195,7 @@ public class EmailTemplateTests
         };
             
         string text = string.Empty, html = string.Empty;
-        Assert.Multiple( ()  =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.DoesNotThrowAsync(async () =>
             {
@@ -208,7 +208,7 @@ public class EmailTemplateTests
             if (origPlannedStart.HasValue) Assert.That(text, Does.Contain(L("Replacement fixture date", cultureName))); else Assert.That(text, Does.Not.Contain(L("Replacement fixture date", cultureName)));
             Assert.That(text, Does.Contain(L("Season fixture venue", cultureName)));
             if (origVenue.HasValue) Assert.That(text, Does.Contain(L("Replacement venue", cultureName))); else Assert.That(text, Does.Not.Contain(L("Replacement venue", cultureName)));
-        });
+        }
     }
         
     [Test]
@@ -223,7 +223,7 @@ public class EmailTemplateTests
         };
             
         string text = string.Empty, html = string.Empty;
-        Assert.Multiple( ()  =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.DoesNotThrowAsync(async () =>
             {
@@ -237,7 +237,7 @@ public class EmailTemplateTests
 
             Assert.That(text, Does.Contain(L("Your primary email is about to be changed to", cultureName)));
             Assert.That(html, Does.Contain(L("Your primary email is about to be changed to", cultureName)));
-        });
+        }
     }        
         
     [Test]
@@ -252,8 +252,8 @@ public class EmailTemplateTests
         };
             
         string text = string.Empty, html = string.Empty;
-            
-        Assert.Multiple( ()  =>
+
+        using (Assert.EnterMultipleScope())
         {
 
             Assert.DoesNotThrowAsync(async () =>
@@ -267,7 +267,7 @@ public class EmailTemplateTests
             } );
             Assert.That(text, Does.Contain(L("Here is your password recovery code", cultureName)));
             Assert.That(html, Does.Contain(L("Here is your password recovery code", cultureName)));
-        });
+        }
     }
         
     [TestCase("en")]
@@ -281,8 +281,8 @@ public class EmailTemplateTests
         };
             
         string text = string.Empty, html = string.Empty;
-            
-        Assert.Multiple( ()  =>
+
+        using (Assert.EnterMultipleScope())
         {
 
             Assert.DoesNotThrowAsync(async () =>
@@ -297,7 +297,7 @@ public class EmailTemplateTests
 
             Assert.That(text, Does.Contain(L("Thank you for creating an account", cultureName)));
             Assert.That(html, Does.Contain(L("Thank you for creating an account", cultureName)));
-        });
+        }
     }
         
     [TestCase("en", false, true)]
@@ -318,7 +318,7 @@ public class EmailTemplateTests
             RoundDescription = "Round description",
             HomeTeamName = "Home Team",
             GuestTeamName = "Guest Team",
-            Match = new TournamentManager.DAL.EntityClasses.MatchEntity
+            Match = new()
             {
                 Id = 12345,
                 PlannedStart = new DateTime(2020, 12, 24, 20, 00, 00),
@@ -331,14 +331,14 @@ public class EmailTemplateTests
             }
         };
         m.Match.Sets.AddRange([
-            new TournamentManager.DAL.EntityClasses.SetEntity {HomeBallPoints = 25, GuestBallPoints = 1, HomeSetPoints = 1, GuestSetPoints = 0},
-            new TournamentManager.DAL.EntityClasses.SetEntity {HomeBallPoints = 25, GuestBallPoints = 2, HomeSetPoints = 1, GuestSetPoints = 0},
-            new TournamentManager.DAL.EntityClasses.SetEntity {HomeBallPoints = 25, GuestBallPoints = 3, HomeSetPoints = 1, GuestSetPoints = 0}
+            new() {HomeBallPoints = 25, GuestBallPoints = 1, HomeSetPoints = 1, GuestSetPoints = 0},
+            new() {HomeBallPoints = 25, GuestBallPoints = 2, HomeSetPoints = 1, GuestSetPoints = 0},
+            new() {HomeBallPoints = 25, GuestBallPoints = 3, HomeSetPoints = 1, GuestSetPoints = 0}
         ]);
             
         string text = string.Empty, html = string.Empty;
-            
-        Assert.Multiple( ()  =>
+
+        using (Assert.EnterMultipleScope())
         {
             Assert.DoesNotThrowAsync(async () =>
             {
@@ -350,7 +350,7 @@ public class EmailTemplateTests
             Assert.That(text, Does.Contain(L("Result", cultureName)));
             if (withRemarks) Assert.That(text, Does.Contain(m.Match.Remarks));
             if (isOrigStartSet) Assert.That(text, Does.Contain(m.Match.OrigPlannedStart?.ToString("d", new CultureInfo(cultureName))!));
-        });
+        }
     }
 
     [TestCase("en", false, true)]
@@ -371,7 +371,7 @@ public class EmailTemplateTests
             RoundDescription = "Round description",
             HomeTeamName = "Home Team",
             GuestTeamName = "Guest Team",
-            Match = new TournamentManager.DAL.EntityClasses.MatchEntity
+            Match = new()
             {
                 Id = 12345,
                 PlannedStart = new DateTime(2023, 11, 24, 20, 00, 00),
@@ -384,14 +384,14 @@ public class EmailTemplateTests
             }
         };
         m.Match.Sets.AddRange([
-            new TournamentManager.DAL.EntityClasses.SetEntity {HomeBallPoints = 25, GuestBallPoints = 1, HomeSetPoints = 1, GuestSetPoints = 0},
-            new TournamentManager.DAL.EntityClasses.SetEntity {HomeBallPoints = 25, GuestBallPoints = 2, HomeSetPoints = 1, GuestSetPoints = 0},
-            new TournamentManager.DAL.EntityClasses.SetEntity {HomeBallPoints = 25, GuestBallPoints = 3, HomeSetPoints = 1, GuestSetPoints = 0}
+            new() {HomeBallPoints = 25, GuestBallPoints = 1, HomeSetPoints = 1, GuestSetPoints = 0},
+            new() {HomeBallPoints = 25, GuestBallPoints = 2, HomeSetPoints = 1, GuestSetPoints = 0},
+            new() {HomeBallPoints = 25, GuestBallPoints = 3, HomeSetPoints = 1, GuestSetPoints = 0}
         ]);
 
         string text = string.Empty, html = string.Empty;
 
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.DoesNotThrowAsync(async () =>
             {
@@ -403,7 +403,7 @@ public class EmailTemplateTests
             Assert.That(text, Does.Contain(L("Match result removed", cultureName)));
             if (withRemarks) Assert.That(text, Does.Contain(m.Match.Remarks));
             if (isOrigStartSet) Assert.That(text, Does.Contain(m.Match.OrigPlannedStart?.ToString("d", new CultureInfo(cultureName))!));
-        });
+        }
     }
 
     [TestCase("en", true)]
@@ -414,14 +414,14 @@ public class EmailTemplateTests
     {
         var m = new AnnounceNextMatchModel
         {
-            Fixture = new PlannedMatchRow
+            Fixture = new()
             {
                 Id = 1000,
                 PlannedStart = new DateTime(2021, 05, 05, 19, 00, 00),
                 HomeTeamNameForRound = "HomeTeam",
                 GuestTeamNameForRound = "GuestTeam"
             },
-            Venue = new TournamentManager.DAL.EntityClasses.VenueEntity
+            Venue = new()
             {
                 Name = "Venue Name",
                 Extension = "Venue Ext.",
@@ -435,8 +435,8 @@ public class EmailTemplateTests
         if (!venueIsSet) m.Venue = null;
             
         string text = string.Empty, html = string.Empty;
-            
-        Assert.Multiple( ()  =>
+
+        using (Assert.EnterMultipleScope())
         {
             Assert.DoesNotThrowAsync(async () =>
             {
@@ -447,7 +447,7 @@ public class EmailTemplateTests
 
             Assert.That(text, Does.Contain(cultureName == "en" ? "Hello" : "Hallo"));
             Assert.That(text, Does.Contain(m.IcsCalendarUrl));
-        });
+        }
     }
 
     [TestCase("en")]
@@ -457,7 +457,7 @@ public class EmailTemplateTests
     {
         var m = new RemindMatchResultModel
         {
-            Fixture = new PlannedMatchRow
+            Fixture = new()
             {
                 Id = 1000,
                 PlannedStart = new DateTime(2021, 05, 05, 19, 00, 00),
@@ -467,8 +467,8 @@ public class EmailTemplateTests
         };
 
         string text = string.Empty, html = string.Empty;
-            
-        Assert.Multiple( ()  =>
+
+        using (Assert.EnterMultipleScope())
         {
             Assert.DoesNotThrowAsync(async () =>
             {
@@ -479,7 +479,7 @@ public class EmailTemplateTests
 
             Assert.That(text, Does.Contain(cultureName == "en" ? "Hello" : "Hallo"));
             Assert.That(text, Does.Contain(m.Fixture.HomeTeamNameForRound));
-        });
+        }
     }
         
     [TestCase("en")]
@@ -489,7 +489,7 @@ public class EmailTemplateTests
     {
         var m = new UrgeMatchResultModel
         {
-            Fixture = new PlannedMatchRow
+            Fixture = new()
             {
                 Id = 1000,
                 PlannedStart = new DateTime(2021, 05, 05, 19, 00, 00),
@@ -499,8 +499,8 @@ public class EmailTemplateTests
         };
             
         string text = string.Empty, html = string.Empty;
-            
-        Assert.Multiple( ()  =>
+
+        using (Assert.EnterMultipleScope())
         {
             Assert.DoesNotThrowAsync(async () =>
             {
@@ -510,6 +510,6 @@ public class EmailTemplateTests
             } );
 
             Assert.That(text, Does.Contain(cultureName == "en" ? "Hello" : "Hallo"));
-        });
+        }
     }
 }

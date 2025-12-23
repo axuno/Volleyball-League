@@ -97,11 +97,11 @@ public class ConcurrentBackgroundQueueServiceTests
         }
         await bgTaskSvc.StopAsync(cts.Token);
 
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(itemCounter, Is.EqualTo(expected));
             Assert.That(ExceptionFromBackgroundQueue?.GetType(), Is.EqualTo(typeof(AmbiguousImplementationException)));
-        });
+        }
     }
 
     [Test]
@@ -186,12 +186,15 @@ public class ConcurrentBackgroundQueueServiceTests
             BindingFlags.NonPublic | BindingFlags.Instance);
         var stoppedField = typeof(ConcurrentBackgroundQueueService).GetField("_applicationStopped",
             BindingFlags.NonPublic | BindingFlags.Instance);
-        Assert.That(stoppingField, Is.Not.Null);
-        Assert.That(stoppedField, Is.Not.Null);
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(stoppingField, Is.Not.Null);
+            Assert.That(stoppedField, Is.Not.Null);
 
-        // Initially false
-        Assert.That((bool) stoppingField!.GetValue(hosted)!, Is.False);
-        Assert.That((bool) stoppedField!.GetValue(hosted)!, Is.False);
+            // Initially false
+            Assert.That((bool) stoppingField!.GetValue(hosted)!, Is.False);
+            Assert.That((bool) stoppedField!.GetValue(hosted)!, Is.False);
+        }
 
         // Trigger lifetime stop (TestHostApplicationLifetime sets both tokens)
         lifetime.StopApplication();
@@ -205,11 +208,14 @@ public class ConcurrentBackgroundQueueServiceTests
             await Task.Delay(10);
         }
 
-        // Assert flags set
-        Assert.That((bool) stoppingField.GetValue(hosted)!, Is.True,
-            "_applicationStopping should be true after StopApplication()");
-        Assert.That((bool) stoppedField.GetValue(hosted)!, Is.True,
-            "_applicationStopped should be true after StopApplication()");
+        using (Assert.EnterMultipleScope())
+        {
+            // Assert flags set
+            Assert.That((bool) stoppingField.GetValue(hosted)!, Is.True,
+                "_applicationStopping should be true after StopApplication()");
+            Assert.That((bool) stoppedField.GetValue(hosted)!, Is.True,
+                "_applicationStopped should be true after StopApplication()");
+        }
 
         // Now stop service normally
         await hosted.StopAsync(CancellationToken.None);

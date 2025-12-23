@@ -56,7 +56,7 @@
     }
     MatchEntity ToMatchEntity(PlannedMatchRow pmr)
     {
-        return new MatchEntity { Id = pmr.Id, HomeTeamId = pmr.HomeTeamId, GuestTeamId = pmr.GuestTeamId, VenueId = pmr.VenueId };
+        return new() { Id = pmr.Id, HomeTeamId = pmr.HomeTeamId, GuestTeamId = pmr.GuestTeamId, VenueId = pmr.VenueId };
     }
 }
 <div class="mb-0 pb-1">

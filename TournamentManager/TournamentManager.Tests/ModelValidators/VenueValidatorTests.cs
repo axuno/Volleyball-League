@@ -19,15 +19,15 @@ public class VenueValidatorTests
     {
         var venue = new VenueEntity{Name = venueName};
 
-        var vv = new VenueValidator(venue, (new GoogleGeo.GeoResponse(), new List<VenueDistanceResultRow>()));
+        var vv = new VenueValidator(venue, (new(), []));
 
         var factResult = await vv.CheckAsync(VenueValidator.FactId.NameIsSet, CancellationToken.None);
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(factResult.Enabled, Is.True);
             Assert.That(factResult.Success, Is.EqualTo(expected));
             Assert.That(factResult.Exception, Is.Null);
-        });
+        }
     }
 
     [TestCase("12345", "City", "Street", true)]
@@ -38,15 +38,15 @@ public class VenueValidatorTests
     {
         var venue = new VenueEntity { PostalCode = postalCode, City = city, Street = street };
 
-        var vv = new VenueValidator(venue, (new GoogleGeo.GeoResponse(), new List<VenueDistanceResultRow>()));
+        var vv = new VenueValidator(venue, (new(), []));
 
         var factResult = await vv.CheckAsync(VenueValidator.FactId.AddressFieldsAreSet, CancellationToken.None);
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(factResult.Enabled, Is.True);
             Assert.That(factResult.Success, Is.EqualTo(expected));
             Assert.That(factResult.Exception, Is.Null);
-        });
+        }
     }
 
 
@@ -54,27 +54,25 @@ public class VenueValidatorTests
     public async Task StatusText_Should_Be_Set()
     {
         var venue = new VenueEntity();
-        var vv = new VenueValidator(venue, (new GoogleGeo.GeoResponse{Success = true, Found = true, StatusText = "OK", Exception = null, GeoLocation = new GoogleGeo.GeoLocation{LocationType = GoogleGeo.LocationType.Approximate}}, new List<VenueDistanceResultRow>()));
-            
-        var factResult = await vv.CheckAsync(VenueValidator.FactId.CanBeLocated, CancellationToken.None);
-        Assert.Multiple(() =>
+        var vv = new VenueValidator(venue, (new() {Success = true, Found = true, StatusText = "OK", Exception = null, GeoLocation = new() {LocationType = GoogleGeo.LocationType.Approximate}}, []));
+        _ = await vv.CheckAsync(VenueValidator.FactId.CanBeLocated, CancellationToken.None);
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(vv.Data.GeoResponse.StatusText, Is.EqualTo("OK"));
             Assert.That(vv.Data.GeoResponse.Exception, Is.Null);
-        });
+        }
     }
 
     [Test]
     public async Task Exception_Should_Be_Set()
     {
         var venue = new VenueEntity();
-        var vv = new VenueValidator(venue, (new GoogleGeo.GeoResponse{Success = false, Found = false, Exception = new ArgumentException(), GeoLocation = new GoogleGeo.GeoLocation{LocationType = GoogleGeo.LocationType.Approximate}}, new List<VenueDistanceResultRow>()));
-            
-        var factResult = await vv.CheckAsync(VenueValidator.FactId.CanBeLocated, CancellationToken.None);
-        Assert.Multiple(() =>
+        var vv = new VenueValidator(venue, (new() {Success = false, Found = false, Exception = new ArgumentException(), GeoLocation = new() {LocationType = GoogleGeo.LocationType.Approximate}}, []));
+        _ = await vv.CheckAsync(VenueValidator.FactId.CanBeLocated, CancellationToken.None);
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(vv.Data.GeoResponse.Exception, Is.InstanceOf<ArgumentException>());
-        });
+        }
     }
 
     [TestCase(true)]
@@ -83,15 +81,15 @@ public class VenueValidatorTests
     {
         var venue = new VenueEntity();
             
-        var vv = new VenueValidator(venue, (new GoogleGeo.GeoResponse{Success = true, Found = found, StatusText = "OK", Exception = null, GeoLocation = new GoogleGeo.GeoLocation{LocationType = GoogleGeo.LocationType.Approximate}}, new List<VenueDistanceResultRow>()));
+        var vv = new VenueValidator(venue, (new() {Success = true, Found = found, StatusText = "OK", Exception = null, GeoLocation = new() {LocationType = GoogleGeo.LocationType.Approximate}}, []));
             
         var factResult = await vv.CheckAsync(VenueValidator.FactId.CanBeLocated, CancellationToken.None);
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(factResult.Enabled, Is.True);
             Assert.That(factResult.Success, Is.EqualTo(found));
             Assert.That(factResult.Exception, Is.Null);
-        });
+        }
     }
 
     [TestCase(GoogleGeo.LocationType.Approximate, false)]
@@ -102,15 +100,15 @@ public class VenueValidatorTests
     {
         var venue = new VenueEntity();
 
-        var vv = new VenueValidator(venue, (new GoogleGeo.GeoResponse{Success = true, Found = true, GeoLocation = new GoogleGeo.GeoLocation{LocationType = locationType}}, new List<VenueDistanceResultRow>()));
+        var vv = new VenueValidator(venue, (new() {Success = true, Found = true, GeoLocation = new() {LocationType = locationType}}, []));
 
         var factResult = await vv.CheckAsync(VenueValidator.FactId.LocationIsPrecise, CancellationToken.None);
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(factResult.Enabled, Is.True);
             Assert.That(factResult.Success, Is.EqualTo(expected));
             Assert.That(factResult.Exception, Is.Null);
-        });
+        }
     }
 
     [TestCase(GoogleGeo.LocationType.Approximate, true)]
@@ -121,15 +119,15 @@ public class VenueValidatorTests
     {
         var venue = new VenueEntity();
 
-        var vv = new VenueValidator(venue, (new GoogleGeo.GeoResponse{Success = true, Found = true, GeoLocation = new GoogleGeo.GeoLocation{LocationType = locationType}}, new List<VenueDistanceResultRow>()));
+        var vv = new VenueValidator(venue, (new() {Success = true, Found = true, GeoLocation = new() {LocationType = locationType}}, []));
 
         var factResult = await vv.CheckAsync(VenueValidator.FactId.NotExistingGeoLocation, CancellationToken.None);
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(enabled, Is.EqualTo(factResult.Enabled));
             Assert.That(factResult.Success, Is.EqualTo(enabled));
             Assert.That(factResult.Exception, Is.Null);
-        });
+        }
     }
 
     [TestCase(GoogleGeo.LocationType.RoofTop, false, false, false)]
@@ -150,15 +148,15 @@ public class VenueValidatorTests
             
         if (emptyList) closeByVenues.Clear();
 
-        var vv = new VenueValidator(venue, (new GoogleGeo.GeoResponse{Success = true, Found = true, GeoLocation = new GoogleGeo.GeoLocation{LocationType = locationType}}, closeByVenues));
+        var vv = new VenueValidator(venue, (new() {Success = true, Found = true, GeoLocation = new() {LocationType = locationType}}, closeByVenues));
 
         var factResult = await vv.CheckAsync(VenueValidator.FactId.NotExistingGeoLocation, CancellationToken.None);
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(factResult.Enabled, Is.True);
             Assert.That(factResult.Success, Is.EqualTo(success));
             if(!success) Assert.That(factResult.Message, Does.Contain((closeByVenues.Max(v => v.Distance)*1000).ToString(CultureInfo.InvariantCulture)));
             Assert.That(factResult.Exception, Is.Null);
-        });
+        }
     }
 }

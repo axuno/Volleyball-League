@@ -69,7 +69,7 @@ public class TenantContentProvider : ITenantContentProvider
     private void InitializeFileWatcher()
     {
         _tenantContentFileWatcher =
-            new DelayedFileSystemWatcher(_contentPath)
+            new(_contentPath)
             {
                 Filters = { "*.json" },
                 ConsolidationInterval = 1000,
@@ -104,7 +104,7 @@ public class TenantContentProvider : ITenantContentProvider
 
         // Lock while creating a new dictionary
         await _semaphore.WaitAsync();
-        _allTenantsContent = new ConcurrentDictionary<string, List<ContentItem>>(StringComparer.OrdinalIgnoreCase);
+        _allTenantsContent = new(StringComparer.OrdinalIgnoreCase);
         _semaphore.Release();
 
         var tenants = _tenantStore.GetTenants();

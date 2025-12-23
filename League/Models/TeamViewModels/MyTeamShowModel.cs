@@ -13,9 +13,9 @@ public class MyTeamShowModel
 
     public TournamentEntity? Tournament { get; set; }
 
-    public List<TeamVenueRoundRow> TeamVenueRoundInfos { get; set; } = new();
+    public List<TeamVenueRoundRow> TeamVenueRoundInfos { get; set; } = [];
 
-    public List<TeamUserRoundRow> TeamUserRoundInfos { get; set; } = new();
+    public List<TeamUserRoundRow> TeamUserRoundInfos { get; set; } = [];
 
     public long ActiveTeamId { get; set; }
 

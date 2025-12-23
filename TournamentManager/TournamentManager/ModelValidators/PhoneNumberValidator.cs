@@ -22,7 +22,7 @@ public class PhoneNumberValidator : AbstractValidator<string, (PhoneNumberServic
 
     private Fact<FactId> NumberIsValid()
     {
-        return new Fact<FactId>
+        return new()
         {
             Id = FactId.NumberIsValid,
             FieldNames = ["PhoneNumber"],

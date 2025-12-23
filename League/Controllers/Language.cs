@@ -67,7 +67,7 @@ public class Language : Controller
         if (languages.Length == 0 || languages[0].StartsWith(requestCulture.Name, StringComparison.InvariantCultureIgnoreCase))
         {
             Response.Cookies.Delete(cookieProvider.CookieName);
-            Response.Cookies.Append(cookieProvider.CookieName, string.Empty, new CookieOptions
+            Response.Cookies.Append(cookieProvider.CookieName, string.Empty, new()
             {
                 Secure = true,
                 Expires = DateTime.UtcNow.AddDays(-1),
@@ -80,10 +80,10 @@ public class Language : Controller
         }
 
         // set the cookie for future language detection
-        var cookieValue = CookieRequestCultureProvider.MakeCookieValue(new RequestCulture(requestCulture, requestUiCulture));
+        var cookieValue = CookieRequestCultureProvider.MakeCookieValue(new(requestCulture, requestUiCulture));
         Response.Cookies.Append(cookieProvider.CookieName,
             cookieValue,
-            new CookieOptions
+            new()
             {
                 Secure = true,
                 Expires = DateTimeOffset.UtcNow.AddYears(1),

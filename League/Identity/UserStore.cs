@@ -30,8 +30,7 @@ public class UserStore : IUserStore<ApplicationUser>, IUserEmailStore<Applicatio
     public async Task<IdentityResult> CreateAsync(ApplicationUser user, CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
-        if (user == null)
-            throw new ArgumentNullException(nameof(user));
+        ArgumentNullException.ThrowIfNull(user);
 
         var userEntity = new UserEntity
         {
@@ -82,8 +81,7 @@ public class UserStore : IUserStore<ApplicationUser>, IUserEmailStore<Applicatio
     public async Task<IdentityResult> DeleteAsync(ApplicationUser user, CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
-        if (user == null)
-            throw new ArgumentNullException(nameof(user));
+        ArgumentNullException.ThrowIfNull(user);
 
         try
         {
@@ -160,24 +158,21 @@ public class UserStore : IUserStore<ApplicationUser>, IUserEmailStore<Applicatio
 #nullable enable annotations
     public Task<string?> GetNormalizedUserNameAsync(ApplicationUser user, CancellationToken cancellationToken)
     {
-        if (user == null)
-            throw new ArgumentNullException(nameof(user));
+        ArgumentNullException.ThrowIfNull(user);
 
         return Task.FromResult(user.NormalizedUserName);
     }
 
     public Task<string> GetUserIdAsync(ApplicationUser user, CancellationToken cancellationToken)
     {
-        if (user == null)
-            throw new ArgumentNullException(nameof(user));
+        ArgumentNullException.ThrowIfNull(user);
 
         return Task.FromResult(user.Id.ToString());
     }
 
     public Task<string?> GetUserNameAsync(ApplicationUser user, CancellationToken cancellationToken)
     {
-        if (user == null)
-            throw new ArgumentNullException(nameof(user));
+        ArgumentNullException.ThrowIfNull(user);
 
         return Task.FromResult(user.UserName);
     }
@@ -185,8 +180,7 @@ public class UserStore : IUserStore<ApplicationUser>, IUserEmailStore<Applicatio
     public Task SetNormalizedUserNameAsync(ApplicationUser user, string? normalizedName,
         CancellationToken cancellationToken)
     {
-        if (user == null)
-            throw new ArgumentNullException(nameof(user));
+        ArgumentNullException.ThrowIfNull(user);
 
         if (string.IsNullOrEmpty(normalizedName))
             throw new ArgumentNullException(nameof(normalizedName), @"Null or empty");
@@ -197,8 +191,7 @@ public class UserStore : IUserStore<ApplicationUser>, IUserEmailStore<Applicatio
 
     public Task SetUserNameAsync(ApplicationUser user, string? userName, CancellationToken cancellationToken)
     {
-        if (user == null)
-            throw new ArgumentNullException(nameof(user));
+        ArgumentNullException.ThrowIfNull(user);
 
         if (string.IsNullOrEmpty(userName))
             throw new ArgumentNullException(nameof(userName), @"Null or empty");
@@ -213,8 +206,7 @@ public class UserStore : IUserStore<ApplicationUser>, IUserEmailStore<Applicatio
     {
         cancellationToken.ThrowIfCancellationRequested();
 
-        if (user == null)
-            throw new ArgumentNullException(nameof(user));
+        ArgumentNullException.ThrowIfNull(user);
 
         var userEntity = new UserEntity
         {
@@ -253,8 +245,7 @@ public class UserStore : IUserStore<ApplicationUser>, IUserEmailStore<Applicatio
     #region ** IUserEmailStore **
     public Task SetEmailAsync(ApplicationUser user, string? email, CancellationToken cancellationToken)
     {
-        if (user == null)
-            throw new ArgumentNullException(nameof(user));
+        ArgumentNullException.ThrowIfNull(user);
 
         if (string.IsNullOrEmpty(email))
             throw new ArgumentNullException(nameof(email), @"Null or empty");
@@ -267,24 +258,21 @@ public class UserStore : IUserStore<ApplicationUser>, IUserEmailStore<Applicatio
 
     public Task<string?> GetEmailAsync(ApplicationUser user, CancellationToken cancellationToken)
     {
-        if (user == null)
-            throw new ArgumentNullException(nameof(user));
+        ArgumentNullException.ThrowIfNull(user);
 
         return Task.FromResult(user.Email);
     }
 
     public Task<bool> GetEmailConfirmedAsync(ApplicationUser user, CancellationToken cancellationToken)
     {
-        if (user == null)
-            throw new ArgumentNullException(nameof(user));
+        ArgumentNullException.ThrowIfNull(user);
 
         return Task.FromResult(user.EmailConfirmed);
     }
 
     public Task SetEmailConfirmedAsync(ApplicationUser user, bool confirmed, CancellationToken cancellationToken)
     {
-        if (user == null)
-            throw new ArgumentNullException(nameof(user));
+        ArgumentNullException.ThrowIfNull(user);
 
         user.EmailConfirmed = confirmed;
         SetSecurityStampAsync(user, null, cancellationToken);
@@ -311,8 +299,7 @@ public class UserStore : IUserStore<ApplicationUser>, IUserEmailStore<Applicatio
 #nullable enable annotations
     public Task<string?> GetNormalizedEmailAsync(ApplicationUser user, CancellationToken cancellationToken)
     {
-        if (user == null)
-            throw new ArgumentNullException(nameof(user));
+        ArgumentNullException.ThrowIfNull(user);
 
         return Task.FromResult(user.NormalizedEmail);
     }
@@ -320,8 +307,7 @@ public class UserStore : IUserStore<ApplicationUser>, IUserEmailStore<Applicatio
     public Task SetNormalizedEmailAsync(ApplicationUser user, string? normalizedEmail,
         CancellationToken cancellationToken)
     {
-        if (user == null)
-            throw new ArgumentNullException(nameof(user));
+        ArgumentNullException.ThrowIfNull(user);
 
         if (string.IsNullOrEmpty(normalizedEmail))
             throw new ArgumentNullException(nameof(normalizedEmail), @"Null or empty");
@@ -334,8 +320,7 @@ public class UserStore : IUserStore<ApplicationUser>, IUserEmailStore<Applicatio
     #region ** IUserPhoneNumberStore **
     public Task SetPhoneNumberAsync(ApplicationUser user, string? phoneNumber, CancellationToken cancellationToken)
     {
-        if (user == null)
-            throw new ArgumentNullException(nameof(user));
+        ArgumentNullException.ThrowIfNull(user);
 
         user.PhoneNumber = phoneNumber ?? string.Empty;
         SetSecurityStampAsync(user, null, cancellationToken);
@@ -344,16 +329,14 @@ public class UserStore : IUserStore<ApplicationUser>, IUserEmailStore<Applicatio
 
     public Task<string?> GetPhoneNumberAsync(ApplicationUser user, CancellationToken cancellationToken)
     {
-        if (user == null)
-            throw new ArgumentNullException(nameof(user));
+        ArgumentNullException.ThrowIfNull(user);
 
         return Task.FromResult(user.PhoneNumber);
     }
 
     public Task<bool> GetPhoneNumberConfirmedAsync(ApplicationUser user, CancellationToken cancellationToken)
     {
-        if (user == null)
-            throw new ArgumentNullException(nameof(user));
+        ArgumentNullException.ThrowIfNull(user);
 
         return Task.FromResult(user.PhoneNumberConfirmed);
     }
@@ -361,8 +344,7 @@ public class UserStore : IUserStore<ApplicationUser>, IUserEmailStore<Applicatio
     public Task SetPhoneNumberConfirmedAsync(ApplicationUser user, bool confirmed,
         CancellationToken cancellationToken)
     {
-        if (user == null)
-            throw new ArgumentNullException(nameof(user));
+        ArgumentNullException.ThrowIfNull(user);
 
         if (string.IsNullOrEmpty(user.PhoneNumber))
         {
@@ -378,8 +360,7 @@ public class UserStore : IUserStore<ApplicationUser>, IUserEmailStore<Applicatio
     #region ** IUserPasswordStore **
     public Task SetPasswordHashAsync(ApplicationUser user, string? passwordHash, CancellationToken cancellationToken)
     {
-        if (user == null)
-            throw new ArgumentNullException(nameof(user));
+        ArgumentNullException.ThrowIfNull(user);
 
         user.PasswordHash = passwordHash;
         SetSecurityStampAsync(user, null, cancellationToken);
@@ -388,16 +369,14 @@ public class UserStore : IUserStore<ApplicationUser>, IUserEmailStore<Applicatio
 
     public Task<string?> GetPasswordHashAsync(ApplicationUser user, CancellationToken cancellationToken)
     {
-        if (user == null)
-            throw new ArgumentNullException(nameof(user));
+        ArgumentNullException.ThrowIfNull(user);
 
         return Task.FromResult(string.IsNullOrEmpty(user.PasswordHash) ? null : user.PasswordHash);
     }
 
     public Task<bool> HasPasswordAsync(ApplicationUser user, CancellationToken cancellationToken)
     {
-        if (user == null)
-            throw new ArgumentNullException(nameof(user));
+        ArgumentNullException.ThrowIfNull(user);
 
         return Task.FromResult(!string.IsNullOrEmpty(user.PasswordHash));
     }
@@ -406,8 +385,7 @@ public class UserStore : IUserStore<ApplicationUser>, IUserEmailStore<Applicatio
     #region ** IUserRoleStore **
     public async Task AddToRoleAsync(ApplicationUser user, string roleName, CancellationToken cancellationToken)
     {
-        if (user == null)
-            throw new ArgumentNullException(nameof(user));
+        ArgumentNullException.ThrowIfNull(user);
 
         if (string.IsNullOrEmpty(roleName))
             throw new ArgumentNullException(nameof(roleName), @"Null or empty");
@@ -437,8 +415,7 @@ public class UserStore : IUserStore<ApplicationUser>, IUserEmailStore<Applicatio
 
     public async Task RemoveFromRoleAsync(ApplicationUser user, string roleName, CancellationToken cancellationToken)
     {
-        if (user == null)
-            throw new ArgumentNullException(nameof(user));
+        ArgumentNullException.ThrowIfNull(user);
 
         if (string.IsNullOrEmpty(roleName))
             throw new ArgumentNullException(nameof(roleName), @"Null or empty");
@@ -468,8 +445,7 @@ public class UserStore : IUserStore<ApplicationUser>, IUserEmailStore<Applicatio
 
     public async Task<IList<string>> GetRolesAsync(ApplicationUser user, CancellationToken cancellationToken)
     {
-        if (user == null)
-            throw new ArgumentNullException(nameof(user));
+        ArgumentNullException.ThrowIfNull(user);
 
         var userEntity = await _appDb.UserRepository.GetLoginUserAsync(user.Id, cancellationToken);
         if (userEntity == null)
@@ -497,8 +473,7 @@ public class UserStore : IUserStore<ApplicationUser>, IUserEmailStore<Applicatio
     public async Task<bool> IsInRoleAsync(ApplicationUser user, string roleName,
         CancellationToken cancellationToken)
     {
-        if (user == null)
-            throw new ArgumentNullException(nameof(user));
+        ArgumentNullException.ThrowIfNull(user);
 
         if (string.IsNullOrEmpty(roleName))
             throw new ArgumentNullException(nameof(roleName), @"Null or empty");
@@ -550,27 +525,24 @@ public class UserStore : IUserStore<ApplicationUser>, IUserEmailStore<Applicatio
     #region ** IUserClaimStore **
     public async Task<IList<Claim>> GetClaimsAsync(ApplicationUser user, CancellationToken cancellationToken)
     {
-        if (user == null)
-            throw new ArgumentNullException(nameof(user));
+        ArgumentNullException.ThrowIfNull(user);
 
         var claimEntities = await _appDb.UserClaimRepository.GetUserClaimsAsync(user.Id, cancellationToken);
         // explicit claims
         var claims = claimEntities.Select(claimEntity => new Claim(claimEntity.ClaimType, claimEntity.ClaimValue, claimEntity.ValueType, claimEntity.Issuer)).ToList();
         // team related claims: managers
-        (await _appDb.ManagerOfTeamRepository.GetTeamIdsOfManagerAsync(user.Id, cancellationToken)).ForEach(tid => claims.Add(new Claim(Constants.ClaimType.ManagesTeam, tid.ToString())));
+        (await _appDb.ManagerOfTeamRepository.GetTeamIdsOfManagerAsync(user.Id, cancellationToken)).ForEach(tid => claims.Add(new(Constants.ClaimType.ManagesTeam, tid.ToString())));
         // team related claims: players
-        (await _appDb.PlayerInTeamRepository.GetTeamIdsForPlayerAsync(user.Id, cancellationToken)).ForEach(tid => claims.Add(new Claim(Constants.ClaimType.PlaysInTeam, tid.ToString()))); ;
+        (await _appDb.PlayerInTeamRepository.GetTeamIdsForPlayerAsync(user.Id, cancellationToken)).ForEach(tid => claims.Add(new(Constants.ClaimType.PlaysInTeam, tid.ToString())));
 
         return claims;
     }
 
     public async Task AddClaimsAsync(ApplicationUser user, IEnumerable<Claim> claims, CancellationToken cancellationToken)
     {
-        if (user == null)
-            throw new ArgumentNullException(nameof(user));
+        ArgumentNullException.ThrowIfNull(user);
 
-        if (claims == null)
-            throw new ArgumentNullException(nameof(claims));
+        ArgumentNullException.ThrowIfNull(claims);
 
         // avoid multiple enumerations
         claims = claims.ToList();
@@ -598,7 +570,7 @@ public class UserStore : IUserStore<ApplicationUser>, IUserEmailStore<Applicatio
                     throw ex;
                 }
 
-                newClaimEntities.Add(new IdentityUserClaimEntity
+                newClaimEntities.Add(new()
                 {
                     UserId = user.Id, ClaimType = claim.Type, ClaimValue = claim.Value,
                     ValueType = claim.ValueType, Issuer = claim.Issuer
@@ -650,14 +622,11 @@ public class UserStore : IUserStore<ApplicationUser>, IUserEmailStore<Applicatio
 
     public async Task ReplaceClaimAsync(ApplicationUser user, Claim claim, Claim newClaim, CancellationToken cancellationToken)
     {
-        if (user == null)
-            throw new ArgumentNullException(nameof(user));
+        ArgumentNullException.ThrowIfNull(user);
 
-        if (claim == null)
-            throw new ArgumentNullException(nameof(claim));
+        ArgumentNullException.ThrowIfNull(claim);
 
-        if (newClaim == null)
-            throw new ArgumentNullException(nameof(newClaim));
+        ArgumentNullException.ThrowIfNull(newClaim);
 
         if (Constants.ClaimType.GetTeamRelatedClaimTypes().Contains(newClaim.Type))
         {
@@ -698,11 +667,9 @@ public class UserStore : IUserStore<ApplicationUser>, IUserEmailStore<Applicatio
 
     public async Task RemoveClaimsAsync(ApplicationUser user, IEnumerable<Claim> claims, CancellationToken cancellationToken)
     {
-        if (user == null)
-            throw new ArgumentNullException(nameof(user));
+        ArgumentNullException.ThrowIfNull(user);
 
-        if (claims == null)
-            throw new ArgumentNullException(nameof(claims));
+        ArgumentNullException.ThrowIfNull(claims);
 
         // avoid multiple enumerations
         claims = claims.ToArray();
@@ -762,8 +729,7 @@ public class UserStore : IUserStore<ApplicationUser>, IUserEmailStore<Applicatio
 
     public async Task<IList<ApplicationUser>> GetUsersForClaimAsync(Claim claim, CancellationToken cancellationToken)
     {
-        if (claim == null)
-            throw new ArgumentNullException(nameof(claim));
+        ArgumentNullException.ThrowIfNull(claim);
 
         var userEntities = new EntityCollection<UserEntity>();
 
@@ -805,8 +771,7 @@ public class UserStore : IUserStore<ApplicationUser>, IUserEmailStore<Applicatio
     #region ** IUserSecurityStampStore **
     public Task SetSecurityStampAsync(ApplicationUser user, string? stamp, CancellationToken cancellationToken)
     {
-        if (user == null)
-            throw new ArgumentNullException(nameof(user));
+        ArgumentNullException.ThrowIfNull(user);
 
         user.SecurityStamp = string.IsNullOrEmpty(stamp) ? Guid.NewGuid().ToString("N") : stamp;
         return Task.CompletedTask;
@@ -823,11 +788,9 @@ public class UserStore : IUserStore<ApplicationUser>, IUserEmailStore<Applicatio
     #region ** IUserLoginStore **
     public async Task AddLoginAsync(ApplicationUser user, UserLoginInfo login, CancellationToken cancellationToken)
     {
-        if (user == null)
-            throw new ArgumentNullException(nameof(user));
+        ArgumentNullException.ThrowIfNull(user);
 
-        if (login == null)
-            throw new ArgumentNullException(nameof(login));
+        ArgumentNullException.ThrowIfNull(login);
 
         try
         {
@@ -842,8 +805,7 @@ public class UserStore : IUserStore<ApplicationUser>, IUserEmailStore<Applicatio
 
     public async Task RemoveLoginAsync(ApplicationUser user, string loginProvider, string providerKey, CancellationToken cancellationToken)
     {
-        if (user == null)
-            throw new ArgumentNullException(nameof(user));
+        ArgumentNullException.ThrowIfNull(user);
 
         if (string.IsNullOrEmpty(loginProvider))
             throw new ArgumentNullException(nameof(loginProvider), @"Null or empty");
@@ -865,12 +827,11 @@ public class UserStore : IUserStore<ApplicationUser>, IUserEmailStore<Applicatio
 
     public async Task<IList<UserLoginInfo>> GetLoginsAsync(ApplicationUser user, CancellationToken cancellationToken)
     {
-        if (user == null)
-            throw new ArgumentNullException(nameof(user));
+        ArgumentNullException.ThrowIfNull(user);
 
         var logins = await _appDb.UserLoginRepository.GetUserLoginsAsync(user.Id, cancellationToken);
         var loginInfoList = new List<UserLoginInfo>();
-        logins.ForEach(li => loginInfoList.Add(new UserLoginInfo(li.LoginProvider, li.ProviderKey, li.ProviderDisplayName)));
+        logins.ForEach(li => loginInfoList.Add(new(li.LoginProvider, li.ProviderKey, li.ProviderDisplayName)));
         return loginInfoList;
     }
 #nullable disable annotations
@@ -898,8 +859,7 @@ public class UserStore : IUserStore<ApplicationUser>, IUserEmailStore<Applicatio
     #region ** IUserAuthenticationTokenStore **
     public async Task<string?> GetTokenAsync(ApplicationUser user, string loginProvider, string name, CancellationToken cancellationToken)
     {
-        if (user == null)
-            throw new ArgumentNullException(nameof(user));
+        ArgumentNullException.ThrowIfNull(user);
 
         if (string.IsNullOrEmpty(loginProvider))
             throw new ArgumentNullException(nameof(loginProvider), @"Null or empty");
@@ -914,8 +874,7 @@ public class UserStore : IUserStore<ApplicationUser>, IUserEmailStore<Applicatio
     public async Task SetTokenAsync(ApplicationUser user, string loginProvider, string name, string? value,
         CancellationToken cancellationToken)
     {
-        if (user == null)
-            throw new ArgumentNullException(nameof(user));
+        ArgumentNullException.ThrowIfNull(user);
 
         if (string.IsNullOrEmpty(loginProvider))
             throw new ArgumentNullException(nameof(loginProvider), @"Null or empty");
@@ -944,8 +903,7 @@ public class UserStore : IUserStore<ApplicationUser>, IUserEmailStore<Applicatio
 
     public async Task RemoveTokenAsync(ApplicationUser user, string loginProvider, string name, CancellationToken cancellationToken)
     {
-        if (user == null)
-            throw new ArgumentNullException(nameof(user));
+        ArgumentNullException.ThrowIfNull(user);
 
         if (string.IsNullOrEmpty(loginProvider))
             throw new ArgumentNullException(nameof(loginProvider), @"Null or empty");
@@ -980,8 +938,7 @@ public class UserStore : IUserStore<ApplicationUser>, IUserEmailStore<Applicatio
 
     public async Task<DateTimeOffset?> GetLockoutEndDateAsync(ApplicationUser user, CancellationToken cancellationToken)
     {
-        if (user == null)
-            throw new ArgumentNullException(nameof(user));
+        ArgumentNullException.ThrowIfNull(user);
 
         cancellationToken.ThrowIfCancellationRequested();
         var userEntity = _appDb.UserRepository.GetLoginUserAsync(user.Id, cancellationToken).Result;
@@ -992,8 +949,7 @@ public class UserStore : IUserStore<ApplicationUser>, IUserEmailStore<Applicatio
 
     public async Task SetLockoutEndDateAsync(ApplicationUser user, DateTimeOffset? lockoutEnd, CancellationToken cancellationToken)
     {
-        if (user == null)
-            throw new ArgumentNullException(nameof(user));
+        ArgumentNullException.ThrowIfNull(user);
 
         cancellationToken.ThrowIfCancellationRequested();
 
@@ -1013,8 +969,7 @@ public class UserStore : IUserStore<ApplicationUser>, IUserEmailStore<Applicatio
 
     public async Task<int> IncrementAccessFailedCountAsync(ApplicationUser user, CancellationToken cancellationToken)
     {
-        if (user == null)
-            throw new ArgumentNullException(nameof(user));
+        ArgumentNullException.ThrowIfNull(user);
 
         cancellationToken.ThrowIfCancellationRequested();
 
@@ -1032,8 +987,7 @@ public class UserStore : IUserStore<ApplicationUser>, IUserEmailStore<Applicatio
 
     public async Task ResetAccessFailedCountAsync(ApplicationUser user, CancellationToken cancellationToken)
     {
-        if (user == null)
-            throw new ArgumentNullException(nameof(user));
+        ArgumentNullException.ThrowIfNull(user);
 
         cancellationToken.ThrowIfCancellationRequested();
         var userEntity = await _appDb.UserRepository.GetLoginUserAsync(user.Id, cancellationToken);
@@ -1045,8 +999,7 @@ public class UserStore : IUserStore<ApplicationUser>, IUserEmailStore<Applicatio
 
     public async Task<int> GetAccessFailedCountAsync(ApplicationUser user, CancellationToken cancellationToken)
     {
-        if (user == null)
-            throw new ArgumentNullException(nameof(user));
+        ArgumentNullException.ThrowIfNull(user);
 
         cancellationToken.ThrowIfCancellationRequested();
         var userEntity = await _appDb.UserRepository.GetLoginUserAsync(user.Id, cancellationToken);
@@ -1055,8 +1008,7 @@ public class UserStore : IUserStore<ApplicationUser>, IUserEmailStore<Applicatio
 
     public async Task<bool> GetLockoutEnabledAsync(ApplicationUser user, CancellationToken cancellationToken)
     {
-        if (user == null)
-            throw new ArgumentNullException(nameof(user));
+        ArgumentNullException.ThrowIfNull(user);
 
         var enabled = !await IsInRoleAsync(user, Constants.RoleName.SystemManager, cancellationToken);
         return enabled;
@@ -1064,8 +1016,7 @@ public class UserStore : IUserStore<ApplicationUser>, IUserEmailStore<Applicatio
 
     public Task SetLockoutEnabledAsync(ApplicationUser user, bool enabled, CancellationToken cancellationToken)
     {
-        if (user == null)
-            throw new ArgumentNullException(nameof(user));
+        ArgumentNullException.ThrowIfNull(user);
 
         return Task.CompletedTask;
     }

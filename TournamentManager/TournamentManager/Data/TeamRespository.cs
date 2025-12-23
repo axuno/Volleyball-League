@@ -136,7 +136,7 @@ public class TeamRepository
 
     public virtual async Task<bool> TeamExistsAsync(long teamId, CancellationToken cancellationToken)
     {
-        return (await GetTeamNamesAsync(new PredicateExpression(TeamFields.Id == teamId), cancellationToken)).Any();
+        return (await GetTeamNamesAsync(new(TeamFields.Id == teamId), cancellationToken)).Any();
     }
 
     public virtual async Task<IList<string>> GetTeamNamesAsync(PredicateExpression filter, CancellationToken cancellationToken)

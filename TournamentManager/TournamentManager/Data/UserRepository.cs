@@ -38,11 +38,10 @@ public class UserRepository
         var result = await (from u in metaData.User
             where
                 u.Id == id
-            select u).WithPath(new IPathEdge[]
-        {
+            select u).WithPath([
             new PathEdge<UserEntity>(UserEntity.PrefetchPathManagerOfTeams),
             new PathEdge<UserEntity>(UserEntity.PrefetchPathPlayerInTeams)
-        }).ExecuteAsync<EntityCollection<UserEntity>>(cancellationToken);
+        ]).ExecuteAsync<EntityCollection<UserEntity>>(cancellationToken);
 
         return result.FirstOrDefault();
     }
@@ -56,10 +55,10 @@ public class UserRepository
         var result = await (from u in metaData.User
             where
                 u.Email.Equals(email, StringComparison.InvariantCultureIgnoreCase)
-            select u).WithPath(new IPathEdge[] {
+            select u).WithPath([
             new PathEdge<UserEntity>(UserEntity.PrefetchPathManagerOfTeams),
             new PathEdge<UserEntity>(UserEntity.PrefetchPathPlayerInTeams)
-        }).ExecuteAsync<EntityCollection<UserEntity>>(cancellationToken);
+        ]).ExecuteAsync<EntityCollection<UserEntity>>(cancellationToken);
 
         return result.FirstOrDefault();
     }
@@ -73,10 +72,10 @@ public class UserRepository
         var result = await (from u in metaData.User
             where
                 u.Email2.Equals(email, StringComparison.InvariantCultureIgnoreCase)
-            select u).WithPath(new IPathEdge[] {
+            select u).WithPath([
             new PathEdge<UserEntity>(UserEntity.PrefetchPathManagerOfTeams),
             new PathEdge<UserEntity>(UserEntity.PrefetchPathPlayerInTeams)
-        }).ExecuteAsync<EntityCollection<UserEntity>>(cancellationToken);
+        ]).ExecuteAsync<EntityCollection<UserEntity>>(cancellationToken);
 
         return result.FirstOrDefault();
     }
@@ -91,10 +90,10 @@ public class UserRepository
         var result = await (from u in metaData.User
             where
                 u.UserName.Equals(userName, StringComparison.InvariantCultureIgnoreCase)
-            select u).WithPath(new IPathEdge[] {
+            select u).WithPath([
             new PathEdge<UserEntity>(UserEntity.PrefetchPathManagerOfTeams),
             new PathEdge<UserEntity>(UserEntity.PrefetchPathPlayerInTeams)
-        }).ExecuteAsync<EntityCollection<UserEntity>>(cancellationToken);
+        ]).ExecuteAsync<EntityCollection<UserEntity>>(cancellationToken);
 
         return result.FirstOrDefault();
     }
@@ -107,11 +106,10 @@ public class UserRepository
         var result = await (from u in metaData.User
             where
                 u.Guid == guid
-            select u).WithPath(new IPathEdge[]
-        {
+            select u).WithPath([
             new PathEdge<UserEntity>(UserEntity.PrefetchPathManagerOfTeams),
             new PathEdge<UserEntity>(UserEntity.PrefetchPathPlayerInTeams)
-        }).ExecuteAsync<EntityCollection<UserEntity>>(cancellationToken);
+        ]).ExecuteAsync<EntityCollection<UserEntity>>(cancellationToken);
 
         return result.FirstOrDefault();
     }
@@ -171,7 +169,7 @@ public class UserRepository
 
         var count = 0;
         using var da = _dbContext.GetNewAdapter();
-        user = new UserEntity(user.Id) {IsNew = false, LastLoginOn = loginDateTime ?? DateTime.UtcNow };
+        user = new(user.Id) {IsNew = false, LastLoginOn = loginDateTime ?? DateTime.UtcNow };
         try
         {
             count = await da.UpdateEntitiesDirectlyAsync(user,
@@ -196,7 +194,7 @@ public class UserRepository
 
     public virtual async Task<string> GenerateUniqueUsernameAsync(string email, string allowedCharacters, string defaultName = "User")
     {
-        var userNameToTry = (email ?? defaultName).Split(new[] {'@'}, 2)[0];
+        var userNameToTry = (email ?? defaultName).Split(['@'], 2)[0];
         userNameToTry = ReplaceDisallowedCharacters(userNameToTry.Length == 0 ? defaultName : userNameToTry,
             allowedCharacters);
         var i = RandomNumberGenerator.GetInt32(1122, 9922 + 1);
@@ -225,6 +223,6 @@ public class UserRepository
             }
         }
 
-        return new string(result);
+        return new(result);
     }
 }

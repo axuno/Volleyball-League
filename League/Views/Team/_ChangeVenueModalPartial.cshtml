@@ -21,7 +21,7 @@
                        asp-route-id="@Model.VenueId"
                        asp-route-tenant="@tenantUrlSegment"
                        asp-route-returnurl="@(TenantLink.Action(nameof(Team.MyTeam), nameof(Team), new {id = Model.TeamId}))"
-                       site-authorize-resource site-resource="@(new List<VenueTeamRow>{{ new VenueTeamRow{ TeamId = Model.TeamId, VenueId = Model.VenueId.Value }}})"
+                       site-authorize-resource site-resource="@(new List<VenueTeamRow>{{ new() { TeamId = Model.TeamId, VenueId = Model.VenueId.Value }}})"
                        site-requirement="@League.Authorization.VenueOperations.EditVenue"
                        class="btn btn-primary d-block w-100">@Localizer["Edit current venue"]</a>
                 }

@@ -92,7 +92,7 @@ public class Role : AbstractController
         var removeTeamMember = await _signInManager.UserManager.FindByIdAsync(model.UserId.ToString());
         if (removeTeamMember != null)
         {
-            await _signInManager.UserManager.RemoveClaimAsync(removeTeamMember, new Claim(model.ClaimType, model.TeamId.ToString()));
+            await _signInManager.UserManager.RemoveClaimAsync(removeTeamMember, new(model.ClaimType, model.TeamId.ToString()));
             try
             {
                 var result = await _signInManager.UserManager.UpdateAsync(removeTeamMember);
@@ -157,7 +157,7 @@ public class Role : AbstractController
         var newTeamMember = model.UserEmail != null ? await _signInManager.UserManager.FindByEmailAsync(model.UserEmail) : null;
         if (newTeamMember != null)
         {
-            await _signInManager.UserManager.AddClaimAsync(newTeamMember, new Claim(model.ClaimType, model.TeamId.ToString()));
+            await _signInManager.UserManager.AddClaimAsync(newTeamMember, new(model.ClaimType, model.TeamId.ToString()));
             try
             {
                 var result = await _signInManager.UserManager.UpdateAsync(newTeamMember);
@@ -186,7 +186,7 @@ public class Role : AbstractController
         if (method.Equals(nameof(Add)) && returnUrl.Contains(TenantLink.Action(nameof(Team.MyTeam), nameof(Team)) ?? string.Empty))
         {
             TempData.Put<MyTeamMessageModel.MyTeamMessage>(nameof(MyTeamMessageModel.MyTeamMessage),
-                new MyTeamMessageModel.MyTeamMessage
+                new()
                 {
                     AlertType = isSuccess ? SiteAlertTagHelper.AlertType.Success : SiteAlertTagHelper.AlertType.Danger,
                     MessageId = isSuccess ? MyTeamMessageModel.MessageId.MemberAddSuccess : MyTeamMessageModel.MessageId.MemberAddFailure
@@ -198,7 +198,7 @@ public class Role : AbstractController
         if (method.Equals(nameof(Remove)) && returnUrl.Contains(TenantLink.Action(nameof(Team.MyTeam), nameof(Team)) ?? string.Empty))
         {
             TempData.Put<MyTeamMessageModel.MyTeamMessage>(nameof(MyTeamMessageModel.MyTeamMessage),
-                new MyTeamMessageModel.MyTeamMessage
+                new()
                 {
                     AlertType = isSuccess ? SiteAlertTagHelper.AlertType.Success : SiteAlertTagHelper.AlertType.Danger,
                     MessageId = isSuccess ? MyTeamMessageModel.MessageId.MemberRemoveSuccess : MyTeamMessageModel.MessageId.MemberRemoveFailure
@@ -215,7 +215,7 @@ public class Role : AbstractController
         if (returnUrl.Contains(TenantLink.Action(nameof(Team.MyTeam), nameof(Team)) ?? string.Empty))
         {
             TempData.Put<MyTeamMessageModel.MyTeamMessage>(nameof(MyTeamMessageModel.MyTeamMessage),
-                new MyTeamMessageModel.MyTeamMessage
+                new()
                 {
                     AlertType = SiteAlertTagHelper.AlertType.Danger,
                     MessageId = MyTeamMessageModel.MessageId.MemberCannotRemoveLastTeamManager

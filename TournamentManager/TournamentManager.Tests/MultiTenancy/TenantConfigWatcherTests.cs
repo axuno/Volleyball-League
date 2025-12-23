@@ -15,15 +15,17 @@ public class TenantConfigWatcherTests
     private const string ConnectionStrings = "ConnectionStrings";
     private const string ConnKeyPrefix = "Conn";
     private const string ConnValuePrefix = "ConnValue";
-    private readonly List<string> _tenantNames = new() {"Tenant1", "Tenant2", "Tenant3", "DefaultTenant"};
+    private readonly List<string> _tenantNames = ["Tenant1", "Tenant2", "Tenant3", "DefaultTenant"];
     private readonly TenantStore _store;
 
     public TenantConfigWatcherTests()
     {
         var config = CreateTenantStoreConfig();
-        _store = new TenantStore(config, new NullLoggerFactory());
-        _store.GetTenantConfigurationFiles = () => Directory.GetFiles(
-            _directoryToWatch, ConfigSearchPattern, SearchOption.TopDirectoryOnly);
+        _store = new TenantStore(config, new NullLoggerFactory())
+        {
+            GetTenantConfigurationFiles = () => Directory.GetFiles(
+                _directoryToWatch, ConfigSearchPattern, SearchOption.TopDirectoryOnly)
+        };
         var watcher = GetTenantConfigWatcher();
         watcher.GetTenantFileWatcher().ConsolidationInterval = 10;
     }
@@ -37,11 +39,11 @@ public class TenantConfigWatcherTests
         CreateTenantContext(tenantName).SerializeToFile(Path.Combine(_directoryToWatch, $"Tenant.{tenantName}.config"));
         await Task.Delay(200);
 
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(_store.GetTenants(), Has.Count.EqualTo(initialTenantCount + 1));
             Assert.That(_store.GetTenantByIdentifier(tenantName)?.DbContext.ConnectionString, Does.Contain(tenantName));
-        });
+        }
     }
 
     [Test]
@@ -136,7 +138,7 @@ public class TenantConfigWatcherTests
     {
         // Configure connection strings per tenant
         var connStr = new List<KeyValuePair<string, string?>>();
-        _tenantNames.ForEach(t => connStr.Add(new KeyValuePair<string, string?>($"{ConnectionStrings}:{ConnKeyPrefix}{t}", $"{ConnValuePrefix}{t}")));
+        _tenantNames.ForEach(t => connStr.Add(new($"{ConnectionStrings}:{ConnKeyPrefix}{t}", $"{ConnValuePrefix}{t}")));
         // Build configuration
         var cb = new ConfigurationBuilder();
         cb.AddInMemoryCollection(connStr);

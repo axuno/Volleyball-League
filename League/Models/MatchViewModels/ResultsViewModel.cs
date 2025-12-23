@@ -14,7 +14,7 @@ public class ResultsViewModel
 
     public TournamentEntity? Tournament { get; set; }
 
-    public List<CompletedMatchRow> CompletedMatches { get; set; } = new();
+    public List<CompletedMatchRow> CompletedMatches { get; set; } = [];
 
     public long? ActiveRoundId { get; set; }
 

@@ -58,18 +58,19 @@ public class TeamVenueValidatorTests
     {
         var team = new TeamEntity { VenueId = venueId };
 
-        _tenantContext.TournamentContext.TeamRuleSet = new TeamRules {
-            HomeVenue = new HomeVenue { MustBeSet = mustBeSet }
+        _tenantContext.TournamentContext.TeamRuleSet = new()
+        {
+            HomeVenue = new() { MustBeSet = mustBeSet }
         };
         var tv = new TeamVenueValidator(team, _tenantContext);
 
         var factResult = await tv.CheckAsync(TeamVenueValidator.FactId.VenueIsSetIfRequired, CancellationToken.None);
 
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(factResult.Exception, Is.Null);
             Assert.That(factResult.Success, Is.EqualTo(expected));
-        });
+        }
     }
 
     [TestCase(1, true)]
@@ -79,17 +80,18 @@ public class TeamVenueValidatorTests
     {
         var team = new TeamEntity { VenueId = venueId };
 
-        _tenantContext.TournamentContext.TeamRuleSet = new TeamRules {
-            HomeVenue = new HomeVenue { MustBeSet = false }
+        _tenantContext.TournamentContext.TeamRuleSet = new()
+        {
+            HomeVenue = new() { MustBeSet = false }
         };
         var tv = new TeamVenueValidator(team, _tenantContext);
 
         var factResult = await tv.CheckAsync(TeamVenueValidator.FactId.VenueIsValid, CancellationToken.None);
 
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(factResult.Exception, Is.Null);
             Assert.That(factResult.Success, Is.EqualTo(expected));
-        });
+        }
     }
 }

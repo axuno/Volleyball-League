@@ -12,9 +12,9 @@ public class ApplicationListModel
 
     public TournamentEntity? Tournament { get; set; }
 
-    public List<LatestTeamTournamentRow> TournamentRoundTeams { get; set; } = new();
+    public List<LatestTeamTournamentRow> TournamentRoundTeams { get; set; } = [];
 
-    public Dictionary<long, DateTime> TeamRegisteredOn { get; set; } = new();
+    public Dictionary<long, DateTime> TeamRegisteredOn { get; set; } = [];
 
     public Axuno.Tools.DateAndTime.TimeZoneConverter TimeZoneConverter { get; }
 }

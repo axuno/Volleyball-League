@@ -12,7 +12,7 @@ public class TeamListModel
 
     public TournamentEntity? Tournament { get; set; }
 
-    public List<RoundTeamRow> RoundsWithTeams { get; set; } = new();
+    public List<RoundTeamRow> RoundsWithTeams { get; set; } = [];
 
     public long? ActiveRoundId { get; set; }
 

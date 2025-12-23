@@ -17,7 +17,7 @@ namespace TournamentManager.Tests.Plan;
 internal class ExcludeMatchDatesTests
 {
     private ITenantContext _tenantContext = new TenantContext();
-    private readonly EntityCollection<ExcludeMatchDateEntity> _excludeMatchDays = new();
+    private readonly EntityCollection<ExcludeMatchDateEntity> _excludeMatchDays = [];
 
     [Test]
     public async Task Generate_Schedule_Should_Succeed()
@@ -25,14 +25,14 @@ internal class ExcludeMatchDatesTests
         var excludeMatchDates = GetExcludeMatchDatesInstance();
         await excludeMatchDates.GenerateExcludeDates(new ExcludeMatchDatesTestImporter(), 1, true, CancellationToken.None);
 
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(_excludeMatchDays, Has.Count.EqualTo(1));
             Assert.That(_excludeMatchDays[0].TournamentId, Is.EqualTo(1));
             Assert.That(_excludeMatchDays[0].DateFrom, Is.EqualTo(new DateTime(2024, 1, 1)));
             Assert.That(_excludeMatchDays[0].DateTo, Is.EqualTo(new DateTime(2024, 1, 1).AddDays(1).AddMinutes(-1)));
             Assert.That(_excludeMatchDays[0].Reason, Is.EqualTo("Any Reason"));
-        });
+        }
     }
 
     private ExcludeMatchDates GetExcludeMatchDatesInstance()
@@ -49,8 +49,8 @@ internal class ExcludeMatchDatesTests
             {
                 var roundLegRow = new List<RoundLegPeriodRow> {
                     new() {
-                        StartDateTime = new DateTime(2024, 1, 1),
-                        EndDateTime = new DateTime(2024, 6, 30)
+                        StartDateTime = new(2024, 1, 1),
+                        EndDateTime = new(2024, 6, 30)
                     }
                 };
 
@@ -125,9 +125,9 @@ internal class ExcludeMatchDatesTestImporter : IExcludeDateImporter
 {
     public IEnumerable<ExcludeDateRecord> Import(DateTimePeriod dateLimits)
     {
-        yield return new ExcludeDateRecord
+        yield return new()
         {
-            Period = new DateTimePeriod(dateLimits.Start, dateLimits.Start?.AddDays(1).AddMinutes(-1)),
+            Period = new(dateLimits.Start, dateLimits.Start?.AddDays(1).AddMinutes(-1)),
             Reason = "Any Reason"
         };
     }

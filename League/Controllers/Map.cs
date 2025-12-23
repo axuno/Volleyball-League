@@ -20,7 +20,7 @@ public class Map : AbstractController
         _tenantContext = tenantContext;
         _appDb = tenantContext.DbContext.AppDb;
         _logger = logger;
-        _googleConfig = new GoogleConfiguration();
+        _googleConfig = new();
         configuration.Bind(nameof(GoogleConfiguration), _googleConfig);
     }
 
@@ -34,7 +34,7 @@ public class Map : AbstractController
         var model = new MapModel(venues)
         {
             GoogleConfiguration = _googleConfig,
-            Tournament = await _appDb.TournamentRepository.GetTournamentAsync(new PredicateExpression(TournamentFields.Id == _tenantContext.TournamentContext.MapTournamentId),
+            Tournament = await _appDb.TournamentRepository.GetTournamentAsync(new(TournamentFields.Id == _tenantContext.TournamentContext.MapTournamentId),
                 cancellationToken),
         };
         if (model.Tournament == null)
@@ -58,7 +58,7 @@ public class Map : AbstractController
         var model = new MapModel(venue)
         {
             Tournament = await _appDb.TournamentRepository.GetTournamentAsync(
-                new PredicateExpression(TournamentFields.Id == _tenantContext.TournamentContext.MapTournamentId),
+                new(TournamentFields.Id == _tenantContext.TournamentContext.MapTournamentId),
                 cancellationToken),
             GoogleConfiguration = _googleConfig,
         };

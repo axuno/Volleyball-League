@@ -54,7 +54,7 @@ public class TeamEditModel
         if (Round!.ShowSelector && Round.SelectedRoundId.HasValue)
         {
             var tirValidator = new TeamInRoundValidator(
-                new TeamInRoundEntity {RoundId = Round.SelectedRoundId.Value, TeamId = teamValidator.Model.Id},
+                new() {RoundId = Round.SelectedRoundId.Value, TeamId = teamValidator.Model.Id},
                 (teamValidator.Data, tournamentId));
 
             await tirValidator.CheckAsync(cancellationToken);

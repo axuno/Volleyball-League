@@ -22,7 +22,7 @@ public class GermanHoliday : IEqualityComparer<GermanHoliday>
 
         PublicHolidayStateIds = id.HasValue
             ? GermanHolidays.GetPublicHolidayStates(id.Value)
-            : new List<GermanFederalStates.Id>();
+            : [];
     }
 
     /// <summary>

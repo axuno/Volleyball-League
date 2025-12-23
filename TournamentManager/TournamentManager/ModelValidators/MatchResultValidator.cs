@@ -21,7 +21,8 @@ public sealed class MatchResultValidator : AbstractValidator<MatchEntity, (ITena
 
     private static readonly Dictionary<MatchValidationMode, Dictionary<FactId, bool>> ModeConfiguration = new() {
         {
-            MatchValidationMode.Default, new Dictionary<FactId, bool> {
+            MatchValidationMode.Default, new()
+            {
                 { FactId.RealMatchDateIsSet, true},
                 { FactId.RealMatchDateTodayOrBefore, true},
                 { FactId.RealMatchDateWithinRoundLegs, true},
@@ -32,7 +33,8 @@ public sealed class MatchResultValidator : AbstractValidator<MatchEntity, (ITena
             }
         },
         {
-            MatchValidationMode.Overrule, new Dictionary<FactId, bool> {
+            MatchValidationMode.Overrule, new()
+            {
                 { FactId.RealMatchDateIsSet, true},
                 { FactId.RealMatchDateTodayOrBefore, true},
                 { FactId.RealMatchDateWithinRoundLegs, false},
@@ -47,7 +49,7 @@ public sealed class MatchResultValidator : AbstractValidator<MatchEntity, (ITena
     public MatchResultValidator(MatchEntity model,
         (ITenantContext TenantContext, Axuno.Tools.DateAndTime.TimeZoneConverter TimeZoneConverter, (MatchRuleEntity MatchRule, SetRuleEntity SetRule) Rules) data, MatchValidationMode validationMode) : base(model, data)
     {
-        SetsValidator = new SetsValidator(Model.Sets, (Data.TenantContext, Data.Rules), validationMode);
+        SetsValidator = new(Model.Sets, (Data.TenantContext, Data.Rules), validationMode);
         CreateFacts();
         ConfigureFacts(ModeConfiguration[validationMode]);
     }
@@ -67,7 +69,7 @@ public sealed class MatchResultValidator : AbstractValidator<MatchEntity, (ITena
 
     private Fact<FactId> RealMatchDurationIsPlausible()
     {
-        return new Fact<FactId>
+        return new()
         {
             // One ball point lasts for about 33 seconds (average over 1,024 matches with 169,845 ball points in 92,186 minutes)
             // https://volleyball.de/nc/news/details/datum/2011/05/27/zahlenspiele-1025-spiele-dauerten-64-tage-und-26-minuten/
@@ -82,7 +84,7 @@ public sealed class MatchResultValidator : AbstractValidator<MatchEntity, (ITena
         {
             const int minDuration = 33 - 10;
             const int maxDuration = 33 + 10;
-            var duration = Model is { RealStart: not null, RealEnd: not null } ? new DateTimePeriod(Model.RealStart, Model.RealEnd).Duration() : new TimeSpan(0);
+            var duration = Model is { RealStart: not null, RealEnd: not null } ? new DateTimePeriod(Model.RealStart, Model.RealEnd).Duration() : new(0);
             var totalBallPoints = Model.Sets.GetTotalBallPoints();
 
             return Task.FromResult(new FactResult
@@ -98,7 +100,7 @@ public sealed class MatchResultValidator : AbstractValidator<MatchEntity, (ITena
 
     private Fact<FactId> RealMatchDateEqualsFixture()
     {
-        return new Fact<FactId>
+        return new()
         {
             Id = FactId.RealMatchDateEqualsFixture,
             FieldNames = [nameof(Model.RealStart), nameof(Model.RealEnd)],
@@ -116,7 +118,7 @@ public sealed class MatchResultValidator : AbstractValidator<MatchEntity, (ITena
 
     private Fact<FactId> SetsValidatorSuccessful()
     {
-        return new Fact<FactId>
+        return new()
         {
             Id = FactId.SetsValidatorSuccessful,
             FieldNames = [string.Empty],
@@ -129,7 +131,7 @@ public sealed class MatchResultValidator : AbstractValidator<MatchEntity, (ITena
         {
             await SetsValidator.CheckAsync(CancellationToken.None).ConfigureAwait(false);
 
-            return new FactResult
+            return new()
             {
                 Message = MatchResultValidatorResource.ResourceManager.GetString(
                     nameof(FactId.SetsValidatorSuccessful)) ?? string.Empty,
@@ -140,7 +142,7 @@ public sealed class MatchResultValidator : AbstractValidator<MatchEntity, (ITena
 
     private Fact<FactId> RealMatchDateWithinRoundLegs()
     {
-        return new Fact<FactId>
+        return new()
         {
             Id = FactId.RealMatchDateWithinRoundLegs,
             FieldNames = [nameof(Model.RealStart), nameof(Model.RealEnd)],
@@ -184,7 +186,7 @@ public sealed class MatchResultValidator : AbstractValidator<MatchEntity, (ITena
                     $"{Data.TimeZoneConverter.ToZonedTime(leg.StartDateTime)?.DateTimeOffset.DateTime.ToShortDateString()} - {Data.TimeZoneConverter.ToZonedTime(leg.EndDateTime)?.DateTimeOffset.DateTime.ToShortDateString()}{joinWith}");
             displayPeriods = displayPeriods[..^joinWith.Length];
 
-            return new FactResult
+            return new()
             {
                 Message = string.Format(MatchResultValidatorResource.ResourceManager.GetString(
                                             nameof(FactId.RealMatchDateWithinRoundLegs)) ??
@@ -196,7 +198,7 @@ public sealed class MatchResultValidator : AbstractValidator<MatchEntity, (ITena
 
     private Fact<FactId> RealMatchDateTodayOrBefore()
     {
-        return new Fact<FactId>
+        return new()
         {
             Id = FactId.RealMatchDateTodayOrBefore,
             FieldNames = [nameof(Model.RealStart), nameof(Model.RealEnd)],
@@ -213,7 +215,7 @@ public sealed class MatchResultValidator : AbstractValidator<MatchEntity, (ITena
 
     private Fact<FactId> RealMatchDateIsSet()
     {
-        return new Fact<FactId>
+        return new()
         {
             Id = FactId.RealMatchDateIsSet,
             FieldNames = [nameof(Model.RealStart), nameof(Model.RealEnd)],
@@ -230,7 +232,7 @@ public sealed class MatchResultValidator : AbstractValidator<MatchEntity, (ITena
 
     private Fact<FactId> MatchPointsAreValid()
     {
-        return new Fact<FactId>
+        return new()
         {
             Id = FactId.MatchPointsAreValid,
             FieldNames = [nameof(Model.HomePoints), nameof(Model.GuestPoints)],

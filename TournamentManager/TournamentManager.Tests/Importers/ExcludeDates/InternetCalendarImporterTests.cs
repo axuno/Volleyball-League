@@ -15,12 +15,12 @@ public class InternetCalendarImporterTests
     {
         var icsFilePath = Path.Combine(TestContext.CurrentContext.TestDirectory, "Assets", "School_Holidays_Bavaria_2024.ics");
         // using CET as time zone
-        var tzConverter = new Axuno.Tools.DateAndTime.TimeZoneConverter(
+        _ = new Axuno.Tools.DateAndTime.TimeZoneConverter(
             "Europe/Berlin", CultureInfo.CurrentCulture);
 
         var icsImporter = new InternetCalendarImporter(File.ReadAllText(icsFilePath, Encoding.UTF8), "Europe/Berlin", NullLogger<InternetCalendarImporter>.Instance);
 
-        var imported = icsImporter.Import(new DateTimePeriod(from, to)).ToList();
+        var imported = icsImporter.Import(new(from, to)).ToList();
 
         Assert.That(imported, Has.Count.EqualTo(expectedCount));
         Assert.That(imported[0].Period.Duration(), Is.EqualTo(expectedDuration));
@@ -42,7 +42,7 @@ public class InternetCalendarImporterTests
         // using CET as time zone, unless dates in the calendar are flagged different
         var icsImporter = new InternetCalendarImporter(iCalendarStream, encoding, "Europe/Berlin", NullLogger<InternetCalendarImporter>.Instance);
 
-        var imported = icsImporter.Import(new DateTimePeriod(from, to)).ToList();
+        var imported = icsImporter.Import(new(from, to)).ToList();
 
         Assert.That(imported, Has.Count.EqualTo(expectedCount));
         Assert.That(imported[0].Period.Duration(), Is.EqualTo(expectedDuration));

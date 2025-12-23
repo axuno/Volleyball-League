@@ -18,11 +18,11 @@ namespace League.Tests.EmbeddedResources
             
             var fileInfo = provider.GetFileInfo("lib/bootstrap/bootstrap.min.css");
 
-            Assert.Multiple(() =>
+            using (Assert.EnterMultipleScope())
             {
                 Assert.That(fileInfo.Exists, Is.True, $"Expected embedded file {file} was not found.");
                 Assert.That(fileInfo.PhysicalPath, Is.Null, $"Physical file path was {file} instead of null");
-            });
+            }
         }
     }
 }

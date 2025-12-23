@@ -11,7 +11,7 @@ public class MultiLanguageIdentityErrorDescriber : IdentityErrorDescriber
 
     public override IdentityError DefaultError()
     {
-        return new IdentityError
+        return new()
         {
             Code = nameof(DefaultError),
             Description = _localizer[nameof(DefaultError)]
@@ -20,7 +20,7 @@ public class MultiLanguageIdentityErrorDescriber : IdentityErrorDescriber
 
     public override IdentityError ConcurrencyFailure()
     {
-        return new IdentityError
+        return new()
         {
             Code = nameof(ConcurrencyFailure),
             Description = _localizer[nameof(ConcurrencyFailure)]
@@ -29,7 +29,7 @@ public class MultiLanguageIdentityErrorDescriber : IdentityErrorDescriber
 
     public override IdentityError PasswordMismatch()
     {
-        return new IdentityError
+        return new()
         {
             Code = nameof(PasswordMismatch),
             Description = _localizer[nameof(PasswordMismatch)]
@@ -38,7 +38,7 @@ public class MultiLanguageIdentityErrorDescriber : IdentityErrorDescriber
 
     public override IdentityError InvalidToken()
     {
-        return new IdentityError
+        return new()
         {
             Code = nameof(InvalidToken),
             Description = _localizer[nameof(InvalidToken)]
@@ -47,7 +47,7 @@ public class MultiLanguageIdentityErrorDescriber : IdentityErrorDescriber
 
     public override IdentityError RecoveryCodeRedemptionFailed()
     {
-        return new IdentityError
+        return new()
         {
             Code = nameof(RecoveryCodeRedemptionFailed),
             Description = _localizer[nameof(RecoveryCodeRedemptionFailed)]
@@ -56,7 +56,7 @@ public class MultiLanguageIdentityErrorDescriber : IdentityErrorDescriber
 
     public override IdentityError LoginAlreadyAssociated()
     {
-        return new IdentityError
+        return new()
         {
             Code = nameof(LoginAlreadyAssociated),
             Description = _localizer[nameof(LoginAlreadyAssociated)]
@@ -65,7 +65,7 @@ public class MultiLanguageIdentityErrorDescriber : IdentityErrorDescriber
 
     public override IdentityError InvalidUserName(string? userName)
     {
-        return new IdentityError
+        return new()
         {
             Code = nameof(InvalidUserName),
             Description = _localizer[nameof(InvalidUserName), userName ?? string.Empty]
@@ -74,7 +74,7 @@ public class MultiLanguageIdentityErrorDescriber : IdentityErrorDescriber
 
     public override IdentityError InvalidEmail(string? email)
     {
-        return new IdentityError
+        return new()
         {
             Code = nameof(InvalidEmail),
             Description = _localizer[nameof(InvalidEmail), email ?? string.Empty]
@@ -83,7 +83,7 @@ public class MultiLanguageIdentityErrorDescriber : IdentityErrorDescriber
 
     public override IdentityError DuplicateUserName(string userName)
     {
-        return new IdentityError
+        return new()
         {
             Code = nameof(DuplicateUserName),
             Description = _localizer[nameof(DuplicateUserName), userName]
@@ -92,7 +92,7 @@ public class MultiLanguageIdentityErrorDescriber : IdentityErrorDescriber
 
     public override IdentityError DuplicateEmail(string email)
     {
-        return new IdentityError
+        return new()
         {
             Code = nameof(DuplicateEmail),
             Description = _localizer[nameof(DuplicateEmail), email]
@@ -101,7 +101,7 @@ public class MultiLanguageIdentityErrorDescriber : IdentityErrorDescriber
 
     public override IdentityError InvalidRoleName(string? role)
     {
-        return new IdentityError
+        return new()
         {
             Code = nameof(InvalidRoleName),
             Description = _localizer[nameof(InvalidRoleName), role ?? string.Empty]
@@ -110,7 +110,7 @@ public class MultiLanguageIdentityErrorDescriber : IdentityErrorDescriber
 
     public override IdentityError DuplicateRoleName(string role)
     {
-        return new IdentityError
+        return new()
         {
             Code = nameof(DuplicateRoleName),
             Description = _localizer[nameof(DuplicateRoleName), role]
@@ -119,7 +119,7 @@ public class MultiLanguageIdentityErrorDescriber : IdentityErrorDescriber
 
     public override IdentityError UserAlreadyHasPassword()
     {
-        return new IdentityError
+        return new()
         {
             Code = nameof(UserAlreadyHasPassword),
             Description = _localizer[nameof(UserAlreadyHasPassword)]
@@ -128,7 +128,7 @@ public class MultiLanguageIdentityErrorDescriber : IdentityErrorDescriber
 
     public override IdentityError UserLockoutNotEnabled()
     {
-        return new IdentityError
+        return new()
         {
             Code = nameof(UserLockoutNotEnabled),
             Description = _localizer[nameof(UserLockoutNotEnabled)]
@@ -137,7 +137,7 @@ public class MultiLanguageIdentityErrorDescriber : IdentityErrorDescriber
 
     public override IdentityError UserAlreadyInRole(string role)
     {
-        return new IdentityError
+        return new()
         {
             Code = nameof(UserAlreadyInRole),
             Description = _localizer[nameof(UserAlreadyInRole), role]
@@ -146,7 +146,7 @@ public class MultiLanguageIdentityErrorDescriber : IdentityErrorDescriber
 
     public override IdentityError UserNotInRole(string role)
     {
-        return new IdentityError
+        return new()
         {
             Code = nameof(UserNotInRole),
             Description = _localizer[nameof(UserNotInRole), role]
@@ -155,7 +155,7 @@ public class MultiLanguageIdentityErrorDescriber : IdentityErrorDescriber
 
     public override IdentityError PasswordTooShort(int length)
     {
-        return new IdentityError
+        return new()
         {
             Code = nameof(PasswordTooShort),
             Description = _localizer[nameof(PasswordTooShort), length]
@@ -164,7 +164,7 @@ public class MultiLanguageIdentityErrorDescriber : IdentityErrorDescriber
 
     public override IdentityError PasswordRequiresUniqueChars(int uniqueChars)
     {
-        return new IdentityError
+        return new()
         {
             Code = nameof(PasswordRequiresUniqueChars),
             Description = _localizer[nameof(PasswordRequiresUniqueChars), uniqueChars]
@@ -173,7 +173,7 @@ public class MultiLanguageIdentityErrorDescriber : IdentityErrorDescriber
 
     public override IdentityError PasswordRequiresNonAlphanumeric()
     {
-        return new IdentityError
+        return new()
         {
             Code = nameof(PasswordRequiresNonAlphanumeric),
             Description = _localizer[nameof(PasswordRequiresNonAlphanumeric)]
@@ -182,7 +182,7 @@ public class MultiLanguageIdentityErrorDescriber : IdentityErrorDescriber
 
     public override IdentityError PasswordRequiresDigit()
     {
-        return new IdentityError
+        return new()
         {
             Code = nameof(PasswordRequiresDigit),
             Description = _localizer[nameof(PasswordRequiresDigit)]
@@ -191,7 +191,7 @@ public class MultiLanguageIdentityErrorDescriber : IdentityErrorDescriber
 
     public override IdentityError PasswordRequiresLower()
     {
-        return new IdentityError
+        return new()
         {
             Code = nameof(PasswordRequiresLower),
             Description = _localizer[nameof(PasswordRequiresLower)]
@@ -200,7 +200,7 @@ public class MultiLanguageIdentityErrorDescriber : IdentityErrorDescriber
 
     public override IdentityError PasswordRequiresUpper()
     {
-        return new IdentityError
+        return new()
         {
             Code = nameof(PasswordRequiresUpper),
             Description = _localizer[nameof(PasswordRequiresUpper)]
@@ -211,7 +211,7 @@ public class MultiLanguageIdentityErrorDescriber : IdentityErrorDescriber
 
     public IdentityError UsernameTooShort()
     {
-        return new IdentityError
+        return new()
         {
             Code = nameof(UsernameTooShort),
             Description = _localizer[nameof(UsernameTooShort)]

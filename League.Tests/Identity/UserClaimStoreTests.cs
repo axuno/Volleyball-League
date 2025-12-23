@@ -37,7 +37,7 @@ public class UserClaimStoreTests
     [Test]
     public void ClaimConstants()
     {
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(Constants.ClaimType.GetTeamRelatedClaimTypes(), Does.Contain(Constants.ClaimType.ManagesTeam));
             Assert.That(Constants.ClaimType.GetTeamRelatedClaimTypes(), Does.Contain(Constants.ClaimType.PlaysInTeam));
@@ -50,7 +50,7 @@ public class UserClaimStoreTests
             Assert.That(Constants.ClaimType.GetAllClaimTypeNames(), Does.Contain(nameof(Constants.ClaimType.ManagesTeam)));
             Assert.That(Constants.ClaimType.GetAllClaimTypeNames(), Does.Contain(nameof(Constants.ClaimType.PlaysInTeam)));
             Assert.That(Constants.ClaimType.GetAllClaimTypeNames(), Does.Contain(nameof(Constants.ClaimType.ImpersonatedByUser)));
-        });
+        }
     }
 
     [Test]
@@ -69,8 +69,8 @@ public class UserClaimStoreTests
             _appDb.DbContext.CommandTimeOut = 2;
             // new claim
             var claim = new Claim("type", "value", "valueType", "issuer");
-            Assert.ThrowsAsync<InvalidOperationException>(async () => await _store.AddClaimsAsync(_user, new[] { claim }, CancellationToken.None));
-            Assert.ThrowsAsync<InvalidOperationException>(async () => await _store.RemoveClaimsAsync(_user, new[] { claim }, CancellationToken.None));
+            Assert.ThrowsAsync<InvalidOperationException>(async () => await _store.AddClaimsAsync(_user, [claim], CancellationToken.None));
+            Assert.ThrowsAsync<InvalidOperationException>(async () => await _store.RemoveClaimsAsync(_user, [claim], CancellationToken.None));
             Assert.ThrowsAsync<InvalidOperationException>(async () => await _store.ReplaceClaimAsync(_user, claim, claim, CancellationToken.None));
             da.Rollback("transaction1");
         }
@@ -85,18 +85,18 @@ public class UserClaimStoreTests
  
         // new claim
         var claim = new Claim("type", "value", "valueType", "issuer");
-        await _store.AddClaimsAsync(_user, new[] {claim}, CancellationToken.None);
+        await _store.AddClaimsAsync(_user, [claim], CancellationToken.None);
 
         // same claim again - should not be added
-        await _store.AddClaimsAsync(_user, new[] { claim }, CancellationToken.None);
+        await _store.AddClaimsAsync(_user, [claim], CancellationToken.None);
         var claims = await _store.GetClaimsAsync(_user, CancellationToken.None);
         Assert.That(claims, Has.Count.EqualTo(1));
-        Assert.That(claims.FirstOrDefault(c => c.Type == claim.Type && c.Value == claim.Value && c.ValueType == claim.ValueType && c.Issuer == claim.Issuer), Is.Not.EqualTo(null));
+        Assert.That(claims.FirstOrDefault(c => c.Type == claim.Type && c.Value == claim.Value && c.ValueType == claim.ValueType && c.Issuer == claim.Issuer), Is.Not.Null);
 
         // remove
-        await _store.RemoveClaimsAsync(_user, new[] {claim}, CancellationToken.None);
+        await _store.RemoveClaimsAsync(_user, [claim], CancellationToken.None);
         claims = await _store.GetClaimsAsync(_user, CancellationToken.None);
-        Assert.That(claims.FirstOrDefault(c => c.Type == claim.Type && c.Value == claim.Value), Is.EqualTo(null));
+        Assert.That(claims.FirstOrDefault(c => c.Type == claim.Type && c.Value == claim.Value), Is.Null);
 
         // List of claims to remove is empty
         Assert.DoesNotThrowAsync(() => _store.RemoveClaimsAsync(_user, new List<Claim>(), CancellationToken.None));
@@ -108,7 +108,7 @@ public class UserClaimStoreTests
         // add
         var claim = new Claim("type", "value", "valueType", "issuer");
         var newClaim = new Claim("newType", "newValue", "newValueType", "newIssuer");
-        await _store.AddClaimsAsync(_user, new[] { claim }, CancellationToken.None);
+        await _store.AddClaimsAsync(_user, [claim], CancellationToken.None);
         Assert.That((await _store.GetClaimsAsync(_user, CancellationToken.None)), Has.Count.EqualTo(1));
 
         // replace
@@ -116,12 +116,12 @@ public class UserClaimStoreTests
         Assert.That((await _store.GetClaimsAsync(_user, CancellationToken.None)), Has.Count.EqualTo(1));
             
         // add the original claim again
-        await _store.AddClaimsAsync(_user, new[] { claim }, CancellationToken.None);
+        await _store.AddClaimsAsync(_user, [claim], CancellationToken.None);
         Assert.That((await _store.GetClaimsAsync(_user, CancellationToken.None)), Has.Count.EqualTo(2));
         // this time, replacing will not happen, because the claim already exists
         await _store.ReplaceClaimAsync(_user, claim, newClaim, CancellationToken.None);
         // replacing a non-existent claim will do nothing
-        await _store.ReplaceClaimAsync(_user, new Claim("non-existent", "non-existent"), newClaim, CancellationToken.None);
+        await _store.ReplaceClaimAsync(_user, new("non-existent", "non-existent"), newClaim, CancellationToken.None);
 
         var claims = await _store.GetClaimsAsync(_user, CancellationToken.None);
         Assert.That(claims.Count(c => c.Type == "type" || c.Type == "newType"), Is.EqualTo(2));
@@ -131,7 +131,7 @@ public class UserClaimStoreTests
     public async Task Get_Users_For_Regular_Claim()
     {
         var claim = new Claim("otherType", "otherValue", "otherValueType", "otherIssuer");
-        await _store.AddClaimsAsync(_user, new[] { claim }, CancellationToken.None);
+        await _store.AddClaimsAsync(_user, [claim], CancellationToken.None);
 
         var users = await _store.GetUsersForClaimAsync(claim, CancellationToken.None);
         Assert.That(users.FirstOrDefault()?.Email, Is.EqualTo(_user.Email));
@@ -146,30 +146,30 @@ public class UserClaimStoreTests
     {
         // new manager claim
         var claim = new Claim(Constants.ClaimType.ManagesTeam, _team.Id.ToString());
-        await _store.AddClaimsAsync(_user, new[] { claim }, CancellationToken.None);
+        await _store.AddClaimsAsync(_user, [claim], CancellationToken.None);
         // non-existent team should throw
         Assert.ThrowsAsync<InvalidOperationException>(() => _store.AddClaimsAsync(_user,
-            new [] {new Claim(Constants.ClaimType.ManagesTeam, "0")}, CancellationToken.None));
+            [new(Constants.ClaimType.ManagesTeam, "0")], CancellationToken.None));
         // not implemented claim - should throw
         Assert.ThrowsAsync<InvalidOperationException>(() => _store.AddClaimsAsync(_user,
-            new [] { new Claim(Constants.ClaimType.NotImplementedClaim, _team.Id.ToString()) }, CancellationToken.None));
+            [new(Constants.ClaimType.NotImplementedClaim, _team.Id.ToString())], CancellationToken.None));
 
         // same manager claim again - should not be added
-        await _store.AddClaimsAsync(_user, new[] { claim }, CancellationToken.None);
+        await _store.AddClaimsAsync(_user, [claim], CancellationToken.None);
         var claims = await _store.GetClaimsAsync(_user, CancellationToken.None);
         Assert.That(claims, Has.Count.EqualTo(1));
-        Assert.That(claims.FirstOrDefault(c => c.Type == claim.Type && c.Value == claim.Value && c.ValueType == claim.ValueType && c.Issuer == claim.Issuer), Is.Not.EqualTo(null));
+        Assert.That(claims.FirstOrDefault(c => c.Type == claim.Type && c.Value == claim.Value && c.ValueType == claim.ValueType && c.Issuer == claim.Issuer), Is.Not.Null);
 
         // remove manager
-        await _store.RemoveClaimsAsync(_user, new[] { claim }, CancellationToken.None);
+        await _store.RemoveClaimsAsync(_user, [claim], CancellationToken.None);
         claims = await _store.GetClaimsAsync(_user, CancellationToken.None);
-        Assert.That(claims.FirstOrDefault(c => c.Type == claim.Type && c.Value == claim.Value), Is.EqualTo(null));
+        Assert.That(claims.FirstOrDefault(c => c.Type == claim.Type && c.Value == claim.Value), Is.Null);
         // non-existent team should throw
         Assert.ThrowsAsync<InvalidOperationException>(() => _store.RemoveClaimsAsync(_user,
-            new [] { new Claim(Constants.ClaimType.ManagesTeam, "0") }, CancellationToken.None));
+            [new(Constants.ClaimType.ManagesTeam, "0")], CancellationToken.None));
         // not implemented claim - should throw
         Assert.ThrowsAsync<InvalidOperationException>(() => _store.RemoveClaimsAsync(_user,
-            new [] { new Claim(Constants.ClaimType.NotImplementedClaim, _team.Id.ToString()) }, CancellationToken.None));
+            [new(Constants.ClaimType.NotImplementedClaim, _team.Id.ToString())], CancellationToken.None));
 
         // replace manager should fail
         Assert.ThrowsAsync<ArgumentException>(() => _store.ReplaceClaimAsync(_user, claim, claim, CancellationToken.None));
@@ -180,32 +180,32 @@ public class UserClaimStoreTests
     {
         // new player claim
         var claim = new Claim(Constants.ClaimType.PlaysInTeam, _team.Id.ToString());
-        await _store.AddClaimsAsync(_user, new[] { claim }, CancellationToken.None);
+        await _store.AddClaimsAsync(_user, [claim], CancellationToken.None);
 
         // same player claim again - should not be added
-        await _store.AddClaimsAsync(_user, new[] { claim }, CancellationToken.None);
+        await _store.AddClaimsAsync(_user, [claim], CancellationToken.None);
         var claims = await _store.GetClaimsAsync(_user, CancellationToken.None);
         Assert.That(claims, Has.Count.EqualTo(1));
-        Assert.That(claims.FirstOrDefault(c => c.Type == claim.Type && c.Value == claim.Value && c.ValueType == claim.ValueType && c.Issuer == claim.Issuer), Is.Not.EqualTo(null));
+        Assert.That(claims.FirstOrDefault(c => c.Type == claim.Type && c.Value == claim.Value && c.ValueType == claim.ValueType && c.Issuer == claim.Issuer), Is.Not.Null);
 
         // remove player
-        await _store.RemoveClaimsAsync(_user, new[] { claim }, CancellationToken.None);
+        await _store.RemoveClaimsAsync(_user, [claim], CancellationToken.None);
         claims = await _store.GetClaimsAsync(_user, CancellationToken.None);
-        Assert.That(claims.FirstOrDefault(c => c.Type == claim.Type && c.Value == claim.Value), Is.EqualTo(null));
+        Assert.That(claims.FirstOrDefault(c => c.Type == claim.Type && c.Value == claim.Value), Is.Null);
     }
 
     [Test]
     public async Task Get_Users_For_Manager_Claim()
     {
         var claim = new Claim(Constants.ClaimType.ManagesTeam, _team.Id.ToString());
-        await _store.AddClaimsAsync(_user, new[] { claim }, CancellationToken.None);
+        await _store.AddClaimsAsync(_user, [claim], CancellationToken.None);
 
         // get users for the claim type
         var users = await _store.GetUsersForClaimAsync(claim, CancellationToken.None);
         Assert.That(users.FirstOrDefault()?.Email, Is.EqualTo(_user.Email));
 
         // get users for claim type which is not implemented
-        Assert.ThrowsAsync<NotImplementedException>(() => _store.GetUsersForClaimAsync(new Claim(Constants.ClaimType.NotImplementedClaim, "1", "z"),
+        Assert.ThrowsAsync<NotImplementedException>(() => _store.GetUsersForClaimAsync(new(Constants.ClaimType.NotImplementedClaim, "1", "z"),
             CancellationToken.None));
     }
 
@@ -213,7 +213,7 @@ public class UserClaimStoreTests
     public async Task Get_Users_For_Player_Claim()
     {
         var claim = new Claim(Constants.ClaimType.PlaysInTeam, _team.Id.ToString());
-        await _store.AddClaimsAsync(_user, new[] { claim }, CancellationToken.None);
+        await _store.AddClaimsAsync(_user, [claim], CancellationToken.None);
 
         // get users for the claim type
         var users = await _store.GetUsersForClaimAsync(claim, CancellationToken.None);
@@ -229,14 +229,14 @@ public class UserClaimStoreTests
     {
         // Programmatic claims cannot be stored
         var claim = new Claim(Constants.ClaimType.ImpersonatedByUser, "123", "valueType", "issuer");
-        Assert.ThrowsAsync<InvalidOperationException>(() => _store.AddClaimsAsync(_user, new []{claim}, CancellationToken.None));
+        Assert.ThrowsAsync<InvalidOperationException>(() => _store.AddClaimsAsync(_user, [claim], CancellationToken.None));
 
         // Programmatic claims cannot be replaced
-        Assert.ThrowsAsync<ArgumentException>(() => _store.ReplaceClaimAsync(_user, claim, new Claim("type", "value"), CancellationToken.None));
-        Assert.ThrowsAsync<ArgumentException>(() => _store.ReplaceClaimAsync(_user, new Claim("type", "value"), claim, CancellationToken.None));
+        Assert.ThrowsAsync<ArgumentException>(() => _store.ReplaceClaimAsync(_user, claim, new("type", "value"), CancellationToken.None));
+        Assert.ThrowsAsync<ArgumentException>(() => _store.ReplaceClaimAsync(_user, new("type", "value"), claim, CancellationToken.None));
 
         // Programmatic claims cannot be removed
-        Assert.ThrowsAsync<InvalidOperationException>(() => _store.RemoveClaimsAsync(_user, new []{ claim }, CancellationToken.None));
+        Assert.ThrowsAsync<InvalidOperationException>(() => _store.RemoveClaimsAsync(_user, [claim], CancellationToken.None));
     }
 
     #endregion
@@ -251,12 +251,12 @@ public class UserClaimStoreTests
         await _appDb.GenericRepository.DeleteEntitiesUsingConstraintAsync<TeamEntity>(new PredicateExpression(), CancellationToken.None);
 
         // create user
-        _user = new ApplicationUser {UserName = "UserName", Email = "userclaim@store.test"};
+        _user = new() {UserName = "UserName", Email = "userclaim@store.test"};
         await _store.CreateAsync(_user, CancellationToken.None);
         _user = await _store.FindByEmailAsync(_user.Email, CancellationToken.None);
 
         // create team
-        _team = new TeamEntity { Name = "Test Team"};
+        _team = new() { Name = "Test Team"};
         await _appDb.GenericRepository.SaveEntityAsync(_team, true, false, CancellationToken.None);
     }
 

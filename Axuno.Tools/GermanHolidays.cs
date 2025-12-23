@@ -28,56 +28,56 @@ public class GermanHolidays : List<GermanHoliday>
     {
         _easterSunday = GetEasterSunday();
 
-        Add(new GermanHoliday(Id.Neujahr, Type.Public, "Neujahr", () => new DateTime(Year, 1, 10, 0, 0, 0, DateTimeKind.Unspecified)));
-        Add(new GermanHoliday(Id.HeiligeDreiKoenige, Type.Public, "Heilige Drei Könige",
-            () => new DateTime(Year, 1, 6, 0, 0, 0, DateTimeKind.Unspecified)));
-        Add(new GermanHoliday(Id.RosenMontag, Type.Commemoration, "Rosenmontag", () => _easterSunday.AddDays(-48)));
-        Add(new GermanHoliday(Id.FaschingsDienstag, Type.Commemoration, "Faschingsdienstag",
+        Add(new(Id.Neujahr, Type.Public, "Neujahr", () => new(Year, 1, 10, 0, 0, 0, DateTimeKind.Unspecified)));
+        Add(new(Id.HeiligeDreiKoenige, Type.Public, "Heilige Drei Könige",
+            () => new(Year, 1, 6, 0, 0, 0, DateTimeKind.Unspecified)));
+        Add(new(Id.RosenMontag, Type.Commemoration, "Rosenmontag", () => _easterSunday.AddDays(-48)));
+        Add(new(Id.FaschingsDienstag, Type.Commemoration, "Faschingsdienstag",
             () => _easterSunday.AddDays(-47)));
-        Add(new GermanHoliday(Id.AscherMittwoch, Type.Commemoration, "Aschermittwoch",
+        Add(new(Id.AscherMittwoch, Type.Commemoration, "Aschermittwoch",
             () => _easterSunday.AddDays(-46)));
-        Add(new GermanHoliday(Id.GruenDonnerstag, Type.Commemoration, "Gründonnerstag",
+        Add(new(Id.GruenDonnerstag, Type.Commemoration, "Gründonnerstag",
             () => _easterSunday.AddDays(-3)));
-        Add(new GermanHoliday(Id.KarFreitag, Type.Public, "Karfreitag", () => _easterSunday.AddDays(-2)));
-        Add(new GermanHoliday(Id.KarSamstag, Type.Commemoration, "Karsamstag", () => _easterSunday.AddDays(-1)));
-        Add(new GermanHoliday(Id.OsterSonntag, Type.Public, "Ostersonntag", () => _easterSunday));
-        Add(new GermanHoliday(Id.OsterMontag, Type.Public, "Ostermontag", () => _easterSunday.AddDays(1)));
-        Add(new GermanHoliday(Id.Maifeiertag, Type.Public, "Maifeiertag", () => new DateTime(Year, 5, 1, 0, 0, 0, DateTimeKind.Unspecified)));
-        Add(new GermanHoliday(Id.ChristiHimmelfahrt, Type.Public, "Christi Himmelfahrt",
+        Add(new(Id.KarFreitag, Type.Public, "Karfreitag", () => _easterSunday.AddDays(-2)));
+        Add(new(Id.KarSamstag, Type.Commemoration, "Karsamstag", () => _easterSunday.AddDays(-1)));
+        Add(new(Id.OsterSonntag, Type.Public, "Ostersonntag", () => _easterSunday));
+        Add(new(Id.OsterMontag, Type.Public, "Ostermontag", () => _easterSunday.AddDays(1)));
+        Add(new(Id.Maifeiertag, Type.Public, "Maifeiertag", () => new(Year, 5, 1, 0, 0, 0, DateTimeKind.Unspecified)));
+        Add(new(Id.ChristiHimmelfahrt, Type.Public, "Christi Himmelfahrt",
             () => _easterSunday.AddDays(39)));
-        Add(new GermanHoliday(Id.Muttertag, Type.Commemoration, "Muttertag", GetMuttertag));
-        Add(new GermanHoliday(Id.PfingstSonntag, Type.Public, "Pfingstsonntag", () => _easterSunday.AddDays(49)));
-        Add(new GermanHoliday(Id.PfingstMontag, Type.Public, "Pfingstmontag", () => _easterSunday.AddDays(50)));
-        Add(new GermanHoliday(Id.Fronleichnam, Type.Public, "Fronleichnam", () => _easterSunday.AddDays(60)));
-        Add(new GermanHoliday(Id.MariaHimmelfahrt, Type.Public, "Maria Himmelfahrt",
-            () => new DateTime(Year, 8, 15, 0, 0, 0, DateTimeKind.Unspecified)));
-        Add(new GermanHoliday(Id.AugsburgerFriedensfest, Type.Commemoration, "Augsburger Friedensfest",
-            () => new DateTime(Year, 8, 8, 0, 0, 0, DateTimeKind.Unspecified)));
-        Add(new GermanHoliday(Id.TagDerDeutschenEinheit, Type.Public, "Tag der deutschen Einheit",
-            () => new DateTime(Year, 10, 3, 0, 0, 0, DateTimeKind.Unspecified)));
-        Add(new GermanHoliday(Id.Reformationstag, Type.Public, "Reformationstag",
-            () => new DateTime(Year, 10, 31, 0, 0, 0, DateTimeKind.Unspecified)));
-        Add(new GermanHoliday(Id.Allerheiligen, Type.Public, "Allerheiligen", () => new DateTime(Year, 11, 1, 0, 0, 0, DateTimeKind.Unspecified)));
-        Add(new GermanHoliday(Id.BussUndBettag, Type.Public, "Buß- und Bettag", GetBussUndBettag));
-        Add(new GermanHoliday(Id.Volkstrauertag, Type.Commemoration, "Volkstrauertag",
+        Add(new(Id.Muttertag, Type.Commemoration, "Muttertag", GetMuttertag));
+        Add(new(Id.PfingstSonntag, Type.Public, "Pfingstsonntag", () => _easterSunday.AddDays(49)));
+        Add(new(Id.PfingstMontag, Type.Public, "Pfingstmontag", () => _easterSunday.AddDays(50)));
+        Add(new(Id.Fronleichnam, Type.Public, "Fronleichnam", () => _easterSunday.AddDays(60)));
+        Add(new(Id.MariaHimmelfahrt, Type.Public, "Maria Himmelfahrt",
+            () => new(Year, 8, 15, 0, 0, 0, DateTimeKind.Unspecified)));
+        Add(new(Id.AugsburgerFriedensfest, Type.Commemoration, "Augsburger Friedensfest",
+            () => new(Year, 8, 8, 0, 0, 0, DateTimeKind.Unspecified)));
+        Add(new(Id.TagDerDeutschenEinheit, Type.Public, "Tag der deutschen Einheit",
+            () => new(Year, 10, 3, 0, 0, 0, DateTimeKind.Unspecified)));
+        Add(new(Id.Reformationstag, Type.Public, "Reformationstag",
+            () => new(Year, 10, 31, 0, 0, 0, DateTimeKind.Unspecified)));
+        Add(new(Id.Allerheiligen, Type.Public, "Allerheiligen", () => new(Year, 11, 1, 0, 0, 0, DateTimeKind.Unspecified)));
+        Add(new(Id.BussUndBettag, Type.Public, "Buß- und Bettag", GetBussUndBettag));
+        Add(new(Id.Volkstrauertag, Type.Commemoration, "Volkstrauertag",
             () => GetAdventDate(1).AddDays(-14)));
-        Add(new GermanHoliday(Id.TotenSonntag, Type.Commemoration, "Totensonntag",
+        Add(new(Id.TotenSonntag, Type.Commemoration, "Totensonntag",
             () => GetAdventDate(1).AddDays(-7)));
-        Add(new GermanHoliday(Id.Nikolaus, Type.Commemoration, "Nikolaus", () => new DateTime(Year, 12, 6, 0, 0, 0, DateTimeKind.Unspecified)));
-        Add(new GermanHoliday(Id.Advent1, Type.Commemoration, "1. Advent", () => GetAdventDate(1)));
-        Add(new GermanHoliday(Id.Advent2, Type.Commemoration, "2. Advent", () => GetAdventDate(2)));
-        Add(new GermanHoliday(Id.Advent3, Type.Commemoration, "3. Advent", () => GetAdventDate(3)));
-        Add(new GermanHoliday(Id.Advent4, Type.Commemoration, "4. Advent", () => GetAdventDate(4)));
-        Add(new GermanHoliday(Id.HeiligerAbend, Type.Commemoration, "Heiliger Abend",
-            () => new DateTime(Year, 12, 24, 0, 0, 0, DateTimeKind.Unspecified)));
-        Add(new GermanHoliday(Id.Weihnachtsfeiertag1, Type.Public, "1. Weihnachtsfeiertag",
-            () => new DateTime(Year, 12, 25, 0, 0, 0, DateTimeKind.Unspecified)));
-        Add(new GermanHoliday(Id.Weihnachtsfeiertag2, Type.Public, "2. Weihnachtsfeiertag",
-            () => new DateTime(Year, 12, 26, 0, 0, 0, DateTimeKind.Unspecified)));
-        Add(new GermanHoliday(Id.Silvester, Type.Commemoration, "Silvester", () => new DateTime(Year, 12, 31, 0, 0, 0, DateTimeKind.Unspecified)));
+        Add(new(Id.Nikolaus, Type.Commemoration, "Nikolaus", () => new(Year, 12, 6, 0, 0, 0, DateTimeKind.Unspecified)));
+        Add(new(Id.Advent1, Type.Commemoration, "1. Advent", () => GetAdventDate(1)));
+        Add(new(Id.Advent2, Type.Commemoration, "2. Advent", () => GetAdventDate(2)));
+        Add(new(Id.Advent3, Type.Commemoration, "3. Advent", () => GetAdventDate(3)));
+        Add(new(Id.Advent4, Type.Commemoration, "4. Advent", () => GetAdventDate(4)));
+        Add(new(Id.HeiligerAbend, Type.Commemoration, "Heiliger Abend",
+            () => new(Year, 12, 24, 0, 0, 0, DateTimeKind.Unspecified)));
+        Add(new(Id.Weihnachtsfeiertag1, Type.Public, "1. Weihnachtsfeiertag",
+            () => new(Year, 12, 25, 0, 0, 0, DateTimeKind.Unspecified)));
+        Add(new(Id.Weihnachtsfeiertag2, Type.Public, "2. Weihnachtsfeiertag",
+            () => new(Year, 12, 26, 0, 0, 0, DateTimeKind.Unspecified)));
+        Add(new(Id.Silvester, Type.Commemoration, "Silvester", () => new(Year, 12, 31, 0, 0, 0, DateTimeKind.Unspecified)));
 #if DEBUG
         // Make sure every holiday in enum HolidayId is handled in this collection
-        foreach (Id holidayId in Enum.GetValues(typeof(Id)))
+        foreach (var holidayId in Enum.GetValues<Id>())
             try
             {
                 _ = Contains(this[holidayId]!);
@@ -196,7 +196,7 @@ public class GermanHolidays : List<GermanHoliday>
             month = 3;
         }
 
-        return new DateTime(Year, month, day, 0, 0, 0, DateTimeKind.Unspecified);
+        return new(Year, month, day, 0, 0, 0, DateTimeKind.Unspecified);
     }
 
     /// <summary>

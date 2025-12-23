@@ -186,7 +186,7 @@ public class HomeMatchTime
     /// </summary>
     [YAXLib.Attributes.YAXComment("Allowed days of a week")]
     [XmlArrayItem(nameof(DaysOfWeekRange))]
-    public List<DayOfWeek> DaysOfWeekRange { get; set; } = new(new[]{DayOfWeek.Monday, DayOfWeek.Tuesday, DayOfWeek.Wednesday, DayOfWeek.Thursday, DayOfWeek.Friday, DayOfWeek.Saturday, DayOfWeek.Sunday});
+    public List<DayOfWeek> DaysOfWeekRange { get; set; } = [DayOfWeek.Monday, DayOfWeek.Tuesday, DayOfWeek.Wednesday, DayOfWeek.Thursday, DayOfWeek.Friday, DayOfWeek.Saturday, DayOfWeek.Sunday];
         
     /// <summary>
     /// If <see langword="true"/> entries not in <see cref="DaysOfWeekRange"/> are errors (else: warning)

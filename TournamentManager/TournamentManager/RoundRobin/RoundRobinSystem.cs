@@ -118,7 +118,7 @@ internal class RoundRobinSystem<TP> : IRoundRobinSystem<TP> where TP : struct, I
     /// <param name="participants"></param>
     /// <returns></returns>
     private static void FixUnbalancedHomeGuestCountsInLastTurn(
-        IList<(int Turn, TP Home, TP Guest)> matches, int lastTurn, ICollection<TP> participants)
+        List<(int Turn, TP Home, TP Guest)> matches, int lastTurn, ICollection<TP> participants)
     {
         // Only odd number of participants require an adjustment
         if (participants.Count % 2 == 0) return;

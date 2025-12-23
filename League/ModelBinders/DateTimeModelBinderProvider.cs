@@ -17,8 +17,7 @@ public class DateTimeModelBinderProvider : IModelBinderProvider
     /// <inheritdoc/>
     public IModelBinder? GetBinder(ModelBinderProviderContext context)
     {
-        if (context == null)
-            throw new ArgumentNullException(nameof(context));
+        ArgumentNullException.ThrowIfNull(context);
 
         return context.Metadata.ModelType == typeof(DateTime) || context.Metadata.ModelType == typeof(DateTime?)
             ? new DateTimeModelBinder(context.Services.GetRequiredService<ILoggerFactory>())

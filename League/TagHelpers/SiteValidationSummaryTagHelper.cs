@@ -105,10 +105,8 @@ public class SiteValidationSummaryTagHelper : TagHelper
     /// <remarks>Does nothing if <see cref="P:Microsoft.AspNetCore.Mvc.TagHelpers.ValidationSummaryTagHelper.ValidationSummary" /> is <see cref="F:Microsoft.AspNetCore.Mvc.Rendering.ValidationSummary.None" />.</remarks>
     public override async Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
     {
-        if (context == null)
-            throw new ArgumentNullException(nameof(context));
-        if (output == null)
-            throw new ArgumentNullException(nameof(output));
+        ArgumentNullException.ThrowIfNull(context);
+        ArgumentNullException.ThrowIfNull(output);
         if (ValidationSummary == ValidationSummary.None)
             return;
             

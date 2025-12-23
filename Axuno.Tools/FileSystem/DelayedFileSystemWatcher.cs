@@ -30,7 +30,7 @@ public class DelayedFileSystemWatcher : IDisposable
     /// <summary>
     /// Stores the events fired by <see cref="FileSystemWatcher"/>.
     /// </summary>
-    private ArrayList _events = new();
+    private ArrayList _events = [];
 
     private int _consolidationInterval = 1000; // initial value in milliseconds
     private bool _isDisposing;
@@ -43,7 +43,7 @@ public class DelayedFileSystemWatcher : IDisposable
     /// </summary>
     public DelayedFileSystemWatcher()
     {
-        _fileSystemWatcher = new FileSystemWatcher();
+        _fileSystemWatcher = new();
         Initialize(out _timer);
     }
 
@@ -53,7 +53,7 @@ public class DelayedFileSystemWatcher : IDisposable
     /// <param name="path">The directory to monitor.</param>
     public DelayedFileSystemWatcher(string path)
     {
-        _fileSystemWatcher = new FileSystemWatcher(path);
+        _fileSystemWatcher = new(path);
         Initialize(out _timer);
     }
 
@@ -64,7 +64,7 @@ public class DelayedFileSystemWatcher : IDisposable
     /// <param name="typeFilter">The type of files to monitor.</param>
     public DelayedFileSystemWatcher(string path, string typeFilter)
     {
-        _fileSystemWatcher = new FileSystemWatcher(path, typeFilter);
+        _fileSystemWatcher = new(path, typeFilter);
         Initialize(out _timer);
     }
 
@@ -75,7 +75,7 @@ public class DelayedFileSystemWatcher : IDisposable
     /// <param name="typeFilters">The types of files to monitor, e.g. new[] {"*.yml", "*.yaml"}</param>
     public DelayedFileSystemWatcher(string path, IEnumerable<string> typeFilters)
     {
-        _fileSystemWatcher = new FileSystemWatcher(path);
+        _fileSystemWatcher = new(path);
         foreach (var filter in typeFilters) _fileSystemWatcher.Filters.Add(filter);
 
         Initialize(out _timer);
@@ -285,14 +285,14 @@ public class DelayedFileSystemWatcher : IDisposable
 
     private void Initialize(out System.Timers.Timer timer)
     {
-        _events = ArrayList.Synchronized(new ArrayList(32));
+        _events = ArrayList.Synchronized(new(32));
         _fileSystemWatcher.Changed += FileSystemEventHandler;
         _fileSystemWatcher.Created += FileSystemEventHandler;
         _fileSystemWatcher.Deleted += FileSystemEventHandler;
         _fileSystemWatcher.Error += ErrorEventHandler;
         _fileSystemWatcher.Renamed += RenamedEventHandler;
 
-        timer = new System.Timers.Timer(_consolidationInterval);
+        timer = new(_consolidationInterval);
         timer.Elapsed += ElapsedEventHandler;
         timer.AutoReset = true;
         timer.Enabled = _fileSystemWatcher.EnableRaisingEvents;
@@ -408,10 +408,7 @@ public class DelayedFileSystemWatcher : IDisposable
 
     private static void DelayEvent(DelayedEvent? current)
     {
-        if (current != null)
-        {
-            current.Delayed = true;
-        }
+        current?.Delayed = true;
     }
 
     /// <summary>

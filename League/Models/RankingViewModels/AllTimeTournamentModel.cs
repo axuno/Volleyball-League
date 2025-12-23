@@ -19,7 +19,7 @@ public class AllTimeTournamentModel
 
     public DateTimePeriod GetTournamentPeriod(long tournamentId)
     {
-        return new DateTimePeriod(_roundLegPeriods.Where(rl => rl.TournamentId == tournamentId).Min(rl => rl.StartDateTime), _roundLegPeriods.Where(rl => rl.TournamentId == tournamentId).Max(rl => rl.EndDateTime));
+        return new(_roundLegPeriods.Where(rl => rl.TournamentId == tournamentId).Min(rl => rl.StartDateTime), _roundLegPeriods.Where(rl => rl.TournamentId == tournamentId).Max(rl => rl.EndDateTime));
     }
 
     public List<(long Id, string Name, DateTimePeriod Period)> GetAllTournaments()

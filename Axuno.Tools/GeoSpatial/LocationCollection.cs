@@ -14,7 +14,7 @@ namespace Axuno.Tools.GeoSpatial;
 /// </summary>
 public sealed class LocationCollection : ICollection<Location>, IXmlSerializable
 {
-    private readonly List<Location> locations = new();
+    private readonly List<Location> locations = [];
 
     /// <summary>
     /// Gets the number of Locations contained in this instance.
@@ -31,7 +31,7 @@ public sealed class LocationCollection : ICollection<Location>, IXmlSerializable
     /// <exception cref="ArgumentNullException">item is null.</exception>
     public void Add(Location item)
     {
-        if (item == null) throw new ArgumentNullException(nameof(item));
+        ArgumentNullException.ThrowIfNull(item);
         locations.Add(item);
     }
 

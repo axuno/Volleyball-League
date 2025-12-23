@@ -11,7 +11,7 @@ public class RoundSelectorComponentModel
     /// The list of rounds with their round type.
     /// </summary>
     [BindNever]
-    public IList<RoundEntity> RoundWithTypeList { get; set; } = new List<RoundEntity>();
+    public IList<RoundEntity> RoundWithTypeList { get; set; } = [];
 
     /// <summary>
     /// If the <see cref="SelectedRoundId"/> is <see langword="null"/> and

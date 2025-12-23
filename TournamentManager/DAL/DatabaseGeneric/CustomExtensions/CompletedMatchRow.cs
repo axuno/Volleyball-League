@@ -24,18 +24,18 @@ public partial class CompletedMatchRow
 
     private void FillSet()
     {
-        _set = new List<CompletedMatchSet>();
+        _set = [];
         if (string.IsNullOrWhiteSpace(SetResults))
         {
             return;
         }
 
-        foreach (var set in SetResults.Split(new[] {' ', ','}, StringSplitOptions.RemoveEmptyEntries))
+        foreach (var set in SetResults.Split([' ', ','], StringSplitOptions.RemoveEmptyEntries))
         {
-            var s = set.Split(new[] { ':' }, StringSplitOptions.RemoveEmptyEntries);
+            var s = set.Split([':'], StringSplitOptions.RemoveEmptyEntries);
             if (s.Length == 2)
             {
-                _set.Add(new CompletedMatchSet(int.Parse(s[0]), int.Parse(s[1])));
+                _set.Add(new(int.Parse(s[0]), int.Parse(s[1])));
             }
         }
     }

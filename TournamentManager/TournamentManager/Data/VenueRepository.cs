@@ -47,7 +47,7 @@ public class VenueRepository
         filter.AddWithAnd(PlannedMatchFields.Id.In(matchIds));
         return matchIds.Count > 0
             ? await new MatchRepository(_dbContext).GetPlannedMatchesAsync(filter, cancellationToken)
-            : new List<PlannedMatchRow>();
+            : [];
     }
 
     public virtual async Task<bool> IsValidVenueIdAsync(long? venueId, CancellationToken cancellationToken)

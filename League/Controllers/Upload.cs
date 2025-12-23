@@ -44,7 +44,7 @@ public class Upload : AbstractController
         }
 
         var team = await _tenantContext.DbContext.AppDb.TeamRepository.GetTeamEntityAsync(
-            new PredicateExpression(TeamFields.Id == id), cancellationToken);
+            new(TeamFields.Id == id), cancellationToken);
 
         if (team == null)
         {
@@ -90,7 +90,7 @@ public class Upload : AbstractController
 
         var teamInfo =
             await _tenantContext.DbContext.AppDb.TeamRepository.GetTeamEntityAsync(
-                new PredicateExpression(TeamFields.Id == teamId), cancellationToken);
+                new(TeamFields.Id == teamId), cancellationToken);
         if (teamInfo == null)
         {
             return NotFound();

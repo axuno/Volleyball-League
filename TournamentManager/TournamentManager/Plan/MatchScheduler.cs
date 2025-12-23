@@ -32,7 +32,7 @@ internal class MatchScheduler
     {
         _tenantContext = tenantContext;
         _appDb = tenantContext.DbContext.AppDb;
-        _availableMatchDates = new AvailableMatchDates(tenantContext, timeZoneConverter, loggerFactory.CreateLogger<AvailableMatchDates>());
+        _availableMatchDates = new(tenantContext, timeZoneConverter, loggerFactory.CreateLogger<AvailableMatchDates>());
         _loggerFactory = loggerFactory;
         _logger = loggerFactory.CreateLogger<MatchScheduler>();
     }
@@ -413,10 +413,10 @@ internal class MatchScheduler
 
                             // Update the minimum time difference for each date
                             if (daysDiff < dates1.MinTimeDiff.Days)
-                                dates1.MinTimeDiff = new TimeSpan(daysDiff, 0, 0, 0);
+                                dates1.MinTimeDiff = new(daysDiff, 0, 0, 0);
 
                             if (daysDiff < dates2.MinTimeDiff.Days)
-                                dates2.MinTimeDiff = new TimeSpan(daysDiff, 0, 0, 0);
+                                dates2.MinTimeDiff = new(daysDiff, 0, 0, 0);
                         }
                     }
                 }

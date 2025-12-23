@@ -36,13 +36,13 @@ public class VenueEditModel
     public bool OverrideWarnings { get; set; }
 
     [BindNever]
-    public IList<string> TeamsUsingTheVenue { get; set; } = new List<string>();
+    public IList<string> TeamsUsingTheVenue { get; set; } = [];
 
     [BindNever]
     public VenueEntity? VenueEntity { get; set; }
 
     [BindNever]
-    public IList<VenueDistanceResultRow> VenuesForDistance { get; set; } = new List<VenueDistanceResultRow>();
+    public IList<VenueDistanceResultRow> VenuesForDistance { get; set; } = [];
 
     [BindNever]
     public bool IsWarning { get; set; }

@@ -33,7 +33,7 @@ public class ConfirmTeamApplicationCreator : IMailMessageCreator
     public async IAsyncEnumerable<MailMergeMessage> GetMailMergeMessages(ITenantContext tenantContext, ITemplateRenderer renderer, IMailMergeService mailMergeService, IStringLocalizer<EmailResource> localizer, [EnumeratorCancellation] CancellationToken cancellationToken)
     {
         var roundWithType = (await tenantContext.DbContext.AppDb.RoundRepository.GetRoundsWithTypeAsync(
-            new PredicateExpression(
+            new(
                 RoundFields.TournamentId == tenantContext.TournamentContext.ApplicationTournamentId &
                 RoundFields.Id == Parameters.RoundId), cancellationToken))[0];
 
@@ -42,8 +42,8 @@ public class ConfirmTeamApplicationCreator : IMailMessageCreator
                                     TeamUserRoundFields.TournamentId ==
                                     tenantContext.TournamentContext.ApplicationTournamentId), cancellationToken);
         var tournament =
-            await tenantContext.DbContext.AppDb.TournamentRepository.GetTournamentAsync(new PredicateExpression(TournamentFields.Id ==
-                tenantContext.TournamentContext.ApplicationTournamentId), cancellationToken);
+            await tenantContext.DbContext.AppDb.TournamentRepository.GetTournamentAsync(new(TournamentFields.Id ==
+                                                                                            tenantContext.TournamentContext.ApplicationTournamentId), cancellationToken);
             
         var registeredBy = teamUserRoundInfos.First(tur => tur.UserId == Parameters.RegisteredByUserId);
 
@@ -73,11 +73,11 @@ public class ConfirmTeamApplicationCreator : IMailMessageCreator
                 : localizer["Update of team registration"].Value;
 
             mailMergeMessage.MailMergeAddresses.Add(MailKind.AutoMailFrom, tenantContext);
-            mailMergeMessage.MailMergeAddresses.Add(new MailMergeAddress(MailAddressType.To,
+            mailMergeMessage.MailMergeAddresses.Add(new(MailAddressType.To,
                 $"{tur.CompleteName}, Team '{tur.TeamName}'", tur.Email));
             if (!string.IsNullOrEmpty(tur.Email2))
             {
-                mailMergeMessage.MailMergeAddresses.Add(new MailMergeAddress(MailAddressType.CC,
+                mailMergeMessage.MailMergeAddresses.Add(new(MailAddressType.CC,
                     $"{tur.CompleteName}, Team '{tur.TeamName}'", tur.Email2));
             }
 

@@ -111,7 +111,7 @@ public class Ranking
         return rankingList;
     }
 
-    private DateTime GetLastUpdatedOn(ICollection<long> teamIdList)
+    private DateTime GetLastUpdatedOn(List<long> teamIdList)
     {
         var lastUpdatedOn = DateTime.UtcNow;
         if (MatchesPlayed.Any())
@@ -181,7 +181,7 @@ public class Ranking
     /// <returns>Returns the <see cref="RankingHistory"/> for each match date.</returns>
     public RankingHistory GetRankingHistory()
     {
-        return new RankingHistory(this);
+        return new(this);
     }
 
     /// <summary>

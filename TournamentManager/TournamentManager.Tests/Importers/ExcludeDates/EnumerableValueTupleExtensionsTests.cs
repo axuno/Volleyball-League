@@ -25,13 +25,13 @@ internal class EnumerableValueTupleExtensionsTests
         };
 
         var ranges = intList.ConsecutiveRanges().ToList();
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(ranges, Has.Count.EqualTo(3));
             Assert.That(ranges[0], Is.EqualTo((2, 4)));
             Assert.That(ranges[1], Is.EqualTo((6, 6)));
             Assert.That(ranges[2], Is.EqualTo((8, 10)));
-        });
+        }
     }
 
     [Test]
@@ -53,13 +53,13 @@ internal class EnumerableValueTupleExtensionsTests
         };
 
         var ranges = dateOnlyList.ConsecutiveRanges().ToList();
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(ranges, Has.Count.EqualTo(3));
             Assert.That(ranges[0], Is.EqualTo((new DateOnly(2024, 10, 2), new DateOnly(2024, 10, 4))));
             Assert.That(ranges[1], Is.EqualTo((new DateOnly(2024, 10, 6), new DateOnly(2024, 10, 6))));
             Assert.That(ranges[2], Is.EqualTo((new DateOnly(2024, 10, 8), new DateOnly(2024, 10, 10))));
-        });
+        }
     }
 }
 

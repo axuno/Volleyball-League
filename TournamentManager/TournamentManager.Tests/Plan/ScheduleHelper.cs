@@ -16,11 +16,11 @@ internal class ScheduleHelper
     internal static TournamentEntity GetTournament()
     {
         var teams = new EntityCollection<TeamEntity> {
-            { new (1) { Venue = new VenueEntity(1){ IsDirty = false, IsNew = false }, MatchDayOfWeek = 5, MatchTime = new TimeSpan(18, 0, 0) } },
-            { new (2) { Venue = new VenueEntity(2){ IsDirty = false, IsNew = false }, MatchDayOfWeek = 4, MatchTime = new TimeSpan(18, 30, 0) } },
-            { new (3) { Venue = new VenueEntity(3){ IsDirty = false, IsNew = false }, MatchDayOfWeek = 3, MatchTime = new TimeSpan(19, 0, 0) } },
-            { new (4) { Venue = new VenueEntity(4){ IsDirty = false, IsNew = false }, MatchDayOfWeek = 2, MatchTime = new TimeSpan(19, 30, 0) } },
-            { new (5) { Venue = new VenueEntity(5){ IsDirty = false, IsNew = false }, MatchDayOfWeek = 1, MatchTime = new TimeSpan(20, 0, 0) } }
+            { new (1) { Venue = new(1){ IsDirty = false, IsNew = false }, MatchDayOfWeek = 5, MatchTime = new TimeSpan(18, 0, 0) } },
+            { new (2) { Venue = new(2){ IsDirty = false, IsNew = false }, MatchDayOfWeek = 4, MatchTime = new TimeSpan(18, 30, 0) } },
+            { new (3) { Venue = new(3){ IsDirty = false, IsNew = false }, MatchDayOfWeek = 3, MatchTime = new TimeSpan(19, 0, 0) } },
+            { new (4) { Venue = new(4){ IsDirty = false, IsNew = false }, MatchDayOfWeek = 2, MatchTime = new TimeSpan(19, 30, 0) } },
+            { new (5) { Venue = new(5){ IsDirty = false, IsNew = false }, MatchDayOfWeek = 1, MatchTime = new TimeSpan(20, 0, 0) } }
         };
         foreach (var teamEntity in teams)
         {
@@ -30,7 +30,7 @@ internal class ScheduleHelper
 
         var round = new RoundEntity(1)
         {
-            RoundLegs = { new RoundLegEntity { Id = 1, RoundId = 1, SequenceNo = 1, StartDateTime = new DateTime(2024, 1, 1), EndDateTime = new DateTime(2024, 4, 30) } }, IsNew = false, IsDirty = false
+            RoundLegs = { new() { Id = 1, RoundId = 1, SequenceNo = 1, StartDateTime = new(2024, 1, 1), EndDateTime = new(2024, 4, 30) } }, IsNew = false, IsDirty = false
         };
 
         var teamInRounds = new EntityCollection<TeamInRoundEntity> {

@@ -28,7 +28,7 @@ public class TournamentRepository
     [Obsolete("Use GetTournamentAsync instead", false)]
     public virtual async Task<TournamentEntity?> GetTournamentByIdAsync(long tournamentId, CancellationToken cancellationToken)
     {
-        return await GetTournamentAsync(new PredicateExpression(TournamentFields.Id == tournamentId),
+        return await GetTournamentAsync(new(TournamentFields.Id == tournamentId),
             cancellationToken);
     }
 

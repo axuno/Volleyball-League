@@ -73,17 +73,17 @@ public class EditFixtureViewModel
     /// <summary>
     /// The list of venues for this fixture belonging to the home or guest team.
     /// </summary>
-    public List<VenueEntity> VenuesOfMatchTeams { get; set; } = new();
+    public List<VenueEntity> VenuesOfMatchTeams { get; set; } = [];
 
     /// <summary>
     /// The list of active venues to select for this fixture.
     /// </summary>
-    public List<VenueEntity> ActiveVenues { get; set; } = new();
+    public List<VenueEntity> ActiveVenues { get; set; } = [];
 
     /// <summary>
     /// The list of unused venues to select for this fixture.
     /// </summary>
-    public List<VenueEntity> UnusedVenues { get; set; } = new();
+    public List<VenueEntity> UnusedVenues { get; set; } = [];
 
     /// <summary>
     /// The TimeZoneConverter, used by the razor view

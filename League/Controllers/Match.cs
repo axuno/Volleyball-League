@@ -379,7 +379,7 @@ public class Match : AbstractController
             model.MapFormFieldsToEntity();
             ModelState.Clear();
 
-            if (!await model.ValidateAsync(new MatchResultValidator(model.Match!,
+            if (!await model.ValidateAsync(new(model.Match!,
                     (_tenantContext, _timeZoneConverter, (model.Round.MatchRule, model.Round.SetRule)),
                     model.IsOverruling ? MatchValidationMode.Overrule : MatchValidationMode.Default), ModelState))
             {
@@ -403,7 +403,7 @@ public class Match : AbstractController
             _logger.LogInformation("Result for match ID {MatchId} was entered by user ID '{CurrentUser}'", match.Id, GetCurrentUserId());
 
             TempData.Put<EnterResultViewModel.MatchResultMessage>(nameof(EnterResultViewModel.MatchResultMessage),
-                new EnterResultViewModel.MatchResultMessage { MatchId = model.Id, ChangeSuccess = success });
+                new() { MatchId = model.Id, ChangeSuccess = success });
 
             if (success)
             {
@@ -418,7 +418,7 @@ public class Match : AbstractController
         {
             _logger.LogError(e, "Building {EnterResultViewModel} failed for MatchId '{ModelId}' and  user ID '{CurrentUserId}'", nameof(EnterResultViewModel), model.Id, GetCurrentUserId());
             TempData.Put<EnterResultViewModel.MatchResultMessage>(nameof(EnterResultViewModel.MatchResultMessage),
-                new EnterResultViewModel.MatchResultMessage { MatchId = model.Id, ChangeSuccess = false });
+                new() { MatchId = model.Id, ChangeSuccess = false });
         }
 
         // redirect to results overview, where success message is shown
@@ -453,14 +453,14 @@ public class Match : AbstractController
             }
 
             // redirect to fixture overview, where success message is shown
-            TempData.Put<EditFixtureViewModel.FixtureMessage>(nameof(EditFixtureViewModel.FixtureMessage), new EditFixtureViewModel.FixtureMessage { MatchId = model.Id.Value, ChangeSuccess = result.Success });
+            TempData.Put<EditFixtureViewModel.FixtureMessage>(nameof(EditFixtureViewModel.FixtureMessage), new() { MatchId = model.Id.Value, ChangeSuccess = result.Success });
             return Redirect(TenantLink.Action(nameof(Fixtures), nameof(Match))!);
         }
         catch (Exception e)
         {
             _logger.LogError(e, "Deleting result for {Model} failed for MatchId '{ModelId}'. User ID '{CurrentUser}'", nameof(EnterResultViewModel), model.Id, GetCurrentUserId());
             TempData.Put<EnterResultViewModel.MatchResultMessage>(nameof(EnterResultViewModel.MatchResultMessage),
-                new EnterResultViewModel.MatchResultMessage { MatchId = model.Id, ChangeSuccess = false });
+                new() { MatchId = model.Id, ChangeSuccess = false });
             // redirect to results overview, where success message is shown
             return Redirect(TenantLink.Action(nameof(Results), nameof(Match))!);
         }
@@ -519,7 +519,7 @@ public class Match : AbstractController
 
         if (!ModelState.IsValid) return NotFound();
 
-        model = new EditFixtureViewModel(await GetPlannedMatchFromDatabase(model.Id, cancellationToken), _timeZoneConverter)
+        model = new(await GetPlannedMatchFromDatabase(model.Id, cancellationToken), _timeZoneConverter)
         {
             Tournament = await GetPlanTournament(cancellationToken)
         };
@@ -560,7 +560,7 @@ public class Match : AbstractController
         ModelState.Clear();
 
         if (!await model.ValidateAsync(
-                new FixtureValidator(match, (_tenantContext, _timeZoneConverter, model.PlannedMatch), DateTime.UtcNow),
+                new(match, (_tenantContext, _timeZoneConverter, model.PlannedMatch), DateTime.UtcNow),
                 ModelState))
         {
             return View(ViewNames.Match.EditFixture, await AddDisplayDataToEditFixtureViewModel(model, cancellationToken));
@@ -663,7 +663,7 @@ public class Match : AbstractController
     private async Task<TournamentEntity?> GetPlanTournament(CancellationToken cancellationToken)
     {
         var tournament =
-            await _appDb.TournamentRepository.GetTournamentAsync(new PredicateExpression(TournamentFields.Id == _tenantContext.TournamentContext.MatchPlanTournamentId), cancellationToken);
+            await _appDb.TournamentRepository.GetTournamentAsync(new(TournamentFields.Id == _tenantContext.TournamentContext.MatchPlanTournamentId), cancellationToken);
 
         if (tournament != null) return tournament;
 
@@ -674,7 +674,7 @@ public class Match : AbstractController
     private async Task<TournamentEntity?> GetResultTournament(CancellationToken cancellationToken)
     {
         var tournament =
-            await _appDb.TournamentRepository.GetTournamentAsync(new PredicateExpression(TournamentFields.Id == _tenantContext.TournamentContext.MatchResultTournamentId), cancellationToken);
+            await _appDb.TournamentRepository.GetTournamentAsync(new(TournamentFields.Id == _tenantContext.TournamentContext.MatchResultTournamentId), cancellationToken);
 
         if (tournament != null) return tournament;
 
@@ -694,7 +694,7 @@ public class Match : AbstractController
         }
 
         var tournament = await _appDb.TournamentRepository.GetTournamentAsync(
-            new PredicateExpression(TournamentFields.Id == _tenantContext.TournamentContext.MatchResultTournamentId), cancellationToken);
+            new(TournamentFields.Id == _tenantContext.TournamentContext.MatchResultTournamentId), cancellationToken);
         if (tournament == null)
         {
             _logger.LogError("{Name} '{Id}' does not exist", nameof(_tenantContext.TournamentContext.MatchResultTournamentId), _tenantContext.TournamentContext.MatchPlanTournamentId);

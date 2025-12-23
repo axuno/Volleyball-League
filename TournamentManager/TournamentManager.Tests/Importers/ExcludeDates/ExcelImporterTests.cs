@@ -20,7 +20,7 @@ public class ExcelImporterTests
             "Europe/Berlin", CultureInfo.CurrentCulture);
         var xlImporter = new ExcelImporter(xlFilePath, tzConverter, NullLogger<ExcelImporter>.Instance);
 
-        var imported = xlImporter.Import(new DateTimePeriod(from, to)).ToList();
+        var imported = xlImporter.Import(new(from, to)).ToList();
 
         Assert.That(imported, Has.Count.EqualTo(expectedCount));
         if (expectedCount == 1)
@@ -37,13 +37,13 @@ public class ExcelImporterTests
             "UTC", CultureInfo.CurrentCulture);
         var xlImporter = new ExcelImporter(xlFilePath, tzConverter, NullLogger<ExcelImporter>.Instance);
 
-        var imported = xlImporter.Import(new DateTimePeriod(from, to)).ToList();
+        var imported = xlImporter.Import(new(from, to)).ToList();
 
         Assert.That(imported, Has.Count.EqualTo(1));
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(imported[0].Period.Start, Is.EqualTo(new DateTime(2022, 1, 1)));
             Assert.That(imported[0].Period.End, Is.EqualTo(new DateTime(2022, 2, 1, 23, 59, 59)));
-        });
+        }
     }
 }

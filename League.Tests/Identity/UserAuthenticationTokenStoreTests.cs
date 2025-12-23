@@ -49,7 +49,7 @@ public class UserAuthenticationTokenStoreTests
 
     private ApplicationUser GetNewUser()
     {
-        return new ApplicationUser
+        return new()
         {
             Name = _testUser.Name,
             UserName = _testUser.UserName,
@@ -76,7 +76,7 @@ public class UserAuthenticationTokenStoreTests
 
     private static UserLoginInfo GetUserLoginInfo()
     {
-        return new UserLoginInfo("loginProvider", "providerKey", "displayName");
+        return new("loginProvider", "providerKey", "displayName");
     }
 
     [Test]

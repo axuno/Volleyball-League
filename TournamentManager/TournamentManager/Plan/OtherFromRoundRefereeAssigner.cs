@@ -7,7 +7,7 @@
 /// <typeparam name="TR">The type of the referee.</typeparam>
 public class OtherFromRoundRefereeAssigner<TP, TR> : IRefereeAssigner<TP, TR> where TP : struct, IEquatable<TP> where TR : struct, IEquatable<TR>
 {
-    private readonly ParticipantCombinations<TP, TR> _participantCombinations = new();
+    private readonly ParticipantCombinations<TP, TR> _participantCombinations = [];
     private readonly IList<TR> _referees;
 
     public OtherFromRoundRefereeAssigner(IList<TR>? referees = null)
@@ -36,7 +36,7 @@ public class OtherFromRoundRefereeAssigner<TP, TR> : IRefereeAssigner<TP, TR> wh
             lastMaxRefereeCount = currentRefereeCount;
             lastMaxReferee = participant;
         }
-        _participantCombinations.Add(new ParticipantCombination<TP, TR>(0, match.Home, match.Guest, (TR?) (object?) lastMaxReferee));
+        _participantCombinations.Add(new(0, match.Home, match.Guest, (TR?) (object?) lastMaxReferee));
 
         return lastMaxReferee;
 

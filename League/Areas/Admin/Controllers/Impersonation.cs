@@ -61,7 +61,7 @@ public class Impersonation : AbstractController
         var targetClaimsPrincipal = await _signInManager.CreateUserPrincipalAsync(targetUser);
         if (targetClaimsPrincipal is { Identity: ClaimsIdentity targetClaimsIdentity })
         {
-            targetClaimsIdentity.AddClaim(new Claim(Constants.ClaimType.ImpersonatedByUser, User.Claims.First(x => x.Type == ClaimTypes.NameIdentifier).Value));
+            targetClaimsIdentity.AddClaim(new(Constants.ClaimType.ImpersonatedByUser, User.Claims.First(x => x.Type == ClaimTypes.NameIdentifier).Value));
         }
 
         // sign out the current user

@@ -36,7 +36,7 @@ public static class Constants
         /// <returns>Returns the (forbidden) roles which are implicitly defined with a relation of a user to teams.</returns>
         public static IEnumerable<string> GetTeamRelatedRoles()
         {
-            return new[] {Player, TeamManager};
+            return [Player, TeamManager];
         }
 
         /// <summary>
@@ -93,7 +93,7 @@ public static class Constants
         /// <returns>Returns programmatic claims which are never stored in the database.</returns>
         public static IEnumerable<string> GetProgrammaticClaimTypes()
         {
-            return new[] { ImpersonatedByUser };
+            return [ImpersonatedByUser];
         }
 
         /// <summary>

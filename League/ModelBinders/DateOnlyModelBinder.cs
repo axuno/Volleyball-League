@@ -14,8 +14,8 @@ public class DateOnlyModelBinder : IModelBinder
 
     private const DateTimeStyles _dateTimeStyles = DateTimeStyles.AllowWhiteSpaces | DateTimeStyles.AllowLeadingWhite | DateTimeStyles.AllowTrailingWhite;
 
-    private readonly string[] _formats = 
-    {
+    private readonly string[] _formats =
+    [
         "yyyyMMdd",
         "yyyy-MM-dd",
         "yy-MM-dd",
@@ -23,7 +23,7 @@ public class DateOnlyModelBinder : IModelBinder
         "M/d/yy",
         "d.M.yyyy",
         "d.M.yy"
-    };
+    ];
 
     /// <summary>
     /// CTOR.

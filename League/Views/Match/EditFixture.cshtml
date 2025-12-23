@@ -92,7 +92,7 @@
 <modal id="select-venue" title="@Localizer["Please select a venue"].Value" dialog-class="modal-lg">
     <modal-body>
         <div>
-            @{ ValueTuple<long, IList<long>, VenueSelectorComponentModel.Criteria, VenueSelectorComponentModel.Criteria, long?> m = (TenantContext.TournamentContext.MatchPlanTournamentId, new List<long>(new[] { Model.PlannedMatch.HomeTeamId, Model.PlannedMatch.GuestTeamId }), VenueSelectorComponentModel.Criteria.VenuesOfTeams | VenueSelectorComponentModel.Criteria.Active, VenueSelectorComponentModel.Criteria.VenuesOfTeams | VenueSelectorComponentModel.Criteria.Active, -1);}
+            @{ ValueTuple<long, IList<long>, VenueSelectorComponentModel.Criteria, VenueSelectorComponentModel.Criteria, long?> m = (TenantContext.TournamentContext.MatchPlanTournamentId, new List<long>([Model.PlannedMatch.HomeTeamId, Model.PlannedMatch.GuestTeamId]), VenueSelectorComponentModel.Criteria.VenuesOfTeams | VenueSelectorComponentModel.Criteria.Active, VenueSelectorComponentModel.Criteria.VenuesOfTeams | VenueSelectorComponentModel.Criteria.Active, -1);}
             @(await Component.InvokeAsync<VenueSelector>(m))
         </div>
     </modal-body>

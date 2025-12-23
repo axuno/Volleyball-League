@@ -56,7 +56,7 @@ public class TeamPhotoStaticFile : AbstractStaticFile
     {
         try
         {
-            DeleteMostRecentFile(new DirectoryInfo(Path.Combine(_webHostEnvironment.WebRootPath, _folder)),
+            DeleteMostRecentFile(new(Path.Combine(_webHostEnvironment.WebRootPath, _folder)),
                 string.Format(_fileSearchPattern, _tenantContext.SiteContext.FolderName, teamId));
         }
         catch (Exception e)
@@ -69,7 +69,7 @@ public class TeamPhotoStaticFile : AbstractStaticFile
     {
         try
         {
-            DeleteObsoleteFiles(new DirectoryInfo(Path.Combine(_webHostEnvironment.WebRootPath, _folder)),
+            DeleteObsoleteFiles(new(Path.Combine(_webHostEnvironment.WebRootPath, _folder)),
                 string.Format(_fileSearchPattern, _tenantContext.SiteContext.FolderName, teamId));
         }
         catch (Exception e)
@@ -80,7 +80,7 @@ public class TeamPhotoStaticFile : AbstractStaticFile
 
     public (string? Filename, DateTime Date) GetFileInfo(long teamId)
     {
-        return GetFileInfo(new DirectoryInfo(Path.Combine(_webHostEnvironment.WebRootPath, _folder)),
+        return GetFileInfo(new(Path.Combine(_webHostEnvironment.WebRootPath, _folder)),
             string.Format(_fileSearchPattern, _tenantContext.Identifier, teamId));
     }
 

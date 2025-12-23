@@ -12,14 +12,14 @@ public class TenantStoreTests
     private const string ConnectionStrings = "ConnectionStrings";
     private const string ConnKeyPrefix = "Conn";
     private const string ConnValuePrefix = "ConnValue";
-    private readonly List<string> _tenantNames = new() {"Tenant1", "Tenant2", "Tenant3", "DefaultTenant"};
+    private readonly List<string> _tenantNames = ["Tenant1", "Tenant2", "Tenant3", "DefaultTenant"];
     private readonly TenantStore _store;
         
     public TenantStoreTests()
     {
         // Configure connection strings per tenant
         var connStr = new List<KeyValuePair<string, string?>>();
-        _tenantNames.ForEach(t => connStr.Add(new KeyValuePair<string, string?>($"{ConnectionStrings}:{ConnKeyPrefix}{t}", $"{ConnValuePrefix}{t}")));
+        _tenantNames.ForEach(t => connStr.Add(new($"{ConnectionStrings}:{ConnKeyPrefix}{t}", $"{ConnValuePrefix}{t}")));
         // Build configuration
         var cb = new ConfigurationBuilder();
         cb.AddInMemoryCollection(connStr);
@@ -53,7 +53,7 @@ public class TenantStoreTests
     public void LoadTenants_Test()
     {
         IReadOnlyDictionary<string, ITenantContext> tenants = new Dictionary<string, ITenantContext>();
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.DoesNotThrow(() => tenants = _store.LoadTenants().GetTenants());
             Assert.That(tenants, Has.Count.EqualTo(_tenantNames.Count));
@@ -68,7 +68,7 @@ public class TenantStoreTests
                 Assert.That(tenant?.OrganizationContext.Tenant != null && tenant.SiteContext.Tenant != null && tenant.TournamentContext.Tenant != null, Is.True);
                 if(tenant is { IsDefault: true }) Assert.That(tenant.SiteContext.UrlSegmentValue, Is.EqualTo(tenant.Identifier));
             }
-        });
+        }
     }
 
     [Test]
@@ -98,23 +98,23 @@ public class TenantStoreTests
     [Test]
     public void TryAddTenant_Test()
     {
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.DoesNotThrow(() => _ = _store.LoadTenants());
             Assert.That(_store.TryAddTenant(new TenantContext {Identifier = "Tenant1"}), Is.False);
             Assert.That(_store.TryAddTenant(new TenantContext {Identifier = "New_Tenant"}), Is.True);
-        });
+        }
     }
         
     [Test]
     public void TryRemoveTenant_Test()
     {
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.DoesNotThrow(() => _ = _store.LoadTenants());
             Assert.That(_store.TryRemoveTenant("Tenant1"), Is.True);
             Assert.That(_store.GetTenantByIdentifier("Tenant1"), Is.Null);
-        });
+        }
     }
         
     [Test]
@@ -123,13 +123,13 @@ public class TenantStoreTests
         var newGuid = Guid.Parse("99999999-9999-9999-9999-999999999999");
         _ = _store.LoadTenants();
         var updateTenant = _store.GetTenantByUrlSegment("Tenant1");
-        if (updateTenant != null) updateTenant.Guid = newGuid;
+        updateTenant?.Guid = newGuid;
 
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(_store.TryUpdateTenant("Tenant1", updateTenant!), Is.True);
             Assert.That(_store.GetTenantByIdentifier("Tenant1")?.Guid, Is.EqualTo(newGuid));
-        });
+        }
     }
         
     [Test]
@@ -144,10 +144,10 @@ public class TenantStoreTests
             updateTenant.Identifier = "A-new-tenant"; // will be set to identifier by TryUpdateTenant
         }
 
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(_store.TryUpdateTenant("Tenant1", updateTenant!), Is.True);
             Assert.That(_store.GetTenantByIdentifier("Tenant1")?.Guid, Is.EqualTo(newGuid));
-        });
+        }
     }
 }

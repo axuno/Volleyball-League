@@ -22,7 +22,7 @@ public class GermanHolidayImporterTests
         var hImporter =
             new GermanHolidayImporter(holidayFilter, tzConverter, NullLogger<GermanHolidayImporter>.Instance);
 
-        var imported = hImporter.Import(new DateTimePeriod(from, to)).ToList();
+        var imported = hImporter.Import(new(from, to)).ToList();
 
         Assert.That(imported, Has.Count.EqualTo(expectedCount));
     }
@@ -40,7 +40,7 @@ public class GermanHolidayImporterTests
         var hImporter =
             new GermanHolidayImporter(holidayFilter, tzConverter, NullLogger<GermanHolidayImporter>.Instance);
 
-        var imported = hImporter.Import(new DateTimePeriod(from, to)).ToList();
+        var imported = hImporter.Import(new(from, to)).ToList();
 
         Assert.That(imported, Has.Count.EqualTo(expectedCount));
     }
@@ -65,7 +65,7 @@ public class GermanHolidayImporterTests
         var hImporter =
             new GermanHolidayImporter(holidayFilter, tzConverter, NullLogger<GermanHolidayImporter>.Instance);
 
-        var imported = hImporter.Import(new DateTimePeriod(from, to)).ToList();
+        var imported = hImporter.Import(new(from, to)).ToList();
 
         Assert.That(imported, Has.Count.EqualTo(expectedCount));
     }
@@ -87,7 +87,7 @@ public class GermanHolidayImporterTests
             NullLogger<GermanHolidayImporter>.Instance);
 
         // The period from 2019-09-01 to 2020-06-30 contains 6 imported school holidays.
-        var imported = hImporter.Import(new DateTimePeriod(from, to)).ToList();
+        var imported = hImporter.Import(new(from, to)).ToList();
 
         Assert.That(imported, Has.Count.EqualTo(expectedCount));
     }
@@ -105,17 +105,17 @@ public class GermanHolidayImporterTests
             "Europe/Berlin", CultureInfo.CurrentCulture);
 
         var holidayFilter = new Predicate<GermanHoliday>(h => h.Type == GermanHolidays.Type.Public);
-        var hImporter = new GermanHolidayImporter(new[] { removeHolidayFilePath, addHolidayFilePath }, holidayFilter,
+        var hImporter = new GermanHolidayImporter([removeHolidayFilePath, addHolidayFilePath], holidayFilter,
             tzConverter, NullLogger<GermanHolidayImporter>.Instance);
 
-        var imported = hImporter.Import(new DateTimePeriod(new DateTime(2024, 1, 1), new DateTime(2024, 1, 1))).ToList();
+        var imported = hImporter.Import(new(new(2024, 1, 1), new DateTime(2024, 1, 1))).ToList();
 
 
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(imported, Has.Count.EqualTo(1));
             Assert.That(imported[0].Reason, Is.EqualTo("Sample New Year"));
-        });
+        }
         
     }
 }

@@ -7,9 +7,9 @@ public class RankingListModel
 {
     public TournamentEntity? Tournament { get; set; }
 
-    public List<RankingListRow> RankingList { get; set; } = new();
+    public List<RankingListRow> RankingList { get; set; } = [];
 
-    public Dictionary<long, System.IO.FileInfo> ChartFileInfos { get; set; } = new();
+    public Dictionary<long, System.IO.FileInfo> ChartFileInfos { get; set; } = [];
 
     public long? ActiveRoundId { get; set; }
 }

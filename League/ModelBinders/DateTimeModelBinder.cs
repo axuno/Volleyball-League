@@ -9,13 +9,13 @@ namespace League.ModelBinders;
 /// </summary>
 public class DateTimeModelBinder : IModelBinder
 {
-    private readonly IModelBinder _fallbackBinder;
+    private readonly SimpleTypeModelBinder _fallbackBinder;
     private readonly ILogger<DateTimeModelBinder> _logger;
 
     private const DateTimeStyles _dateTimeStyles = DateTimeStyles.AllowWhiteSpaces | DateTimeStyles.AllowLeadingWhite | DateTimeStyles.AllowTrailingWhite;
 
-    private readonly string[] _formats = 
-    {
+    private readonly string[] _formats =
+    [
         // H := 24-hour clock, h := 12-hour clock
         "yyyyMMddHHmmss",
         "yyyyMMddHHmm",
@@ -31,7 +31,7 @@ public class DateTimeModelBinder : IModelBinder
         "d.M.yyyy HH:mm:ss",
         "d.M.yyyy HH:mm",
         "d.M.yyyy"
-    };
+    ];
 
     /// <summary>
     /// CTOR.

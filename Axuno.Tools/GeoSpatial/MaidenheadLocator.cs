@@ -91,9 +91,9 @@ public static class MaidenheadLocator
             throw new FormatException("Invalid locator format");
 
         var location = new Location(
-            new Latitude(Angle.FromDegrees((locator[1] - 'A') * 10 + (locator[3] - '0') +
+            new(Angle.FromDegrees((locator[1] - 'A') * 10 + (locator[3] - '0') +
                 (locator[5] - 'A' + 0.5) / 24 - 90)),
-            new Longitude(Angle.FromDegrees((locator[0] - 'A') * 20 + (locator[2] - '0') * 2 +
+            new(Angle.FromDegrees((locator[0] - 'A') * 20 + (locator[2] - '0') * 2 +
                 (locator[4] - 'A' + 0.5) / 12 - 180)));
 
         return location;

@@ -122,7 +122,7 @@ public class PointResult : IOpponent<int?>, IComparable<IOpponent<int?>>, ICompa
     /// <returns></returns>
     public static PointResult operator +(PointResult a, IOpponent<int?> b)
     {
-        return new PointResult((a.Home ?? 0) + (b.Home ?? 0), (a.Guest ?? 0) + (b.Guest ?? 0));
+        return new((a.Home ?? 0) + (b.Home ?? 0), (a.Guest ?? 0) + (b.Guest ?? 0));
     }
 
     /// <summary>
@@ -136,7 +136,7 @@ public class PointResult : IOpponent<int?>, IComparable<IOpponent<int?>>, ICompa
         if (a.Home < b.Home || a.Guest < b.Guest)
             throw new ArgumentException(@"Operation would lead to negative points value.", b.ToString());
 
-        return new PointResult((a.Home ?? 0) - (b.Home ?? 0), (a.Guest ?? 0) - (b.Guest ?? 0));
+        return new((a.Home ?? 0) - (b.Home ?? 0), (a.Guest ?? 0) - (b.Guest ?? 0));
     }
 
     /// <summary>

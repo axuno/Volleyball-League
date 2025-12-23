@@ -61,16 +61,16 @@ public class TeamValidatorTests
     {
         var team = new TeamEntity {Name = teamName};
             
-        _tenantContext.TournamentContext.TeamRuleSet = new TeamRules{HomeMatchTime = new HomeMatchTime{}};
+        _tenantContext.TournamentContext.TeamRuleSet = new() {HomeMatchTime = new() {}};
         var tv = new TeamValidator(team, _tenantContext);
 
         var factResult = await tv.CheckAsync(TeamValidator.FactId.TeamNameIsSet, CancellationToken.None);
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(factResult.Enabled, Is.True);
             Assert.That(factResult.Success, Is.EqualTo(expected));
             Assert.That(factResult.Exception, Is.Null);
-        });
+        }
     }
 
     [TestCase("Test Team Name", 100, true)] // team IDs < 10 should fail
@@ -80,17 +80,17 @@ public class TeamValidatorTests
     {
         var team = new TeamEntity {Name = teamName, Id = teamId};
 
-        _tenantContext.TournamentContext.TeamRuleSet = new TeamRules { HomeMatchTime = new HomeMatchTime { } };
+        _tenantContext.TournamentContext.TeamRuleSet = new() { HomeMatchTime = new() { } };
         var tv = new TeamValidator(team, _tenantContext);
 
         var factResult = await tv.CheckAsync(TeamValidator.FactId.TeamNameIsUnique, CancellationToken.None);
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(teamName != null, Is.EqualTo(factResult.Enabled));
             Assert.That(factResult.Success, Is.EqualTo(expected));
             if (factResult.Enabled && !factResult.Success) Assert.That(factResult.Message, Does.Contain(teamName ?? string.Empty));
             Assert.That(factResult.Exception, Is.Null);
-        });
+        }
     }
 
     // DOW always set
@@ -107,16 +107,16 @@ public class TeamValidatorTests
     {
         var team = new TeamEntity { MatchTime = matchTime, MatchDayOfWeek = dow};
 
-        _tenantContext.TournamentContext.TeamRuleSet = new TeamRules { HomeMatchTime = new HomeMatchTime { IsEditable = isEditable, MustBeSet = mustBeSet} };
+        _tenantContext.TournamentContext.TeamRuleSet = new() { HomeMatchTime = new() { IsEditable = isEditable, MustBeSet = mustBeSet} };
         var tv = new TeamValidator(team, _tenantContext);
 
         var factResult = await tv.CheckAsync(TeamValidator.FactId.MatchDayOfWeekAndTimeIsSet, CancellationToken.None);
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(factResult.Enabled, Is.EqualTo(isEditable));
             Assert.That(factResult.Success, Is.EqualTo(expected));
             Assert.That(factResult.Exception, Is.Null);
-        });
+        }
     }
 
     [Test]
@@ -132,25 +132,25 @@ public class TeamValidatorTests
         // Note: all times are set and compared to local time
 
         var team = new TeamEntity();
-        _tenantContext.TournamentContext.TeamRuleSet = new TeamRules { HomeMatchTime = new HomeMatchTime {IsEditable = true, MustBeSet = startTimeMustBeSet} };
-        _tenantContext.TournamentContext.FixtureRuleSet = new FixtureRuleSet
+        _tenantContext.TournamentContext.TeamRuleSet = new() { HomeMatchTime = new() {IsEditable = true, MustBeSet = startTimeMustBeSet} };
+        _tenantContext.TournamentContext.FixtureRuleSet = new()
         {
-            RegularMatchStartTime = new RegularMatchStartTime
-            {MinDayTime = new TimeSpan(19, 0, 0), 
-                MaxDayTime = new TimeSpan(21, 0, 0)}
+            RegularMatchStartTime = new()
+            {MinDayTime = new(19, 0, 0), 
+                MaxDayTime = new(21, 0, 0)}
         };
         var tv = new TeamValidator(team, _tenantContext);
 
         team.MatchTime = startTime;
         var factResult = await tv.CheckAsync(TeamValidator.FactId.MatchTimeWithinRange, CancellationToken.None);
 
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(factResult.IsChecked == startTimeMustBeSet &&
                                       factResult.Success && factResult.Message.Contains(_tenantContext.TournamentContext.FixtureRuleSet
                                           .RegularMatchStartTime.MinDayTime.ToShortTimeString()), Is.EqualTo(expected));
             Assert.That(factResult.Exception, Is.Null);
-        });
+        }
     }
 
     [TestCase(null, false, false, false)]
@@ -163,9 +163,9 @@ public class TeamValidatorTests
     {
         var team = new TeamEntity { MatchDayOfWeek = dayOfWeek.HasValue ? (int) dayOfWeek : default(int?), MatchTime = new TimeSpan(18,0,0)};
 
-        _tenantContext.TournamentContext.TeamRuleSet = new TeamRules
+        _tenantContext.TournamentContext.TeamRuleSet = new()
         {
-            HomeMatchTime = new HomeMatchTime
+            HomeMatchTime = new()
             {
                 IsEditable = isEditable, 
                 MustBeSet = mustBeSet,
@@ -174,7 +174,7 @@ public class TeamValidatorTests
         var tv = new TeamValidator(team, _tenantContext);
 
         var factResult = await tv.CheckAsync(TeamValidator.FactId.DayOfWeekWithinRange, CancellationToken.None);
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(isEditable && mustBeSet, Is.EqualTo(factResult.Enabled));
             if (factResult.Enabled)
@@ -182,7 +182,7 @@ public class TeamValidatorTests
                 Assert.That(factResult.Success, Is.EqualTo(expected));
             }
             Assert.That(factResult.Exception, Is.Null);
-        });
+        }
     }
 
     [TestCase(null, false, false)]
@@ -195,20 +195,20 @@ public class TeamValidatorTests
     {
         var team = new TeamEntity { MatchDayOfWeek = dayOfWeek.HasValue ? (int)dayOfWeek : default(int?) };
 
-        _tenantContext.TournamentContext.TeamRuleSet = new TeamRules
+        _tenantContext.TournamentContext.TeamRuleSet = new()
         {
-            HomeMatchTime = new HomeMatchTime
+            HomeMatchTime = new()
             {
                 IsEditable = true,
                 MustBeSet = true,
                 ErrorIfNotInDaysOfWeekRange = errorIfNotInRange,
-                DaysOfWeekRange = new List<DayOfWeek> { DayOfWeek.Monday, DayOfWeek.Tuesday }
+                DaysOfWeekRange = [DayOfWeek.Monday, DayOfWeek.Tuesday]
             }
         };
         var tv = new TeamValidator(team, _tenantContext);
 
         var factResult = await tv.CheckAsync(TeamValidator.FactId.DayOfWeekWithinRange, CancellationToken.None);
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(_tenantContext.TournamentContext.TeamRuleSet.HomeMatchTime.IsEditable && _tenantContext.TournamentContext.TeamRuleSet.HomeMatchTime.MustBeSet, Is.EqualTo(factResult.Enabled));
             if (factResult.Enabled)
@@ -217,6 +217,6 @@ public class TeamValidatorTests
                 Assert.That(factResult.Success, Is.EqualTo(expected));
             }
             Assert.That(factResult.Exception, Is.Null);
-        });
+        }
     }
 }

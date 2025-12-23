@@ -24,7 +24,7 @@ internal static class MailMergeAddressCollectionExtensions
             var mailAddress = siteContext.MailAddresses.FirstOrDefault(a => a.Kind == mailKind);
             if (mailAddress == null) return;
 
-            addresses.Add(new MailMergeAddress(
+            addresses.Add(new(
                 addressType,
                 displayName: mailAddress.DisplayName,
                 address: mailAddress.Address
@@ -37,7 +37,7 @@ internal static class MailMergeAddressCollectionExtensions
 
         foreach (var mailAddress in mailAddresses)
         {
-            addresses.Add(new MailMergeAddress(
+            addresses.Add(new(
                 addressType,
                 displayName: mailAddress.DisplayName,
                 address: mailAddress.Address

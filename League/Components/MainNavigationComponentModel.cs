@@ -53,13 +53,13 @@ public class MainNavigationComponentModel
         /// <summary>
         /// The <see cref="List{NavigationNode}"/> of child <see cref="NavigationNode"/>s.
         /// </summary>
-        public List<NavigationNode> ChildNodes { get; } = new();
+        public List<NavigationNode> ChildNodes { get; } = [];
     }
         
     /// <summary>
     /// Gets the top navigation <see cref="List{NavigationNode}"/> of type <see cref="NavigationNode"/>.
     /// </summary>
-    public List<NavigationNode> TopNavigationNodes { get; } = new();
+    public List<NavigationNode> TopNavigationNodes { get; } = [];
         
     /// <summary>
     /// Gets the active <see cref="NavigationNode"/> for the current <see cref="Microsoft.AspNetCore.Http.HttpContext.Request"/>.

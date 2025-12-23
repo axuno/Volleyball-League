@@ -54,7 +54,7 @@ public class ChangePrimaryUserEmailCreator : IMailMessageCreator
             mailMergeMessage.Subject = localizer["Please confirm your new primary email"].Value;
                 
             mailMergeMessage.MailMergeAddresses.Add(MailKind.AutoMailFrom, tenantContext);
-            mailMergeMessage.MailMergeAddresses.Add(new MailMergeAddress(MailAddressType.To, Parameters.NewEmail));
+            mailMergeMessage.MailMergeAddresses.Add(new(MailAddressType.To, Parameters.NewEmail));
 
             mailMergeMessage.PlainText = await renderer.RenderAsync(TemplateName.ConfirmNewPrimaryEmailTxt, model,
                 Parameters.CultureInfo.TwoLetterISOLanguageName);
@@ -65,7 +65,7 @@ public class ChangePrimaryUserEmailCreator : IMailMessageCreator
                 
             // Second email goes to the current email address
                 
-            model = new ChangeUserAccountModel()
+            model = new()
             {
                 Email = Parameters.NewEmail,
                 CallbackUrl = string.Empty, // not used in the template
@@ -77,7 +77,7 @@ public class ChangePrimaryUserEmailCreator : IMailMessageCreator
             mailMergeMessage.Subject = localizer["Your primary email is about to be changed"].Value;
                 
             mailMergeMessage.MailMergeAddresses.Add(MailKind.AutoMailFrom, tenantContext);
-            mailMergeMessage.MailMergeAddresses.Add(new MailMergeAddress(MailAddressType.To, Parameters.Email));
+            mailMergeMessage.MailMergeAddresses.Add(new(MailAddressType.To, Parameters.Email));
 
             mailMergeMessage.PlainText = await renderer.RenderAsync(TemplateName.NotifyCurrentPrimaryEmailTxt, model,
                 Parameters.CultureInfo.TwoLetterISOLanguageName);

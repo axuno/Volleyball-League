@@ -8,19 +8,19 @@ public interface ITenant
     /// <summary>
     /// Gets or sets the unique tenant identifier.
     /// </summary>
-    public string Identifier { get; set; }
+    string Identifier { get; set; }
     /// <summary>
     /// Gets or sets the tenant GUID.
     /// </summary>
-    public Guid Guid { get; set; }
+    Guid Guid { get; set; }
         
     /// <summary>
     /// Gets or sets the filename of the tenant configuration.
     /// </summary>
-    public string Filename { get; set; }
+    string Filename { get; set; }
         
     /// <summary>
     /// If <see langword="true"/>, this is the default tenant.
     /// </summary>
-    public bool IsDefault { get; set; }
+    bool IsDefault { get; set; }
 }

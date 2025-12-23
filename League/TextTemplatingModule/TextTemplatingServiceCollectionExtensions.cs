@@ -41,7 +41,7 @@ public static class TextTemplatingServiceCollectionExtensions
             
         var ianaTzId = "America/New_York"; // America/New_York
         // TimeZoneConverter will use the culture of the current scope
-        services.TryAddTransient<Axuno.Tools.DateAndTime.TimeZoneConverter>(sp => new Axuno.Tools.DateAndTime.TimeZoneConverter(
+        services.TryAddTransient<Axuno.Tools.DateAndTime.TimeZoneConverter>(sp => new(
             ianaTzId, CultureInfo.GetCultureInfo("en")));
 
         #endregion

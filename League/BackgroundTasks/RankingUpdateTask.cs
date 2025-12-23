@@ -135,7 +135,7 @@ public class RankingUpdateTask : IBackgroundTask
                 if (matchesPlayed.TrueForAll(mp => mp.RoundId != roundId))
                 {
                     // Remove an existing ranking list for the round
-                    await TenantContext.DbContext.AppDb.RankingRepository.ReplaceAsync(new RankingList(), roundId, cancellationToken);
+                    await TenantContext.DbContext.AppDb.RankingRepository.ReplaceAsync([], roundId, cancellationToken);
                     continue;
                 }
                     
@@ -184,7 +184,7 @@ public class RankingUpdateTask : IBackgroundTask
     {
         var chart = new RankingChart(newRanking,
                 teamsInRound.Select(tir => (tir.TeamId, tir.TeamNameForRound)).ToList(),
-                new RankingChart.ChartSettings
+                new()
                 {
                     Title = string.Empty, XTitle = "MD", YTitle = "R", Width = 700, Height = 400,
                     GraphBackgroundColorArgb = "#FFEFFFEF", PlotAreaBackgroundColorArgb = "#FFFFFFFF",

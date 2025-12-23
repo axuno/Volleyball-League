@@ -66,12 +66,12 @@ internal class MatchCreatorTests
             _ => throw new ArgumentOutOfRangeException(nameof(refereeType))
         };
 
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(combinations, Has.Count.EqualTo(10));
             Assert.That(matchCreator.CombinationsPerLeg, Is.EqualTo(4));
             Assert.That(firstCombination.Referee, Is.EqualTo(expectedReferee));
-        });
+        }
     }
 
     [Test]
@@ -114,12 +114,12 @@ internal class MatchCreatorTests
         var stringBeforeSwap = combination.ToString();
         combination.SwapHomeGuest();
 
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(combination.Home, Is.EqualTo(guest));
             Assert.That(combination.Guest, Is.EqualTo(home));
             Assert.That(combination.ToString(), Is.Not.EqualTo(stringBeforeSwap));
-        });
+        }
     }
 
     [Test]
@@ -135,13 +135,13 @@ internal class MatchCreatorTests
             firstLeg.TurnDateTimePeriods.Add(turn, null);
         }
 
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(firstLeg, Has.Count.EqualTo(numOfParticipants * 2));
             Assert.That(firstTurn.Count, Is.EqualTo(2));
             Assert.That(allTurns, Has.Count.EqualTo(numOfParticipants));
             Assert.That(firstLeg.TurnDateTimePeriods, Has.Count.EqualTo(allTurns.Count));
-        });
+        }
     }
 
     private static Collection<long> GetParticipants(int numOfParticipants)

@@ -36,13 +36,13 @@ internal class MatchSchedulerTests
     [Test]
     public void Generate_Schedule_Should_Succeed()
     {
-        EntityCollection<MatchEntity> matches = new(); 
+        EntityCollection<MatchEntity> matches = []; 
         var scheduler = GetMatchSchedulerInstance();
         scheduler.OnBeforeSave += (sender, fixtures) => matches = fixtures;
         var participants = _tournamentEntityForMatchScheduler!.Rounds.First().TeamCollectionViaTeamInRound;
         var expectedNumOfMatches = participants.Count * (participants.Count - 1) / 2;
 
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(del: async () => await scheduler.ScheduleFixturesForTournament(false, CancellationToken.None), Throws.Nothing);
             Assert.That(matches, Has.Count.EqualTo(expectedNumOfMatches));
@@ -61,7 +61,7 @@ internal class MatchSchedulerTests
                 .Union(matches.Select(m => m.GuestTeamId))
                 .Distinct()
                 .All(teamId => !TeamHasOverlappingMatches(teamId, matches)), Is.True);
-        });
+        }
     }
 
     private static bool TeamHasOverlappingMatches(long teamId, EntityCollection<MatchEntity> matches)

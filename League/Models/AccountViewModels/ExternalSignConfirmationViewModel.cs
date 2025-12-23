@@ -34,5 +34,5 @@ public class ExternalSignConfirmationViewModel
     [Display(Name = "Primary phone number")]
     public string PhoneNumber { get; set; } = string.Empty;
 
-    public static char[] Genders => new[] {'u', 'f', 'm'};
+    public static char[] Genders => ['u', 'f', 'm'];
 }

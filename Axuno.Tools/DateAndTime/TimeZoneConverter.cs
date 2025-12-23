@@ -159,7 +159,7 @@ public class TimeZoneConverter
         var localDateTime = TimeZoneInfo.ConvertTime(dateTimeOffset.Value.UtcDateTime, windowsTimeZoneId);
 
         zonedDateTime.CultureInfo = cultureInfo;
-        zonedDateTime.DateTimeOffset = new DateTimeOffset(localDateTime, windowsTimeZoneId.GetUtcOffset(localDateTime));
+        zonedDateTime.DateTimeOffset = new(localDateTime, windowsTimeZoneId.GetUtcOffset(localDateTime));
         zonedDateTime.IsDaylightSavingTime = windowsTimeZoneId.IsDaylightSavingTime(localDateTime);
         zonedDateTime.DisplayName = windowsTimeZoneId.DisplayName;
         zonedDateTime.BaseUtcOffset = windowsTimeZoneId.BaseUtcOffset;

@@ -27,6 +27,6 @@ public class AllTimeTeamModel
 
     public DateTimePeriod GetTournamentPeriod(long tournamentId)
     {
-        return new DateTimePeriod(_roundLegPeriods.Where(rl => rl.TournamentId == tournamentId).Min(rl => rl.StartDateTime), _roundLegPeriods.Max(rl => rl.EndDateTime));
+        return new(_roundLegPeriods.Where(rl => rl.TournamentId == tournamentId).Min(rl => rl.StartDateTime), _roundLegPeriods.Max(rl => rl.EndDateTime));
     }
 }

@@ -89,11 +89,11 @@ internal class RoundRobinTests
                 participantsWithConsecutiveHomeGuestMatches.Add(participant);
             }
 
-            Assert.Multiple(() =>
+            using (Assert.EnterMultipleScope())
             {
                 Assert.That(maxConsecutiveHomeGuest.HomeCount, Is.LessThanOrEqualTo(2));
                 Assert.That(maxConsecutiveHomeGuest.GuestCount, Is.LessThanOrEqualTo(2));
-            });
+            }
         }
 
         Assert.That(participantsWithConsecutiveHomeGuestMatches, Has.Count.EqualTo(numOfParticipants % 2 == 0 ? numOfParticipants - 2 : numOfParticipants - 1));

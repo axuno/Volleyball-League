@@ -23,7 +23,8 @@ public sealed class SingleSetValidator : AbstractValidator<SetEntity, (ITenantCo
 
     private static readonly Dictionary<MatchValidationMode, Dictionary<FactId, bool>> ModeConfiguration = new() {
         {
-            MatchValidationMode.Default, new Dictionary<FactId, bool> {
+            MatchValidationMode.Default, new()
+            {
                 { FactId.BallPointsNotNegative, true },
                 { FactId.SetPointsAreValid, false },
                 { FactId.TieIsAllowed, true },
@@ -35,7 +36,8 @@ public sealed class SingleSetValidator : AbstractValidator<SetEntity, (ITenantCo
             }
         },
         {
-            MatchValidationMode.Overrule, new Dictionary<FactId, bool> {
+            MatchValidationMode.Overrule, new()
+            {
                 { FactId.BallPointsNotNegative, true },
                 { FactId.SetPointsAreValid, true },
                 { FactId.TieIsAllowed, false },
@@ -77,7 +79,7 @@ public sealed class SingleSetValidator : AbstractValidator<SetEntity, (ITenantCo
 
     private Fact<FactId> TieBreakWinReachedWithTwoPlusPointsAhead()
     {
-        return new Fact<FactId>
+        return new()
         {
             Id = FactId.TieBreakWinReachedWithTwoPlusPointsAhead,
             FieldNames = [nameof(Model.HomeBallPoints), nameof(Model.GuestBallPoints)],
@@ -146,7 +148,7 @@ public sealed class SingleSetValidator : AbstractValidator<SetEntity, (ITenantCo
 
     private Fact<FactId> TieBreakWinReachedWithOnePointAhead()
     {
-        return new Fact<FactId>
+        return new()
         {
             Id = FactId.TieBreakWinReachedWithOnePointAhead,
             FieldNames = [nameof(Model.HomeBallPoints), nameof(Model.GuestBallPoints)],
@@ -185,7 +187,7 @@ public sealed class SingleSetValidator : AbstractValidator<SetEntity, (ITenantCo
 
     private Fact<FactId> RegularWinReachedWithTwoPlusPointsAhead()
     {
-        return new Fact<FactId>
+        return new()
         {
             Id = FactId.RegularWinReachedWithTwoPlusPointsAhead,
             FieldNames = [nameof(Model.HomeBallPoints), nameof(Model.GuestBallPoints)],
@@ -255,7 +257,7 @@ public sealed class SingleSetValidator : AbstractValidator<SetEntity, (ITenantCo
 
     private Fact<FactId> RegularWinReachedWithOnePointAhead()
     {
-        return new Fact<FactId>
+        return new()
         {
             Id = FactId.RegularWinReachedWithOnePointAhead,
             FieldNames = [nameof(Model.HomeBallPoints), nameof(Model.GuestBallPoints)],
@@ -294,7 +296,7 @@ public sealed class SingleSetValidator : AbstractValidator<SetEntity, (ITenantCo
 
     private Fact<FactId> NumOfPointsToWinReached()
     {
-        return new Fact<FactId>
+        return new()
         {
             Id = FactId.NumOfPointsToWinReached,
             FieldNames = [nameof(Model.HomeBallPoints), nameof(Model.GuestBallPoints)],
@@ -302,7 +304,7 @@ public sealed class SingleSetValidator : AbstractValidator<SetEntity, (ITenantCo
             Type = FactType.Error,
             CheckAsync = (cancellationToken) => Task.FromResult(
                 Model.IsTieBreak
-                    ? new FactResult
+                    ? new()
                     {
                         Message = string.Format(
                             SingleSetValidatorResource.ResourceManager.GetString(
@@ -325,7 +327,7 @@ public sealed class SingleSetValidator : AbstractValidator<SetEntity, (ITenantCo
 
     private Fact<FactId> TieIsAllowed()
     {
-        return new Fact<FactId>
+        return new()
         {
             Id = FactId.TieIsAllowed,
             FieldNames = [nameof(Model.HomeBallPoints), nameof(Model.GuestBallPoints)],
@@ -364,7 +366,7 @@ public sealed class SingleSetValidator : AbstractValidator<SetEntity, (ITenantCo
 
     private Fact<FactId> BallPointsNotNegative()
     {
-        return new Fact<FactId>
+        return new()
         {
             Id = FactId.BallPointsNotNegative,
             FieldNames = [nameof(Model.HomeBallPoints), nameof(Model.GuestBallPoints)],
@@ -382,7 +384,7 @@ public sealed class SingleSetValidator : AbstractValidator<SetEntity, (ITenantCo
 
     private Fact<FactId> SetPointsAreValid()
     {
-        return new Fact<FactId>
+        return new()
         {
             Id = FactId.SetPointsAreValid,
             FieldNames = [nameof(Model.HomeSetPoints), nameof(Model.GuestSetPoints)],

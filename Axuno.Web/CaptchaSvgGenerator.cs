@@ -11,7 +11,8 @@ namespace Axuno.Web;
 public class CaptchaSvgGenerator : IDisposable
 {
     // use characters well to distinguish by humans
-    private readonly char[] _captureChars = { 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'k', 'm', 'n', 'o', 'p', 'q', 's', 'u', 'v', 'w', 'x', 'y', 'z' };
+    private readonly char[] _captureChars = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'k', 'm', 'n', 'o', 'p', 'q', 's', 'u', 'v', 'w', 'x', 'y', 'z'
+    ];
         
     /// <summary>
     /// CTOR.

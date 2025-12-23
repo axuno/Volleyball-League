@@ -20,12 +20,12 @@ public class MatchResultPermissionValidatorTests
         await mpv.CheckAsync(MatchResultPermissionValidator.FactId.TournamentIsInActiveMode,
             CancellationToken.None);
         var factResults = mpv.GetFailedFacts();
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(factResults.Count == 1, Is.EqualTo(failureExpected));
             Assert.That(factResults.FirstOrDefault()?.Id == MatchResultPermissionValidator.FactId.TournamentIsInActiveMode, Is.EqualTo(failureExpected));
             Assert.That(factResults.All(fr => fr.Exception == null), Is.True);
-        });
+        }
     }
 
     [TestCase(true, true)]
@@ -40,12 +40,12 @@ public class MatchResultPermissionValidatorTests
         await mpv.CheckAsync(MatchResultPermissionValidator.FactId.RoundIsStillRunning,
             CancellationToken.None);
         var factResults = mpv.GetFailedFacts();
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(factResults.Count == 1, Is.EqualTo(failureExpected));
             Assert.That(factResults.FirstOrDefault()?.Id == MatchResultPermissionValidator.FactId.RoundIsStillRunning, Is.EqualTo(failureExpected));
             Assert.That(factResults.All(fr => fr.Exception == null), Is.True);
-        });
+        }
     }
 
     [TestCase("2020-07-02 20:00:00", 10, false)]
@@ -53,7 +53,7 @@ public class MatchResultPermissionValidatorTests
     [TestCase("2020-07-30 20:00:00", 0, true)]
     public async Task Current_Date_Is_Before_Result_Correction_Deadline(DateTime changeDate, int maxDaysForCorrection, bool failureExpected)
     {
-        var data = (new TenantContext() { TournamentContext = new TournamentContext {MaxDaysForResultCorrection = maxDaysForCorrection}},
+        var data = (new TenantContext() { TournamentContext = new() {MaxDaysForResultCorrection = maxDaysForCorrection}},
             (TournamentInPlanMode: false, RoundIsCompleted: false,
                 CurrentDateUtc: changeDate));
         var match = new MatchEntity {RealStart = new DateTime(2020, 07, 01, 20, 00, 00) };
@@ -61,11 +61,11 @@ public class MatchResultPermissionValidatorTests
         await mpv.CheckAsync(MatchResultPermissionValidator.FactId.CurrentDateIsBeforeResultCorrectionDeadline,
             CancellationToken.None);
         var factResults = mpv.GetFailedFacts();
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(factResults.Count == 1, Is.EqualTo(failureExpected));
             Assert.That(factResults.FirstOrDefault()?.Id == MatchResultPermissionValidator.FactId.CurrentDateIsBeforeResultCorrectionDeadline, Is.EqualTo(failureExpected));
             Assert.That(factResults.All(fr => fr.Exception == null), Is.True);
-        });
+        }
     }
 }

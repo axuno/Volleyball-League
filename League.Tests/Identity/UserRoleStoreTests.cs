@@ -63,12 +63,12 @@ public class UserRoleStoreTests
         // adding the same role again should throw
         Assert.ThrowsAsync<InvalidOperationException>(() => _userStore.AddToRoleAsync(_user, Constants.RoleName.TournamentManager, CancellationToken.None));
 
-        await Assert.MultipleAsync(async () =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That((await _userStore.GetRolesAsync(_user, CancellationToken.None)).Contains(Constants.RoleName.TournamentManager), Is.True);
 
-            Assert.That((await _userStore.GetUsersInRoleAsync(Constants.RoleName.TournamentManager, CancellationToken.None)).FirstOrDefault(u => u.Email == _user.Email), Is.Not.EqualTo(null));
-        });
+            Assert.That((await _userStore.GetUsersInRoleAsync(Constants.RoleName.TournamentManager, CancellationToken.None)).FirstOrDefault(u => u.Email == _user.Email), Is.Not.Null);
+        }
 
         Assert.DoesNotThrowAsync(async () => await _userStore.RemoveFromRoleAsync(_user, Constants.RoleName.TournamentManager, CancellationToken.None));
     }
@@ -79,28 +79,28 @@ public class UserRoleStoreTests
         const string email = "player-and-manager.userrole@store.tests";
         var team = new TeamEntity { Name = "Fancy Team" };
         var userEntity = new UserEntity { Email = email, UserName = "PlayerManagerUserRoleStoreTester" };
-        userEntity.PlayerInTeams.Add(new PlayerInTeamEntity { User = userEntity, Team = team });
-        userEntity.ManagerOfTeams.Add(new ManagerOfTeamEntity { User = userEntity, Team = team });
+        userEntity.PlayerInTeams.Add(new() { User = userEntity, Team = team });
+        userEntity.ManagerOfTeams.Add(new() { User = userEntity, Team = team });
         await _appDb.GenericRepository.SaveEntityAsync(userEntity, true, true, CancellationToken.None);
 
         var user = await _userStore.FindByEmailAsync(email, CancellationToken.None);
-        await Assert.MultipleAsync(async () =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(await _userStore.IsInRoleAsync(user, Constants.RoleName.Player, CancellationToken.None), Is.True);
             Assert.That(await _userStore.IsInRoleAsync(user, Constants.RoleName.TeamManager, CancellationToken.None), Is.True);
             Assert.That((await _userStore.GetUsersInRoleAsync(Constants.RoleName.Player, CancellationToken.None)), Has.Count.EqualTo(1));
             Assert.That((await _userStore.GetUsersInRoleAsync(Constants.RoleName.TeamManager, CancellationToken.None)), Has.Count.EqualTo(1));
-        });
+        }
 
 
         await _appDb.GenericRepository.DeleteEntitiesUsingConstraintAsync<PlayerInTeamEntity>(new PredicateExpression(), CancellationToken.None);
         await _appDb.GenericRepository.DeleteEntitiesUsingConstraintAsync<ManagerOfTeamEntity>(new PredicateExpression(), CancellationToken.None);
 
-        Assert.Multiple(async () =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(await _userStore.IsInRoleAsync(user, Constants.RoleName.Player, CancellationToken.None), Is.False);
             Assert.That(await _userStore.IsInRoleAsync(user, Constants.RoleName.TeamManager, CancellationToken.None), Is.False);
-        });
+        }
     }
 
     [Test]
@@ -127,7 +127,7 @@ public class UserRoleStoreTests
         // delete all user rows (will also remove rows in other tables connected with foreign keys)
         await _appDb.GenericRepository.DeleteEntitiesUsingConstraintAsync<UserEntity>(new PredicateExpression(), CancellationToken.None);
 
-        _user = new ApplicationUser { Email = "userrole@store.tests", UserName = "UserRoleStoreTester"};
+        _user = new() { Email = "userrole@store.tests", UserName = "UserRoleStoreTester"};
         Assert.That(await _userStore.CreateAsync(_user, CancellationToken.None), Is.EqualTo(IdentityResult.Success));
     }
 
@@ -147,7 +147,7 @@ public class UserRoleStoreTests
         var roles = new EntityCollection<IdentityRoleEntity>();
         foreach (var roleName in Constants.RoleName.GetAllRoleValues<string>())
         {
-            roles.Add(new IdentityRoleEntity { Name = roleName });
+            roles.Add(new() { Name = roleName });
         }
 
         await _appDb.GenericRepository.SaveEntitiesAsync(roles, false, false, CancellationToken.None);

@@ -13,7 +13,7 @@ public class ApplicationSelectTeamModel
     public long? SelectedTeamId { get; set; }
 
     [BindNever]
-    public List<LatestTeamTournamentRow> TeamsManagedByUser { get; set; } = new();
+    public List<LatestTeamTournamentRow> TeamsManagedByUser { get; set; } = [];
 
     [BindNever]
     public string TournamentName { get; set; } = string.Empty;
