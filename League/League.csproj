@@ -87,7 +87,7 @@ Localizations for English and German are included. The library is in operation o
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
         <PackageReference Include="StackifyMiddleware" Version="3.3.3.4767" />
-        <PackageReference Include="System.Security.Cryptography.Xml" Version="10.0.4" />
+        <PackageReference Include="System.Security.Cryptography.Xml" Version="10.0.6" />
     </ItemGroup>
     <ItemGroup>
         <DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="2.0.3" />
