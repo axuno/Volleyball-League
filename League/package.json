@@ -24,7 +24,7 @@
     "js-cookie": "2.2.1",
     "jsnlog": "2.30.0",
     "sass": "^1.94.1",
-    "postcss": "^8.4.38",
+    "postcss": "^8.5.10",
     "@popperjs/core": "2.11.8",
     "@eonasdan/tempus-dominus": "6.9.6",
     "set-value": ">=4.1.0"
