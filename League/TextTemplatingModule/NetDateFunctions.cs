@@ -236,15 +236,15 @@ public class NetDateTimeFunctions : ScriptObject, IScriptCustomFunction
     /// <param name="arguments"></param>
     /// <param name="blockStatement"></param>
     /// <returns>Returns the result of the custom function.</returns>
-    public virtual object? Invoke(TemplateContext context, ScriptNode callerContext, ScriptArray arguments, ScriptBlockStatement blockStatement)
+    public virtual object? Invoke(TemplateContext context, ScriptNode? callerContext, ScriptArray arguments, ScriptBlockStatement? blockStatement)
     {
         // If we access 'ndate' without any parameter, it calls the 'parse' function by default 
         // otherwise it is the 'date' object itself
         return arguments.Count switch
         {
             0 => this,
-            1 => Parse(context, context.ObjectToString(arguments[0])),
-            _ => throw new ScriptRuntimeException(callerContext.Span,
+            1 => Parse(context, context.ObjectToString(arguments[0]) ?? string.Empty),
+            _ => throw new ScriptRuntimeException(callerContext?.Span ?? default,
                 $"Invalid number of parameters `{arguments.Count}` for `{DateVariable.Name}` object/function.")
         };
     }
@@ -257,8 +257,8 @@ public class NetDateTimeFunctions : ScriptObject, IScriptCustomFunction
     /// <param name="arguments"></param>
     /// <param name="blockStatement"></param>
     /// <returns>Returns the result of the custom function.</returns>
-    ValueTask<object?> IScriptCustomFunction.InvokeAsync(TemplateContext context, ScriptNode callerContext, ScriptArray arguments,
-        ScriptBlockStatement blockStatement)
+    ValueTask<object?> IScriptCustomFunction.InvokeAsync(TemplateContext context, ScriptNode? callerContext, ScriptArray arguments,
+        ScriptBlockStatement? blockStatement)
     {
         return InvokeAsync(context, callerContext, arguments, blockStatement);
     }
@@ -276,7 +276,7 @@ public class NetDateTimeFunctions : ScriptObject, IScriptCustomFunction
         return new(typeof(object), "parameter" + index);
     }
 
-    private ValueTask<object?> InvokeAsync(TemplateContext context, ScriptNode callerContext, ScriptArray arguments, ScriptBlockStatement blockStatement)
+    private ValueTask<object?> InvokeAsync(TemplateContext context, ScriptNode? callerContext, ScriptArray arguments, ScriptBlockStatement? blockStatement)
     {
         return new(Invoke(context, callerContext, arguments, blockStatement));
     }

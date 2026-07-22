@@ -6,7 +6,6 @@
 @inject IViewLocalizer Localizer
 @{
     ViewData.Title(Localizer["Message"].Value);
-#pragma warning disable CS8321 // This method is actually used in this view
     List<SelectListItem> GenderList()
     {
         return
@@ -17,7 +16,6 @@
             new() { Value = "u", Text = Localizer["none"].Value }
         ];
     }
-#pragma warning restore CS8321
 }
 <div>
     <h2 class="h2 d-inline-block">@ViewData.Title()</h2>
