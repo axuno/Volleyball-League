@@ -9,27 +9,27 @@
   },
   "devDependencies": {
     "@fortawesome/fontawesome-free": "5.13.1",
-    "autoprefixer": "10.4.19",
-    "bootstrap": "5.3.3",
-    "cssnano": "7.0.1",
-    "dropzone": "5.7.1",
-    "grunt": "1.6.1",
-    "grunt-cli": "1.4.3",
+    "autoprefixer": "10.5.4",
+    "bootstrap": "5.3.8",
+    "cssnano": "8.0.2",
+    "dropzone": "5.9.3",
+    "grunt": "1.6.2",
+    "grunt-cli": "1.5.0",
     "grunt-contrib-concat": "2.1.0",
     "grunt-contrib-copy": "1.0.0",
     "grunt-contrib-uglify": "5.2.2",
     "grunt-contrib-watch": "1.1.0",
     "@lodder/grunt-postcss": "3.1.1",
-    "grunt-sass": "3.1.0",
-    "js-cookie": "3.0.7",
+    "grunt-sass": "4.1.0",
+    "js-cookie": "3.0.8",
     "jsnlog": "2.30.0",
-    "sass": "^1.94.1",
-    "postcss": "^8.5.10",
+    "sass": "^1.101.5",
+    "postcss": "^8.5.22",
     "@popperjs/core": "2.11.8",
-    "@eonasdan/tempus-dominus": "6.9.6",
+    "@eonasdan/tempus-dominus": "6.10.4",
     "set-value": ">=4.1.0"
   },
   "dependencies": {
-    "uglify-js": "3.17.4"
+    "uglify-js": "3.19.3"
   }
 }
