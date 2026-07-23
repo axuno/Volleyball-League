@@ -84,20 +84,19 @@
 
                     <div class="text-success col-md-3">@Localizer["Team contact"]</div>
                     <div class="col-md-7 mb-2">
-                        <div class="fw-bold"><i class="fas fa-user"></i><span class="d-inline-block me-2"></span>@userInfo.CompleteNameWithNickName</div>
-                        <div><i class="far fa-envelope"></i><span class="d-inline-block me-2"></span><a href="mailto:@userInfo.Email">@userInfo.Email</a></div>
+                        <div class="fw-bold"><i class="fas fa-user me-2"></i>&nbsp;@userInfo.CompleteNameWithNickName</div>
+                        <div><i class="far fa-envelope me-2"></i><a href="mailto:@userInfo.Email">@userInfo.Email</a></div>
                         @if (!string.IsNullOrEmpty(userInfo.PhoneNumber))
                         {
                             <span class="d-inline-block me-4">
-                                <i class="fas fa-phone-square-alt"></i>
-                                <span class="d-inline-block me-2"></span>
+                                <i class="fas fa-phone-square-alt me-2"></i>
                                 <a href="@TelUriPhoneNo(userInfo.PhoneNumber)">@DisplayPhoneNo(userInfo.PhoneNumber)</a>
                             </span>
                         }
                         @if (!string.IsNullOrEmpty(userInfo.PhoneNumber2))
                         {
                             <span class="d-inline-block text-nowrap">
-                                <i class="fas fa-phone-square-alt"></i>
+                                <i class="fas fa-phone-square-alt me-2"></i>
                                 <a href="@TelUriPhoneNo(userInfo.PhoneNumber2)">@DisplayPhoneNo(userInfo.PhoneNumber2)</a>
                             </span>
                         }
