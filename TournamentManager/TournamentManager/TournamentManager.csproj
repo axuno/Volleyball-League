@@ -5,8 +5,9 @@
     <NeutralLanguage>en</NeutralLanguage>
     <!-- With dotnet, add parameter: -p:SatelliteResourceLanguages="""en;de""" -->
     <SatelliteResourceLanguages>en;de</SatelliteResourceLanguages>
-    <Version>6.2.0</Version>
-    <FileVersion>6.2.0</FileVersion>
+    <Version>9.2.0</Version>
+    <FileVersion>9.2.0</FileVersion>
+    <AssemblyVersion>9.0.0.0</AssemblyVersion> <!--only update AssemblyVersion with major releases -->
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <!-- CA5362 looks like a bug in code analyzer -->
     <NoWarn>$(NoWarn);1591;AD0001;CA5362</NoWarn>
