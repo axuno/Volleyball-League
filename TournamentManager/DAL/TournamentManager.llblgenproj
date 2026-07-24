@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<!--LLBLGen Pro v5.11 project file. Do not manually edit this file. Incorrect references could lead to an unloadable project file.-->
-<Project Version="5.11" TargetFrameworkName="LLBLGen Pro Runtime Framework">
+<!--LLBLGen Pro v5.13 project file. Do not manually edit this file. Incorrect references could lead to an unloadable project file.-->
+<Project Version="5.13" TargetFrameworkName="LLBLGen Pro Runtime Framework">
   <Properties>
     <Abbreviations />
     <Property Name="AdditionalTaskPerformerFolder" Value="" />
@@ -115,12 +115,12 @@
         <DestinationRootFolder Value=".\" />
         <FrameworkName Value="LLBLGen Pro Runtime Framework" />
         <LanguageName Value="C#" />
-        <PlatformName Value=".NET 8" />
+        <PlatformName Value=".NET 10" />
         <PresetName Value="SD.Presets.Adapter.General.Netstandard" />
         <RootNamespace Value="TournamentManager.DAL" />
         <TemplateGroup Value="Adapter" />
         <TemplateBindings>
-          <Binding Name="SD.TemplateBindings.SharedTemplates.Net8" />
+          <Binding Name="SD.TemplateBindings.SharedTemplates.Net10" />
           <Binding Name="SD.TemplateBindings.SharedTemplates" />
           <Binding Name="SD.TemplateBindings.SqlServerSpecific" />
           <Binding Name="SD.TemplateBindings.General" />
@@ -370,17 +370,6 @@
           <Field Name="ValuationDate" Type="datetime" FieldIndex="4" />
         </Fields>
       </EntityDefinition>
-      <EntityDefinition Name="Registration" ObjectID="d4e773b6-4709-4cef-9406-8ebe1077d035">
-        <Fields>
-          <Field Name="AppliedOn" Type="datetime" FieldIndex="6" />
-          <Field Name="AppliedWithMessage" Type="string" IsOptional="true" MaxLength="4000" FieldIndex="5" />
-          <Field Name="Guid" Type="string" MaxLength="50" FieldIndex="4" />
-          <Field Name="Id" Type="long" IsReadOnly="true" Precision="11" IsPrimaryKey="true" FieldIndex="0" />
-          <Field Name="ManagerId" Type="long" Precision="11" FieldIndex="3" />
-          <Field Name="TeamId" Type="long" Precision="11" FieldIndex="2" />
-          <Field Name="TournamentId" Type="long" Precision="11" IsAutoCreated="true" FieldIndex="1" />
-        </Fields>
-      </EntityDefinition>
       <EntityDefinition Name="Round" ObjectID="fb44d94c-9791-4dc1-a27e-bc427cbabd26">
         <Fields>
           <Field Name="CreatedOn" Type="datetime" FieldIndex="10" />
@@ -479,14 +468,13 @@
       </EntityDefinition>
       <EntityDefinition Name="Tournament" ObjectID="ca23a303-bd66-4958-a387-d863d80cfb7e">
         <Fields>
-          <Field Name="CreatedOn" Type="datetime" FieldIndex="7" />
+          <Field Name="CreatedOn" Type="datetime" FieldIndex="6" />
           <Field Name="Description" Type="string" IsOptional="true" MaxLength="255" FieldIndex="2" />
           <Field Name="Id" Type="long" IsReadOnly="true" Precision="11" IsPrimaryKey="true" FieldIndex="0" />
           <Field Name="IsComplete" Type="bool" Precision="1" FieldIndex="4" />
-          <Field Name="IsPlanningMode" Type="bool" Precision="1" FieldIndex="5" />
-          <Field Name="ModifiedOn" Type="datetime" FieldIndex="8" />
+          <Field Name="ModifiedOn" Type="datetime" FieldIndex="7" />
           <Field Name="Name" Type="string" MaxLength="255" FieldIndex="1" />
-          <Field Name="NextTournamentId" Type="long" IsOptional="true" Precision="11" FieldIndex="6" />
+          <Field Name="NextTournamentId" Type="long" IsOptional="true" Precision="11" FieldIndex="5" />
           <Field Name="TypeId" Type="long" IsOptional="true" Precision="11" FieldIndex="3" />
         </Fields>
       </EntityDefinition>
@@ -676,21 +664,6 @@
       <NormalRelationship Name="Ranking.Tournament-Tournament.Rankings" Start=":Ranking" End=":Tournament" StartNavigator="Tournament" EndNavigator="Rankings" Type="4" UpdateRuleAction="1" DeleteRuleAction="1">
         <FieldRelationships>
           <FieldFieldRelationship FkField="TournamentId" PkField="Id" />
-        </FieldRelationships>
-      </NormalRelationship>
-      <NormalRelationship Name="Registration.Team-Team.Registration" Start=":Registration" End=":Team" StartNavigator="Team" EndNavigator="Registration" Type="4" UpdateRuleAction="1" DeleteRuleAction="1">
-        <FieldRelationships>
-          <FieldFieldRelationship FkField="TeamId" PkField="Id" />
-        </FieldRelationships>
-      </NormalRelationship>
-      <NormalRelationship Name="Registration.Tournament-Tournament.Registrations" Start=":Registration" End=":Tournament" StartNavigator="Tournament" EndNavigator="Registrations" Type="4" UpdateRuleAction="1" DeleteRuleAction="1">
-        <FieldRelationships>
-          <FieldFieldRelationship FkField="TournamentId" PkField="Id" />
-        </FieldRelationships>
-      </NormalRelationship>
-      <NormalRelationship Name="Registration.User-User.Registrations" Start=":Registration" End=":User" StartNavigator="User" EndNavigator="Registrations" Type="4" UpdateRuleAction="1" DeleteRuleAction="1">
-        <FieldRelationships>
-          <FieldFieldRelationship FkField="ManagerId" PkField="Id" />
         </FieldRelationships>
       </NormalRelationship>
       <NormalRelationship Name="Round.MatchRule-MatchRule.Rounds" Start=":Round" End=":MatchRule" StartNavigator="MatchRule" EndNavigator="Rounds" Type="4" UpdateRuleAction="1">
@@ -1094,6 +1067,7 @@
         <ConnectionElement Name="UseWindowsAuthentication" Value="true" />
         <ConnectionElement Name="UserID" Value="" />
         <ConnectionElement Name="Password" Value="" />
+        <ConnectionElement Name="CustomFragments" Value="" />
       </ConnectionElements>
       <SystemSequences>
         <Sequence Name="SCOPE_IDENTITY()" />
@@ -1102,7 +1076,7 @@
       <Catalogs>
         <Catalog Name="TestOrg">
           <Schemas>
-            <Schema Name="dbo" SyncSource="2" LastSyncWithDatabase="2020-06-14T14:49:37.1064671Z">
+            <Schema Name="dbo" SyncSource="2" LastSyncWithDatabase="2026-07-24T20:58:23.9239123Z">
               <Tables>
                 <Table Name="AvailableMatchDate">
                   <PkConstraintName Name="PK_378f3f14a1c871b25041c380344" />
@@ -1254,8 +1228,8 @@
                     <Field Name="LegSequenceNo" Ordinal="8" IsOptional="true" DbType="8" Precision="10" />
                     <Field Name="HomePoints" Ordinal="9" IsOptional="true" DbType="8" Precision="10" />
                     <Field Name="GuestPoints" Ordinal="10" IsOptional="true" DbType="8" Precision="10" />
-                    <Field Name="IsComplete" Ordinal="11" HasDefaultValue="true" DefaultValue="(1)" DbType="2" />
-                    <Field Name="IsOverruled" Ordinal="12" HasDefaultValue="true" DefaultValue="(0)" DbType="2" />
+                    <Field Name="IsComplete" Ordinal="11" HasDefaultValue="true" DefaultValue="1" DbType="2" />
+                    <Field Name="IsOverruled" Ordinal="12" HasDefaultValue="true" DefaultValue="0" DbType="2" />
                     <Field Name="PlannedStart" Ordinal="13" IsOptional="true" DbType="4" />
                     <Field Name="PlannedEnd" Ordinal="14" IsOptional="true" DbType="4" />
                     <Field Name="OrigPlannedStart" Ordinal="15" IsOptional="true" DbType="4" />
@@ -1263,7 +1237,7 @@
                     <Field Name="RealStart" Ordinal="17" IsOptional="true" DbType="4" />
                     <Field Name="RealEnd" Ordinal="18" IsOptional="true" DbType="4" />
                     <Field Name="Remarks" Ordinal="19" IsOptional="true" DbType="12" Length="2147483647" />
-                    <Field Name="ChangeSerial" Ordinal="20" HasDefaultValue="true" DefaultValue="(0)" DbType="0" Precision="19" />
+                    <Field Name="ChangeSerial" Ordinal="20" HasDefaultValue="true" DefaultValue="0" DbType="0" Precision="19" />
                     <Field Name="CreatedOn" Ordinal="21" HasDefaultValue="true" DefaultValue="getdate()" DbType="4" />
                     <Field Name="ModifiedOn" Ordinal="22" HasDefaultValue="true" DefaultValue="getdate()" DbType="4" />
                   </Fields>
@@ -1276,14 +1250,14 @@
                   <Fields>
                     <Field Name="Id" Ordinal="1" IsIdentity="true" IsPrimaryKey="true" DbType="0" Precision="19" />
                     <Field Name="Name" Ordinal="2" HasDefaultValue="true" DefaultValue="''" DbType="12" Length="255" />
-                    <Field Name="NumOfSets" Ordinal="3" HasDefaultValue="true" DefaultValue="(1)" DbType="8" Precision="10" />
-                    <Field Name="BestOf" Ordinal="4" HasDefaultValue="true" DefaultValue="(0)" DbType="2" />
-                    <Field Name="PointsMatchWon" Ordinal="5" HasDefaultValue="true" DefaultValue="(0)" DbType="8" Precision="10" />
-                    <Field Name="PointsMatchLost" Ordinal="6" HasDefaultValue="true" DefaultValue="(0)" DbType="8" Precision="10" />
-                    <Field Name="PointsMatchWonAfterTieBreak" Ordinal="7" HasDefaultValue="true" DefaultValue="(0)" DbType="8" Precision="10" />
-                    <Field Name="PointsMatchLostAfterTieBreak" Ordinal="8" HasDefaultValue="true" DefaultValue="(0)" DbType="8" Precision="10" />
-                    <Field Name="PointsMatchTie" Ordinal="9" HasDefaultValue="true" DefaultValue="(0)" DbType="8" Precision="10" />
-                    <Field Name="RankComparer" Ordinal="10" HasDefaultValue="true" DefaultValue="(1)" DbType="8" Precision="10" />
+                    <Field Name="NumOfSets" Ordinal="3" HasDefaultValue="true" DefaultValue="1" DbType="8" Precision="10" />
+                    <Field Name="BestOf" Ordinal="4" HasDefaultValue="true" DefaultValue="0" DbType="2" />
+                    <Field Name="PointsMatchWon" Ordinal="5" HasDefaultValue="true" DefaultValue="0" DbType="8" Precision="10" />
+                    <Field Name="PointsMatchLost" Ordinal="6" HasDefaultValue="true" DefaultValue="0" DbType="8" Precision="10" />
+                    <Field Name="PointsMatchWonAfterTieBreak" Ordinal="7" HasDefaultValue="true" DefaultValue="0" DbType="8" Precision="10" />
+                    <Field Name="PointsMatchLostAfterTieBreak" Ordinal="8" HasDefaultValue="true" DefaultValue="0" DbType="8" Precision="10" />
+                    <Field Name="PointsMatchTie" Ordinal="9" HasDefaultValue="true" DefaultValue="0" DbType="8" Precision="10" />
+                    <Field Name="RankComparer" Ordinal="10" HasDefaultValue="true" DefaultValue="1" DbType="8" Precision="10" />
                     <Field Name="CreatedOn" Ordinal="11" HasDefaultValue="true" DefaultValue="getdate()" DbType="4" />
                     <Field Name="ModifiedOn" Ordinal="12" HasDefaultValue="true" DefaultValue="getdate()" DbType="4" />
                   </Fields>
@@ -1319,28 +1293,13 @@
                     <Field Name="SetPointsLost" Ordinal="10" IsOptional="true" DbType="8" Precision="10" />
                     <Field Name="BallPointsWon" Ordinal="11" IsOptional="true" DbType="8" Precision="10" />
                     <Field Name="BallPointsLost" Ordinal="12" IsOptional="true" DbType="8" Precision="10" />
-                    <Field Name="MatchesPlayed" Ordinal="13" HasDefaultValue="true" DefaultValue="(0)" DbType="8" Precision="10" />
-                    <Field Name="MatchesToPlay" Ordinal="14" HasDefaultValue="true" DefaultValue="(0)" DbType="8" Precision="10" />
+                    <Field Name="MatchesPlayed" Ordinal="13" HasDefaultValue="true" DefaultValue="0" DbType="8" Precision="10" />
+                    <Field Name="MatchesToPlay" Ordinal="14" HasDefaultValue="true" DefaultValue="0" DbType="8" Precision="10" />
                     <Field Name="CreatedOn" Ordinal="15" HasDefaultValue="true" DefaultValue="getdate()" DbType="4" />
                     <Field Name="ModifiedOn" Ordinal="16" HasDefaultValue="true" DefaultValue="getdate()" DbType="4" />
                   </Fields>
                   <CustomProperties>
                     <CustomProperty Name="MS_Description" Value="Ranking history for all tournaments" />
-                  </CustomProperties>
-                </Table>
-                <Table Name="Registration">
-                  <PkConstraintName Name="PK_5a14f5d4dc690066c854d5d8685" />
-                  <Fields>
-                    <Field Name="Id" Ordinal="1" IsIdentity="true" IsPrimaryKey="true" DbType="0" Precision="19" />
-                    <Field Name="TournamentId" Ordinal="2" DbType="0" Precision="19" />
-                    <Field Name="TeamId" Ordinal="3" DbType="0" Precision="19" />
-                    <Field Name="ManagerId" Ordinal="4" DbType="0" Precision="19" />
-                    <Field Name="Guid" Ordinal="5" HasDefaultValue="true" DefaultValue="''" DbType="12" Length="50" />
-                    <Field Name="AppliedWithMessage" Ordinal="6" IsOptional="true" HasDefaultValue="true" DefaultValue="''" DbType="12" Length="4000" />
-                    <Field Name="AppliedOn" Ordinal="7" HasDefaultValue="true" DefaultValue="getdate()" DbType="4" />
-                  </Fields>
-                  <CustomProperties>
-                    <CustomProperty Name="MS_Description" Value="Registration of teams for a tournament" />
                   </CustomProperties>
                 </Table>
                 <Table Name="Round">
@@ -1351,10 +1310,10 @@
                     <Field Name="Name" Ordinal="3" HasDefaultValue="true" DefaultValue="''" DbType="12" Length="255" />
                     <Field Name="Description" Ordinal="4" HasDefaultValue="true" DefaultValue="''" DbType="12" Length="255" />
                     <Field Name="TypeId" Ordinal="5" DbType="0" Precision="19" />
-                    <Field Name="NumOfLegs" Ordinal="6" HasDefaultValue="true" DefaultValue="(1)" DbType="8" Precision="10" />
+                    <Field Name="NumOfLegs" Ordinal="6" HasDefaultValue="true" DefaultValue="1" DbType="8" Precision="10" />
                     <Field Name="MatchRuleId" Ordinal="7" DbType="0" Precision="19" />
                     <Field Name="SetRuleId" Ordinal="8" DbType="0" Precision="19" />
-                    <Field Name="IsComplete" Ordinal="9" HasDefaultValue="true" DefaultValue="(0)" DbType="2" />
+                    <Field Name="IsComplete" Ordinal="9" HasDefaultValue="true" DefaultValue="0" DbType="2" />
                     <Field Name="NextRoundId" Ordinal="10" IsOptional="true" DbType="0" Precision="19" />
                     <Field Name="CreatedOn" Ordinal="11" HasDefaultValue="true" DefaultValue="getdate()" DbType="4" />
                     <Field Name="ModifiedOn" Ordinal="12" HasDefaultValue="true" DefaultValue="getdate()" DbType="4" />
@@ -1368,7 +1327,7 @@
                   <Fields>
                     <Field Name="Id" Ordinal="1" IsIdentity="true" IsPrimaryKey="true" DbType="0" Precision="19" />
                     <Field Name="RoundId" Ordinal="2" DbType="0" Precision="19" />
-                    <Field Name="SequenceNo" Ordinal="3" HasDefaultValue="true" DefaultValue="(1)" DbType="8" Precision="10" />
+                    <Field Name="SequenceNo" Ordinal="3" HasDefaultValue="true" DefaultValue="1" DbType="8" Precision="10" />
                     <Field Name="Description" Ordinal="4" IsOptional="true" DbType="12" Length="255" />
                     <Field Name="StartDateTime" Ordinal="5" HasDefaultValue="true" DefaultValue="getdate()" DbType="4" />
                     <Field Name="EndDateTime" Ordinal="6" HasDefaultValue="true" DefaultValue="getdate()" DbType="4" />
@@ -1397,15 +1356,15 @@
                   <Fields>
                     <Field Name="Id" Ordinal="1" IsIdentity="true" IsPrimaryKey="true" DbType="0" Precision="19" />
                     <Field Name="MatchId" Ordinal="2" DbType="0" Precision="19" />
-                    <Field Name="SequenceNo" Ordinal="3" HasDefaultValue="true" DefaultValue="(1)" DbType="8" Precision="10" />
-                    <Field Name="HomeBallPoints" Ordinal="4" HasDefaultValue="true" DefaultValue="(0)" DbType="8" Precision="10" />
-                    <Field Name="GuestBallPoints" Ordinal="5" HasDefaultValue="true" DefaultValue="(0)" DbType="8" Precision="10" />
-                    <Field Name="HomeSetPoints" Ordinal="6" HasDefaultValue="true" DefaultValue="(0)" DbType="8" Precision="10" />
-                    <Field Name="GuestSetPoints" Ordinal="7" HasDefaultValue="true" DefaultValue="(0)" DbType="8" Precision="10" />
-                    <Field Name="HomeTimeout" Ordinal="8" HasDefaultValue="true" DefaultValue="(0)" DbType="8" Precision="10" />
-                    <Field Name="GuestTimeout" Ordinal="9" HasDefaultValue="true" DefaultValue="(0)" DbType="8" Precision="10" />
-                    <Field Name="IsOverruled" Ordinal="10" HasDefaultValue="true" DefaultValue="(0)" DbType="2" />
-                    <Field Name="IsTieBreak" Ordinal="11" HasDefaultValue="true" DefaultValue="(0)" DbType="2" />
+                    <Field Name="SequenceNo" Ordinal="3" HasDefaultValue="true" DefaultValue="1" DbType="8" Precision="10" />
+                    <Field Name="HomeBallPoints" Ordinal="4" HasDefaultValue="true" DefaultValue="0" DbType="8" Precision="10" />
+                    <Field Name="GuestBallPoints" Ordinal="5" HasDefaultValue="true" DefaultValue="0" DbType="8" Precision="10" />
+                    <Field Name="HomeSetPoints" Ordinal="6" HasDefaultValue="true" DefaultValue="0" DbType="8" Precision="10" />
+                    <Field Name="GuestSetPoints" Ordinal="7" HasDefaultValue="true" DefaultValue="0" DbType="8" Precision="10" />
+                    <Field Name="HomeTimeout" Ordinal="8" HasDefaultValue="true" DefaultValue="0" DbType="8" Precision="10" />
+                    <Field Name="GuestTimeout" Ordinal="9" HasDefaultValue="true" DefaultValue="0" DbType="8" Precision="10" />
+                    <Field Name="IsOverruled" Ordinal="10" HasDefaultValue="true" DefaultValue="0" DbType="2" />
+                    <Field Name="IsTieBreak" Ordinal="11" HasDefaultValue="true" DefaultValue="0" DbType="2" />
                     <Field Name="RealStart" Ordinal="12" IsOptional="true" DbType="4" />
                     <Field Name="RealEnd" Ordinal="13" IsOptional="true" DbType="4" />
                     <Field Name="Remarks" Ordinal="14" IsOptional="true" DbType="12" Length="2147483647" />
@@ -1421,15 +1380,15 @@
                   <Fields>
                     <Field Name="Id" Ordinal="1" IsIdentity="true" IsPrimaryKey="true" DbType="0" Precision="19" />
                     <Field Name="Name" Ordinal="2" HasDefaultValue="true" DefaultValue="''" DbType="12" Length="255" />
-                    <Field Name="NumOfPointsToWinRegular" Ordinal="3" HasDefaultValue="true" DefaultValue="(0)" DbType="8" Precision="10" />
-                    <Field Name="NumOfPointsToWinTiebreak" Ordinal="4" HasDefaultValue="true" DefaultValue="(0)" DbType="8" Precision="10" />
-                    <Field Name="PointsDiffToWinRegular" Ordinal="5" HasDefaultValue="true" DefaultValue="(0)" DbType="8" Precision="10" />
-                    <Field Name="PointsDiffToWinTiebreak" Ordinal="6" HasDefaultValue="true" DefaultValue="(0)" DbType="8" Precision="10" />
-                    <Field Name="PointsSetLost" Ordinal="7" HasDefaultValue="true" DefaultValue="(0)" DbType="8" Precision="10" />
-                    <Field Name="PointsSetTie" Ordinal="8" HasDefaultValue="true" DefaultValue="(0)" DbType="8" Precision="10" />
-                    <Field Name="PointsSetWon" Ordinal="9" HasDefaultValue="true" DefaultValue="(0)" DbType="8" Precision="10" />
-                    <Field Name="MaxTimeouts" Ordinal="10" HasDefaultValue="true" DefaultValue="(0)" DbType="8" Precision="10" />
-                    <Field Name="MaxSubstitutions" Ordinal="11" HasDefaultValue="true" DefaultValue="(0)" DbType="8" Precision="10" />
+                    <Field Name="NumOfPointsToWinRegular" Ordinal="3" HasDefaultValue="true" DefaultValue="0" DbType="8" Precision="10" />
+                    <Field Name="NumOfPointsToWinTiebreak" Ordinal="4" HasDefaultValue="true" DefaultValue="0" DbType="8" Precision="10" />
+                    <Field Name="PointsDiffToWinRegular" Ordinal="5" HasDefaultValue="true" DefaultValue="0" DbType="8" Precision="10" />
+                    <Field Name="PointsDiffToWinTiebreak" Ordinal="6" HasDefaultValue="true" DefaultValue="0" DbType="8" Precision="10" />
+                    <Field Name="PointsSetLost" Ordinal="7" HasDefaultValue="true" DefaultValue="0" DbType="8" Precision="10" />
+                    <Field Name="PointsSetTie" Ordinal="8" HasDefaultValue="true" DefaultValue="0" DbType="8" Precision="10" />
+                    <Field Name="PointsSetWon" Ordinal="9" HasDefaultValue="true" DefaultValue="0" DbType="8" Precision="10" />
+                    <Field Name="MaxTimeouts" Ordinal="10" HasDefaultValue="true" DefaultValue="0" DbType="8" Precision="10" />
+                    <Field Name="MaxSubstitutions" Ordinal="11" HasDefaultValue="true" DefaultValue="0" DbType="8" Precision="10" />
                     <Field Name="CreatedOn" Ordinal="12" HasDefaultValue="true" DefaultValue="getdate()" DbType="4" />
                     <Field Name="ModifiedOn" Ordinal="13" HasDefaultValue="true" DefaultValue="getdate()" DbType="4" />
                   </Fields>
@@ -1478,11 +1437,10 @@
                     <Field Name="Name" Ordinal="2" HasDefaultValue="true" DefaultValue="''" DbType="12" Length="255" />
                     <Field Name="Description" Ordinal="3" IsOptional="true" HasDefaultValue="true" DefaultValue="''" DbType="12" Length="255" />
                     <Field Name="TypeId" Ordinal="4" IsOptional="true" DbType="0" Precision="19" />
-                    <Field Name="IsComplete" Ordinal="5" HasDefaultValue="true" DefaultValue="(0)" DbType="2" />
-                    <Field Name="IsPlanningMode" Ordinal="6" HasDefaultValue="true" DefaultValue="(0)" DbType="2" />
-                    <Field Name="NextTournamentId" Ordinal="7" IsOptional="true" DbType="0" Precision="19" />
-                    <Field Name="CreatedOn" Ordinal="8" HasDefaultValue="true" DefaultValue="getdate()" DbType="4" />
-                    <Field Name="ModifiedOn" Ordinal="9" HasDefaultValue="true" DefaultValue="getdate()" DbType="4" />
+                    <Field Name="IsComplete" Ordinal="5" HasDefaultValue="true" DefaultValue="0" DbType="2" />
+                    <Field Name="NextTournamentId" Ordinal="6" IsOptional="true" DbType="0" Precision="19" />
+                    <Field Name="CreatedOn" Ordinal="7" HasDefaultValue="true" DefaultValue="getdate()" DbType="4" />
+                    <Field Name="ModifiedOn" Ordinal="8" HasDefaultValue="true" DefaultValue="getdate()" DbType="4" />
                   </Fields>
                   <CustomProperties>
                     <CustomProperty Name="MS_Description" Value="Tournament basic data" />
@@ -1513,7 +1471,7 @@
                     <Field Name="PhoneNumber" Ordinal="7" HasDefaultValue="true" DefaultValue="''" DbType="12" Length="40" />
                     <Field Name="PhoneNumberConfirmedOn" Ordinal="8" IsOptional="true" DbType="4" />
                     <Field Name="LastLoginOn" Ordinal="9" IsOptional="true" DbType="4" />
-                    <Field Name="AccessFailedCount" Ordinal="10" HasDefaultValue="true" DefaultValue="(0)" DbType="8" Precision="10" />
+                    <Field Name="AccessFailedCount" Ordinal="10" HasDefaultValue="true" DefaultValue="0" DbType="8" Precision="10" />
                     <Field Name="LockoutEndDateUtc" Ordinal="11" IsOptional="true" DbType="4" />
                     <Field Name="Gender" Ordinal="12" HasDefaultValue="true" DefaultValue="'u'" DbType="12" Length="1" />
                     <Field Name="Title" Ordinal="13" HasDefaultValue="true" DefaultValue="''" DbType="12" Length="255" />
@@ -1551,7 +1509,7 @@
                     <Field Name="City" Ordinal="6" HasDefaultValue="true" DefaultValue="''" DbType="12" Length="255" />
                     <Field Name="Longitude" Ordinal="7" IsOptional="true" DbType="6" Precision="38" />
                     <Field Name="Latitude" Ordinal="8" IsOptional="true" DbType="6" Precision="38" />
-                    <Field Name="PrecisePosition" Ordinal="9" HasDefaultValue="true" DefaultValue="(0)" DbType="2" />
+                    <Field Name="PrecisePosition" Ordinal="9" HasDefaultValue="true" DefaultValue="0" DbType="2" />
                     <Field Name="Direction" Ordinal="10" HasDefaultValue="true" DefaultValue="''" DbType="12" Length="2147483647" />
                     <Field Name="CreatedOn" Ordinal="11" HasDefaultValue="true" DefaultValue="getdate()" DbType="4" />
                     <Field Name="ModifiedOn" Ordinal="12" HasDefaultValue="true" DefaultValue="getdate()" DbType="4" />
@@ -2015,21 +1973,6 @@
                 <FieldPair PkField="dbo:Tournament:Id" FkField="dbo:Ranking:TournamentId" />
               </FieldPairs>
             </ForeignKeyConstraint>
-            <ForeignKeyConstraint Name="dbo:Registration:FK_4462bad40269915324df04e014d" UpdateRuleAction="1" DeleteRuleAction="1">
-              <FieldPairs>
-                <FieldPair PkField="dbo:User:Id" FkField="dbo:Registration:ManagerId" />
-              </FieldPairs>
-            </ForeignKeyConstraint>
-            <ForeignKeyConstraint Name="dbo:Registration:FK_7bab7f542cbbe91cec71043643e" UpdateRuleAction="1" DeleteRuleAction="1">
-              <FieldPairs>
-                <FieldPair PkField="dbo:Team:Id" FkField="dbo:Registration:TeamId" />
-              </FieldPairs>
-            </ForeignKeyConstraint>
-            <ForeignKeyConstraint Name="dbo:Registration:FK_b3d49004f0692a3e027b9b68624" UpdateRuleAction="1" DeleteRuleAction="1">
-              <FieldPairs>
-                <FieldPair PkField="dbo:Tournament:Id" FkField="dbo:Registration:TournamentId" />
-              </FieldPairs>
-            </ForeignKeyConstraint>
             <ForeignKeyConstraint Name="dbo:Round:Round_MatchRule" UpdateRuleAction="1">
               <FieldPairs>
                 <FieldPair PkField="dbo:MatchRule:Id" FkField="dbo:Round:MatchRuleId" />
@@ -2255,17 +2198,6 @@
             <FieldMapping FieldName="ValuationDate" TargetFieldName="ValuationDate" />
           </FieldMappings>
         </EntityMapping>
-        <EntityMapping EntityName=":Registration" TargetName="TestOrg:dbo:Registration">
-          <FieldMappings>
-            <FieldMapping FieldName="AppliedOn" TargetFieldName="AppliedOn" />
-            <FieldMapping FieldName="AppliedWithMessage" TargetFieldName="AppliedWithMessage" />
-            <FieldMapping FieldName="Guid" TargetFieldName="Guid" />
-            <FieldMapping FieldName="Id" TargetFieldName="Id" SequenceToUse="SCOPE_IDENTITY()" />
-            <FieldMapping FieldName="ManagerId" TargetFieldName="ManagerId" />
-            <FieldMapping FieldName="TeamId" TargetFieldName="TeamId" />
-            <FieldMapping FieldName="TournamentId" TargetFieldName="TournamentId" />
-          </FieldMappings>
-        </EntityMapping>
         <EntityMapping EntityName=":Round" TargetName="TestOrg:dbo:Round">
           <FieldMappings>
             <FieldMapping FieldName="CreatedOn" TargetFieldName="CreatedOn" />
@@ -2368,7 +2300,6 @@
             <FieldMapping FieldName="Description" TargetFieldName="Description" />
             <FieldMapping FieldName="Id" TargetFieldName="Id" SequenceToUse="SCOPE_IDENTITY()" />
             <FieldMapping FieldName="IsComplete" TargetFieldName="IsComplete" />
-            <FieldMapping FieldName="IsPlanningMode" TargetFieldName="IsPlanningMode" />
             <FieldMapping FieldName="ModifiedOn" TargetFieldName="ModifiedOn" />
             <FieldMapping FieldName="Name" TargetFieldName="Name" />
             <FieldMapping FieldName="NextTournamentId" TargetFieldName="NextTournamentId" />

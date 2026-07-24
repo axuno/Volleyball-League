@@ -14,7 +14,7 @@ EmailConfirmedOn | 6 | datetime | 0 | 0 | 0 | Yes |  |  |  |  |  |
 PhoneNumber | 7 | nvarchar | 40 | 0 | 0 |  |  |  |  |  | '' | 
 PhoneNumberConfirmedOn | 8 | datetime | 0 | 0 | 0 | Yes |  |  |  |  |  | 
 LastLoginOn | 9 | datetime | 0 | 0 | 0 | Yes |  |  |  |  |  | 
-AccessFailedCount | 10 | int | 0 | 10 | 0 |  |  |  |  |  | (0) | 
+AccessFailedCount | 10 | int | 0 | 10 | 0 |  |  |  |  |  | 0 | 
 LockoutEndDateUtc | 11 | datetime | 0 | 0 | 0 | Yes |  |  |  |  |  | 
 Gender | 12 | nvarchar | 1 | 0 | 0 |  |  |  |  |  | 'u' | 
 Title | 13 | nvarchar | 255 | 0 | 0 |  |  |  |  |  | '' | 

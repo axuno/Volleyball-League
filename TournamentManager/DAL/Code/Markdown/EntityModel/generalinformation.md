@@ -7,7 +7,7 @@
 Target framework | LLBLGen Pro Runtime Framework
 Group usage | As visual grouping mechanism
 Number of groups | 1
-Number of entities | 25
+Number of entities | 24
 Number of value types | 0
 Number of typed lists | 0
 Number of typed views | 14
@@ -64,7 +64,7 @@ Typed view output type default | PocoWithQuerySpecQuery
 
 --|--
 Target language | C#
-Target platform | .NET 8
+Target platform | .NET 10
 Root namespace | TournamentManager.DAL
 Template group | Adapter
 Selected preset | SD.Presets.Adapter.General.Netstandard

@@ -3,7 +3,7 @@
 	"Source": ".",
 	"Destination": "..\\Site\\",
 	"Theme": "Light",
-	"Footer" : "TournamentManager Model Documentation. &copy;2024 axuno gGmbH",
+	"Footer" : "TournamentManager Model Documentation. &copy;2026 axuno gGmbH",
 	"MaxLevelInToC": 3,
 	"Pages": 
 	{
@@ -28,7 +28,6 @@
 				"MatchRule" : "EntityModel\\_DefaultGroup\\Entities\\MatchRule.md",
 				"PlayerInTeam" : "EntityModel\\_DefaultGroup\\Entities\\PlayerInTeam.md",
 				"Ranking" : "EntityModel\\_DefaultGroup\\Entities\\Ranking.md",
-				"Registration" : "EntityModel\\_DefaultGroup\\Entities\\Registration.md",
 				"Round" : "EntityModel\\_DefaultGroup\\Entities\\Round.md",
 				"RoundLeg" : "EntityModel\\_DefaultGroup\\Entities\\RoundLeg.md",
 				"RoundType" : "EntityModel\\_DefaultGroup\\Entities\\RoundType.md",
@@ -94,7 +93,6 @@
 							"MatchRule" : "SQL_Server_SqlClient\\TestOrg\\dbo\\MatchRule.md",
 							"PlayerInTeam" : "SQL_Server_SqlClient\\TestOrg\\dbo\\PlayerInTeam.md",
 							"Ranking" : "SQL_Server_SqlClient\\TestOrg\\dbo\\Ranking.md",
-							"Registration" : "SQL_Server_SqlClient\\TestOrg\\dbo\\Registration.md",
 							"Round" : "SQL_Server_SqlClient\\TestOrg\\dbo\\Round.md",
 							"RoundLeg" : "SQL_Server_SqlClient\\TestOrg\\dbo\\RoundLeg.md",
 							"RoundType" : "SQL_Server_SqlClient\\TestOrg\\dbo\\RoundType.md",

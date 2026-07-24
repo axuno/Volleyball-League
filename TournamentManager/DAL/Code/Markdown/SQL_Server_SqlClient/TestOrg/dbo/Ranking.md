@@ -17,8 +17,8 @@ SetPointsWon | 9 | int | 0 | 10 | 0 | Yes |  |  |  |  |  |
 SetPointsLost | 10 | int | 0 | 10 | 0 | Yes |  |  |  |  |  | 
 BallPointsWon | 11 | int | 0 | 10 | 0 | Yes |  |  |  |  |  | 
 BallPointsLost | 12 | int | 0 | 10 | 0 | Yes |  |  |  |  |  | 
-MatchesPlayed | 13 | int | 0 | 10 | 0 |  |  |  |  |  | (0) | 
-MatchesToPlay | 14 | int | 0 | 10 | 0 |  |  |  |  |  | (0) | 
+MatchesPlayed | 13 | int | 0 | 10 | 0 |  |  |  |  |  | 0 | 
+MatchesToPlay | 14 | int | 0 | 10 | 0 |  |  |  |  |  | 0 | 
 CreatedOn | 15 | datetime | 0 | 0 | 0 |  |  |  |  |  | getdate() | 
 ModifiedOn | 16 | datetime | 0 | 0 | 0 |  |  |  |  |  | getdate() | 
 

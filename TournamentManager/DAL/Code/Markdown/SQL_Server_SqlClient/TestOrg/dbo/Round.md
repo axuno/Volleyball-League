@@ -10,10 +10,10 @@ TournamentId | 2 | bigint | 0 | 19 | 0 | Yes |  | Yes |  |  |  |
 Name | 3 | nvarchar | 255 | 0 | 0 |  |  |  |  |  | '' | 
 Description | 4 | nvarchar | 255 | 0 | 0 |  |  |  |  |  | '' | 
 TypeId | 5 | bigint | 0 | 19 | 0 |  |  | Yes |  |  |  | 
-NumOfLegs | 6 | int | 0 | 10 | 0 |  |  |  |  |  | (1) | 
+NumOfLegs | 6 | int | 0 | 10 | 0 |  |  |  |  |  | 1 | 
 MatchRuleId | 7 | bigint | 0 | 19 | 0 |  |  | Yes |  |  |  | 
 SetRuleId | 8 | bigint | 0 | 19 | 0 |  |  | Yes |  |  |  | 
-IsComplete | 9 | bit | 0 | 0 | 0 |  |  |  |  |  | (0) | 
+IsComplete | 9 | bit | 0 | 0 | 0 |  |  |  |  |  | 0 | 
 NextRoundId | 10 | bigint | 0 | 19 | 0 | Yes |  | Yes |  |  |  | 
 CreatedOn | 11 | datetime | 0 | 0 | 0 |  |  |  |  |  | getdate() | 
 ModifiedOn | 12 | datetime | 0 | 0 | 0 |  |  |  |  |  | getdate() | 

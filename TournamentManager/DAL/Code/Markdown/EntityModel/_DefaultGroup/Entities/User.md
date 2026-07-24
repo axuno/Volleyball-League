@@ -19,7 +19,6 @@ Related Entity | Full description
 [IdentityUserToken](../../_DefaultGroup/Entities/IdentityUserToken.htm) | IdentityUserToken.User - User.IdentityUserTokens (m:1) 
 [ManagerOfTeam](../../_DefaultGroup/Entities/ManagerOfTeam.htm) | ManagerOfTeam.User - User.ManagerOfTeams (m:1) 
 [PlayerInTeam](../../_DefaultGroup/Entities/PlayerInTeam.htm) | PlayerInTeam.User - User.PlayerInTeams (m:1) 
-[Registration](../../_DefaultGroup/Entities/Registration.htm) | Registration.User - User.Registrations (m:1) 
 
 ## Fields
 
@@ -293,11 +292,6 @@ Setting name | Value
 Navigator property is public | True
 
 #### PlayerInTeams (NavigatorCollection)
-Setting name | Value
---|--
-Navigator property is public | True
-
-#### Registrations (NavigatorCollection)
 Setting name | Value
 --|--
 Navigator property is public | True
