@@ -7,15 +7,15 @@ Field name | Ordinal | Native type | Length | Precision | Scale | Is Nullable | 
 --|--
 Id | 1 | bigint | 0 | 19 | 0 |  | Yes |  | Yes |  |  | 
 MatchId | 2 | bigint | 0 | 19 | 0 |  |  | Yes |  |  |  | 
-SequenceNo | 3 | int | 0 | 10 | 0 |  |  |  |  |  | (1) | 
-HomeBallPoints | 4 | int | 0 | 10 | 0 |  |  |  |  |  | (0) | 
-GuestBallPoints | 5 | int | 0 | 10 | 0 |  |  |  |  |  | (0) | 
-HomeSetPoints | 6 | int | 0 | 10 | 0 |  |  |  |  |  | (0) | 
-GuestSetPoints | 7 | int | 0 | 10 | 0 |  |  |  |  |  | (0) | 
-HomeTimeout | 8 | int | 0 | 10 | 0 |  |  |  |  |  | (0) | 
-GuestTimeout | 9 | int | 0 | 10 | 0 |  |  |  |  |  | (0) | 
-IsOverruled | 10 | bit | 0 | 0 | 0 |  |  |  |  |  | (0) | 
-IsTieBreak | 11 | bit | 0 | 0 | 0 |  |  |  |  |  | (0) | 
+SequenceNo | 3 | int | 0 | 10 | 0 |  |  |  |  |  | 1 | 
+HomeBallPoints | 4 | int | 0 | 10 | 0 |  |  |  |  |  | 0 | 
+GuestBallPoints | 5 | int | 0 | 10 | 0 |  |  |  |  |  | 0 | 
+HomeSetPoints | 6 | int | 0 | 10 | 0 |  |  |  |  |  | 0 | 
+GuestSetPoints | 7 | int | 0 | 10 | 0 |  |  |  |  |  | 0 | 
+HomeTimeout | 8 | int | 0 | 10 | 0 |  |  |  |  |  | 0 | 
+GuestTimeout | 9 | int | 0 | 10 | 0 |  |  |  |  |  | 0 | 
+IsOverruled | 10 | bit | 0 | 0 | 0 |  |  |  |  |  | 0 | 
+IsTieBreak | 11 | bit | 0 | 0 | 0 |  |  |  |  |  | 0 | 
 RealStart | 12 | datetime | 0 | 0 | 0 | Yes |  |  |  |  |  | 
 RealEnd | 13 | datetime | 0 | 0 | 0 | Yes |  |  |  |  |  | 
 Remarks | 14 | nvarchar | 2147483647 | 0 | 0 | Yes |  |  |  |  |  | 

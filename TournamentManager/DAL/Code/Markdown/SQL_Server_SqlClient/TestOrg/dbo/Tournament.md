@@ -9,11 +9,10 @@ Id | 1 | bigint | 0 | 19 | 0 |  | Yes |  | Yes |  |  |
 Name | 2 | nvarchar | 255 | 0 | 0 |  |  |  |  |  | '' | 
 Description | 3 | nvarchar | 255 | 0 | 0 | Yes |  |  |  |  | '' | 
 TypeId | 4 | bigint | 0 | 19 | 0 | Yes |  | Yes |  |  |  | 
-IsComplete | 5 | bit | 0 | 0 | 0 |  |  |  |  |  | (0) | 
-IsPlanningMode | 6 | bit | 0 | 0 | 0 |  |  |  |  |  | (0) | 
-NextTournamentId | 7 | bigint | 0 | 19 | 0 | Yes |  | Yes |  |  |  | 
-CreatedOn | 8 | datetime | 0 | 0 | 0 |  |  |  |  |  | getdate() | 
-ModifiedOn | 9 | datetime | 0 | 0 | 0 |  |  |  |  |  | getdate() | 
+IsComplete | 5 | bit | 0 | 0 | 0 |  |  |  |  |  | 0 | 
+NextTournamentId | 6 | bigint | 0 | 19 | 0 | Yes |  | Yes |  |  |  | 
+CreatedOn | 7 | datetime | 0 | 0 | 0 |  |  |  |  |  | getdate() | 
+ModifiedOn | 8 | datetime | 0 | 0 | 0 |  |  |  |  |  | getdate() | 
 
 ## Foreign key constraints
 

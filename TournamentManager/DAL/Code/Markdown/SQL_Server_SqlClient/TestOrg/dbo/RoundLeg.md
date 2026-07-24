@@ -7,7 +7,7 @@ Field name | Ordinal | Native type | Length | Precision | Scale | Is Nullable | 
 --|--
 Id | 1 | bigint | 0 | 19 | 0 |  | Yes |  | Yes |  |  | 
 RoundId | 2 | bigint | 0 | 19 | 0 |  |  | Yes |  |  |  | 
-SequenceNo | 3 | int | 0 | 10 | 0 |  |  |  |  |  | (1) | 
+SequenceNo | 3 | int | 0 | 10 | 0 |  |  |  |  |  | 1 | 
 Description | 4 | nvarchar | 255 | 0 | 0 | Yes |  |  |  |  |  | 
 StartDateTime | 5 | datetime | 0 | 0 | 0 |  |  |  |  |  | getdate() | 
 EndDateTime | 6 | datetime | 0 | 0 | 0 |  |  |  |  |  | getdate() | 

@@ -15,7 +15,6 @@ Related Entity | Full description
 --|--
 [ExcludeMatchDate](../../_DefaultGroup/Entities/ExcludeMatchDate.htm) | ExcludeMatchDate.Tournament - Tournament.ExcludeMatchDates (m:1) 
 [Ranking](../../_DefaultGroup/Entities/Ranking.htm) | Ranking.Tournament - Tournament.Rankings (m:1) 
-[Registration](../../_DefaultGroup/Entities/Registration.htm) | Registration.Tournament - Tournament.Registrations (m:1) 
 [Round](../../_DefaultGroup/Entities/Round.htm) | Round.Tournament - Tournament.Rounds (m:1) 
 [Tournament](../../_DefaultGroup/Entities/Tournament.htm) | Tournament.NextTournament - Tournament.Tournaments (m:1) 
 [TournamentType](../../_DefaultGroup/Entities/TournamentType.htm) | Tournament.TournamentType - TournamentType.Tournaments (m:1) 
@@ -31,7 +30,6 @@ Name | `string (System.String)` |   |  |  |  | 255 | 0 | 0
 Description | `string (System.String)` |   |  | Yes |  | 255 | 0 | 0
 TypeId | `long (System.Int64)` |   | Yes | Yes |  | 0 | 11 | 0
 IsComplete | `bool (System.Boolean)` |   |  |  |  | 0 | 1 | 0
-IsPlanningMode | `bool (System.Boolean)` |   |  |  |  | 0 | 1 | 0
 NextTournamentId | `long (System.Int64)` |   | Yes | Yes |  | 0 | 11 | 0
 CreatedOn | `datetime (System.DateTime)` |   |  |  |  | 0 | 0 | 0
 ModifiedOn | `datetime (System.DateTime)` |   |  |  |  | 0 | 0 | 0
@@ -57,7 +55,6 @@ CreatedOn | CreatedOn |  | datetime | 0 | 0 | 0 |  |
 Description | Description | Yes | nvarchar | 255 | 0 | 0 |  | 
 Id | Id |  | bigint | 0 | 19 | 0 | SCOPE_IDENTITY() | 
 IsComplete | IsComplete |  | bit | 0 | 0 | 0 |  | 
-IsPlanningMode | IsPlanningMode |  | bit | 0 | 0 | 0 |  | 
 ModifiedOn | ModifiedOn |  | datetime | 0 | 0 | 0 |  | 
 Name | Name |  | nvarchar | 255 | 0 | 0 |  | 
 NextTournamentId | NextTournamentId | Yes | bigint | 0 | 19 | 0 |  | 
@@ -93,13 +90,6 @@ Field property is public | True
 Field property has private setter | False
 
 #### IsComplete (NormalField)
-Setting name | Value
---|--
-Generate as nullable type | True
-Field property is public | True
-Field property has private setter | False
-
-#### IsPlanningMode (NormalField)
 Setting name | Value
 --|--
 Generate as nullable type | True
@@ -145,11 +135,6 @@ Setting name | Value
 Navigator property is public | True
 
 #### Rankings (NavigatorCollection)
-Setting name | Value
---|--
-Navigator property is public | True
-
-#### Registrations (NavigatorCollection)
 Setting name | Value
 --|--
 Navigator property is public | True

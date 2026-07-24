@@ -15,8 +15,8 @@ OrigVenueId | 7 | bigint | 0 | 19 | 0 | Yes |  | Yes |  |  |  |
 LegSequenceNo | 8 | int | 0 | 10 | 0 | Yes |  |  |  |  |  | 
 HomePoints | 9 | int | 0 | 10 | 0 | Yes |  |  |  |  |  | 
 GuestPoints | 10 | int | 0 | 10 | 0 | Yes |  |  |  |  |  | 
-IsComplete | 11 | bit | 0 | 0 | 0 |  |  |  |  |  | (1) | 
-IsOverruled | 12 | bit | 0 | 0 | 0 |  |  |  |  |  | (0) | 
+IsComplete | 11 | bit | 0 | 0 | 0 |  |  |  |  |  | 1 | 
+IsOverruled | 12 | bit | 0 | 0 | 0 |  |  |  |  |  | 0 | 
 PlannedStart | 13 | datetime | 0 | 0 | 0 | Yes |  |  |  |  |  | 
 PlannedEnd | 14 | datetime | 0 | 0 | 0 | Yes |  |  |  |  |  | 
 OrigPlannedStart | 15 | datetime | 0 | 0 | 0 | Yes |  |  |  |  |  | 
@@ -24,7 +24,7 @@ OrigPlannedEnd | 16 | datetime | 0 | 0 | 0 | Yes |  |  |  |  |  |
 RealStart | 17 | datetime | 0 | 0 | 0 | Yes |  |  |  |  |  | 
 RealEnd | 18 | datetime | 0 | 0 | 0 | Yes |  |  |  |  |  | 
 Remarks | 19 | nvarchar | 2147483647 | 0 | 0 | Yes |  |  |  |  |  | 
-ChangeSerial | 20 | bigint | 0 | 19 | 0 |  |  |  |  |  | (0) | 
+ChangeSerial | 20 | bigint | 0 | 19 | 0 |  |  |  |  |  | 0 | 
 CreatedOn | 21 | datetime | 0 | 0 | 0 |  |  |  |  |  | getdate() | 
 ModifiedOn | 22 | datetime | 0 | 0 | 0 |  |  |  |  |  | getdate() | 
 

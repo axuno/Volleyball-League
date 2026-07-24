@@ -21,7 +21,6 @@ Related Entity | Full description
 [Match](../../_DefaultGroup/Entities/Match.htm) | Match.RefereeTeam - Team.MatchReferee (m:1) 
 [PlayerInTeam](../../_DefaultGroup/Entities/PlayerInTeam.htm) | PlayerInTeam.Team - Team.PlayerInTeams (m:1) 
 [Ranking](../../_DefaultGroup/Entities/Ranking.htm) | Ranking.Team - Team.Rankings (m:1) 
-[Registration](../../_DefaultGroup/Entities/Registration.htm) | Registration.Team - Team.Registration (m:1) 
 [Round](../../_DefaultGroup/Entities/Round.htm) | Team.RoundCollectionViaTeamsInRounds - Round.TeamCollectionViaTeamInRound (m:n) (via TeamInRound) 
 [TeamInRound](../../_DefaultGroup/Entities/TeamInRound.htm) | TeamInRound.Team - Team.TeamInRounds (m:1) 
 [Venue](../../_DefaultGroup/Entities/Venue.htm) | Team.Venue - Venue.Teams (m:1) 
@@ -167,11 +166,6 @@ Setting name | Value
 Navigator property is public | True
 
 #### Rankings (NavigatorCollection)
-Setting name | Value
---|--
-Navigator property is public | True
-
-#### Registration (NavigatorCollection)
 Setting name | Value
 --|--
 Navigator property is public | True
