@@ -1,5 +1,4 @@
-﻿using SD.LLBLGen.Pro.ORMSupportClasses;
-using TournamentManager.DAL.EntityClasses;
+﻿using TournamentManager.DAL.EntityClasses;
 using TournamentManager.DAL.HelperClasses;
 using TournamentManager.MultiTenancy;
 

@@ -17,7 +17,7 @@ public class DirectoryLocator
         var projectName = targetAssembly.GetName().Name ?? throw new InvalidOperationException("Assembly name is null");
 
         // Get currently executing test project path
-        var applicationBasePath = System.AppContext.BaseDirectory;
+        var applicationBasePath = AppContext.BaseDirectory;
 
         // Find the path to the target project
         var directoryInfo = new DirectoryInfo(applicationBasePath);
@@ -47,6 +47,6 @@ public class DirectoryLocator
     /// <returns>Returns the full path to the folder that contains configuration files.</returns>
     public static string GetTargetConfigurationPath()
     {
-        return new DirectoryInfo(Path.Combine(GetTargetProjectPath(typeof(League.LeagueStartup)), League.LeagueStartup.ConfigurationFolder)).FullName;
+        return new DirectoryInfo(Path.Combine(GetTargetProjectPath(typeof(LeagueStartup)), LeagueStartup.ConfigurationFolder)).FullName;
     }
 }

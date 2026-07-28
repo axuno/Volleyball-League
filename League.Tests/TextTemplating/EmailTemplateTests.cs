@@ -9,7 +9,6 @@ using League.TextTemplatingModule;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Localization;
 using NUnit.Framework;
-using TournamentManager.DAL.TypedViewClasses;
 using TournamentManager.MultiTenancy;
 
 namespace League.Tests.TextTemplating;
@@ -63,7 +62,7 @@ public class EmailTemplateTests
     [Test]
     public void LeagueAssembly_Should_Contain_Embedded_Email_Templates()
     {
-        var resources = System.Reflection.Assembly.GetAssembly(typeof(League.LeagueStartup))?.GetManifestResourceNames();
+        var resources = System.Reflection.Assembly.GetAssembly(typeof(LeagueStartup))?.GetManifestResourceNames();
         Assert.That(resources != null && resources.Any(r => r.ToString().Contains("League.Templates.Email")));
     }
 

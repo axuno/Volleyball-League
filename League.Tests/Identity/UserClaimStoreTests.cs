@@ -6,7 +6,6 @@ using SD.LLBLGen.Pro.ORMSupportClasses;
 using TournamentManager.DAL.EntityClasses;
 using TournamentManager.DAL.DatabaseSpecific;
 using TournamentManager.MultiTenancy;
-using Microsoft.AspNetCore.Identity;
 
 namespace League.Tests.Identity;
 

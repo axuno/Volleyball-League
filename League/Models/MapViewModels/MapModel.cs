@@ -49,10 +49,10 @@ public class MapModel
         if (!Venues.Exists(v => v is { Longitude: not null, Latitude: not null }))
             return;
             
-        MaxLongitude = Venues.Max(l => l.Longitude)?.ToString("###.########", System.Globalization.CultureInfo.InvariantCulture);
-        MinLongitude = Venues.Min(l => l.Longitude)?.ToString("###.########", System.Globalization.CultureInfo.InvariantCulture);
-        MaxLatitude = Venues.Max(l => l.Latitude)?.ToString("###.########", System.Globalization.CultureInfo.InvariantCulture);
-        MinLatitude = Venues.Min(l => l.Latitude)?.ToString("###.########", System.Globalization.CultureInfo.InvariantCulture);
+        MaxLongitude = Venues.Max(l => l.Longitude)?.ToString("###.########", CultureInfo.InvariantCulture);
+        MinLongitude = Venues.Min(l => l.Longitude)?.ToString("###.########", CultureInfo.InvariantCulture);
+        MaxLatitude = Venues.Max(l => l.Latitude)?.ToString("###.########", CultureInfo.InvariantCulture);
+        MinLatitude = Venues.Min(l => l.Latitude)?.ToString("###.########", CultureInfo.InvariantCulture);
             
         foreach (var venue in Venues)
         {

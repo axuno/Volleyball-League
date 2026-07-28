@@ -28,7 +28,7 @@ public partial class UserEntity
     }
 
     [XmlIgnore]
-    public ReadOnlyDictionary<string, string> DataErrorInfoPerField => new(base.DataErrorInfoErrorsPerField ?? []);
+    public ReadOnlyDictionary<string, string> DataErrorInfoPerField => new(DataErrorInfoErrorsPerField ?? []);
 
     [XmlIgnore]
     public bool IsTeamManager => ManagerOfTeams.Any();

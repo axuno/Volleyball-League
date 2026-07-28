@@ -1,5 +1,4 @@
 using System.Data;
-using System.Text;
 using Microsoft.Extensions.Logging;
 using SD.LLBLGen.Pro.LinqSupportClasses;
 using SD.LLBLGen.Pro.ORMSupportClasses;
@@ -11,17 +10,16 @@ using TournamentManager.DAL.HelperClasses;
 using TournamentManager.DAL.Linq;
 using TournamentManager.DAL.TypedViewClasses;
 using TournamentManager.MultiTenancy;
-using static SkiaSharp.HarfBuzz.SKShaper;
 
 namespace TournamentManager.Data;
 
 public class MatchRepository
 {
     private readonly ILogger _logger = AppLogging.CreateLogger<MatchRepository>();
-    private readonly MultiTenancy.IDbContext _dbContext;
+    private readonly IDbContext _dbContext;
     private readonly IAppDb _appDb;
 
-    public MatchRepository(MultiTenancy.IDbContext dbContext)
+    public MatchRepository(IDbContext dbContext)
     {
         _dbContext = dbContext;
         _appDb = _dbContext.AppDb;

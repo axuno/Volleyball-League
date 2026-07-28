@@ -60,7 +60,7 @@ public class Manage : AbstractController
     [HttpGet("")]
     public async Task<IActionResult> Index()
     {
-        var ue = new TournamentManager.DAL.EntityClasses.UserEntity();
+        var ue = new UserEntity();
 
         ue.Fields[(int) TournamentManager.DAL.UserFieldIndex.UserName].Alias = _metaData.GetDisplayName<ChangeUsernameViewModel>(nameof(ChangeUsernameViewModel.Username));
 

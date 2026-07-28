@@ -1,9 +1,7 @@
 ﻿@using TournamentManager.MultiTenancy
-@using TournamentManager.DAL.EntityClasses
 @inject ITenantContext TenantContext
 @inject Axuno.Tools.DateAndTime.TimeZoneConverter TimeZoneConverter
-@* use fully qualified name for IViewLocalizer! *@
-@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer localizer 
+@inject IViewLocalizer localizer 
 @model TournamentManager.DAL.TypedViewClasses.MatchReportSheetRow
 @{
     // Can eventually be removed when the date is never displayed on report sheets
@@ -47,7 +45,7 @@
     }
 }
 <!DOCTYPE html>
-<html lang="@(System.Threading.Thread.CurrentThread.CurrentUICulture.TwoLetterISOLanguageName)">
+<html lang="@Thread.CurrentThread.CurrentUICulture.TwoLetterISOLanguageName">
 <head>
     <meta name="viewport" content="width=device-width" />
     <title>@ViewData["Title"]</title>

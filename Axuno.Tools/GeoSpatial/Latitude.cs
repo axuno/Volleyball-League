@@ -1,5 +1,4 @@
-﻿using System;
-using System.Globalization;
+﻿using System.Globalization;
 
 namespace Axuno.Tools.GeoSpatial;
 
@@ -128,7 +127,7 @@ public sealed class Latitude : Angle
         {
             // We're going to remove the negative sign, but find out what a
             // negative sign is in the current format provider
-            var numberFormat = Angle.GetNumberFormatInfo(formatProvider);
+            var numberFormat = GetNumberFormatInfo(formatProvider);
             var negativeSign = numberFormat.NegativeSign;
             formatted = formatted[negativeSign.Length..];
         }

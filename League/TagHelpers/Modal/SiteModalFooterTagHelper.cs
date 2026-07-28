@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Razor.TagHelpers;
-using System.Threading.Tasks;
 
 namespace League.TagHelpers.Modal;
 

@@ -23,7 +23,7 @@ public static class MainNavigationComponentModelExtensions
     /// <param name="nodes"></param>
     /// <param name="httpContext"></param>
     /// <returns>The active <see cref="MainNavigationComponentModel.NavigationNode"/> for the current <see cref="Microsoft.AspNetCore.Http.HttpContext.Request"/> or <see langword="null"/> if no node was found.</returns>
-    public static MainNavigationComponentModel.NavigationNode? FindActiveNodeFromUrl(this MainNavigationComponentModel model, List<MainNavigationComponentModel.NavigationNode> nodes, Microsoft.AspNetCore.Http.HttpContext httpContext)
+    public static MainNavigationComponentModel.NavigationNode? FindActiveNodeFromUrl(this MainNavigationComponentModel model, List<MainNavigationComponentModel.NavigationNode> nodes, HttpContext httpContext)
     {
         foreach (var node in nodes)
         {
@@ -52,7 +52,7 @@ public static class MainNavigationComponentModelExtensions
     /// <returns>A string of css classes which can be used for link.</returns>
     public static async Task<string?> GetClassAsync(
         this MainNavigationComponentModel model,
-        Microsoft.AspNetCore.Http.HttpContext httpContext,
+        HttpContext httpContext,
         MainNavigationComponentModel.NavigationNode? node,
         string? inputClass = null,
         string activeClass = "active",
@@ -90,7 +90,7 @@ public static class MainNavigationComponentModelExtensions
     /// <param name="httpContext"></param>
     /// <param name="node"></param>
     /// <returns><see langword="true"/>, if the given <see cref="MainNavigationComponentModel.NavigationNode"/> is the active node.</returns>
-    public static async Task<bool> IsActiveNodeAsync(this MainNavigationComponentModel model, Microsoft.AspNetCore.Http.HttpContext httpContext,
+    public static async Task<bool> IsActiveNodeAsync(this MainNavigationComponentModel model, HttpContext httpContext,
         MainNavigationComponentModel.NavigationNode? node)
     {
         var currentNode = await model.GetActiveNode(httpContext);
@@ -114,7 +114,7 @@ public static class MainNavigationComponentModelExtensions
     /// <param name="httpContext"></param>
     /// <param name="node"></param>
     /// <returns><see langword="true"/>, if the given <see cref="MainNavigationComponentModel.NavigationNode"/> contains an active child node.</returns>
-    public static async Task<bool> HasActiveChildAsync(this MainNavigationComponentModel model, Microsoft.AspNetCore.Http.HttpContext httpContext, MainNavigationComponentModel.NavigationNode? node)
+    public static async Task<bool> HasActiveChildAsync(this MainNavigationComponentModel model, HttpContext httpContext, MainNavigationComponentModel.NavigationNode? node)
     {
         var currentNode = await model.GetActiveNode(httpContext);
 

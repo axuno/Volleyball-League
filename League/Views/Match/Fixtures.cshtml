@@ -1,12 +1,9 @@
-﻿@using System.Globalization
-@using Microsoft.AspNetCore.Mvc.Localization
+﻿@using Microsoft.AspNetCore.Mvc.Localization
 @using TournamentManager.DAL.EntityClasses
 @using TournamentManager.DAL.TypedViewClasses
 @using TournamentManager.MultiTenancy
-@using League.MultiTenancy @* don't remove *@
-@using League.TagHelpers
+@* don't remove *@
 @using League.Views
-@using Microsoft.AspNetCore.Mvc.TagHelpers
 @inject IViewLocalizer Localizer
 @inject ITenantContext TenantContext
 @inject TenantLink TenantLink
@@ -62,7 +59,7 @@
 <div class="mb-0 pb-1">
     <h2 id="@tableDescriptionId" class="h2">@ViewData["Title"]</h2>
     <hr class="mb-4" />
-    <partial name="@League.Views.ViewNames.Match._FixtureMessagesPartial" model="@Model.FixtureMessage" />
+    <partial name="@ViewNames.Match._FixtureMessagesPartial" model="@Model.FixtureMessage" />
     <ul class="nav nav-tabs" id="round-tabs" role="tablist">
         @foreach (var r in rounds)
         {

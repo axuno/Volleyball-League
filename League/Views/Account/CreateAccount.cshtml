@@ -57,7 +57,7 @@
         </div>
         <div class="mb-3">
             <div class="mt-2">
-                <img id="CaptchaImage" style="vertical-align: bottom; display:inline" src="@Url.Action(nameof(League.Controllers.Captcha.Index), nameof(League.Controllers.Captcha))@("?guid=" + Guid.NewGuid())" alt="Captcha" title="" />
+                <img id="CaptchaImage" style="vertical-align: bottom; display:inline" src="@Url.Action(nameof(Captcha.Index), nameof(Captcha))@("?guid=" + Guid.NewGuid())" alt="Captcha" title="" />
                 <button type="button" tabindex="0" class="d-inline btn btn-link"
                        onclick="javascript:if (document.images) document.images.CaptchaImage.src = '@Url.Action(nameof(Captcha.Index), nameof(Captcha))?new=1&amp;time=' + new Date().getTime(); return false;"
                        onkeyup="javascript:if (document.images && event.keyCode !== 9) document.images.CaptchaImage.src = '@Url.Action(nameof(Captcha.Index), nameof(Captcha))?new=1&amp;time=' + new Date().getTime(); return false;"

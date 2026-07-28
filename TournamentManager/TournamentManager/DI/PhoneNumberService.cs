@@ -13,11 +13,11 @@ namespace TournamentManager.DI;
 public class PhoneNumberService
 {
     private const string PhoneNumberLiteral = "{PhoneNumber}"; // used for logging
-    private readonly PhoneNumbers.PhoneNumberUtil _fnu;
+    private readonly PhoneNumberUtil _fnu;
     private static readonly object Locker = new();
     private readonly ILogger _logger = AppLogging.CreateLogger<PhoneNumber>();
 
-    public PhoneNumberService(PhoneNumbers.PhoneNumberUtil phoneNumberUtility)
+    public PhoneNumberService(PhoneNumberUtil phoneNumberUtility)
     {
         _fnu = phoneNumberUtility;
     }
@@ -68,8 +68,8 @@ public class PhoneNumberService
                 if (!_fnu.IsValidNumber(number)) return phoneNumber;
                 return _fnu.Format(number,
                     _fnu.GetRegionCodeForNumber(number).Equals(region.ToUpperInvariant())
-                        ? PhoneNumbers.PhoneNumberFormat.NATIONAL
-                        : PhoneNumbers.PhoneNumberFormat.INTERNATIONAL);
+                        ? PhoneNumberFormat.NATIONAL
+                        : PhoneNumberFormat.INTERNATIONAL);
             }
             catch (Exception e)
             {

@@ -1,7 +1,5 @@
 ﻿using Axuno.TextTemplating;
 using Scriban;
-using Scriban.Parsing;
-using Scriban.Syntax;
 
 namespace League.TextTemplatingModule;
 
@@ -57,7 +55,7 @@ public class LeagueTemplateRenderer : TemplateRenderer
             
         // Add the predefined global variable for the current culture, which is also accessible from the 'Layout' templates
         // (same as with the global 'content' variable)
-        baseContext.BuiltinObject["culture"] = System.Globalization.CultureInfo.CurrentCulture.TwoLetterISOLanguageName;
+        baseContext.BuiltinObject["culture"] = CultureInfo.CurrentCulture.TwoLetterISOLanguageName;
 
         // The ScriptObject is already registered as global
         baseContext.StrictVariables = true;  // Note: has no effect for child members

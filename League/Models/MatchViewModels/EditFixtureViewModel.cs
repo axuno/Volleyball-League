@@ -114,8 +114,8 @@ public class EditFixtureViewModel
             {
                 if (fact.FieldNames.Contains(nameof(FixtureValidator.Model.PlannedStart)))
                 {
-                    modelState.AddModelError(nameof(EditFixtureViewModel.MatchDate), fact.Message);
-                    modelState.AddModelError(nameof(EditFixtureViewModel.MatchTime), fact.Message);
+                    modelState.AddModelError(nameof(MatchDate), fact.Message);
+                    modelState.AddModelError(nameof(MatchTime), fact.Message);
                 }
                 else
                 {

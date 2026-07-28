@@ -26,7 +26,7 @@ public class ReportSheetCacheTests
         _webHostEnvironment = new HostingEnvironment {
             WebRootPath = Path.GetTempPath(), ContentRootPath
                 // Because we use a Browser installation in the demo web app
-                = DirectoryLocator.GetTargetProjectPath(typeof(League.WebApp.WebAppStartup))
+                = DirectoryLocator.GetTargetProjectPath(typeof(WebApp.WebAppStartup))
         };
 
         _tenantContext = new TenantContext

@@ -6,7 +6,7 @@
 @inject IViewLocalizer Localizer
 @inject ITenantContext TenantContext
 @inject IUserValidator<ApplicationUser> userValidator
-@{ var UserValidator = (LeagueUserValidator<ApplicationUser>)this.userValidator;
+@{ var UserValidator = (LeagueUserValidator<ApplicationUser>)userValidator;
     var tenantUrlSegment = TenantContext.SiteContext.UrlSegmentValue;}
 @model ChangeUsernameViewModel
 @{ var allowedUsernameCharacters = Axuno.Tools.StringFormatter.GroupedValidCharacters(UserManager.Options.User.AllowedUserNameCharacters);}

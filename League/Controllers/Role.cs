@@ -1,5 +1,4 @@
-﻿using System.Security.Claims;
-using League.Helpers;
+﻿using League.Helpers;
 using League.Models.RoleViewModels;
 using League.Models.TeamViewModels;
 using League.MultiTenancy;
@@ -14,7 +13,7 @@ namespace League.Controllers;
 public class Role : AbstractController
 {
     private readonly ITenantContext _tenantContext;
-    private readonly Microsoft.AspNetCore.Identity.SignInManager<Identity.ApplicationUser> _signInManager;
+    private readonly SignInManager<Identity.ApplicationUser> _signInManager;
     private readonly IAuthorizationService _authorizationService;
     private readonly IStringLocalizer<Role> _localizer;
     private readonly ILogger<Role> _logger;
@@ -22,7 +21,7 @@ public class Role : AbstractController
     private const string _defaultReturnUrl = "/";
 
     public Role(ITenantContext tenantContext,
-        Microsoft.AspNetCore.Identity.SignInManager<Identity.ApplicationUser> signInManager,
+        SignInManager<Identity.ApplicationUser> signInManager,
         IAuthorizationService authorizationService, IStringLocalizer<Role> localizer,
         ILoggerFactory loggerFactory)
     {

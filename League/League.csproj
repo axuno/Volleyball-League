@@ -102,7 +102,6 @@ Localizations for English and German are included. The library is in operation o
         <ProjectReference Include="..\Axuno.BackgroundTask\Axuno.BackgroundTask.csproj" />
         <ProjectReference Include="..\Axuno.Web\Axuno.Web.csproj" />
         <ProjectReference Include="..\TournamentManager\DAL\DatabaseGeneric\TournamentManager.DAL.DbGeneric.csproj" />
-        <ProjectReference Include="..\TournamentManager\DAL\DatabaseSpecific\TournamentManager.DAL.DBSpecific.csproj" />
         <ProjectReference Include="..\TournamentManager\TournamentManager\TournamentManager.csproj" />
     </ItemGroup>
     <ItemGroup>
