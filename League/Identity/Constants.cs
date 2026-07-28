@@ -102,7 +102,7 @@ public static class Constants
         /// <returns>Returns the values of type T of all constants in this class.</returns>
         public static IEnumerable<T?> GetAllClaimTypeValues<T>()
         {
-            return Constants.GetAllValues<T>(typeof(ClaimType));
+            return GetAllValues<T>(typeof(ClaimType));
         }
 
         /// <summary>
@@ -111,7 +111,7 @@ public static class Constants
         /// <returns>Returns the names of all constants in this class.</returns>
         public static IEnumerable<string?> GetAllClaimTypeNames()
         {
-            return Constants.GetAllNames(typeof(ClaimType));
+            return GetAllNames(typeof(ClaimType));
         }
     }
 

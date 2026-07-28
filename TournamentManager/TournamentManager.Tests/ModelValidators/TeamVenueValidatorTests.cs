@@ -5,7 +5,6 @@ using Moq;
 using TournamentManager.Data;
 using TournamentManager.MultiTenancy;
 using TournamentManager.Tests.TestComponents;
-using TeamRules = TournamentManager.MultiTenancy.TeamRules;
 
 namespace TournamentManager.Tests.ModelValidators;
 

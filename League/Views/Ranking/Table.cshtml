@@ -31,9 +31,9 @@
 }
 @functions {
 
-    System.Drawing.Color ToColor(uint argb)
+    Color ToColor(uint argb)
     {
-        return System.Drawing.Color.FromArgb((byte) ((argb & -16777216) >> 0x18),
+        return Color.FromArgb((byte) ((argb & -16777216) >> 0x18),
             (byte) ((argb & 0xff0000) >> 0x10),
             (byte) ((argb & 0xff00) >> 8),
             (byte) (argb & 0xff));

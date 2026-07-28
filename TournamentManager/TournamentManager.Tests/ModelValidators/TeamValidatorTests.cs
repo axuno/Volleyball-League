@@ -6,10 +6,6 @@ using TournamentManager.Data;
 using TournamentManager.MultiTenancy;
 using TournamentManager.ExtensionMethods;
 using TournamentManager.Tests.TestComponents;
-using FixtureRuleSet = TournamentManager.MultiTenancy.FixtureRuleSet;
-using HomeMatchTime = TournamentManager.MultiTenancy.HomeMatchTime;
-using RegularMatchStartTime = TournamentManager.MultiTenancy.RegularMatchStartTime;
-using TeamRules = TournamentManager.MultiTenancy.TeamRules;
 
 namespace TournamentManager.Tests.ModelValidators;
 

@@ -1,6 +1,5 @@
 ﻿using MailMergeLib.MessageStore;
 using Microsoft.Extensions.DependencyInjection.Extensions;
-using TournamentManager.MultiTenancy;
 
 namespace MailMergeLib.AspNet;
 

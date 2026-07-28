@@ -66,7 +66,7 @@ public class MainNavigationComponentModel
     /// </summary>
     /// <param name="httpContext"></param>
     /// <returns>The active <see cref="NavigationNode"/> for the current <see cref="Microsoft.AspNetCore.Http.HttpContext.Request"/> or <see langword="null"/> if no node was found.</returns>
-    public Task<NavigationNode?> GetActiveNode(Microsoft.AspNetCore.Http.HttpContext httpContext)
+    public Task<NavigationNode?> GetActiveNode(HttpContext httpContext)
     {
         return Task.FromResult(this.FindActiveNodeFromUrl(TopNavigationNodes, httpContext));
     }

@@ -28,7 +28,7 @@ public class UnitTestHelpers
     public UnitTestHelpers()
     {
         _configPath = DirectoryLocator.GetTargetConfigurationPath();
-        var msSqlPath = Path.GetFullPath(Path.Combine(DirectoryLocator.GetTargetProjectPath(typeof(League.LeagueStartup)), @"..\..\MsSqlDb"));
+        var msSqlPath = Path.GetFullPath(Path.Combine(DirectoryLocator.GetTargetProjectPath(typeof(LeagueStartup)), @"..\..\MsSqlDb"));
 
         _tenantContext = new TenantContext
         {
@@ -81,7 +81,7 @@ public class UnitTestHelpers
 
     public RoleStore GetRoleStore()
     {
-        return new(_tenantContext, new NullLogger<League.Identity.RoleStore>(), new UpperInvariantLookupNormalizer(), new Mock<MultiLanguageIdentityErrorDescriber>(null!).Object);
+        return new(_tenantContext, new NullLogger<RoleStore>(), new UpperInvariantLookupNormalizer(), new Mock<MultiLanguageIdentityErrorDescriber>(null!).Object);
     }
 
     public ServiceProvider GetStandardServiceProvider()
@@ -187,7 +187,7 @@ public class UnitTestHelpers
     {
         var logger = (Microsoft.Extensions.Logging.ILogger) GetStandardServiceProvider().GetRequiredService(typeof(ILogger<UnitTestHelpers>));
         logger.LogError("error");
-        var localizer = (IStringLocalizer) GetStandardServiceProvider().GetRequiredService(typeof(IStringLocalizer<League.Controllers.Account>));
+        var localizer = (IStringLocalizer) GetStandardServiceProvider().GetRequiredService(typeof(IStringLocalizer<Controllers.Account>));
         _ = localizer["This is your password recovery key"].Value;
 
         var mlLoc = new MultiLanguageIdentityErrorDescriber((IStringLocalizer<MultiLanguageIdentityErrorDescriberResource>) GetStandardServiceProvider().GetRequiredService(typeof(IStringLocalizer<MultiLanguageIdentityErrorDescriberResource>)));

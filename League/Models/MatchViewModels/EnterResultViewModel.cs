@@ -1,6 +1,5 @@
 ﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using HarfBuzzSharp;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using TournamentManager;
 using TournamentManager.DAL;
@@ -39,7 +38,7 @@ public class EnterResultViewModel
     private static StringLocalizer<EnterResultViewModel> CreateModelStringLocalizer()
     {
         // no need for any params if using a StringLocalizer<T>
-        var options = Microsoft.Extensions.Options.Options.Create(new LocalizationOptions());
+        var options = Options.Create(new LocalizationOptions());
         var factory = new ResourceManagerStringLocalizerFactory(options, Microsoft.Extensions.Logging.Abstractions.NullLoggerFactory.Instance);
         // Note: The resource is also used by System.ComponentModel.DataAnnotations
         return new(factory);
@@ -264,7 +263,7 @@ public class EnterResultViewModel
 
     private void AddModelErrorForMatchDate(Fact<MatchResultValidator.FactId> fact, ModelStateDictionary modelState)
     {
-        modelState.AddModelError(nameof(EnterResultViewModel.MatchDate), fact.Message);
+        modelState.AddModelError(nameof(MatchDate), fact.Message);
     }
 
     private void AddModelErrorForSets(MatchResultValidator validator, ModelStateDictionary modelState)

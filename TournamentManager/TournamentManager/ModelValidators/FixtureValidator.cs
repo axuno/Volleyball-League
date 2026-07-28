@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel;
-using SD.LLBLGen.Pro.ORMSupportClasses;
 using TournamentManager.DAL;
 using TournamentManager.DAL.EntityClasses;
 using TournamentManager.DAL.HelperClasses;

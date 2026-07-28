@@ -9,7 +9,7 @@ public class RankingListModel
 
     public List<RankingListRow> RankingList { get; set; } = [];
 
-    public Dictionary<long, System.IO.FileInfo> ChartFileInfos { get; set; } = [];
+    public Dictionary<long, FileInfo> ChartFileInfos { get; set; } = [];
 
     public long? ActiveRoundId { get; set; }
 }

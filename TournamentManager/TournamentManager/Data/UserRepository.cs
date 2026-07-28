@@ -214,7 +214,7 @@ public class UserRepository
         if (string.IsNullOrEmpty(allowedCharacters) || string.IsNullOrEmpty(input)) return input;
 
         var result = input.ToCharArray();
-        var allowedCharSet = new System.Collections.Generic.HashSet<char>(allowedCharacters);
+        var allowedCharSet = new HashSet<char>(allowedCharacters);
         for (var i = 0; i < result.Length; i++)
         {
             if (!allowedCharSet.Contains(result[i]))

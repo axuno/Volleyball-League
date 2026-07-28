@@ -3,7 +3,6 @@
 // Licensed under the MIT license.
 //
 
-using System.Linq;
 using SD.LLBLGen.Pro.ORMSupportClasses;
 
 namespace TournamentManager.DAL.DatabaseSpecific.CustomExtensions;

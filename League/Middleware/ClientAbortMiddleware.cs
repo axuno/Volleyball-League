@@ -1,6 +1,4 @@
-﻿using System.Data.SqlClient;
-
-namespace League.Middleware;
+﻿namespace League.Middleware;
 
 /// <summary>
 /// The <see cref="TaskCanceledException"/> is commonly thrown when the connection to

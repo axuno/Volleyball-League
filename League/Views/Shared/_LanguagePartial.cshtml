@@ -8,7 +8,7 @@
     {
         <li class="nav-item dropdown">
             <button class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="/">
-                @(System.Threading.Thread.CurrentThread.CurrentCulture.ThreeLetterISOLanguageName.ToUpperInvariant().First() + System.Threading.Thread.CurrentThread.CurrentCulture.ThreeLetterISOLanguageName[1..].ToLowerInvariant())
+                @(Thread.CurrentThread.CurrentCulture.ThreeLetterISOLanguageName.ToUpperInvariant().First() + Thread.CurrentThread.CurrentCulture.ThreeLetterISOLanguageName[1..].ToLowerInvariant())
             </button>
             <ul class="dropdown-menu shadow dropdown-menu-end" style="margin-top: -0.3rem">
                 @{

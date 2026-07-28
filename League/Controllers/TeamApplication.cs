@@ -616,8 +616,8 @@ public class TeamApplication : AbstractController
         var venueEditorComponentModel = new VenueEditorComponentModel
         {
             HtmlFieldPrefix = nameof(VenueEditModel.Venue),
-            ShowLatLng = User.IsInRole(League.Identity.Constants.RoleName.SystemManager) ||
-                         User.IsInRole(League.Identity.Constants.RoleName.TournamentManager)
+            ShowLatLng = User.IsInRole(Identity.Constants.RoleName.SystemManager) ||
+                         User.IsInRole(Identity.Constants.RoleName.TournamentManager)
         };
         venueEditorComponentModel.MapEntityToFormFields(venueEntity);
 

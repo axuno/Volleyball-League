@@ -3,7 +3,6 @@ using SD.LLBLGen.Pro.LinqSupportClasses;
 using SD.LLBLGen.Pro.ORMSupportClasses;
 using SD.LLBLGen.Pro.QuerySpec;
 using SD.LLBLGen.Pro.QuerySpec.Adapter;
-using TournamentManager.DAL;
 using TournamentManager.DAL.EntityClasses;
 using TournamentManager.DAL.FactoryClasses;
 using TournamentManager.DAL.HelperClasses;

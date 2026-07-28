@@ -227,7 +227,7 @@ public class CaptchaSvgGenerator : IDisposable
     /// <returns>Returns a string with the SVG content</returns>
     private string GenerateSvg()
     {
-        var xmlDoc = System.Xml.Linq.XDocument.Parse($@"
+        var xmlDoc = XDocument.Parse($@"
 <!DOCTYPE svg PUBLIC '-//W3C//DTD SVG 1.1//EN' 'http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd'>
 <svg height='{Height}' width='{Width}' xmlns='http://www.w3.org/2000/svg' xml:space='preserve' version='1.1' style='shape-rendering:geometricPrecision; text-rendering:geometricPrecision; image-rendering:optimizeQuality; fill-rule:evenodd; clip-rule:evenodd'>
     <defs>

@@ -21,13 +21,10 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.DataProtection.AuthenticatedEncryption;
-using Microsoft.AspNetCore.DataProtection.AuthenticatedEncryption.ConfigurationModel;
-using Microsoft.AspNetCore.Mvc.Abstractions;
 using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.FileProviders;
-using Microsoft.Net.Http.Headers;
 using SD.LLBLGen.Pro.ORMSupportClasses;
 using TournamentManager.DI;
 using TournamentManager.MultiTenancy;
@@ -484,7 +481,7 @@ public static class LeagueStartup
 
         #region ** Phone number service **
 
-        services.AddSingleton<TournamentManager.DI.PhoneNumberService>(sp =>
+        services.AddSingleton<PhoneNumberService>(sp =>
             new(PhoneNumbers.PhoneNumberUtil.GetInstance()));
 
         #endregion

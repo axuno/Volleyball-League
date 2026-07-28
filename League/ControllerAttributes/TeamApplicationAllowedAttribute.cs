@@ -13,10 +13,10 @@ public class TeamApplicationAllowedAttribute : ActionFilterAttribute
                 ITenantContext tenantContext &&
             (!(DateTime.UtcNow >= tenantContext.TournamentContext.ApplicationStart && DateTime.UtcNow < tenantContext.TournamentContext.ApplicationEnd)
              && ((context.RouteData.Values["controller"]?.ToString() ?? string.Empty)
-                 .Equals(nameof(League.Controllers.TeamApplication),
+                 .Equals(nameof(Controllers.TeamApplication),
                      StringComparison.OrdinalIgnoreCase) &&
                  !(context.RouteData.Values["action"]?.ToString() ?? string.Empty)
-                     .Equals(nameof(League.Controllers.TeamApplication.List),
+                     .Equals(nameof(Controllers.TeamApplication.List),
                          StringComparison.OrdinalIgnoreCase)
              )))
         {

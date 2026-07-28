@@ -1,5 +1,4 @@
 ﻿using Axuno.Tools.GeoSpatial;
-using League.Components;
 using League.ConfigurationPoco;
 using League.Helpers;
 using League.Models.TeamViewModels;
@@ -11,7 +10,6 @@ using SD.LLBLGen.Pro.ORMSupportClasses;
 using TournamentManager.DAL.EntityClasses;
 using TournamentManager.DAL.HelperClasses;
 using TournamentManager.DAL.TypedViewClasses;
-using TournamentManager.ModelValidators;
 using TournamentManager.MultiTenancy;
 
 namespace League.Controllers;
@@ -294,8 +292,8 @@ public class Venue : AbstractController
             {
                 IsNew = isNew,
                 HtmlFieldPrefix = nameof(VenueEditModel.Venue),
-                ShowLatLng = User.IsInRole(League.Identity.Constants.RoleName.SystemManager) ||
-                             User.IsInRole(League.Identity.Constants.RoleName.TournamentManager)
+                ShowLatLng = User.IsInRole(Identity.Constants.RoleName.SystemManager) ||
+                             User.IsInRole(Identity.Constants.RoleName.TournamentManager)
             },
             VenueEntity = venueEntity
         };
