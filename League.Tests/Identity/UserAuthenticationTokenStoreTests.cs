@@ -6,6 +6,7 @@ using TournamentManager.DAL.DatabaseSpecific;
 using TournamentManager.DAL.EntityClasses;
 using SD.LLBLGen.Pro.ORMSupportClasses;
 using TournamentManager.MultiTenancy;
+using League.Tests.TestComponents;
 
 namespace League.Tests.Identity;
 

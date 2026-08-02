@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc.Testing;
+﻿using League.Demo;
+using League.Tests.TestComponents;
+using Microsoft.AspNetCore.Mvc.Testing;
 using NUnit.Framework;
 
 namespace League.Tests.IntegrationTests;
@@ -9,13 +11,13 @@ namespace League.Tests.IntegrationTests;
 [TestFixture]
 public class BasicIntegrationTests
 {
-    private WebApplicationFactory<WebApp.Program>? _factory;
+    private WebApplicationFactory<Program>? _factory;
 
     [OneTimeSetUp]
     public void Setup()
     {
         // Create a test factory using League.WebApp.Program (aka the demo) as the host
-        _factory = UnitTestHelpers.GetLeagueTestApplicationFactory<WebApp.Program>()
+        _factory = UnitTestHelpers.GetLeagueTestApplicationFactory<Program>()
             .WithWebHostBuilder(builder =>
             {
                 builder.ConfigureServices(services =>

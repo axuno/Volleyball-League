@@ -1,9 +1,10 @@
 using Axuno.BackgroundTask;
+using League.WebApp;
 using NLog;
 using NLog.Web;
 using TournamentManager.MultiTenancy;
 
-namespace League.WebApp;
+namespace League.Demo;
 
 public class Program
 {

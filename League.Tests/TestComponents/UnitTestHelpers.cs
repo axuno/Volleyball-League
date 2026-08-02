@@ -2,7 +2,6 @@
 using Axuno.VirtualFileSystem;
 using League.Caching;
 using League.Identity;
-using League.Tests.TestComponents;
 using League.TextTemplatingModule;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.Identity;
@@ -17,7 +16,7 @@ using NLog.Extensions.Logging;
 using SD.LLBLGen.Pro.ORMSupportClasses;
 using TournamentManager.MultiTenancy;
 
-namespace League.Tests;
+namespace League.Tests.TestComponents;
 
 public class UnitTestHelpers
 {
