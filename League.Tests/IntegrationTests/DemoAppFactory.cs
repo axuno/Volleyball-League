@@ -1,4 +1,4 @@
-﻿using League.WebApp;
+﻿using League.Demo;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.Hosting;

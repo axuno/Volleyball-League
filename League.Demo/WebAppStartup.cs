@@ -1,4 +1,5 @@
 using League.Components;
+using League.Demo;
 using League.MultiTenancy;
 
 namespace League.WebApp;
