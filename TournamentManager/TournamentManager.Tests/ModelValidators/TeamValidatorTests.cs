@@ -165,6 +165,7 @@ public class TeamValidatorTests
             {
                 IsEditable = isEditable, 
                 MustBeSet = mustBeSet,
+                DaysOfWeekRange = [DayOfWeek.Monday, DayOfWeek.Tuesday]
             }
         };
         var tv = new TeamValidator(team, _tenantContext);
