@@ -34,7 +34,8 @@ public class UserStoreTests
         _roleStore.Dispose();
     }
 
-    private readonly ApplicationUser _testUser = new() {
+    private readonly ApplicationUser _testUser = new()
+    {
         Email = "user@store.test",
         EmailConfirmed = true,
         EmailConfirmedOn = new DateTime(2019, 04, 25, 12, 00, 00),
@@ -105,7 +106,7 @@ public class UserStoreTests
     {
         // Creating the user should fail because of a table lock
         var currentTimeOut = _appDb.DbContext.CommandTimeOut;
-        using (var da = (DataAccessAdapter)_appDb.DbContext.GetNewAdapter())
+        using (var da = (DataAccessAdapter) _appDb.DbContext.GetNewAdapter())
         {
             //await da.ExecuteSQLAsync(CancellationToken.None, "BEGIN TRAN SELECT 1 FROM [testorg].[User] WITH (TABLOCKX) WAITFOR DELAY '00:00:05' ROLLBACK TRAN");
             await da.StartTransactionAsync(IsolationLevel.Serializable, "transaction1");
@@ -133,7 +134,7 @@ public class UserStoreTests
         Assert.That(await _store.CreateAsync(user, CancellationToken.None), Is.EqualTo(IdentityResult.Success));
 
         user = await _store.FindByNameAsync(_testUser.UserName, CancellationToken.None);
-        Assert.That(user.Id, Is.Not.Zero);
+        Assert.That(user?.Id, Is.Not.Zero);
         using (Assert.EnterMultipleScope())
         {
             Assert.That(_testUser.Name, Is.EqualTo(user.UserName));
@@ -160,15 +161,15 @@ public class UserStoreTests
 
         // create another user only with email
         var anotherUserMail = "another@email.test";
-        user = new() {Email = anotherUserMail};
+        user = new() { Email = anotherUserMail };
         Assert.That(await _store.CreateAsync(user, CancellationToken.None), Is.EqualTo(IdentityResult.Success));
 
         // Empty username should be replaced with Guid
         user = await _store.FindByEmailAsync(anotherUserMail, CancellationToken.None);
-        Assert.That(Guid.TryParse(user.UserName, out _), Is.True);
+        Assert.That(Guid.TryParse(user?.UserName, out _), Is.True);
 
         // trying to create a user with the same username again should fail
-        user.Email = "onemore." + anotherUserMail;
+        user!.Email = "onemore." + anotherUserMail;
         Assert.That(await _store.CreateAsync(user, CancellationToken.None), Is.Not.EqualTo(IdentityResult.Success));
 
 
@@ -188,7 +189,7 @@ public class UserStoreTests
         var result = await _store.UpdateAsync(user, CancellationToken.None);
         Assert.That(result, Is.EqualTo(IdentityResult.Success));
         user = await _store.FindByEmailAsync(_testUser.Email, CancellationToken.None);
-        Assert.That(changedLastName, Is.EqualTo(user.LastName));
+        Assert.That(changedLastName, Is.EqualTo(user!.LastName));
     }
 
     [Test]
@@ -217,15 +218,15 @@ public class UserStoreTests
         using (Assert.EnterMultipleScope())
         {
             Assert.That(result, Is.EqualTo(IdentityResult.Success));
-            Assert.That((await _store.FindByIdAsync(user.Id.ToString(), CancellationToken.None)).UserName, Is.EqualTo(user.UserName));
+            Assert.That((await _store.FindByIdAsync(user.Id.ToString(), CancellationToken.None))?.UserName, Is.EqualTo(user.UserName));
         }
 
         user = await _store.FindByEmailAsync(_testUser.Email, CancellationToken.None);
-        Assert.That(user.UserName, Is.EqualTo(_testUser.UserName));
+        Assert.That(user?.UserName, Is.EqualTo(_testUser.UserName));
         Assert.ThrowsAsync<ArgumentNullException>(() => _store.FindByEmailAsync(null, CancellationToken.None));
 
         user = await _store.FindByNameAsync(_testUser.UserName, CancellationToken.None);
-        Assert.That(user.Email, Is.EqualTo(_testUser.Email));
+        Assert.That(user?.Email, Is.EqualTo(_testUser.Email));
         Assert.ThrowsAsync<ArgumentNullException>(() => _store.FindByNameAsync(null, CancellationToken.None));
         using (Assert.EnterMultipleScope())
         {
@@ -344,7 +345,7 @@ public class UserStoreTests
     public async Task UserLockoutStore()
     {
         var user = GetNewUser();
-        var nonExistentUser = new ApplicationUser {Id = 0};
+        var nonExistentUser = new ApplicationUser { Id = 0 };
 
         Assert.That(await _store.CreateAsync(user, CancellationToken.None), Is.EqualTo(IdentityResult.Success));
         Assert.DoesNotThrowAsync(() => _store.SetLockoutEnabledAsync(user, true, CancellationToken.None));
@@ -361,7 +362,7 @@ public class UserStoreTests
 
         // Test setting lockout end date
         await _store.SetLockoutEndDateAsync(user, lockoutEndDate, CancellationToken.None);
-        Assert.That((await _store.GetLockoutEndDateAsync(user, CancellationToken.None)).Value.DateTime, Is.EqualTo(lockoutEndDate.Value.UtcDateTime));
+        Assert.That((await _store.GetLockoutEndDateAsync(user, CancellationToken.None))?.DateTime, Is.EqualTo(lockoutEndDate.Value.UtcDateTime));
 
         // Nothing should happen for non-existent users
         Assert.ThrowsAsync<ArgumentException>(() => _store.SetLockoutEndDateAsync(nonExistentUser, lockoutEndDate, CancellationToken.None));
@@ -386,7 +387,7 @@ public class UserStoreTests
         // Tests for user as SystemManager
         var role = new ApplicationRole { Name = Constants.RoleName.SystemManager };
         Assert.That(await _roleStore.CreateAsync(role, CancellationToken.None), Is.EqualTo(IdentityResult.Success));
-            
+
         // SystemManagers should not be locked out
         await _store.AddToRoleAsync(user, Constants.RoleName.SystemManager, CancellationToken.None);
         Assert.That(await _store.GetLockoutEnabledAsync(user, CancellationToken.None), Is.False);
@@ -404,6 +405,6 @@ public class UserStoreTests
     [Test]
     public void DisposeTest()
     {
-        Assert.DoesNotThrow(() =>_store.Dispose());
+        Assert.DoesNotThrow(() => _store.Dispose());
     }
 }

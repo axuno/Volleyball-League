@@ -46,8 +46,8 @@ public class TeamValidator : AbstractValidator<TeamEntity, ITenantContext, TeamV
                         Data.TournamentContext.FixtureRuleSet.RegularMatchStartTime.MinDayTime.ToShortTimeString(),
                         Data.TournamentContext.FixtureRuleSet.RegularMatchStartTime.MaxDayTime.ToShortTimeString()),
                     // regular start time is given in local time
-                    Success = Model.MatchTime.HasValue && Model.MatchTime >= Data.TournamentContext.FixtureRuleSet.RegularMatchStartTime.MinDayTime &&
-                              Model.MatchTime <= Data.TournamentContext.FixtureRuleSet.RegularMatchStartTime.MaxDayTime
+                    Success = Model.MatchTime.HasValue && TimeOnly.FromTimeSpan(Model.MatchTime.Value) >= Data.TournamentContext.FixtureRuleSet.RegularMatchStartTime.MinDayTime &&
+                              TimeOnly.FromTimeSpan(Model.MatchTime.Value) <= Data.TournamentContext.FixtureRuleSet.RegularMatchStartTime.MaxDayTime
                 })
         };
     }

@@ -29,7 +29,7 @@ internal class MatchSchedulerTests
         }
         var scheduler = GetMatchSchedulerInstance();
 
-        Assert.That(del: async () => await scheduler.ScheduleFixturesForTournament(false, CancellationToken.None),
+        Assert.That(code: async () => await scheduler.ScheduleFixturesForTournament(false, CancellationToken.None),
     Throws.InvalidOperationException.With.Message.EqualTo("Round-robin system requires at least 2 participants."));
     }
 
@@ -44,7 +44,7 @@ internal class MatchSchedulerTests
 
         using (Assert.EnterMultipleScope())
         {
-            Assert.That(del: async () => await scheduler.ScheduleFixturesForTournament(false, CancellationToken.None), Throws.Nothing);
+            Assert.That(code: async () => await scheduler.ScheduleFixturesForTournament(false, CancellationToken.None), Throws.Nothing);
             Assert.That(matches, Has.Count.EqualTo(expectedNumOfMatches));
             Assert.That(matches.All(m => (m.PlannedEnd!.Value - m.PlannedStart!.Value) == _tenantContext.TournamentContext.FixtureRuleSet.PlannedDurationOfMatch), Is.True);
             Assert.That(matches.All(m => m.HomeTeamId == m.RefereeId), Is.True);

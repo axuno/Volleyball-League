@@ -252,7 +252,7 @@ public class UserClaimStoreTests
         // create user
         _user = new() {UserName = "UserName", Email = "userclaim@store.test"};
         await _store.CreateAsync(_user, CancellationToken.None);
-        _user = await _store.FindByEmailAsync(_user.Email, CancellationToken.None);
+        _user = (await _store.FindByEmailAsync(_user.Email, CancellationToken.None))!;
 
         // create team
         _team = new() { Name = "Test Team"};

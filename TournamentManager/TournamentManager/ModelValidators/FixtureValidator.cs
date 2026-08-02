@@ -237,9 +237,9 @@ public class FixtureValidator : AbstractValidator<MatchEntity, (ITenantContext T
                 {
                     Message = string.Format(FixtureValidatorResource.ResourceManager.GetString(nameof(FactId.PlannedStartWithinDesiredTimeRange)) ?? string.Empty, Data.TenantContext.TournamentContext.FixtureRuleSet.RegularMatchStartTime.MinDayTime.ToShortTimeString(), Data.TenantContext.TournamentContext.FixtureRuleSet.RegularMatchStartTime.MaxDayTime.ToShortTimeString()),
                     // regular start time is given in local time
-                    Success = !Model.PlannedStart.HasValue || 
-                              Data.TimeZoneConverter.ToZonedTime(Model.PlannedStart)?.DateTimeOffset.TimeOfDay >= Data.TenantContext.TournamentContext.FixtureRuleSet.RegularMatchStartTime.MinDayTime &&
-                              Data.TimeZoneConverter.ToZonedTime(Model.PlannedStart)?.DateTimeOffset.TimeOfDay <= Data.TenantContext.TournamentContext.FixtureRuleSet.RegularMatchStartTime.MaxDayTime
+                    Success = !Model.PlannedStart.HasValue ||
+                              Data.TimeZoneConverter.ToZonedTime(Model.PlannedStart)?.DateTimeOffset.TimeOfDay >= Data.TenantContext.TournamentContext.FixtureRuleSet.RegularMatchStartTime.MinDayTime.ToTimeSpan() &&
+                              Data.TimeZoneConverter.ToZonedTime(Model.PlannedStart)?.DateTimeOffset.TimeOfDay <= Data.TenantContext.TournamentContext.FixtureRuleSet.RegularMatchStartTime.MaxDayTime.ToTimeSpan()
                 })
         };
     }

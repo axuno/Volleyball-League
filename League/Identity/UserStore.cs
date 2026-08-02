@@ -64,7 +64,7 @@ public class UserStore : IUserStore<ApplicationUser>, IUserEmailStore<Applicatio
 
             if (await _appDb.UserRepository.UsernameExistsAsync(userEntity.UserName))
             {
-                return IdentityResult.Failed(new IdentityError { Description = "Username is unavailable"});
+                return IdentityResult.Failed(new IdentityError { Description = "Username is unavailable" });
             }
 
             await _appDb.GenericRepository.SaveEntityAsync(userEntity, true, false, cancellationToken);
@@ -93,7 +93,7 @@ public class UserStore : IUserStore<ApplicationUser>, IUserEmailStore<Applicatio
         }
         catch (Exception e)
         {
-            _logger.LogError(e, "Account for user id {UWserId} could not be deleted", user.Id);
+            _logger.LogError(e, "Account for user id {UserId} could not be deleted", user.Id);
             return IdentityResult.Failed(_identityErrorDescriber.DefaultError());
         }
     }
@@ -121,11 +121,11 @@ public class UserStore : IUserStore<ApplicationUser>, IUserEmailStore<Applicatio
         user.ModifiedOn = userEntity.ModifiedOn;
         return Task.CompletedTask;
     }
-#nullable disable annotations
+
     /// <summary>
     /// Returns the <see cref="ApplicationUser"/> for the <paramref name="userId"/> if found, else <see langword="null"/>.
     /// </summary>
-    public async Task<ApplicationUser> FindByIdAsync(string userId, CancellationToken cancellationToken)
+    public async Task<ApplicationUser?> FindByIdAsync(string? userId, CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
         if (string.IsNullOrEmpty(userId))
@@ -142,7 +142,7 @@ public class UserStore : IUserStore<ApplicationUser>, IUserEmailStore<Applicatio
         return user;
     }
 
-    public async Task<ApplicationUser> FindByNameAsync(string normalizedUserName, CancellationToken cancellationToken)
+    public async Task<ApplicationUser?> FindByNameAsync(string? normalizedUserName, CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
         if (string.IsNullOrEmpty(normalizedUserName))
@@ -155,7 +155,7 @@ public class UserStore : IUserStore<ApplicationUser>, IUserEmailStore<Applicatio
         await MapUserEntityToUser(user, userEntity);
         return user;
     }
-#nullable enable annotations
+
     public Task<string?> GetNormalizedUserNameAsync(ApplicationUser user, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(user);
@@ -278,11 +278,11 @@ public class UserStore : IUserStore<ApplicationUser>, IUserEmailStore<Applicatio
         SetSecurityStampAsync(user, null, cancellationToken);
         return Task.CompletedTask;
     }
-#nullable disable annotations
+
     /// <summary>
     /// Returns the <see cref="ApplicationUser"/> for the <paramref name="normalizedEmail"/> if found, else <see langword="null"/>.
     /// </summary>
-    public async Task<ApplicationUser> FindByEmailAsync(string normalizedEmail, CancellationToken cancellationToken)
+    public async Task<ApplicationUser?> FindByEmailAsync(string? normalizedEmail, CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
 
@@ -296,7 +296,7 @@ public class UserStore : IUserStore<ApplicationUser>, IUserEmailStore<Applicatio
         await MapUserEntityToUser(user, userEntity);
         return user;
     }
-#nullable enable annotations
+
     public Task<string?> GetNormalizedEmailAsync(ApplicationUser user, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(user);
@@ -406,7 +406,7 @@ public class UserStore : IUserStore<ApplicationUser>, IUserEmailStore<Applicatio
             _logger.LogError(e, exceptionMsg);
             success = false;
         }
-            
+
         if (!success)
         {
             throw new InvalidOperationException(exceptionMsg);
@@ -431,7 +431,7 @@ public class UserStore : IUserStore<ApplicationUser>, IUserEmailStore<Applicatio
         {
             success = await _appDb.UserRoleRepository.RemoveUserFromRoleAsync(user.Id, roleName, cancellationToken);
         }
-        catch(Exception e)
+        catch (Exception e)
         {
             _logger.LogError(e, exceptionMsg);
             success = false;
@@ -470,7 +470,7 @@ public class UserStore : IUserStore<ApplicationUser>, IUserEmailStore<Applicatio
         return roles.ToList();
     }
 
-    public async Task<bool> IsInRoleAsync(ApplicationUser user, string roleName,
+    public async Task<bool> IsInRoleAsync(ApplicationUser? user, string roleName,
         CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(user);
@@ -605,12 +605,12 @@ public class UserStore : IUserStore<ApplicationUser>, IUserEmailStore<Applicatio
         {
             case Constants.ClaimType.ManagesTeam:
                 await _appDb.GenericRepository.SaveEntityAsync(
-                    new ManagerOfTeamEntity {TeamId = teamId, UserId = user.Id, IsNew = true}, false, false,
+                    new ManagerOfTeamEntity { TeamId = teamId, UserId = user.Id, IsNew = true }, false, false,
                     cancellationToken);
                 return;
             case Constants.ClaimType.PlaysInTeam:
                 await _appDb.GenericRepository.SaveEntityAsync(
-                    new PlayerInTeamEntity {TeamId = teamId, UserId = user.Id, IsNew = true}, false, false,
+                    new PlayerInTeamEntity { TeamId = teamId, UserId = user.Id, IsNew = true }, false, false,
                     cancellationToken);
                 return;
             default:
@@ -716,7 +716,7 @@ public class UserStore : IUserStore<ApplicationUser>, IUserEmailStore<Applicatio
         switch (claim.Type)
         {
             case Constants.ClaimType.ManagesTeam:
-                await _appDb.GenericRepository.DeleteEntityAsync(new ManagerOfTeamEntity(user.Id, teamId){IsNew = false}, cancellationToken);
+                await _appDb.GenericRepository.DeleteEntityAsync(new ManagerOfTeamEntity(user.Id, teamId) { IsNew = false }, cancellationToken);
                 return;
             case Constants.ClaimType.PlaysInTeam:
                 await _appDb.GenericRepository.DeleteEntityAsync(new PlayerInTeamEntity(user.Id, teamId) { IsNew = false }, cancellationToken); return;
@@ -767,7 +767,7 @@ public class UserStore : IUserStore<ApplicationUser>, IUserEmailStore<Applicatio
         return applicationUsers;
     }
     #endregion
-        
+
     #region ** IUserSecurityStampStore **
     public Task SetSecurityStampAsync(ApplicationUser user, string? stamp, CancellationToken cancellationToken)
     {
@@ -834,11 +834,11 @@ public class UserStore : IUserStore<ApplicationUser>, IUserEmailStore<Applicatio
         logins.ForEach(li => loginInfoList.Add(new(li.LoginProvider, li.ProviderKey, li.ProviderDisplayName)));
         return loginInfoList;
     }
-#nullable disable annotations
+
     /// <summary>
     /// Returns the <see cref="ApplicationUser"/> for the <paramref name="loginProvider"/> and <paramref name="providerKey"/> if found, else <see langword="null"/>.
     /// </summary>
-    public async Task<ApplicationUser> FindByLoginAsync(string loginProvider, string providerKey, CancellationToken cancellationToken)
+    public async Task<ApplicationUser?> FindByLoginAsync(string loginProvider, string providerKey, CancellationToken cancellationToken)
     {
         if (string.IsNullOrEmpty(loginProvider))
             throw new ArgumentNullException(nameof(loginProvider), @"Null or empty");
@@ -848,12 +848,12 @@ public class UserStore : IUserStore<ApplicationUser>, IUserEmailStore<Applicatio
 
         var userEntity = await _appDb.UserLoginRepository.GetUserByLoginAsync(loginProvider, providerKey, cancellationToken);
         if (userEntity == null) return null;
-            
+
         var user = new ApplicationUser();
         await MapUserEntityToUser(user, userEntity);
         return user;
     }
-#nullable enable annotations
+
     #endregion
 
     #region ** IUserAuthenticationTokenStore **

@@ -90,7 +90,7 @@ public class UserLoginStoreTests
         using (Assert.EnterMultipleScope())
         {
             Assert.That(userByLogin, Is.Not.Null);
-            Assert.That(user.Id, Is.EqualTo(userByLogin.Id));
+            Assert.That(user.Id, Is.EqualTo(userByLogin!.Id));
         }
 
         var login2 = new UserLoginInfo("provider2", "providerKey2", "displayName2");

@@ -18,17 +18,17 @@ public class TournamentContext : ITournamentContext
     [YAXLib.Attributes.YAXComment(
         """
         The UTC date from which teams' applications are allowed.
-        Format: 'yyyy-MM-dd HH:mm:ss' or 'MM/dd/yyyy HH:mm:ss'
+        Format: ISO 8601 (e.g., '2026-07-31T18:00:00Z', '2026-07-31T18:00:00+00:00')
         """)]
-    public DateTime ApplicationStart { get; set; }
+    public DateTimeOffset ApplicationStart { get; set; }
 
     /// <inheritdoc/>
     [YAXLib.Attributes.YAXComment(
         """
         The UTC deadline for new teams' applications.
-        Format: 'yyyy-MM-dd HH:mm:ss' or 'MM/dd/yyyy HH:mm:ss'
+        Format: ISO 8601 (e.g., '2026-07-31T18:00:00Z', '2026-07-31T18:00:00+00:00')
         """)]
-    public DateTime ApplicationEnd { get; set; }
+    public DateTimeOffset ApplicationEnd { get; set; }
 
     /// <inheritdoc/>
     [YAXLib.Attributes.YAXComment("The ID of the tournament which will be used for to display maps")]
@@ -120,16 +120,34 @@ public class FixtureRuleSet
 /// </summary>
 public class RegularMatchStartTime
 {
+    // Workaround for YAXLib not supporting TimeOnly serialized as HH:mm:ss.
+    [YAXLib.Attributes.YAXComment("Earliest start time for a match (in local time)")]
+    [YAXLib.Attributes.YAXSerializeAs(nameof(MinDayTime))]
+    private TimeSpan MinDayTimeTimeSpan
+    {
+        get => MinDayTime.ToTimeSpan();
+        set => MinDayTime = TimeOnly.FromTimeSpan(value);
+    }
+
+    // Workaround for YAXLib not supporting TimeOnly serialized as HH:mm:ss.
+    [YAXLib.Attributes.YAXComment("Latest start time for a match (in local time)")]
+    [YAXLib.Attributes.YAXSerializeAs(nameof(MaxDayTime))]
+    private TimeSpan MaxDayTimeTimeSpan
+    {
+        get => MaxDayTime.ToTimeSpan();
+        set => MaxDayTime = TimeOnly.FromTimeSpan(value);
+    }
+
     /// <summary>
     /// Earliest start time for a match (in local time).
     /// </summary>
-    [YAXLib.Attributes.YAXComment("Earliest start time for a match (in local time)")]
-    public TimeSpan MinDayTime { get; set; } = new(0,18,0,0);
+    [YAXLib.Attributes.YAXDontSerialize]
+    public TimeOnly MinDayTime { get; set; } = new(0,18,0,0);
     /// <summary>
     /// Latest start time for a match (in local time).
     /// </summary>
-    [YAXLib.Attributes.YAXComment("Latest start time for a match (in local time)")]
-    public TimeSpan MaxDayTime { get; set; } = new(0, 21,0,0);
+    [YAXLib.Attributes.YAXDontSerialize]
+    public TimeOnly MaxDayTime { get; set; } = new(0, 21,0,0);
 }
 
 /// <summary>

@@ -11,7 +11,7 @@ public class TeamApplicationAllowedAttribute : ActionFilterAttribute
     {
         if (context.HttpContext.RequestServices.GetService(typeof(ITenantContext)) is
                 ITenantContext tenantContext &&
-            (!(DateTime.UtcNow >= tenantContext.TournamentContext.ApplicationStart && DateTime.UtcNow < tenantContext.TournamentContext.ApplicationEnd)
+            (!(DateTimeOffset.UtcNow >= tenantContext.TournamentContext.ApplicationStart && DateTimeOffset.UtcNow < tenantContext.TournamentContext.ApplicationEnd)
              && ((context.RouteData.Values["controller"]?.ToString() ?? string.Empty)
                  .Equals(nameof(Controllers.TeamApplication),
                      StringComparison.OrdinalIgnoreCase) &&

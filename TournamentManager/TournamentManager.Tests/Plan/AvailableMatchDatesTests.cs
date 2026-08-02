@@ -23,7 +23,7 @@ internal class AvailableMatchDatesTests
 
         using (Assert.EnterMultipleScope())
         {
-            Assert.That(del: async () => await availableDates.GenerateNewAsync(tournament.Rounds[0], matches, CancellationToken.None), Throws.Nothing);
+            Assert.That(code: async () => await availableDates.GenerateNewAsync(tournament.Rounds[0], matches, CancellationToken.None), Throws.Nothing);
             Assert.That(availableDates.GetGeneratedAndManualAvailableMatchDateDays(tournamentLeg), Has.Count.EqualTo(87));
             Assert.That(availableDates.GetGeneratedAndManualAvailableMatchDates(1, new(tournamentLeg.StartDateTime, tournamentLeg.EndDateTime), null), Has.Count.EqualTo(17));
         }

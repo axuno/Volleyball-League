@@ -15,7 +15,7 @@ public class MatchEntityExtensionTests
         var setRule = GetSetRule();
         var match = new MatchEntity(1234);
 
-        Assert.That(del: () => _ = match.Sets.CalculateSetPoints(setRule, matchRule), Throws.Nothing);
+        Assert.That(code: () => _ = match.Sets.CalculateSetPoints(setRule, matchRule), Throws.Nothing);
     }
 
     [TestCase("25:1 25:2 25:3", 3, 0)]
@@ -77,7 +77,7 @@ public class MatchEntityExtensionTests
         var lastSet = match.Sets.Last();
         lastSet.HomeSetPoints = lastSet.GuestSetPoints = 0;
 
-        Assert.That(del: () => _ = match.CalculateMatchPoints(matchRule), Throws.InvalidOperationException);
+        Assert.That(code: () => _ = match.CalculateMatchPoints(matchRule), Throws.InvalidOperationException);
     }
 
     private static MatchRuleEntity GetMatchRule_NoTieBreakRule()

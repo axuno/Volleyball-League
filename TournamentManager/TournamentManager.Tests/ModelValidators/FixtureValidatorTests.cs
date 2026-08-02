@@ -6,7 +6,6 @@ using TournamentManager.Data;
 using Moq;
 using SD.LLBLGen.Pro.ORMSupportClasses;
 using TournamentManager.DAL.TypedViewClasses;
-using TournamentManager.ExtensionMethods;
 using TournamentManager.Tests.TestComponents;
 using TournamentManager.MultiTenancy;
 
@@ -175,7 +174,7 @@ public class FixtureValidatorTests
     [TestCase("2020-01-01 22:00:00", "19:00:00", "21:00:00", false, false)]
     [TestCase("2020-01-01 17:00:00", "19:00:00", "21:00:00", false, false)]
     [TestCase("2020-07-01 17:00:00", "19:00:00", "21:00:00", false, true)] // DST in time zone Europe/Berlin
-    public async Task PlannedStart_MayBeNull_OrWithin_TimeLimit(DateTime? plannedStart, TimeSpan minStart, TimeSpan maxStart, bool plannedMatchTimeMustBeSet, bool expected)
+    public async Task PlannedStart_MayBeNull_OrWithin_TimeLimit(DateTime? plannedStart, TimeOnly minStart, TimeOnly maxStart, bool plannedMatchTimeMustBeSet, bool expected)
     {
         // Note: While PlannedStart is treated as UTC, MinStart and MaxStart are in local time
 

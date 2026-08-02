@@ -18,12 +18,12 @@ public interface ITournamentContext
     /// <summary>
     /// The date from which teams' applications are allowed.
     /// </summary>
-    DateTime ApplicationStart { get; set; }
+    DateTimeOffset ApplicationStart { get; set; }
 
     /// <summary>
     /// The deadline for new teams' applications.
     /// </summary>
-    DateTime ApplicationEnd { get; set; }
+    DateTimeOffset ApplicationEnd { get; set; }
 
     /// <summary>
     /// The ID of the tournament which will be used for to display maps.
