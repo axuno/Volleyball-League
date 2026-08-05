@@ -1,0 +1,176 @@
+﻿{
+  // Configuration data for a tenant.
+  "TenantContext": {
+    // Identifies the tenant. Value is also used for tenant-specific file names.
+    "Identifier": "TestOrg",
+    // The tenant GUID.
+    "Guid": "bf2e2412-c610-4521-ae12-7bda286e4480",
+    // May only be true for a single tenant in a tenant store.
+    "IsDefault": false,
+    // Provides website specific data.
+    "SiteContext": {
+      // The position of the tenant within tenant lists (e.g. navigation).
+      "Position": 1,
+      // The Url segment used to identify the site. May be empty for the default tenant.
+      "UrlSegmentValue": "testorg",
+      // The folder name used for a tenant. This name must be set.
+      "FolderName": "testorg",
+      // The cookie name used Asp.Net Identity.
+      "IdentityCookieName": ".LeagueTest",
+      // The session name used for the tenant.
+      "SessionName": ".LeagueTest",
+      // If true, the site will not be shown in the navigation menu.
+      "HideInMenu": false,
+      // Recipients for generated emails.
+      "MailAddresses": [
+        {
+          "Kind": "ContactFrom",
+          "Address": "testorg@volleyball-liga.de",
+          "DisplayName": "Testorganization"
+        },
+        {
+          "Kind": "ContactTo",
+          "Address": "testorg@volleyball-liga.de",
+          "DisplayName": "Testorganization"
+        },
+        {
+          "Kind": "AutoMailFrom",
+          "Address": "testorg@volleyball-liga.de",
+          "DisplayName": "Testorganization"
+        },
+        {
+          "Kind": "AutoMailTo",
+          "Address": "testorg@volleyball-liga.de",
+          "DisplayName": "Testorganization"
+        },
+        {
+          "Kind": "AutoMailBcc",
+          "Address": "testorg@volleyball-liga.de",
+          "DisplayName": "Testorganization"
+        }
+      ],
+      // Notifications sent before and after matches.
+      "MatchNotifications": {
+        // Number of days before the next match will be announced. 0 for none, negative number days.
+        "DaysBeforeNextMatch": -10,
+        // Number of days to remind 1st time for missing match results. 0 for none, positive number of days.
+        "DaysForMatchResultReminder1": 3,
+        // Number of days to remind 2nd time for missing match results. 0 for none, positive number of days.
+        "DaysForMatchResultReminder2": 10
+      }
+    },
+    // All configuration data for an organization.
+    "OrganizationContext": {
+      // The full name of the organization.
+      "Name": "Volleyball Test League",
+      // The short version of the organization's name.
+      "ShortName": "Test League",
+      "Description": "This is a league for test purposes.",
+      // The homepage for the organization (NOT the league website).
+      "HomepageUrl": "https://volleyball-liga.de/testorg",
+      "Bank": {
+        // If true, bank details are part of the confirmation email when registering a team.
+        "ShowBankDetailsInConfirmationEmail": true,
+        // The name of the payment recipient, usually the organization name.
+        "Recipient": "axuno - Test Organization",
+        // The name of the bank where a payment is directed.
+        "BankName": "Some Bank",
+        // The BIC number of the bank account.
+        "Bic": "ABCDEFGHXXX",
+        // The IBAN number of the bank.
+        "Iban": "DE12 345 678 910 123 456 789",
+        // The participation fee, may be zero.
+        "Amount": 22.99,
+        // The currency for the participation fee.
+        "Currency": "EUR"
+      }
+    },
+    // Database access specific settings.
+    "DbContext": {
+      // The connection key used to retrieve the ConnectionString
+      "ConnectionKey": "TestOrgConnectionString",
+      // The catalog aka database name
+      "Catalog": "TestOrg",
+      // The schema inside the database
+      "Schema": "dbo",
+      // The timeout value to use with database commands
+      "CommandTimeOut": 15
+    },
+    // Configuration data for a tournament
+    "TournamentContext": {
+      // The ID of the tournament which will be used for new teams' applications
+      "ApplicationTournamentId": 3,
+      // The zoned date from which teams' applications are allowed.
+      // Format: ISO 8601 (e.g., '2026-07-31T18:00:00Z', '2026-07-31T18:00:00+00:00')
+      "ApplicationStart": "2020-01-26T00:00:00+01:00",
+      // The zoned deadline for new teams' applications.
+      // Format: ISO 8601 (e.g., '2026-07-31T18:00:00Z', '2026-07-31T18:00:00+00:00')
+      "ApplicationEnd": "2020-04-05T00:00:00+02:00",
+      // The ID of the tournament which will be used for to display maps
+      "MapTournamentId": 2,
+      // The ID of the tournament which will be used to display team data
+      "TeamTournamentId": 2,
+      // The ID of the tournament which will be used to display the match plan
+      "MatchPlanTournamentId": 2,
+      // The ID of the tournament which will be used to display match results and tables
+      "MatchResultTournamentId": 2,
+      // The rules which apply for creating and editing fixtures
+      "FixtureRuleSet": {
+        // The time when matches start and end normally (e.g. from 18:00 - 21:00 h)
+        "RegularMatchStartTime": {
+          // Earliest start time for a match (in local time)
+          "MinDayTime": "00:18:00",
+          // Latest start time for a match (in local time)
+          "MaxDayTime": "00:21:00"
+        },
+        // The duration which is used to generate fixtures and to determine periods where a venue is occupied
+        "PlannedDurationOfMatch": "02:00:00",
+        // If set to true, when editing a fixture the match time must be set
+        "PlannedMatchDateTimeMustBeSet": true,
+        // If set to true, the planned match time must not include any dates found in ExcludeMatchDate table entries
+        "CheckForExcludedMatchDateTime": true,
+        // If set to true, the planned match time must stay within the current leg date boundaries. If false, the planned time must stay with in any leg date boundaries.
+        "PlannedMatchTimeMustStayInCurrentLegBoundaries": false,
+        // If set to true, when editing a fixture the venue must be set
+        "PlannedVenueMustBeSet": true,
+        // If true, when checking whether teams already have a match at a certain moment, only the date will be used (i.e. only 1 match per calendar date)
+        "UseOnlyDatePartForTeamFreeBusyTimes": true
+      },
+      // The max. number of days after RealStart where results may be changed. Negative value means 'unlimited'
+      "MaxDaysForResultCorrection": -1,
+      // The rules which apply for creating and editing team data
+      "TeamRuleSet": {
+        // Rules for the HomeMatchTime of a team
+        "HomeMatchTime": {
+          // If true, HomeMatchTime will be shown on team forms. If false, IsEditable, DaysOfWeekRange and ErrorIfNotInDaysOfWeekRange are irrelevant.
+          "IsEditable": true,
+          // If true, the HomeMatchTime must be set, i.e. cannot be null/unspecified
+          "MustBeSet": true,
+          // Allowed days of a week
+          "DaysOfWeekRange": [
+            "Monday",
+            "Tuesday",
+            "Wednesday",
+            "Thursday",
+            "Friday",
+            "Saturday",
+            "Sunday"
+          ],
+          // If true, entries not in 'DaysOfWeekRange' are errors (else: warning)
+          "ErrorIfNotInDaysOfWeekRange": false
+        },
+        // Rules for the HomeVenue of a team.
+        "HomeVenue": {
+          // If true, the HomeVenue must be set, i.e. cannot be null/unspecified.
+          // If false, when auto-creating fixtures the team will only have away-matches (i.e. is always the guest team).
+          "MustBeSet": true
+        }
+      },
+      // Rules for referee master data
+      "RefereeRuleSet": {
+        // Rule for organizing referees
+        "RefereeType": "Home"
+      }
+    }
+  }
+}
