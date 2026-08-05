@@ -65,6 +65,7 @@
       "Name": "Volleyball Test League",
       // The short version of the organization's name.
       "ShortName": "Test League",
+      // A description of the organization.
       "Description": "This is a league for test purposes.",
       // The homepage for the organization (NOT the league website).
       "HomepageUrl": "https://volleyball-liga.de/testorg",

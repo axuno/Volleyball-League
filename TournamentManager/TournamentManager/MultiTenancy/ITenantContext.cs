@@ -4,17 +4,6 @@ namespace TournamentManager.MultiTenancy;
 public interface ITenantContext : ITenant
 {
     /// <summary>
-    /// Deserializes an instance of <see cref="TenantContext"/> to XML.
-    /// </summary>
-    /// <param name="filename"></param>
-    void SerializeToFile(string filename);
-
-    /// <summary>
-    /// Deserializes an instance of <see cref="TenantContext"/> to a string.
-    /// </summary>
-    string Serialize();
-
-    /// <summary>
     /// Provides site-specific data.
     /// </summary>
     SiteContext SiteContext { get; set; }

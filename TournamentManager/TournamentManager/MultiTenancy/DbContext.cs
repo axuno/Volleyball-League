@@ -8,11 +8,10 @@ namespace TournamentManager.MultiTenancy;
 /// <summary>
 /// Settings and methods for database access.
 /// </summary>
-[YAXLib.Attributes.YAXComment("Database access specific settings.")]
 [JsonComment("Database access specific settings.")]
 public class DbContext : IDbContext // Rather rename to DbAccessContext
 {
-    private readonly object _locker = new();
+    private readonly Lock _locker = new();
     private readonly IAppDb _appDb;
 
     public DbContext()
@@ -23,35 +22,30 @@ public class DbContext : IDbContext // Rather rename to DbAccessContext
     /// <summary>
     /// Gets or sets the <see cref="ITenant"/> this context refers to.
     /// </summary>
-    [YAXLib.Attributes.YAXDontSerialize]
     [JsonIgnore]
     public ITenant? Tenant { get; set; }
 
     /// <summary>
     /// The connection key used to retrieve the <see cref="ConnectionString"/>.
     /// </summary>
-    [YAXLib.Attributes.YAXComment("The connection key used to retrieve the ConnectionString")]
     [JsonComment("The connection key used to retrieve the ConnectionString")]
     public virtual string ConnectionKey { get; set; } = string.Empty;
 
     /// <summary>
     /// The connection string for the database.
     /// </summary>
-    [YAXLib.Attributes.YAXDontSerialize]
     [JsonIgnore]
     public virtual string ConnectionString { get; set; } = string.Empty;
 
     /// <summary>
     /// The catalog aka database name.
     /// </summary>
-    [YAXLib.Attributes.YAXComment("The catalog aka database name")]
     [JsonComment("The catalog aka database name")]
     public virtual string Catalog { get; set; } = string.Empty;
 
     /// <summary>
     /// The schema inside the database.
     /// </summary>
-    [YAXLib.Attributes.YAXComment("The schema inside the database")]
     [JsonComment("The schema inside the database")]
     public virtual string Schema { get; set; } = string.Empty;
 
@@ -62,7 +56,6 @@ public class DbContext : IDbContext // Rather rename to DbAccessContext
     /// <remarks>
     /// Set this prior to calling a method which executes database logic.
     /// </remarks>
-    [YAXLib.Attributes.YAXComment("The timeout value to use with database commands")]
     [JsonComment("The timeout value to use with database commands")]
     public virtual int CommandTimeOut { get; set; } = 30;
 
@@ -104,7 +97,6 @@ public class DbContext : IDbContext // Rather rename to DbAccessContext
     /// <summary>
     /// Gives access to the repositories.
     /// </summary>
-    [YAXLib.Attributes.YAXDontSerialize]
     [JsonIgnore]
     public virtual IAppDb AppDb => _appDb;
 }

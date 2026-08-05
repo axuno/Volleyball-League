@@ -36,7 +36,6 @@
         <PackageReference Include="libphonenumber-csharp" Version="9.0.35" />
         <PackageReference Include="NLog.Extensions.Logging" Version="6.1.4" />
         <PackageReference Include="System.Data.SqlClient" Version="4.9.1" />
-        <PackageReference Include="YAXLib" Version="4.5.0" />
     </ItemGroup>
     <ItemGroup>
         <ProjectReference Include="..\..\Axuno.Tools\Axuno.Tools.csproj" />

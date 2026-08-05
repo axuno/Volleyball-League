@@ -1,6 +1,7 @@
 ﻿using System.Collections.Concurrent;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using TournamentManager.JsonCSerializer;
 
 namespace TournamentManager.MultiTenancy;
 
@@ -12,7 +13,6 @@ public class AbstractTenantStore<T> : ITenantStore<T> where T: class, ITenantCon
 {
     protected readonly ConcurrentDictionary<string, T> Tenants = new();
     protected ILogger Logger;
-    internal YAXLib.YAXSerializer<TenantContext?> TenantContextSerializer = new();
 
     /// <summary>
     /// CTOR.
@@ -72,7 +72,8 @@ public class AbstractTenantStore<T> : ITenantStore<T> where T: class, ITenantCon
     public virtual bool TryAddTenant(T tenant)
     {
         var success = Tenants.TryAdd(tenant.Identifier, tenant);
-        Logger.LogTrace("Tenant with {Tenant} '{TenantIdentifier}' {SuccessMsg}.", nameof(tenant.Identifier), tenant.Identifier,  success ? "added" : "failed to add");
+        if (Logger.IsEnabled(LogLevel.Trace))
+            Logger.LogTrace("Tenant with {Tenant} '{TenantIdentifier}' {SuccessMsg}.", nameof(tenant.Identifier), tenant.Identifier,  success ? "added" : "failed to add");
         return success;
     }
         
@@ -84,7 +85,8 @@ public class AbstractTenantStore<T> : ITenantStore<T> where T: class, ITenantCon
     public virtual bool TryRemoveTenant(string identifier)
     {
         var success = Tenants.TryRemove(identifier, out _);
-        Logger.LogTrace("Tenant with {Name} '{Identifier}' {SuccessMsg}.", nameof(identifier), identifier, success ? "removed" : "failed to remove");
+        if (Logger.IsEnabled(LogLevel.Trace))
+            Logger.LogTrace("Tenant with {Name} '{Identifier}' {SuccessMsg}.", nameof(identifier), identifier, success ? "removed" : "failed to remove");
         return success;
     }
 
@@ -103,7 +105,8 @@ public class AbstractTenantStore<T> : ITenantStore<T> where T: class, ITenantCon
             newTenant.Identifier = identifier;
             success = Tenants.TryUpdate(identifier, newTenant, currentTenant);
         }
-        Logger.LogTrace("Tenant with {Name} '{Identifier}' {SuccessMsg}.", nameof(identifier), identifier, success ? "updated" : "failed to update");
+        if (Logger.IsEnabled(LogLevel.Trace))
+            Logger.LogTrace("Tenant with {Name} '{Identifier}' {SuccessMsg}.", nameof(identifier), identifier, success ? "updated" : "failed to update");
         return success;
     }
         
@@ -116,7 +119,8 @@ public class AbstractTenantStore<T> : ITenantStore<T> where T: class, ITenantCon
     {
         Tenants.Clear();
         var configFiles = GetTenantConfigurationFiles.Invoke();
-        Logger.LogInformation("Tenant config files: {Config}", configFiles.ToList());
+        if (Logger.IsEnabled(LogLevel.Information)) // configFiles.ToList() is expensive
+            Logger.LogInformation("Tenant config files: {Config}", configFiles.ToList());
 
         foreach (var configFile in configFiles)
         {
@@ -138,15 +142,15 @@ public class AbstractTenantStore<T> : ITenantStore<T> where T: class, ITenantCon
     /// </summary>
     /// <param name="filePath">The full path to the file</param>
     /// <returns>Returns the <see cref="ITenantContext"/>, if the tenant could be built, else <see langword="null"/>.</returns>
-    public virtual ITenantContext? BuildTenantContext(string filePath)
+    public virtual ITenantContext BuildTenantContext(string filePath)
     {
-        var tc = (ITenantContext?) TenantContextSerializer.Deserialize(ReadTenantConfigFile(filePath));
-        if (tc == null) return null;
+        // Deserialize using default options
+        var tc = JsonCSerializer<TenantContext>.Deserialize(ReadTenantConfigFile(filePath));
 
         tc.Filename = filePath;
         tc.DbContext.ConnectionString =
             Configuration.GetConnectionString(tc.DbContext.ConnectionKey) ?? string.Empty;
-        SetTenantForChildContexts((T) tc);
+        SetTenantForChildContexts(tc);
         return tc;
     }
 
@@ -165,7 +169,7 @@ public class AbstractTenantStore<T> : ITenantStore<T> where T: class, ITenantCon
     /// Sets the tenant context in child contexts of the tenant.
     /// </summary>
     /// <param name="tenantContext"></param>
-    public virtual void SetTenantForChildContexts(T tenantContext)
+    public virtual void SetTenantForChildContexts(ITenantContext tenantContext)
     {
         tenantContext.SiteContext.Tenant = tenantContext.OrganizationContext.Tenant =
             tenantContext.DbContext.Tenant = tenantContext.TournamentContext.Tenant = tenantContext;
