@@ -66,7 +66,7 @@ public sealed class JsonCSerializerOptions
         UnmappedMemberHandling = JsonUnmappedMemberHandling.Disallow,
         Converters =
         {
-            // null for naming policy with default to PascalCase
+            // null for naming policy uses the default 'PascalCase'
             new JsonStringEnumConverter(null, allowIntegerValues: true)
         }
     };

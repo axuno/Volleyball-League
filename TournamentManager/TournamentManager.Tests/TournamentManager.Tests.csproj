@@ -24,6 +24,9 @@
         <ProjectReference Include="..\TournamentManager\TournamentManager.csproj" />
     </ItemGroup>
     <ItemGroup>
+        <None Update="Assets\SampleTenant.config">
+          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
         <None Update="Assets\Single_Holiday_To_Remove.xml">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </None>

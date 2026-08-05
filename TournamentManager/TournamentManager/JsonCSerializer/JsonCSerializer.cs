@@ -165,7 +165,7 @@ public static class JsonCSerializer<T>
         private readonly JsonSerializerOptions _jsonOptions = options.SerializerOptions;
 
         private readonly HashSet<object> _visited =
-            new(System.Collections.Generic.ReferenceEqualityComparer.Instance);
+            new(ReferenceEqualityComparer.Instance);
 
         public override string ToString()
         {
