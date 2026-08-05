@@ -138,7 +138,7 @@ public static class LeagueStartup
 
         #region ******** Multi Tenancy ********************************************
 
-        var configSearchPattern = $"Tenant.*.{environment.EnvironmentName}.config";
+        var configSearchPattern = $"Tenant.*.{environment.EnvironmentName}.json";
         var configDirectory = Path.Combine(environment.ContentRootPath, ConfigurationFolder);
         
         var store = (TenantStore) new TenantStore(configuration)
@@ -648,11 +648,13 @@ public static class LeagueStartup
             var folderName = Path.Combine(environment.WebRootPath, folder);
             if (!Directory.Exists(folderName))
             {
-                logger.LogInformation("Folder '{FolderName}' does not exist.", folderName);
+                if (logger.IsEnabled(LogLevel.Information))
+                    logger.LogInformation("Folder '{FolderName}' does not exist.", folderName);
                 try
                 {
                     Directory.CreateDirectory(folderName);
-                    logger.LogInformation("Folder '{FolderName}' created.", folderName);
+                    if (logger.IsEnabled(LogLevel.Information))
+                        logger.LogInformation("Folder '{FolderName}' created.", folderName);
                 }
                 catch (Exception e)
                 {

@@ -65,6 +65,7 @@
       "Name": "The Volleyball League",
       // The short version of the organization's name.
       "ShortName": "Volleyball League",
+      // A description of the organization.
       "Description": "",
       // The homepage for the organization (NOT the league website).
       "HomepageUrl": "https://volleyball-liga.de/",

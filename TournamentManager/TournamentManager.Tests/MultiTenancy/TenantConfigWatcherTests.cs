@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging.Abstractions;
 using NUnit.Framework;
+using TournamentManager.JsonCSerializer;
 using TournamentManager.MultiTenancy;
 
 namespace TournamentManager.Tests.MultiTenancy;
@@ -8,8 +9,8 @@ namespace TournamentManager.Tests.MultiTenancy;
 [TestFixture]
 public class TenantConfigWatcherTests
 {
-    private const string ConfigSearchPattern = "Tenant.*.config";
-    private string _directoryToWatch = CreateTempPathFolder();
+    private const string ConfigSearchPattern = "Tenant.*.json";
+    private readonly string _directoryToWatch = CreateTempPathFolder();
 
     // For TenantStore
     private const string ConnectionStrings = "ConnectionStrings";
@@ -36,7 +37,8 @@ public class TenantConfigWatcherTests
         _store.LoadTenants();
         var initialTenantCount = _store.GetTenants().Count;
         var tenantName = _tenantNames[0];
-        CreateTenantContext(tenantName).SerializeToFile(Path.Combine(_directoryToWatch, $"Tenant.{tenantName}.config"));
+        await File.WriteAllTextAsync(Path.Combine(_directoryToWatch, $"Tenant.{tenantName}.json"),
+            JsonCSerializer<TenantContext>.Serialize(CreateTenantContext(tenantName)));
         await Task.Delay(200);
 
         using (Assert.EnterMultipleScope())
@@ -54,7 +56,8 @@ public class TenantConfigWatcherTests
         if (initialTenantCount == 0)
         {
             var tenantName = _tenantNames[0];
-            CreateTenantContext(tenantName).SerializeToFile(Path.Combine(_directoryToWatch, $"Tenant.{tenantName}.config"));
+            await File.WriteAllTextAsync(Path.Combine(_directoryToWatch, $"Tenant.{tenantName}.json"),
+                JsonCSerializer<TenantContext>.Serialize(CreateTenantContext(tenantName)));
         }
         await Task.Delay(100);
         initialTenantCount = _store.GetTenants().Count;
@@ -72,11 +75,12 @@ public class TenantConfigWatcherTests
         if (initialTenantCount == 0)
         {
             var tenantName = _tenantNames[0];
-            CreateTenantContext(tenantName).SerializeToFile(Path.Combine(_directoryToWatch, $"Tenant.{tenantName}.config"));
+            await File.WriteAllTextAsync(Path.Combine(_directoryToWatch, $"Tenant.{tenantName}.json"),
+                JsonCSerializer<TenantContext>.Serialize(CreateTenantContext(tenantName)));
         }
         await Task.Delay(100);
         var identifier = _store.GetTenants().First().Value.Identifier;
-        var newPath = Path.Combine(_directoryToWatch, $"Tenant.xXx.config");
+        var newPath = Path.Combine(_directoryToWatch, $"Tenant.xXx.json");
         File.Move(_store.GetTenantByIdentifier(identifier)!.Filename, newPath);
         await Task.Delay(200);
 
@@ -91,11 +95,12 @@ public class TenantConfigWatcherTests
         if (initialTenantCount == 0)
         {
             var tenantName = _tenantNames[0];
-            CreateTenantContext(tenantName).SerializeToFile(Path.Combine(_directoryToWatch, $"Tenant.{tenantName}.config"));
+            await File.WriteAllTextAsync(Path.Combine(_directoryToWatch, $"Tenant.{tenantName}.json"),
+                JsonCSerializer<TenantContext>.Serialize(CreateTenantContext(tenantName)));
         }
         await Task.Delay(100);
         var identifier = _store.GetTenants().First().Value.Identifier;
-        var newPath = Path.Combine(_directoryToWatch, $"__Tenant.{identifier}.config");
+        var newPath = Path.Combine(_directoryToWatch, $"__Tenant.{identifier}.json");
         File.Move(_store.GetTenantByIdentifier(identifier)!.Filename, newPath);
         await Task.Delay(200);
 
@@ -111,7 +116,8 @@ public class TenantConfigWatcherTests
         if (_store.GetTenantByIdentifier(tenantName) == null)
         {
             // the watcher will load the file automatically
-            CreateTenantContext(tenantName).SerializeToFile(Path.Combine(_directoryToWatch, $"Tenant.{tenantName}.config"));
+            File.WriteAllText(Path.Combine(_directoryToWatch, $"Tenant.{tenantName}.json"),
+                JsonCSerializer<TenantContext>.Serialize(CreateTenantContext(tenantName)));
         }
         
         var initialConnString = _store.GetTenantByIdentifier(tenantName)!.DbContext.GetNewAdapter().ConnectionString;

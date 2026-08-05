@@ -42,11 +42,11 @@ public class TenantStoreTests
                 DbContext = {ConnectionKey = ConnKeyPrefix + tenantName},
                 OrganizationContext = {Name = "Long: " + tenantName, ShortName = "Short: " + tenantName}
             };
-            return tenant.Serialize();
+            return TournamentManager.JsonCSerializer.JsonCSerializer<TenantContext>.Serialize(tenant);
         });
         tenantStoreMock.Setup(s => s.LoadTenants());
         _store = tenantStoreMock.Object;
-        _store.GetTenantConfigurationFiles = () => _tenantNames.ToArray();
+        _store.GetTenantConfigurationFiles = () => [.. _tenantNames];
     }
 
     [Test]

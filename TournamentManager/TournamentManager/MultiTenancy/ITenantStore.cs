@@ -12,7 +12,7 @@ public interface ITenantStore<T> where T: class, ITenantContext, ITenant
     /// Sets the tenant context in child contexts of the tenant of type <see cref="ITenantContext"/>.
     /// </summary>
     /// <param name="tenantContext"></param>
-    void SetTenantForChildContexts(T tenantContext);
+    void SetTenantForChildContexts(ITenantContext tenantContext);
 
     /// <summary>
     /// Gets a list of <see cref="ITenant"/> configurations for all current tenants.
@@ -26,7 +26,7 @@ public interface ITenantStore<T> where T: class, ITenantContext, ITenant
     /// </summary>
     /// <param name="filePath">The full path to the file</param>
     /// <returns>Returns the <see cref="ITenantContext"/>, if the tenant could be built, else <see langword="null"/>.</returns>
-    ITenantContext? BuildTenantContext(string filePath);
+    ITenantContext BuildTenantContext(string filePath);
 
     /// <summary>
     /// Gets the <see cref="ITenant"/> configuration for the tenant with the specified <paramref name="identifier"/>.

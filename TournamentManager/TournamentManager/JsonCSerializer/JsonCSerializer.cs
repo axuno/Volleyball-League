@@ -411,7 +411,7 @@ public static class JsonCSerializer<T>
                 query = query.OrderBy(p => p.MetadataToken);
             }
 
-            return query.ToList();
+            return [.. query];
         }
 
         private string GetJsonPropertyName(PropertyInfo property)
