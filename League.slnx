@@ -1,0 +1,14 @@
+<Solution>
+  <Project Path="Axuno.BackgroundTask.Test/Axuno.BackgroundTask.Tests.csproj" />
+  <Project Path="Axuno.BackgroundTask/Axuno.BackgroundTask.csproj" />
+  <Project Path="Axuno.Tools.Tests/Axuno.Tools.Tests.csproj" />
+  <Project Path="Axuno.Tools/Axuno.Tools.csproj" />
+  <Project Path="Axuno.Web/Axuno.Web.csproj" />
+  <Project Path="League.Demo/League.Demo.csproj" />
+  <Project Path="League.Tests/League.Tests.csproj" />
+  <Project Path="League/League.csproj" />
+  <Project Path="TournamentManager/DAL/DatabaseGeneric/TournamentManager.DAL.DbGeneric.csproj" />
+  <Project Path="TournamentManager/DAL/DatabaseSpecific/TournamentManager.DAL.DBSpecific.csproj" />
+  <Project Path="TournamentManager/TournamentManager.Tests/TournamentManager.Tests.csproj" />
+  <Project Path="TournamentManager/TournamentManager/TournamentManager.csproj" />
+</Solution>
