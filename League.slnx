@@ -1,10 +1,22 @@
 <Solution>
+  <Folder Name="/Solution Items/">
+    <File Path=".editorconfig" />
+    <File Path=".gitattributes" />
+    <File Path=".gitignore" />
+    <File Path="CODE_OF_CONDUCT.md" />
+    <File Path="Directory.Build.props" />
+    <File Path="LICENSE" />
+    <File Path="logo-volleyball-league.png" />
+    <File Path="logo-volleyball-league_100x100.png" />
+    <File Path="PictureCredits.md" />
+    <File Path="README.md" />
+  </Folder>
   <Project Path="Axuno.BackgroundTask.Test/Axuno.BackgroundTask.Tests.csproj" />
   <Project Path="Axuno.BackgroundTask/Axuno.BackgroundTask.csproj" />
   <Project Path="Axuno.Tools.Tests/Axuno.Tools.Tests.csproj" />
   <Project Path="Axuno.Tools/Axuno.Tools.csproj" />
   <Project Path="Axuno.Web/Axuno.Web.csproj" />
-  <Project Path="League.Demo/League.Demo.csproj" />
+  <Project DefaultStartup="true" Path="League.Demo/League.Demo.csproj" />
   <Project Path="League.Tests/League.Tests.csproj" />
   <Project Path="League/League.csproj" />
   <Project Path="TournamentManager/DAL/DatabaseGeneric/TournamentManager.DAL.DbGeneric.csproj" />
