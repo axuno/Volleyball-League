@@ -1,0 +1,7 @@
+<Solution>
+  <Project Path="../Axuno.Tools/Axuno.Tools.csproj" />
+  <Project Path="DAL/DatabaseGeneric/TournamentManager.DAL.DbGeneric.csproj" />
+  <Project Path="DAL/DatabaseSpecific/TournamentManager.DAL.DBSpecific.csproj" />
+  <Project DefaultStartup="true" Path="TournamentManager.Tests/TournamentManager.Tests.csproj" />
+  <Project Path="TournamentManager/TournamentManager.csproj" />
+</Solution>
