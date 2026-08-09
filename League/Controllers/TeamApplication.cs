@@ -484,7 +484,7 @@ public class TeamApplication : AbstractController
             var teamInRoundEntity = new TeamInRoundEntity();
             try
             {
-                // If the team had already been registered for another round, we have get the existing entity
+                // If the team had already been registered for another round, we have to get the existing entity
                 if (!sessionModel.TeamInRound!.IsNew)
                 {
                     teamInRoundEntity =
@@ -595,7 +595,11 @@ public class TeamApplication : AbstractController
         {
             EnforceExplicitSelection = true,
             SelectedRoundId = tir?.RoundId,
-            ShowSelector = await _appDb.MatchRepository.GetMatchCountAsync(
+            // The selector is shown
+            // 1. for a new team,
+            // 2. for an existing team that is not in a round of the tournament,
+            // 3. for any team, as long as there are no matches for the tournament
+            ShowSelector = team.IsNew || tir is null || await _appDb.MatchRepository.GetMatchCountAsync(
                 new(
                     RoundFields.TournamentId == _tenantContext.TournamentContext.ApplicationTournamentId),
                 cancellationToken) == 0,

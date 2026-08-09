@@ -120,9 +120,9 @@
         // The time when matches start and end normally (e.g. from 18:00 - 21:00 h)
         "RegularMatchStartTime": {
           // Earliest start time for a match (in local time)
-          "MinDayTime": "00:18:00",
+          "MinDayTime": "18:00:00",
           // Latest start time for a match (in local time)
-          "MaxDayTime": "00:21:00"
+          "MaxDayTime": "21:00:00"
         },
         // The duration which is used to generate fixtures and to determine periods where a venue is occupied
         "PlannedDurationOfMatch": "02:00:00",
