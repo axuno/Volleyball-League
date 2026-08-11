@@ -67,7 +67,11 @@ internal class MatchScheduler
         await LoadEntitiesAsync(cancellationToken);
 
         if (await _appDb.MatchRepository.AnyCompleteMatchesExistAsync(_tenantContext.TournamentContext.MatchPlanTournamentId, cancellationToken))
-            throw new InvalidOperationException("Completed matches exist for this tournament. Generating fixtures aborted.");
+        {
+            _logger.LogError("Completed matches exist for this tournament. Generating fixtures aborted.");
+            throw new InvalidOperationException(
+                "Completed matches exist for this tournament. Generating fixtures aborted.");
+        }
 
         foreach (var round in _tournament.Rounds)
             await ScheduleFixturesForRound(round, keepExisting, cancellationToken);
@@ -94,6 +98,7 @@ internal class MatchScheduler
                 return;
             case 1:
                 // Fail early if there is only one team in the round
+                _logger.LogCritical("Round '{RoundName}' has only 1 team. Cannot generate fixtures.", round.Name);
                 throw new InvalidOperationException(
                     $"Round '{round.Name}' has only 1 team. Cannot generate fixtures.");
         }
@@ -101,7 +106,10 @@ internal class MatchScheduler
         await LoadEntitiesAsync(cancellationToken);
 
         if (await _appDb.MatchRepository.AnyCompleteMatchesExistAsync(round, cancellationToken))
+        {
+            _logger.LogError("Completed matches exist for round '{RoundId}'. Generating fixtures aborted.", round.Id);
             throw new InvalidOperationException($"Completed matches exist for round '{round.Id}'. Generating fixtures aborted.");
+        }
 
         // We load ALL tournament matches (including those that were saved previously),
         // so that we can check for venues occupied by existing matches in memory.
@@ -199,7 +207,7 @@ internal class MatchScheduler
                 PlannedEnd = datesFound[index] != null
                     ? datesFound[index]!.MatchStartTime
                         .Add(_tenantContext.TournamentContext.FixtureRuleSet.PlannedDurationOfMatch)
-                    : default(DateTime?),
+                    : null,
                 VenueId = datesFound[index] != null
                     ? datesFound[index]!.VenueId
                     // take over the venue stored in the team entity (may also be null!)
@@ -500,8 +508,11 @@ internal class MatchScheduler
         }
 
         if (combinations.TurnDateTimePeriods.Values.Any(p => p is null))
+        {
+            _logger.LogError("Not all round turns for round '{Round}/{LegDescription}' got a date period assigned. Probably not enough dates available for assignment.", roundLeg.Round.Name, roundLeg.Description);
             throw new InvalidOperationException(
                 "Not all round turns got a date period assigned. Probably not enough dates available for assignment.");
+        }
     }
 
     /// <summary>
