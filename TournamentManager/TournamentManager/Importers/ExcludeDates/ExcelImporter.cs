@@ -65,8 +65,11 @@ public class ExcelImporter : IExcludeDateImporter
                 yield break;
             }
 
-            // Swap if needed
-            if (from > to) (from, to) = (to, from);
+            if (from > to)
+            {
+                _logger.LogError("'From' date is later than 'To' date in row {RowNo}: From={From}, To={To}", row, from, to);
+                throw new InvalidOperationException($"'From' date is later than 'To' date in row {row}: From={from}, To={to}");
+            }
 
             // No time part means, the whole day should be excluded
             const int millisecondsOneSecond = 1000;
