@@ -85,12 +85,12 @@ public class UserAuthenticationTokenStoreTests
     {
         var user = await CreateNewUser();
         var userLoginInfo = GetUserLoginInfo();
-        Assert.DoesNotThrowAsync(() => _store.AddLoginAsync(user, userLoginInfo, CancellationToken.None));
+        await Assert.DoesNotThrowAsync(() => _store.AddLoginAsync(user, userLoginInfo, CancellationToken.None));
 
-        Assert.DoesNotThrowAsync(() => _store.SetTokenAsync(user, userLoginInfo.LoginProvider, "TokenName", "TheValue",  CancellationToken.None));
+        await Assert.DoesNotThrowAsync(() => _store.SetTokenAsync(user, userLoginInfo.LoginProvider, "TokenName", "TheValue",  CancellationToken.None));
         Assert.That(await _store.GetTokenAsync(user, userLoginInfo.LoginProvider, "TokenName", CancellationToken.None), Is.EqualTo("TheValue"));
 
-        Assert.DoesNotThrowAsync(() => _store.RemoveTokenAsync(user, userLoginInfo.LoginProvider, "TokenName", CancellationToken.None));
+        await Assert.DoesNotThrowAsync(() => _store.RemoveTokenAsync(user, userLoginInfo.LoginProvider, "TokenName", CancellationToken.None));
         Assert.That(await _store.GetTokenAsync(user, userLoginInfo.LoginProvider, "TokenName", CancellationToken.None), Is.Null);
     }
 
@@ -109,8 +109,8 @@ public class UserAuthenticationTokenStoreTests
                 $"SELECT 1 FROM [{_appDb.DbContext.Schema}].[{da.GetPersistentTableName(new IdentityUserLoginEntity())}] WITH (TABLOCKX)");
             // Trying to update will fail because the table is locked
             _appDb.DbContext.CommandTimeOut = 2;
-            Assert.ThrowsAsync<InvalidOperationException>(async () => await _store.SetTokenAsync(GetNewUser(), "Provider", "TokenName", "TheValue", CancellationToken.None));
-            Assert.ThrowsAsync<InvalidOperationException>(async () => await _store.RemoveTokenAsync(GetNewUser(), "Provider", "TokenName", CancellationToken.None));
+            await Assert.ThrowsAsync<InvalidOperationException>(async () => await _store.SetTokenAsync(GetNewUser(), "Provider", "TokenName", "TheValue", CancellationToken.None));
+            await Assert.ThrowsAsync<InvalidOperationException>(async () => await _store.RemoveTokenAsync(GetNewUser(), "Provider", "TokenName", CancellationToken.None));
             da.Rollback("transaction1");
         }
         _appDb.DbContext.CommandTimeOut = currentTimeOut;

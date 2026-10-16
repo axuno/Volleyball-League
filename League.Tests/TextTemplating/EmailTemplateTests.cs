@@ -69,7 +69,7 @@ public class EmailTemplateTests
     [Test]
     [TestCase("en")]
     [TestCase("de")]
-    public void ConfirmNewPrimaryEmail_Test(string cultureName)
+    public async Task ConfirmNewPrimaryEmail_Test(string cultureName)
     {
         var m = new ChangeUserAccountModel
         {
@@ -80,7 +80,7 @@ public class EmailTemplateTests
         string text = string.Empty, html = string.Empty;
         using (Assert.EnterMultipleScope())
         {
-            Assert.DoesNotThrowAsync(async () =>
+            await Assert.DoesNotThrowAsync(async () =>
             {
                 text = await _renderer.RenderAsync(TemplateName.ConfirmNewPrimaryEmailTxt, m, cultureName);
                 Console.WriteLine($@"*** {TemplateName.ConfirmNewPrimaryEmailTxt} ***");
@@ -104,12 +104,12 @@ public class EmailTemplateTests
     [TestCase("de", true, true)]
     [TestCase("de", false, false)]
     [TestCase("de", false, true)]
-    public void ConfirmTeamApplication_Test(string cultureName, bool showBank, bool isRegisteringUser)
+    public async Task ConfirmTeamApplication_Test(string cultureName, bool showBank, bool isRegisteringUser)
     {
         string text = string.Empty, html = string.Empty;
         using (Assert.EnterMultipleScope())
         {
-            Assert.DoesNotThrowAsync(async () =>
+            await Assert.DoesNotThrowAsync(async () =>
             {
                 _tenantContext.OrganizationContext.Bank.ShowBankDetailsInConfirmationEmail = showBank;
                 text = await _renderer.RenderAsync(TemplateName.ConfirmTeamApplicationTxt,
@@ -145,7 +145,7 @@ public class EmailTemplateTests
     [Test]
     [TestCase("en")]
     [TestCase("de")]
-    public void ContactForm_Test(string cultureName)
+    public async Task ContactForm_Test(string cultureName)
     {
         var m = new { Form = new ContactViewModel
         {
@@ -158,7 +158,7 @@ public class EmailTemplateTests
         string text = string.Empty, html = string.Empty;
         using (Assert.EnterMultipleScope())
         {
-            Assert.DoesNotThrowAsync(async () =>
+            await Assert.DoesNotThrowAsync(async () =>
             {
                 text = await _renderer.RenderAsync(TemplateName.ContactFormTxt, m, cultureName);
                 Console.WriteLine($@"*** {TemplateName.ContactFormTxt} ***");
@@ -178,7 +178,7 @@ public class EmailTemplateTests
     [TestCase("de", "2021-02-02 19:00:00", 1234)]
     [TestCase("de", null, null)]
     [TestCase("de", null, 1234)]
-    public void ChangeFixture_Test(string cultureName, DateTime? origPlannedStart, long? origVenue)
+    public async Task ChangeFixture_Test(string cultureName, DateTime? origPlannedStart, long? origVenue)
     {
         var m = new ChangeFixtureModel
         {
@@ -196,7 +196,7 @@ public class EmailTemplateTests
         string text = string.Empty, html = string.Empty;
         using (Assert.EnterMultipleScope())
         {
-            Assert.DoesNotThrowAsync(async () =>
+            await Assert.DoesNotThrowAsync(async () =>
             {
                 text = await _renderer.RenderAsync(TemplateName.ChangeFixtureTxt, m, cultureName);
                 Console.WriteLine($@"*** {TemplateName.ChangeFixtureTxt} ***");
@@ -213,7 +213,7 @@ public class EmailTemplateTests
     [Test]
     [TestCase("en")]
     [TestCase("de")]
-    public void NotifyCurrentPrimaryEmail_Test(string cultureName)
+    public async Task NotifyCurrentPrimaryEmail_Test(string cultureName)
     {
         var m = new ChangeUserAccountModel
         {
@@ -224,7 +224,7 @@ public class EmailTemplateTests
         string text = string.Empty, html = string.Empty;
         using (Assert.EnterMultipleScope())
         {
-            Assert.DoesNotThrowAsync(async () =>
+            await Assert.DoesNotThrowAsync(async () =>
             {
                 text = await _renderer.RenderAsync(TemplateName.NotifyCurrentPrimaryEmailTxt, m, cultureName);
                 Console.WriteLine($@"*** {TemplateName.NotifyCurrentPrimaryEmailTxt} ***");
@@ -242,7 +242,7 @@ public class EmailTemplateTests
     [Test]
     [TestCase("en")]
     [TestCase("de")]
-    public void PasswordReset_Test(string cultureName)
+    public async Task PasswordReset_Test(string cultureName)
     {
         var m = new ChangeUserAccountModel
         {
@@ -255,7 +255,7 @@ public class EmailTemplateTests
         using (Assert.EnterMultipleScope())
         {
 
-            Assert.DoesNotThrowAsync(async () =>
+            await Assert.DoesNotThrowAsync(async () =>
             {
                 text = await _renderer.RenderAsync(TemplateName.PasswordResetTxt, m, cultureName);
                 Console.WriteLine($@"*** {TemplateName.PasswordResetTxt} ***");
@@ -271,7 +271,7 @@ public class EmailTemplateTests
         
     [TestCase("en")]
     [TestCase("de")]
-    public void PleaseConfirmEmail_Test(string cultureName)
+    public async Task PleaseConfirmEmail_Test(string cultureName)
     {
         var m = new ChangeUserAccountModel
         {
@@ -284,7 +284,7 @@ public class EmailTemplateTests
         using (Assert.EnterMultipleScope())
         {
 
-            Assert.DoesNotThrowAsync(async () =>
+            await Assert.DoesNotThrowAsync(async () =>
             {
                 text = await _renderer.RenderAsync(TemplateName.PleaseConfirmEmailTxt, m, cultureName);
                 Console.WriteLine($@"*** {TemplateName.PleaseConfirmEmailTxt} ***");
@@ -307,7 +307,7 @@ public class EmailTemplateTests
     [TestCase("de", false, false)]
     [TestCase("de", true, true)]
     [TestCase("de", true, false)]
-    public void ResultEntered_Test(string cultureName, bool isOrigStartSet, bool withRemarks)
+    public async Task ResultEntered_Test(string cultureName, bool isOrigStartSet, bool withRemarks)
     {
         var realStart = new DateTime(2021, 12, 24, 20, 00, 00);
 
@@ -339,7 +339,7 @@ public class EmailTemplateTests
 
         using (Assert.EnterMultipleScope())
         {
-            Assert.DoesNotThrowAsync(async () =>
+            await Assert.DoesNotThrowAsync(async () =>
             {
                 text = await _renderer.RenderAsync(TemplateName.ResultEnteredTxt, m, cultureName);
                 Console.WriteLine($@"*** {TemplateName.ResultEnteredTxt} ***");
@@ -360,7 +360,7 @@ public class EmailTemplateTests
     [TestCase("de", false, false)]
     [TestCase("de", true, true)]
     [TestCase("de", true, false)]
-    public void ResultRemoved_Test(string cultureName, bool isOrigStartSet, bool withRemarks)
+    public async Task ResultRemoved_Test(string cultureName, bool isOrigStartSet, bool withRemarks)
     {
         var realStart = new DateTime(2023, 11, 30, 20, 00, 00);
 
@@ -392,7 +392,7 @@ public class EmailTemplateTests
 
         using (Assert.EnterMultipleScope())
         {
-            Assert.DoesNotThrowAsync(async () =>
+            await Assert.DoesNotThrowAsync(async () =>
             {
                 text = await _renderer.RenderAsync(TemplateName.ResultRemovedTxt, m, cultureName);
                 Console.WriteLine($@"*** {TemplateName.ResultRemovedTxt} ***");
@@ -409,7 +409,7 @@ public class EmailTemplateTests
     [TestCase("en", false)]
     [TestCase("de", true)]
     [TestCase("de", false)]
-    public void AnnounceNextMatch_Test(string cultureName, bool venueIsSet)
+    public async Task AnnounceNextMatch_Test(string cultureName, bool venueIsSet)
     {
         var m = new AnnounceNextMatchModel
         {
@@ -437,7 +437,7 @@ public class EmailTemplateTests
 
         using (Assert.EnterMultipleScope())
         {
-            Assert.DoesNotThrowAsync(async () =>
+            await Assert.DoesNotThrowAsync(async () =>
             {
                 text = await _renderer.RenderAsync(TemplateName.AnnounceNextMatchTxt, m, cultureName);
                 Console.WriteLine($@"*** {TemplateName.AnnounceNextMatchTxt} ***");
@@ -452,7 +452,7 @@ public class EmailTemplateTests
     [TestCase("en")]
     [TestCase("de")]
 
-    public void RemindMatchResult_Test(string cultureName)
+    public async Task RemindMatchResult_Test(string cultureName)
     {
         var m = new RemindMatchResultModel
         {
@@ -469,7 +469,7 @@ public class EmailTemplateTests
 
         using (Assert.EnterMultipleScope())
         {
-            Assert.DoesNotThrowAsync(async () =>
+            await Assert.DoesNotThrowAsync(async () =>
             {
                 text = await _renderer.RenderAsync(TemplateName.RemindMatchResultTxt, m, cultureName);
                 Console.WriteLine($@"*** {TemplateName.RemindMatchResultTxt} ***");
@@ -484,7 +484,7 @@ public class EmailTemplateTests
     [TestCase("en")]
     [TestCase("de")]
 
-    public void UrgeMatchResult_Test(string cultureName)
+    public async Task UrgeMatchResult_Test(string cultureName)
     {
         var m = new UrgeMatchResultModel
         {
@@ -501,7 +501,7 @@ public class EmailTemplateTests
 
         using (Assert.EnterMultipleScope())
         {
-            Assert.DoesNotThrowAsync(async () =>
+            await Assert.DoesNotThrowAsync(async () =>
             {
                 text = await _renderer.RenderAsync(TemplateName.UrgeMatchResultTxt, m, cultureName);
                 Console.WriteLine($@"*** {TemplateName.UrgeMatchResultTxt} ***");

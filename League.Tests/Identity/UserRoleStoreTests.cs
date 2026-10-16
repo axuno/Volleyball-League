@@ -48,8 +48,8 @@ public class UserRoleStoreTests
                 $"SELECT 1 FROM [{_appDb.DbContext.Schema}].[{da.GetPersistentTableName(new IdentityRoleEntity())}] WITH (TABLOCKX)");
             // Trying to update will fail because the table is locked
             _appDb.DbContext.CommandTimeOut = 2;
-            Assert.ThrowsAsync<InvalidOperationException>(async () => await _userStore.RemoveFromRoleAsync(_user, Constants.RoleName.TournamentManager, CancellationToken.None));
-            Assert.ThrowsAsync<InvalidOperationException>(async () => await _userStore.AddToRoleAsync(_user, Constants.RoleName.TournamentManager, CancellationToken.None));
+            await Assert.ThrowsAsync<InvalidOperationException>(async () => await _userStore.RemoveFromRoleAsync(_user, Constants.RoleName.TournamentManager, CancellationToken.None));
+            await Assert.ThrowsAsync<InvalidOperationException>(async () => await _userStore.AddToRoleAsync(_user, Constants.RoleName.TournamentManager, CancellationToken.None));
             da.Rollback("transaction1");
         }
         _appDb.DbContext.CommandTimeOut = currentTimeOut;
@@ -62,7 +62,7 @@ public class UserRoleStoreTests
         Assert.That(await _userStore.IsInRoleAsync(_user, Constants.RoleName.TournamentManager, CancellationToken.None), Is.True);
 
         // adding the same role again should throw
-        Assert.ThrowsAsync<InvalidOperationException>(() => _userStore.AddToRoleAsync(_user, Constants.RoleName.TournamentManager, CancellationToken.None));
+        await Assert.ThrowsAsync<InvalidOperationException>(() => _userStore.AddToRoleAsync(_user, Constants.RoleName.TournamentManager, CancellationToken.None));
 
         using (Assert.EnterMultipleScope())
         {
@@ -71,7 +71,7 @@ public class UserRoleStoreTests
             Assert.That((await _userStore.GetUsersInRoleAsync(Constants.RoleName.TournamentManager, CancellationToken.None)).FirstOrDefault(u => u.Email == _user.Email), Is.Not.Null);
         }
 
-        Assert.DoesNotThrowAsync(async () => await _userStore.RemoveFromRoleAsync(_user, Constants.RoleName.TournamentManager, CancellationToken.None));
+        await Assert.DoesNotThrowAsync(async () => await _userStore.RemoveFromRoleAsync(_user, Constants.RoleName.TournamentManager, CancellationToken.None));
     }
 
     [Test]
@@ -105,20 +105,20 @@ public class UserRoleStoreTests
     }
 
     [Test]
-    public void TryToAdd_Forbidden_Roles()
+    public async Task TryToAdd_Forbidden_Roles()
     {
         foreach (var role in Constants.RoleName.GetTeamRelatedRoles())
         {
-            Assert.ThrowsAsync<InvalidOperationException>(async () => await _userStore.AddToRoleAsync(_user, role, CancellationToken.None));
+            await Assert.ThrowsAsync<InvalidOperationException>(async () => await _userStore.AddToRoleAsync(_user, role, CancellationToken.None));
         }
     }
 
     [Test]
-    public void TryToRemove_Forbidden_Roles()
+    public async Task TryToRemove_Forbidden_Roles()
     {
         foreach (var role in Constants.RoleName.GetTeamRelatedRoles())
         {
-            Assert.ThrowsAsync<InvalidOperationException>( () =>  _userStore.RemoveFromRoleAsync(_user, role, CancellationToken.None));
+            await Assert.ThrowsAsync<InvalidOperationException>( () =>  _userStore.RemoveFromRoleAsync(_user, role, CancellationToken.None));
         }
     }
 
