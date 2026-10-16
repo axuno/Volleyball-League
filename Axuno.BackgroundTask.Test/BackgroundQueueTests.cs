@@ -35,7 +35,7 @@ public class BackgroundQueueTests
     private Exception? ExceptionFromBackgroundQueue { get; set; }
 
     [Test]
-    public void Tasks_Timeout_Should_Throw()
+    public async System.Threading.Tasks.Task Tasks_Timeout_Should_Throw()
     {
         // onException just sets the exception variable as an evidence for being called
         var queue = _serviceProvider?.GetRequiredService<IBackgroundQueue>();
@@ -47,8 +47,8 @@ public class BackgroundQueueTests
 
         using (Assert.EnterMultipleScope())
         {
-            Assert.ThrowsAsync<TimeoutException>(async () => await queue.RunTaskAsync(await queue.DequeueTaskAsync(CancellationToken.None), CancellationToken.None));
-            Assert.That(ExceptionFromBackgroundQueue is TimeoutException, Is.True);
+            await Assert.ThrowsAsync<TimeoutException>(async () => await queue.RunTaskAsync(await queue.DequeueTaskAsync(CancellationToken.None), CancellationToken.None));
+            Assert.That(ExceptionFromBackgroundQueue, Is.InstanceOf<TimeoutException>());
         }
 
             

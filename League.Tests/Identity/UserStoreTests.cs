@@ -224,11 +224,11 @@ public class UserStoreTests
 
         user = await _store.FindByEmailAsync(_testUser.Email, CancellationToken.None);
         Assert.That(user?.UserName, Is.EqualTo(_testUser.UserName));
-        Assert.ThrowsAsync<ArgumentNullException>(() => _store.FindByEmailAsync(null, CancellationToken.None));
+        await Assert.ThrowsAsync<ArgumentNullException>(() => _store.FindByEmailAsync(null, CancellationToken.None));
 
         user = await _store.FindByNameAsync(_testUser.UserName, CancellationToken.None);
         Assert.That(user?.Email, Is.EqualTo(_testUser.Email));
-        Assert.ThrowsAsync<ArgumentNullException>(() => _store.FindByNameAsync(null, CancellationToken.None));
+        await Assert.ThrowsAsync<ArgumentNullException>(() => _store.FindByNameAsync(null, CancellationToken.None));
         using (Assert.EnterMultipleScope())
         {
             Assert.That(await _store.FindByNameAsync("does-not-exist", CancellationToken.None), Is.Null);
@@ -349,7 +349,7 @@ public class UserStoreTests
         var nonExistentUser = new ApplicationUser { Id = 0 };
 
         Assert.That(await _store.CreateAsync(user, CancellationToken.None), Is.EqualTo(IdentityResult.Success));
-        Assert.DoesNotThrowAsync(() => _store.SetLockoutEnabledAsync(user, true, CancellationToken.None));
+        await Assert.DoesNotThrowAsync(() => _store.SetLockoutEnabledAsync(user, true, CancellationToken.None));
 
         using (Assert.EnterMultipleScope())
         {
@@ -366,8 +366,8 @@ public class UserStoreTests
         Assert.That((await _store.GetLockoutEndDateAsync(user, CancellationToken.None))?.DateTime, Is.EqualTo(lockoutEndDate.Value.UtcDateTime));
 
         // Nothing should happen for non-existent users
-        Assert.ThrowsAsync<ArgumentException>(() => _store.SetLockoutEndDateAsync(nonExistentUser, lockoutEndDate, CancellationToken.None));
-        Assert.DoesNotThrowAsync(() => _store.GetLockoutEndDateAsync(nonExistentUser, CancellationToken.None));
+        await Assert.ThrowsAsync<ArgumentException>(() => _store.SetLockoutEndDateAsync(nonExistentUser, lockoutEndDate, CancellationToken.None));
+        await Assert.DoesNotThrowAsync(() => _store.GetLockoutEndDateAsync(nonExistentUser, CancellationToken.None));
 
         using (Assert.EnterMultipleScope())
         {
@@ -376,13 +376,13 @@ public class UserStoreTests
             Assert.That(await _store.IncrementAccessFailedCountAsync(user, CancellationToken.None), Is.EqualTo(1));
         }
         Assert.That(await _store.IncrementAccessFailedCountAsync(user, CancellationToken.None), Is.EqualTo(2));
-        Assert.ThrowsAsync<ArgumentException>(() => _store.IncrementAccessFailedCountAsync(nonExistentUser, CancellationToken.None));
+        await Assert.ThrowsAsync<ArgumentException>(() => _store.IncrementAccessFailedCountAsync(nonExistentUser, CancellationToken.None));
 
         // Test after resetting failed count and lockout date
         await _store.ResetAccessFailedCountAsync(user, CancellationToken.None);
         await _store.SetLockoutEndDateAsync(user, null, CancellationToken.None);
         Assert.That(await _store.GetAccessFailedCountAsync(user, CancellationToken.None), Is.Zero);
-        Assert.DoesNotThrowAsync(() => _store.ResetAccessFailedCountAsync(nonExistentUser, CancellationToken.None));
+        await Assert.DoesNotThrowAsync(() => _store.ResetAccessFailedCountAsync(nonExistentUser, CancellationToken.None));
         Assert.That(await _store.GetAccessFailedCountAsync(nonExistentUser, CancellationToken.None), Is.Zero);
 
         // Tests for user as SystemManager

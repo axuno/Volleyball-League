@@ -169,7 +169,7 @@ public class ConcurrentBackgroundQueueServiceTests
         await bgTaskSvc.StartAsync(CancellationToken.None);
         await Task.Delay(100, CancellationToken.None);
 
-        Assert.DoesNotThrowAsync(() => bgTaskSvc.StopAsync(CancellationToken.None));
+        await Assert.DoesNotThrowAsync(() => bgTaskSvc.StopAsync(CancellationToken.None));
     }
 
     [Test]

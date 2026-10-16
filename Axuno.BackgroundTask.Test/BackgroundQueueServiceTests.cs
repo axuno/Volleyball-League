@@ -184,6 +184,6 @@ public class BackgroundQueueServiceTests
         await hosted.StartAsync(CancellationToken.None);
         await Task.Delay(50, CancellationToken.None);
 
-        Assert.DoesNotThrowAsync(() => hosted.StopAsync(CancellationToken.None));
+        await Assert.DoesNotThrowAsync(() => hosted.StopAsync(CancellationToken.None));
     }
 }

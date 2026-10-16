@@ -132,8 +132,8 @@ public class RoleStoreTests
             _appDb.DbContext.CommandTimeOut = 2;
             // new claim
             var claim = new Claim(Constants.ClaimType.ManagesTeam, "y", "z");
-            Assert.ThrowsAsync<InvalidOperationException>(() => _roleStore.AddClaimAsync(role, claim, CancellationToken.None));
-            Assert.ThrowsAsync<InvalidOperationException>(() => _roleStore.RemoveClaimAsync(role, claim, CancellationToken.None));
+            await Assert.ThrowsAsync<InvalidOperationException>(() => _roleStore.AddClaimAsync(role, claim, CancellationToken.None));
+            await Assert.ThrowsAsync<InvalidOperationException>(() => _roleStore.RemoveClaimAsync(role, claim, CancellationToken.None));
             da.Rollback("transaction1");
         }
         _appDb.DbContext.CommandTimeOut = currentTimeOut;
@@ -237,14 +237,14 @@ public class RoleStoreTests
         var role = new ApplicationRole { Name = Constants.RoleName.SystemManager };
         Assert.That((await _roleStore.GetNormalizedRoleNameAsync(role, CancellationToken.None)), Has.Length.EqualTo(role.Name.Length));
 
-        Assert.DoesNotThrowAsync(async () => await _roleStore.SetNormalizedRoleNameAsync(role, await _roleStore.GetNormalizedRoleNameAsync(role, CancellationToken.None), CancellationToken.None));
+        await Assert.DoesNotThrowAsync(async () => await _roleStore.SetNormalizedRoleNameAsync(role, await _roleStore.GetNormalizedRoleNameAsync(role, CancellationToken.None), CancellationToken.None));
     }
 
     [Test]
-    public void Get_Role_Id_and_Name()
+    public async Task Get_Role_Id_and_Name()
     {
         var role = new ApplicationRole { Id = 1234, Name = Constants.RoleName.SystemManager };
-        Assert.DoesNotThrowAsync(async () => await _roleStore.SetRoleNameAsync(role, Constants.RoleName.TournamentManager, CancellationToken.None));
+        await Assert.DoesNotThrowAsync(async () => await _roleStore.SetRoleNameAsync(role, Constants.RoleName.TournamentManager, CancellationToken.None));
         using (Assert.EnterMultipleScope())
         {
             Assert.That(_roleStore.GetRoleIdAsync(role, CancellationToken.None).Result, Is.EqualTo(role.Id.ToString()));
@@ -260,7 +260,7 @@ public class RoleStoreTests
         Assert.That(await _roleStore.CreateAsync(role, CancellationToken.None), Is.EqualTo(IdentityResult.Success));
 
         // add claim to non existing role should throw
-        Assert.ThrowsAsync<InvalidOperationException>(() => _roleStore.AddClaimAsync(new(), new(Constants.ClaimType.ManagesTeam, "y", "z"), CancellationToken.None));
+        await Assert.ThrowsAsync<InvalidOperationException>(() => _roleStore.AddClaimAsync(new(), new(Constants.ClaimType.ManagesTeam, "y", "z"), CancellationToken.None));
 
         // add claim to role
         var guid = Guid.NewGuid().ToString("N");
@@ -283,7 +283,7 @@ public class RoleStoreTests
         await _roleStore.RemoveClaimAsync(role, createdClaim, CancellationToken.None);
         Assert.That((await _roleStore.GetClaimsAsync(role, CancellationToken.None)), Is.Empty);
         // remove non-existing claim should throw
-        Assert.ThrowsAsync<InvalidOperationException>(() => _roleStore.RemoveClaimAsync(role, new(Constants.ClaimType.ManagesTeam, "x"), CancellationToken.None));
+        await Assert.ThrowsAsync<InvalidOperationException>(() => _roleStore.RemoveClaimAsync(role, new(Constants.ClaimType.ManagesTeam, "x"), CancellationToken.None));
     }
         
     [Test]
