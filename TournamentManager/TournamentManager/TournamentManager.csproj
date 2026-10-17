@@ -5,8 +5,8 @@
         <NeutralLanguage>en</NeutralLanguage>
         <!-- With dotnet, add parameter: -p:SatelliteResourceLanguages="""en;de""" -->
         <SatelliteResourceLanguages>en;de</SatelliteResourceLanguages>
-        <Version>9.2.0</Version>
-        <FileVersion>9.2.0</FileVersion>
+        <Version>9.4.0</Version>
+        <FileVersion>9.4.0</FileVersion>
         <AssemblyVersion>9.0.0.0</AssemblyVersion>
         <!--only update AssemblyVersion with major releases -->
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
