@@ -1,4 +1,7 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Ical.Net.DataTypes;
+using Ical.Net.Serialization;
+using Microsoft.Extensions.Logging;
+using NodaTime;
 
 namespace TournamentManager.Importers.ExcludeDates;
 
@@ -36,7 +39,10 @@ public class InternetCalendarImporter : IExcludeDateImporter
     public IEnumerable<ExcludeDateRecord> Import(DateTimePeriod fromToTimePeriod)
     {
         _iCalendarStreamReader.BaseStream.Position = 0;
-        var iCal = Ical.Net.Calendar.Load(_iCalendarStreamReader)!;
+        _iCalendarStreamReader.DiscardBufferedData();
+
+        var iCal = CalendarSerializer.Deserialize<Ical.Net.Calendar>(_iCalendarStreamReader.BaseStream);
+
         _logger.LogInformation("Imported {Count} events from iCalendar", iCal.Events.Count);
         return Map(iCal, fromToTimePeriod);
     }
@@ -44,7 +50,7 @@ public class InternetCalendarImporter : IExcludeDateImporter
     private IEnumerable<ExcludeDateRecord> Map(Ical.Net.Calendar iCal, DateTimePeriod dateLimits)
     {
         // small come before big date ranges
-        foreach (var calendarEvent in iCal.Events.OrderBy(e => e.DtStart!.Date).ThenBy(e => e.EffectiveDuration.Days))
+        foreach (var calendarEvent in iCal.Events.OrderBy(e => e.DtStart!.Date).ThenBy(e => e.Duration?.Days))
         {
             var exclDate = CreateRecord(calendarEvent);
             if (dateLimits.Contains(exclDate.Period.Start) || dateLimits.Contains(exclDate.Period.End))
@@ -63,21 +69,22 @@ public class InternetCalendarImporter : IExcludeDateImporter
         if (calendarEvent.Start == null)
             throw new ArgumentException(@$"Could not create {nameof(ExcludeDateRecord)} from {nameof(Ical.Net.CalendarComponents.CalendarEvent)} Start={calendarEvent.Start}, End={calendarEvent.End}, Name={calendarEvent.Description}", nameof(calendarEvent));
 
-        calendarEvent.Start = calendarEvent.Start.TzId is null ? new(calendarEvent.Start.Date, calendarEvent.Start.Time, _defaultTimeZoneId) : calendarEvent.Start;
-        var start = calendarEvent.Start.AsUtc;
+        calendarEvent.Start = calendarEvent.Start.TzId is null
+            ? CalDateTime.FromDateTime(calendarEvent.Start.ToDateTimeUnspecified(), _defaultTimeZoneId)
+            : calendarEvent.Start;
+        var start = calendarEvent.Start.ToLocalDateTime().InUtc();
 
-        DateTime end;
+        ZonedDateTime end;
         if (calendarEvent.End != null)
         {
-            calendarEvent.End = calendarEvent.End.TzId is null ? new(calendarEvent.End.Date, calendarEvent.End.Time, _defaultTimeZoneId) : calendarEvent.Start;
-            end = calendarEvent.End.AsUtc.AddSeconds(-1);
+            calendarEvent.End = calendarEvent.End.TzId is null
+                ? CalDateTime.FromDateTime(calendarEvent.End.ToDateTimeUnspecified(), _defaultTimeZoneId)
+                : calendarEvent.End;
+            end = calendarEvent.End.ToLocalDateTime().InUtc().PlusSeconds(-1);
         }
         else
-            end = start.Date.AddDays(1).AddSeconds(-1);
+            end = start.LocalDateTime.PlusDays(1).PlusSeconds(-1).InZoneLeniently(start.Zone);
 
-        // Swap if necessary
-        if (start > end) (start, end) = (end, start);
-
-        return new(new(start, end), calendarEvent.Summary ?? string.Empty);
+        return new(new(start.ToDateTimeUtc(), end.ToDateTimeUtc()), calendarEvent.Summary ?? string.Empty);
     }
 }
