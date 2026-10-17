@@ -32,7 +32,7 @@
         <PackageReference Include="OxyPlot.SkiaSharp" Version="2.2.0" />
         <PackageReference Include="PuppeteerSharp" Version="25.14.0" />
         <PackageReference Include="System.Reflection.TypeExtensions" Version="4.7.0" />
-        <PackageReference Include="Ical.Net" Version="5.2.3" />
+        <PackageReference Include="Ical.Net" Version="6.0.0-pre.1" />
         <PackageReference Include="libphonenumber-csharp" Version="9.0.41" />
         <PackageReference Include="NLog.Extensions.Logging" Version="6.2.2" />
         <PackageReference Include="System.Data.SqlClient" Version="4.9.1" />

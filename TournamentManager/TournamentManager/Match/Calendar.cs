@@ -130,10 +130,10 @@ public class Calendar
                 match.VenueLongitude.Value.ToString(System.Globalization.CultureInfo.InvariantCulture));
         evt.Description += "\n" + DescriptionFooter;
         evt.Sequence = (int) match.ChangeSerial;
-        evt.Start = new(value: match.PlannedStart.Value, tzId);
-        evt.End = new(value: match.PlannedEnd.Value, tzId);
-        evt.LastModified = new(match.ModifiedOn, "UTC");
-        evt.DtStamp = new(DateTime.UtcNow);
+        evt.Start = CalDateTime.FromDateTime(match.PlannedStart.Value, tzId);
+        evt.End = CalDateTime.FromDateTime(match.PlannedEnd.Value, tzId);
+        evt.LastModified = CalDateTime.FromDateTime(match.ModifiedOn, CalDateTime.UtcTzId); 
+        evt.DtStamp = CalDateTime.UtcNow;
 
         evt.Uid = string.Format(UidFormat, match.Id);
         evt.Class = eventClass;
