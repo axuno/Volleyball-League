@@ -13,10 +13,10 @@ public class ContentItem
     public int Position { get; set; }
 
     /// <summary>
-    /// The titel of the page.
+    /// The title of the page.
     /// </summary>
     [Required]
-    public string? PageTitel { get; set; }
+    public string? PageTitle { get; set; }
 
     /// <summary>
     /// A short description of the content. This is used for SEO purposes.
@@ -27,12 +27,17 @@ public class ContentItem
     /// The title of the menu item used for navigation.
     /// </summary>
     [Required]
-    public string? MenuTitel { get; set; }
+    public string? MenuTitle { get; set; }
 
     /// <summary>
     /// The topic of the content item. It is used in the Url and the filename.
     /// </summary>
     public string Topic { get; set; } = string.Empty;
+
+    /// <summary>
+    /// The optional target attribute for navigation links (e.g. "_blank").
+    /// </summary>
+    public string Target { get; set; } = string.Empty;
 
     /// <summary>
     /// Whether the content item is active. Inactive items will never be displayed.

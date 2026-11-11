@@ -21,13 +21,13 @@
             if (childNode.HasVisibleChildNodes())
             {
                 <li>
-                    <a href="@Url.Content(childNode.Url!)" class="@(await Model.MainNav.GetClassAsync(Context, childNode, "dropdown-item", "active", true))">@childNode.Text</a>
+                    <a href="@Url.Content(childNode.Url!)" class="@(await Model.MainNav.GetClassAsync(Context, childNode, "dropdown-item", "active", true))" target="@(string.IsNullOrWhiteSpace(childNode.Target) ? null : childNode.Target)" rel="@(childNode.Target == "_blank" ? "noopener noreferrer" : null)">@childNode.Text</a>
                 </li>
             }
             else
             {
                 <li>
-                    <a href="@Url.Content(childNode.Url!)" class="@(await Model.MainNav.GetClassAsync(Context, childNode, "dropdown-item", "active", true))">@childNode.Text</a>
+                    <a href="@Url.Content(childNode.Url!)" class="@(await Model.MainNav.GetClassAsync(Context, childNode, "dropdown-item", "active", true))" target="@(string.IsNullOrWhiteSpace(childNode.Target) ? null : childNode.Target)" rel="@(childNode.Target == "_blank" ? "noopener noreferrer" : null)">@childNode.Text</a>
                     <partial name="@League.Views.ViewNames.Shared.NavigationNodeChildDropdownPartial" model="(Model.MainNav, childNode)" /> @*recursion*@
                 </li>
             }

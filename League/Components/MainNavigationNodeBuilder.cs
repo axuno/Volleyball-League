@@ -360,7 +360,7 @@ public class MainNavigationNodeBuilder : IMainNavigationNodeBuilder
         var contentItems = await contentProvider.GetContentItems(TenantContext);
 
         var homeItem = contentItems.FirstOrDefault(ci => ci.Topic.Equals("home", StringComparison.InvariantCultureIgnoreCase));
-        if (homeItem == null || string.IsNullOrEmpty(homeItem.MenuTitel))
+        if (homeItem == null || string.IsNullOrEmpty(homeItem.MenuTitle))
         {
             if (TenantContext.IsDefault)
                 Logger.LogInformation("No home content item found for default tenant {Tenant}", TenantContext.Identifier);
@@ -373,7 +373,7 @@ public class MainNavigationNodeBuilder : IMainNavigationNodeBuilder
         var tenantTopNode = new MainNavigationComponentModel.NavigationNode
         {
             Key = "Top_Tenant",
-            Text = Localizer[homeItem.MenuTitel],
+            Text = Localizer[homeItem.MenuTitle],
             Url = TenantLink.Action(nameof(TenantContent.Home),
                 nameof(TenantContent),
                 // if topic is empty, the default topic "home" will be displayed
@@ -395,13 +395,14 @@ public class MainNavigationNodeBuilder : IMainNavigationNodeBuilder
                             && i.IsVisible())
                      .OrderBy(i => i.Position))
         {
-            if (contentItem.MenuTitel == null || string.IsNullOrEmpty(contentItem.Topic)) continue;
+            if (contentItem.MenuTitle == null || string.IsNullOrEmpty(contentItem.Topic)) continue;
             var childNode = new MainNavigationComponentModel.NavigationNode
             {
-                Key = $"Tenant_{contentItem.MenuTitel}",
-                Text = Localizer[contentItem.MenuTitel],
+                Key = $"Tenant_{contentItem.MenuTitle}",
+                Text = Localizer[contentItem.MenuTitle],
                 Url = TenantLink.Action(nameof(TenantContent.Home), nameof(TenantContent),
-                    new { topic = contentItem.Topic })
+                    new { topic = contentItem.Topic }),
+                Target = contentItem.Target
             };
             tenantTopNode.ChildNodes.Add(childNode);
         }
