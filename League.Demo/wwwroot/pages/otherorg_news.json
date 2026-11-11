@@ -1,8 +1,8 @@
-{
+﻿{
   "Position": 10,
-  "PageTitel": "OtherOrg News",
+  "PageTitle": "OtherOrg News",
   "Description": "This is a short description for SEO purposes.",
-  "MenuTitel": "News",
+  "MenuTitle": "News",
   "Topic": "news",
   "IsActive": true,
   "LastModified": "2025-01-02T12:00:00Z",

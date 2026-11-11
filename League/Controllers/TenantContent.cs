@@ -80,7 +80,7 @@ public class TenantContent : AbstractController
 
         if (html == null) return NotFound();
 
-        ViewData.Title(contentItem!.PageTitel ?? _tenantContext.OrganizationContext.ShortName);
+        ViewData.Title(contentItem!.PageTitle ?? _tenantContext.OrganizationContext.ShortName);
         ViewData.Description(contentItem.Description ?? _tenantContext.OrganizationContext.Description);
         ViewData["LastModified"] = contentItem.LastModified.ToString("yyyy-MM-ddTHH:mm:ssK");
         ViewData["Date"] = contentItem.PubDate.ToString("yyyy-MM-ddTHH:mm:ssK");

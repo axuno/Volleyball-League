@@ -1,8 +1,8 @@
-{
+﻿{
   "Position": 0,
-  "PageTitel": "TestOrg Home",
+  "PageTitle": "TestOrg Home",
   "Description": "This is a short description for SEO purposes.",
-  "MenuTitel": "My League",
+  "MenuTitle": "My League",
   "Topic": "home",
   "IsActive": true,
   "LastModified": "2025-01-02T12:00:00Z",
